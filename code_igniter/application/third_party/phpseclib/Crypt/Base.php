@@ -526,8 +526,8 @@ class Crypt_Base
         $this->_setEngine();
 
         // Determining whether inline crypting can be used by the cipher
-        if ($this->use_inline_crypt !== false) {
-            $this->use_inline_crypt = version_compare(PHP_VERSION, '5.3.0') >= 0 || function_exists('create_function');
+        if ($this->use_inline_crypt !== false && function_exists('create_function')) {
+            $this->use_inline_crypt = true;
         }
     }
 
@@ -661,7 +661,7 @@ class Crypt_Base
                 $count = isset($func_args[4]) ? $func_args[4] : 1000;
 
                 // Keylength
-                if (isset($func_args[5]) && $func_args[5] > 0) {
+                if (isset($func_args[5])) {
                     $dkLen = $func_args[5];
                 } else {
                     $dkLen = $method == 'pbkdf1' ? 2 * $this->key_length : $this->key_length;
@@ -696,10 +696,10 @@ class Crypt_Base
                             include_once 'Crypt/Hash.php';
                         }
                         $i = 1;
-                        $hmac = new Crypt_Hash();
-                        $hmac->setHash($hash);
-                        $hmac->setKey($password);
                         while (strlen($key) < $dkLen) {
+                            $hmac = new Crypt_Hash();
+                            $hmac->setHash($hash);
+                            $hmac->setKey($password);
                             $f = $u = $hmac->hash($salt . pack('N', $i++));
                             for ($j = 2; $j <= $count; ++$j) {
                                 $u = $hmac->hash($u);
@@ -1912,7 +1912,6 @@ class Crypt_Base
      */
     function _unpad($text)
     {
-        return $text;
         if (!$this->padding) {
             return $text;
         }
@@ -2551,11 +2550,6 @@ class Crypt_Base
         }
 
         // Create the $inline function and return its name as string. Ready to run!
-        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-            eval('$func = function ($_action, &$self, $_text) { ' . $init_crypt . 'if ($_action == "encrypt") { ' . $encrypt . ' } else { ' . $decrypt . ' } };');
-            return $func;
-        }
-
         return create_function('$_action, &$self, $_text', $init_crypt . 'if ($_action == "encrypt") { ' . $encrypt . ' } else { ' . $decrypt . ' }');
     }
 
@@ -2612,50 +2606,6 @@ class Crypt_Base
                     $result .= $t ^ $hash;
                 }
                 return $result . pack('H*', sha1($hash));
-        }
-    }
-
-    /**
-     * Convert float to int
-     *
-     * On 32-bit Linux installs running PHP < 5.3 converting floats to ints doesn't always work
-     *
-     * @access private
-     * @param string $x
-     * @return int
-     */
-    function safe_intval($x)
-    {
-        switch (true) {
-            case is_int($x):
-            // PHP 5.3, per http://php.net/releases/5_3_0.php, introduced "more consistent float rounding"
-            case version_compare(PHP_VERSION, '5.3.0') >= 0 && (php_uname('m') & "\xDF\xDF\xDF") != 'ARM':
-            // PHP_OS & "\xDF\xDF\xDF" == strtoupper(substr(PHP_OS, 0, 3)), but a lot faster
-            case (PHP_OS & "\xDF\xDF\xDF") === 'WIN':
-                return $x;
-        }
-        return (fmod($x, 0x80000000) & 0x7FFFFFFF) |
-            ((fmod(floor($x / 0x80000000), 2) & 1) << 31);
-    }
-
-    /**
-     * eval()'able string for in-line float to int
-     *
-     * @access private
-     * @return string
-     */
-    function safe_intval_inline()
-    {
-        // on 32-bit linux systems with PHP < 5.3 float to integer conversion is bad
-        switch (true) {
-            case defined('PHP_INT_SIZE') && PHP_INT_SIZE == 8:
-            case version_compare(PHP_VERSION, '5.3.0') >= 0 && (php_uname('m') & "\xDF\xDF\xDF") != 'ARM':
-            case (PHP_OS & "\xDF\xDF\xDF") === 'WIN':
-                return '%s';
-                break;
-            default:
-                $safeint = '(is_int($temp = %s) ? $temp : (fmod($temp, 0x80000000) & 0x7FFFFFFF) | ';
-                return $safeint . '((fmod(floor($temp / 0x80000000), 2) & 1) << 31))';
         }
     }
 }

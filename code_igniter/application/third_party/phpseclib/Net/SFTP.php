@@ -199,7 +199,7 @@ class Net_SFTP extends Net_SSH2
      * Current working directory
      *
      * @var string
-     * @see self::realpath()
+     * @see self::_realpath()
      * @see self::chdir()
      * @access private
      */
@@ -228,7 +228,7 @@ class Net_SFTP extends Net_SSH2
      *
      * @see self::getSFTPErrors()
      * @see self::getLastSFTPError()
-     * @var array
+     * @var string
      * @access private
      */
     var $sftp_errors = array();
@@ -276,20 +276,6 @@ class Net_SFTP extends Net_SSH2
      * @access private
      */
     var $sortOptions = array();
-
-    /**
-     * Canonicalization Flag
-     *
-     * Determines whether or not paths should be canonicalized before being
-     * passed on to the remote server.
-     *
-     * @see self::enablePathCanonicalization()
-     * @see self::disablePathCanonicalization()
-     * @see self::realpath()
-     * @var bool
-     * @access private
-     */
-    var $canonicalize_paths = true;
 
     /**
      * Default Constructor.
@@ -390,7 +376,7 @@ class Net_SFTP extends Net_SSH2
             // yields inconsistent behavior depending on how php is compiled.  so we left shift -1 (which, in
             // two's compliment, consists of all 1 bits) by 31.  on 64-bit systems this'll yield 0xFFFFFFFF80000000.
             // that's not a problem, however, and 'anded' and a 32-bit number, as all the leading 1 bits are ignored.
-            (-1 << 31) & 0xFFFFFFFF => 'NET_SFTP_ATTR_EXTENDED'
+              -1 << 31 => 'NET_SFTP_ATTR_EXTENDED'
         );
         // http://tools.ietf.org/html/draft-ietf-secsh-filexfer-04#section-6.3
         // the flag definitions change somewhat in SFTPv5+.  if SFTPv5+ support is added to this library, maybe name
@@ -427,7 +413,7 @@ class Net_SFTP extends Net_SSH2
         );
 
         if (!defined('NET_SFTP_QUEUE_SIZE')) {
-            define('NET_SFTP_QUEUE_SIZE', 32);
+            define('NET_SFTP_QUEUE_SIZE', 50);
         }
     }
 
@@ -478,7 +464,7 @@ class Net_SFTP extends Net_SSH2
 
         $this->channel_status[NET_SFTP_CHANNEL] = NET_SSH2_MSG_CHANNEL_OPEN;
 
-        $response = $this->_get_channel_packet(NET_SFTP_CHANNEL, true);
+        $response = $this->_get_channel_packet(NET_SFTP_CHANNEL);
         if ($response === false) {
             return false;
         }
@@ -499,7 +485,7 @@ class Net_SFTP extends Net_SSH2
 
         $this->channel_status[NET_SFTP_CHANNEL] = NET_SSH2_MSG_CHANNEL_REQUEST;
 
-        $response = $this->_get_channel_packet(NET_SFTP_CHANNEL, true);
+        $response = $this->_get_channel_packet(NET_SFTP_CHANNEL);
         if ($response === false) {
             // from PuTTY's psftp.exe
             $command = "test -x /usr/lib/sftp-server && exec /usr/lib/sftp-server\n" .
@@ -523,7 +509,7 @@ class Net_SFTP extends Net_SSH2
 
             $this->channel_status[NET_SFTP_CHANNEL] = NET_SSH2_MSG_CHANNEL_REQUEST;
 
-            $response = $this->_get_channel_packet(NET_SFTP_CHANNEL, true);
+            $response = $this->_get_channel_packet(NET_SFTP_CHANNEL);
             if ($response === false) {
                 return false;
             }
@@ -541,20 +527,11 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nversion', $this->_string_shift($response, 4)));
         $this->version = $version;
         while (!empty($response)) {
-            if (strlen($response) < 4) {
-                return false;
-            }
             extract(unpack('Nlength', $this->_string_shift($response, 4)));
             $key = $this->_string_shift($response, $length);
-            if (strlen($response) < 4) {
-                return false;
-            }
             extract(unpack('Nlength', $this->_string_shift($response, 4)));
             $value = $this->_string_shift($response, $length);
             $this->extensions[$key] = $value;
@@ -645,26 +622,6 @@ class Net_SFTP extends Net_SSH2
     }
 
     /**
-     * Enable path canonicalization
-     *
-     * @access public
-     */
-    function enablePathCanonicalization()
-    {
-        $this->canonicalize_paths = true;
-    }
-
-    /**
-     * Enable path canonicalization
-     *
-     * @access public
-     */
-    function disablePathCanonicalization()
-    {
-        $this->canonicalize_paths = false;
-    }
-
-    /**
      * Returns the current directory name
      *
      * @return mixed
@@ -685,15 +642,12 @@ class Net_SFTP extends Net_SSH2
     function _logError($response, $status = -1)
     {
         if ($status == -1) {
-            if (strlen($response) < 4) {
-                return;
-            }
             extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         }
 
         $error = $this->status_codes[$status];
 
-        if ($this->version > 2 || strlen($response) < 4) {
+        if ($this->version > 2) {
             extract(unpack('Nlength', $this->_string_shift($response, 4)));
             $this->sftp_errors[] = $error . ': ' . $this->_string_shift($response, $length);
         } else {
@@ -722,20 +676,13 @@ class Net_SFTP extends Net_SSH2
      * SFTP doesn't provide a mechanism by which the current working directory can be changed, so we'll emulate it.  Returns
      * the absolute (canonicalized) path.
      *
-     * If canonicalize_paths has been disabled using disablePathCanonicalization(), $path is returned as-is.
-     *
      * @see self::chdir()
-     * @see self::disablePathCanonicalization()
      * @param string $path
      * @return mixed
      * @access private
      */
     function _realpath($path)
     {
-        if (!$this->canonicalize_paths) {
-            return $path;
-        }
-
         if ($this->pwd === false) {
             // http://tools.ietf.org/html/draft-ietf-secsh-filexfer-13#section-8.9
             if (!$this->_send_sftp_packet(NET_SFTP_REALPATH, pack('Na*', strlen($path), $path))) {
@@ -749,9 +696,6 @@ class Net_SFTP extends Net_SSH2
                     // should work on all SFTP versions since the only part of the SSH_FXP_NAME packet the following looks
                     // at is the first part and that part is defined the same in SFTP versions 3 through 6.
                     $this->_string_shift($response, 4); // skip over the count - it should be 1, anyway
-                    if (strlen($response) < 4) {
-                        return false;
-                    }
                     extract(unpack('Nlength', $this->_string_shift($response, 4)));
                     return $this->_string_shift($response, $length);
                 case NET_SFTP_STATUS:
@@ -919,17 +863,7 @@ class Net_SFTP extends Net_SSH2
                 unset($files[$key]);
                 continue;
             }
-            $is_directory = false;
-            if ($key != '.' && $key != '..') {
-                if ($this->use_stat_cache) {
-                    $is_directory = is_array($this->_query_stat_cache($this->_realpath($dir . '/' . $key)));
-                } else {
-                    $stat = $this->lstat($dir . '/' . $key);
-                    $is_directory = $stat && $stat['type'] === NET_SFTP_TYPE_DIRECTORY;
-                }
-            }
-
-            if ($is_directory) {
+            if ($key != '.' && $key != '..' && is_array($this->_query_stat_cache($this->_realpath($dir . '/' . $key)))) {
                 $depth++;
                 $files[$key] = $this->rawlist($dir . '/' . $key, true);
                 $depth--;
@@ -996,19 +930,10 @@ class Net_SFTP extends Net_SSH2
             $response = $this->_get_sftp_packet();
             switch ($this->packet_type) {
                 case NET_SFTP_NAME:
-                    if (strlen($response) < 4) {
-                        return false;
-                    }
                     extract(unpack('Ncount', $this->_string_shift($response, 4)));
                     for ($i = 0; $i < $count; $i++) {
-                        if (strlen($response) < 4) {
-                            return false;
-                        }
                         extract(unpack('Nlength', $this->_string_shift($response, 4)));
                         $shortname = $this->_string_shift($response, $length);
-                        if (strlen($response) < 4) {
-                            return false;
-                        }
                         extract(unpack('Nlength', $this->_string_shift($response, 4)));
                         $longname = $this->_string_shift($response, $length);
                         $attributes = $this->_parseAttributes($response);
@@ -1035,9 +960,6 @@ class Net_SFTP extends Net_SSH2
                     }
                     break;
                 case NET_SFTP_STATUS:
-                    if (strlen($response) < 4) {
-                        return false;
-                    }
                     extract(unpack('Nstatus', $this->_string_shift($response, 4)));
                     if ($status != NET_SFTP_STATUS_EOF) {
                         $this->_logError($response, $status);
@@ -1212,7 +1134,7 @@ class Net_SFTP extends Net_SSH2
                 $temp[$dir] = array();
             }
             if ($i === $max) {
-                if (is_object($temp[$dir]) && is_object($value)) {
+                if (is_object($temp[$dir])) {
                     if (!isset($value->stat) && isset($temp[$dir]->stat)) {
                         $value->stat = $temp[$dir]->stat;
                     }
@@ -1400,7 +1322,7 @@ class Net_SFTP extends Net_SSH2
     /**
      * Returns general information about a file or symbolic link
      *
-     * Determines information without calling Net_SFTP::realpath().
+     * Determines information without calling Net_SFTP::_realpath().
      * The second parameter can be either NET_SFTP_STAT or NET_SFTP_LSTAT.
      *
      * @param string $filename
@@ -1561,7 +1483,7 @@ class Net_SFTP extends Net_SSH2
             return true;
         }
 
-        $filename = $this->realpath($filename);
+        $filename = $this->_realPath($filename);
         // rather than return what the permissions *should* be, we'll return what they actually are.  this will also
         // tell us if the file actually exists.
         // incidentally, SFTPv4+ adds an additional 32-bit integer field - flags - to the following:
@@ -1632,9 +1554,6 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             $this->_logError($response, $status);
@@ -1747,18 +1666,12 @@ class Net_SFTP extends Net_SSH2
                 return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Ncount', $this->_string_shift($response, 4)));
         // the file isn't a symlink
         if (!$count) {
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nlength', $this->_string_shift($response, 4)));
         return $this->_string_shift($response, $length);
     }
@@ -1793,9 +1706,6 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             $this->_logError($response, $status);
@@ -1859,9 +1769,6 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             $this->_logError($response, $status);
@@ -1899,9 +1806,6 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             // presumably SSH_FX_NO_SUCH_FILE or SSH_FX_PERMISSION_DENIED?
@@ -2024,14 +1928,7 @@ class Net_SFTP extends Net_SSH2
                 break;
             case is_resource($data):
                 $mode = $mode & ~NET_SFTP_LOCAL_FILE;
-                $info = stream_get_meta_data($data);
-                if ($info['wrapper_type'] == 'PHP' && $info['stream_type'] == 'Input') {
-                    $fp = fopen('php://memory', 'w+');
-                    stream_copy_to_stream($data, $fp);
-                    rewind($fp);
-                } else {
-                    $fp = $data;
-                }
+                $fp = $data;
                 break;
             case $mode & NET_SFTP_LOCAL_FILE:
                 if (!is_file($data)) {
@@ -2046,7 +1943,7 @@ class Net_SFTP extends Net_SSH2
 
         if (isset($fp)) {
             $stat = fstat($fp);
-            $size = !empty($stat) ? $stat['size'] : 0;
+            $size = $stat['size'];
 
             if ($local_start >= 0) {
                 fseek($fp, $local_start);
@@ -2136,9 +2033,6 @@ class Net_SFTP extends Net_SSH2
                 return false;
             }
 
-            if (strlen($response) < 4) {
-                return false;
-            }
             extract(unpack('Nstatus', $this->_string_shift($response, 4)));
             if ($status != NET_SFTP_STATUS_OK) {
                 $this->_logError($response, $status);
@@ -2170,9 +2064,6 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             $this->_logError($response, $status);
@@ -2346,15 +2237,6 @@ class Net_SFTP extends Net_SSH2
             return false;
         }
 
-        if (is_object($path)) {
-            // It's an object. Cast it as string before we check anything else.
-            $path = (string) $path;
-        }
-
-        if (!is_string($path) || $path == '') {
-            return false;
-        }
-
         $path = $this->_realpath($path);
         if ($path === false) {
             return false;
@@ -2372,9 +2254,6 @@ class Net_SFTP extends Net_SSH2
         }
 
         // if $status isn't SSH_FX_OK it's probably SSH_FX_NO_SUCH_FILE or SSH_FX_PERMISSION_DENIED
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             $this->_logError($response, $status);
@@ -2800,9 +2679,6 @@ class Net_SFTP extends Net_SSH2
         }
 
         // if $status isn't SSH_FX_OK it's probably SSH_FX_NO_SUCH_FILE or SSH_FX_PERMISSION_DENIED
-        if (strlen($response) < 4) {
-            return false;
-        }
         extract(unpack('Nstatus', $this->_string_shift($response, 4)));
         if ($status != NET_SFTP_STATUS_OK) {
             $this->_logError($response, $status);
@@ -2830,10 +2706,6 @@ class Net_SFTP extends Net_SSH2
     function _parseAttributes(&$response)
     {
         $attr = array();
-        if (strlen($response) < 4) {
-            user_error('Malformed file attributes');
-            return array();
-        }
         extract(unpack('Nflags', $this->_string_shift($response, 4)));
         // SFTPv4+ have a type field (a byte) that follows the above flag field
         foreach ($this->attributes as $key => $value) {
@@ -2848,17 +2720,9 @@ class Net_SFTP extends Net_SSH2
                     $attr['size'] = hexdec(bin2hex($this->_string_shift($response, 8)));
                     break;
                 case NET_SFTP_ATTR_UIDGID: // 0x00000002 (SFTPv3 only)
-                    if (strlen($response) < 8) {
-                        user_error('Malformed file attributes');
-                        return $attr;
-                    }
                     $attr+= unpack('Nuid/Ngid', $this->_string_shift($response, 8));
                     break;
                 case NET_SFTP_ATTR_PERMISSIONS: // 0x00000004
-                    if (strlen($response) < 4) {
-                        user_error('Malformed file attributes');
-                        return $attr;
-                    }
                     $attr+= unpack('Npermissions', $this->_string_shift($response, 4));
                     // mode == permissions; permissions was the original array key and is retained for bc purposes.
                     // mode was added because that's the more industry standard terminology
@@ -2869,29 +2733,13 @@ class Net_SFTP extends Net_SSH2
                     }
                     break;
                 case NET_SFTP_ATTR_ACCESSTIME: // 0x00000008
-                    if (strlen($response) < 8) {
-                        user_error('Malformed file attributes');
-                        return $attr;
-                    }
                     $attr+= unpack('Natime/Nmtime', $this->_string_shift($response, 8));
                     break;
                 case NET_SFTP_ATTR_EXTENDED: // 0x80000000
-                    if (strlen($response) < 4) {
-                        user_error('Malformed file attributes');
-                        return $attr;
-                    }
                     extract(unpack('Ncount', $this->_string_shift($response, 4)));
                     for ($i = 0; $i < $count; $i++) {
-                        if (strlen($response) < 4) {
-                            user_error('Malformed file attributes');
-                            return $attr;
-                        }
                         extract(unpack('Nlength', $this->_string_shift($response, 4)));
                         $key = $this->_string_shift($response, $length);
-                        if (strlen($response) < 4) {
-                            user_error('Malformed file attributes');
-                            return $attr;
-                        }
                         extract(unpack('Nlength', $this->_string_shift($response, 4)));
                         $attr[$key] = $this->_string_shift($response, $length);
                     }
@@ -3037,7 +2885,7 @@ class Net_SFTP extends Net_SSH2
 
         // SFTP packet length
         while (strlen($this->packet_buffer) < 4) {
-            $temp = $this->_get_channel_packet(NET_SFTP_CHANNEL, true);
+            $temp = $this->_get_channel_packet(NET_SFTP_CHANNEL);
             if (is_bool($temp)) {
                 $this->packet_type = false;
                 $this->packet_buffer = '';
@@ -3045,16 +2893,13 @@ class Net_SFTP extends Net_SSH2
             }
             $this->packet_buffer.= $temp;
         }
-        if (strlen($this->packet_buffer) < 4) {
-            return false;
-        }
         extract(unpack('Nlength', $this->_string_shift($this->packet_buffer, 4)));
         $tempLength = $length;
         $tempLength-= strlen($this->packet_buffer);
 
         // SFTP packet type and data payload
         while ($tempLength > 0) {
-            $temp = $this->_get_channel_packet(NET_SFTP_CHANNEL, true);
+            $temp = $this->_get_channel_packet(NET_SFTP_CHANNEL);
             if (is_bool($temp)) {
                 $this->packet_type = false;
                 $this->packet_buffer = '';
@@ -3122,7 +2967,7 @@ class Net_SFTP extends Net_SSH2
     /**
      * Returns all errors
      *
-     * @return array
+     * @return string
      * @access public
      */
     function getSFTPErrors()

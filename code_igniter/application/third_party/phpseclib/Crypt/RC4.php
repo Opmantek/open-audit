@@ -141,7 +141,7 @@ class Crypt_RC4 extends Crypt_Base
      * @var string
      * @access private
      */
-    var $key;
+    var $key = "\0";
 
     /**
      * The Key Stream for decryption and encryption
@@ -189,10 +189,8 @@ class Crypt_RC4 extends Crypt_Base
      */
     function isValidEngine($engine)
     {
-        if ($engine == CRYPT_ENGINE_OPENSSL) {
-            if (version_compare(PHP_VERSION, '5.3.7') >= 0) {
-                $this->cipher_name_openssl = 'rc4-40';
-            } else {
+        switch ($engine) {
+            case CRYPT_ENGINE_OPENSSL:
                 switch (strlen($this->key)) {
                     case 5:
                         $this->cipher_name_openssl = 'rc4-40';
@@ -206,7 +204,6 @@ class Crypt_RC4 extends Crypt_Base
                     default:
                         return false;
                 }
-            }
         }
 
         return parent::isValidEngine($engine);
