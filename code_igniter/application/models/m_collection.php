@@ -832,7 +832,7 @@ class M_collection extends MY_Model
                 $new_credentials = new stdClass();
                 if (!empty($existing_credentials)) {
                     foreach ($existing_credentials as $existing_key => $existing_value) {
-                        if (!empty($received_credentials->$existing_key)) {
+                        if (isset($received_credentials->$existing_key)) {
                             $new_credentials->$existing_key = $received_credentials->$existing_key;
                         } else {
                             $new_credentials->$existing_key = $existing_credentials->$existing_key;
