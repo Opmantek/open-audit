@@ -53,5 +53,28 @@ $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
 $db['default']['stricton'] = false;
 
+if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.json')) {
+	if (!empty($_SERVER['HTTP_HOST'])) {
+		$company = explode('.', $_SERVER['HTTP_HOST']);
+		$name = $company[0];
+		unset($company);
+		$file_config = @file_get_contents('/usr/local/open-audit/code_igniter/application/config/config.json');
+		if (!empty($file_config)) {
+			$json_config = json_decode($file_config);
+			unset($file_config);
+			foreach ($json_config as $item) {
+				if ($item->name === $name) {
+					$db['default']['hostname'] = $item->hostname;
+					$db['default']['username'] = $item->username;
+					$db['default']['password'] = $item->password;
+					$db['default']['database'] = $item->database;
+				}
+			}
+			unset($json_config);
+			unset($name);
+		}
+	}
+}
+
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */
