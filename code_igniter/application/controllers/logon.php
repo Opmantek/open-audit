@@ -267,8 +267,10 @@ class Logon extends CI_Controller
 
     public function check_defaults()
     {
-
-        $oae_url = $this->config->config['oae_url'];
+        $oae_url = '';
+        if (!empty($this->config->config['oae_url'])) {
+            $oae_url = $this->config->config['oae_url'];
+        }
         $oae_url = str_replace('/omk/oae', '/omk/open-audit', $oae_url);
         if ($oae_url == '') {
             $oae_url = '/omk/open-audit/';
@@ -329,7 +331,7 @@ class Logon extends CI_Controller
         if ($license->license == 'none') {
             $product = 'Open-AudIT Community';
         }
-        if ($this->config->config['internal_version'] >= 20170620) {
+        if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] >= 20170620) {
             $this->m_configuration->update('oae_product', (string)$product, 'system');
         } else {
             $this->config->config['oae_product'] = 'Open-AudIT Community';

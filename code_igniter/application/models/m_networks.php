@@ -141,7 +141,7 @@ class M_networks extends MY_Model
         if (empty($network->org_id)) {
             $network->org_id = 1;
         }
-        if ($this->config->config['internal_version'] < 20160904) {
+        if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] < 20160904) {
             return;
         }
         $sql = "SELECT * FROM networks WHERE networks.org_id = ? AND networks.network = ?";

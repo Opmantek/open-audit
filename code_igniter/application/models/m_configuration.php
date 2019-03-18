@@ -93,7 +93,7 @@ class M_configuration extends MY_Model
 
     public function update($id = '', $value = '', $edited_by = '')
     {
-        if ($this->config->config['internal_version'] < 20160904) {
+        if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] < 20160904) {
             return;
         }
         $this->log->function = strtolower(__METHOD__);
@@ -172,14 +172,16 @@ class M_configuration extends MY_Model
         }
 
         # set all items to value or ''
-        foreach ($result as $row) {
-            $temp_name = $row->name;
-            if (empty($row->value)) {
-                $this->config->config[$temp_name] = '';
-            } else {
-                $this->config->config[$temp_name] = $row->value;
+        if (!empty($result)) {
+            foreach ($result as $row) {
+                $temp_name = $row->name;
+                if (empty($row->value)) {
+                    $this->config->config[$temp_name] = '';
+                } else {
+                    $this->config->config[$temp_name] = $row->value;
+                }
+                unset($temp_name);
             }
-            unset($temp_name);
         }
         $temp = array();
         if (!empty($_SERVER['REQUEST_URI'])) {
