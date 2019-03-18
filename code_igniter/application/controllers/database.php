@@ -584,193 +584,193 @@ class Database extends MY_Controller
         
         include "db_upgrades/db_1.08.04.php";
 
-        if (($db_internal_version < '20160104') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160104') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.10
             include "db_upgrades/db_1.10.00.php";
         }
 
-        if (($db_internal_version < '20160126') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160126') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.10.1
             include "db_upgrades/db_1.10.01.php";
         }
 
-        if (($db_internal_version < '20160130') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160130') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12
             include "db_upgrades/db_1.12.00.php";
         }
 
-        if (($db_internal_version < '20160303') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160303') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12.2
             include "db_upgrades/db_1.12.02.php";
         }
 
-        if (($db_internal_version < '20160401') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160401') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12.4
             include "db_upgrades/db_1.12.04.php";
         }
 
-        if (($db_internal_version < '20160409') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160409') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12.6
             include "db_upgrades/db_1.12.06.php";
         }
 
-        if (($db_internal_version < '20160620') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160620') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12.8
             include "db_upgrades/db_1.12.08.00.php";
         }
 
-        if (($db_internal_version < '20160810') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160810') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12.8.1
             include "db_upgrades/db_1.12.08.01.php";
         }
 
-        if (($db_internal_version < '20160811') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160811') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.12.10
             include "db_upgrades/db_1.12.10.php";
         }
 
-        if (($db_internal_version < '20160904') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160904') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.14
             include "db_upgrades/db_1.14.00.php";
         }
 
-        if (($db_internal_version < '20161130') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20161130') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.14.2
             include "db_upgrades/db_1.14.02.php";
         }
 
-        if (($db_internal_version < '20170104') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170104') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 1.14.4
             include "db_upgrades/db_1.14.04.php";
         }
 
-        if (($db_internal_version < '20170601') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170601') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0a (v2 alpha)
             include "db_upgrades/db_2.0.0a.php";
         }
 
-        if (($db_internal_version < '20170620') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170620') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.1
             include "db_upgrades/db_2.0.1.php";
         }
 
-        if (($db_internal_version < '20170701') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170701') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.2
             include "db_upgrades/db_2.0.2.php";
         }
 
-        if (($db_internal_version < '20170719') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170719') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.3
             include "db_upgrades/db_2.0.3.php";
         }
 
-        if (($db_internal_version < '20170810') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170810') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.4
             include "db_upgrades/db_2.0.4.php";
         }
 
-        if (($db_internal_version < '20170820') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170820') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.6
             include "db_upgrades/db_2.0.6.php";
         }
 
-        if (($db_internal_version < '20170919') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20170919') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.8
             include "db_upgrades/db_2.0.8.php";
         }
 
-        if (($db_internal_version < '20171010') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20171010') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.10
             include "db_upgrades/db_2.0.10.php";
         }
 
-        if (($db_internal_version < '20171025') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20171025') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.11
             include "db_upgrades/db_2.0.11.php";
         }
 
-        if (($db_internal_version < '20171130') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20171130') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.0.12
             include "db_upgrades/db_2.0.12.php";
         }
 
-        if (($db_internal_version < '20171225') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20171225') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.1.0
             include "db_upgrades/db_2.1.0.php";
         }
 
-        if (($db_internal_version < '20180105') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180105') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.1.1
             include "db_upgrades/db_2.1.1.php";
         }
 
-        if (($db_internal_version < '20180218') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180218') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.0
             include "db_upgrades/db_2.2.0.php";
         }
 
-        if (($db_internal_version < '20180512') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180512') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.1
             include "db_upgrades/db_2.2.1.php";
         }
 
-        if (($db_internal_version < '20180620') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180620') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.2
             include "db_upgrades/db_2.2.2.php";
         }
 
-        if (($db_internal_version < '20180625') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180625') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.3
             include "db_upgrades/db_2.2.3.php";
         }
 
-        if (($db_internal_version < '20180630') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180630') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.4
             include "db_upgrades/db_2.2.4.php";
         }
 
-        if (($db_internal_version < '20180705') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180705') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.5
             include "db_upgrades/db_2.2.5.php";
         }
 
-        if (($db_internal_version < '20180710') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180710') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.6
             include "db_upgrades/db_2.2.6.php";
         }
 
-        if (($db_internal_version < '20180810') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180810') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.2.7
             include "db_upgrades/db_2.2.7.php";
         }
 
-        if (($db_internal_version < '20180925') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20180925') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.3.0
             include "db_upgrades/db_2.3.0.php";
         }
 
-        if (($db_internal_version < '20181212') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20181212') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.3.1
             include "db_upgrades/db_2.3.1.php";
         }
 
-        if (($db_internal_version < '20181225') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20181225') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.3.2
             include "db_upgrades/db_2.3.2.php";
             $this->data['warning'] = "As at Open-AudIT 2.3.2 we have changed the default Nmap discovery options. Please see the wiki page at <a href=\"https://community.opmantek.com/display/OA/Discovery+Scan+Options\">https://community.opmantek.com/display/OA/Discovery+Scan+Options</a> for more details.";
         }
 
-        if (($db_internal_version < '20190211') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20190211') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 2.3.3
             include "db_upgrades/db_2.3.3.php";
         }
 
-        if (($db_internal_version < '20190214') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20190214') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 3.0.0
             include "db_upgrades/db_3.0.0.php";
         }
 
-        if (($db_internal_version < '20190301') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20190301') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 3.0.1
             include "db_upgrades/db_3.0.1.php";
         }
