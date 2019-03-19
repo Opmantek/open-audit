@@ -70,7 +70,8 @@ if (php_uname('s') != 'Windows NT') {
               $this->db->query($sql, $data);
               $this->log_db($this->db->last_query());
           } else {
-              $this->log_db("Could not unencrypt credentials " . $item->name);
+              $this->log_db("WARNING - Could not unencrypt credentials " . $item->name);
+              $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
           }
       }
   }
@@ -90,7 +91,8 @@ if (php_uname('s') != 'Windows NT') {
               $this->db->query($sql, $data);
               $this->log_db($this->db->last_query());
           } else {
-              $this->log_db("Could not unencrypt device credentials " . $item->name);
+              $this->log_db("WARNING - Could not unencrypt device credentials " . $item->name);
+              $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
           }
       }
   }
@@ -110,7 +112,8 @@ if (php_uname('s') != 'Windows NT') {
               $this->db->query($sql, $data);
               $this->log_db($this->db->last_query());
           } else {
-              $this->log_db("Could not unencrypt ldap credentials " . $item->name);
+              $this->log_db("WARNING - Could not unencrypt ldap credentials " . $item->name);
+              $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
           }
       }
   }
@@ -129,7 +132,8 @@ if (php_uname('s') != 'Windows NT') {
               $this->db->query($sql, $data);
               $this->log_db($this->db->last_query());
           } else {
-              $this->log_db("Could not unencrypt cloud credentials " . $item->name);
+              $this->log_db("WARNING - Could not unencrypt cloud credentials " . $item->name);
+              $this->data['alert'] = "WARNING - Could not cloud credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
           }
       }
   }
