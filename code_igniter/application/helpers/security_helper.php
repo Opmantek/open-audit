@@ -86,6 +86,7 @@ if (! function_exists('simpleDecrypt')) {
         }
         $nonce = mb_substr($message, 0, 24, '8bit');
         $ciphertext = mb_substr($message, 24, strlen($message), '8bit');
+        $plaintext = '';
         try {
             $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt(
                 $ciphertext,
@@ -94,12 +95,12 @@ if (! function_exists('simpleDecrypt')) {
                 $key
             );
         } catch (Exception $e) {
-            echo "<pre>\n";
-            print_r($e);
-            exit();
+            //echo "<pre>\n";
+            // print_r($e);
+            // exit();
         }
         if (!is_string($plaintext)) {
-            throw new Exception('Invalid message');
+            // throw new Exception('Invalid message');
         }
         return $plaintext;
     }
