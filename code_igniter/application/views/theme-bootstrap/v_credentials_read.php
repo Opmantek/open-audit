@@ -170,7 +170,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.community" class="col-sm-3 control-label"><?php echo __('Community'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.community" name="credentials.community" value="<?php echo htmlspecialchars($item->attributes->credentials->community, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.community" name="credentials.community" value="<?php echo @htmlspecialchars($item->attributes->credentials->community, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.community" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.community"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -184,7 +184,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.security_name" class="col-sm-3 control-label"><?php echo __('User / Security Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="credentials.security_name" name="credentials.security_name" value="<?php echo htmlspecialchars($item->attributes->credentials->security_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="credentials.security_name" name="credentials.security_name" value="<?php echo @htmlspecialchars($item->attributes->credentials->security_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.security_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.security_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -199,9 +199,9 @@ $item = $this->response->data[0];
                         <label for="credentials.security_level" class="col-sm-3 control-label"><?php echo __('Security Level'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="credentials.security_level" name="credentials.security_level" disabled>
-                                <option value='noAuthNoPriv' <?php if ($item->attributes->credentials->security_level == 'noAuthNoPriv') { echo 'selected '; } ?>>noAuthNoPriv</option>
-                                <option value='authNoPriv' <?php if ($item->attributes->credentials->security_level == 'authNoPriv') { echo 'selected '; } ?>>authNoPriv</option>
-                                <option value='authPriv' <?php if ($item->attributes->credentials->security_level == 'authPriv') { echo 'selected '; } ?>>authPriv</option>
+                                <option value='noAuthNoPriv' <?php if (!empty($item->attributes->credentials->security_level) and $item->attributes->credentials->security_level == 'noAuthNoPriv') { echo 'selected '; } ?>>noAuthNoPriv</option>
+                                <option value='authNoPriv' <?php if (!empty($item->attributes->credentials->security_level) and $item->attributes->credentials->security_level == 'authNoPriv') { echo 'selected '; } ?>>authNoPriv</option>
+                                <option value='authPriv' <?php if (!empty($item->attributes->credentials->security_level) and $item->attributes->credentials->security_level == 'authPriv') { echo 'selected '; } ?>>authPriv</option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
@@ -217,8 +217,8 @@ $item = $this->response->data[0];
                         <label for="credentials.authentication_protocol" class="col-sm-3 control-label"><?php echo __('Authentication Protocol'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="credentials.authentication_protocol" name="credentials.authentication_protocol" disabled>
-                                <option value='MD5' <?php if ($item->attributes->credentials->authentication_protocol == 'MD5') { echo 'selected '; } ?>>MD5</option>
-                                <option value='SHA' <?php if ($item->attributes->credentials->authentication_protocol == 'SHA') { echo 'selected '; } ?>>SHA</option>
+                                <option value='MD5' <?php if (!empty($item->attributes->credentials->authentication_protocol) and $item->attributes->credentials->authentication_protocol == 'MD5') { echo 'selected '; } ?>>MD5</option>
+                                <option value='SHA' <?php if (!empty($item->attributes->credentials->authentication_protocol) and $item->attributes->credentials->authentication_protocol == 'SHA') { echo 'selected '; } ?>>SHA</option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
@@ -233,7 +233,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.authentication_passphrase" class="col-sm-3 control-label"><?php echo __('User / Authentication Passphrase'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" value="<?php echo htmlspecialchars($item->attributes->credentials->authentication_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" value="<?php echo @htmlspecialchars($item->attributes->credentials->authentication_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.authentication_passphrase" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.authentication_passphrase"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -248,8 +248,8 @@ $item = $this->response->data[0];
                         <label for="credentials.privacy_protocol" class="col-sm-3 control-label"><?php echo __('Privacy Protocol'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="credentials.privacy_protocol" name="credentials.privacy_protocol" disabled>
-                                <option value='AES' <?php if ($item->attributes->credentials->privacy_protocol == 'AES') { echo 'selected '; } ?>>AES</option>
-                                <option value='DES' <?php if ($item->attributes->credentials->privacy_protocol == 'DES') { echo 'selected '; } ?>>DES</option>
+                                <option value='AES' <?php if (!empty($item->attributes->credentials->privacy_protocol) and $item->attributes->credentials->privacy_protocol == 'AES') { echo 'selected '; } ?>>AES</option>
+                                <option value='DES' <?php if (!empty($item->attributes->credentials->privacy_protocol) and $item->attributes->credentials->privacy_protocol == 'DES') { echo 'selected '; } ?>>DES</option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
@@ -264,7 +264,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.privacy_passphrase" class="col-sm-3 control-label"><?php echo __('Privacy Passphrase'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" value="<?php echo htmlspecialchars($item->attributes->credentials->privacy_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" value="<?php echo @htmlspecialchars($item->attributes->credentials->privacy_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.privacy_passphrase" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.privacy_passphrase"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -278,3 +278,16 @@ $item = $this->response->data[0];
         </div>
     </div>
 </form>
+
+<?php if (empty($item->attributes->credentials)) { ?>
+<div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Warning!</strong> Could not decrypt credentials. PLease edit this entry or delete and create anew.
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>

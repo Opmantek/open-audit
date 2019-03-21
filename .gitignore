@@ -13,3 +13,5 @@ www/open-audit/custom_images/*.jpg
 www/open-audit/custom_images/*.png
 ._*
 .idea
+code_igniter/application/config/config.json
+

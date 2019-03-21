@@ -477,7 +477,7 @@ if debugging > "1" then
 end if
 
 ' Are we auditing the local machine?
-if (instr(lcase(local_net), lcase(strcomputer)) <> 0) and (strcomputer <> ".") then
+if (instr(lcase(local_net), lcase(strcomputer) & " ") <> 0) and (strcomputer <> ".") then
     if debugging > "0" then wscript.echo "Changed strcomputer from " & strcomputer & " to . because we're auditing this local machine." end if
     strcomputer = "."
 end if

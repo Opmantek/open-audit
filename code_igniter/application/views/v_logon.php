@@ -53,7 +53,20 @@ header("X-Frame-Options: DENY");
 <form class="form-horizontal" id="form" name="form" method="post" action="logon">
 <input type="hidden" name="url" id="url" value="<?php echo @$this->response->meta->url; ?>" />
 <?php
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
+if (empty($this->config->config['internal_version'])) {
+    $command = "mysql -u root -popenauditrootuserpassword -e \"DROP DATABASE IF EXISTS openaudit; CREATE DATABASE openaudit;\" <br />mysql -u root -popenauditrootuserpassword openaudit < /usr/local/open-audit/other/openaudit_mysql.sql";
+    if (php_uname() == 'Windows NT') {
+        $command = "C:\\xampp\\mysql\\bin.exe -u root -popenauditrootuserpassword -e \"DROP DATABASE IF EXISTS openaudit; CREATE DATABASE openaudit;\" <br />C:\\xampp\\mysql\\bin.exe -u root -popenauditrootuserpassword openaudit < c:\\xampp\\mysql\\bin\\openaudit_mysql.sql";
+    }
+?>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 text-center">
+        <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>No configuration could be retrieved. This indicates no working database.<br />Does your database "<?php echo $this->db->database; ?>" exist and does the user "<?php echo $this->db->username; ?>", have access to it?<br />If so, does the "configuration" table exist within the database "<?php echo $this->db->database; ?>"?<br />You can always start a fresh database using the commands<br /><?php echo $command; ?></div>
+    </div>
+</div>
+<?php
+}
+if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
 ?>
 <div class="row">
     <div class="col-md-8 col-md-offset-2 text-center">
@@ -91,7 +104,8 @@ if ($this->config->config['internal_version'] < $this->config->config['web_inter
                         <div class="form-group text-center">
                             <label for="submit" class="col-sm-3 control-label col-md-offset-2"></label>
                             <div class="col-sm-2 input-group">
-                                <button type="submit" class="btn btn-default" id="submit" name="submit">Submit</button>
+                                <?php $disabled = ''; if (empty($this->config->config['internal_version'])) { $disabled = 'disabled'; } ?>
+                                <button type="submit" class="btn btn-default" id="submit" name="submit" <?php echo $disabled; ?>>Submit</button>
                             </div>
                         </div>
                     </div>
