@@ -112,11 +112,7 @@ try {
 unset($xml_input);
 
 # So we can output back to the discovery script, and continue processing
-if (php_uname('s') == 'Windows NT') {
-    print_r($xml);
-} else {
-    echo "";
-}
+echo "";
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
