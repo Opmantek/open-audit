@@ -78,26 +78,13 @@ class M_device extends MY_Model
         $match = new stdClass();
         if (!empty($parameters->match)) {
             $match = $parameters->match;
-            // Ensure we have a fully populated (even if blank) match list
-            $matches = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
-            foreach ($matches as $item) {
-                if (!isset($match->{$item})) {
-                    $match->{$item} = $this->config->config[$item];
-                }
+        }
+        // Ensure we have a fully populated (even if blank) match list
+        $matches = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
+        foreach ($matches as $item) {
+            if (empty($match->{$item})) {
+                $match->{$item} = $this->config->config[$item];
             }
-        } else {
-            $match->match_dbus = $this->config->config['match_dbus'];
-            $match->match_fqdn = $this->config->config['match_fqdn'];
-            $match->match_hostname = $this->config->config['match_hostname'];
-            $match->match_hostname_dbus = $this->config->config['match_hostname_dbus'];
-            $match->match_hostname_serial = $this->config->config['match_hostname_serial'];
-            $match->match_hostname_uuid = $this->config->config['match_hostname_uuid'];
-            $match->match_ip = $this->config->config['match_ip'];
-            $match->match_mac = $this->config->config['match_mac'];
-            $match->match_mac_vmware = $this->config->config['match_mac_vmware'];
-            $match->match_serial = $this->config->config['match_serial'];
-            $match->match_serial_type = $this->config->config['match_serial_type'];
-            $match->match_uuid = $this->config->config['match_uuid'];
         }
 
         # TODO: fix this by making sure (snmp in particular) calls with the proper variable name
