@@ -1355,6 +1355,8 @@ if (!function_exists('process_scan')) {
                 $parameters->source = $audit_file;
                 $parameters->destination = $destination;
                 $parameters->ssh_port = $input->ssh_port;
+                # Allow 20 seconds to copy the file
+                $this->config->config['discovery_ssh_timeout'] = 20;
                 $temp = scp_get($parameters);
                 if ($temp) {
                     $audit_result = file_get_contents($destination);
@@ -1369,8 +1371,10 @@ if (!function_exists('process_scan')) {
                 // Delete the remote file
                 $command = 'rm ' . $audit_file;
                 if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
-                    // add sudo
+                    // add sudo, we need this if we have run the audit using sudo
                     $command = 'sudo ' . $command;
+                    // Allow 10 seconds to run the command
+                    $this->config->config['discovery_ssh_timeout'] = 10;
                 }
                 $parameters = new stdClass();
                 $parameters->log = $log;

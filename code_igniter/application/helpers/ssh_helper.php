@@ -576,9 +576,7 @@ if (! function_exists('ssh_audit')) {
         foreach ($credentials as $credential) {
             if ($credential->type == 'ssh_key') {
                 $ssh = new Net_SSH2($ip, $ssh_port);
-                if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-                    $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-                }
+                $ssh->setTimeout(10);
                 $key = new Crypt_RSA();
                 if (!empty($credential->credentials->password)) {
                     $key->setPassword($credential->credentials->password);
@@ -600,9 +598,7 @@ if (! function_exists('ssh_audit')) {
                 }
             } else if ($credential->type == 'ssh') {
                 $ssh = new Net_SSH2($ip, $ssh_port);
-                if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-                    $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-                }
+                $ssh->setTimeout(10);
                 if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
                     $log->message = "Valid credentials named " . $credential->name . " used to log in to $ip.";
                     $log->command_status = 'success';
