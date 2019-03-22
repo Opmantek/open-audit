@@ -346,6 +346,33 @@ $config['rewrite_short_tags'] = false;
 */
 $config['proxy_ips'] = '';
 
+
+if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.json')) {
+	if (!empty($_SERVER['REQUEST_URI'])) {
+		$company = explode('/', $_SERVER['REQUEST_URI']);
+		$name = $company[1];
+		unset($company);
+		$file_config = @file_get_contents('/usr/local/open-audit/code_igniter/application/config/config.json');
+		if (!empty($file_config)) {
+			$json_config = json_decode($file_config);
+			unset($file_config);
+			foreach ($json_config as $item) {
+				if ($item->name == $name) {
+					$config['base_url'] = $item->url;
+					$config['encryption_key'] = $item->encryption_key;
+					$config['name'] = $item->name;
+					$config['company_name'] = $item->company_name;
+					$config['op_identifier'] = $item->op_identifier;
+					$config['license'] = $item->license;
+					$config['users'] = $item->users;
+				}
+			}
+			unset($json_config);
+			unset($name);
+		}
+	}
+}
+
 #function __autoload($class)
 function __spl_autoload_register($class)
 {
