@@ -267,74 +267,76 @@ class Logon extends CI_Controller
 
     public function check_defaults()
     {
-        $oae_url = '';
-        if (!empty($this->config->config['oae_url'])) {
-            $oae_url = $this->config->config['oae_url'];
-        }
-        $oae_url = str_replace('/omk/oae', '/omk/open-audit', $oae_url);
-        if ($oae_url == '') {
-            $oae_url = '/omk/open-audit/';
-        }
-        # Add a trailing slash if not already present
-        if (substr($oae_url, -1, 1) != '/') {
-            $oae_url = $oae_url.'/';
-        }
-        // if we already have http... in the oae_url variable, no need to do anything.
-        if (strpos(strtolower($oae_url), 'http') === false) {
-            // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
-            // Make sure we have a leading /
-            if (substr($oae_url, 0, 1) != '/') {
-                $oae_url = '/'.$oae_url;
+        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+            $oae_url = '';
+            if (!empty($this->config->config['oae_url'])) {
+                $oae_url = $this->config->config['oae_url'];
             }
-            // need to create a link to OAE on port 8042 to check the license
-            // we cannot detect and use the browser http[s] as it may being used in the client browser,
-            //     but stripped by a https offload or proxy
-            $oae_license_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url.'license';
-            // we create a link for the browser using the same address + the path & file in oae_url
-            if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
+            $oae_url = str_replace('/omk/oae', '/omk/open-audit', $oae_url);
+            if ($oae_url == '') {
+                $oae_url = '/omk/open-audit/';
+            }
+            # Add a trailing slash if not already present
+            if (substr($oae_url, -1, 1) != '/') {
+                $oae_url = $oae_url.'/';
+            }
+            // if we already have http... in the oae_url variable, no need to do anything.
+            if (strpos(strtolower($oae_url), 'http') === false) {
+                // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
+                // Make sure we have a leading /
+                if (substr($oae_url, 0, 1) != '/') {
+                    $oae_url = '/'.$oae_url;
+                }
+                // need to create a link to OAE on port 8042 to check the license
+                // we cannot detect and use the browser http[s] as it may being used in the client browser,
+                //     but stripped by a https offload or proxy
+                $oae_license_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url.'license';
+                // we create a link for the browser using the same address + the path & file in oae_url
+                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                    $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
+                } else {
+                    $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
+                }
+            }
+            ini_set('default_socket_timeout', 3);
+
+            // Get the license type and set our logo
+            $license = '';
+            $oae_license_url = $oae_url.'license';
+
+            // get the license status from the OAE API
+            // license status are: none, free, commercial
+            $license = @file_get_contents($oae_license_url, false);
+            if (!empty($license) and $license !== false) {
+                $license = json_decode($license);
+                if (json_last_error()) {
+                    $license = new stdClass();
+                    $license->license = 'none';
+                }
             } else {
-                $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
-            }
-        }
-        ini_set('default_socket_timeout', 3);
-
-        // Get the license type and set our logo
-        $license = '';
-        $oae_license_url = $oae_url.'license';
-
-        // get the license status from the OAE API
-        // license status are: none, free, commercial
-        $license = @file_get_contents($oae_license_url, false);
-        if (!empty($license) and $license !== false) {
-            $license = json_decode($license);
-            if (json_last_error()) {
                 $license = new stdClass();
                 $license->license = 'none';
             }
-        } else {
-            $license = new stdClass();
-            $license->license = 'none';
-        }
 
-        if ($license->license != 'none' and $license->license != 'commercial' and $license->license != 'free') {
-            $license->license = 'none';
-        }
+            if ($license->license != 'none' and $license->license != 'commercial' and $license->license != 'free') {
+                $license->license = 'none';
+            }
 
-        $this->m_configuration->update('oae_license', (string)$license->license, 'system');
+            $this->m_configuration->update('oae_license', (string)$license->license, 'system');
 
-        if (!empty($license->product)) {
-            $product = $license->product;
-        } else {
-            $product = 'Open-AudIT Community';
-        }
-        if ($license->license == 'none') {
-            $product = 'Open-AudIT Community';
-        }
-        if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] >= 20170620) {
-            $this->m_configuration->update('oae_product', (string)$product, 'system');
-        } else {
-            $this->config->config['oae_product'] = 'Open-AudIT Community';
+            if (!empty($license->product)) {
+                $product = $license->product;
+            } else {
+                $product = 'Open-AudIT Community';
+            }
+            if ($license->license == 'none') {
+                $product = 'Open-AudIT Community';
+            }
+            if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] >= 20170620) {
+                $this->m_configuration->update('oae_product', (string)$product, 'system');
+            } else {
+                $this->config->config['oae_product'] = 'Open-AudIT Community';
+            }
         }
 
         // Set our Server's IP addresses
@@ -363,36 +365,39 @@ class Logon extends CI_Controller
         $sql = "DELETE FROM `discoveries` WHERE `discard` = 'y' AND `edited_date` < (NOW() - INTERVAL 1 HOUR)";
         $query = $this->db->query($sql);
 
-        # Get the installed application list from Enterprise
-        $url = str_replace('open-audit/', '', $oae_url);
-        $installed = @json_decode(@file_get_contents($url . '.json'));
-        # get the available application list from file
-        $modules = @json_decode(@file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/other/modules.json'));
-        if (!empty($installed) and !empty($modules)) {
-            foreach ($installed->products as $ins) {
-                foreach ($modules as $app) {
-                    if ($app->name == $ins->name) {
-                        $app->installed = true;
-                        $app->version = $ins->version;
+        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+            # Get the installed application list from Enterprise
+            $url = str_replace('open-audit/', '', $oae_url);
+            $installed = @json_decode(@file_get_contents($url . '.json'));
+            # get the available application list from file
+            $modules = @json_decode(@file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/other/modules.json'));
+            if (!empty($installed) and !empty($modules)) {
+                foreach ($installed->products as $ins) {
+                    foreach ($modules as $app) {
+                        if ($app->name == $ins->name) {
+                            $app->installed = true;
+                            $app->version = $ins->version;
+                        }
                     }
                 }
+                $modules = json_encode($modules);
+                # Update our config item with the new list
+                $this->m_configuration->update('modules', $modules, 'system');
             }
-            $modules = json_encode($modules);
-            # Update our config item with the new list
-            $this->m_configuration->update('modules', $modules, 'system');
         }
 
-
-        // Upsert the local server subnet into the /networks
-        foreach ($this->m_configuration->read_subnet() as $subnet) {
-            $this->load->model('m_networks');
-            $network = new stdClass();
-            $network->name = $subnet;
-            $network->network = $subnet;
-            $network->org_id = 0;
-            $network->description = 'Auto inserted local server subnet';
-            $this->m_networks->upsert($network);
-            unset($network);
+        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+            // Upsert the local server subnet into the /networks
+            foreach ($this->m_configuration->read_subnet() as $subnet) {
+                $this->load->model('m_networks');
+                $network = new stdClass();
+                $network->name = $subnet;
+                $network->network = $subnet;
+                $network->org_id = 0;
+                $network->description = 'Auto inserted local server subnet';
+                $this->m_networks->upsert($network);
+                unset($network);
+            }
         }
     }
 }

@@ -85,7 +85,7 @@ $item = $this->response->data[0];
                                 ?>
                             </select>
                         <?php } ?>
-                        <?php if (!empty($edit) and $item->attributes->editable == 'y') { ?>
+                        <?php if (!empty($edit) and $item->attributes->editable == 'y' and ($this->config->config['oae_product'] !== 'Open-AudIT Cloud' or $item->attributes->name != 'default_network_address')) { ?>
                         <span class="input-group-btn">
                             <button id="edit_value" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="value"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                         </span>

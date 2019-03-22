@@ -140,7 +140,7 @@ if ($nmap_warning != '') {
                         <label for="network_address" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="network_address" name="network_address" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
+                            <?php if (!empty($edit) and $this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
                             <span class="input-group-btn">
                                 <button id="edit_network_address" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network_address"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>

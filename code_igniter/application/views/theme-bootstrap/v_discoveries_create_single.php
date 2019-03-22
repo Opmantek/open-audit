@@ -52,25 +52,26 @@
 //     }
 // }
 $network_address_array = array();
-$selected = '';
-if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
-    $selected = 'selected';
+if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+    $selected = '';
+    if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
+        $selected = 'selected';
+    }
+    $network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
+    $selected = '';
+    if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
+        $selected = 'selected';
+    }
+    $network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
+
+    if (!empty($this->config->config['default_network_address'])) {
+        $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
+        $network_address_array[] =  $network_address;
+    }
+    $network_address_array[] = "                                <option value='other'>Other</option>";
+} else {
+    $network_address_array[] = "                                <option value='" . $this->config->config['default_network_address'] . "' selected>" . $this->config->config['default_network_address'] . "</option>";
 }
-$network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
-
-
-$selected = '';
-if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
-    $selected = 'selected';
-}
-$network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
-
-if (!empty($this->config->config['default_network_address'])) {
-    $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
-    $network_address_array[] =  $network_address;
-}
-
-$network_address_array[] = "                                <option value='other'>Other</option>";
 ?>
 
 <?php if ($this->response->{'meta'}->{'warning'} == 'y') { ?>

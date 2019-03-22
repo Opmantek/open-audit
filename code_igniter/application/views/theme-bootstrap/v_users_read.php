@@ -91,12 +91,12 @@ $item = $this->response->data[0];
                             <?php } ?>
                         </div>
                     </div>
-
+<?php echo $this->config->config['oae_product'] ?>
                 <div class="form-group">
                     <label for="password" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                     <div class="col-sm-8 input-group">
                         <input type="password" class="form-control" id="password" name="password" value="*********" disabled>
-                        <?php if (!empty($edit)) { ?>
+                        <?php if (!empty($edit) and $this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
                         <span class="input-group-btn">
                             <button id="edit_password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                         </span>

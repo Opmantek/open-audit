@@ -111,7 +111,7 @@ if (!empty($this->config->config['internal_version']) and $this->config->config[
                     </div>
 
                     <?php
-                    if ($this->config->config['device_count'] == '0') {
+                    if ($this->config->config['device_count'] == '0' and $this->config->config['oae_product'] !== 'Open_AudIT Cloud') {
                         ?>
                         <div class="row">
                         <div class="col-sm-4 col-md-offset-4">

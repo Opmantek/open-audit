@@ -34,25 +34,26 @@
 * @link      http://www.open-audit.org
  */
 $network_address_array = array();
-$selected = '';
-if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
-    $selected = 'selected';
+if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+        $selected = '';
+        if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
+            $selected = 'selected';
+        }
+        $network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
+    $selected = '';
+    if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
+        $selected = 'selected';
+    }
+    $network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
+    if (!empty($this->config->config['default_network_address'])) {
+        $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
+        $network_address_array[] =  $network_address;
+    }
+    $network_address_array[] = "                                <option value='other'>Other</option>";
+} else {
+    $network_address_array[] = "                                <option value='" . $this->config->config['default_network_address'] . "' selected>" . $this->config->config['default_network_address'] . "</option>";
 }
-$network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
 
-
-$selected = '';
-if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
-    $selected = 'selected';
-}
-$network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
-
-if (!empty($this->config->config['default_network_address'])) {
-    $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
-    $network_address_array[] =  $network_address;
-}
-
-$network_address_array[] = "                                <option value='other'>Other</option>";
 
 # check if we have nmap installed
 $nmap_installed = 'n';
@@ -105,7 +106,6 @@ if ($nmap_warning != '') {
     </div>
 </div>
 <?php } ?>
-
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
@@ -155,7 +155,9 @@ if ($nmap_warning != '') {
                         <label for="network_address_select" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select required class="form-control" id="network_address_select" name="network_address_select">
+                                <?php if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
                                 <option value='' label=' '></option>
+                                <?php } ?>
                                 <?php
                                 foreach ($network_address_array as $key => $value) {
                                     if ($value != '') {
