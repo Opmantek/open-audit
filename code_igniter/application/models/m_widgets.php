@@ -408,8 +408,27 @@ class M_widgets extends MY_Model
             $result = $this->run_sql($sql, array());
             if (!empty($result)) {
                 foreach ($result as $row) {
-                    $row->name = strtotime($row->date);
-                    $row->link = 'devices?sub_resource=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
+                    if (empty($widget->link)) {
+                        $row->name = strtotime($row->date);
+                        $row->link = 'devices?sub_resource=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
+                    } else {
+                        $row->link = $widget->link;
+                        if (isset($row->name)) {
+                            $row->link = str_ireplace('@name', $row->name, $row->link);
+                        }
+                        if (isset($row->description)) {
+                            $row->link = str_ireplace('@description', $row->description, $row->link);
+                        }
+                        if (isset($row->ternary)) {
+                            $row->link = str_ireplace('@ternary', $row->ternary, $row->link);
+                        }
+                        if (isset($row->date)) {
+                            $row->link = str_ireplace('@date', $row->date, $row->link);
+                        }
+                        if (isset($row->timestamp)) {
+                            $row->link = str_ireplace('@timestamp', $row->timestamp, $row->link);
+                        }
+                    }
                 }
             }
             $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
