@@ -1130,7 +1130,9 @@ if (! function_exists('ssh_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'SSH command';
             if (empty($device->uuid)) {
-                $log->command_output = $ssh->getErrors();
+                #$log->command_output = $ssh->getErrors();
+                $log->command_output = '';
+                $log->message = 'blank return';
                 $log->command_status = 'notice';
                 discovery_log($log);
 
