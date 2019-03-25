@@ -102,6 +102,11 @@ class Input extends CI_Controller
                 echo "=====================\n" . $log->message . "\n======================\n";
                 stdlog($log);
             }
+            $error = new stdClass();
+            $error->message = 'Unauthorized input for ' . $this->uri->segment(2, 0) . ' from ' . $_SERVER['REMOTE_ADDR'] . '. Not in list of blessed subnets.';
+            $this->response = new stdClass();
+            $this->response->errors[] = $error;
+            print_r(json_encode($this->response));
             exit;
         }
 
