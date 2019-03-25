@@ -454,13 +454,19 @@ if (! function_exists('output')) {
         $GLOBALS['timer_log'][] = $entry;
 
         $entry = new stdClass();
-        $entry->time = ($timer_end - $CI->response->meta->time_start);
+        $entry->time = '';
+        if (!empty($CI->response->meta->time_start)) {
+            $entry->time = ($timer_end - $CI->response->meta->time_start);
+        }
         $entry->detail = 'Finish.';
         $GLOBALS['timer_log'][] = $entry;
 
         $CI->response->meta->timing = $GLOBALS['timer_log'];
         $CI->response->meta->time_end = microtime(true);
-        $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
+        $CI->response->meta->time_elapsed = '';
+        if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
+            $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
+        }
 
         echo json_encode($CI->response);
     }
