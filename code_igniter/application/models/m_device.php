@@ -766,7 +766,7 @@ class M_device extends MY_Model
                     $data = array("$mac");
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
-                    if (count($row) > 0) {
+                    if (!empty($row->id)) {
                         $details->id = $row->id;
                         $log->system_id = $details->id;
                         $message = new stdClass();
