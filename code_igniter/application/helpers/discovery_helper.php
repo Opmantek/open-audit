@@ -462,7 +462,6 @@ if (!function_exists('process_scan')) {
             $parameters->ssh_port = $input->ssh_port;
             $ssh_details = ssh_audit($parameters);
             if (!empty($ssh_details)) {
-
                 if (!empty($ssh_details->credentials)) {
                     $credentials_ssh = $ssh_details->credentials;
                 }
@@ -520,19 +519,19 @@ if (!function_exists('process_scan')) {
         # Set manufacturer based on MAC address (if not already set)
         if (empty($device->manufacturer) and !empty($input->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
-                $log->severity = 7;
-                $log->command_status = 'notice';
-                $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+            $log->severity = 7;
+            $log->command_status = 'notice';
+            $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         if (empty($device->manufacturer) and !empty($device->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
-                $log->severity = 7;
-                $log->command_status = 'notice';
-                $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+            $log->severity = 7;
+            $log->command_status = 'notice';
+            $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
         if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_ports, '5060/') !== false) {
@@ -973,7 +972,7 @@ if (!function_exists('process_scan')) {
         }
 
         // set the identification with what we have
-        $this->m_device->set_identification($device->id);
+        $CI->m_device->set_identification($device->id);
 
         // Get and make the audit script
         if (!empty($credentials_windows) or !empty($credentials_ssh)) {
@@ -1076,6 +1075,12 @@ if (!function_exists('process_scan')) {
                     unset($log->command, $log->message, $log->command_status);
                     $audit_script = '';
                 }
+            } else {
+                $log->severity = 6;
+                $log->command_status = 'notice';
+                $log->message = "Discovery could not match the OS Group ($device->os_group) to an audit script for $device->ip (System ID $device->id).";
+                discovery_log($log);
+                return true;
             }
         } else {
             // go back now as we don't have a script
@@ -1085,12 +1090,6 @@ if (!function_exists('process_scan')) {
             discovery_log($log);
             return true;
         }
-
-
-
-
-
-
         # Audit Windows
         if ($input->wmi_status == "true" and !empty($credentials_windows) and !empty($audit_script)) {
             # We do not support auditing windows using the script over SSH at this time
@@ -1230,14 +1229,6 @@ if (!function_exists('process_scan')) {
                 }
             }
         }
-
-
-
-
-
-
-
-
 
         # Audit via SSH
         if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh) and !empty($audit_script)) {
@@ -1567,7 +1558,7 @@ if (!function_exists('process_scan')) {
             discovery_log($log);
         }
         // set the identification with what we have
-        $this->m_device->set_identification($device->id);
+        $CI->m_device->set_identification($device->id);
         // finish
         $log->severity = 7;
         $log->command_status = 'notice';
