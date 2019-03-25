@@ -1655,10 +1655,10 @@ class M_devices_components extends MY_Model
     }
 
     public function nmap_ip($parameters) {
-        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($device->id) or empty($ip->ip)) {
+        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($parameters->device->id) or empty($parameters->ip->ip)) {
             $log = new stdClass();
             $log->severity = 4;
-            $log->message = "Function audit_format_system called without parameters object.";
+            $log->message = "Function nmap_ip called without parameters object.";
             $log->status = 'fail';
             stdlog($log);
             return false;
