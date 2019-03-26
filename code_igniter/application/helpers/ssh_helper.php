@@ -1125,14 +1125,15 @@ if (! function_exists('ssh_audit')) {
             if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
                 $device->uuid = '';
             }
-
+            $log->message = 'SSH command';
             $log->command = trim($command) .'; # uuid';
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'SSH command';
-            if (empty($device->uuid)) {
-                #$log->command_output = $ssh->getErrors();
+            if (!empty($device->uuid)) {
+                $log->command_output = $device->uuid;
+                $log->command_status = 'success';
+                discovery_log($log);
+            } else {
                 $log->command_output = '';
-                $log->message = 'blank return';
                 $log->command_status = 'notice';
                 discovery_log($log);
 
@@ -1141,13 +1142,12 @@ if (! function_exists('ssh_audit')) {
                 if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
                     $command = $device->bash . " -c '" . $command . "'";
                 }
-
                 $device->uuid = trim($ssh->exec($command));
                 $log->command = trim($command) . '; # uuid';
                 $log->message = 'SSH command';
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 if (empty($device->uuid)) {
-                    $log->command_output = $ssh->getErrors();
+                    $log->command_output = '';
                     $log->command_status = 'notice';
                     discovery_log($log);
                 } else {
@@ -1155,10 +1155,6 @@ if (! function_exists('ssh_audit')) {
                     $log->command_status = 'success';
                     discovery_log($log);
                 }
-            } else {
-                $log->command_output = $device->uuid;
-                $log->command_status = 'success';
-                discovery_log($log);
             }
         }
 
