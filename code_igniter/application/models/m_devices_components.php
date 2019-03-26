@@ -1724,7 +1724,7 @@ class M_devices_components extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             # INSERT
-            $log->message = 'Inserting ip ' . $ip->ip;
+            $log->message = 'Inserting ip ' . ip_address_from_db($ip->ip);
             discovery_log($log);
             $sql = "INSERT INTO `ip` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '')";
             $data = array($device->id, $device->first_seen, $device->last_seen, $ip->mac, $ip->net_index, $ip->ip, $ip->netmask, $ip->cidr, $ip->version, $ip->network);
