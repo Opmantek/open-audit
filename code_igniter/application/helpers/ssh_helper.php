@@ -210,7 +210,6 @@ if (! function_exists('scp_get')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-    #function scp_get($ip = '', $credentials = '', $source = '', $destination = false, $log)
     function scp_get($parameters)
     {
         $message = '';
@@ -247,21 +246,17 @@ if (! function_exists('scp_get')) {
             $log->severity = 7;
             return false;
         }
-
         $ip = $parameters->ip;
         $credentials = $parameters->credentials;
         $source = $parameters->source;
         $destination = $parameters->destination;
+        $ssh_port = '22';
         if (!empty($parameters->ssh_port)) {
             $ssh_port = intval($parameters->ssh_port);
-        }
-        if (empty($ssh_port)) {
-            $ssh_port = '22';
         }
 
         $CI = & get_instance();
         $item_start = microtime(true);
-
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
@@ -298,8 +293,6 @@ if (! function_exists('scp_get')) {
                 discovery_log($log);
             }
         } else if ($credentials->type == 'ssh') {
-            // $log->message = 'Using SSH to copy file.';
-            // discovery_log($log);
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
             # $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
@@ -361,7 +354,6 @@ if (! function_exists('ssh_command')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-    #function ssh_command($ip = '', $credentials = '', $command = '')
     function ssh_command($parameters)
     {
         if (empty($parameters) or empty($parameters->ip) or empty($parameters->credentials) or empty($parameters->command)) {
