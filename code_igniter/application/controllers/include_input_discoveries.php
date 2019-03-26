@@ -1304,6 +1304,7 @@ foreach ($xml->children() as $input) {
             $result = false;
         }
         if ($audit_script != '') {
+            $log->command = '';
             $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
             $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
             $log->command_output = '';
@@ -1381,6 +1382,12 @@ foreach ($xml->children() as $input) {
                     discovery_log($log);
                 }
                 unlink ($destination);
+            } else {
+                $log->severity = 5;
+                $log->command_status = 'fail';
+                $log->message = 'Could not SCP GET to ' . $destination;
+                discovery_log($log);
+                $log->severity = 7;
             }
             // Delete the remote file
             $command = 'rm ' . $audit_file;

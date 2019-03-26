@@ -1293,10 +1293,12 @@ if (!function_exists('process_scan')) {
 
             $result = false;
             if ($audit_script != '') {
+                $log->command = '';
+                $log->command_output = '';
                 $command = $CI->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' last_seen_by=audit_ssh discovery_id='.$discovery->id;
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
                 if ($credentials_ssh->credentials->username == 'root') {
-                    $log->message = 'Running audit using root username.';
+                    $log->message = 'Running audit using root user.';
                 } else if (!empty($device->which_sudo) and $device->use_sudo) {
                     $command = 'sudo ' . $command;
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
@@ -1323,6 +1325,7 @@ if (!function_exists('process_scan')) {
             $log->command_output = '';
             $log->message = '';
             $log->ip = $device->ip;
+            discovery_log($log);
 
             if (!empty($result) and gettype($result) == 'array') {
                 foreach ($result as $line) {
@@ -1345,7 +1348,7 @@ if (!function_exists('process_scan')) {
                 $parameters->destination = $destination;
                 $parameters->ssh_port = $input->ssh_port;
                 # Allow 20 seconds to copy the file
-                $this->config->config['discovery_ssh_timeout'] = 20;
+                $CI->config->config['discovery_ssh_timeout'] = 20;
                 $temp = scp_get($parameters);
                 if ($temp) {
                     $audit_result = file_get_contents($destination);
@@ -1356,6 +1359,12 @@ if (!function_exists('process_scan')) {
                         $log->command_output = '';
                         discovery_log($log);
                     }
+                } else {
+                    $log->severity = 5;
+                    $log->command_status = 'fail';
+                    $log->message = 'Could not SCP GET to ' . $destination;
+                    discovery_log($log);
+                    $log->severity = 7;
                 }
                 // Delete the remote file
                 $command = 'rm ' . $audit_file;
@@ -1363,7 +1372,7 @@ if (!function_exists('process_scan')) {
                     // add sudo, we need this if we have run the audit using sudo
                     $command = 'sudo ' . $command;
                     // Allow 10 seconds to run the command
-                    $this->config->config['discovery_ssh_timeout'] = 10;
+                    $CI->config->config['discovery_ssh_timeout'] = 10;
                 }
                 $parameters = new stdClass();
                 $parameters->log = $log;
