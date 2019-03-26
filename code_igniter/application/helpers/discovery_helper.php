@@ -522,6 +522,7 @@ if (!function_exists('process_scan')) {
             $log->severity = 7;
             $log->command_status = 'notice';
             $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
+            $log->command_output = '';
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
@@ -976,7 +977,13 @@ if (!function_exists('process_scan')) {
 
         // Get and make the audit script
         if (!empty($credentials_windows) or !empty($credentials_ssh)) {
-            $timestamp = date('y_m_d_H_i_s');
+            $temp = microtime();
+            $temp2 = explode(' ', $temp);
+            unset($temp);
+            $micro = str_replace('0.', '', $temp2[0]);
+            unset($temp2);
+            $timestamp = date('y_m_d_H_i_s') . '_' . $micro;
+            unset($micro);
             switch (strtolower($device->os_group)) {
                 case 'aix':
                     $audit_script = 'audit_aix.sh';
@@ -1298,8 +1305,8 @@ if (!function_exists('process_scan')) {
                 } else if (empty($device->which_sudo)) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
                 }
-                $log->command = $command;
-                $command_start = microtime(true);
+                discovery_log($log);
+
                 $parameters = new stdClass();
                 $parameters->log = $log;
                 $parameters->ip = $device->ip;
@@ -1307,15 +1314,6 @@ if (!function_exists('process_scan')) {
                 $parameters->command = $command;
                 $parameters->ssh_port = $input->ssh_port;
                 $result = ssh_command($parameters);
-                $command_end = microtime(true);
-                $log->command_time_to_execute = $command_end - $command_start;
-                if (!empty($result)) {
-                    $log->command_status = 'success';
-                } else {
-                    $log->command_status = 'fail';
-                }
-                discovery_log($log);
-                $log->severity = 7;
             }
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
