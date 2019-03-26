@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.0.0
+* @version   3.0.2
 * @link      http://www.open-audit.org
  */
 class M_devices_components extends MY_Model
@@ -1655,10 +1655,10 @@ class M_devices_components extends MY_Model
     }
 
     public function nmap_ip($parameters) {
-        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($device->id) or empty($ip->ip)) {
+        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($parameters->device->id) or empty($parameters->ip->ip)) {
             $log = new stdClass();
             $log->severity = 4;
-            $log->message = "Function audit_format_system called without parameters object.";
+            $log->message = "Function nmap_ip called without parameters object.";
             $log->status = 'fail';
             stdlog($log);
             return false;
@@ -1724,7 +1724,7 @@ class M_devices_components extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             # INSERT
-            $log->message = 'Inserting ip ' . $ip->ip;
+            $log->message = 'Inserting ip ' . ip_address_from_db($ip->ip);
             discovery_log($log);
             $sql = "INSERT INTO `ip` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '')";
             $data = array($device->id, $device->first_seen, $device->last_seen, $ip->mac, $ip->net_index, $ip->ip, $ip->netmask, $ip->cidr, $ip->version, $ip->network);

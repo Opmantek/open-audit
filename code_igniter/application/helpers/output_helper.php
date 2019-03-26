@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.0.0
+* @version   3.0.2
 * @link      http://www.open-audit.org
  */
 if (! function_exists('output')) {
@@ -99,7 +99,7 @@ if (! function_exists('output')) {
 
             if (!empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
+                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'search' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
                         $CI->response->meta->data_order[] = $key;
                     } else {
                         $table = $CI->response->meta->collection;
@@ -454,13 +454,19 @@ if (! function_exists('output')) {
         $GLOBALS['timer_log'][] = $entry;
 
         $entry = new stdClass();
-        $entry->time = ($timer_end - $CI->response->meta->time_start);
+        $entry->time = '';
+        if (!empty($CI->response->meta->time_start)) {
+            $entry->time = ($timer_end - $CI->response->meta->time_start);
+        }
         $entry->detail = 'Finish.';
         $GLOBALS['timer_log'][] = $entry;
 
         $CI->response->meta->timing = $GLOBALS['timer_log'];
         $CI->response->meta->time_end = microtime(true);
-        $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
+        $CI->response->meta->time_elapsed = '';
+        if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
+            $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
+        }
 
         echo json_encode($CI->response);
     }

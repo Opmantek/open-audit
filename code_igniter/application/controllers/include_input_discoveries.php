@@ -112,11 +112,7 @@ try {
 unset($xml_input);
 
 # So we can output back to the discovery script, and continue processing
-if (php_uname('s') == 'Windows NT') {
-    print_r($xml);
-} else {
-    echo "";
-}
+echo "";
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
@@ -539,6 +535,7 @@ foreach ($xml->children() as $input) {
             $log->severity = 7;
             $log->command_status = 'notice';
             $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
+            $log->command_output = '';
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
@@ -999,37 +996,43 @@ foreach ($xml->children() as $input) {
 
     // Get and make the audit script
     if (!empty($credentials_windows) or !empty($credentials_ssh)) {
-        $ts = date('y_m_d_H_i_s');
+        $temp = microtime();
+        $temp2 = explode(' ', $temp);
+        unset($temp);
+        $micro = str_replace('0.', '', $temp2[0]);
+        unset($temp2);
+        $timestamp = date('y_m_d_H_i_s') . '_' . $micro;
+        unset($micro);
         switch (strtolower($device->os_group)) {
             case 'aix':
                 $audit_script = 'audit_aix.sh';
-                $source_name = 'audit_aix_' . $ts . '.sh';
+                $source_name = 'audit_aix_' . $timestamp . '.sh';
                 break;
             
             case 'vmkernel':
             case 'vmware':
                 $audit_script = 'audit_esxi.sh';
-                $source_name = 'audit_esxi_' . $ts . '.sh';
+                $source_name = 'audit_esxi_' . $timestamp . '.sh';
                 break;
             
             case 'linux':
                 $audit_script = 'audit_linux.sh';
-                $source_name = 'audit_linux_' . $ts . '.sh';
+                $source_name = 'audit_linux_' . $timestamp . '.sh';
                 break;
             
             case 'darwin':
                 $audit_script = 'audit_osx.sh';
-                $source_name = 'audit_osx_' . $ts . '.sh';
+                $source_name = 'audit_osx_' . $timestamp . '.sh';
                 break;
             
             case 'windows':
                 $audit_script = 'audit_windows.vbs';
-                $source_name = 'audit_windows_' . $ts . '.vbs';
+                $source_name = 'audit_windows_' . $timestamp . '.vbs';
                 break;
             
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
-                $source_name = 'audit_solaris_' . $ts . '.sh';
+                $source_name = 'audit_solaris_' . $timestamp . '.sh';
                 break;
             
             default:
@@ -1301,6 +1304,7 @@ foreach ($xml->children() as $input) {
             $result = false;
         }
         if ($audit_script != '') {
+            $log->command = '';
             $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
             $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
             $log->command_output = '';
@@ -1317,8 +1321,7 @@ foreach ($xml->children() as $input) {
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
             }
             discovery_log($log);
-            $log->command = $command;
-            $command_start = microtime(true);
+
             $parameters = new stdClass();
             $parameters->log = $log;
             $parameters->ip = $device->ip;
@@ -1326,17 +1329,6 @@ foreach ($xml->children() as $input) {
             $parameters->command = $command;
             $parameters->ssh_port = $input->ssh_port;
             $result = ssh_command($parameters);
-            $command_end = microtime(true);
-            $log->command_time_to_execute = $command_end - $command_start;
-            if (!empty($result)) {
-                $log->command_status = 'success';
-            } else {
-                $log->severity = 3;
-                $log->command_status = 'fail';
-                discovery_log($log);
-            }
-            $log->command_output = '';
-            $log->severity = 7;
         } else {
             $log->severity = 3;
             $log->command_time_to_execute = '';
@@ -1377,6 +1369,8 @@ foreach ($xml->children() as $input) {
             $parameters->destination = $destination;
             $parameters->log = $log;
             $parameters->ssh_port = $input->ssh_port;
+            # Allow 20 seconds to copy the file
+            $this->config->config['discovery_ssh_timeout'] = 20;
             $temp = scp_get($parameters);
             if ($temp) {
                 $audit_result = file_get_contents($destination);
@@ -1388,12 +1382,20 @@ foreach ($xml->children() as $input) {
                     discovery_log($log);
                 }
                 unlink ($destination);
+            } else {
+                $log->severity = 5;
+                $log->command_status = 'fail';
+                $log->message = 'Could not SCP GET to ' . $destination;
+                discovery_log($log);
+                $log->severity = 7;
             }
             // Delete the remote file
             $command = 'rm ' . $audit_file;
             if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
-                // add sudo
+                // add sudo, we need this if we have run the audit using sudo
                 $command = 'sudo ' . $command;
+                // Allow 10 seconds to run the command
+                $this->config->config['discovery_ssh_timeout'] = 10;
             }
             $parameters = new stdClass();
             $parameters->log = $log;

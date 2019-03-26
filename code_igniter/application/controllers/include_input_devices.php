@@ -37,7 +37,7 @@ $this->load->model('m_devices_components');
 
 // check if the submitting IP is in the list of allowable subnets
 $this->load->model('m_networks');
-if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
+if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '') and empty($this->user->id)) {
     $log = new stdClass();
     $log->type = 'system';
     $log->severity = 5;

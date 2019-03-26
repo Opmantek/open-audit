@@ -70,10 +70,10 @@ if ($queue == 'scans' and !empty($id)) {
     }
 
     if ($exec) {
-        $input = json_decode($queue_item->details);
-        process_scan($input);
         $sql = "DELETE FROM queue WHERE id = " . intval($id);
         $query = $this->db->query($sql);
+        $input = json_decode($queue_item->details);
+        process_scan($input);
     }
     unset($queue_item);
 }

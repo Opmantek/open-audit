@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.0.0
+* @version   3.0.2
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
@@ -462,7 +462,6 @@ if (!function_exists('process_scan')) {
             $parameters->ssh_port = $input->ssh_port;
             $ssh_details = ssh_audit($parameters);
             if (!empty($ssh_details)) {
-
                 if (!empty($ssh_details->credentials)) {
                     $credentials_ssh = $ssh_details->credentials;
                 }
@@ -520,19 +519,20 @@ if (!function_exists('process_scan')) {
         # Set manufacturer based on MAC address (if not already set)
         if (empty($device->manufacturer) and !empty($input->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
-                $log->severity = 7;
-                $log->command_status = 'notice';
-                $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+            $log->severity = 7;
+            $log->command_status = 'notice';
+            $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
+            $log->command_output = '';
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         if (empty($device->manufacturer) and !empty($device->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
-                $log->severity = 7;
-                $log->command_status = 'notice';
-                $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+            $log->severity = 7;
+            $log->command_status = 'notice';
+            $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
         if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_ports, '5060/') !== false) {
@@ -973,11 +973,17 @@ if (!function_exists('process_scan')) {
         }
 
         // set the identification with what we have
-        $this->m_device->set_identification($device->id);
+        $CI->m_device->set_identification($device->id);
 
         // Get and make the audit script
         if (!empty($credentials_windows) or !empty($credentials_ssh)) {
-            $timestamp = date('y_m_d_H_i_s');
+            $temp = microtime();
+            $temp2 = explode(' ', $temp);
+            unset($temp);
+            $micro = str_replace('0.', '', $temp2[0]);
+            unset($temp2);
+            $timestamp = date('y_m_d_H_i_s') . '_' . $micro;
+            unset($micro);
             switch (strtolower($device->os_group)) {
                 case 'aix':
                     $audit_script = 'audit_aix.sh';
@@ -1076,6 +1082,12 @@ if (!function_exists('process_scan')) {
                     unset($log->command, $log->message, $log->command_status);
                     $audit_script = '';
                 }
+            } else {
+                $log->severity = 6;
+                $log->command_status = 'notice';
+                $log->message = "Discovery could not match the OS Group ($device->os_group) to an audit script for $device->ip (System ID $device->id).";
+                discovery_log($log);
+                return true;
             }
         } else {
             // go back now as we don't have a script
@@ -1085,12 +1097,6 @@ if (!function_exists('process_scan')) {
             discovery_log($log);
             return true;
         }
-
-
-
-
-
-
         # Audit Windows
         if ($input->wmi_status == "true" and !empty($credentials_windows) and !empty($audit_script)) {
             # We do not support auditing windows using the script over SSH at this time
@@ -1231,14 +1237,6 @@ if (!function_exists('process_scan')) {
             }
         }
 
-
-
-
-
-
-
-
-
         # Audit via SSH
         if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh) and !empty($audit_script)) {
             $log->message = 'Starting SSH audit script for ' . $device->ip . ' (System ID ' . $device->id . ')';
@@ -1295,10 +1293,12 @@ if (!function_exists('process_scan')) {
 
             $result = false;
             if ($audit_script != '') {
+                $log->command = '';
+                $log->command_output = '';
                 $command = $CI->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' last_seen_by=audit_ssh discovery_id='.$discovery->id;
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
                 if ($credentials_ssh->credentials->username == 'root') {
-                    $log->message = 'Running audit using root username.';
+                    $log->message = 'Running audit using root user.';
                 } else if (!empty($device->which_sudo) and $device->use_sudo) {
                     $command = 'sudo ' . $command;
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
@@ -1307,8 +1307,8 @@ if (!function_exists('process_scan')) {
                 } else if (empty($device->which_sudo)) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
                 }
-                $log->command = $command;
-                $command_start = microtime(true);
+                discovery_log($log);
+
                 $parameters = new stdClass();
                 $parameters->log = $log;
                 $parameters->ip = $device->ip;
@@ -1316,15 +1316,6 @@ if (!function_exists('process_scan')) {
                 $parameters->command = $command;
                 $parameters->ssh_port = $input->ssh_port;
                 $result = ssh_command($parameters);
-                $command_end = microtime(true);
-                $log->command_time_to_execute = $command_end - $command_start;
-                if (!empty($result)) {
-                    $log->command_status = 'success';
-                } else {
-                    $log->command_status = 'fail';
-                }
-                discovery_log($log);
-                $log->severity = 7;
             }
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
@@ -1334,6 +1325,7 @@ if (!function_exists('process_scan')) {
             $log->command_output = '';
             $log->message = '';
             $log->ip = $device->ip;
+            discovery_log($log);
 
             if (!empty($result) and gettype($result) == 'array') {
                 foreach ($result as $line) {
@@ -1355,6 +1347,8 @@ if (!function_exists('process_scan')) {
                 $parameters->source = $audit_file;
                 $parameters->destination = $destination;
                 $parameters->ssh_port = $input->ssh_port;
+                # Allow 20 seconds to copy the file
+                $CI->config->config['discovery_ssh_timeout'] = 20;
                 $temp = scp_get($parameters);
                 if ($temp) {
                     $audit_result = file_get_contents($destination);
@@ -1365,12 +1359,20 @@ if (!function_exists('process_scan')) {
                         $log->command_output = '';
                         discovery_log($log);
                     }
+                } else {
+                    $log->severity = 5;
+                    $log->command_status = 'fail';
+                    $log->message = 'Could not SCP GET to ' . $destination;
+                    discovery_log($log);
+                    $log->severity = 7;
                 }
                 // Delete the remote file
                 $command = 'rm ' . $audit_file;
                 if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
-                    // add sudo
+                    // add sudo, we need this if we have run the audit using sudo
                     $command = 'sudo ' . $command;
+                    // Allow 10 seconds to run the command
+                    $CI->config->config['discovery_ssh_timeout'] = 10;
                 }
                 $parameters = new stdClass();
                 $parameters->log = $log;
@@ -1563,7 +1565,7 @@ if (!function_exists('process_scan')) {
             discovery_log($log);
         }
         // set the identification with what we have
-        $this->m_device->set_identification($device->id);
+        $CI->m_device->set_identification($device->id);
         // finish
         $log->severity = 7;
         $log->command_status = 'notice';
