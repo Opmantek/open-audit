@@ -357,12 +357,11 @@ if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.js
 			$json_config = json_decode($file_config);
 			unset($file_config);
 			foreach ($json_config as $item) {
-				if ($item->name == $name) {
+				if ($item->id == $name) {
 					$config['base_url'] = $item->url;
 					$config['encryption_key'] = $item->encryption_key;
-					$config['name'] = $item->name;
-					$config['company_name'] = $item->company_name;
-					$config['op_identifier'] = $item->op_identifier;
+					$config['id'] = $item->id;
+					$config['company'] = $item->company;
 					$config['license'] = $item->license;
 					$config['users'] = $item->users;
 				}
