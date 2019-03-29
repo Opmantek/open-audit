@@ -63,7 +63,7 @@ if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.js
 			$json_config = json_decode($file_config);
 			unset($file_config);
 			foreach ($json_config as $item) {
-				if ($item->name == $name) {
+				if ($item->id == $name) {
 					$db['default']['hostname'] = $item->hostname;
 					$db['default']['username'] = $item->username;
 					$db['default']['password'] = $item->password;
