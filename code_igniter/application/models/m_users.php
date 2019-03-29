@@ -375,56 +375,32 @@ class M_users extends MY_Model
         $this->load->helper('url');
         $this->load->helper('log');
         $this->load->helper('error');
-        $user_prefix = '';
-        if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
-            $user_prefix = 'user_';
-        }
+
         if (empty($this->config->config['access_token_count'])) {
-            $this->config->config['access_token_count'] = 10;
+            $this->config->config['access_token_count'] = 20;
         }
-        if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
-            $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'users'";
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if (count($result) !== 0) {
-                $db_table = 'users';
-            } else {
-                $db_table = 'oa_user';
-            }
-        } else {
+        $db_table = 'oa_user';
+        if ($this->db->table_exists('users')) {
             $db_table = 'users';
         }
-
-        if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
-            # See if we have a column named $column in the DB
-            # SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = 'openaudit' AND `TABLE_NAME` = 'bios' AND `COLUMN_NAME` = 'system_id';
-            $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE `TABLE_SCHEMA` = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $db_table . "' AND `COLUMN_NAME` = 'user_id'";
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if (count($result) !== 1) {
-                $db_id_column = 'id';
-                $db_prefix = '';
-            } else {
-                $db_id_column = 'user_id';
-                $db_prefix = 'user_';
-            }
-        } else {
+        $db_id_column = 'user_id';
+        $db_prefix = 'user_';
+        if ($this->db->field_exists('id', $db_table)) {
             $db_id_column = 'id';
             $db_prefix = '';
         }
 
         if (!empty($_SERVER['HTTP_USER'])) {
-            $user = $_SERVER['HTTP_USER'];
             $sql = "SELECT * FROM `users` WHERE `name` = ?";
-            $data = array($user);
+            $data = array($_SERVER['HTTP_USER']);
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() == 1) {
-                $this->log->summary = 'Valid username submitted via headers';
+                $this->log->summary = 'Valid username submitted via headers (' . $_SERVER['HTTP_USER'] . ')';
                 stdlog($this->log);
                 $user = $query->row();
             } else {
-                $this->log->summary = 'Invalid username submitted via headers';
+                $this->log->summary = 'Invalid username submitted via headers (' . $_SERVER['HTTP_USER'] . ')';
                 stdlog($this->log);
                 log_error('ERR-0036');
                 redirect('logon');
