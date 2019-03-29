@@ -446,9 +446,9 @@ if (! function_exists('inputRead')) {
         # put any POST data into the object
         $data_supplied_by = '';
         if ($REQUEST_METHOD == 'POST') {
-            if (!empty($_POST['data']) and is_array($_POST{'data'})) {
+            if (!empty($_POST['data']) and is_array($_POST['data'])) {
                 # This is form submitted data
-                $CI->response->meta->received_data = $_POST{'data'};
+                $CI->response->meta->received_data = $_POST['data'];
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
                 $log->summary = "Receiving data";
@@ -456,7 +456,7 @@ if (! function_exists('inputRead')) {
                 $data_supplied_by = 'form';
             } else {
                 # This is straight JSON submitted data in a string
-                $CI->response->meta->received_data = @json_decode($_POST{'data'});
+                $CI->response->meta->received_data = @json_decode($_POST['data']);
                 $log->summary = "Receiving data";
                 $log->detail = "Data has been supplied via POST json.";
                 $data_supplied_by = 'json';

@@ -345,7 +345,7 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0036']->status = 'HTTP/1.1 403 Forbidden';
         $error_array['ERR-0036']->severity = 4;
         $error_array['ERR-0036']->title = "Invalid user supplied.";
-        $error_array['ERR-0036']->detail = 'A user was supplied int he request header that does not exist within Open-AudIT. Please specify a valid user.';
+        $error_array['ERR-0036']->detail = 'A user was supplied in the request header that does not exist within Open-AudIT. Please specify a valid user.';
 
         $error_array['ERR-0037'] = new stdClass();
         $error_array['ERR-0037']->code = 'ERR-0037';
