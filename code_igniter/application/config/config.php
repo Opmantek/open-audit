@@ -373,11 +373,13 @@ if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.js
 }
 
 #function __autoload($class)
-function __spl_autoload_register($class)
-{
-    if (strpos($class, 'CI_') !== 0) {
-        @include_once(APPPATH . 'core/'. $class . EXT);
-    }
+if (!function_exists('__spl_autoload_register')) {
+	function __spl_autoload_register($class)
+	{
+	    if (strpos($class, 'CI_') !== 0) {
+	        @include_once(APPPATH . 'core/'. $class . EXT);
+	    }
+	}
 }
 
 /* End of file config.php */
