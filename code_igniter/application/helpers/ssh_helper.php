@@ -767,8 +767,10 @@ if (! function_exists('ssh_audit')) {
         $log->severity = 7;
 
         $commands = array(
-            'hostname' => 'hostname -s 2>/dev/null',
-            'domain' => 'hostname -d 2>/dev/null',
+            'hostname' => 'hostname 2>/dev/null',
+            # removed the below and will parse hostname for name and domain and fqdn
+            #'hostname' => 'hostname -s 2>/dev/null',
+            #'domain' => 'hostname -d 2>/dev/null',
             # NOTE - removed below because on Solaris this sets the hostname
             #'fqdn' => 'hostname -f 2>/dev/null | grep -F . 2>/dev/null',
             'solaris_domain' => 'domainname 2>/dev/null',
@@ -786,13 +788,14 @@ if (! function_exists('ssh_audit')) {
             'ubiquiti_os' => 'cat /etc/motd 2>/dev/null | grep -i EdgeOS 2>/dev/null',
             'ubiquiti_os_version' => 'cat /etc/version 2>/dev/null',
             'ddwrt_os_name' => 'cat /etc/motd 2>/dev/null | grep -i DD-WRT 2>/dev/null',
+            'solaris_os_name' => 'cat /etc/release 2>/dev/null | head -n1 | awk \'{print $1, $2, $3}\'',
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
             'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
             'ubiquiti_serial' => 'grep serialno /proc/ubnthal/system.info 2>/dev/null | cut -d= -f2',
 
             'dbus_identifier' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
-            'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}"',
+            'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk \'{print $2}\'',
             'esx_uuid' => 'vim-cmd hostsvc/hostsummary 2>/dev/null | sed -n "/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p" | grep uuid | cut -d= -f2 | sed s/,//g | sed s/\"//g',
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
             'lshal_uuid' => 'lshal 2>/dev/null | grep "system.hardware.uuid"',
@@ -857,6 +860,13 @@ if (! function_exists('ssh_audit')) {
 
         # Set some items that may have multiple results
         if (!empty($device->hostname)) {
+            if (stripos('.', $device->hostname) !== false) {
+                $device->fqdn = $device->hostname;
+                $temp = explode('.', $device->hostname);
+                $device->hostname = $temp[0];
+                unset($temp[0]);
+                $device->domain = implode('.', $temp);
+            }
             $device->name = $device->hostname;
         }
         if (empty($device->domain) and !empty($device->solaris_domain) and $device->solaris_domain != '(none)') {
@@ -948,6 +958,12 @@ if (! function_exists('ssh_audit')) {
         }
         unset($device->ddwrt_model);
 
+        if (empty($device->os_name) and !empty($device->solaris_os_name)) {
+            $device->os_name = trim($device->solaris_os_name);
+            $device->type = 'computer';
+        }
+        unset($device->solaris_os_name);
+
         if (!empty($device->hpux_os_group) and trim($device->hpux_os_group) === 'HP-UX') {
             $device->os_group = 'HP-UX';
             $device->os_family = 'HP-UX';
@@ -1017,7 +1033,7 @@ if (! function_exists('ssh_audit')) {
                 $log->command = trim($command) . '; # hostname test using sudo';
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
-                $log->message = 'SSH command';
+                $log->message = 'SSH command - sudo hostname';
                 if ($device->use_sudo) {
                     $log->command_status = 'success';
                 } else {
