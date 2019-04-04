@@ -369,6 +369,7 @@ if (!function_exists('audit_format_system')) {
         if (isset($input->manufacturer) and (
             (strripos($input->manufacturer, "vmware") !== false) or
             (strripos($input->manufacturer, "parallels") !== false) or
+            (strripos($input->manufacturer, "PCS Systemtechnik GmbH") !== false) or
             (strripos($input->manufacturer, "virtual") !== false))) {
             $input->form_factor = 'Virtual';
             $mylog->message = "Manufacturer match, setting form factor to Virtual.";
