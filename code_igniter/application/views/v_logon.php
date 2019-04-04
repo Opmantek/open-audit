@@ -33,6 +33,9 @@
 * @version   3.0.2
 * @link      http://www.open-audit.org
  */
+if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
+    header("Location: /omk/open-audit");
+}
 header("Content-Security-Policy: frame-ancestors 'none'");
 header("X-Frame-Options: DENY");
 ?><!DOCTYPE html>
