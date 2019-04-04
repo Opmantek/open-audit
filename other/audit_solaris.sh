@@ -165,6 +165,9 @@ function escape_xml()
 
         # Trim leading/trailing spaces
         result=`trim "$result"`
+        if [ "$result" != "$1" ]; then
+            result="<![CDATA[$result]]>"
+        fi
         echo $result
 }
 
