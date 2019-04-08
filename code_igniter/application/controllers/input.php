@@ -114,6 +114,7 @@ class Input extends CI_Controller
         $this->response->meta = new stdClass();
         $this->response->meta->collection = 'input';
         $this->response->meta->action = '';
+        $this->response->meta->time_start = microtime(true);
 
         if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
             $this->response->meta->format = 'json';
@@ -149,6 +150,7 @@ class Input extends CI_Controller
             $this->response->meta = new stdClass();
             $this->response->meta->collection = '';
             $this->response->meta->query_string = '';
+            $this->response->meta->time_start = microtime(true);
             $this->load->model('m_roles');
             $this->roles = $this->m_roles->collection();
             $this->response->meta->collection = 'input';
