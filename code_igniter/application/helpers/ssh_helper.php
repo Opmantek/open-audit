@@ -798,7 +798,7 @@ if (! function_exists('ssh_audit')) {
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk \'{print $2}\'',
             'esx_uuid' => 'vim-cmd hostsvc/hostsummary 2>/dev/null | sed -n "/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p" | grep uuid | cut -d= -f2 | sed s/,//g | sed s/\"//g',
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
-            'lshal_uuid' => 'lshal 2>/dev/null | grep "system.hardware.uuid"',
+            'lshal_uuid' => 'lshal 2>/dev/null | grep \'system.hardware.uuid\'',
 
             'hpux_hostname' => 'hostname 2>/dev/null',
             'hpux_domain' => 'domainname 2>/dev/null',
