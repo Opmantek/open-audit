@@ -518,9 +518,9 @@ fi
 system_domain=$(hostname -d | grep -v \(none\))
 system_fqdn=$(hostname -f | grep -v \(none\))
 
-dns_hostname=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f1)
-dns_domain=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f2- | cut -d" " -f1)
-dns_fqdn=$(hostname -A 2>/dev/null | head -n1)
+dns_hostname=$(hostname -s 2>/dev/null | head -n1 | cut -d. -f1)
+dns_domain=$(hostname --domain 2>/dev/null | head -n1 | cut -d. -f2- | cut -d" " -f1)
+dns_fqdn=$(hostname --fqdn 2>/dev/null | head -n1)
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
