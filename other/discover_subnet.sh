@@ -162,12 +162,12 @@ function db_log()
 	if [ -z "$status" ]; then
 		status="notice"
 	fi
-
-	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=$ip&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command" -X POST http://localhost/open-audit/index.php/input/logs
+	log_url=`echo "${url/input/logs}"`
+	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=$ip&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command" -X POST $log_url
 	if [ "$debugging" -gt 0 ]; then
 		echo "$1"
 		echo ""
-		echo "curl -d \"type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=$ip&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command\" -X POST http://localhost/open-audit/index.php/input/logs"
+		echo "curl -d \"type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=$ip&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command\" -X POST $log_url"
 		echo ""
 	fi
 }
