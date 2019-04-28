@@ -1180,13 +1180,13 @@ foreach ($xml->children() as $input) {
             } else {
                 $log->severity = 3;
                 $log->command_time_to_execute = '';
-                $log->message = 'Could not audit script to ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->message = 'Could not copy audit script to ' . $device->ip . ' (System ID ' . $device->id . ')';
                 $log->command_status = 'fail';
                 discovery_log($log);
                 $log->severity = 7;
             }
             $audit_file = false;
-            if (!empty($output)) {
+            if (!empty($output) and $copy) {
                 foreach ($output as $line) {
                     if (strpos($line, 'File    ') !== false) {
                         $audit_file = trim(str_replace('File    ', '', $line));
@@ -1201,7 +1201,7 @@ foreach ($xml->children() as $input) {
                 $log->severity = 7;
             }
             $copy = false;
-            if ($audit_file) {
+            if ($audit_file and !empty($output) and $copy) {
                 $temp = explode('\\', $audit_file);
                 if (php_uname('s') == 'Windows NT') {
                     $destination = $filepath . '\\scripts\\' . end($temp);
