@@ -6933,6 +6933,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($oid == '1.3.6.1.4.1.9.12.3.1.9.93.5') { $details->model = 'Cisco QSFP40GCR4Passive'; $details->type = 'cisco module'; }
     if ($oid == '1.3.6.1.4.1.9.12.3.1.9.95') { $details->model = 'Cisco ModuleN6KType'; $details->type = 'cisco module'; }
 
+    if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1812') { $details->model = 'Cisco Nexus N9K-C93180YC-EX'; $details->type = 'switch'; }
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1824') { $details->model = 'Cisco Nexus N9K-C93108TC-EX'; $details->type = 'switch'; }
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1843') { $details->model = 'Cisco Nexus N9K-C93180LC-EX'; $details->type = 'switch'; }
 
