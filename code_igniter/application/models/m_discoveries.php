@@ -173,7 +173,8 @@ class M_discoveries extends MY_Model
             }
             # run the script and continue (do not wait for result)
             if (php_uname('s') != 'Windows NT') {
-                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
+                #$command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
+                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $discovery[0]->network_address . 'index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
                 if (php_uname('s') == 'Linux') {
                     $command_string = 'nohup ' . $command_string;
                 }
@@ -457,7 +458,6 @@ class M_discoveries extends MY_Model
             }
         }
 
-
         if ($discovery->type == 'subnet') {
             $command_string = $this->create_command($discovery);
             // Unix based discovery
@@ -479,7 +479,6 @@ class M_discoveries extends MY_Model
                     stdlog($this->log);
                 }
             }
-
             // Windows based discovery
             if (php_uname('s') == 'Windows NT') {
                 pclose(popen($command_string, "r"));
