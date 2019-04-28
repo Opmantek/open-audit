@@ -489,7 +489,7 @@ class M_widgets extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "/* m_widgets::execute */ " . "SELECT * FROM widgets WHERE id = ?";
+        $sql = "SELECT * FROM widgets WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $widget = $result[0];
