@@ -3272,6 +3272,7 @@ CREATE TABLE `system` (
   `sysContact` varchar(255) NOT NULL DEFAULT '',
   `sysName` varchar(255) NOT NULL DEFAULT '',
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
+  `snmp_version` varchar(10) NOT NULL DEFAULT '',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen_by` varchar(150) NOT NULL DEFAULT '',
