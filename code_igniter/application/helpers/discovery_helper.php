@@ -403,6 +403,9 @@ if (!function_exists('process_scan')) {
             }
         }
         if ($credentials_snmp) {
+            if (!empty($credentials_snmp->credentials->version)) {
+                $device->snmp_version = intval($credentials_snmp->credentials->version);
+            }
             $temp_array = snmp_audit($device->ip, $credentials_snmp,$log);
             if (!empty($temp_array['details'])) {
                 foreach ($temp_array['details'] as $key => $value) {
