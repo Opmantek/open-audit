@@ -153,6 +153,9 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->access_token = @$CI->access_token;
         $CI->response->meta->action = '';
         $CI->response->meta->baseurl = $CI->config->config['base_url'];
+        if (!empty($CI->config->config['id'])) {
+            $CI->response->meta->cloud_id = $CI->config->config['id'];
+        }
         $CI->response->meta->collection = '';
         $CI->response->meta->current = 'y';
         $CI->response->meta->debug = false;
