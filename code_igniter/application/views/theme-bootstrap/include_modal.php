@@ -19,8 +19,8 @@
     // Menu click response
     $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
-        $.get('/omk/data/open-audit.json', function(data){
-        //$.get('https://opmantek.com/product_data/open-audit.1json', function(data){
+        // $.get('/omk/data/open-audit.json', function(data){
+        $.get('https://opmantek.com/product_data/open-audit.json', function(data){
             //console.log(data.version);
             modal.open({content: data, source: "online"});
         })
