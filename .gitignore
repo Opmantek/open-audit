@@ -9,9 +9,14 @@ other/open-audit.log
 other/log_access.log
 other/log_debug.log
 other/log_system.log
+!www/open-audit/custom_images/
 www/open-audit/custom_images/*.jpg
 www/open-audit/custom_images/*.png
+www/open-audit/custom_images/*
 ._*
 .idea
 code_igniter/application/config/config.json
+!code_igniter/application/attachments/
+code_igniter/application/attachments/*
+
 
