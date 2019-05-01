@@ -31,7 +31,8 @@ $this->response->meta->id = $this->{'m_collection'}->create();
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Create.';
+$entry->detail = 'include_create::create';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 if (!empty($this->response->meta->id)) {

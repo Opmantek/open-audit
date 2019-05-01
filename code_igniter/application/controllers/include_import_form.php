@@ -37,7 +37,8 @@ $this->response->meta->include = 'v_collection_import_form';
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Import Form.';
+$entry->detail = 'include_import_form::import_form';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 output($this->response);

@@ -219,7 +219,8 @@ if (! function_exists('output')) {
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Output Format.';
+        $entry->detail = 'output_helper::output';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
         switch ($CI->response->meta->format) {
@@ -450,17 +451,9 @@ if (! function_exists('output')) {
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Output JSON.';
+        $entry->detail = 'output_helper::output_json';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
-
-        $entry = new stdClass();
-        $entry->time = '';
-        if (!empty($CI->response->meta->time_start)) {
-            $entry->time = ($timer_end - $CI->response->meta->time_start);
-        }
-        $entry->detail = 'Finish.';
-        $GLOBALS['timer_log'][] = $entry;
-
         $CI->response->meta->timing = $GLOBALS['timer_log'];
         $CI->response->meta->time_end = microtime(true);
         $CI->response->meta->time_elapsed = '';
@@ -694,7 +687,8 @@ if (! function_exists('output')) {
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Output Screen.';
+        $entry->detail = 'output_helper::output_screen';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
         $CI->response->meta->timing = $GLOBALS['timer_log'];

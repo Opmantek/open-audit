@@ -222,7 +222,8 @@ if ($collection == 'users') {
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Create Form.';
+$entry->detail = 'include_create_form::create_form';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 unset($collection);

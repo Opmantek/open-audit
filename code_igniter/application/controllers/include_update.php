@@ -41,7 +41,8 @@ if ($this->response->meta->collection === 'clouds') {
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Update.';
+$entry->detail = 'include_update::update';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 if ($this->response->meta->format === 'json') {

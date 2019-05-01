@@ -64,7 +64,8 @@ class MY_Controller extends CI_Controller
 
         $entry = new stdClass();
         $entry->time = 0;
-        $entry->detail = 'Start.';
+        $entry->detail = 'my_controller::construct';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
@@ -94,21 +95,24 @@ class MY_Controller extends CI_Controller
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Load models and helpers.';
+        $entry->detail = 'my_controller::Load models and helpers.';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
         $timer_start = microtime(true);
         $this->m_configuration->load();
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Load configuration.';
+        $entry->detail = 'my_controller::Load configuration.';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
         $timer_start = microtime(true);
         $this->m_users->validate();
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Validate User.';
+        $entry->detail = 'my_controller::Validate User.';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
         $timer_start = microtime(true);
         set_time_limit(600);
@@ -148,7 +152,8 @@ class MY_Controller extends CI_Controller
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Load user details.';
+        $entry->detail = 'my_controller::Load user details.';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
     }
 

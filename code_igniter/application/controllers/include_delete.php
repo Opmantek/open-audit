@@ -40,7 +40,8 @@ if ($this->{'m_'.$this->response->meta->collection}->delete($this->response->met
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Delete.';
+$entry->detail = 'include_delete::delete';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 if ($this->response->meta->format === 'json') {

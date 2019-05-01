@@ -91,7 +91,8 @@ class devices extends MY_Controller
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Collection.';
+        $entry->detail = 'm_devices::collection';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
         output($this->response);
@@ -202,7 +203,8 @@ class devices extends MY_Controller
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Read.';
+        $entry->detail = 'm_devices::read';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
         output($this->response);
@@ -262,7 +264,8 @@ class devices extends MY_Controller
             $timer_end = microtime(true);
             $entry = new stdClass();
             $entry->time = ($timer_end - $timer_start);
-            $entry->detail = 'Create.';
+            $entry->detail = 'm_devices::create';
+            $entry->time_now = time();
             $GLOBALS['timer_log'][] = $entry;
 
             if ($this->response->meta->format == 'screen') {
@@ -396,7 +399,8 @@ class devices extends MY_Controller
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'Bulk Update Form.';
+        $entry->detail = 'm_devices::bulk_update_form';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
         output($this->response);

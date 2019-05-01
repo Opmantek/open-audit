@@ -67,7 +67,8 @@ if ($this->response->meta->collection === 'licenses') {
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Collection.';
+$entry->detail = 'include_collection::collection.';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 $this->response->meta->links = $this->response->links;

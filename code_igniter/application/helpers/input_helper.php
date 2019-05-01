@@ -1263,9 +1263,9 @@ if (! function_exists('inputRead')) {
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'InputRead.';
+        $entry->detail = 'input_helper::InputRead.';
+        $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
-
     }
 }
 

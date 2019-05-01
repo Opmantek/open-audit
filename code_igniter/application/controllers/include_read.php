@@ -398,7 +398,8 @@ if ($this->m_users->get_user_permission('', $this->response->meta->collection, '
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
-$entry->detail = 'Read.';
+$entry->detail = 'include_read::read';
+$entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 output($this->response);
