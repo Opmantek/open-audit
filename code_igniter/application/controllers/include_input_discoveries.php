@@ -420,7 +420,10 @@ foreach ($xml->children() as $input) {
         # run SNMP audit commands
         if (!empty($credentials_snmp)) {
             if (!empty($credentials_snmp->credentials->version)) {
-                $device->snmp_version = intval($credentials_snmp->credentials->version);
+                $device->snmp_version = "snmpv" . intval($credentials_snmp->credentials->version);
+                if (intval($credentials_snmp->credentials->version) === 2) {
+                    $device->snmp_version .= 'c';
+                }
             }
             $temp_array = snmp_audit($device->ip, $credentials_snmp, $log);
             if (!empty($temp_array['details'])) {
