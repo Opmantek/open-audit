@@ -556,6 +556,22 @@ class M_devices extends MY_Model
                 return false;
             }
             $target = BASEPATH."../application/attachments/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
+            if (!empty($CI->response->meta->cloud_id)) {
+                if (!file_exists(BASEPATH."../application/attachments/".$CI->response->meta->cloud_id)) {
+                    mkdir(BASEPATH."../application/attachments/".$CI->response->meta->cloud_id);
+                }
+                if (!file_exists(BASEPATH."../application/attachments/".$CI->response->meta->cloud_id)) {
+                    $log->severity = 5;
+                    $log->summary = 'No cloud attachments directory.';
+                    $log->detail = 'The cloud attachments directory does not exist and cannot be created. Error: ' . error_get_last();
+                    $log->status = 'error';
+                    stdlog($log);
+                    log_error('ERR-0037', "m_devices::sub_resource_create", "The cloud attachments directory does not exist and cannot be created.");
+                    return false;
+                } else {
+                    $target = BASEPATH."../application/attachments/".$CI->response->meta->cloud_id."/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
+                }
+            }
             if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                 $sql = "INSERT INTO `attachment` VALUES (NULL, ?, ?, ?, ?, NOW())";
                 $data = array(intval($CI->response->meta->id),
@@ -596,9 +612,28 @@ class M_devices extends MY_Model
                 $this->db->query($sql, array());
                 return false;
             }
+            if (!empty($CI->response->meta->cloud_id)) {
+                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id)) {
+                    mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id);
+                }
+                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id)) {
+                    $log->severity = 5;
+                    $log->summary = 'No cloud custom_images directory.';
+                    $log->detail = 'The cloud custom_images directory does not exist and cannot be created. Error: ' . error_get_last();
+                    $log->status = 'error';
+                    stdlog($log);
+                    log_error('ERR-0037', "m_devices::sub_resource_create", "The cloud custom_images directory does not exist and cannot be created.");
+                    $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
+                    $this->db->query($sql, array());
+                    return false;
+                }
+            }
             $filename = @(string)basename($_FILES['attachment']['name']);
             if (!empty($filename)) {
                 $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
+                if (!empty($CI->response->meta->cloud_id)) {
+                    $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id . '/' . $filename;
+                }
                 if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                     $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
                     $data = array(intval($CI->response->meta->id),
