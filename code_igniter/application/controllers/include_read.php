@@ -30,7 +30,7 @@ $this->response->meta->filtered = count($this->response->data);
 
 if (count($this->response->data) == 0) {
     log_error('ERR-0002', $this->response->meta->collection . ':read');
-    $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called update.');
+    $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
     if ($this->response->meta->format === 'json') {
         output($this->response);
     } else {
