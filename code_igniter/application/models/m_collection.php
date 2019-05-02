@@ -956,7 +956,7 @@ class M_collection extends MY_Model
                 }
 
                 if (!empty($received_other->nmap->tcp_ports)) {
-                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->tcp_ports)) {
+                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->tcp_ports)) {
                         // Invalid TCP ports
                         log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for tcp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
@@ -974,7 +974,7 @@ class M_collection extends MY_Model
                 }
 
                 if (!empty($received_other->nmap->udp_ports)) {
-                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->udp_ports)) {
+                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->udp_ports)) {
                         // Invalid UDP ports
                         log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for udp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
@@ -992,7 +992,7 @@ class M_collection extends MY_Model
                 }
 
                 if (!empty($received_other->nmap->exclude_tcp_ports)) {
-                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_tcp_ports)) {
+                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_tcp_ports)) {
                         // Invalud Exclude TCP ports
                         log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
@@ -1009,7 +1009,7 @@ class M_collection extends MY_Model
                 }
 
                 if (!empty($received_other->nmap->exclude_udp_ports)) {
-                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_udp_ports)) {
+                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_udp_ports)) {
                         // Invalid Exclude UDP ports
                         log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
