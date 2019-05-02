@@ -64,13 +64,14 @@ class M_discoveries extends MY_Model
         if (empty($result[0]->other->nmap)) {
             $result[0]->other->nmap = new stdClass();
         }
-        if (empty($result[0]->other->nmap->discovery_scan_option_id)) {
+        if (!isset($result[0]->other->nmap->discovery_scan_option_id) or !is_numeric($result[0]->other->nmap->discovery_scan_option_id)) {
             if (!empty($this->config->config['discovery_default_scan_option'])) {
                 $result[0]->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
             } else {
                 $result[0]->other->nmap->discovery_scan_option_id = 1;
             }
         }
+        # Do not check if 0 as 0 is for custom scans
         if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
             $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
             $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
@@ -95,8 +96,6 @@ class M_discoveries extends MY_Model
         if ($result[0]->type == 'subnet') {
             $result[0]->command = $this->create_command($result[0]);
         }
-
-
         $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
@@ -431,10 +430,11 @@ class M_discoveries extends MY_Model
             if (empty($discovery->other->nmap)) {
                 $discovery->other->nmap = new stdClass();
             }
-            if (empty($discovery->other->nmap->discovery_scan_option_id)) {
+            if (!isset($discovery->other->nmap->discovery_scan_option_id) or !is_numeric($discovery->other->nmap->discovery_scan_option_id)) {
                 $discovery->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
             }
 
+            # Only check if we're not 0 as 0 is for custom scans
             if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
                 $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
                 $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
