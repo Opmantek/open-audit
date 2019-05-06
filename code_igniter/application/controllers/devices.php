@@ -656,4 +656,43 @@ class devices extends MY_Controller
     {
         include 'include_import.php';
     }
+
+    /**
+    * Accept a device id and provide a JSON export of most fields
+    *
+    * @access public
+    * @return NULL
+    */
+    public function export()
+    {
+        $this->response->meta->format = 'json';
+        $this->response->meta->include = 'bios,disk,dns,ip,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+        $device = new stdClass();
+
+        $sql = "SELECT * FROM system WHERE id = ?";
+        $query = $this->db->query($sql, array(intval($this->response->meta->id)));
+        $result = $query->result();
+        unset($result[0]->id);
+        unset($result[0]->first_seen);
+        unset($result[0]->last_seen);
+        $device->sys = $result[0];
+
+        $temp = explode(',', $this->response->meta->include);
+        foreach ($temp as $table) {
+            $sql = "SELECT * FROM `$table` WHERE system_id = ? AND current = 'y'";
+            $query = $this->db->query($sql, array(intval($this->response->meta->id)));
+            $result = $query->result();
+            if (!empty($result)) {
+                for ($i=0; $i < count($result); $i++) {
+                    unset($result[$i]->id);
+                    unset($result[$i]->system_id);
+                    unset($result[$i]->current);
+                    unset($result[$i]->first_seen);
+                    unset($result[$i]->last_seen);
+                }
+                $device->{$table} = $result;
+            }
+        }
+        echo json_encode($device);
+    }
 }
