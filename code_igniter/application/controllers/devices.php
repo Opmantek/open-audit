@@ -675,6 +675,11 @@ class devices extends MY_Controller
         unset($result[0]->id);
         unset($result[0]->first_seen);
         unset($result[0]->last_seen);
+        foreach ($result[0] as $key => $value) {
+            if (empty($value)) {
+                unset($result[0]->{$key});
+            }
+        }
         $device->sys = $result[0];
 
         $temp = explode(',', $this->response->meta->include);

@@ -333,7 +333,8 @@ class M_devices_components extends MY_Model
         }
 
         if (!$this->db->table_exists($table)) {
-            $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $log = new stdClass();
+            $log->message = 'Table supplied does not exist (' . @$table . ') for '. @$details->ip . ' (' . @$name . ')';
             $log->command_status = 'fail';
             $log->severity = 4;
             discovery_log($log);
