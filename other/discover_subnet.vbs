@@ -700,10 +700,12 @@ for each host in hosts
             error_description = Err.Description
             on error goto 0
             if error_returned <> 0 then
-                wscript.echo "Cannot open URL: " & url
-                wscript.echo "Error Returned: " & error_returned
-                wscript.echo "Error Description: " & error_description
-                wscript.echo "Cannot submit online as requested - ABORTING."
+                if debugging > 0 then
+                    wscript.echo "Cannot open URL: " & url
+                    wscript.echo "Error Returned: " & error_returned
+                    wscript.echo "Error Description: " & error_description
+                    wscript.echo "Cannot submit online as requested - ABORTING."
+                end if
                 db_log_message "Error when opening URL to submit"
                 db_log_status = "fail"
                 db_log_command = url
@@ -715,6 +717,24 @@ for each host in hosts
             on error resume next
             objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
             objHTTP.Send "data=" + result + vbcrlf
+
+            error_returned = Err.Number
+            error_description = Err.Description
+            on error goto 0
+            if error_returned <> 0 then
+                if debugging > 0 then
+                    wscript.echo "Cannot send data to URL: " & url
+                    wscript.echo "Error Returned: " & error_returned
+                    wscript.echo "Error Description: " & error_description
+                    wscript.echo "Cannot submit scan result online as requested."
+                end if
+                db_log_message "Error when sending data to URL to submit. " & error_returned
+                db_log_status = "fail"
+                db_log_command = url
+                db_log_severity = 3
+                db_log_output = error_description
+                db_log()
+            end if
         else
             wscript.echo "IP " & host & " responding."
         end if ' submit_online
@@ -884,6 +904,10 @@ function check_output()
     do while InStr(1, temp, "  ")
         temp = Replace(temp, "  ", " ")
     loop
+
+    if debugging > "1" then
+        wscript.echo temp
+    end if
 
     if instr(temp, "/tcp open ") then
         host_is_up = "true"
