@@ -29,6 +29,58 @@
 
 $this->log_db('Upgrade database to 3.1.0 commenced');
 
+$change_log_timestamp = false;
+$change_log_db_table = false;
+$change_log_db_action = false;
+$sql = "SHOW INDEX FROM `change_log`";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+if ($query->num_rows() > 0) {
+	$result = $query->result();
+	foreach ($result as $row) {
+		if ($row->Key_name === 'change_log_timestamp') {
+			$change_log_timestamp = true;
+		}
+		if ($row->Key_name === 'change_log_db_table') {
+			$change_log_db_table = true;
+		}
+		if ($row->Key_name === 'change_log_db_action') {
+			$change_log_db_action = true;
+		}
+	}
+}
+
+if ($change_log_timestamp) {
+	$sql = "DROP INDEX change_log_timestamp ON change_log";
+	$this->db->query($sql);
+	$this->log_db($this->db->last_query());
+}
+
+if ($change_log_db_table) {
+	$sql = "DROP INDEX change_log_db_table ON change_log";
+	$this->db->query($sql);
+	$this->log_db($this->db->last_query());
+}
+
+if ($change_log_db_action) {
+	$sql = "DROP INDEX change_log_db_action ON change_log";
+	$this->db->query($sql);
+	$this->log_db($this->db->last_query());
+}
+
+$sql = "CREATE INDEX change_log_timestamp ON change_log (`timestamp`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE INDEX change_log_db_table ON change_log (`db_table`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE INDEX change_log_db_action ON change_log (`db_action`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
 $this->alter_table('system', 'snmp_version', "ADD `snmp_version` varchar(10) NOT NULL DEFAULT '' AFTER `sysLocation`", 'add');
 
 # set our versions

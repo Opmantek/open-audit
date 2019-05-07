@@ -541,7 +541,7 @@ class Database extends MY_Controller
                 }
                 return;
             } else {
-                $this->log_db("WARNING - Column '" . $column . "' exists in '" . $table . "' when it shoud not as passed to 'alter_table'.");
+                $this->log_db("WARNING - Column '" . $column . "' exists in '" . $table . "' when it should not as passed to 'alter_table'.");
                 return;
             }
         }
@@ -778,6 +778,11 @@ class Database extends MY_Controller
         if (($db_internal_version < '20190401') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 3.0.2
             include "db_upgrades/db_3.0.2.php";
+        }
+
+        if (($db_internal_version < '20190512') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 3.1.0
+            include "db_upgrades/db_3.1.0.php";
         }
 
         $this->data['include'] = 'v_database_update';

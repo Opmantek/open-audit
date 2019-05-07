@@ -59,12 +59,19 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
 
     $upgrade_message .= '<button class="btn btn-warning" type="submit" name="submit" id="submit">'. __('Upgrade') . '</button>';
 
+    if ($this->config->item('internal_version') < '20190512') {
+        $upgrade_message .= '&nbsp;&nbsp;<strong>NOTE</strong>- Upgrading to 3.1.0 may take some time as we create new indexes on some tables. This will depend on the size of those tables, please be patient.';
+    }
+
     $upgrade_message .= '</div></div>';
+
 
     // if ($this->config->item('internal_version') < 20160104) {
     //     $upgrade_message .= "<strong>NOTE</strong>- If you have a large dataset, the upgrade to 1.10 may take a while. Please do not refresh the page. Watch your browser page indicator to determine when the upgrade has completed. Do not press the 'stop' button on your browser.<br />It may take a while, but it will complete.";
     // }
 }
+
+
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->config->config['base_url']; ?>index.php/database?action=update">
     <div class="panel panel-default">
