@@ -424,16 +424,15 @@ if (! function_exists('output')) {
         $CI = & get_instance();
         $CI->output->enable_profiler(false);
 
-        if (!empty($CI->response->meta->heading)) {
-            $filename = $CI->response->meta->heading;
-        } else if (!empty($CI->response->meta->collection)) {
-            $filename = $CI->response->meta->collection;
-        } else {
-            $filename = 'openaudit';
-        }
-
         header('Content-Type: application/json');
         if ((string) $CI->config->item('download_reports') === 'download') {
+            if (!empty($CI->response->meta->heading)) {
+                $filename = $CI->response->meta->heading;
+            } else if (!empty($CI->response->meta->collection)) {
+                $filename = $CI->response->meta->collection;
+            } else {
+                $filename = 'openaudit';
+            }
             header('Content-Disposition: attachment;filename="'.$filename.'.json"');
             header('Cache-Control: max-age=0');
         }
@@ -441,6 +440,7 @@ if (! function_exists('output')) {
         header("Pragma: no-cache");
         header("Expires: 0");
         header($CI->response->meta->header);
+
         if ($CI->response->meta->debug) {
             $CI->response->meta->user = $CI->user;
         } else {
@@ -460,7 +460,6 @@ if (! function_exists('output')) {
         if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
             $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
         }
-
         echo json_encode($CI->response);
     }
 
