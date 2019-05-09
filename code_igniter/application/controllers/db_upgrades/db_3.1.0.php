@@ -29,6 +29,29 @@
 
 $this->log_db('Upgrade database to 3.1.0 commenced');
 
+$audit_log_system_id_type = false;
+$sql = "SHOW INDEX FROM `audit_log`";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+if ($query->num_rows() > 0) {
+	$result = $query->result();
+	foreach ($result as $row) {
+		if ($row->Key_name === 'audit_log_system_id_type') {
+			$audit_log_system_id_type = true;
+		}
+	}
+}
+
+if ($audit_log_system_id_type) {
+	$sql = "DROP INDEX audit_log_system_id_type ON audit_log";
+	$this->db->query($sql);
+	$this->log_db($this->db->last_query());
+}
+
+$sql = "CREATE INDEX audit_log_system_id_type ON audit_log (`system_id`, `type`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $change_log_timestamp = false;
 $change_log_db_table = false;
 $change_log_db_action = false;
