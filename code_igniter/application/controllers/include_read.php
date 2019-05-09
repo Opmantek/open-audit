@@ -33,6 +33,7 @@ if (count($this->response->data) == 0) {
     $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
     if ($this->response->meta->format === 'json') {
         output($this->response);
+        exit();
     } else {
         redirect($this->response->meta->collection);
     }
@@ -59,7 +60,6 @@ if ($this->response->meta->format != 'screen') {
     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
-
 # applications
 if ($this->response->meta->collection == 'applications') {
     $this->load->model('m_applications');
@@ -70,7 +70,6 @@ if ($this->response->meta->collection == 'applications') {
 # attributes
 if ($this->response->meta->collection == 'attributes') {
 }
-
 
 # buildings
 if ($this->response->meta->collection == 'buildings') {
@@ -129,7 +128,7 @@ if ($this->response->meta->collection == 'collectors') {
 
 # configuration
 if ($this->response->meta->collection == 'configuration') {
-    if ($this->response->data[0]->attributes->name == 'discovery_default_scan_option') {
+    if (!empty($this->response->data) and $this->response->data[0]->attributes->name == 'discovery_default_scan_option') {
         $this->load->model('m_discovery_scan_options');
         $options = $this->m_discovery_scan_options->collection();
         $this->response->included = array_merge($this->response->included, $options);
