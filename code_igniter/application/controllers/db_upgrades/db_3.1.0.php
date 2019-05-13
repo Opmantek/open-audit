@@ -27,6 +27,16 @@
 *
 **/
 
+/*
+CREATE INDEX audit_log_system_id_type ON audit_log (`system_id`, `type`);
+CREATE INDEX change_log_timestamp ON change_log (`timestamp`);
+CREATE INDEX change_log_db_table ON change_log (`db_table`);
+CREATE INDEX change_log_db_action ON change_log (`db_action`);
+ALTER TABLE `system` ADD `snmp_version` varchar(10) NOT NULL DEFAULT '' AFTER `sysLocation`;
+UPDATE `configuration` SET `value` = '20190512' WHERE `name` = 'internal_version';
+UPDATE `configuration` SET `value` = '3.1.0' WHERE `name` = 'display_version';
+*/
+
 $this->log_db('Upgrade database to 3.1.0 commenced');
 
 $audit_log_system_id_type = false;
