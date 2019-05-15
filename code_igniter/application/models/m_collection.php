@@ -104,11 +104,11 @@ class M_collection extends MY_Model
         $sql = "ALTER TABLE `$collection` AUTO_INCREMENT = 1";
         $query = $this->db->query($sql);
         if ($this->db->_error_message()) {
-            $log->severity = 3;
-            $log->status = 'failure';
-            $log->summary = $this->db->last_query();
-            $log->detail = 'Query fail - ' . @$this->db->_error_message();
-            stdlog($log);
+            $this->log->severity = 3;
+            $this->log->status = 'failure';
+            $this->log->summary = $this->db->last_query();
+            $this->log->detail = 'Query fail - ' . @$this->db->_error_message();
+            stdlog($this->log);
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
             $this->db->db_debug = $temp_debug;
             return false;
@@ -117,20 +117,20 @@ class M_collection extends MY_Model
         $sql = "OPTIMIZE TABLE `$collection`";
         $query = $this->db->query($sql);
         if ($this->db->_error_message()) {
-            $log->severity = 3;
-            $log->status = 'failure';
-            $log->summary = $this->db->last_query();
-            $log->detail = 'Query fail - ' . @$this->db->_error_message();
-            stdlog($log);
+            $this->log->severity = 3;
+            $this->log->status = 'failure';
+            $this->log->summary = $this->db->last_query();
+            $this->log->detail = 'Query fail - ' . @$this->db->_error_message();
+            stdlog($this->log);
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
             $this->db->db_debug = $temp_debug;
             return false;
         }
 
         $this->db->db_debug = $temp_debug;
-        $log->severity = 7;
-        $log->detail = $collection . ' table has been reset successfully';
-        stdlog($log);
+        $this->log->severity = 7;
+        $this->log->detail = $collection . ' table has been reset successfully';
+        stdlog($this->log);
         return true;
     }
 
