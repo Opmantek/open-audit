@@ -142,6 +142,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($oid == '1.3.6.1.4.1.45.3.80.2') { $details->model = 'Ethernet Routing Switch 3526T-PWR+'; $details->type = 'switch'; }
     if ($oid == '1.3.6.1.4.1.45.3.80.4') { $details->model = 'Ethernet Routing Switch 3524GT-PWR+'; $details->type = 'switch'; }
     if ($oid == '1.3.6.1.4.1.45.3.80.6') { $details->model = 'Ethernet Routing Switch 3510GT-PWR+'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.45.3.82.4') { $details->model = 'Ethernet Routing Switch 4950GTS-PWR+ Stack'; $details->type = 'switch'; }
     if ($oid == '1.3.6.1.4.1.45.6.1.3.1.3') { $details->model = 'Nortel WSS2380'; $details->type = 'switch'; }
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.45.1.6.3.1.6.0");
     if (empty($details->model)) {
