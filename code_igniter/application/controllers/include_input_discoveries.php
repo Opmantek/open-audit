@@ -1120,11 +1120,16 @@ foreach ($xml->children() as $input) {
         $log->function = 'discoveries';
         $log->command_time_to_execute = '';
         $log->command = '';
+        $log->command_status = 'notice';
         $log->message = 'Starting windows script audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
         $share = '\\admin$';
         $destination = 'audit_windows.vbs';
-        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system') {
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_linux_script_directory')) and $this->config->item('discovery_linux_script_directory') == 'y') {
+
+            $log->message = 'Running discovery the old way using the code for Apache service account.';
+            discovery_log($log);
+
             # Windows Server running on the LocalSystem account.
             # We cannot copy the audit script to the target and then run it,
             # We _must_ run the script locally and use $device->ip as the script target
@@ -1170,18 +1175,16 @@ foreach ($xml->children() as $input) {
                 discovery_log($log);
             }
         } else {
-            # Unix or Windows Server and non default apache user on Windows
-            # Remotely run script ON target device
-            #$command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
-            $command = "cscript " . $device->install_dir . "\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
+            # Unix or Windows default - Remotely run script on target device
             # Copy the audit script to admin$
             $copy = false;
             $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $source, 'audit_windows.vbs', $log);
-            $output = false;
             if ($copy) {
                 # We managed to copy the file, so now run it
                 # As at 2.3.0, we now wait for this to complete and parse the
                 # output looking for 'File    ' so we can retrieve the file
+                $output = false;
+                $command = "cscript " . $device->install_dir . "\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
                 $output = execute_windows($device->ip, $credentials_windows, $command, $log);
             } else {
                 $log->severity = 3;
@@ -1206,8 +1209,8 @@ foreach ($xml->children() as $input) {
                 discovery_log($log);
                 $log->severity = 7;
             }
-            $copy = false;
-            if ($audit_file and !empty($output) and $copy) {
+            if (!empty($audit_file) and !empty($output) and $copy === true) {
+                $copy = false;
                 $temp = explode('\\', $audit_file);
                 if (php_uname('s') == 'Windows NT') {
                     $destination = $filepath . '\\scripts\\' . end($temp);
@@ -1215,13 +1218,14 @@ foreach ($xml->children() as $input) {
                     $destination = $filepath . '/scripts/' . end($temp);
                 }
                 $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $log);
-                if ($copy) {
+                if ($copy === true) {
                     $audit_result = file_get_contents($destination);
                     unlink($destination);
                     if (empty($audit_result)) {
                         $log->severity = 3;
                         $log->command_time_to_execute = '';
-                        $log->message = 'Could not open audit result on localhost ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
+                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
+                        $log->command_output = $destination;
                         $log->command_status = 'fail';
                         discovery_log($log);
                         $log->severity = 7;
@@ -1229,7 +1233,7 @@ foreach ($xml->children() as $input) {
                 } else {
                     $log->severity = 3;
                     $log->command_time_to_execute = '';
-                    $log->message = 'Could not copy audit result file to localhost ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                    $log->message = 'Could not copy audit result file to localhost for ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
                     $log->command_status = 'fail';
                     discovery_log($log);
                     $log->severity = 7;

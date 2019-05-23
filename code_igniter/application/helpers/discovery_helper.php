@@ -1111,12 +1111,17 @@ if (!function_exists('process_scan')) {
             $log->function = 'discoveries';
             $log->command_time_to_execute = '';
             $log->command = '';
+            $log->command_status = 'notice';
             $log->message = 'Starting windows script audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $share = '\\admin$';
             $destination = 'audit_windows.vbs';
 
-            if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system') {
+            if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_linux_script_directory')) and $this->config->item('discovery_linux_script_directory') == 'y') {
+
+                $log->message = 'Running discovery the old way using the code for Apache service account.';
+                discovery_log($log);
+
                 # Windows Server running on the LocalSystem account.
                 # We cannot copy the audit script to the target and then run it,
                 # We _must_ run the script locally and use $device->ip as the script target
@@ -1161,9 +1166,8 @@ if (!function_exists('process_scan')) {
                     discovery_log($log);
                 }
             } else {
-                # Unix or Windows Server and non default apache user on Windows
-                # Remotely run script ON target device
-                $command = "cscript " . $device->install_dir . "\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
+                # Unix or Windows default - Remotely run script on target device
+
                 # Copy the audit script to admin$
                 $copy = false;
                 $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $source, 'audit_windows.vbs', $log);
@@ -1173,7 +1177,7 @@ if (!function_exists('process_scan')) {
                     $log->file = 'discovery_helper';
                     $log->function = 'discoveries';
                     $log->command = 'unlink(\'' . $source .'\')';
-                    $log->message = 'Attempt to delete temp audit script succeeded';
+                    $log->message = 'Attempt to delete temp audit script succeeded.';
 
                     if(is_file($source) && @unlink($source)){
                         // delete success
@@ -1181,12 +1185,12 @@ if (!function_exists('process_scan')) {
                         // unlink failed
                         $perms = substr(sprintf('%o', fileperms($source)), -4);
                         $log->command_status = 'fail';
-                        $log->command_output = 'Could not delete file ' . $source . ' , file permissions are: ' . $perms . '.';
+                        $log->command_output = 'Could not delete file ' . $source . ', file permissions are: ' . $perms . '.';
                         $log->severity = 4;
                     } else {
                       // file doesn't exist
                         $log->command_status = 'fail';
-                        $log->command_output = 'File does not exist.';
+                        $log->command_output = 'Could not delete file ' . $source . ', file does not exist.';
                         $log->severity = 4;
                     }
                     discovery_log($log);
@@ -1194,12 +1198,12 @@ if (!function_exists('process_scan')) {
                     unset($log->command, $log->message);
                 }
 
-
-                $output = false;
                 if ($copy) {
                     # We managed to copy the file, so now run it
                     # As at 2.3.0, we now wait for this to complete and parse the
                     # output looking for 'File    ' so we can retrieve the file
+                    $command = "cscript " . $device->install_dir . "\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
+                    $output = false;
                     $output = execute_windows($device->ip, $credentials_windows, $command, $log);
                 }
                 $audit_file = false;
@@ -1224,7 +1228,7 @@ if (!function_exists('process_scan')) {
                     $audit_result = file_get_contents($destination);
                     if (empty($audit_result)) {
                         $log->command_status = 'fail';
-                        $log->message = 'Could not read audit result file.';
+                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
                         $log->command = "file_get_contents('$destination')";
                         $log->command_output = '';
                         discovery_log($log);
