@@ -565,27 +565,18 @@ if (! function_exists('delete_windows_result')) {
         if (php_uname('s') == 'Linux') {
             $password = str_replace('$', '\$', $parameters->credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
-            $temp = explode('@', $parameters->credentials->credentials->username);
 
-            $command      = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
+            $command      = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $parameters->credentials->credentials->username . '%' . $password . '" -c "del ' . $parameters->file . '"';
 
-            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . '*******' . '" -c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
+            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $parameters->credentials->credentials->username . '%' . '*******' . '" -c "del ' . $parameters->file . '"';
 
             exec($command, $output, $return_var);
 
             $log->message = 'Linux delete file from \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . ' in wmi_helper::delete_windows_result (SMB2 split)';
             $log->command_output = json_encode($output);
-            if ($return_var != 0) {
-                $log->severity = 7;
-                $log->command_status = 'success';
-                $return = true;
-            } else {
-                $log->severity = 6;
-                $log->command_status = 'fail';
-                $return = false;
-            }
+            $log->command_status = 'notice';
             discovery_log($log);
-            return $return;
+            return true;
         }
 
 
