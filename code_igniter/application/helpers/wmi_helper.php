@@ -175,7 +175,7 @@ if (! function_exists('execute_windows')) {
             $domain = $temp[1];
             unset($temp);
             $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
-            $log->command = 'winexe -U ' . $domain . '/' . $username . '%****** //' . $ip . ' \'' . $command . '\'';
+            $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . ' \'' . $command . '\'';
             discovery_log($log);
             exec($command_string, $return['output'], $return['status']);
         }
@@ -221,20 +221,19 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            if (!empty($temp[1])) {
-                $domain = $temp[1] . '\\';
-                $domain = '';
-            } else {
-                $domain = '';
-            }
-            $command_string = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
-
-            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" cmd /c "' . $command . '"';
-
-            discovery_log($log);
+            $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+            $command_string  = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
+            $log->command    = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
             exec($command_string, $output, $return_var);
+            $log->message = 'Running audit script on ' . $ip;
+            $log->command_output = json_encode($output);
+            $log->command_status = 'fail';
+            foreach ($output as $line) {
+                if (stripos($line, "Microsoft (R) Windows Script") !== false) {
+                    $log->command_status = 'success';
+                }
+            }
+            discovery_log($log);
         }
 
         unset($log->id, $log->command, $log->command_status, $log->command_time_to_execute, $log->command_output, $log->file, $log->function);
@@ -461,35 +460,49 @@ if (! function_exists('copy_to_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            # Must have paexec
-            if (!file_exists($CI->config->config['base_path'] . '\\other\\paexec.exe')) {
-                $log->message = 'You must have paexec.exe in ' . $CI->config->config['base_path'] . '\\open-audit\\other\\';
-                $log->command = '';
-                $log->command_status = 'fail';
-                discovery_log($log);
-                return false;
-            }
-            # NOTE - the file to be copied MUST be in c:\windows\
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            if (!empty($temp[1])) {
-                $domain = $temp[1] . '/';
-            } else {
-                $domain = '';
-            }
-            unset($temp);
-            $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
-            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" -c "c:\\windows\\' . $source . '"';
-            $log->message = 'Attempting to copy file to Windows.';
-            discovery_log($log);
+            $return = false;
+            $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+
+                 $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . $password;
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '******';
             exec($command, $output, $return_var);
-            # NOTE - We expect this to report that it fails as paexec attempts to EXECUTE the file.
-            # In this function, we just want the file copied to the target, which does appear to work as it should.
-            $log->message = 'Windows attempt to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
-            $log->severity = 7;
-            stdlog($log);
-            return true;
+            $log->command_status = 'fail';
+            $log->message = 'Net Use';
+            $log->command_output = json_encode($output);
+            if ($output[0] == "The command completed successfully.") {
+                $log->command_status = 'success';
+            }
+            discovery_log($log);
+
+                 $command = 'copy "' . $source . '" "\\\\' . $ip . '\\admin$\\' .  $destination . '"';
+            $log->command = 'copy "' . $source . '" "\\\\' . $ip . '\\admin$\\' .  $destination . '"';
+            exec($command, $output, $return_var);
+            $log->command_status = 'fail';
+            $log->message = 'Copy to ' . $ip;
+            $log->command_output = json_encode($output);
+            if ($output[0] == "The command completed successfully.") {
+                $log->command_status = 'success';
+                $return = true;
+            }
+            discovery_log($log);
+
+                 $command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            exec($command, $output, $return_var);
+            $log->command_status = 'fail';
+            $log->message = 'Net Use Delete';
+            $log->command_output = json_encode($output);
+            if ($output[0] == "The command completed successfully.") {
+                $log->command_status = 'success';
+            }
+            discovery_log($log);
+
+            $log->message = '';
+            $log->command = '';
+            $log->command_output = '';
+            $log->command_status = '';
+
+            return $return;
         }
     }
 }
@@ -554,24 +567,25 @@ if (! function_exists('delete_windows_result')) {
             $password = str_replace("'", "", escapeshellarg($password));
             $temp = explode('@', $parameters->credentials->credentials->username);
 
+            $command      = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
 
-            // $command =      'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "rm ' . $parameters->file . '" 2>&1';
-            // $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . "*******" . '" -c "rm ' . $parameters->file . '" 2>&1';
-            $command =      'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "rm ' . $parameters->file . '"';
-            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . "*******" . '" -c "rm ' . $parameters->file . '"';
+            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . '*******' . '" -c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
 
             exec($command, $output, $return_var);
 
-            $log->message = 'Linux attempt to delete file \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . ' in wmi_helper::delete_windows_result (SMB2 split)';
+            $log->message = 'Linux delete file from \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . ' in wmi_helper::delete_windows_result (SMB2 split)';
             $log->command_output = json_encode($output);
             if ($return_var != 0) {
-                return true;
+                $log->severity = 7;
+                $log->command_status = 'success';
+                $return = true;
             } else {
                 $log->severity = 6;
                 $log->command_status = 'fail';
-                discovery_log($log);
-                return false;
+                $return = false;
             }
+            discovery_log($log);
+            return $return;
         }
 
 
@@ -584,32 +598,24 @@ if (! function_exists('delete_windows_result')) {
                 discovery_log($log);
                 return false;
             }
-            # NOTE - the file to be copied MUST be in c:\windows\
-            $temp = explode('@', $parameters->credentials->credentials->username);
-            $username = $temp[0];
-            if (!empty($temp[1])) {
-                $domain = $temp[1] . '/';
-            } else {
-                $domain = '';
-            }
-            unset($temp);
             $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+            $command =      $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $parameters->ip . ' -s -u ' . $parameters->credentials->credentials->username . ' -p "' . $password . '" cmd /c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
 
-            $command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $parameters->ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" cmd /c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
-
-            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $parameters->ip . ' -s -u ' . $domain . $username . ' -p "******" cmd /c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
+            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $parameters->ip . ' -s -u ' . $parameters->credentials->credentials->username . ' -p "' . "*******" . '" cmd /c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
 
             exec($command, $output, $return_var);
-            $log->message = 'Windows attempt to delete file on ' . $ip . ' in wmi_helper::delete_windows_result';
+            $log->message = 'Delete file on ' . $parameters->ip;
             $log->command_output = json_encode($output);
             if (empty($return_var)) {
-                return false;
+                $return = false;
+                $log->command_status = 'success';
             } else {
-                $log->status = 'fail';
+                $log->command_status = 'fail';
                 $log->severity = 6;
-                stdlog($log);
-                return true;
+                $return = true;
             }
+            discovery_log($log);
+            return $return;
         }
     }
 }
@@ -761,6 +767,7 @@ if (! function_exists('copy_from_windows')) {
             $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             exec($command, $output, $return_var);
+            $log->command_output = json_encode($output);
             if ($return_var == 0) {
                 $log->message = 'Linux attempt (1) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
                 $log->command_status = 'success';
@@ -776,6 +783,7 @@ if (! function_exists('copy_from_windows')) {
                 $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                 $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $temp[1] . '\\' . $temp[0] . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                 exec($command, $output, $return_var);
+                $log->command_output = json_encode($output);
                 if ($return_var == 0) {
                     $log->message = 'Linux attempt (2) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
                     $log->command_status = 'success';
@@ -790,6 +798,7 @@ if (! function_exists('copy_from_windows')) {
                     $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                     $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                     exec($command, $output, $return_var);
+                    $log->command_output = json_encode($output);
                     if ($return_var == 0) {
                         $log->message = 'Linux attempt (3) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
                         $log->command_status = 'success';
@@ -805,6 +814,7 @@ if (! function_exists('copy_from_windows')) {
                         $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                         $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                         exec($command, $output, $return_var);
+                        $log->command_output = json_encode($output);
                         if ($return_var == 0) {
                             $log->message = 'Linux attempt (4) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
                             $log->command_status = 'success';
@@ -824,32 +834,50 @@ if (! function_exists('copy_from_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            # Must have paexec
-            if (!file_exists($CI->config->config['base_path'] . '\\other\\paexec.exe')) {
-                $log->message = 'You must have paexec.exe in ' . $CI->config->config['base_path'] . '\\open-audit\\other\\';
-                $log->command = '';
-                $log->command_status = 'fail';
-                discovery_log($log);
+            $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+                 $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . $password;
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '******';
+            exec($command, $output, $return_var);
+            $log->command_status = 'fail';
+            $log->message = 'Net Use';
+            $log->command_output = json_encode($output);
+            if ($output[0] == "The command completed successfully.") {
+                $log->command_status = 'success';
+            }
+            discovery_log($log);
+
+                 $command = 'copy "\\\\' . $ip . '\\admin$\\' . $source . '" "' . $destination . '"';
+            $log->command = 'copy "\\\\' . $ip . '\\admin$\\' . $source . '" "' . $destination . '"';
+            exec($command, $output, $return_var);
+            $log->command_status = 'fail';
+            $log->message = 'Copy from ' . $source;
+            $log->command_output = json_encode($output);
+            if ($output[0] == "The command completed successfully.") {
+                $log->command_status = 'success';
+            }
+            discovery_log($log);
+
+                 $command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            exec($command, $output, $return_var);
+            $log->command_status = 'fail';
+            $log->message = 'Net Use Delete';
+            $log->command_output = json_encode($output);
+            if ($output[0] == "The command completed successfully.") {
+                $log->command_status = 'success';
+            }
+            discovery_log($log);
+
+            $log->message = '';
+            $log->command = '';
+            $log->command_output = '';
+            $log->command_status = '';
+
+            if (file_exists($destination)) {
+                return true;
+            } else {
                 return false;
             }
-            # NOTE - the file to be copied MUST be in c:\windows\
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            if (!empty($temp[1])) {
-                $domain = $temp[1] . '/';
-            } else {
-                $domain = '';
-            }
-            unset($temp);
-            $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "' . $source . ' ' . $destination . '"';
-            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" -c "' . $source . ' ' . $destination . '"';
-            $log->message = 'Attempting to copy file to Windows.';
-            discovery_log($log);
-            exec($command, $output, $return_var);
-            # NOTE - We expect this to report that it fails as paexec attempts to EXECUTE the file.
-            # In this function, we just want the file copied to the target, which does appear to work as it should (ie, witrhout generating an error)
-            return true;
         }
     }
 }
