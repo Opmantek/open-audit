@@ -518,44 +518,44 @@ FINISH=$((SECONDS-START))
 if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 
 
-START="$SECONDS"
-if [[ "$debugging" -gt 0 ]]; then print -n "Netstat Details     "; fi
-print -n "	<netstat><![CDATA[" >> "$xml_file"
-for line in $(eval "netstat -Aan | grep LISTEN | awk '{print \$1 \" \" \$2 \" \" \$5}' $safety"); do 
-	pcb=$(eval "echo \"$line\" | cut -d' ' -f1 $safety")
-	protocol=$(eval "echo \"$line\" | cut -d' ' -f2 $safety")
-	port=$(eval "echo \"$line\" | cut -d' ' -f3 $safety")
-	out=$(eval "rmsock $pcb tcpcb $safety")
-	if echo "$out" | grep "Kernel Extension" > /dev/null; then
-		echo "$protocol $port Kernel Extension" >> "$xml_file"
-	else
-		pid=$(echo "$out" | sed -n 's/.*pro[c]*ess \([0-9][0-9]*\) .*/\1/p')
-		if [ -n "$pid" ]; then
-			netstat_process=$(ps -p "$pid" | tail -n 1 | awk '{print $4}')
-			echo "$protocol $port $netstat_process" >> "$xml_file"
-		fi
-	fi
-done
-for line in $(eval "netstat -Aan | grep udp | awk '{print \$1 \" \" \$2 \" \" \$5}' $safety"); do 
-	pcb=$(eval "echo \"$line\" | cut -d' ' -f1 $safety")
-	protocol=$(eval "echo \"$line\" | cut -d' ' -f2 $safety")
-	port=$(eval "echo \"$line\" | cut -d' ' -f3 $safety")
-	if [[ $port != "*.*" ]]; then
-		out=$(timeout 5 rmsock "$pcb" inpcb)
-		if [[ -n "$out" ]]; then
-			pid=$(echo "$out" | sed -n 's/.*pro[c]*ess \([0-9][0-9]*\) .*/\1/p')
-			if [ -n "$pid" ]; then
-				netstat_process=$(ps -p "$pid" | tail -n 1 | awk '{print $4}')
-				echo "$protocol $port $netstat_process" >> "$xml_file"
-			else 
-				echo "$protocol $port unknown" >> "$xml_file" 
-			fi
-		fi
-	fi
-done
-echo "]]></netstat>" >> "$xml_file"
-FINISH=$((SECONDS-START))
-if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
+# START="$SECONDS"
+# if [[ "$debugging" -gt 0 ]]; then print -n "Netstat Details     "; fi
+# print -n "	<netstat><![CDATA[" >> "$xml_file"
+# for line in $(eval "netstat -Aan | grep LISTEN | awk '{print \$1 \" \" \$2 \" \" \$5}' $safety"); do 
+# 	pcb=$(eval "echo \"$line\" | cut -d' ' -f1 $safety")
+# 	protocol=$(eval "echo \"$line\" | cut -d' ' -f2 $safety")
+# 	port=$(eval "echo \"$line\" | cut -d' ' -f3 $safety")
+# 	out=$(eval "rmsock $pcb tcpcb $safety")
+# 	if echo "$out" | grep "Kernel Extension" > /dev/null; then
+# 		echo "$protocol $port Kernel Extension" >> "$xml_file"
+# 	else
+# 		pid=$(echo "$out" | sed -n 's/.*pro[c]*ess \([0-9][0-9]*\) .*/\1/p')
+# 		if [ -n "$pid" ]; then
+# 			netstat_process=$(ps -p "$pid" | tail -n 1 | awk '{print $4}')
+# 			echo "$protocol $port $netstat_process" >> "$xml_file"
+# 		fi
+# 	fi
+# done
+# for line in $(eval "netstat -Aan | grep udp | awk '{print \$1 \" \" \$2 \" \" \$5}' $safety"); do 
+# 	pcb=$(eval "echo \"$line\" | cut -d' ' -f1 $safety")
+# 	protocol=$(eval "echo \"$line\" | cut -d' ' -f2 $safety")
+# 	port=$(eval "echo \"$line\" | cut -d' ' -f3 $safety")
+# 	if [[ $port != "*.*" ]]; then
+# 		out=$(timeout 5 rmsock "$pcb" inpcb)
+# 		if [[ -n "$out" ]]; then
+# 			pid=$(echo "$out" | sed -n 's/.*pro[c]*ess \([0-9][0-9]*\) .*/\1/p')
+# 			if [ -n "$pid" ]; then
+# 				netstat_process=$(ps -p "$pid" | tail -n 1 | awk '{print $4}')
+# 				echo "$protocol $port $netstat_process" >> "$xml_file"
+# 			else 
+# 				echo "$protocol $port unknown" >> "$xml_file" 
+# 			fi
+# 		fi
+# 	fi
+# done
+# echo "]]></netstat>" >> "$xml_file"
+# FINISH=$((SECONDS-START))
+# if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 
 
 START="$SECONDS"
