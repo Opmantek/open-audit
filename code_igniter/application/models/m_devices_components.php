@@ -294,12 +294,6 @@ class M_devices_components extends MY_Model
     **/
     public function process_component($parameters)
     {
-        $create_alerts = $this->config->config['discovery_create_alerts'];
-
-        $table = '';
-        if (!empty($parameters->table)) {
-            $table = $parameters->table;
-        }
 
         if (empty($parameters) or empty($parameters->table) or empty($parameters->details) or empty($parameters->input)) {
             $message = '';
@@ -332,6 +326,11 @@ class M_devices_components extends MY_Model
             return;
         }
 
+        $table = '';
+        if (!empty($parameters->table)) {
+            $table = $parameters->table;
+        }
+
         if (!$this->db->table_exists($table)) {
             $log = new stdClass();
             $log->message = 'Table supplied does not exist (' . @$table . ') for '. @$details->ip . ' (' . @$name . ')';
@@ -339,6 +338,14 @@ class M_devices_components extends MY_Model
             $log->severity = 4;
             discovery_log($log);
             return;
+        }
+
+        $create_change_log = true;
+        if (!empty($this->config->config['create_change_log_' . $table]) and $this->config->config['create_change_log_' . $table] == 'n') {
+            $create_change_log = false;
+        }
+        if (!empty($this->config->config['create_change_log']) and $this->config->config['create_change_log'] == 'n') {
+            $create_change_log = false;
         }
 
         $details = $parameters->details;
@@ -393,6 +400,25 @@ class M_devices_components extends MY_Model
             $log->command_status = 'fail';
             discovery_log($log);
             return;
+        }
+
+        if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen == '') {
+            $sql = "SELECT last_seen FROM `system` WHERE id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            $details->last_seen = $result[0]->last_seen;
+        }
+
+        # make sure we have a populated org_id for adding items to the charts table
+        if (empty($details->org_id)) {
+            $sql = "SELECT `system`.`org_id` FROM `system` WHERE `system`.`id` = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->org_id = $row->org_id;
         }
 
         foreach ($match_columns as $match_column) {
@@ -483,7 +509,7 @@ class M_devices_components extends MY_Model
                 $data = array($details->id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
-                $create_alerts = 'n';
+                $create_change_log = false;
             }
             if ($details->type == 'computer' and
                 !empty($details->manufacturer) and $details->manufacturer == 'Xen' and
@@ -495,7 +521,7 @@ class M_devices_components extends MY_Model
                 $data = array($details->id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
-                $create_alerts = 'n';
+                $create_change_log = false;
             }
         }
 
@@ -507,6 +533,33 @@ class M_devices_components extends MY_Model
                 }
             }
         }
+
+        ### NETSTAT ###
+        if ((string)$table == 'netstat') {
+            foreach ($input as $item => $attributes) {
+                $attributes->protocol = strtolower($attributes->protocol);
+                $attributes->port = intval($attributes->port);
+                # The protocol MUST be one defined in the SQL schema as below
+                if ($attributes->protocol != 'tcp' and $attributes->protocol != 'udp' and
+                    $attributes->protocol != 'tcp6' and $attributes->protocol != 'udp6' and
+                    $attributes->protocol != 'tcp4' and $attributes->protocol != 'udp4') {
+                    unset($input[$item]);
+                    continue;
+                }
+                if (isset($this->config->config['process_netstat_windows_dns']) and $this->config->config['process_netstat_windows_dns'] == 'n') {
+                    if (stripos($attributes->program, 'dns.exe') !== false and intval($attributes->port) > 1000) {
+                        unset($input[$item]);
+                        continue;
+                    }
+                }
+                if (stripos($attributes->program, 'audit_windows.vbs') !== false) {
+                    # Remove the discovery connection
+                    unset($input[$item]);
+                    continue;
+                }
+            }
+        }
+
         ### NETWORK ###
         if ((string)$table == 'network') {
             if ($details->type == 'computer' and $details->os_group != 'VMware') {
@@ -522,7 +575,7 @@ class M_devices_components extends MY_Model
                 $data = array($details->id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
-                $create_alerts = 'n';
+                $create_change_log = false;
             } else {
                 # just match the index
                 $match_columns[] = 'net_index';
@@ -563,6 +616,16 @@ class M_devices_components extends MY_Model
                 if (isset($input[$i]->version) and $input[$i]->version != '' and $input[$i]->type == 'database') {
                     #$input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
                     $input[$i]->version_string = (string)$this->get_sql_server_version_string($input[$i]->version);
+                }
+            }
+        }
+
+        ### SERVICE ###
+        if ((string)$table == 'service') {
+            foreach ($input as $item => $attributes) {
+                # Remove any PAExec and Winexe 'services' as these are just the audit script running
+                if (strtolower($attributes->name) == 'paexec' or strtolower($attributes->name) == 'winexesvc') {
+                    unset($input[$item]);
                 }
             }
         }
@@ -614,16 +677,6 @@ class M_devices_components extends MY_Model
             }
         }
 
-        # make sure we have a populated org_id for adding items to the charts table
-        if (empty($details->org_id)) {
-            $sql = "SELECT `system`.`org_id` FROM `system` WHERE `system`.`id` = ?";
-            $sql = $this->clean_sql($sql);
-            $data = array($details->id);
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            $details->org_id = $row->org_id;
-        }
-
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND `$table`.`system_id` = ?";
         $sql = $this->clean_sql($sql);
@@ -639,41 +692,10 @@ class M_devices_components extends MY_Model
 
         // get the field list from the table
         $fields = $this->db->list_fields($table);
-        // ensure we have a filtered array with only single copies of each $item
+
+        // ensure we have a filtered array with only single copies of each in $item
+        // Also if we have two of the same item, but one has an ampty attribute, keep the non-empty attribute when combining
         $items = array();
-        // for every input item
-        // foreach ($input->item as $input_key => $input_item) {
-        //     $matched = 'n';
-        //     // loop through them, building up item array
-        //     foreach ($items as $output_key => $output_item) {
-        //         // the matched count is the number of columns in the match_columns array
-        //         // that have equal values in our input items
-        //         $match_count = 0;
-        //         // loop through our match_columns array
-        //         for ($i = 0; $i < count($match_columns); $i++) {
-        //             // and test if the variables match
-        //             if ((string)$input_item->{$match_columns[$i]} === (string)$output_item->{$match_columns[$i]}) {
-        //                 // they match so increment the count
-        //                 $match_count ++;
-        //             }
-        //         }
-        //         if ($match_count == (count($match_columns))) {
-        //             // we have all the same matching items - combine them
-        //             # NOTE - we use isset and != '' because if we used empty, 0 would falsely match
-        //             foreach ($fields as $field) {
-        //                 if ((!isset($output_item->$field) or $output_item->$field == '') and isset($input_item->$field) and $input_item->$field != '') {
-        //                     $output_item->$field = (string) $input_item->$field;
-        //                 }
-        //             }
-        //             $items[$output_key] = $output_item;
-        //             $matched = 'y';
-        //         }
-        //     }
-        //     if ($matched != 'y') {
-        //         // no match, add the input item to the item array
-        //         $items[] = $input_item;
-        //     }
-        // }
         foreach ($input as $input_item) {
             $matched = 'n';
             // loop through them, building up item array
@@ -764,7 +786,6 @@ class M_devices_components extends MY_Model
             // we have looped through the database items
             // INSERT because the $flag is set to insert
             if ($flag == 'insert') {
-                # $input_item->system_id  = $details->id; # this will be changed when we convert the system table
                 $input_item->system_id  = $details->id;
                 $input_item->current  = 'y';
                 $input_item->first_seen = (string)$details->last_seen;
@@ -787,7 +808,22 @@ class M_devices_components extends MY_Model
                 $sql = $this->clean_sql($sql);
                 $query = $this->db->query($sql, $data);
                 $id = $this->db->insert_id();
-                if ($alert and strtolower($create_alerts) == 'y') {
+
+                # these are our special rules - currently only for netstat
+                $special = true;
+                if ($table == 'netstat') {
+                    if (!empty($this->config->config['create_change_log_netstat_well_known']) and $this->config->config['create_change_log_netstat_well_known'] == 'n' and isset($input_item->port) and intval($input_item->port) < 1024) {
+                        $special = false;
+                    }
+                    if (!empty($this->config->config['create_change_log_netstat_registered']) and $this->config->config['create_change_log_netstat_registered'] == 'n' and isset($input_item->port) and intval($input_item->port) > 1023 and intval($input_item->port) < 49152) {
+                        $special = false;
+                    }
+                    if (!empty($this->config->config['create_change_log_netstat_dynamic']) and $this->config->config['create_change_log_netstat_dynamic'] == 'n' and isset($input_item->port) and intval($input_item->port) > 49151) {
+                        $special = false;
+                    }
+                }
+
+                if ($alert and $create_change_log and $special) {
                     // We have existing items and this is a new item - raise an alert
                     $alert_details = '';
                     foreach ($match_columns as $key => $value) {
@@ -797,17 +833,9 @@ class M_devices_components extends MY_Model
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
-                    if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                        $sql = "SELECT last_seen FROM `system` WHERE id = ?";
-                        $sql = $this->clean_sql($sql);
-                        $data = array($details->id);
-                        $query = $this->db->query($sql, $data);
-                        $result = $query->result();
-                        $details->last_seen = $result[0]->last_seen;
-                    }
                     $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
                     $sql = $this->clean_sql($sql);
-                    $data = array("$details->id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
+                    $data = array(intval($details->id), "$table", intval($id), "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
                     # add a count to our chart table
                     $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_create', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
@@ -843,34 +871,36 @@ class M_devices_components extends MY_Model
             }
         }
 
-        // we have now inserted or updated all items in the audit set
-        // we have also unset any items that were inserted (from the audit set above) from the db set
-        // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
-        if (count($db_result) > 0) {
-            $log->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log->severity = 7;
-            $log->command_status = 'notice';
-            discovery_log($log);
-        }
-
         if (!empty($this->config->config['delete_noncurrent']) and strtolower($this->config->config['delete_noncurrent']) == 'y') {
-            foreach ($db_result as $db_item) {
+            for ($i=0; $i < count($db_result); $i++) {
                 $sql = "DELETE FROM `$table` WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array($db_item->id);
+                $data = array($db_result[$i]->id);
                 $query = $this->db->query($sql, $data);
+                unset($db_result[$i]);
             }
             return;
         }
 
         if (!empty($this->config->config['delete_noncurrent_' . $table]) and strtolower($this->config->config['delete_noncurrent_' . $table]) == 'y') {
-            foreach ($db_result as $db_item) {
+            for ($i=0; $i < count($db_result); $i++) {
                 $sql = "DELETE FROM `$table` WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array($db_item->id);
+                $data = array($db_result[$i]->id);
                 $query = $this->db->query($sql, $data);
+                unset($db_result[$i]);
             }
             return;
+        }
+
+        // we have now inserted or updated all items in the audit set
+        // we have also unset any items that were inserted (from the audit set above) from the db set
+        // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
+        if (count($db_result) > 0 and $alert and $create_change_log) {
+            $log->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $log->severity = 7;
+            $log->command_status = 'notice';
+            discovery_log($log);
         }
 
         foreach ($db_result as $db_item) {
@@ -878,7 +908,22 @@ class M_devices_components extends MY_Model
             $sql = $this->clean_sql($sql);
             $data = array($db_item->id);
             $query = $this->db->query($sql, $data);
-            if (strtolower($create_alerts) == 'y') {
+
+            # these are our special rules - currently only for netstat
+            $special = true;
+            if ($table == 'netstat') {
+                if (!empty($this->config->config['create_change_log_netstat_well_known']) and $this->config->config['create_change_log_netstat_well_known'] == 'n' and isset($db_item->port) and intval($db_item->port) < 1024) {
+                    $special = false;
+                }
+                if (!empty($this->config->config['create_change_log_netstat_registered']) and $this->config->config['create_change_log_netstat_registered'] == 'n' and isset($db_item->port) and intval($db_item->port) > 1023 and intval($db_item->port < 49152)) {
+                    $special = false;
+                }
+                if (!empty($this->config->config['create_change_log_netstat_dynamic']) and $this->config->config['create_change_log_netstat_dynamic'] == 'n' and isset($db_item->port) and intval($db_item->port) > 49151) {
+                    $special = false;
+                }
+            }
+
+            if ($alert and $create_change_log and $special) {
                 $alert_details = '';
                 foreach ($match_columns as $key => $value) {
                     if (!empty($db_item->$value)) {
@@ -887,17 +932,9 @@ class M_devices_components extends MY_Model
                 }
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
-                if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                    $sql = "SELECT last_seen FROM `system` WHERE id = ?";
-                    $sql = $this->clean_sql($sql);
-                    $data = array($details->id);
-                    $query = $this->db->query($sql, $data);
-                    $result = $query->result();
-                    $details->last_seen = $result[0]->last_seen;
-                }
                 $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
+                $data = array(intval($details->id), "$table", intval($db_item->id), "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
                 # add a count to our chart table
                 $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
@@ -1314,138 +1351,6 @@ class M_devices_components extends MY_Model
             $version_string = "SQL Server 7";
         }
         return ($version_string);
-    }
-
-    public function format_netstat_data($input, $details)
-    {
-        if (!is_string($input) or empty($input)) {
-            return array();
-        }
-        $lines = explode("\n", $input);
-        if (count($lines) == 0) {
-            define('NL_NIX', "\n");
-            define('NL_WIN', "\r\n");
-            define('NL_MAC', "\r");
-            $input = str_replace(array(NL_WIN, NL_MAC, NL_NIX), "\n", $input);
-            $lines = explode("\n", $input);
-        }
-
-        $input = null;
-        $input_array = array();
-        $CI = & get_instance();
-
-        // need to parse the input based on os_group.
-        if (strtolower($details->os_group) == "windows") {
-            if (strtolower($details->os_family) == "windows 2000" or strtolower($details->os_family) == "windows xp" or strtolower($details->os_family) == "windows 2003") {
-                $offset = 4;
-            } else {
-                $offset = 3;
-            }
-            foreach ($lines as $line) {
-                $i = new stdClass();
-                if (strpos($line, ":") !== false) {
-                    $line = trim($line);
-                    $line = str_replace("LISTENING", "", $line);
-                    $line = preg_replace('/  +/', ' ', $line);
-                    $attributes = explode(" ", $line);
-
-                    $t_ar = explode(":", $attributes[1]);
-                    $i->port = $t_ar[count($t_ar)-1];
-                    if (strpos($t_ar[0], "[") !== false) {
-                        $i->protocol = strtolower($attributes[0])."6";
-                    } else {
-                        $i->protocol = strtolower($attributes[0]);
-                    }
-                    $i->ip = str_replace(":".$i->port, "", $attributes[1]);
-                    $i->ip = str_replace("[", "", $i->ip);
-                    $i->ip = str_replace("]", "", $i->ip);
-                    $i->program = "";
-                    for ($j = $offset; $j <= (count($attributes)-1); $j++) {
-                        $i->program .= $attributes[$j]." ";
-                    }
-                    $i->program = trim($i->program);
-                    if (isset($i->protocol)) {
-                        if ($i->program !== 'dns' and $i->program !== '[dns.exe]') {
-                            $input_array[] = $i;
-                        } else if ($CI->config->config['process_netstat_windows_dns'] === 'y') {
-                            $input_array[] = $i;
-                        }
-                    }
-                }
-            }
-        }
-        if (strtolower($details->os_group) == "linux") {
-            foreach ($lines as $line) {
-                $i = new stdClass();
-                if (strpos($line, ":") !== false) {
-                    $offset = 5;
-                    $line = trim($line);
-                    $line = str_replace("LISTEN", "", $line);
-                    $line = preg_replace('/  +/', ' ', $line);
-                    $attributes = explode(" ", $line);
-
-                    $t_ar = explode(":", $attributes[3]);
-                    $i->port = $t_ar[count($t_ar)-1];
-                    $i->protocol = strtolower($attributes[0]);
-
-                    $i->ip = str_replace(":".$i->port, "", $attributes[3]);
-                    if ((substr_count($i->ip, ":") > 1) and (strlen($i->protocol) == 3)) {
-                        $i->protocol = $i->protocol."6";
-                    }
-                    $i->program = "";
-                    $t_program = "";
-                    for ($j = $offset; $j <= count($attributes)-1; $j++) {
-                        $t_program .= $attributes[$j]." ";
-                    }
-                    $t_program = trim($t_program);
-                    $t_explode = explode("/", $t_program);
-                    $i->program = @$t_explode[1];
-                    if (!isset($i->program)) {
-                        $i->program = '';
-                    }
-                    if ($i->protocol != '') {
-                        $input_array[] = $i;
-                    }
-                }
-            }
-        }
-
-        if (strtolower($details->os_family) == "ibm aix") {
-            foreach ($lines as $line) {
-                if ($line > '') {
-                    $i = new stdClass();
-                    $attributes = explode(" ", $line);
-
-                    #protocol - tcp, tcp4, udp or udp4
-                    $i->protocol = $attributes[0];
-
-                    # ip address and port
-                    $port_split = explode(".", $attributes[1]);
-                    $i->port = $port_split[count($port_split)-1];
-                    if (count($port_split) == 5) {
-                        $i->ip = $port_split[0].".".$port_split[1].".".$port_split[2].".".$port_split[3];
-                    } else {
-                        $i->ip = "0.0.0.0";
-                    }
-
-                    # program (name of the program or unknown)
-                    $i->program = "";
-                    $t_program = "";
-                    for ($j = 2; $j <= count($attributes)-1; $j++) {
-                        $t_program .= $attributes[$j]." ";
-                    }
-                    $i->program = trim($t_program);
-                    if ($i->port == intval($i->port) and $i->port != "\t\t") {
-                        $input_array[] = $i;
-                    }
-                }
-            }
-        }
-        // $object = new stdClass();
-        // $object->item = array();
-        // $object->item = $input_array;
-        // return($object);
-        return($input_array);
     }
 
     public function set_initial_address($id, $force = 'n')
