@@ -35,7 +35,8 @@ CREATE INDEX change_log_db_action ON change_log (`db_action`);
 ALTER TABLE `system` ADD `snmp_version` varchar(10) NOT NULL DEFAULT '' AFTER `sysLocation`;
 DELETE FROM `configuration` WHERE `name` = 'discovery_use_vintage_service';
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
-
+UPDATE `configuration` SET `value` = 'y', `type` = 'bool', description = 'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.' WHERE `name` = 'download_reports'
+DELETE FROM `configuration` WHERE `name` = 'discovery_create_alerts';
 DELETE FROM `configuration` WHERE `name` LIKE 'create_change_log%';
 INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_bios','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the bios table.');
@@ -221,13 +222,26 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# remove no longer required config item (replaced by create_change_log items below)
+$sql = "SELECT * FROM `configuration` WHERE `name` = 'discovery_create_alerts'";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+$result = $query->result();
+$value = 'y';
+if (!empty($result[0]->value)) {
+	$value = $result[0]->value;
+}
+
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_create_alerts'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # new change log and 'current' config items
 $sql = "DELETE FROM `configuration` WHERE `name` LIKE 'create_change_log%'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
-$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log','" . $value . "','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
