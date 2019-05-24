@@ -108,7 +108,7 @@ $log->message = '';
 $log->command = 'process audit';
 $log->display = 'y';
 
-# we will store our message until we get a system.id, then wrtie them to the log
+# we will store our messages until we get a system.id, then write them to the log
 $log_message = array();
 
 # We will use this array to hold a list of ID's in the discovery log
