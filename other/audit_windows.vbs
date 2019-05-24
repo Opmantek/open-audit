@@ -6671,12 +6671,13 @@ if (strcomputer = "." and audit_location = "local") then
             do while not rexec.StdOut.AtEndofStream
                 strtext = rexec.stdout.readline()
                 if (instr(strtext, "Active Connections") or instr(strtext, "Proto  Local Address")) then
-                    ' do noting - these are header lines
+                    ' do nothing - these are header lines
                 else
                     if ((instr(strtext, "  TCP") = 1) or (instr(strtext, "  UDP") = 1)) then
                         if (instr(strtext, "LISTENING") or instr(strtext, "  UDP") = 1) then
                             ' only write out the line if it's a "listening" port
                             Dim words, ip, protocol, ports, port, pid, program
+                            ' Collapse multiple spaces to a single space'
                             do while instr(strtext, "  ") > 0
                                 strtext = Replace(strtext, "  ", " ")
                             loop
