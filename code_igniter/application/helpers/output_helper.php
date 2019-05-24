@@ -397,7 +397,7 @@ if (! function_exists('output')) {
                 unset($line_array);
             }
         }
-        if ((string) $CI->config->item('download_reports') === 'download') {
+        if ((string) $CI->config->item('download_reports') === 'y') {
             echo $output_csv;
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
@@ -425,7 +425,7 @@ if (! function_exists('output')) {
         $CI->output->enable_profiler(false);
 
         header('Content-Type: application/json');
-        if ((string) $CI->config->item('download_reports') === 'download') {
+        if ((string) $CI->config->item('download_reports') === 'y') {
             if (!empty($CI->response->meta->heading)) {
                 $filename = $CI->response->meta->heading;
             } else if (!empty($CI->response->meta->collection)) {
@@ -724,7 +724,7 @@ if (! function_exists('output')) {
             $output .= "\t</item>\n";
         }
         $output .=  "</" . $CI->response->meta->collection . ">\n";
-        if ((string) $CI->config->item('download_reports') === 'download') {
+        if ((string) $CI->config->item('download_reports') === 'y') {
             header('Content-Type: text/xml');
             header('Content-Disposition: attachment;filename="' . $filename . '.xml"');
             header('Cache-Control: max-age=0');
@@ -921,7 +921,7 @@ if (! function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        if ((string) $CI->config->item('download_reports') === 'download') {
+        if ((string) $CI->config->item('download_reports') === 'y') {
             header('Content-Type: text/html');
             header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
             header('Cache-Control: max-age=0');
@@ -950,7 +950,7 @@ if (! function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        if ((string) $CI->config->item('download_reports') === 'download') {
+        if ((string) $CI->config->item('download_reports') === 'y') {
             header('Content-Type: text/html');
             header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
             header('Cache-Control: max-age=0');

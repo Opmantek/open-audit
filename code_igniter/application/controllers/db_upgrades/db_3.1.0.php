@@ -198,8 +198,21 @@ $this->log_db($this->db->last_query());
 
 $this->alter_table('system', 'snmp_version', "ADD `snmp_version` varchar(10) NOT NULL DEFAULT '' AFTER `sysLocation`", 'add');
 
-# new config item to allow 'old' way of working
+# change our download_reports option
+$sql = "SELECT * FROM `configuration` WHERE `name` = 'download_reports'";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+$result = $query->result();
+$value = 'y';
+if (!empty($result[0]->value)) {
+	if ($result[0]->value != 'download') {
+		$value = 'n';
+	}
+}
+$sql = "UPDATE `configuration` SET `value` = '$value', `type` = 'bool', description = 'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.' WHERE `name` = 'download_reports'";
+$query = $this->db->query($sql);
 
+# new config item to allow 'old' way of working
 $sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_use_vintage_service'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
