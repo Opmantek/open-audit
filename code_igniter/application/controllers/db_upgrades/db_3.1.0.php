@@ -36,6 +36,7 @@ ALTER TABLE `system` ADD `snmp_version` varchar(10) NOT NULL DEFAULT '' AFTER `s
 DELETE FROM `configuration` WHERE `name` = 'discovery_use_vintage_service';
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
 UPDATE `configuration` SET `value` = 'y', `type` = 'bool', description = 'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.' WHERE `name` = 'download_reports'
+UPDATE `configuration` SET `value` = 'http://127.0.0.1/open-audit/' WHERE `name` = 'default_network_address' AND `value` = '';
 DELETE FROM `configuration` WHERE `name` = 'discovery_create_alerts';
 DELETE FROM `configuration` WHERE `name` LIKE 'create_change_log%';
 INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
@@ -212,6 +213,10 @@ if (!empty($result[0]->value)) {
 }
 $sql = "UPDATE `configuration` SET `value` = '$value', `type` = 'bool', description = 'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.' WHERE `name` = 'download_reports'";
 $query = $this->db->query($sql);
+
+$sql = "UPDATE `configuration` SET `value` = 'http://127.0.0.1/open-audit/' WHERE `name` = 'default_network_address' AND `value` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # new config item to allow 'old' way of working
 $sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_use_vintage_service'";
