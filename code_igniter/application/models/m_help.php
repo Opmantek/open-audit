@@ -240,9 +240,9 @@ class M_help extends MY_Model
         $extensions = get_loaded_extensions();
         $data->php->extensions = implode($extensions, ', ');
         if (php_uname('s') == 'Windows NT') {
-            $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mcrypt', 'mysqli', 'session', 'simplexml', 'snmp', 'xml');
+            $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mysqli', 'session', 'simplexml', 'snmp', 'xml');
         } else {
-            $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mcrypt', 'mysqli', 'posix', 'session', 'simplexml', 'snmp', 'xml');
+            $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mysqli', 'posix', 'session', 'simplexml', 'snmp', 'xml');
         }
         foreach ($extensions as $extension) {
             $data->php->{'ext_'.$extension} = phpversion($extension);
