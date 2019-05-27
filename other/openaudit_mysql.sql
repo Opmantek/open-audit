@@ -2397,7 +2397,7 @@ CREATE TABLE `policy` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `type` varchar(100) NOT NULL DEFAULT '',
   `name` text NOT NULL,
-  `value` varchar(100) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
   `guid` text NOT NULL,
   `options` text NOT NULL,
   PRIMARY KEY (`id`),

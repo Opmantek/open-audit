@@ -208,6 +208,8 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_vm','n','bool','y','
 
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_windows','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current windows data.');
 
+ALTER TABLE `policy` CHANGE `value` `value` TEXT NOT NULL;
+
 UPDATE `configuration` SET `value` = '20190512' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.1.0' WHERE `name` = 'display_version';
@@ -630,6 +632,7 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_windows','n'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$this->alter_table('policy', 'value', "`value` TEXT NOT NULL");
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190512' WHERE `name` = 'internal_version'";
