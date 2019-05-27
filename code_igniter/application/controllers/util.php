@@ -105,13 +105,32 @@ class Util extends CI_Controller
 
     public function audit_my_pc()
     {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+
         $this->load->helper('url');
         $client = $this->uri->segment(3, 0);
-        if ($client == 'lin') {
+        $filename = 'audit_windows.vbs';
+
+        if ($client == 'aix') {
+            $filename = 'audit_aix.sh';
+
+        } elseif ($client == 'esxi') {
+            $filename = 'audit_esxi.sh';
+
+        } elseif ($client == 'hpux') {
+            $filename = 'audit_hpux.sh';
+
+        } elseif ($client == 'linux') {
             $filename = 'audit_linux.sh';
+
         } elseif ($client == 'osx') {
             $filename = 'audit_osx.sh';
-        } else {
+
+        } elseif ($client == 'solaris') {
+            $filename = 'audit_solaris.sh';
+
+        } elseif ($client == 'windows') {
             $filename = 'audit_windows.vbs';
         }
         if (file_exists(dirname(dirname(dirname(dirname(__FILE__)))).'/other/'.$filename)) {
@@ -119,16 +138,30 @@ class Util extends CI_Controller
             $variable['submit_online'] = 'y';
             $variable['create_file'] = 'n';
             $variable['url'] = base_url().'index.php/input/devices';
+            if (!empty($this->config->config['default_network_address'])) {
+                $variable['url'] = $this->config->config['default_network_address'] .'index.php/input/devices';
+            }
             $variable['debugging'] = '1';
-            foreach ($variable as $name => $value) {
-                foreach ($file as $line_num => $line) {
-                    if (strpos($line, $name.' =') === 0) {
-                        // set the variable
-                        $file[$line_num] = $name.' = "'.$value."\"\n";
-                        break;
-                    }
+
+            $new_line = "";
+            if ($filename != 'audit_windows.vbs') {
+                foreach ($variable as $name => $value) {
+                    $new_line .= "\n" . $name.'="'.$value."\"";
+                }
+            } else {
+                foreach ($variable as $name => $value) {
+                    $new_line .= "\n" . $name.' = "'.$value."\"";
                 }
             }
+            $new_line .= "\n";
+
+            for ($i=0; $i < count($file); $i++) {
+                if (stripos($file[$i], 'Configuration from web UI here') !== false) {
+                    $file[$i] .= $new_line;
+                    break;
+                }
+            }
+
             // Set headers
             header('Cache-Control: public');
             header('Content-Description: File Transfer');
@@ -139,6 +172,8 @@ class Util extends CI_Controller
             foreach ($file as $line => $value) {
                 echo $value;
             }
+        } else {
+            # throw an error for invalid type
         }
     }
 
