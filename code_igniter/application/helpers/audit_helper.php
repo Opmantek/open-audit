@@ -198,8 +198,22 @@ if (!function_exists('audit_convert')) {
                         foreach ($xml->{$section}->item as $item) {
                             $newitem = new stdClass();
                             foreach ($item as $key => $value) {
-                                if ((string)$value != '') {
-                                    $newitem->{$key} = (string)$value;
+                                if ($key === 'options' and $section == 'policy') {
+                                    $json = @json_decode($value);
+                                    if (!empty($json)) {
+                                        $values = $json;
+                                    } else {
+                                        $values = $value;
+                                    }
+                                    $new = new stdClass();
+                                    foreach ($values as $k => $v) {
+                                        $new->{$k} = (string) $v;
+                                    }
+                                    $newitem->options = @json_encode($new);
+                                } else {
+                                    if ((string)$value != '') {
+                                        $newitem->{$key} = (string)$value;
+                                    }
                                 }
                             }
                             $audit->{$section}[] = $newitem;
@@ -207,7 +221,6 @@ if (!function_exists('audit_convert')) {
                     }
                 }
                 unset($input);
-                $log->message = 'string converted from XML';
                 $input = $audit;
             }
         }
@@ -236,6 +249,7 @@ if (!function_exists('audit_convert')) {
         }
 
         $log->severity = 7;
+        $log->message = 'string converted from XML';
         if (!empty($GLOBALS['discovery_id'])) {
             $log->command_status = 'success';
             discovery_log($log);
