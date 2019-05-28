@@ -1578,22 +1578,21 @@ if debugging > "0" then wscript.echo "policy info" end if
 on error resume next
 Set colItems = objWMIService3.ExecQuery("Select * from RSOP_GPO")
 for each objItem in colItems
-    options = "{" & _
-    """AccessDenied"":"""   & objItem.AccessDenied   & """," & _
-    """Enabled"":"""        & objItem.Enabled        & """," & _
-    """FileSystemPath"":""" & objItem.FileSystemPath & """," & _
-    """FilterAllowed"":"""  & objItem.FilterAllowed  & """," & _
-    """FilterId"":"""       & objItem.FilterId       & """," & _
-    """GUIDName"":"""       & objItem.GUIDName       & """," & _
-    """Name"":"""           & objItem.Name           & """," & _
-    """Version"":"""        & objItem.Version        & """}"
-
     item = item & "     <item>" & vbcrlf
     item = item & "         <type>RSOP_GPO</type>" & vbcrlf
     item = item & "         <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
     item = item & "         <value>" & escape_xml(objItem.Enabled) & "</value>" & vbcrlf
     item = item & "         <guid>" & escape_xml(objItem.GUIDName) & "</guid>" & vbcrlf
-    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "         <options>" & vbcrlf
+    item = item & "             <accessdenied>" & escape_xml(objItem.AccessDenied) & "</accessdenied>" & vbcrlf
+    item = item & "             <enabled>" & escape_xml(objItem.Enabled) & "</enabled>" & vbcrlf
+    item = item & "             <filesystempath>" & escape_xml(objItem.FileSystemPath) & "</filesystempath>" & vbcrlf
+    item = item & "             <filterallowed>" & escape_xml(objItem.FilterAllowed) & "</filterallowed>" & vbcrlf
+    item = item & "             <filterid>" & escape_xml(objItem.FilterId) & "</filterid>" & vbcrlf
+    item = item & "             <guidname>" & escape_xml(objItem.GUIDName) & "</guidname>" & vbcrlf
+    item = item & "             <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+    item = item & "             <version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+    item = item & "         </options>" & vbcrlf
     item = item & "     </item>" & vbcrlf
 next
 on error goto 0
@@ -1601,23 +1600,22 @@ on error goto 0
 on error resume next
 Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingString")
 For Each objItem in colItems
-    options = "{" & _
-    """errorcode"":"""  & objItem.ErrorCode  & """," & _
-    """gpoid"":"""      & objItem.GPOID      & """," & _
-    """id"":"""         & objItem.ID         & """," & _
-    """keyname"":"""    & objItem.KeyName    & """," & _
-    """name"":"""       & objItem.Name       & """," & _
-    """precedence"":""" & objItem.Precedence & """," & _
-    """setting"":"""    & objItem.Setting    & """," & _
-    """somid"":"""      & objItem.SOMID      & """," & _
-    """status"":"""     & objItem.Status     & """}"
-
     item = item & "     <item>" & vbcrlf
     item = item & "         <type>RSOP_SecuritySettingString</type>" & vbcrlf
     item = item & "         <name>" & escape_xml(objItem.KeyName) & "</name>" & vbcrlf
     item = item & "         <value>" & escape_xml(objItem.Setting) & "</value>" & vbcrlf
     item = item & "         <guid>" & escape_xml(objItem.ID) & "</guid>" & vbcrlf
-    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "         <options>" & vbcrlf
+    item = item & "             <errorcode>" & escape_xml(objItem.ErrorCode) & "</errorcode>" & vbcrlf
+    item = item & "             <gpoid>" & escape_xml(objItem.GPOID) & "</gpoid>" & vbcrlf
+    item = item & "             <id>" & escape_xml(objItem.ID) & "</id>" & vbcrlf
+    item = item & "             <keyname>" & escape_xml(objItem.KeyName) & "</keyname>" & vbcrlf
+    item = item & "             <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+    item = item & "             <precedence>" & escape_xml(objItem.Precedence) & "</precedence>" & vbcrlf
+    item = item & "             <setting>" & escape_xml(objItem.Setting) & "</setting>" & vbcrlf
+    item = item & "             <somid>" & escape_xml(objItem.SOMID) & "</somid>" & vbcrlf
+    item = item & "             <status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
+    item = item & "         </options>" & vbcrlf
     item = item & "     </item>" & vbcrlf
 next
 on error goto 0
@@ -1625,23 +1623,22 @@ on error goto 0
 on error resume next
 Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingNumeric")
 For Each objItem in colItems
-    options = "{" & _
-    """errorcode"":"""  & objItem.ErrorCode  & """," & _
-    """gpoid"":"""      & objItem.GPOID      & """," & _
-    """id"":"""         & objItem.ID         & """," & _
-    """keyname"":"""    & objItem.KeyName    & """," & _
-    """name"":"""       & objItem.Name       & """," & _
-    """precedence"":""" & objItem.Precedence & """," & _
-    """setting"":"""    & objItem.Setting    & """," & _
-    """somid"":"""      & objItem.SOMID      & """," & _
-    """status"":"""     & objItem.Status     & """}"
-
     item = item & "     <item>" & vbcrlf
     item = item & "         <type>RSOP_SecuritySettingNumeric</type>" & vbcrlf
     item = item & "         <name>" & escape_xml(objItem.KeyName) & "</name>" & vbcrlf
     item = item & "         <value>" & escape_xml(objItem.Setting) & "</value>" & vbcrlf
     item = item & "         <guid>" & escape_xml(objItem.ID) & "</guid>" & vbcrlf
-    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "         <options>" & vbcrlf
+    item = item & "             <errorcode>" & escape_xml(objItem.ErrorCode) & "</errorcode>" & vbcrlf
+    item = item & "             <gpoid>" & escape_xml(objItem.GPOID) & "</gpoid>" & vbcrlf
+    item = item & "             <id>" & escape_xml(objItem.ID) & "</id>" & vbcrlf
+    item = item & "             <keyname>" & escape_xml(objItem.KeyName) & "</keyname>" & vbcrlf
+    item = item & "             <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+    item = item & "             <precedence>" & escape_xml(objItem.Precedence) & "</precedence>" & vbcrlf
+    item = item & "             <setting>" & escape_xml(objItem.Setting) & "</setting>" & vbcrlf
+    item = item & "             <somid>" & escape_xml(objItem.SOMID) & "</somid>" & vbcrlf
+    item = item & "             <status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
+    item = item & "         </options>" & vbcrlf
     item = item & "     </item>" & vbcrlf
 next
 on error goto 0
@@ -1649,23 +1646,22 @@ on error goto 0
 on error resume next
 Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingBoolean")
 For Each objItem in colItems
-    options = "{" & _
-    """errorcode"":"""  & objItem.ErrorCode  & """," & _
-    """gpoid"":"""      & objItem.GPOID      & """," & _
-    """id"":"""         & objItem.ID         & """," & _
-    """keyname"":"""    & objItem.KeyName    & """," & _
-    """name"":"""       & objItem.Name       & """," & _
-    """precedence"":""" & objItem.Precedence & """," & _
-    """setting"":"""    & objItem.Setting    & """," & _
-    """somid"":"""      & objItem.SOMID      & """," & _
-    """status"":"""     & objItem.Status     & """}"
-
     item = item & "     <item>" & vbcrlf
     item = item & "         <type>RSOP_SecuritySettingBoolean</type>" & vbcrlf
     item = item & "         <name>" & escape_xml(objItem.KeyName) & "</name>" & vbcrlf
     item = item & "         <value>" & escape_xml(objItem.Setting) & "</value>" & vbcrlf
     item = item & "         <guid>" & escape_xml(objItem.ID) & "</guid>" & vbcrlf
-    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "         <options>" & vbcrlf
+    item = item & "             <errorcode>" & escape_xml(objItem.ErrorCode) & "</errorcode>" & vbcrlf
+    item = item & "             <gpoid>" & escape_xml(objItem.GPOID) & "</gpoid>" & vbcrlf
+    item = item & "             <id>" & escape_xml(objItem.ID) & "</id>" & vbcrlf
+    item = item & "             <keyname>" & escape_xml(objItem.KeyName) & "</keyname>" & vbcrlf
+    item = item & "             <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+    item = item & "             <precedence>" & escape_xml(objItem.Precedence) & "</precedence>" & vbcrlf
+    item = item & "             <setting>" & escape_xml(objItem.Setting) & "</setting>" & vbcrlf
+    item = item & "             <somid>" & escape_xml(objItem.SOMID) & "</somid>" & vbcrlf
+    item = item & "             <status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
+    item = item & "         </options>" & vbcrlf
     item = item & "     </item>" & vbcrlf
 next
 on error goto 0
