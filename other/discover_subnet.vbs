@@ -71,7 +71,7 @@ dim temp
 dim port
 dim program
 dim script_timer : script_timer = Timer
-dim version: version = "2.3.2"
+dim version: version = "3.1.0"
 
 dim hosts_scanned : hosts_scanned = 0
 dim host_timer : host_timer = 0
@@ -397,28 +397,27 @@ end if
 if debugging > "0" then
     wscript.echo "----------------------------"
     wscript.echo "Open-AudIT Discover Subnet script"
-    wscript.echo "Version: version"
+    wscript.echo "Version: " & version
     wscript.echo "----------------------------"
-    wscript.echo "My PID is           " & current_pid
     wscript.echo "Create File:        " & create_file
+    wscript.echo "Custom TCP Ports:   " & tcp_ports
+    wscript.echo "Custom UDP Ports:   " & udp_ports
     wscript.echo "Discovery ID:       " & discovery_id
+    wscript.echo "Exclude IPs:        " & exclude_ip
+    wscript.echo "Excluded TCP Ports: " & exclude_tcp_ports
+    wscript.echo "Filtered as Open:   " & filtered
     wscript.echo "Log Level:          " & debugging
     wscript.echo "Nmap Binary:        " & nmap_path
     wscript.echo "Nmap Version:       " & nmap_version
-    wscript.echo "Submit Online:      " & submit_online
-    wscript.echo "Subnet Range:       " & subnet_range
-    wscript.echo "URL:                " & url
-    wscript.echo "Nmap Options"
-    wscript.echo "Subnet Range:       " & subnet_range
-    wscript.echo "Exclude IPs:        " & exclude_ip
+    wscript.echo "PID                 " & current_pid
     wscript.echo "Ping:               " & ping
     wscript.echo "Service Version:    " & service_version
+    wscript.echo "Submit Online:      " & submit_online
+    wscript.echo "Subnet Range:       " & subnet_range
     wscript.echo "Timing:             " & timing
     wscript.echo "Top TCP Ports:      " & nmap_tcp_ports
     wscript.echo "Top UDP Ports:      " & nmap_udp_ports
-    wscript.echo "Custom TCP Ports:   " & tcp_ports
-    wscript.echo "Custom UDP Ports:   " & udp_ports
-    wscript.echo "Excluded TCP Ports: " & exclude_tcp_ports
+    wscript.echo "URL:                " & url
     wscript.echo "----------------------------"
 end if
 
@@ -530,7 +529,11 @@ end if
 for each host in hosts
     hosts_scanned = hosts_scanned + 1
     db_log_status = ""
-    if debugging > "0" then wscript.echo "Scanning Host: " & host end if
+    if debugging > "0" then
+        wscript.echo "----------------------------"
+        wscript.echo "----------------------------"
+        wscript.echo "Scanning Host: " & host
+    end if
     db_log_duration = 0
     host_timer = Timer
 
@@ -861,6 +864,10 @@ function db_log()
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
         objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=" & db_log_severity & "&pid=" & current_pid & "&ip=" & db_log_ip & "&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=" & db_log_duration & "&command_status=" & db_log_status & "&command_output=" & db_log_output & "&command=" & db_log_command
     on error goto 0
+    if (debugging > "0") then
+        wscript.echo "Log Message: " & db_log_message
+        wscript.echo "Log Output: " & db_log_output
+    end if
     db_log_message = ""
     db_log_command = ""
     db_log_output = ""
@@ -906,7 +913,7 @@ function check_output()
     loop
 
     if debugging > "1" then
-        wscript.echo temp
+        wscript.echo "Nmap Line Output: " & temp
     end if
 
     if instr(temp, "/tcp open ") then
