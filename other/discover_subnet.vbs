@@ -405,6 +405,7 @@ if debugging > "0" then
     wscript.echo "Discovery ID:       " & discovery_id
     wscript.echo "Exclude IPs:        " & exclude_ip
     wscript.echo "Excluded TCP Ports: " & exclude_tcp_ports
+    wscript.echo "Excluded UDP Ports: " & exclude_udp_ports
     wscript.echo "Filtered as Open:   " & filtered
     wscript.echo "Log Level:          " & debugging
     wscript.echo "Nmap Binary:        " & nmap_path
