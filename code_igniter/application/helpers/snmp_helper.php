@@ -450,7 +450,6 @@ if (!function_exists('snmp_audit')) {
         discovery_log($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-        $details->hostname = $details->sysName;
         $details->name = $details->sysName;
 
         $log->message = 'sysLocation retrieval for '.$ip;
