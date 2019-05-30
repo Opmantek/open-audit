@@ -208,6 +208,12 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_vm','n','bool','y','
 
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_windows','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current windows data.');
 
+DELETE FROM `configuration` WHERE `name` LIKE 'match_sysname%';
+
+INSERT INTO `configuration` VALUES (NULL,'match_sysname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName.');
+
+INSERT INTO `configuration` VALUES (NULL,'match_sysname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName and serial.');
+
 ALTER TABLE `policy` CHANGE `value` `value` TEXT NOT NULL;
 
 DELETE FROM `queries` WHERE `name` = 'MS Office';
@@ -633,6 +639,18 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_windows','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current windows data.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `configuration` WHERE `name` LIKE 'match_sysname%'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'match_sysname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'match_sysname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName and serial.');";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
