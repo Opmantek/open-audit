@@ -627,6 +627,91 @@ class M_device extends MY_Model
             }
         }
 
+        if (strtolower($match->match_sysname_serial) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->sysname)) {
+            $sql = "SELECT system.id FROM system WHERE system.sysname = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->sysname", "$details->serial");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (!empty($row)) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $message = new stdClass();
+                $message->message = 'HIT on sysname + serial.';
+                $message->command_status = 'success';
+                $message->command_output = 'SysName: ' . $details->sysname . ', Serial: ' . $details->serial . ', SystemID : ' . $details->id;
+                $log_message[] = $message;
+                foreach ($log_message as $message) {
+                    $log->message = $message->message;
+                    $log->command_status = $message->command_status;
+                    $log->command_output = $message->command_output;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+            $message = new stdClass();
+            $message->message = 'MISS on sysname + serial.';
+            $message->command_status = 'notice';
+            $message->command_output = 'SysName: ' . $details->sysname . ', Serial: ' . $details->serial;
+            $log_message[] = $message;
+        } else {
+            if (strtolower($match->match_sysname_serial) != 'y') {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, matching rule set to: ' . $match->match_sysname_serial .  '.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (!empty($details->id)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, device id already set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($device->serial)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, serial not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($device->sysname)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, sysname not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            }
+        }
+
+        if (strtolower($match->match_sysname) == 'y' and empty($details->id) and !empty($details->sysname)) {
+            $sql = "SELECT system.id FROM system WHERE (system.sysname = ?) AND system.status != 'deleted'";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->sysname");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (!empty($row)) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $message = new stdClass();
+                $message->message = 'HIT on sysname.';
+                $message->command_status = 'success';
+                $message->command_output = 'SysName: ' . $details->sysname . ', SystemID : ' . $details->id;
+                $log_message[] = $message;
+                foreach ($log_message as $message) {
+                    $log->message = $message->message;
+                    $log->command_status = $message->command_status;
+                    $log->command_output = $message->command_output;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+        }
+
         if (strtolower($match->match_mac) == 'y' and empty($details->id) and !empty($details->mac_address)) {
             if (strtolower($match->match_mac_vmware) == 'n') {
                 #$log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' excluding VMware MACs';
