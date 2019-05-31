@@ -59,7 +59,6 @@ class Help extends MY_Controller
         $this->output->url = $this->config->item('oa_web_index');
         $this->response->meta->collection = 'help';
         $this->response->meta->heading = 'Help';
-
         $this->load->model('m_files');
     }
 

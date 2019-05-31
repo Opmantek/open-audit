@@ -59,6 +59,12 @@ class Main extends MY_Controller
         $this->roles = $this->m_roles->collection();
     }
 
+
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function index()
     {
         $this->load->helper('input');

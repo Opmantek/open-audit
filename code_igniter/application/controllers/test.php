@@ -67,6 +67,12 @@ class Test extends CI_Controller
         }
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
         redirect('/');
