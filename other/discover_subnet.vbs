@@ -564,7 +564,7 @@ for each host in hosts
 
     if (nmap_tcp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & nmap_tcp_ports & " " & timeout & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & nmap_tcp_ports & " " & timeout & " " & host & " :: Top TCP Ports"
         db_log_message = "Nmap Command"
         db_log_severity = 7
         db_log_level = 7
@@ -576,6 +576,7 @@ for each host in hosts
         db_log_duration = Timer - host_timer
         db_log()
         do until objExecObject.StdOut.AtEndOfStream
+            db_log_command = command
             line = objExecObject.StdOut.ReadLine
             check_output()
         loop
@@ -583,7 +584,7 @@ for each host in hosts
 
     if (nmap_udp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & nmap_udp_ports & " " & timeout & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & nmap_udp_ports & " " & timeout & " " & host & " :: Top UDP Ports"
         db_log_message = "Nmap Command"
         db_log_severity = 7
         db_log_level = 7
@@ -595,6 +596,7 @@ for each host in hosts
         db_log_duration = Timer - host_timer
         db_log()
         do until objExecObject.StdOut.AtEndOfStream
+            db_log_command = command
             line = objExecObject.StdOut.ReadLine
             check_output()
         loop
@@ -602,7 +604,7 @@ for each host in hosts
 
     if (tcp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & tcp_ports & " " & timeout & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & tcp_ports & " " & timeout & " " & host & " :: Custom TCP Ports"
         db_log_message = "Nmap Command"
         db_log_severity = 7
         db_log_level = 7
@@ -614,6 +616,7 @@ for each host in hosts
         db_log_duration = Timer - host_timer
         db_log()
         do until objExecObject.StdOut.AtEndOfStream
+            db_log_command = command
             line = objExecObject.StdOut.ReadLine
             check_output()
         loop
@@ -621,8 +624,9 @@ for each host in hosts
 
     if (udp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & udp_ports & " " & timeout & " " & host
-
+        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & udp_ports & " " & timeout & " " & host & " :: Custom UDP Ports"
+        db_log_severity = 7
+        db_log_level = 7
         db_log_command = command
         execute_command()
         do until objExecObject.Status = 0
@@ -631,6 +635,7 @@ for each host in hosts
         db_log_duration = Timer - host_timer
         db_log()
         do until objExecObject.StdOut.AtEndOfStream
+            db_log_command = command
             line = objExecObject.StdOut.ReadLine
             check_output()
         loop
@@ -681,11 +686,11 @@ for each host in hosts
                 response_reason = "ping response"
             end if
             if debugging > 0 then
-                wscript.echo "IP " & host & " responding, " & response_reason & ", adding to device list."
+                wscript.echo "IP " & host & " responding, " & response_reason & ", adding to device list. SSH Status: " & ssh_status & ", WMI Status: " & wmi_status & ", SNMP Status: " & snmp_status & "."
             end if
             db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
             db_log_severity = 6
-            db_log_message = "IP " & host & " responding, " & response_reason & ", adding to device list."
+            db_log_message = "IP " & host & " responding, " & response_reason & ", adding to device list.. SSH Status: " & ssh_status & ", WMI Status: " & wmi_status & ", SNMP Status: " & snmp_status & "."
             db_log_output = ""
             db_log_command = url
             db_log()
@@ -764,7 +769,7 @@ result_file = result_file & result
 result_file = "<devices>" & vbcrlf & result_file & vbcrlf & "</devices>"
 
 
-if (echo_output = "y" and submit_online <> "y") then
+if (echo_output = "y") then
     wscript.echo result_file
 end if
 
@@ -950,12 +955,12 @@ function check_output()
         end if
         if (port = "22/tcp") then
             ssh_status = "true"
-            db_log_message = "Host " & host & " is up, received filtered ssh (TCP port 22 open|filtered) response"
+            db_log_message = "Host " & host & " is up, received open|filtered ssh (TCP port 22 open|filtered) response"
         elseif (port = "135/tcp") then
             wmi_status = "true"
-            db_log_message = "Host " & host & " is up, received filtered wmi (TCP port 135 open|filtered) response"
+            db_log_message = "Host " & host & " is up, received open|filtered wmi (TCP port 135 open|filtered) response"
         else
-            db_log_message = "Host " & host & " is up, received filtered port " & port & " response"
+            db_log_message = "Host " & host & " is up, received open|filtered port " & port & " response"
         end if
         db_log_output = line
         db_log()
@@ -991,9 +996,9 @@ function check_output()
         end if
         if (port = "161/udp") then
             snmp_status = "true"
-            db_log_message = "Host " & host & " is up, received filtered snmp (UDP port 161 open|filtered) response"
+            db_log_message = "Host " & host & " is up, received open|filtered snmp (UDP port 161 open|filtered) response"
         else
-            db_log_message = "Host " & host & " is up, received filtered UDP port $port open|filtered response"
+            db_log_message = "Host " & host & " is up, received open|filtered UDP port $port open|filtered response"
         end if
         db_log_output = line
         db_log()
