@@ -46,6 +46,11 @@
  */
 class Scripts extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function __construct()
     {
         parent::__construct();

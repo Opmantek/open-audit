@@ -50,7 +50,6 @@ class Home extends MY_Controller
     * Constructor
     *
     * @access    public
-
     */
     public function __construct()
     {

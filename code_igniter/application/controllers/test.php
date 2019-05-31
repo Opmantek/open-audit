@@ -46,6 +46,11 @@
  */
 class Test extends CI_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function __construct()
     {
         parent::__construct();
