@@ -60,7 +60,7 @@ range='^[0-9\.\,\/\-]+$'
 ports='^[0-9\,]+$'
 
 # OSX - nmap not in _www user's path
-if [[ $(uname) == "Darwin" ]]; then
+if [[ $(uname) = "Darwin" ]]; then
 	PATH="$PATH:/usr/local/bin"
 	export PATH
 fi
@@ -69,13 +69,13 @@ fi
 for arg in "$@"; do
 	parameter=${arg%%=*}
 	value=${arg##*=}
-	if [ "$parameter" == "help" ]; then value="y"; fi
-	if [ "$parameter" == "--help" ]; then parameter="help"; value="y"; fi
-	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
+	if [ "$parameter" = "help" ]; then value="y"; fi
+	if [ "$parameter" = "--help" ]; then parameter="help"; value="y"; fi
+	if [ "$parameter" = "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
 
-if [ "$help" == "y" ]; then
+if [ "$help" = "y" ]; then
 	echo ""
 	echo "---------------------------------"
 	echo "Open-AudIT Linux Discovery script"
@@ -197,26 +197,33 @@ function check_output ()
 {
 	# greps the line for interesting items
 	line=$1
+	db_command=$2
 	test=""
 
-	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
+	if [ -n "$filtered" ] && [ "$filtered" = "y" ]; then
 		test=$(echo $line | grep "tcp.*open")
 		if [ -n "$test" ]; then
 			host_is_up="true"
 			port=$(echo $line | awk '{print $1}')
 			program=$(echo $line | awk '{print $3}')
 			nmap_ports="$nmap_ports,$port/$program"
+			isfiltered=$(echo $line | grep "filtered")
+			if [ -n "$isfiltered" ]; then
+				isfiltered="open|filtered"
+			else
+				isfiltered="open"
+			fi
 			if [ -z "$response_reason" ]; then
-				response_reason="received open TCP port ($port, $program)"
+				response_reason="received $isfiltered TCP port ($port, $program)"
 			fi
 			if [ -n $port ] && [ "$port" = "22/tcp" ]; then
 				ssh_status="true"
-				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received ssh (TCP port 22 $isfiltered) response" "" "" "7" "$line" "" "$db_command" "$host"
 			elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
 				wmi_status="true"
-				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received wmi (TCP port 135 $isfiltered) response" "" "" "7" "$line" "" "$db_command" "$host"
 			else
-				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received TCP port $port $isfiltered response" "" "" "7" "$line" "" "$db_command" "$host"
 			fi
 
 		fi
@@ -232,43 +239,49 @@ function check_output ()
 			fi
 			if [ -n $port ] && [ "$port" = "22/tcp" ]; then
 				ssh_status="true"
-				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "$db_command" "$host"
 			elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
 				wmi_status="true"
-				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "$db_command" "$host"
 			else
-				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "$db_command" "$host"
 			fi
 		fi
-		test=$(echo $line | grep "tcp.*filterred")
+		test=$(echo $line | grep "tcp.*filtered")
 		if [ -n "$test" ]; then
-			db_log "Host $host had a filtered port, but options state not to detect" "" "" "7" "$line" "" "" "$host"
+			db_log "Host $host had an open|filtered port, but options state not to detect" "" "" "7" "$line" "" "$db_command" "$host"
 		fi
 	fi
 	test=""
 
-	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
+	if [ -n "$filtered" ] && [ "$filtered" = "y" ]; then
 		test=$(echo $line | grep "udp.*open")
 	else
 		test=$(echo $line | grep "udp.*open" | grep -v filtered)
 	fi
 
 
-	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
+	if [ -n "$filtered" ] && [ "$filtered" = "y" ]; then
 		test=$(echo $line | grep "udp.*open")
 		if [ -n "$test" ]; then
 			host_is_up="true"
 			port=$(echo $line | awk '{print $1}')
 			program=$(echo $line | awk '{print $3}')
 			nmap_ports="$nmap_ports,$port/$program"
+			isfiltered=$(echo $line | grep "filtered")
+			if [ -n "$isfiltered" ]; then
+				isfiltered="open|filtered"
+			else
+				isfiltered="open"
+			fi
 			if [ -z "$response_reason" ]; then
-				response_reason="received open UDP port ($port, $program)"
+				response_reason="received $isfiltered UDP port ($port, $program)"
 			fi
 			if [ -n $port ] && [ "$port" = "161/udp" ]; then
 				snmp_status="true"
-				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received snmp (UDP port 161 $isfiltered) response" "" "" "7" "$line" "" "$db_command" "$host"
 			else
-				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received UDP port $port $isfiltered response" "" "" "7" "$line" "" "$db_command" "$host"
 			fi
 		fi
 	else
@@ -283,14 +296,14 @@ function check_output ()
 			fi
 			if [ -n $port ] && [ "$port" = "161/udp" ]; then
 				snmp_status="true"
-				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "$db_command" "$host"
 			else
-				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "$db_command" "$host"
 			fi
 		fi
-		test=$(echo $line | grep "udp.*filterred")
+		test=$(echo $line | grep "udp.*filtered")
 		if [ -n "$test" ]; then
-			db_log "Host $host had a filtered port, but options state not to detect" "" "" "7" "$line" "" "" "$host"
+			db_log "Host $host had an open|filtered port, but options state not to detect" "" "" "7" "$line" "" "$db_command" "$host"
 		fi
 	fi
 	test=""
@@ -299,7 +312,7 @@ function check_output ()
 	if [[ "$test" != "" ]]; then
 		host_is_up="true"
 		response_reason="arp response received"
-		db_log "Host $host is up, received arp-response" "" "" "7" "$line" "" "" "$host"
+		db_log "Host $host is up, received arp-response" "" "" "7" "$line" "" "$db_command" "$host"
 	fi
 	test=""
 
@@ -311,7 +324,7 @@ function check_output ()
 		if [ -z "$response_reason" ]; then
 			response_reason="MAC address retrieved ($mac_address)"
 		fi
-		db_log "Host $host is up, received mac addess $mac_address" "" "" "7" "$line" "" "" "$host"
+		db_log "Host $host is up, received mac addess $mac_address" "" "" "7" "$line" "" "$db_command" "$host"
 	fi
 	test=""
 
@@ -322,7 +335,7 @@ function check_output ()
 		if [ -z "$response_reason" ]; then
 			response_reason="ping reply"
 		fi
-		db_log "Host $host is up, received Nmap ping response" "" "" "7" "$line" "" "" "$host"
+		db_log "Host $host is up, received Nmap ping response" "" "" "7" "$line" "" "$db_command" "$host"
 	fi
 	test=""
 
@@ -332,7 +345,7 @@ function check_output ()
 		if [ -z "$response_reason" ]; then
         	response_reason="host responded but timed out"
         fi
-		db_log "Host $host timed out. Exceeded $timeout seconds." "" "" "7" "$line" "" "" "$host"
+		db_log "Host $host timed out. Exceeded $timeout seconds." "" "" "7" "$line" "" "$db_command" "$host"
 	fi
 	test=""
 
@@ -384,7 +397,7 @@ else
 fi
 
 if [ -n "$ping" ]; then
-	if [ "$ping" == "n" ]; then
+	if [ "$ping" = "n" ]; then
 		ping="-Pn"
 	else
 		ping=""
@@ -394,7 +407,7 @@ else
 fi
 
 if [ -n "$service_version" ]; then
-	if [ "$service_version" == "y" ]; then
+	if [ "$service_version" = "y" ]; then
 		service_version="-sV"
 	else
 		service_version=""
@@ -596,7 +609,7 @@ IFS=$NEWLINEIFS
 
 
 
-# In the case of only scnning devices responding to an Nmap ping,
+# In the case of only scanning devices responding to an Nmap ping,
 #    send a log line that this IP didn't respond
 if [ -n "$ip_list" ]; then
 	db_log "Updating discovery log with non-responding IPs" "" "" "7" "" "" ""
@@ -633,7 +646,7 @@ for host in $alive_ips; do
 	if [ -n "$nmap_tcp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host"
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host # Top TCP Ports"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
@@ -651,14 +664,14 @@ for host in $alive_ips; do
 			echo ""
 		fi
 		for line in $nmap_scan; do
-			check_output "$line"
+			check_output "$line" "$command"
 		done
 	fi
 
 	if [ -n "$nmap_udp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host"
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host # Top UDP Ports"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
@@ -676,14 +689,14 @@ for host in $alive_ips; do
 			echo ""
 		fi
 		for line in $nmap_scan; do
-			check_output "$line"
+			check_output "$line" "$command"
 		done
 	fi
 
 	if [ -n "$tcp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host"
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host # Custom TCP Ports"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
@@ -701,14 +714,14 @@ for host in $alive_ips; do
 			echo ""
 		fi
 		for line in $nmap_scan; do
-			check_output "$line"
+			check_output "$line" "$command"
 		done
 	fi
 
 	if [ -n "$udp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host"
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host # Custom UDP Ports"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
@@ -726,12 +739,12 @@ for host in $alive_ips; do
 			echo ""
 		fi
 		for line in $nmap_scan; do
-			check_output "$line"
+			check_output "$line" "$command"
 		done
 	fi
 
 	result=""
-	if [ "$host_is_up" == "true" ] || [ -z "$ping" ]; then
+	if [ "$host_is_up" = "true" ] || [ -z "$ping" ]; then
 		nmap_ports=${nmap_ports#?}
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
@@ -756,17 +769,17 @@ for host in $alive_ips; do
 		# wrap this device in xml tags for submission individually
 		result="<devices>"$'\n'"$result"$'\n'"</devices>"
 
-		if [[ "$echo_output" == "y" ]]; then
+		if [[ "$echo_output" = "y" ]]; then
 			echo ""
 			echo "$result"
 			echo ""
 		fi
 
-		if [[ "$submit_online" == "y" ]]; then
+		if [[ "$submit_online" = "y" ]]; then
 			if [ -z "$ping" ] && [ -z "$response_reason" ]; then
 				response_reason="ping response"
 			fi
-			db_log "IP $host responding, $response_reason, adding to device list." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url" "$host"
+			db_log "IP $host responding, $response_reason, adding to device list. SSH Status: $ssh_status, WMI Status: $wmi_status, SNMP Status: $snmp_status." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url" "$host"
 			# curl options
 			# -k = ignore invalid (self signed) certs
 			# -s = Silent mode. Don’t show progress meter or error messages.
@@ -790,13 +803,13 @@ for host in $alive_ips; do
 done
 
 resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
-if [[ "$echo_output" == "y" ]]; then
+if [[ "$echo_output" = "y" ]]; then
 	echo ""
 	echo "$resultcomplete"
 	echo ""
 fi
 
-if [[ "$submit_online" == "y" ]]; then
+if [[ "$submit_online" = "y" ]]; then
 	send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
 	if [ -n "$send_result" ]; then
 		db_log "Error when submitting discovery result (complete). $send_result" "" "fail" "3" "" "" "" "$host"
@@ -805,7 +818,7 @@ if [[ "$submit_online" == "y" ]]; then
 	fi
 fi
 
-if [[ "$create_file" == "y" ]]; then
+if [[ "$create_file" = "y" ]]; then
 	result_file="<devices>$result_file"$'\n'"</devices>"$'\n'
 	echo "$result_file" > discovery_subnet.xml
 fi
