@@ -210,13 +210,13 @@ class M_scripts extends MY_Model
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
 
-        if ($options->url == 'http://open-audit/index.php/system/add_system' or 
+        if (empty($options->url) or 
+            $options->url == 'http://open-audit/index.php/system/add_system' or 
             $options->url == 'http://open-audit/index.php/input/devices' or 
             $options->url == 'http://localhost/open-audit/index.php/system/add_system' or 
             $options->url == 'http://localhost/open-audit/index.php/input/devices') {
             # inject our default network address
-            $test = @$CI->config->item('default_network_address');
-            if (!empty($test)) {
+            if (!empty($CI->config->item('default_network_address'))) {
                 $options->url = $CI->config->item('default_network_address') . 'index.php/input/devices';
             } else {
                 unset($options->url);
