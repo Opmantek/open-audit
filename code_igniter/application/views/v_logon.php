@@ -151,11 +151,11 @@ if (!empty($temp)) {
     {
         var testWin = navigator.userAgent.match(/Windows NT/i);
         if (testWin) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/win";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/windows";
         }
         var testLin = navigator.userAgent.match(/Linux /i);
         if (testLin) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/lin";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/linux";
         }
         var testOsx = navigator.userAgent.match(/Mac OS X/i);
         if (testOsx) {
