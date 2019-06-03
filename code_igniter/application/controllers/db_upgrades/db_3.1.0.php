@@ -28,6 +28,14 @@
 **/
 
 /*
+DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Cloud Region';
+
+DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Cloud Zone';
+
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud Region','Cloud Region','system','2000-01-01 00:00:00');
+
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud Zone','Cloud Zone','system','2000-01-01 00:00:00');
+
 CREATE INDEX audit_log_system_id_type ON audit_log (`system_id`, `type`);
 
 CREATE INDEX change_log_timestamp ON change_log (`timestamp`);
@@ -226,6 +234,22 @@ UPDATE `configuration` SET `value` = '3.1.0' WHERE `name` = 'display_version';
 */
 
 $this->log_db('Upgrade database to 3.1.0 commenced');
+
+$sql = "DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Cloud Region'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Cloud Zone'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud Region','Cloud Region','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud Zone','Cloud Zone','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $audit_log_system_id_type = false;
 $sql = "SHOW INDEX FROM `audit_log`";
