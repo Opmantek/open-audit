@@ -135,6 +135,9 @@ for each strArg in objArgs
             case "exclude_ip"
                 exclude_ip = varArray(1)
 
+            case "filtered"
+                filtered = varArray(1)
+
             case "help"
                 help = varArray(1)
 
