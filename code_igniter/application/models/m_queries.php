@@ -244,10 +244,49 @@ class M_queries extends MY_Model
             $result = $this->format_data($result, 'queries');
             $this->log->summary = 'finish';
             stdlog($this->log);
-            return $result;
-        } else {
+        }
+        if (empty($result)) {
             return array();
         }
+        if (!empty($CI->response->meta->format == 'json')) {
+            if (isset($result[0]->attributes->{'system.credentials'}))  {
+                $this->load->library('encrypt');
+                $this->load->model('m_credentials');
+                $credentials = $this->m_credentials->collection();
+                $device_ids = array();
+                foreach ($result as $device) {
+                    $device_ids[] = $device->attributes->{'system.id'};
+                    $credentials_array = json_decode($device->{'attributes'}->{'system.credentials'});
+                    if (!empty($credentials_array)) {
+                        foreach ($credentials_array as $credential_id) {
+                            foreach ($credentials as $credential) {
+                                if ($credential->id == $credential_id) {
+                                    $type = $credential->attributes->type;
+                                    foreach ($credential->attributes->credentials as $key => $value) {
+                                        $device->attributes->{'credentials.'.$type.'.'.$key} = $value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $ids = implode(',', $device_ids);
+                $sql = "SELECT * FROM `credential` WHERE `system_id` IN ($ids)";
+                $credentials = $this->run_sql($sql, array());
+                foreach ($credentials as $credential) {
+                    foreach ($result as $device) {
+                        if ($device->{'attributes'}->{'system.id'} == $credential->system_id) {
+                            $decoded = json_decode(simpleDecrypt($credential->credentials));
+                            $type = $credential->type;
+                            foreach ($decoded as $key => $value) {
+                                $device->attributes->{'credentials.'.$type.'.'.$key} = $value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     public function sub_resource($id = '')
