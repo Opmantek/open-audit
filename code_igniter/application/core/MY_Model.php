@@ -507,4 +507,35 @@ class MY_Model extends CI_Model
         $return = substr($return, 1);
         return $return;
     }
+
+    function deep_merge($original, $submitted) {
+        if (is_array($original)) {
+            for ($i=0; $i < count($submitted); $i++) {
+                if (is_array($submitted[$i]) or is_object($submitted[$i])) {
+                    if (!isset($original[$i])) {
+                        $original[$i] = gettype($submitted[$i]);
+                    }
+                    $original[$i] = $this->deep_merge($original[$i], $submitted[$i]);
+                }
+                if (is_string($submitted[$i]) or is_integer($submitted[$i])) {
+                    $original[$i] = $submitted[$i];
+                }
+            }
+        } else if (is_object($original)) {
+            foreach ($submitted as $key => $value) {
+                if (is_array($value) or is_object($value)) {
+                    if (!isset($original->$key)) {
+                        $original->$key = gettype($submitted->{$key});
+                    }
+                    $original->$key = $this->deep_merge($original->$key, $value);
+                }
+                if (is_string($value) or is_integer($value)) {
+                    $original->{$key} = $submitted->{$key};
+                }
+            }
+        } else if (is_string($original) or is_integer($original)) {
+            $original = $submitted;
+        }
+        return($original);
+    }
 }

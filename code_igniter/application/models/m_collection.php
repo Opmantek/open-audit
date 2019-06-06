@@ -621,6 +621,10 @@ class M_collection extends MY_Model
             $data->other = json_encode($data->other);
         }
 
+        if ($collection === 'integrations') {
+            $data->options = json_encode($data->options);
+        }
+
         if ($collection === 'ldap_servers') {
             if (!empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);
@@ -1111,6 +1115,21 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'integrations') {
+            if (!empty($data->options)) {
+                $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+                $query = $this->db->query($select, array($data->id));
+                $result = $query->result();
+                $existing = new stdClass();
+                if (!empty($result[0]->options)) {
+                    $original = json_decode($result[0]->options);
+                }
+                $submitted = $data->options;
+                $merged = $this->deep_merge($original, $submitted);
+                $data->options = (string)json_encode($merged);
+            }
+        }
+
         if ($collection === 'ldap_servers') {
             if (!empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);
@@ -1289,6 +1308,10 @@ class M_collection extends MY_Model
                 return(' name org_id description expose sql ');
                 break;
 
+            case "integrations":
+                return(' name org_id description options ');
+                break;
+
             case "ldap_servers":
                 return(' name org_id description lang host port secure domain type version base_dn user_dn user_membership_attribute use_roles dn_account dn_password refresh ');
                 break;
@@ -1423,6 +1446,10 @@ class M_collection extends MY_Model
 
             case "groups":
                 return(array('name','org_id','sql'));
+                break;
+
+            case "integrations":
+                return(array('name','org_id','options'));
                 break;
 
             case "ldap_servers":

@@ -510,6 +510,23 @@ An example for SQL to select all devices running the Debian OS - <code>SELECT DI
     $dictionary->attributes->update = array('name','org_id','description','sql');
 }
 
+if ($table == 'integrations') {
+    $dictionary->sentence = 'Use Open-AudIT to integrate with external systems.';
+    $dictionary->marketing = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p>Our default query "Integration Default for NMIS" and custom query selects devices that have a their nmis_manage attribute set to "y". If you prefer to change the custom query, we recommend using the fields as provided in the custom query and changing the WHERE section only. The retrieved fields are required for transforming the attribute data from Open-AudIT to NMIS.';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','description','options');
+    $dictionary->attributes->update = array('name','org_id','description','options');
+}
+
 if ($table == 'ldap_servers') {
     $dictionary->about = '<p>Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate a user and in addition, to create a user account using assigned roles and orgs based on LDAP group membership.<br /><br />
     ' . $link . '<br /><br /></p>';

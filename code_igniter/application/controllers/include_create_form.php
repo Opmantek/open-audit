@@ -103,6 +103,12 @@ if ($this->response->meta->collection == 'floors') {
 if ($this->response->meta->collection == 'groups') {
 }
 
+# integrations
+if ($collection == 'integrations') {
+    $this->load->model('m_queries');
+    $this->response->included = array_merge($this->response->included, $this->m_queries->collection());
+}
+
 # ldap_servers
 if ($this->response->meta->collection == 'ldap_servers') {
 }
