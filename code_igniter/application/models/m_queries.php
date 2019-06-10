@@ -284,6 +284,14 @@ class M_queries extends MY_Model
                         }
                     }
                 }
+                foreach ($result as $device) {
+                    $device->{'attributes'}->{'system.collect'} = 'false';
+                    foreach ($device->{'attributes'} as $key => $value) {
+                        if (stripos($key, 'credentials.') === 0) {
+                            $device->{'attributes'}->{'system.collect'} = 'true';
+                        }
+                    }
+                }
             }
         }
         return $result;
