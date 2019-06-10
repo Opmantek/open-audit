@@ -524,7 +524,7 @@ if ($table == 'integrations') {
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','description','options');
-    $dictionary->attributes->update = array('name','org_id','description','options');
+    $dictionary->attributes->update = array('name','org_id','description','options','last_run');
 }
 
 if ($table == 'ldap_servers') {

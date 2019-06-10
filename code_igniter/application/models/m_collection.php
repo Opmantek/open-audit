@@ -622,7 +622,9 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'integrations') {
-            $data->options = json_encode($data->options);
+            if (!empty($data->options)) {
+                $data->options = json_encode($data->options);
+            }
         }
 
         if ($collection === 'ldap_servers') {
@@ -1115,19 +1117,17 @@ class M_collection extends MY_Model
             }
         }
 
-        if ($collection === 'integrations') {
-            if (!empty($data->options)) {
-                $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
-                $query = $this->db->query($select, array($data->id));
-                $result = $query->result();
-                $existing = new stdClass();
-                if (!empty($result[0]->options)) {
-                    $original = json_decode($result[0]->options);
-                }
-                $submitted = $data->options;
-                $merged = $this->deep_merge($original, $submitted);
-                $data->options = (string)json_encode($merged);
+        if ($collection === 'integrations' and !empty($data->options)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            $existing = new stdClass();
+            if (!empty($result[0]->options)) {
+                $original = json_decode($result[0]->options);
             }
+            $submitted = $data->options;
+            $merged = $this->deep_merge($original, $submitted);
+            $data->options = (string)json_encode($merged);
         }
 
         if ($collection === 'ldap_servers') {
@@ -1309,7 +1309,7 @@ class M_collection extends MY_Model
                 break;
 
             case "integrations":
-                return(' name org_id description options ');
+                return(' name org_id description options last_run ');
                 break;
 
             case "ldap_servers":
