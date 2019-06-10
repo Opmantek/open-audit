@@ -375,6 +375,7 @@ if ($this->response->meta->collection == 'tasks') {
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('discoveries'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('groups'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('integrations'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('queries'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('summaries'));
 }
