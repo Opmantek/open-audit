@@ -1502,7 +1502,8 @@ CREATE TABLE `integrations` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'nmis',
-  `options` text NOT NULL,
+  `options` longtext NOT NULL,
+  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
