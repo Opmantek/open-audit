@@ -212,6 +212,7 @@ if ($collection == 'tasks') {
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('clouds'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('discoveries'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('groups'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('integrations'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('queries'));
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('summaries'));
     #$this->load->model('m_reports');
