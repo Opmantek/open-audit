@@ -50,7 +50,6 @@ class Logon extends CI_Controller
     * Constructor
     *
     * @access    public
-
     */
     public function __construct()
     {

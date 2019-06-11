@@ -46,17 +46,11 @@
  */
 class San extends CI_Controller
 {
-
     /**
-     * Constructor
-     *
-     * @access    public
-     * @category  Constructor
-     * @package   Open-AudIT
-     * @author    Mark Unwin <marku@opmantek.com>
-     * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-     * @link      http://www.open-audit.org
-     */
+    * Constructor
+    *
+    * @access    public
+    */
     public function __construct()
     {
         parent::__construct();

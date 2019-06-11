@@ -233,6 +233,7 @@ if (!function_exists('process_scan')) {
         $device->type = '';
         $device->uuid = '';
         $device->vm_uuid = '';
+        $device->credentials = array();
 
         // Use local DNS if requested
         if ($CI->config->item('discovery_use_dns') == 'y') {
@@ -331,6 +332,7 @@ if (!function_exists('process_scan')) {
         unset($temp);
         $creds = array();
         foreach ($credentials as $credential) {
+            $credential->attributes->foreign = $credential->type;
             $creds[] = $credential->attributes;
         }
         unset($credentials);
@@ -402,6 +404,15 @@ if (!function_exists('process_scan')) {
                 discovery_log($log);
             }
         }
+
+        # Add this credential sets ID to device->credentials
+        # if collection == credentials, not an individual device acssociated credential
+        if (!empty($credentials_snmp)) {
+            if ($credentials_snmp->foreign == 'credentials') {
+                $device->credentials[] = intval($credentials_snmp->id);
+            }
+        }
+
         if ($credentials_snmp) {
             if (!empty($credentials_snmp->credentials->version)) {
                 $device->snmp_version = "snmpv" . intval($credentials_snmp->credentials->version);
@@ -482,6 +493,14 @@ if (!function_exists('process_scan')) {
             }
         }
 
+        if (!empty($credentials_ssh)) {
+            # Add this credential sets ID to device->credentials
+            # if collection == credentials, not an individual device acssociated credential
+            if ($credentials_ssh->foreign == 'credentials') {
+                $device->credentials[] = intval($credentials_ssh->id);
+            }
+        }
+
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';
         $log->command_status = 'notice';
@@ -517,8 +536,19 @@ if (!function_exists('process_scan')) {
                 }
             }
         }
+        if (!empty($credentials_windows)) {
+            # Add this credential sets ID to device->credentials
+            # if collection == credentials, not an individual device acssociated credential
+            if ($credentials_windows->foreign == 'credentials') {
+                $device->credentials[] = intval($credentials_windows->id);
+            }
+        }
+
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';
+
+        # Set our device->credentials to a JSON array of working interger credentials.id
+        $device->credentials = json_encode($device->credentials);
 
         # Intelligent guesses at various attributes
 

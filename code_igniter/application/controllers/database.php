@@ -50,7 +50,6 @@ class Database extends MY_Controller
     * Constructor
     *
     * @access    public
-
     */
     public function __construct()
     {
@@ -63,10 +62,9 @@ class Database extends MY_Controller
     }
 
     /**
-    * Index that is unused
+    * Constructor
     *
-    * @access public
-    * @return NULL
+    * @access    public
     */
     public function index()
     {

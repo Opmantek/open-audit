@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Orgs
+* Base Object Integrations
 *
 * @access   public
 * @category Object
@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class Orgs extends MY_Controller
+class Integrations extends MY_Controller
 {
     /**
     * Constructor
@@ -54,7 +54,7 @@ class Orgs extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper('network');
+        $this->load->model('m_integrations');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
     }
@@ -88,7 +88,6 @@ class Orgs extends MY_Controller
     */
     public function create()
     {
-        $this->response->meta->received_data->attributes->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $this->response->meta->received_data->attributes->name));
         include 'include_create.php';
     }
 
@@ -148,39 +147,16 @@ class Orgs extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
+    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
     *
     * @access public
     * @return NULL
     */
-    public function update_form()
+    public function reset()
     {
-        include 'include_update_form.php';
+        include 'include_reset.php';
     }
 
-    /**
-    * Supply a HTML form for the user to upload a collection of objects in CSV
-    *
-    * @access public
-    * @return NULL
-    */
-    public function import_form()
-    {
-        $this->load->model('m_database');
-        $this->response->data = $this->m_database->read('orgs');
-        include 'include_import_form.php';
-    }
-
-    /**
-    * Process the supplied data and create a new object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function import()
-    {
-        include 'include_import.php';
-    }
 }
-// End of file orgs.php
-// Location: ./controllers/orgs.php
+// End of file integrations.php
+// Location: ./controllers/integrations.php

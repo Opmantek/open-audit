@@ -80,7 +80,7 @@ class M_device extends MY_Model
             $match = $parameters->match;
         }
         // Ensure we have a fully populated (even if blank) match list
-        $matches = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
+        $matches = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
         foreach ($matches as $item) {
             if (empty($match->{$item})) {
                 $match->{$item} = $this->config->config[$item];
@@ -252,13 +252,13 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->uuid)) {
+            } else if (empty($details->uuid)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_uuid, uuid not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->hostname)) {
+            } else if (empty($details->hostname)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_uuid, hostname not set.';
                 $message->command_status = 'notice';
@@ -314,13 +314,13 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->dbus_identifier)) {
+            } else if (empty($details->dbus_identifier)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_dbus, dbus_identifier not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->hostname)) {
+            } else if (empty($details->hostname)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_dbus, hostname not set.';
                 $message->command_status = 'notice';
@@ -376,13 +376,13 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->serial)) {
+            } else if (empty($details->serial)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_serial, serial not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->hostname)) {
+            } else if (empty($details->hostname)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_serial, hostname not set.';
                 $message->command_status = 'notice';
@@ -438,7 +438,7 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->dbus_identifier)) {
+            } else if (empty($details->dbus_identifier)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_dbus, dbus_identifier not set.';
                 $message->command_status = 'notice';
@@ -494,7 +494,7 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->fqdn)) {
+            } else if (empty($details->fqdn)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_fqdn, fqdn not set.';
                 $message->command_status = 'notice';
@@ -550,13 +550,13 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->serial)) {
+            } else if (empty($details->serial)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_serial_type, serial not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->type)) {
+            } else if (empty($details->type)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_serial_type, type not set.';
                 $message->command_status = 'notice';
@@ -612,7 +612,7 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($device->serial)) {
+            } else if (empty($details->serial)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_serial, serial not set.';
                 $message->command_status = 'notice';
@@ -621,6 +621,117 @@ class M_device extends MY_Model
             } else {
                 $message = new stdClass();
                 $message->message = 'Not running match_serial.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            }
+        }
+
+        if (strtolower($match->match_sysname_serial) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->sysName)) {
+            $sql = "SELECT system.id FROM system WHERE system.sysName = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->sysName", "$details->serial");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (!empty($row)) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $message = new stdClass();
+                $message->message = 'HIT on sysname + serial.';
+                $message->command_status = 'success';
+                $message->command_output = 'SysName: ' . $details->sysName . ', Serial: ' . $details->serial . ', SystemID : ' . $details->id;
+                $log_message[] = $message;
+                foreach ($log_message as $message) {
+                    $log->message = $message->message;
+                    $log->command_status = $message->command_status;
+                    $log->command_output = $message->command_output;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+            $message = new stdClass();
+            $message->message = 'MISS on sysname + serial.';
+            $message->command_status = 'notice';
+            $message->command_output = 'SysName: ' . $details->sysName . ', Serial: ' . $details->serial;
+            $log_message[] = $message;
+        } else {
+            if (strtolower($match->match_sysname_serial) != 'y') {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, matching rule set to: ' . $match->match_sysname_serial .  '.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (!empty($details->id)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, device id already set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($details->sysName)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, sysname not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($details->serial)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, serial not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            }
+        }
+
+        if (strtolower($match->match_sysname) == 'y' and empty($details->id) and !empty($details->sysName)) {
+            $sql = "SELECT system.id FROM system WHERE (system.sysName = ?) AND system.status != 'deleted'";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->sysName");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (!empty($row)) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $message = new stdClass();
+                $message->message = 'HIT on sysName.';
+                $message->command_status = 'success';
+                $message->command_output = 'SysName: ' . $details->sysName . ', SystemID : ' . $details->id;
+                $log_message[] = $message;
+                foreach ($log_message as $message) {
+                    $log->message = $message->message;
+                    $log->command_status = $message->command_status;
+                    $log->command_output = $message->command_output;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+        } else {
+            if (strtolower($match->match_sysname_serial) != 'y') {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname, matching rule set to: ' . $match->match_sysname .  '.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (!empty($details->id)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname, device id already set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($details->sysName)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname, sysname not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;

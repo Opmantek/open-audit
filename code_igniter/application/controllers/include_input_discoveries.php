@@ -259,6 +259,7 @@ foreach ($xml->children() as $input) {
     $device->last_seen_by = 'nmap';
     $device->discovery_id = $discovery->id;
     $device->mac_address = (string)$input->mac_address;
+    $device->credentials = array();
 
     if ($this->config->item('discovery_use_dns') == 'y') {
         $device = dns_validate($device);
@@ -357,6 +358,7 @@ foreach ($xml->children() as $input) {
     # We don't want the usual id (int), name (string), attributes (object) list, we just want the attributes.
     $creds = array();
     foreach ($credentials as $credential) {
+        $credential->attributes->foreign = $credential->type;
         $creds[] = $credential->attributes;
     }
     unset($credentials);
@@ -417,6 +419,15 @@ foreach ($xml->children() as $input) {
         }
         discovery_log($log);
         $credentials_snmp = snmp_credentials($device->ip, $credentials, $log);
+
+        # Add this credential sets ID to device->credentials
+        # if collection == credentials, not an individual device acssociated credential
+        if (!empty($credentials_snmp)) {
+            if ($credentials_snmp->foreign == 'credentials') {
+                $device->credentials[] = intval($credentials_snmp->id);
+            }
+        }
+
         # run SNMP audit commands
         if (!empty($credentials_snmp)) {
             if (!empty($credentials_snmp->credentials->version)) {
@@ -495,6 +506,14 @@ foreach ($xml->children() as $input) {
         }
     }
 
+    if (!empty($credentials_ssh)) {
+        # Add this credential sets ID to device->credentials
+        # if collection == credentials, not an individual device acssociated credential
+        if ($credentials_ssh->foreign == 'credentials') {
+            $device->credentials[] = intval($credentials_ssh->id);
+        }
+    }
+
     $log->file = 'discovery_helper';
     $log->function = 'discoveries';
     $log->command_status = 'notice';
@@ -518,6 +537,15 @@ foreach ($xml->children() as $input) {
     } else {
         $credentials_windows = false;
     }
+
+    if (!empty($credentials_windows)) {
+        # Add this credential sets ID to device->credentials
+        # if collection == credentials, not an individual device acssociated credential
+        if ($credentials_windows->foreign == 'credentials') {
+            $device->credentials[] = intval($credentials_windows->id);
+        }
+    }
+
     if ($input->wmi_status == 'true' and $credentials_windows) {
         $windows_details = wmi_audit($device->ip, $credentials_windows, $log);
         if (!empty($windows_details)) {
@@ -532,6 +560,9 @@ foreach ($xml->children() as $input) {
     }
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
+
+    # Set our device->credentials to a JSON array of working interger credentials.id
+    $device->credentials = json_encode($device->credentials);
 
     # Intelligent guesses at various attributes
 

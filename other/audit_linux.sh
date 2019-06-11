@@ -2606,6 +2606,99 @@ if [ -n "$test" ]; then
 	echo "		</item>"
 	} >> "$xml_file"
 fi
+
+# Custom addition - alexander.szele@umanitoba.ca
+# Pull web server info from nginx
+test=$(which nginx 2>/dev/null)
+if [ -n "$test" ]; then
+	version=$(nginx -v 2>&1 | cut -d/ -f2)
+	version_string=$(nginx -v 2>&1 | cut -d: -f2 | sed -e 's/^[[:space:]]*//')
+	nginx_status=$(service nginx status 2>/dev/null | grep Active | awk '{ print $2 }')
+	port=$(netstat -tulpn 2>/dev/null | grep nginx | awk '{ print$4 }' | rev | cut -d: -f1 | rev | head -n1)
+	{
+	echo "		<item>"
+	echo "			<type>web</type>"
+	echo "			<name>NGINX</name>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+	echo "			<status>$(escape_xml "$nginx_status")</status>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "		</item>"
+	} >> "$xml_file"
+fi
+
+# Custom addition - alexander.szele@umanitoba.ca
+# Pull web server info from tomcat
+# test = PID of java tomcat process
+test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
+if [ -n "$test" ]; then
+	instance=0
+	for pid in $test
+	do
+		instance=$(expr $instance + 1)
+        if [ $instance -gt 1 ] 
+        then
+			name="Tomcat-instance$instance"
+        else
+			name="Tomcat"
+        fi
+		catalina_home=$(ps -fp $pid | sed -n -e 's/^.*Dcatalina\.home=//p' | awk '{ print $1 }')
+		catalina_base=$(ps -fp $pid | sed -n -e 's/^.*Dcatalina\.base=//p' | awk '{ print $1 }')
+		version_text=$(unzip -q -c $catalina_home/lib/catalina.jar META-INF/MANIFEST.MF | grep "Implementation-Title:" | cut -d":" -f2 | sed -e 's/^[[:space:]]*//' | tr -d '\r')
+		version=$(unzip -q -c $catalina_home/lib/catalina.jar META-INF/MANIFEST.MF | grep "Implementation-Version:" | cut -d":" -f2 | sed -e 's/^[[:space:]]*//' | tr -d '\r')
+		version_string="$version_text/$version"
+		description="Catalina.home=$catalina_home; Catalina.base=$catalina_base"
+		# ServerInfo.properties is sometimes manually mangled by developers as a security measure.
+		# If the above fails, these can be tried.
+		# version=$(java -cp $catalina_home/lib/catalina.jar org.apache.catalina.util.ServerInfo 2>/dev/null | grep "Server number" | cut -d":" -f2 | sed -e 's/^[[:space:]]*//')
+		# version_string=$(java -cp $catalina_home/lib/catalina.jar org.apache.catalina.util.ServerInfo 2>/dev/null | grep "Server version" | cut -d":" -f2 | sed -e 's/^[[:space:]]*//')
+		tomcat_status=$(service tomcat status 2>/dev/null | grep Active | awk '{ print $2 }')
+		# Port information causes issues on import. If multiple instances claim the same port, then the xml import process causes missed information.
+		# Open-Audit does not appear to allow multiple servers to claim the same port, and due to the vagueries of tomcat's port listings
+		# It is best to leave this blank.
+		# port=$(netstat -tulpn 2>/dev/null | grep java | awk '{ print$4 }' | rev | cut -d: -f1 | rev | head -n1)
+		{
+		echo "		<item>"
+		echo "			<type>web</type>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<version>$(escape_xml "$version")</version>"
+		echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+		echo "			<description>$(escape_xml "$description")</description>"
+		echo "			<status>$(escape_xml "$tomcat_status")</status>"
+		echo "			<port></port>"
+		echo "		</item>"
+		} >> "$xml_file"
+	done
+fi
+
+# Custom addition - alexander.szele@umanitoba.ca
+# Pull db server info from mongodb
+#
+test=$(which mongo 2>/dev/null)
+if [ -n "$test" ]; then
+	version=$(mongo --version | grep -i mongodb | awk '{ print $4 }')
+	version_string=$(mongo --version | grep -i mongodb)
+	status=$(service mongod status 2>/dev/null | grep Active | awk '{ print $2 }')
+	if [ -z "$status" ]; then
+		status=$(service mongod status 2>/dev/null | grep Uptime | cut -d: -f2 2>/dev/null)
+		if [ -n "$status" ]; then
+			status="active"
+		fi
+	fi
+	port=$(netstat -tulpn 2>/dev/null | grep mongod | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	ip=$(netstat -tulpn 2>/dev/null | grep mongod | awk '{ print $4 }' | cut -d: -f1 | head -n1)
+	{
+	echo "		<item>"
+	echo "			<type>database</type>"
+	echo "			<name>MongoDB</name>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+	echo "			<status>$(escape_xml "$status")</status>"
+	echo "			<ip>$(escape_xml "$ip")</ip>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "		</item>"
+	} >> "$xml_file"
+fi
 echo "	</server>" >> "$xml_file"
 
 
@@ -2740,6 +2833,62 @@ for i in $(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep 
 		echo "			<path>$(escape_xml "$path")</path>"
 		echo "		</item>"
 		} >> "$xml_file"
+	fi
+done
+
+
+# Custom addition - alexander.szele@umanitoba.ca
+# Pull db server info from mongodb
+# Inconsistent results if non-standard configurations are used.
+if [ -e "/etc/mongod.conf" ]; then
+	datadir=$(grep "^[^#][[:space:]]dbPath" /etc/mongod.conf 2>/dev/null | awk '{ print $2 }')
+	if [ -n "$datadir" ]; then
+		for i in $(grep "^[^#][[:space:]]dbPath" /etc/mongod.conf 2>/dev/null | awk '{ print $2 }'); do
+			name=$(echo $i | rev | cut -d/ -f1 | rev)
+			size=$(ls -lk "$i" | awk '{ total += $5 }; END { print int(total/1024/1024) }')
+			{
+			echo "		<item>"
+			echo "			<type>database</type>"
+			echo "			<parent_name>MongoDB</parent_name>"
+			echo "			<name>$(escape_xml "$name")</name>"
+			echo "			<description></description>"
+			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+			echo "			<instance>MongoDB</instance>"
+			echo "			<path>$(escape_xml "$i")</path>"
+			echo "			<size>$(escape_xml "$size")</size>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	fi
+fi
+
+# Custom addition - alexander.szele@umanitoba.ca
+# Pull website info from nginx
+for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 | xargs -0 egrep '^([[:space:]])*server_name ' | awk '{ print $1 }' | cut -d':' -f1 | sort | uniq); do
+	if [ -n "$i" ]; then
+		name=$(echo "$i" | rev | cut -d/ -f1 | rev)
+		name=${name%.conf}
+		hostname=$(egrep '^([[:space:]])*server_name ' $i | awk '{ print $2 }' | cut -d';' -f1)
+		port=$(egrep '^([[:space:]])*listen ' $i | awk '{ print $2 }' | cut -d: -f2 | cut -d';' -f1)
+		path=$(awk '/location \/ {/,/}/{ print $0 }' $i | grep root | awk '{ print $2 }' | cut -d';' -f1)
+		if [ -z $path ]; then
+	        path=$(awk '/^([[:space:]])*root /' $i | awk '{ print $2 }' | cut -d';' -f1)
+        fi
+        {
+		echo "		<item>"
+		echo "			<type>website</type>"
+		echo "			<parent_name>NGINX</parent_name>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<description></description>"
+		echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+		echo "			<ip></ip>"
+		echo "			<hostname>$(escape_xml "$hostname")</hostname>"
+		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<status>$(escape_xml "$apache_status")</status>"
+		echo "			<instance></instance>"
+		echo "			<path>$(escape_xml "$path")</path>"
+		echo "		</item>"
+		} >> "$xml_file"	
 	fi
 done
 

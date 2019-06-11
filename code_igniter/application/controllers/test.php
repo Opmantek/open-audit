@@ -46,6 +46,11 @@
  */
 class Test extends CI_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -62,6 +67,12 @@ class Test extends CI_Controller
         }
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
         redirect('/');

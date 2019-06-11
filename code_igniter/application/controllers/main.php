@@ -46,6 +46,11 @@
  */
 class Main extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -54,6 +59,12 @@ class Main extends MY_Controller
         $this->roles = $this->m_roles->collection();
     }
 
+
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function index()
     {
         $this->load->helper('input');

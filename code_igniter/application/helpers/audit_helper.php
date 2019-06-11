@@ -319,11 +319,7 @@ if (!function_exists('audit_format_system')) {
         }
 
         if (empty($input->hostname)) {
-            if (!empty($details->sysName)) {
-                $details->hostname = $details->sysName;
-            } else {
-                $input->hostname = '';
-            }
+            $input->hostname = '';
         }
 
         if (empty($input->last_seen)) {

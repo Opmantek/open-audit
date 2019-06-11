@@ -317,7 +317,7 @@ class M_collection extends MY_Model
                         }
                     }
 
-                    if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries') {
+                    if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries' or $result[$i]->type == 'integrations') {
                         $sql = "SELECT name AS `name` FROM `" . $result[$i]->type . "` WHERE id = ?";
                         $data = array($result[$i]->sub_resource_id);
                         $data_result = $this->run_sql($sql, $data);
@@ -328,59 +328,6 @@ class M_collection extends MY_Model
                         }
                     } else if ($result[$i]->type == 'reports') {
                         $result[$i]->sub_resource_name = "";
-                        // switch ($result[$i]->sub_resource_id) {
-                        //     case '10000':
-                        //         $result[$i]->sub_resource_name = "Devices Discovered Today";
-                        //         break;
-
-                        //     case '10001':
-                        //         $result[$i]->sub_resource_name = "Devices Discovered Yesterday";
-                        //         break;
-
-                        //     case '10002':
-                        //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 7 Days";
-                        //         break;
-
-                        //     case '10003':
-                        //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 30 Days";
-                        //         break;
-
-                        //     case '20000':
-                        //         $result[$i]->sub_resource_name = "Software Discovered Today";
-                        //         break;
-
-                        //     case '20001':
-                        //         $result[$i]->sub_resource_name = "Software Discovered Yesterday";
-                        //         break;
-
-                        //     case '20002':
-                        //         $result[$i]->sub_resource_name = "Software Discovered in the Last 7 Days";
-                        //         break;
-
-                        //     case '20003':
-                        //         $result[$i]->sub_resource_name = "Software Discovered in the Last 30 Days";
-                        //         break;
-
-                        //     case '30000':
-                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 7 Days";
-                        //         break;
-
-                        //     case '30001':
-                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 30 Days";
-                        //         break;
-
-                        //     case '30002':
-                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 90 Days";
-                        //         break;
-
-                        //     case '30003':
-                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 180 Days";
-                        //         break;
-
-                        //     default:
-                        //         $result[$i]->sub_resource_name = "";
-                        //         break;
-                        // }
                     } else {
                         $result[$i]->sub_resource_name = '';
                     }
@@ -619,6 +566,12 @@ class M_collection extends MY_Model
                 $this->session->set_flashdata('warning', $warning);
             }
             $data->other = json_encode($data->other);
+        }
+
+        if ($collection === 'integrations') {
+            if (!empty($data->options)) {
+                $data->options = json_encode($data->options);
+            }
         }
 
         if ($collection === 'ldap_servers') {
@@ -1111,6 +1064,19 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'integrations' and !empty($data->options)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            $existing = new stdClass();
+            if (!empty($result[0]->options)) {
+                $original = json_decode($result[0]->options);
+            }
+            $submitted = $data->options;
+            $merged = $this->deep_merge($original, $submitted);
+            $data->options = (string)json_encode($merged);
+        }
+
         if ($collection === 'ldap_servers') {
             if (!empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);
@@ -1289,6 +1255,10 @@ class M_collection extends MY_Model
                 return(' name org_id description expose sql ');
                 break;
 
+            case "integrations":
+                return(' name org_id description options last_run ');
+                break;
+
             case "ldap_servers":
                 return(' name org_id description lang host port secure domain type version base_dn user_dn user_membership_attribute use_roles dn_account dn_password refresh ');
                 break;
@@ -1423,6 +1393,10 @@ class M_collection extends MY_Model
 
             case "groups":
                 return(array('name','org_id','sql'));
+                break;
+
+            case "integrations":
+                return(array('name','org_id','options'));
                 break;
 
             case "ldap_servers":
