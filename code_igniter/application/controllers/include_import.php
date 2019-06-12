@@ -68,7 +68,7 @@ if ($this->response->meta->collection === 'devices') {
 foreach ($csv as $key => $value) {
     $item = new stdClass();
     for ($i=0; $i < count($value); $i++) {
-        $item->{$header[$i]} = $value[$i];
+        $item->{@$header[$i]} = @$value[$i];
     }
     $item->org_id = @intval($item->org_id);
 
