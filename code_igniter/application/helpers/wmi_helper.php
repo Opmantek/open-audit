@@ -461,7 +461,7 @@ if (! function_exists('copy_to_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             $return = false;
-            $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+            $password = str_replace('"', '\"', $credentials->credentials->password);
 
                  $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . $password;
             $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '******';
@@ -825,7 +825,7 @@ if (! function_exists('copy_from_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+            $password = str_replace('"', '\"', $credentials->credentials->password);
                  $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . $password;
             $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '******';
             exec($command, $output, $return_var);
