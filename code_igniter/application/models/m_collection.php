@@ -999,7 +999,7 @@ class M_collection extends MY_Model
                 if (!empty($received_other->subnet)) {
                     $other->subnet = $received_other->subnet;
                     $data->description = 'Subnet - ' . $received_other->subnet;
-                    if (stripos($received_other->subnet, '-') === false) {
+                    if (stripos($received_other->subnet, '-') === false and stripos($received_other->subnet, ',') === false) {
                         $this->load->helper('network');
                         $temp = network_details($received_other->subnet);
                         if (!empty($temp->error) and filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
