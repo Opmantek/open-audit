@@ -30,8 +30,6 @@
 /*
 UPDATE `roles` SET `permissions` = '{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}' WHERE `name` = 'org_admin';
 
-INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.',,'open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-'
 DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Cloud Region';
 
 DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Cloud Zone';
@@ -254,6 +252,7 @@ CREATE TABLE `integrations` (
 UPDATE `configuration` SET `value` = '20190512' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.1.0' WHERE `name` = 'display_version';
+
 */
 
 $this->log_db('Upgrade database to 3.1.0 commenced');
