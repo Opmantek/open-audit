@@ -112,7 +112,7 @@ try {
 unset($xml_input);
 
 # So we can output back to the discovery script, and continue processing
-echo "";
+echo "Data ";
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
@@ -133,6 +133,7 @@ foreach ($xml->children() as $input) {
         if (!empty($result[0])) {
             $discovery = $result[0];
             $discovery->other = json_decode($discovery->other);
+            $syslog->ip = $input->ip;
             $syslog->severity = 7;
             $syslog->command_status = 'success';
             $syslog->summary = 'Discovery ID ' . $input->discovery_id . ', named ' . $discovery->name . ' staring to process.';
@@ -142,6 +143,7 @@ foreach ($xml->children() as $input) {
             $discovery = new stdClass();
             $discovery->id = '';
             $discovery->discard = '';
+            $syslog->ip = $input->ip;
             $syslog->severity = 4;
             $syslog->status = 'fail';
             $syslog->summary = 'Invalid discovery id (' . $input->discovery_id . ') provided to input::discovery';
@@ -149,6 +151,7 @@ foreach ($xml->children() as $input) {
             stdlog($syslog);
         }
     } else {
+        $syslog->ip = $input->ip;
         $syslog->severity = 4;
         $syslog->status = 'notice';
         $syslog->summary = 'No discovery id provided';
