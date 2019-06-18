@@ -133,35 +133,20 @@ class Util extends CI_Controller
         } elseif ($client == 'windows') {
             $filename = 'audit_windows.vbs';
         }
-        if (file_exists(dirname(dirname(dirname(dirname(__FILE__)))).'/other/'.$filename)) {
-            $file = file(dirname(dirname(dirname(dirname(__FILE__)))).'/other/'.$filename);
-            $variable['submit_online'] = 'y';
-            $variable['create_file'] = 'n';
-            $variable['url'] = base_url().'index.php/input/devices';
-            if (!empty($this->config->config['default_network_address'])) {
-                $variable['url'] = $this->config->config['default_network_address'] .'index.php/input/devices';
-            }
-            $variable['debugging'] = '1';
 
-            $new_line = "";
-            if ($filename != 'audit_windows.vbs') {
-                foreach ($variable as $name => $value) {
-                    $new_line .= "\n" . $name.'="'.$value."\"";
-                }
-            } else {
-                foreach ($variable as $name => $value) {
-                    $new_line .= "\n" . $name.' = "'.$value."\"";
-                }
-            }
-            $new_line .= "\n";
+        $sql = "SELECT `id` AS `id` FROM `scripts` WHERE `name` = '$filename' ORDER BY id LIMIT 1";
+        $query = $this->db->query($sql);
 
-            for ($i=0; $i < count($file); $i++) {
-                if (stripos($file[$i], 'Configuration from web UI here') !== false) {
-                    $file[$i] .= $new_line;
-                    break;
-                }
-            }
+        foreach($query->result_array() as $row) {
+            $id = $row['id'];
+        }
 
+        if (!empty($id)) {
+            $this->load->model('m_scripts');
+            $file = $this->m_scripts->download($id);
+        }
+
+        if (!empty($file)) {
             // Set headers
             header('Cache-Control: public');
             header('Content-Description: File Transfer');
@@ -169,11 +154,9 @@ class Util extends CI_Controller
             header('Content-Type: text/plain');
             header('Content-Transfer-Encoding: binary');
             // echo our file contents
-            foreach ($file as $line => $value) {
-                echo $value;
-            }
+            echo $file;
         } else {
-            # throw an error for invalid type
+            # throw an error for invalid type or script entry not in DB
         }
     }
 
