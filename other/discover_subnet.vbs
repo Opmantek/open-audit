@@ -81,7 +81,6 @@ dim nmap_path : nmap_path = ""
 ' nmap path on a default install is - C:\Program Files (x86)\Nmap\nmap.exe
 ' Only set the above if you have installed into a custom directory AND it is not on your users $path
 
-dim db_ip : db_ip = ""
 dim db_log_ip : db_log_ip = "127.0.0.1"
 dim db_log_message : db_log_message = ""
 dim db_log_duration : db_log_duration = 0
@@ -693,7 +692,7 @@ for each host in hosts
             end if
             db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
             db_log_severity = 6
-            db_log_message = "IP " & host & " responding, " & response_reason & ", adding to device list.. SSH Status: " & ssh_status & ", WMI Status: " & wmi_status & ", SNMP Status: " & snmp_status & "."
+            db_log_message = "IP " & host & " responding, " & response_reason & ", adding to device list. SSH Status: " & ssh_status & ", WMI Status: " & wmi_status & ", SNMP Status: " & snmp_status & "."
             db_log_output = ""
             db_log_command = url
             db_log()
@@ -729,26 +728,28 @@ for each host in hosts
             on error resume next
             objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
             objHTTP.Send "data=" + result + vbcrlf
-
             error_returned = Err.Number
             error_description = Err.Description
             on error goto 0
-            if error_returned <> 0 then
-                if debugging > 0 then
-                    wscript.echo "Cannot send data to URL: " & url
-                    wscript.echo "Error Returned: " & error_returned
-                    wscript.echo "Error Description: " & error_description
-                    wscript.echo "Cannot submit scan result online as requested."
-                end if
-                db_log_message "Error when sending data to URL to submit. " & error_returned
+            db_log_ip = host
+            if (error_returned <> 0 or objHTTP.responseText <> "") then
+                db_log_message = "IP " & host & " had an error when sending data to URL to submit. " & error_returned & " Discovery script continuing to next IP."
                 db_log_status = "fail"
-                db_log_command = url
+                db_log_command = "Error Description: " & error_description & " URL: " & url
                 db_log_severity = 3
-                db_log_output = error_description
-                db_log()
+                db_log_output = "Status: " & objHTTP.Status & " Response: " & objHTTP.responseText
+            else
+                db_log_message = "IP " & host & " has successfully been sent to the server. Discovery script continuing to next IP."
+                db_log_status = "success"
+                db_log_command = "Status: " & objHTTP.Status & " URL: " & url
+                db_log_severity = 7
+                db_log_output = "Response: " & objHTTP.responseText
             end if
+            db_log()
         else
-            wscript.echo "IP " & host & " responding."
+            if debugging > 0 then
+                wscript.echo "IP " & host & " responding."
+            end if
         end if ' submit_online
     else
         if debugging > 0 then 
@@ -862,8 +863,8 @@ function db_log()
     if (db_log_status = "") then
         db_log_status = "notice"
     end if
-    if (db_ip = "") then
-        db_ip = "127.0.0.1"
+    if (db_log_ip = "") then
+        db_log_ip = "127.0.0.1"
     end if
     on error resume next
         Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -874,8 +875,11 @@ function db_log()
         objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=" & db_log_severity & "&pid=" & current_pid & "&ip=" & db_log_ip & "&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=" & db_log_duration & "&command_status=" & db_log_status & "&command_output=" & db_log_output & "&command=" & db_log_command
     on error goto 0
     if (debugging > "0") then
+        wscript.echo "Log Status: " & db_log_status
+        wscript.echo "Log Command: " & db_log_command
         wscript.echo "Log Message: " & db_log_message
         wscript.echo "Log Output: " & db_log_output
+        wscript.echo ""
     end if
     db_log_message = ""
     db_log_command = ""
