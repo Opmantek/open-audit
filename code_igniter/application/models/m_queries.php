@@ -248,7 +248,7 @@ class M_queries extends MY_Model
         if (empty($result)) {
             return array();
         }
-        if (!empty($CI->response->meta->format == 'json')) {
+        if (!empty($CI->response->meta->format) == 'json') {
             if (isset($result[0]->attributes->{'system.credentials'}))  {
                 $this->load->library('encrypt');
                 $this->load->model('m_credentials');
