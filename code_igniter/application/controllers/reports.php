@@ -97,6 +97,18 @@ class Reports extends MY_Controller
         $this->response->data = array_merge($this->response->data, $summaries);
         $this->response->meta->total = count($this->response->data);
         output($this->response);
+
+        $log = new stdClass();
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
+        $log->severity = 7;
+        $log->status = 'success';
+        $log->summary = 'finish';
+        $log->type = 'access';
+        if ($this->config->config['log_level'] == 7) {
+            $log->detail = json_encode($this->response->meta);
+        }
+        stdLog($log);
     }
 }
 // End of file reports.php
