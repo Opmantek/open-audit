@@ -1813,6 +1813,7 @@ DROP TABLE IF EXISTS `logs`;
 CREATE TABLE `logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `request_microtime` varchar(50) NOT NULL DEFAULT '',
   `type` varchar(200) NOT NULL DEFAULT '',
   `severity` int(10) unsigned NOT NULL DEFAULT '0',
   `severity_text` varchar(20) NOT NULL DEFAULT '',
