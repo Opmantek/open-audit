@@ -264,6 +264,7 @@ if (! function_exists('stdlog')) {
 
         // log_details:
         //  timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
+        //  request_microtime - microtime as provided by PHP and store at the start of every request in $CI->config->config['microtime']
         //  severity - default to 5
         //  log level - default to 5, default set in config, can be over written
         //  type - the log file to write to. Default to 'access'.and debug.
@@ -303,6 +304,7 @@ if (! function_exists('stdlog')) {
 
         // setup the default values
         $log = array();
+        $log['request_microtime'] = $CI->config->config['microtime'];
         $log['type'] = 'access';
         $log['severity'] = 7;
         $log['severity_text'] = 'notice';
@@ -424,13 +426,15 @@ if (! function_exists('stdlog')) {
         }
 
         if (intval($CI->config->config['internal_version']) <= 20160820) {
-            $sql = "/* log_helper */" . "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = '" . $CI->db->database . "' AND TABLE_NAME = 'logs'";
-            $query = $CI->db->query($sql);
-            $result = $query->result();
-            if (count($result) === 0) {
+            // $sql = "/* log_helper */" . "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = '" . $CI->db->database . "' AND TABLE_NAME = 'logs'";
+            // $query = $CI->db->query($sql);
+            // $result = $query->result();
+            // if (count($result) === 0) {
+            if (!$CI->db->table_exists('logs')) {
                 $sql = "CREATE TABLE `logs` (
                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                       `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+                      `request_microtime` varchar(50) NOT NULL DEFAULT '',
                       `type` varchar(200) NOT NULL DEFAULT '',
                       `severity` int(10) unsigned NOT NULL DEFAULT 0,
                       `severity_text` varchar(20) NOT NULL DEFAULT '',
@@ -450,7 +454,17 @@ if (! function_exists('stdlog')) {
             }
         }
 
-        $sql = "/* log_helper */ " . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if (!$CI->db->field_exists('request_microtime', 'logs')) {
+            $sql = "SHOW COLUMNS FROM `logs` WHERE Field = 'request_microtime'";
+            $query = $CI->db->query($sql);
+            $result = $query->result();
+            if (count($result) === 0) {
+                $sql = "ALTER TABLE `logs` ADD `request_microtime` varchar(50) NOT NULL DEFAULT '' AFTER `timestamp`";
+                $query = $CI->db->query($sql);
+            }
+        }
+
+        $sql = "/* log_helper */ " . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $query = $CI->db->query($sql, $log);
 
         if ($CI->db->_error_message()) {
