@@ -453,7 +453,7 @@ class Database extends MY_Controller
     * @access public
     * @param  string    table     The table to be altered
     * @param  string    column    The column to be altered
-    * @param  string    change    The change to perform on the table / column
+    * @param  string    change    The change to perform on the table / column - change, drop, add.
     * @param  string    type      Either change, add or drop
     * @return void
     */

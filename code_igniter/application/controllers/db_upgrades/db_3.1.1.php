@@ -28,7 +28,7 @@
 **/
 
 /*
-ALTER TABLE `logs` CHANGE `pid` `pid` varchar(100) NOT NULL DEFAULT '' AFTER `severity_text`;
+ALTER TABLE `logs` ADD `request_microtime` varchar(50) NOT NULL DEFAULT '' AFTER `timestamp`;
 
 UPDATE `configuration` SET `value` = '20190620' WHERE `name` = 'internal_version';
 
@@ -37,7 +37,7 @@ UPDATE `configuration` SET `value` = '3.1.1' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.1.1 commenced');
 
-$this->alter_table('logs', 'pid', "`pid` varchar(100) NOT NULL DEFAULT ''");
+$this->alter_table('logs', 'request_microtime', "ADD `request_microtime` varchar(50) NOT NULL DEFAULT '' AFTER `timestamp`", 'add');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190620' WHERE `name` = 'internal_version'";
