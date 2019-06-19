@@ -150,30 +150,32 @@ $item = $this->response->data[0];
                 </div>
                 <div class="panel-body">
                 <?php
-                foreach ($script_options as $script_option) {
-                    $option_value = '';
-                    foreach ($this->response->included as $option) {
-                        if ($option->id == $script_option) {
-                            foreach ($item->attributes->options as $key => $value) {
-                                if ($key == $script_option) {
-                                    $option_value = $value;
+                if (!empty($script_options)) {
+                    foreach ($script_options as $script_option) {
+                        $option_value = '';
+                        foreach ($this->response->included as $option) {
+                            if ($option->id == $script_option) {
+                                foreach ($item->attributes->options as $key => $value) {
+                                    if ($key == $script_option) {
+                                        $option_value = $value;
+                                    }
                                 }
                             }
                         }
-                    }
-                ?>
-                    <div class="form-group">
-                        <label for="<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" class="col-md-4 control-label"><?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?></label>
-                        <div class="col-sm-7 input-group">
-                            <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" title="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($option_value, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
+                    ?>
+                        <div class="form-group">
+                            <label for="<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" class="col-md-4 control-label"><?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?></label>
+                            <div class="col-sm-7 input-group">
+                                <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" title="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($option_value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
+                            </div>
                         </div>
-                    </div>
-                <?php
+                    <?php
+                    }
                 }
                 ?>
                 </div>
