@@ -8430,6 +8430,8 @@ if (! function_exists('mac_model')) {
 		if ($serial == 'HRMD') { $description = 'MacBook (Retina, 12-inch, Early 2016)'; }
 		if ($serial == 'HRMF') { $description = 'MacBook (Retina, 12-inch, Early 2016)'; }
 		if ($serial == 'HRMG') { $description = 'MacBook (Retina, 12-inch, Early 2016)'; }
+		if ($serial == 'HTD6') { $description = 'MacBook Pro (15-inch, 2017)'; }
+		if ($serial == 'HTD9') { $description = 'MacBook Pro (15-inch, 2017)'; }
 		if ($serial == 'HTDF') { $description = 'MacBook Pro (15-inch, 2017)'; }
 		if ($serial == 'HV29') { $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; }
 		if ($serial == 'HV2D') { $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; }
@@ -8438,17 +8440,26 @@ if (! function_exists('mac_model')) {
 		if ($serial == 'HV2J') { $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; }
 		if ($serial == 'HV2L') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
 		if ($serial == 'HV2M') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
+		if ($serial == 'HV2N') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
 		if ($serial == 'HV2Q') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
 		if ($serial == 'HV2R') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
 		if ($serial == 'HV5J') { $description = 'MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)'; }
 		if ($serial == 'HV5K') { $description = 'MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)'; }
+		if ($serial == 'HX8F') { $description = 'iMac Pro (2017)'; }
 		if ($serial == 'J1GG') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J1GN') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J1GP') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J1GQ') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J3RW') { $description = 'Mac Pro (Late 2013)'; }
 		if ($serial == 'J3RY') { $description = 'Mac Pro (Late 2013)'; }
+		if ($serial == 'J9K2') { $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; }
+		if ($serial == 'JG5J') { $description = 'MacBook Pro (15-inch, 2018)'; }
+		if ($serial == 'JGH7') { $description = 'MacBook Pro (15-inch, 2018)'; }
 		if ($serial == 'JGH8') { $description = 'MacBook Pro (15-inch, 2018)'; }
+		if ($serial == 'JHCD') { $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; }
+		if ($serial == 'JHD4') { $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; }
+
+
 
 		if ($description == '') {
 			$model_xml = @implode('', @file('https://support-sp.apple.com/sp/product?cc='.$serial));
