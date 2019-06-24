@@ -1354,7 +1354,7 @@ class M_device extends MY_Model
         $this->load->model('m_devices');
 
         $log_details = new stdClass();
-        $log_details->message = 'System update start for '.@ip_address_from_db($details->ip).'('.$details->hostname.') (System ID '.$details->id.')';
+        $log_details->message = 'System update start for '.@ip_address_from_db(@$details->ip).'('.@$details->hostname.') (System ID '.@$details->id.')';
         $log_details->severity = 7;
         $log_details->file = 'system';
         if ($display != 'y') {
