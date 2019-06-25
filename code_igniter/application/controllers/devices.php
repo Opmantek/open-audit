@@ -177,6 +177,18 @@ class devices extends MY_Controller
                         }
                     }
                 }
+                // # populate the credentials associated form the last discovery
+                if (!empty($this->response->data[0]->attributes->credentials)) {
+                    $credentials = @json_decode($this->response->data[0]->attributes->credentials);
+                    if (!empty($credentials)) {
+                        $this->load->model('m_credentials');
+                        foreach ($credentials as $credential_id) {
+                            $credential = $this->m_credentials->read($credential_id);
+                            unset($credential[0]->attributes->credentials);
+                            $this->response->included = array_merge($this->response->included, $credential);
+                        }
+                    }
+                }
             }
         }
         $this->response->meta->total = count($this->response->data);
