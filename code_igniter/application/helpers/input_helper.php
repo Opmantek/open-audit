@@ -188,6 +188,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->time_elapsed = 0;
         $CI->response->meta->total = 0;
         $CI->response->meta->timestamp = $CI->config->config['timestamp'];
+        $CI->response->meta->timezone = $CI->config->config['timezone'];
         $CI->response->meta->version = 1;
         $CI->response->meta->filter = array();
         $CI->response->meta->internal = new stdClass();
