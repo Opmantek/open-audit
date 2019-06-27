@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.0
+* @version   3.1.1
 * @link      http://www.open-audit.org
 */
 
@@ -75,69 +75,77 @@ class Migrate extends CI_Controller
         $this->load->library('encrypt');
         
         # credentials
-        $sql = "SELECT * FROM `credentials`";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        foreach ($result as $row) {
-            if (!empty($row->credentials)) {
-                $credentials = $this->encrypt->decode($row->credentials);
-                if (!empty($credentials)) {
-                    $item = new stdClass();
-                    $item->type = 'credentials';
-                    $item->id = $row->id;
-                    $item->credentials = $credentials;
-                    $output[] = $item;
+        if ($this->db->table_exists('credentials')) {
+            $sql = "SELECT * FROM `credentials`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                if (!empty($row->credentials)) {
+                    $credentials = $this->encrypt->decode($row->credentials);
+                    if (!empty($credentials)) {
+                        $item = new stdClass();
+                        $item->type = 'credentials';
+                        $item->id = $row->id;
+                        $item->credentials = $credentials;
+                        $output[] = $item;
+                    }
                 }
             }
         }
 
         # device credentials
-        $sql = "SELECT * FROM `credential`";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        foreach ($result as $row) {
-            if (!empty($row->credentials)) {
-            $credentials = $this->encrypt->decode($row->credentials);
-                if (!empty($credentials)) {
-                    $item = new stdClass();
-                    $item->type = 'credential';
-                    $item->id = $row->id;
-                    $item->credentials = $credentials;
-                    $output[] = $item;
+        if ($this->db->table_exists('credential')) {
+            $sql = "SELECT * FROM `credential`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                if (!empty($row->credentials)) {
+                    $credentials = $this->encrypt->decode($row->credentials);
+                    if (!empty($credentials)) {
+                        $item = new stdClass();
+                        $item->type = 'credential';
+                        $item->id = $row->id;
+                        $item->credentials = $credentials;
+                        $output[] = $item;
+                    }
                 }
             }
         }
 
         # clouds
-        $sql = "SELECT * FROM `clouds`";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        foreach ($result as $row) {
-            if (!empty($row->credentials)) {
-            $credentials = $this->encrypt->decode($row->credentials);
-                if (!empty($credentials)) {
-                    $item = new stdClass();
-                    $item->type = 'clouds';
-                    $item->id = $row->id;
-                    $item->credentials = $credentials;
-                    $output[] = $item;
+        if ($this->db->table_exists('clouds')) {
+            $sql = "SELECT * FROM `clouds`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                if (!empty($row->credentials)) {
+                    $credentials = $this->encrypt->decode($row->credentials);
+                    if (!empty($credentials)) {
+                        $item = new stdClass();
+                        $item->type = 'clouds';
+                        $item->id = $row->id;
+                        $item->credentials = $credentials;
+                        $output[] = $item;
+                    }
                 }
             }
         }
 
         # ldap servers
-        $sql = "SELECT * FROM `ldap_servers`";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        foreach ($result as $row) {
-            if (!empty($row->dn_password)) {
-            $credentials = $this->encrypt->decode($row->dn_password);
-                if (!empty($credentials)) {
-                    $item = new stdClass();
-                    $item->type = 'ldap_servers';
-                    $item->id = $row->id;
-                    $item->credentials = $credentials;
-                    $output[] = $item;
+        if ($this->db->table_exists('ldap_servers')) {
+            $sql = "SELECT * FROM `ldap_servers`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                if (!empty($row->dn_password)) {
+                    $credentials = $this->encrypt->decode($row->dn_password);
+                    if (!empty($credentials)) {
+                        $item = new stdClass();
+                        $item->type = 'ldap_servers';
+                        $item->id = $row->id;
+                        $item->credentials = $credentials;
+                        $output[] = $item;
+                    }
                 }
             }
         }

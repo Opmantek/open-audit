@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.0
+* @version   3.1.1
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
@@ -347,7 +347,7 @@ if (!function_exists('process_scan')) {
         discovery_log($log);
 
         $input->ssh_port = '22';
-        if ($discovery->other->nmap->ssh_ports != '22') {
+        if (!empty($discovery->other->nmap->ssh_ports) and $discovery->other->nmap->ssh_ports != '22') {
             $nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
             foreach (explode(',', $input->nmap_ports) as $port) {
                 $temp = explode('/', $port);
@@ -596,7 +596,7 @@ if (!function_exists('process_scan')) {
             }
         }
         # Android devices typically have a hostname of android-***
-        if (stripos($device->hostname, 'android') !== false or stripos($device->dns_hostname, 'android') !== false) {
+        if ((!empty($device->hostname) and stripos($device->hostname, 'android') !== false) or (!empty($device->dns_hostname) and stripos($device->dns_hostname, 'android') !== false)) {
             # Could be a table or smart phone or anything else.
             # We have no way of knowing so simply setting it to android.
             $device->type = 'android';

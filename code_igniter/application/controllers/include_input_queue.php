@@ -170,7 +170,11 @@ if ($queue == 'scans' and empty($id)) {
                     $execute = true;
                     # run the script and continue (do not wait for result)
                     if (php_uname('s') != 'Windows NT') {
-                        $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/scans/' . $id . ' method=post > /dev/null 2>&1 &';
+                        $instance = '';
+                        if ($this->db->database != 'openaudit') {
+                            $instance = '/' . $this->db->database;
+                        }
+                        $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost' . $instance . '/open-audit/index.php/input/queue/scans/' . $id . ' method=post > /dev/null 2>&1 &';
                         if (php_uname('s') == 'Linux') {
                             $command_string = 'nohup ' . $command_string;
                         }

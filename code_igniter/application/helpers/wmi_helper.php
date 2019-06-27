@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   3.1.0
+ * @version   3.1.1
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -984,7 +984,7 @@ if (! function_exists('wmi_command')) {
             $command_string = "timeout 1m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static-2";
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = $temp[1];
+            $domain = @$temp[1];
             if ($domain != '') {
                 $domain .= '/';
             }

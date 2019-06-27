@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.0
+* @version   3.1.1
 * @link      http://www.open-audit.org
 */
 
@@ -174,6 +174,18 @@ class devices extends MY_Controller
                             $this->load->model('m_racks');
                             $rack = $this->m_racks->read($result[0]->attributes->rack_id);
                             $this->response->included = array_merge($this->response->included, $rack);
+                        }
+                    }
+                }
+                // # populate the credentials associated form the last discovery
+                if (!empty($this->response->data[0]->attributes->credentials)) {
+                    $credentials = @json_decode($this->response->data[0]->attributes->credentials);
+                    if (!empty($credentials)) {
+                        $this->load->model('m_credentials');
+                        foreach ($credentials as $credential_id) {
+                            $credential = $this->m_credentials->read($credential_id);
+                            unset($credential[0]->attributes->credentials);
+                            $this->response->included = array_merge($this->response->included, $credential);
                         }
                     }
                 }

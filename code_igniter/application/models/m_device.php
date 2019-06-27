@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.0
+* @version   3.1.1
 * @link      http://www.open-audit.org
  */
 class M_device extends MY_Model
@@ -1354,7 +1354,7 @@ class M_device extends MY_Model
         $this->load->model('m_devices');
 
         $log_details = new stdClass();
-        $log_details->message = 'System update start for '.@ip_address_from_db($details->ip).'('.$details->hostname.') (System ID '.$details->id.')';
+        $log_details->message = 'System update start for '.@ip_address_from_db(@$details->ip).'('.@$details->hostname.') (System ID '.@$details->id.')';
         $log_details->severity = 7;
         $log_details->file = 'system';
         if ($display != 'y') {

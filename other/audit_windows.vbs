@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-' @version   3.1.0
+' @version   3.1.1
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -104,7 +104,7 @@ self_delete = "n"
 debugging = "1"
 
 ' Version - NOTE, special formatted so we match the *nix scripts and can do find/replace
-version="3.1.0"
+version="3.1.1"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
@@ -2353,11 +2353,8 @@ if (cint(windows_build_number) >= 6000) then
         For Each Monitor In Monitors
           
             device_id = Monitor.InstanceName
-            wscript.echo "Serial"
             serial = BytesToString(Monitor.SerialNumberID)
-            wscript.echo "Model"
             model = BytesToString(Monitor.UserFriendlyName)
-            if debugging > "1" then wscript.echo "  Model: " & model
             edid_version = ""   
             device_id = BytesToString(Monitor.ProductCodeID)
 
@@ -2377,10 +2374,6 @@ if (cint(windows_build_number) >= 6000) then
                 intIndex = MonitorMode.PreferredMonitorSourceModeIndex
                 horizontalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).HorizontalActivePixels)
                 verticalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).VerticalActivePixels)
-                if debugging > "2" then
-                    wscript.echo "    Horizontal Pixels: " & horizontalPixels
-                    wscript.echo "    Vertical Pixels: " & verticalPixels
-                end if
             Next
             on error goto 0
 
@@ -2388,12 +2381,13 @@ if (cint(windows_build_number) >= 6000) then
                 screenResolution = horizontalPixels & " x " & verticalPixels
                 common = gcd(horizontalPixels, verticalPixels)
                 ratio = CStr(horizontalPixels / common)  & ":" & CStr(verticalPixels / common)
-                if ratio="8:5" then ratio="16:10"
-                if debugging > "2" then wscript.echo "    Ratio: " & ratio
+                if ratio = "8:5" then
+                    ratio = "16:10"
+                end if
             end if
-            
+
             set colItems = Nothing
-            
+
             strQuery = "SELECT MaxHorizontalImageSize, MaxVerticalImageSize " & _
                    "FROM WmiMonitorBasicDisplayParams WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
             Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
@@ -2404,7 +2398,6 @@ if (cint(windows_build_number) >= 6000) then
                 Width = MonitorParam.MaxHorizontalImageSize / 2.54
                 Height = MonitorParam.MaxVerticalImageSize / 2.54
                 screen_size = Round(Sqr((Height ^ 2) + (Width ^ 2)),1)
-                if debugging > "2" then wscript.echo "    Size: " & screen_size
             Next
             on error goto 0
 
@@ -2500,8 +2493,18 @@ if (cint(windows_build_number) >= 6000) then
             manufacturer = replace(manufacturer, "@", "")
             manufacturer = replace(manufacturer, "%", "")
             manufacturer = replace(manufacturer, ";", "")
-            
-            if debugging > "2" then wscript.echo "    Manufacturer: " & manufacturer
+
+            if debugging > "2" then
+                wscript.echo "Monitor"
+                wscript.echo "    Manufacturer: " & manufacturer
+                wscript.echo "    Model: " & model
+                wscript.echo "    Serial: " & serial
+                wscript.echo "    Horizontal Pixels: " & horizontalPixels
+                wscript.echo "    Vertical Pixels: " & verticalPixels
+                wscript.echo "    Ratio: " & ratio
+                wscript.echo "    Size: " & screen_size
+            end if
+
             if (manufacturer <> "" and _
                 manufacture_date <> "01/1990" and _
                 model <> "Model Descriptor Not Found in EDID data") then
@@ -2516,9 +2519,12 @@ if (cint(windows_build_number) >= 6000) then
                 item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
                 item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
                 item = item & "     </item>" & vbcrlf
+            else
+                if debugging > "2" then
+                    wscript.echo "    Not recorded as manufacturer, model or date of manufacture not set."
+                end if
             end if
-            
-        Next
+        next
     end if
     if item > "" then
         result.WriteText "  <monitor>" & vbcrlf

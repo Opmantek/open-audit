@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.0
+* @version   3.1.1
 * @link      http://www.open-audit.org
  */
 class M_discoveries extends MY_Model
@@ -172,8 +172,12 @@ class M_discoveries extends MY_Model
             }
             # run the script and continue (do not wait for result)
             if (php_uname('s') != 'Windows NT') {
-                #$command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
-                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $discovery[0]->network_address . 'index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
+                $instance = '';
+                if ($this->db->database != 'openaudit') {
+                    $instance = '/' . $this->db->database;
+                }
+                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost' . $instance . '/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
+                #$command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $discovery[0]->network_address . 'index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
                 if (php_uname('s') == 'Linux') {
                     $command_string = 'nohup ' . $command_string;
                 }
