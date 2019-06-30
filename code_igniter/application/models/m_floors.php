@@ -114,7 +114,7 @@ class M_floors extends MY_Model
             $properties = 'floors.*';
             $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
             $sort = 'ORDER BY floors.name';
-            $limit = 'LIMIT 0,' . $CI->config->item('page_size');
+            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
         }
         $group_by = 'GROUP BY floors.id';
         if (!empty($parent)) {

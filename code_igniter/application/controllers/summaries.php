@@ -61,7 +61,7 @@ class Summaries extends MY_Controller
         }
         $this->load->model('m_summaries');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
         return;
     }
 

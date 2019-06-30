@@ -114,7 +114,7 @@ class M_rows extends MY_Model
             $properties = 'rows.*';
             $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
             $sort = 'ORDER BY rows.name';
-            $limit = 'LIMIT 0,' . $CI->config->item('page_size');
+            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
         }
         $group_by = 'GROUP BY rows.id';
         if (!empty($parent)) {

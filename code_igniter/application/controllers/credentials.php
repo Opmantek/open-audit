@@ -57,7 +57,7 @@ class Credentials extends MY_Controller
         $this->load->library('encrypt');
         $this->load->model('m_credentials');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
     }
 
     /**

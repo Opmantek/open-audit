@@ -100,7 +100,7 @@ class M_rack_devices extends MY_Model
             $properties = 'rack_devices.*';
             $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
             $sort = 'ORDER BY rack_devices.name';
-            $limit = 'LIMIT 0,' . $CI->config->item('page_size');
+            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
         }
         $group_by = 'GROUP BY rack_devices.id';
         if (!empty($parent)) {

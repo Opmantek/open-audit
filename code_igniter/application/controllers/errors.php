@@ -56,7 +56,7 @@ class Errors extends MY_Controller
         parent::__construct();
         $this->load->model('m_errors');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
         unset($this->response->links);
         unset($this->response->included);
     }

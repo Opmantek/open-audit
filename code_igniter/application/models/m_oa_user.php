@@ -426,8 +426,8 @@ class M_oa_user extends MY_Model
 
         // check against AD if configured
         if (!empty($CI->config->config['ad_domain']) and !empty($CI->config->config['ad_server']) and extension_loaded('ldap')) {
-            $ad_ldap_connect = 'ldap://'.$CI->config->item('ad_server');
-            $ad_user = $username.'@'.$CI->config->item('ad_domain');
+            $ad_ldap_connect = 'ldap://'.$CI->config->config['ad_server'];
+            $ad_user = $username.'@'.$CI->config->config['ad_domain'];
             $ad_secret = $password;
             $error_reporting = error_reporting();
             error_reporting(0);

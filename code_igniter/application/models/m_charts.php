@@ -84,7 +84,7 @@ class M_charts extends MY_Model
             $filter = new stdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
-            $temp = $this->config->item('graph_days');
+            $temp = $this->config->config['graph_days'];
             $days = intval($temp);
             if (empty($temp)) {
                 $days = 30;

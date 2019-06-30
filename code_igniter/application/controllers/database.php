@@ -58,7 +58,7 @@ class Database extends MY_Controller
         $this->load->helper('error');
         $this->load->model('m_database');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
     }
 
     /**
@@ -577,7 +577,7 @@ class Database extends MY_Controller
         stdlog($log);
 
         $this->log_db = array();
-        $db_internal_version = $this->config->item('internal_version');
+        $db_internal_version = $this->config->config['internal_version'];
         $this->data['output'] = "";
         
         include "db_upgrades/db_1.08.04.php";

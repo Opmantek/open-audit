@@ -45,8 +45,8 @@
         }
     })(jQuery)
 
-var rssurl = "<?php echo htmlspecialchars( $this->config->item('rss_url') , REPLACE_FLAGS, CHARSET); ?>"
-var rssfeed = $.ajax({ url: "<?php echo htmlspecialchars( $this->config->item('rss_url') , REPLACE_FLAGS, CHARSET); ?>", ifModified: true})
+var rssurl = "<?php echo htmlspecialchars( $this->config->config['rss_url'] , REPLACE_FLAGS, CHARSET); ?>"
+var rssfeed = $.ajax({ url: "<?php echo htmlspecialchars( $this->config->config['rss_url'] , REPLACE_FLAGS, CHARSET); ?>", ifModified: true})
 .done(function(data) {
     var $xml = $(data);
     $xml.find("entry").each(function() {

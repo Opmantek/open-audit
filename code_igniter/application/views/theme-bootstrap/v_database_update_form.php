@@ -49,26 +49,21 @@ $upgrade_message = "";
 
 
 
-if (($this->config->item('display_version') != $this->config->item('web_display_version')) and (!$this->m_users->get_user_permission('', 'database', 'u'))) {
+if (($this->config->config['display_version'] != $this->config->config['web_display_version']) and (!$this->m_users->get_user_permission('', 'database', 'u'))) {
     $upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
 }
 
-if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->m_users->get_user_permission($this->user->id, 'database', 'u') or $this->config->config['internal_version'] < 20160904)) {
+if ($this->config->config['display_version'] != $this->config->config['web_display_version'] and ($this->m_users->get_user_permission($this->user->id, 'database', 'u') or $this->config->config['internal_version'] < 20160904)) {
 
     $upgrade_message = '<div class="form-group"><label for="display_version" class="col-sm-3 control-label">' . __('Database Upgrade Required') . '</label><div class="col-sm-8 input-group">';
 
     $upgrade_message .= '<button class="btn btn-warning" type="submit" name="submit" id="submit">'. __('Upgrade') . '</button>';
 
-    if ($this->config->item('internal_version') < '20190512') {
+    if ($this->config->config['internal_version'] < '20190512') {
         $upgrade_message .= '&nbsp;&nbsp;<strong>NOTE</strong>- Upgrading to 3.1.0 may take some time as we create new indexes on some tables. This will depend on the size of those tables, please be patient.';
     }
 
     $upgrade_message .= '</div></div>';
-
-
-    // if ($this->config->item('internal_version') < 20160104) {
-    //     $upgrade_message .= "<strong>NOTE</strong>- If you have a large dataset, the upgrade to 1.10 may take a while. Please do not refresh the page. Watch your browser page indicator to determine when the upgrade has completed. Do not press the 'stop' button on your browser.<br />It may take a while, but it will complete.";
-    // }
 }
 
 
@@ -93,14 +88,14 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
                     <div class="form-group">
                         <label for="web_display_version" class="col-sm-3 control-label"><?php echo __('Open-AudIT Web Version'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="web_display_version" name="web_display_version" value="<?php echo htmlspecialchars($this->config->item('web_display_version'), REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="web_display_version" name="web_display_version" value="<?php echo htmlspecialchars($this->config->config['web_display_version'], REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="display_version" class="col-sm-3 control-label"><?php echo __('Open-AudIT Database Version'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="display_version" name="display_version" value="<?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="display_version" name="display_version" value="<?php echo htmlspecialchars($this->config->config['display_version'], REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 

@@ -323,11 +323,11 @@ if (!function_exists('audit_format_system')) {
         }
 
         if (empty($input->last_seen)) {
-            $input->last_seen = $CI->config->item('timestamp');
+            $input->last_seen = $CI->config->config['timestamp'];
         }
 
         if (empty($input->timestamp)) {
-            $input->timestamp = $CI->config->item('timestamp');
+            $input->timestamp = $CI->config->config['timestamp'];
         }
 
         if (!empty($input->type)) {

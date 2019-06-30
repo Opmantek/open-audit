@@ -153,7 +153,7 @@ if (! function_exists('output')) {
                         }
                     }
                 }
-                $test = @$CI->config->item('decrypt_credentials');
+                $test = @$CI->config->config['decrypt_credentials'];
                 if (!empty($test) and $test != 'y') {
                     for ($i=0; $i < count($CI->response->data); $i++) {
                         $fields = array('key','secret_key');
@@ -176,7 +176,7 @@ if (! function_exists('output')) {
                         }
                     }
                 }
-                $test = @$CI->config->item('decrypt_credentials');
+                $test = @$CI->config->config['decrypt_credentials'];
                 if (!empty($test) and $test != 'y') {
                     for ($i=0; $i < count($CI->response->data); $i++) {
                         $fields = array('community', 'security_name', 'authentication_passphrase', 'privacy_passphrase', 'password', 'ssh_key');
@@ -367,7 +367,7 @@ if (! function_exists('output')) {
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
 
         # Each individual data line
-        $output_escape_csv = @$CI->config->item('output_escape_csv');
+        $output_escape_csv = @$CI->config->config['output_escape_csv'];
         if (!empty($CI->response->data)) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
@@ -397,7 +397,7 @@ if (! function_exists('output')) {
                 unset($line_array);
             }
         }
-        if ((string) $CI->config->item('download_reports') === 'y') {
+        if ((string) $CI->config->config['download_reports'] === 'y') {
             echo $output_csv;
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
@@ -425,7 +425,7 @@ if (! function_exists('output')) {
         $CI->output->enable_profiler(false);
 
         header('Content-Type: application/json');
-        if ((string) $CI->config->item('download_reports') === 'y') {
+        if ((string) $CI->config->config['download_reports'] === 'y') {
             if (!empty($CI->response->meta->heading)) {
                 $filename = $CI->response->meta->heading;
             } else if (!empty($CI->response->meta->collection)) {
@@ -724,7 +724,7 @@ if (! function_exists('output')) {
             $output .= "\t</item>\n";
         }
         $output .=  "</" . $CI->response->meta->collection . ">\n";
-        if ((string) $CI->config->item('download_reports') === 'y') {
+        if ((string) $CI->config->config['download_reports'] === 'y') {
             header('Content-Type: text/xml');
             header('Content-Disposition: attachment;filename="' . $filename . '.xml"');
             header('Cache-Control: max-age=0');
@@ -832,7 +832,7 @@ if (! function_exists('output')) {
             $query_parameters = $CI->response->meta->query_parameters;
             if (!empty($CI->response->meta->offset)) {
                 $temp = intval($CI->response->meta->limit);
-                if (empty($temp)) { $temp = $CI->config->item('page_size'); }
+                if (empty($temp)) { $temp = $CI->config->config['page_size']; }
                 if ($temp < 0) { $temp = 0; }
                 $offset = intval($CI->response->meta->offset - $temp);
                 if (!empty($offset)) {
@@ -876,7 +876,7 @@ if (! function_exists('output')) {
             $query_parameters = $CI->response->meta->query_parameters;
             if ($CI->response->meta->total > $CI->response->meta->limit) {
                 $temp = intval($CI->response->meta->limit);
-                if (empty($temp)) { $temp = $CI->config->item('page_size'); }
+                if (empty($temp)) { $temp = $CI->config->config['page_size']; }
                 if ($temp < 0) { $temp = 0; }
                 $offset = intval($CI->response->meta->total) - intval($temp);
                 $hit = false;
@@ -921,7 +921,7 @@ if (! function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        if ((string) $CI->config->item('download_reports') === 'y') {
+        if ((string) $CI->config->config['download_reports'] === 'y') {
             header('Content-Type: text/html');
             header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
             header('Cache-Control: max-age=0');
@@ -950,7 +950,7 @@ if (! function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        if ((string) $CI->config->item('download_reports') === 'y') {
+        if ((string) $CI->config->config['download_reports'] === 'y') {
             header('Content-Type: text/html');
             header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
             header('Cache-Control: max-age=0');

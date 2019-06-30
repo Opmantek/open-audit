@@ -113,7 +113,7 @@ class M_rooms extends MY_Model
             $properties = 'rooms.*';
             $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
             $sort = 'ORDER BY rooms.name';
-            $limit = 'LIMIT 0,' . $CI->config->item('page_size');
+            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
         }
         $group_by = 'GROUP BY rooms.id';
         if (!empty($parent)) {

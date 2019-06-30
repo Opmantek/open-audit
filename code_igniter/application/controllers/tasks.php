@@ -56,7 +56,7 @@ class tasks extends MY_Controller
         parent::__construct();
         $this->load->model('m_tasks');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
     }
 
     public function index()

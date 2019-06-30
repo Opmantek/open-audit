@@ -56,7 +56,7 @@ class Help extends MY_Controller
         parent::__construct();
         $this->load->model('m_help');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
         $this->response->meta->collection = 'help';
         $this->response->meta->heading = 'Help';
         $this->load->model('m_files');

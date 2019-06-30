@@ -113,7 +113,7 @@ class M_buildings extends MY_Model
             $properties = 'buildings.*';
             $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
             $sort = 'ORDER BY buildings.name';
-            $limit = 'LIMIT 0,' . $CI->config->item('page_size');
+            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
         }
         $group_by = 'GROUP BY buildings.id';
         if (!empty($parent)) {

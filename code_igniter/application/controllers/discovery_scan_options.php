@@ -56,7 +56,7 @@ class Discovery_scan_options extends MY_Controller
         parent::__construct();
         $this->load->model('m_discovery_scan_options');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
     }
 
     /**
