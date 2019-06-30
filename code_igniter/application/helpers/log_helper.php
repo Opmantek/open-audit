@@ -368,7 +368,7 @@ if (! function_exists('stdlog')) {
         }
 
         if (empty($log_details->log_level)) {
-            $log_level = intval($CI->config->config['log_level']);
+            $log_level = intval($CI->config->item('log_level'));
         } else {
             $log_level = intval($log_details->log_level);
         }
