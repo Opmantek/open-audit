@@ -219,9 +219,9 @@ class M_configuration extends MY_Model
         $result = $this->run_sql($sql, array());
         $this->config->config['timezone'] = $result[0]->tz;
         if ($this->config->config['timezone'] >= 0) {
-            $this->config->config['timezone'] = 'GMT +' . $this->config->config['timezone'];
+            $this->config->config['timezone'] = 'UTC +' . $this->config->config['timezone'];
         } else {
-            $this->config->config['timezone'] = 'GMT ' . $this->config->config['timezone'];
+            $this->config->config['timezone'] = 'UTC ' . $this->config->config['timezone'];
         }
 
         # get the server OS
