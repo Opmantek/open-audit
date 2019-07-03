@@ -66,7 +66,7 @@ if (! function_exists('set_collection')) {
     {
         $CI = & get_instance();
         $collection = @$CI->uri->segment(1);
-        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','integrations','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
+        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','conditions','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','integrations','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
             # a valid collection
         } else {
@@ -201,7 +201,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
 
-        $collections = ' agents applications attributes charts clouds collectors configuration connections credentials dashboards database devices discoveries errors fields files graphs groups invoices invoice_items ldap_servers licenses locations logs networks nmis orgs queue queries racks reports roles scripts search sessions summaries tasks users widgets ';
+        $collections = ' agents applications attributes charts clouds collectors conditions configuration connections credentials dashboards database devices discoveries errors fields files graphs groups invoices invoice_items ldap_servers licenses locations logs networks nmis orgs queue queries racks reports roles scripts search sessions summaries tasks users widgets ';
         $collection = '';
 
         # Allow for URLs thus:
