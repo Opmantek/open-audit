@@ -127,7 +127,7 @@ if [ "$help" = "y" ]; then
 	echo "        - https://nmap.org/book/man-performance.html"
 	echo ""
 	echo "  url"
-	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo "    *http://localhost/open-audit/index.php/input/discoveries - The http url of the Open-AudIT Server used to submit the result to."
 	echo ""
 	echo ""
 	echo "NOTE - The netstat section can take a few minutes to complete."
@@ -162,7 +162,7 @@ function db_log()
 	if [ -z "$status" ]; then
 		status="notice"
 	fi
-	log_url=`echo "${url/input\/discoveries/input\/logs}"`
+	log_url=`echo "${url/discoveries/logs}"`
 	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=$ip&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command" -X POST -k $log_url
 	if [ "$debugging" -gt 0 ]; then
 		echo "$1"
@@ -646,11 +646,11 @@ for host in $alive_ips; do
 	if [ -n "$nmap_tcp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host # Top TCP Ports"
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Top TCP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
+		db_log "Nmap Command (Top TCP Ports)" "$nmap_timer_end" "" "7" "" "" "$command # Top TCP Ports" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -671,11 +671,11 @@ for host in $alive_ips; do
 	if [ -n "$nmap_udp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host # Top UDP Ports"
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Top UDP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
+		db_log "Nmap Command (Top UDP Ports)" "$nmap_timer_end" "" "7" "" "" "$command # Top UDP Ports" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -696,11 +696,11 @@ for host in $alive_ips; do
 	if [ -n "$tcp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host # Custom TCP Ports"
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Custom TCP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
+		db_log "Nmap Command (Custom TCP Ports)" "$nmap_timer_end" "" "7" "" "" "$command # Custom TCP Ports" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -721,11 +721,11 @@ for host in $alive_ips; do
 	if [ -n "$udp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host # Custom UDP Ports"
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Custom UDP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
+		db_log "Nmap Command (Custom UDP Ports)" "$nmap_timer_end" "" "7" "" "" "$command # Custom UDP Ports" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
