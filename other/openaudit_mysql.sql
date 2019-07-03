@@ -387,7 +387,7 @@ CREATE TABLE `audit_log` (
   `version` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
-  KEY `audit_log_system_id_type` (`system_id`, `type`),
+  KEY `audit_log_system_id_type` (`system_id`,`type`),
   CONSTRAINT `audit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -660,6 +660,36 @@ CREATE TABLE `collectors` (
 LOCK TABLES `collectors` WRITE;
 /*!40000 ALTER TABLE `collectors` DISABLE KEYS */;
 /*!40000 ALTER TABLE `collectors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `conditions`
+--
+
+DROP TABLE IF EXISTS `conditions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `conditions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `weight` int(10) unsigned NOT NULL DEFAULT '100',
+  `inputs` text NOT NULL,
+  `outputs` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `conditions`
+--
+
+LOCK TABLES `conditions` WRITE;
+/*!40000 ALTER TABLE `conditions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `conditions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3306,6 +3336,7 @@ CREATE TABLE `system` (
   `os_version` varchar(200) NOT NULL DEFAULT '',
   `attached_system_id` int(10) DEFAULT NULL,
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `manufacturer_code` varchar(200) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
   `serial` varchar(200) NOT NULL DEFAULT '',
   `uptime` varchar(50) NOT NULL DEFAULT '',
@@ -3386,6 +3417,8 @@ CREATE TABLE `system` (
   `sysName` varchar(255) NOT NULL DEFAULT '',
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
   `snmp_version` varchar(10) NOT NULL DEFAULT '',
+  `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen_by` varchar(150) NOT NULL DEFAULT '',
