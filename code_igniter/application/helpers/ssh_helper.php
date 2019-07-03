@@ -944,6 +944,12 @@ if (! function_exists('ssh_audit')) {
         unset($device->osx_os_version);
         if (empty($device->serial) and !empty($device->osx_serial)) {
             $device->serial = $device->osx_serial;
+            if (strlen($device->serial) == 11) {
+                $device->manufacturer_code = substr($device->serial, -3);
+            }
+            if (strlen($device->serial) == 12) {
+                $device->manufacturer_code = substr($device->serial, -4);
+            }
         }
         unset($device->osx_serial);
         # DD-WRT items
