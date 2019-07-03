@@ -224,7 +224,6 @@ if ($table == 'collectors') {
         It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
-    $dictionary->notes = '';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -240,6 +239,26 @@ if ($table == 'collectors') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','status');
     $dictionary->attributes->update = array('name','org_id','description','ip','status','check_minutes','user_id','uuid','network_address','options');
+}
+
+if ($table == 'conditions') {
+    $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
+    $dictionary->marketing = '<p>Conditions are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Conditions are used to apply attribute details to a device, depending on it\'s other attributes<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->weight = 'A lower number means it will have a lower preference for being applied, versus other conditions.';
+    $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match.';
+    $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','weight','inputs','outputs');
+    $dictionary->attributes->update = array('name','org_id','description','weight','inputs','outputs');
 }
 
 if ($table == 'connections') {
