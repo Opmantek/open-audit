@@ -33,7 +33,7 @@ $this->log_db('Upgrade database to 3.0.2 commenced');
 $this->alter_table('discoveries', 'options', "`options` TEXT NOT NULL AFTER other");
 
 # discovery_scan_options
-$this->alter_table('discovery_scan_options', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
+$this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
 
 # widgets
 $sql = "SELECT * FROM `widgets`";
