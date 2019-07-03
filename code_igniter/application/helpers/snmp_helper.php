@@ -354,6 +354,7 @@ if (!function_exists('snmp_audit')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
+        $CI->load->model('m_conditions');
 
         $log->file = 'snmp_helper';
         $log->function = 'snmp_audit';
@@ -463,9 +464,7 @@ if (!function_exists('snmp_audit')) {
         $log->command_status = 'notice';
         discovery_log($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
-
         $details->location = $details->sysLocation;
-
 
         $log->message = 'sysUpTime retrieval for '.$ip;
         $log->command = 'snmpget 1.3.6.1.2.1.1.3.0';
@@ -487,14 +486,6 @@ if (!function_exists('snmp_audit')) {
         } else {
             $details->uptime = intval($details->sysUpTime / 100);
         }
-        // if (!empty($details->uptime)) {
-        //     $log->message = 'derive uptime from sysUpTime for '.$ip;
-        //     $log->command = '';
-        //     $log->command_output = (string)$details->uptime;
-        //     $log->command_time_to_execute = (microtime(true) - $item_start);
-        //     discovery_log($log);
-        //     unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
-        // }
 
         $log->message = 'sysObjectID retrieval for '.$ip;
         $log->command = 'snmpget 1.3.6.1.2.1.1.2.0';
@@ -509,39 +500,46 @@ if (!function_exists('snmp_audit')) {
         unset($log->id, $log->command, $log->command_time_to_execute);
 
         $details->snmp_oid = (string)$details->sysObjectID;
+        $details->snmp_enterprise_id = '';
+        if (!empty($details->snmp_oid)) {
+            if (substr($details->snmp_oid, 0, 1) == ".") {
+                $temp = substr($details->snmp_oid, 1, strlen($details->snmp_oid));
+            } else {
+                $temp = $details->snmp_oid;
+            }
+            $temp_array = explode('.', $temp);
+            if (!empty($temp_array[6])) {
+                $details->snmp_enterprise_id = @intval($temp_array[6]);
+            }
+        }
 
-        if ($details->snmp_oid > '') {
-            $log->message = 'Manufacturer from sysObjectID retrieval for '.$ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-            $details->manufacturer = get_oid($details->snmp_oid);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_output = (string)$details->manufacturer;
-            $log->command_status = 'notice';
-            if ($details->manufacturer == 'net-snmp') {
-                $details->manufacturer = (string)'';
-                $log->command_output = 'net-snmp (removing)';
-            }
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
-        }
+        $log->message = 'snmp_enterprise_id set for '.$ip;
+        $log->command = 'snmp_enterprise_id';
+        $log->command_status = 'notice';
+        $item_start = microtime(true);
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = $details->snmp_enterprise_id;
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
         # sometimes we get an OID, but not enough to specify a manufacturer
-        $explode = explode(".", $details->snmp_oid);
-        if (!isset($explode[6])) {
-            $vendor_oid = 0;
-            if (strpos($details->sysDescr, "ZyXEL") !== false) {
-                # we have a Zyxel device
-                $vendor_oid = 890;
-            }
-        } else {
-            $vendor_oid = intval($explode[6]);
+        if (empty($details->snmp_enterprise_id)) {
+            $details->snmp_enterprise_id = 0;
         }
-        if (file_exists(BASEPATH.'../application/helpers/snmp_'.$vendor_oid.'_helper.php')) {
-            $log->message = 'Loading the snmp helper for '.$vendor_oid.' when scanning '.$ip;
+
+        if (!empty($details->sysDescr) and stripos($details->sysDescr, 'ZyXEL') !== false) {
+            $details->snmp_enterprise_id = 890;
+        }
+
+        if (!empty($details->sysDescr) and (stripos($details->sysDescr, 'synology') !== false or stripos($details->sysDescr, 'diskstation') !== false)) {
+            $details->snmp_enterprise_id = 6574;
+        }
+
+        if (file_exists(BASEPATH.'../application/helpers/snmp_'.$details->snmp_enterprise_id.'_helper.php')) {
+            $log->message = 'Loading the snmp helper for '.$details->snmp_enterprise_id.' when scanning '.$ip;
             discovery_log($log);
             unset($get_oid_details);
-            include 'snmp_'.$vendor_oid."_helper.php";
+            include 'snmp_'.$details->snmp_enterprise_id."_helper.php";
             $log->message = 'Specific details based on sysObjectID retrieval for '.$ip;
             $log->command_status = 'notice';
             $item_start = microtime(true);
@@ -553,91 +551,23 @@ if (!function_exists('snmp_audit')) {
                 $log->command_output = $value;
                 discovery_log($log);
             }
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_status = 'notice';
-            #discovery_log($log);
             unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
             unset($new_details);
         } else {
-            $log->message = 'No snmp helper for '.$vendor_oid.' when scanning '.$ip;
+            $log->message = 'No snmp helper for '.$details->snmp_enterprise_id.' when scanning '.$ip;
             discovery_log($log);
             $log->severity = 7;
         }
-        if (!empty($details->sysDescr) and stripos($details->sysDescr, 'dd-wrt') !== false) {
-            $details->os_group = 'Linux';
-            $details->os_name = 'DD-WRT';
-            $details->type = 'router';
-            $log->message = 'Device is running DD-WRT according to sysDescr for '.$ip;
-            discovery_log($log);
-        }
-        if (!empty($details->sysDescr) and stripos($details->sysDescr, "Darwin Kernel Version 12") !== false) {
-            $details->manufacturer = "Apple Inc";
-            $details->os_family = 'Apple OSX';
-            $log->message = 'Device is running Darwin according to sysDescr for '.$ip;
-            discovery_log($log);
-        }
-        if (!empty($details->manufacturer) and (stripos($details->manufacturer, 'tplink') !== false or stripos($details->manufacturer, 'tp-link') !== false)) {
-            $details->manufacturer = 'TP-Link Technology';
-        }
-        if (!empty($details->sysDescr) and stripos($details->sysDescr, "Apple AirPort") !== false) {
-            $details->model = 'Apple AirPort';
-            $details->type = 'wap';
-            $log->message = 'Device is a (wap) Apple Airport according to sysDescr for '.$ip;
-            discovery_log($log);
-        }
-        if (!empty($details->sysDescr) and stripos($details->sysDescr, 'buffalo terastation') !== false) {
-            $details->manufacturer = 'Buffalo';
-            $details->model = 'TeraStation';
-            $details->type = 'nas';
-            $log->message = 'Device is a (nas) Buffalo Terastation according to sysDescr for '.$ip;
-            discovery_log($log);
-        }
-        if (!empty($details->sysDescr) and (stripos($details->sysDescr, 'synology') !== false or stripos($details->sysDescr, 'diskstation') !== false)) {
-            $details->manufacturer = 'Synology';
-            $log->message = 'Model for Synology retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.4.1.6574.1.5.1.0';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-            $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6574.1.5.1.0");
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_output = (string)$temp;
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
-            $details->model = trim('DiskStation '.$temp);
 
-            $log->message = 'Serial for Synology retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.4.1.6574.1.5.2.0';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-            $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6574.1.5.2.0");
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_output = (string)$details->serial;
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+        $parameters = new stdClass();
+        $parameters->device = $details;
+        $parameters->discovery_id = intval($log->discovery_id);
+        $parameters->action = 'return';
+        $details = $CI->m_conditions->execute($parameters);
 
-            $details->type = 'nas';
-            $details->os_group = 'Linux';
-            $details->os_family = 'Synology DSM';
-
-            $log->message = 'OS Name for Synology retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.4.1.6574.1.5.3.0';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-            $details->os_name = 'Synology '.my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6574.1.5.3.0");
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_output = (string)$details->os_name;
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
-        }
         // Ubiquiti specific items to determine manufacturer
-        $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.1.9.1.3");
-        foreach ($i as $line) {
+        $temp_services = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.1.9.1.3");
+        foreach ($temp_services as $line) {
             if (strpos($line, 'Ubiquiti') !== false) {
                 $details->manufacturer = 'Ubiquiti Networks Inc.';
                 $log->message = 'Manufacturer set to Ubiquiti '.$ip . ', because in services list.';
@@ -727,11 +657,6 @@ if (!function_exists('snmp_audit')) {
                     }
                 }
             }
-        }
-
-        if (!empty($details->model) and strpos($details->model, 'UBNT ') !== false) {
-            $details->manufacturer = 'Ubiquiti Networks Inc.';
-            $details->os_group = 'Linux';
         }
 
         // serial
@@ -1244,13 +1169,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
-
-            // $log->message = 'Processing modules for '.$ip;
-            // $log->command_status = 'fail';
-            // $log->id = discovery_log($log);
-            // $item_start = microtime(true);
             foreach ($modules_list as $key => $value) {
-
                 $module = new stdClass();
                 $module->description = $value;
                 $module->module_index = str_replace('.1.3.6.1.2.1.47.1.1.1.1.2.', '', $key);
@@ -1310,10 +1229,6 @@ if (!function_exists('snmp_audit')) {
 
                 $modules[] = $module;
             }
-            // $log->command_time_to_execute = (microtime(true) - $item_start);
-            // $log->command_status = 'notice';
-            // discovery_log($log);
-            // unset($log->id, $log->command, $log->command_time_to_execute);
         }
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
@@ -1509,16 +1424,7 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            // $log->message = 'Processing interfaces for '.$ip;
-            // $log->command_status = 'fail';
-            // $log->id = discovery_log($log);
-            // $item_start = microtime(true);
-
             foreach ($interfaces as $key => $value) {
-                // $log->message = 'Processing interface '. $value .' for '.$ip;
-                // $log->id = discovery_log($log);
-                // $item_start = microtime(true);
-
                 $interface = new stdclass();
                 $interface->net_index = $value;
 
@@ -1596,25 +1502,18 @@ if (!function_exists('snmp_audit')) {
                     //     $interfaces_filtered[] = $interface;
                     // }
                 }
-                // $log->command_time_to_execute = (microtime(true) - $item_start);
-                // discovery_log($log);
-                // unset($log->id, $log->command, $log->command_time_to_execute);
             }
-
-            // $log->command_time_to_execute = (microtime(true) - $item_start);
-            // $log->command_status = 'notice';
-            // discovery_log($log);
-            // unset($log->id, $log->command, $log->command_time_to_execute);
         } // end of network interfaces
 
         // Special for ExaBlaze
         if (!isset($modules_list) or !is_array($modules_list) or count($modules_list) === 0) {
-            if ($vendor_oid == 43296) {
+            if ($details->snmp_enterprise_id == 43296) {
                 $interfaces_filtered = @$get_modules($ip, $credentials, $log, $log->discovery_id, $details->id);
                 unset($log->id, $log->command, $log->command_time_to_execute);
             }
         }
 
+        # Check and set the default IP/MAC/Subnet
         if (!empty($details->mac_address) and !empty($details->ip) and empty($return_ips->item)) {
             $new_ip = new stdclass();
             $new_ip->net_index = 0;
@@ -1633,7 +1532,7 @@ if (!function_exists('snmp_audit')) {
 
         // Virtual Guests
         $guests = array();
-        if ($vendor_oid == 6876) {
+        if ($details->snmp_enterprise_id == 6876) {
             if (file_exists(BASEPATH.'../application/helpers/snmp_6876_2_helper.php')) {
                 $log->severity = 7;
                 $log->message = 'snmp_helper::snmp_audit is loading the model helper for VMware virtual guests';
