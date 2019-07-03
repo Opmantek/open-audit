@@ -41,47 +41,16 @@
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.43296.3') { $details->model = 'ExaLINK Fusion'; $details->type = 'switch'; }
-
-    $model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43296.3.1.3");
-    if (!empty($model)) {
-        $details->model = $details->model . " " . $model;
-    }
-    unset($model);
-
-    # serial
+    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43296.3.1.3");
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43296.3.1.1");
-
     return($details);
 };
 
 $get_modules = function ($ip, $credentials, $discovery_id, $system_id) {
 
     $modules = array();
-
-    $log = new stdClass();
-    $log->command = 'snmpwalk 1.3.6.1.4.1.43296.3.1.5.1.1';
-    $log->command_status = 'fail';
-    $log->discovery_id = $discovery_id;
-    $log->file = 'snmp_43296_helper';
-    $log->function = 'get_modules';
-    $log->ip = $ip;
-    $log->message = 'Line Card retrieval for '.$ip;
-    $log->pid = getmypid();
-    $log->severity = 7;
-    $log->system_id = $system_id;
-    $log->timestamp = date('Y-m-b H:M:i');
-    $item_start = microtime(true);
-    $log->id = discovery_log($log);
-
     # line cards
     $modules_list = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.43296.3.1.5.1.1');
-    $log->command_time_to_execute = (microtime(true) - $item_start);
-    $log->command_output = 'Count is ' . @count($modules_list);
-    $log->command_status = '';
-    discovery_log($log);
-    unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
-
     if (!empty($modules_list)) {
         $names = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.43296.3.1.5.1.2');
     }

@@ -48,8 +48,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_family = '';
     $details->os_name = '';
     $details->icon = 'computer';
-
-
     # try to determine if this is a VMware virtual machine
     $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.25.6.3.1.2");
     if (count($i) > 0) {
@@ -60,7 +58,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
             }
         }
     }
-
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.77.1.2.1.0");
     return($details);
 };

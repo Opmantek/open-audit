@@ -38,10 +38,20 @@ if (!defined('BASEPATH')) {
 * @link      http://www.open-audit.org
  */
 
-# Vendor Siklu
+# Vendor Synology
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.31926') { $details->model = 'EtherHaul-2200FX'; $details->type = 'wireless link'; $details->manufacturer = 'Siklu'; }
+    $details->type = 'nas';
+    $details->os_group = 'Linux';
+    $details->os_family = 'Synology DSM';
+    $details->manufacturer = 'Synology';
+    $details->model = 'DiskStation';
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6574.1.5.2.0");
+    $details->os_name = 'Synology '.my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6574.1.5.3.0");
+    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6574.1.5.1.0");
+    if (!empty($temp)) {
+        $details->model = trim('DiskStation '.$temp);
+    }
     return($details);
 };

@@ -42,7 +42,9 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.1429.2.2.6.2') { $details->model = 'D98xx Program Receiver'; $details->type = 'satellite receiver'; $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.1429.2.2.4.1.7.0"); }
+    if ($oid == '1.3.6.1.4.1.1429.2.2.6.2') {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.1429.2.2.4.1.7.0");
+    }
     # attempt to refine the model number
     $temp_model = '';
     $temp_model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.1429.2.2.4.1.6.0");
@@ -54,6 +56,5 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     unset($temp_model);
     unset($tmp_array);
-    if ($oid == '1.3.6.1.4.1.1429.2.1.6.1.0.2.0.1') { $details->model = 'WebSTAR DPC2100 Series'; $details->type = 'cable modem'; }
     return($details);
 };

@@ -43,15 +43,9 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-
-    # manufacturer
     $details->manufacturer = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.2.5");
     $details->os_name = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.4.5");
-
-    # serial
     $details->serial = my_snmp_get($ip, $credentials, "1.2.840.10036.1.1.1.1.5");
-
-    # model
     $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.5");
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.10");
@@ -62,6 +56,5 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.41112.1.6.3.3");
     }
-
     return($details);
 };

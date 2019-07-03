@@ -42,10 +42,8 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    
     $details->type = 'router';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.7.3.0");
-
     $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
     if ($temp == "RouterOS CHR") {
         $details->model = "Cloud Hosted Router";
@@ -55,15 +53,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = implode(' ', $temp);
         unset($temp);
     }
-
     $details->os_group = 'Linux';
     $details->os_family = 'RouterOS';
     $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.17.1.1.4.1");
-
     if (stripos($details->model, 'RB921UAGS-5SHPacT')) {
-        $details->type = 'wireless router'; }
-
-
-
+        $details->type = 'wireless router';
+    }
     return($details);
 };

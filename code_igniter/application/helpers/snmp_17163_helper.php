@@ -42,17 +42,11 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    # http://www.circitor.fr/Mibs/Html/STEELHEAD-MIB.php
-    #if ($oid == '1.3.6.1.4.1.17163.1.1') { $details->model = 'Riverbed Steelhead XX20'; $details->type = 'wan accelerator'; }
-    #if ($oid == '1.3.6.1.4.1.17163.1.2') { $details->model = 'Riverbed Steelhead CMC8000'; $details->type = 'wan accelerator'; }
-    #if ($oid == '1.3.6.1.4.1.17163.1.3') { $details->model = 'Riverbed Steelhead IC9200'; $details->type = 'wan accelerator'; }
     $details->type = 'wan accelerator';
-    # model
     $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.1.1.1.0");
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.51.1.1.0");
     }
-    # serial
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.1.1.2.0");
     if (empty($details->serial)) {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.51.1.2.0");

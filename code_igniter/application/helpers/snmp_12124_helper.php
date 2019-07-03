@@ -42,7 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-
     if ($oid == '1.3.6.1.4.1.12124.1') { $details->type = 'storage misc'; }
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.3.1");
     $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.4.1");
