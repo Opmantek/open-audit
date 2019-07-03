@@ -39,7 +39,11 @@ UPDATE `configuration` SET `value` = '3.2.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.2.0 commenced');
 
+$this->alter_table('cluster', 'status', "ADD `status` varchar(100) NOT NULL DEFAULT '' AFTER purpose", 'add');
+
 $this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
+
+$this->alter_table('system', 'cluster_id', "ADD `cluster_id` int(10) unsigned DEFAULT NULL AFTER cluster_type", 'add');
 
 $this->alter_table('system', 'manufacturer_code', "ADD `manufacturer_code` varchar(200) NOT NULL DEFAULT '' AFTER manufacturer", 'add');
 

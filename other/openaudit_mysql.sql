@@ -613,6 +613,7 @@ CREATE TABLE `cluster` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',
   `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -3373,6 +3374,7 @@ CREATE TABLE `system` (
   `vm_group` varchar(150) NOT NULL DEFAULT '',
   `cluster_name` varchar(150) NOT NULL DEFAULT '',
   `cluster_type` varchar(150) NOT NULL DEFAULT '',
+  `cluster_id` int(10) unsigned DEFAULT NULL,
   `invoice_id` int(10) unsigned DEFAULT NULL,
   `purchase_invoice` varchar(50) NOT NULL DEFAULT '',
   `purchase_order_number` varchar(50) NOT NULL DEFAULT '',
