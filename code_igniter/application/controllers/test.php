@@ -78,178 +78,41 @@ class Test extends CI_Controller
         redirect('/');
     }
 
-    public function ttt()
+    public function test_conditions_json()
     {
-
-        $t1 = microtime(true);
-        $device = new stdClass();
-        $device->id = 1;
-        $device->snmp_oid = '1.3.6.1.4.1.9.12.3.1.11.3';
-
-        echo "<pre>\n";
-        echo "\n\n\n\n\nBEFORE\n";
-        print_r($device);
-        echo "\n\n\n\n\nAFTER\n";
-
         $sql = "SELECT * FROM conditions";
         $query = $this->db->query($sql);
-        $result = $query->result();
-        $t2 = microtime(true);
-
-        foreach ($result as $condition) {
-            #echo "$condition->name\n";
-            $condition->inputs = json_decode($condition->inputs);
-            $condition->outputs = json_decode($condition->outputs);
-
-            $input_count = count($condition->inputs);
-            $hit = 0;
-            foreach ($condition->inputs as $input) {
-                switch ($input->operator) {
-                    case 'eq':
-                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} == $input->value) {
-                            echo "hit on " . $device->{$input->attribute} . " eq " . $input->value . " for " . $condition->name . "\n";
-                            print_r($condition->outputs);
-                            $hit++;
-                        }
-                    break;
-
-                    case 'ne':
-                        if (empty($device->{$input->attribute}) or $device->{$input->attribute} != $input->value) {
-                            echo "hit on " . $device->{$input->attribute} . " ne " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'gt':
-                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} > $input->value) {
-                            echo "hit on " . $device->{$input->attribute} . " gt " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'ge':
-                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} >= $input->value) {
-                            echo "hit on " . $device->{$input->attribute} . " ge " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'lt':
-                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} < $input->value) {
-                            echo "hit on " . $device->{$input->attribute} . " lt " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'le':
-                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} <= $input->value) {
-                            echo "hit on " . $device->{$input->attribute} . " le" . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'li':
-                        if (!empty($device->{$input->attribute}) and stripos($device->{$input->attribute}, $input->value) !== false) {
-                            echo "hit on " . $device->{$input->attribute} . " li " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'nl':
-                        if (!empty($device->{$input->attribute}) and stripos($device->{$input->attribute}, $input->value) === false) {
-                            echo "hit on " . $device->{$input->attribute} . " nl " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'in':
-                        $values = explode(',', $input->value);
-                        if (!empty($device->{$input->attribute}) and in_array($device->{$input->attribute}, $values)) {
-                            echo "hit on " . $device->{$input->attribute} . " in " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-
-                    case 'ni':
-                        $values = explode(',', $input->value);
-                        if (!empty($device->{$input->attribute}) and !in_array($device->{$input->attribute}, $values)) {
-                            echo "hit on " . $device->{$input->attribute} . " ni " . $input->value . " for " . $condition->name . "\n";
-                            $hit++;
-                        }
-                    break;
-                    
-                    default:
-                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} == $input->value) {
-                            echo "hit on default\n";
-                            $hit++;
-                        }
-                    break;
-                }
-                if ($hit === $input_count) {
-                    foreach ($condition->outputs as $output) {
-                        switch ($output->value_type) {
-                            case 'string':
-                                $device->{$output->attribute} = (string)$output->value;
-                            break;
-                            
-                            case 'integer':
-                                $device->{$output->attribute} = intval($output->value);
-                            break;
-                            
-                            case 'timestamp':
-                                if ($output->value == 'NOW') {
-                                    #$device->{$output->attribute} = $this->config->config->['timestamp'];
-                                    $device->{$output->attribute} = date('Y-M-D H:i:s');
-                                } else {
-                                    $device->{$output->attribute} = intval($output->value);
-                                }
-                            break;
-                            
-                            default:
-                                $device->{$output->attribute} = (string)$output->value;
-                            break;
-                        }
-                        $device->{$output->attribute} = $output->value;
-                    }
-                }
-            }
-        }
-
-        $t3 = microtime(true);
-
-        print_r($device);
-
-        echo "$t1\n$t2\n$t3\n";
-        $time = $t2 - $t1;
-        echo "Time for SQL: " . $time . " seconds.\n";
-        $time = $t3 - $t2;
-        echo "Time for Conditions: " . $time . " seconds.\n";
-    }
-
-    public function iana()
-    {
-        $this->load->model('m_configuration');
-        $this->m_configuration->load();
-        $file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers');
+        $conditions = $query->result();
         echo "<pre>\n";
-        $oids = array();
-        for ($i=0; $i < count($file); $i++) { 
-            if (preg_match('/^\d./', $file[$i])) {
-                $oid = trim($file[$i]);
-                $manufacturer = $file[$i+1];
-                $oids[$oid] = $manufacturer;
+        foreach ($conditions as $condition) {
+            unset($json);
+            $json = @json_decode($condition->inputs);
+            if (empty($json)) {
+                echo "BAD input JSON for ID: " . $condition->id . ", Name: " . $condition->name . "\n";
+                echo $condition->inputs . "\n\n";
+            }
+            unset($json);
+            $json = @json_decode($condition->outputs);
+            if (empty($json)) {
+                echo "BAD output JSON for ID: " . $condition->id . ", Name: " . $condition->name . "\n";
+                echo $condition->outputs . "\n\n";
             }
         }
-        print_r($oids);
     }
 
-    public function oui()
+    public function read_oui()
     {
         $this->load->model('m_configuration');
         $this->m_configuration->load();
+
+        // $sql = "SELECT * FROM `conditions`";
+        // $query = $this->db->query($sql);
+        // $conditions = $query->result();
+
         $file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
         echo "<pre>\n";
         $ouis = array();
+
         for ($i=0; $i < count($file); $i++) { 
             if (strpos($file[$i], "   (hex)\t\t")) {
                 $oui = str_replace('-', ':',strtolower(trim(substr($file[$i], 0, 8))));
@@ -257,40 +120,98 @@ class Test extends CI_Controller
                 $ouis[$oui] = $manufacturer;
             }
         }
-        foreach ($ouis as $mac => $manufacturer) {
-            $sql = "INSERT IGNORE INTO `manufacturers_mac` VALUES (NULL, ?, ?, 'system', NOW())";
-            $data = array($mac, $manufacturer);
-            @$this->db->query($sql, $data);
+        foreach ($ouis as $key => $value) {
+            $insert = true;
+            // $input = "[{\"attribute\":\"mac\",\"operator\":\"st\",\"value\":\"$key\"}]";
+            // foreach ($conditions as $condition) {
+            //     if ($condition->name = "MAC Address for $value" and $condition->inputs == $input) {
+            //         $insert = false;
+            //         break;
+            //     }
+            // }
+            if ($insert) {
+                $value = str_replace("'", "''", $value);
+                $sql = "INSERT INTO `conditions` VALUES (NULL, 'MAC Address for $value', 1, 'Set the manufacturer based on the MAC prefix.', 100, '[{\"attribute\":\"mac\",\"operator\":\"st\",\"value\":\"$key\"},{\"attribute\":\"manufacturer\",\"operator\":\"ne\",\"value\":\"\"}]', '[{\"attribute\":\"manufacturer\",\"value\":\"$value\",\"value_type\":\"string\"}]', 'system', '2000-01-01 00:00:00');";
+                echo $sql . "\n";
+                # $query = $this->db->query($sql);
+            }
         }
     }
-     
-    public function manufacturers_oid()
+
+
+
+
+    public function read_iana()
     {
         $this->load->model('m_configuration');
         $this->m_configuration->load();
-        $oid_file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers');
+
+        // $sql = "SELECT * FROM `conditions`";
+        // $query = $this->db->query($sql);
+        // $conditions = $query->result();
+
+        $file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers.txt');
         echo "<pre>\n";
-        $manufacturers = array();
-        for ($i=0; $i < count($oid_file); $i++) {
-            if (ctype_digit(trim($oid_file[$i]))) {
-                $manufacturers[] = trim($oid_file[$i+1]);
+        $oids = array();
+
+        for ($i=0; $i < count($file); $i++) { 
+            if (preg_match('/^\d.*/', $file[$i])) {
+                $oid = trim($file[$i]);
+                $manufacturer = $file[$i+1];
+                $oids[$oid] = trim($manufacturer);
             }
         }
+        $count = 0;
+        foreach ($oids as $key => $value) {
+            $insert = true;
+            $value = trim($value);
+            $value = str_replace('"', '', $value);
+            $value = str_replace('\\', '', $value);
+            $newvalue = $value;
+            if ($newvalue == 'Apple Computer, Inc.') { $newvalue = 'Apple, Inc.'; }
+            if ($newvalue == 'Apple Inc') { $newvalue = 'Apple, Inc.'; }
+            if ($newvalue == 'net-snmp') { $newvalue = ''; }
+            $newvalue = str_replace("'", "''", $newvalue);
+            // $input = '[{\"attribute\":\"snmp_enterprise_id\",\"operator\":\"eq\",\"value\":\"$key\"}]';
+            // foreach ($conditions as $condition) {
+            //     if ($condition->name = "SNMP Enterprise Number for $value" and $condition->inputs == $input) {
+            //         $insert = false;
+            //         break;
+            //     }
+            // }
+            if ($insert) {
+                $value = str_replace("'", "''", $value);
 
-        $oid_file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
-        for ($i=0; $i < count($oid_file); $i++) {
-            if (strpos($oid_file[$i], '(hex)') !== false) {
-                $manufacturers[] = trim(substr($oid_file[$i], 18));
+                $inputs = array();
+                $outputs = array();
+ 
+                $item = new stdClass();
+                $item->attribute = 'snmp_enterprise_id';
+                $item->operator = 'eq';
+                $item->value = $key;
+                $inputs[] = $item;
+
+                $item = new stdClass();
+                $item->attribute = 'manufacturer';
+                $item->value = $newvalue;
+                $item->value_type = 'string';
+                $outputs[] = $item;
+
+                $item = new stdClass();
+                $item->attribute = 'snmp_enterprise_name';
+                $item->value = $value;
+                $item->value_type = 'string';
+                $outputs[] = $item;
+
+                #$sql = "INSERT INTO `conditions` VALUES (NULL, 'SNMP Enterprise Number for $value1', 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, '[{\"attribute\":\"snmp_enterprise_id\",\"operator\":\"eq\",\"value\":\"$key\"}]', '[{\"attribute\":\"manufacturer\",\"value\":\"$newvalue\",\"value_type\":\"string\"},{\"attribute\":\"snmp_enterprise_name\",\"value\":\"$value2\",\"value_type\":\"string\"}]', 'system', '2000-01-01 00:00:00');";
+                $sql = "INSERT INTO `conditions` VALUES (NULL, 'SNMP Enterprise Number for $value', 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, '" . json_encode($inputs) . "', '" . json_encode($outputs) . "', 'system', '2000-01-01 00:00:00');";
+
+                echo "$sql\n";
+                #$query = $this->db->query($sql);
             }
+            $count++;
         }
-
-        $manufacturers = array_unique($manufacturers);
-        sort($manufacturers);
-        echo "Count: " . count($manufacturers) . "\n";
-        foreach($manufacturers as $manufacturer) {
-            echo $manufacturer . "\n";
-        }
-        echo "</pre>\n";        
+        #echo "Count: $count\n";
     }
 
     public function import_json_device()
