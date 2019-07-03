@@ -141,6 +141,13 @@ system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
 system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
 system_os_name="OSX $system_os_version"
 system_serial=$(system_profiler SPHardwareDataType | grep 'Serial Number (system):' | cut -d':' -f2 | sed 's/^ *//g')
+manufacturer_code=""
+if [[ ${#system_serial} = 11 ]]; then
+    manufacturer_code=${system_serial: -3}
+fi
+if [[ ${#system_serial} = 12 ]]; then
+    manufacturer_code=${system_serial: -4}
+fi
 system_model=$(system_profiler SPHardwareDataType | grep 'Model Identifier:' | cut -d':' -f2 | sed 's/^ *//g')
 # todo - below displays days and stops at hours
 # system_uptime=`system_profiler SPSoftwareDataType | grep "Time since boot:" | cut -d":" -f2 | sed 's/^ *//g'`
@@ -170,7 +177,8 @@ echo  "     <os_name>$system_os_name</os_name>" >> $xml_file
 echo  "     <os_version>$system_os_version</os_version>" >> $xml_file
 echo  "     <serial>$system_serial</serial>" >> $xml_file
 echo  "     <model>$system_model</model>" >> $xml_file
-echo  "     <manufacturer>Apple Inc</manufacturer>" >> $xml_file
+echo  "     <manufacturer>Apple, Inc.</manufacturer>" >> $xml_file
+echo  "     <manufacturer_code>$manufacturer_code</manufacturer_code>" >> $xml_file
 echo  "     <uptime>$system_uptime</uptime>" >> $xml_file
 echo  "     <form_factor></form_factor>" >> $xml_file
 echo  "     <os_bit>$system_pc_os_bit</os_bit>" >> $xml_file
