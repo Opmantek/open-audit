@@ -603,10 +603,10 @@ UNLOCK TABLES;
 -- Table structure for table `cluster`
 --
 
-DROP TABLE IF EXISTS `cluster`;
+DROP TABLE IF EXISTS `clusters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cluster` (
+CREATE TABLE `clusters` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
@@ -621,12 +621,12 @@ CREATE TABLE `cluster` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cluster`
+-- Dumping data for table `clusters`
 --
 
-LOCK TABLES `cluster` WRITE;
-/*!40000 ALTER TABLE `cluster` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cluster` ENABLE KEYS */;
+LOCK TABLES `clusters` WRITE;
+/*!40000 ALTER TABLE `clusters` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clusters` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

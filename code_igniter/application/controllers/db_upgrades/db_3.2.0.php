@@ -39,8 +39,6 @@ UPDATE `configuration` SET `value` = '3.2.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.2.0 commenced');
 
-$this->alter_table('cluster', 'status', "ADD `status` varchar(100) NOT NULL DEFAULT '' AFTER purpose", 'add');
-
 $this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
 
 $this->alter_table('system', 'cluster_id', "ADD `cluster_id` int(10) unsigned DEFAULT NULL AFTER cluster_type", 'add');
@@ -50,6 +48,37 @@ $this->alter_table('system', 'manufacturer_code', "ADD `manufacturer_code` varch
 $this->alter_table('system', 'snmp_enterprise_id', "ADD `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0' AFTER snmp_version", 'add');
 
 $this->alter_table('system', 'snmp_enterprise_name', "ADD `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '' AFTER snmp_enterprise_id", 'add');
+
+$this->drop_table("clusters");
+
+$sql = "CREATE TABLE `clusters` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',
+  `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+if ($this->db->table_exists('cluster')) {
+    $sql = "SELECT COUNT(*) AS `count` FROM `cluster`";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+    $result = $query->result();
+    if (!empty($result[0]->count)) {
+        $sql = "INSERT INTO `clusters` SELECT (NULL, name, org_id, description, type, purpose, 'active', edited_by, edited_date FROM `cluster`)";
+        $this->db->query($sql);
+        $this->log_db($this->db->last_query());
+    } else {
+        $this->drop_table("cluster");
+    }
+}
 
 $sql = "DROP TABLE IF EXISTS conditions";
 $this->db->query($sql);
