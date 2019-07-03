@@ -609,8 +609,8 @@ DROP TABLE IF EXISTS `clusters`;
 CREATE TABLE `clusters` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
   `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',
   `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',
   `status` varchar(100) NOT NULL DEFAULT '',
