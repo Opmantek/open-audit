@@ -154,7 +154,10 @@ class M_collection extends MY_Model
         $locations = $result;
 
         $sql = $this->collection_sql($collection, 'sql');
-        $result = $this->run_sql($sql, array());
+        $result = array();
+        if ($this->db->table_exists($collection)) {
+            $result = $this->run_sql($sql, array());
+        }
 
         # Add the Org name into every row that contains the orgs_id attribute
         if (!empty($result) and !empty($orgs)) {
