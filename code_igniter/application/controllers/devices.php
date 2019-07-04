@@ -469,19 +469,7 @@ class devices extends MY_Controller
             output($this->response);
         } elseif ($this->response->meta->sub_resource == 'discovery') {
             if ($this->config->config['default_network_address'] == '') {
-                $message = 'Network Address must be set in the configuration before calling Discovery.';
-                $this->session->set_flashdata('error', $message);
-                if ($this->response->meta->format == 'screen') {
-                    redirect('devices');
-                } else {
-                    $error = new stdClass();
-                    $error->title = 'Discovery cannot execute without a default network address being set in the configuration.';
-                    $error->summary = 'Discovery cannot execute without a default network address being set in the configuration.';
-                    $error->detail = 'Discovery cannot execute without a default network address being set in the configuration.';
-                    $this->response->errors[] = $error;
-                    output($this->response);
-                    exit();
-                }
+                $this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
             }
             $ids = array();
             if (!empty($this->response->meta->id)) {
@@ -500,10 +488,17 @@ class devices extends MY_Controller
                 $query = $this->db->query($sql);
                 $result = $query->result();
                 if (!empty($result)) {
-                    # We already have a previously created device discovery - use that
-                    $discovery_id = $result[0]->id;
-                    $this->m_discoveries->execute($discovery_id);
-                } else {
+                    # Check we have this discovery as it may have been removed
+                    $discovery = $this->m_discoveries->read($result[0]->id);
+                    if (!empty($discovery)) {
+                        # We already have a previously created device discovery - use that
+                        $discovery_id = $result[0]->id;
+                        $this->m_discoveries->execute($discovery_id);
+                    } else {
+                        unset($result);
+                    }
+                }
+                if (empty($result)) {
                     # make a new one and run it
                     $data = new stdClass();
                     $data->name = 'Device Discovery - ' . $this->response->data[0]->attributes->name;
@@ -545,7 +540,7 @@ class devices extends MY_Controller
                     }
                     if (empty($data->other->match->match_hostname)) {
                         # use the defaults
-                        $match_rules = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
+                        $match_rules = array('match_dbus', 'match_dns_fqdn', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
                         foreach ($match_rules as $item) {
                             $data->other->match->{$item} = $this->config->config[$item];
                         }
