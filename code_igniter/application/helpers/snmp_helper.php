@@ -354,7 +354,6 @@ if (!function_exists('snmp_audit')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
-        $CI->load->model('m_conditions');
 
         $log->file = 'snmp_helper';
         $log->function = 'snmp_audit';
