@@ -375,43 +375,7 @@ if (!function_exists('audit_format_system')) {
             $input->hostname = '';
         }
 
-        # Virtual Machines
-        if (isset($input->manufacturer) and (
-            (strripos($input->manufacturer, "vmware") !== false) or
-            (strripos($input->manufacturer, "parallels") !== false) or
-            (strripos($input->manufacturer, "PCS Systemtechnik GmbH") !== false) or
-            (strripos($input->manufacturer, "virtual") !== false))) {
-            $input->form_factor = 'Virtual';
-            $mylog->message = "Manufacturer match, setting form factor to Virtual.";
-            $mylog->command_output = 'Manufacturer: ' . $input->manufacturer;
-            discovery_log($mylog);
-        }
-
         $mylog->command_output = '';
-
-        if (!empty($input->form_factor) and $input->form_factor == 'Virtual' and !empty($input->os_group) and $input->os_group != 'Windows' and $input->os_group != '' and empty($input->class)) {
-            $input->class = 'virtual server';
-            $mylog->message = "Setting class to " . $input->class;
-            discovery_log($mylog);
-        }
-
-        if (!empty($input->form_factor) and $input->form_factor != 'Virtual' and !empty($input->os_group) and $input->os_group != 'Windows' and $input->os_group != '' and empty($input->class)) {
-            $input->class = 'server';
-            $mylog->message = "Setting class to " . $input->class;
-            discovery_log($mylog);
-        }
-
-        if (!empty($input->form_factor) and $input->form_factor == 'Virtual' and !empty($input->os_group) and $input->os_group == 'Windows' and stripos($input->os_name, 'server') !== false and empty($input->class)) {
-            $input->class = 'virtual server';
-            $mylog->message = "Setting class to " . $input->class;
-            discovery_log($mylog);
-        }
-
-        if (!empty($input->form_factor) and $input->form_factor != 'Virtual' and !empty($input->os_group) and $input->os_group == 'Windows' and stripos($input->os_name, 'server') !== false and empty($input->class)) {
-            $input->class = 'server';
-            $mylog->message = "Setting class to " . $input->class;
-            discovery_log($mylog);
-        }
 
         if (empty($input->fqdn) and !empty($input->hostname) and !empty($input->domain)) {
             $input->fqdn = $input->hostname . "." . $input->domain;
