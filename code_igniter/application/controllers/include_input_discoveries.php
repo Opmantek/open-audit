@@ -216,6 +216,9 @@ foreach ($xml->children() as $input) {
         continue;
     }
 
+    # Load the conditions model as we'll use this in SNMP Helper, SSH Helper and here
+    $this->load->model('m_conditions');
+
     if (!empty($input->system_id)) {
         $log->system_id = intval($input->system_id);
     }
@@ -327,12 +330,13 @@ foreach ($xml->children() as $input) {
         $sql = "/* input::discoveries */ " . "SELECT `credentials` FROM `system` WHERE id = " . intval($device->id);
         $query = $this->db->query($sql);
         $result = $query->result();
-        $temp = $result[0]->credentials;
-        $temp = @json_decode($temp);
-        if (is_array($temp) and count($temp) > 0) {
-            foreach ($temp as $item => $value) {
-                $tempcred = $this->m_credentials->read(intval($value));
-                $credentials[] = @$tempcred[0];
+        if (!empty($result[0]->credentials)) {
+            $temp = @json_decode($result[0]->credentials);
+            if (!empty($temp) and is_array($temp) and count($temp) > 0) {
+                foreach ($temp as $item => $value) {
+                    $tempcred = $this->m_credentials->read(intval($value));
+                    $credentials[] = $tempcred[0];
+                }
             }
         }
     }
@@ -469,9 +473,11 @@ foreach ($xml->children() as $input) {
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
-    if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and stripos($device->manufacturer, 'Ubiquiti') === false ) {
+    if (!empty($device->type) and $device->type != 'computer' and $device->type != 'unknown' and $device->type != 'unclassified'
+        and !empty($device->os_name) and stripos($device->os_name, 'dd-wrt') === false
+        and !empty($device->manufacturer) and stripos($device->manufacturer, 'Ubiquiti') === false) {
         $log->severity = 7;
-        $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
+        $log->message = 'Not a computer and not a DD-WRT or Ubiquiti device setting SSH status to false for ' . $device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
         }
@@ -525,7 +531,7 @@ foreach ($xml->children() as $input) {
     $log->command_status = 'notice';
 
     # We do not want to attempt to audit using WMI anything that's not a Windows machine
-    if (!empty($device->os_group) and $device->os_group != 'Windows') {
+    if (!empty($device->os_group) and $device->os_group != 'Windows' and $input->wmi_status != 'false') {
         $input->wmi_status = 'false';
         $log->message = 'Setting WMI to false because we have an os_group that is not Windows.';
         $log->command_output = $device->os_group;
@@ -570,83 +576,12 @@ foreach ($xml->children() as $input) {
     # Set our device->credentials to a JSON array of working interger credentials.id
     $device->credentials = json_encode($device->credentials);
 
-    # Intelligent guesses at various attributes
-
-    # Set manufacturer based on MAC address (if not already set)
-    if (empty($device->manufacturer) and !empty($input->mac_address)) {
-        $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
-            $log->severity = 7;
-            $log->command_status = 'notice';
-            $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
-            $log->command_output = '';
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    }
-    if (empty($device->manufacturer) and !empty($device->mac_address)) {
-        $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
-            $log->severity = 7;
-            $log->command_status = 'notice';
-            $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    }
-    # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
-    if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_ports, '5060/') !== false) {
-        $device->type = 'voip phone';
-    }
-    # Port 62078 is used by IOS for iTunes wifi sync
-    if (stripos($input->nmap_ports, '62078/tcp/iphone-sync') !== false) {
-        # this could be an iPad (tablet), iPod (media device) or iPhone (smart phone).
-        $log->message = 'Detected port TCP 62078 open. Assuming an Apple IOS device';
-        discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        $device->type = 'iphone';
-        $device->model = 'Apple iPhone';
-        $device->manufacturer = 'Apple';
-        $device->os_group = 'Apple IOS';
-        $device->os_family = 'Apple IOS';
-        $device->os_name = 'Apple IOS';
-        if (stripos($device->hostname, 'ipad') !== false or stripos($device->dns_hostname, 'ipad') !== false) {
-            $device->type = 'ipad';
-            $device->model = 'Apple iPad';
-        }
-        if (stripos($device->hostname, 'ipod') !== false or stripos($device->dns_hostname, 'ipod') !== false) {
-            $device->type = 'ipod';
-            $device->model = 'Apple iPod';
-        }
-    }
-
-    # Android devices typically have a hostname of android-***
-    if (stripos($device->hostname, 'android') !== false or stripos($device->dns_hostname, 'android') !== false) {
-        # Could be a table or smart phone or anything else.
-        # We have no way of knowing so simply setting it to android.
-        $device->type = 'android';
-        $device->os_group = 'Android';
-        $device->os_family = 'Android';
-        $device->os_name = 'Android';
-    }
-    # Ubiquiti guessing
-    if (empty($device->model) and stripos($device->manufacturer, 'Ubiquiti') !== false) {
-        $device = $this->m_devices->model_guess($device);
-        if (!empty($device->model)) {
-            $log->message = 'Best guess at Ubiquiti model to be ' . $device->model . ' for sysDesc: ' . $device->sysDescr;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
-        if (empty($device->type)) {
-            $device->type = 'router';
-            $log->message = 'No device type assigned to Ubiquiti device, assigning router.';
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
-    }
-    # Playstation guess
-    if (stripos($device->manufacturer, 'Sony') !== false and ($device->hostname == 'playstation' or $device->dns_hostname == 'playstation')) {
-        $device->type = 'game console';
-        $log->message = 'Assigning type = game console to Sony Playstation.';
-        discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    }
+    // Now run our conditions to update the device if any match
+    $parameters = new stdClass();
+    $parameters->device = $device;
+    $parameters->discovery_id = intval($discovery->id);
+    $parameters->action = 'return';
+    $device = $this->m_conditions->execute($parameters);
 
     # If we don't have a device.id, check with our updated device attributes (if any)
     if (empty($device->id)) {
@@ -662,6 +597,7 @@ foreach ($xml->children() as $input) {
             $log->message = 'Delete the previous log entries for this system_id';
             $log->command_status = 'notice';
             $log->command = $sql;
+            $log->command_output = '';
             $command_log_id = discovery_log($log);
             $command_start = microtime(true);
             $query = $this->db->query($sql);
@@ -758,7 +694,6 @@ foreach ($xml->children() as $input) {
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         unset($log->id, $command_log_id);
     }
-
 
     // grab some timestamps
     $device->last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
@@ -920,6 +855,14 @@ foreach ($xml->children() as $input) {
         $parameters->log = $log;
         $this->m_devices_components->process_component($parameters);
     }
+
+    // Now run our conditions to update the device if any match
+    $parameters = new stdClass();
+    $parameters->id = intval($device->id);
+    $parameters->discovery_id = intval($discovery->id);
+    $parameters->ip = $device->ip;
+    $parameters->action = 'update';
+    $this->m_conditions->execute($parameters);
 
     // insert a blank to indicate we're finished this part of the discovery
     // if required, the audit scripts will insert their own audit logs
@@ -1162,7 +1105,7 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
         $share = '\\admin$';
         $destination = 'audit_windows.vbs';
-        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_linux_script_directory')) and $this->config->item('discovery_linux_script_directory') == 'y') {
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_use_vintage_service')) and $this->config->item('discovery_use_vintage_service') == 'y') {
 
             $log->message = 'Running discovery the old way using the code for Apache service account.';
             discovery_log($log);
@@ -1514,12 +1457,9 @@ foreach ($xml->children() as $input) {
         $parameters->match = $discovery->other->match;
         $i = $this->m_device->match($parameters);
 
-        if (empty($audit->system->discovery_id)) {
-            $audit->system->discovery_id = '';
-        } else {
-            $log->discovery_id = $audit->system->discovery_id;
-            $GLOBALS['discovery_id'] = $audit->system->discovery_id;
-        }
+        $audit->system->discovery_id = $discovery->id;
+        $log->discovery_id = $discovery->id;
+        $GLOBALS['discovery_id'] = $discovery->id;
         if (!empty($audit->system->id)) {
             $log->system_id = $audit->system->id;
         }
@@ -1528,7 +1468,7 @@ foreach ($xml->children() as $input) {
         }
         if (!empty($i) and !empty($audit->system->id) and $i != $audit->system->id) {
             // We delete this original system as likely with limited data (from
-            // nmap and/or snmp) we couldn't match an existing system
+            // nmap and/or snmp and/or SSH) we couldn't match an existing system
             // Now we have an actual audit result with plenty of data
             // we have found a match and it's not the original
             $sql = "/* include_input_devices */ DELETE FROM system WHERE id = ?";
@@ -1624,6 +1564,14 @@ foreach ($xml->children() as $input) {
             unset($dns);
         }
 
+        // Run our conditions to update the device if any match
+        $parameters = new stdClass();
+        $parameters->id = intval($audit->system->id);
+        $parameters->discovery_id = intval($discovery->id);
+        $parameters->ip = @$audit->system->ip;
+        $parameters->action = 'update';
+        $this->m_conditions->execute($parameters);
+
         $this->m_audit_log->update('debug', 'finished processing', $audit->system->id, $audit->system->last_seen);
         $log->message = 'Processed audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';
         discovery_log($log);
@@ -1673,10 +1621,15 @@ foreach ($xml->children() as $input) {
             }
         }
     } else {
-        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system') {
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_use_vintage_service')) and $this->config->item('discovery_use_vintage_service') == 'y') {
             $log->message = 'Audit result incoming from target.';
+            $log->severity = 6;
+        } else if (!empty($audit_script)) {
+            $log->message = 'WARNING - No audit result retrieved for processing';
+            $log->severity = 4;
         } else {
-            $log->message = 'No audit script result to process';
+            $log->message = 'In theory, we should never see this log.';
+            $log->severity = 5;
         }
         discovery_log($log);
     }
