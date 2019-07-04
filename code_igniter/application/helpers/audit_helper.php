@@ -405,16 +405,19 @@ if (!function_exists('audit_format_system')) {
 
         # because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
         if (!empty($input->uuid) and !empty($input->serial) and stripos($input->serial, 'vmware-') !== false and !empty($input->os_name) and stripos($input->os_name, 'windows') !== false) {
-            $mylog->message = "Windows VMware style serial detected, creating vm_uuid.";
-            discovery_log($mylog);
             # serial is taken from Win32_ComputerSystemProduct.IdentifyingNumber
             # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
             # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+            $mylog->command_output = $input->serial;
             $input->vm_uuid = str_ireplace('VMware-', '', $input->serial);
             $input->vm_uuid = str_ireplace('-', ' ', $input->vm_uuid);
             $input->vm_uuid = strtolower($input->vm_uuid);
             $input->vm_uuid = str_ireplace(' ', '', $input->vm_uuid);
             $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-'. substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
+            $mylog->message = "Windows VMware style serial detected, creating vm_uuid.";
+            $mylog->command_output .= ' -> ' . $input->vm_uuid;
+            discovery_log($mylog);
+            $mylog->command_output = '';
         }
 
         if (!empty($input->uuid) and empty($input->vm_uuid)) {
