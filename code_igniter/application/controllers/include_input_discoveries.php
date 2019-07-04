@@ -324,7 +324,9 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         unset($log->id, $command_log_id);
+    }
 
+    if (!empty($device->id)) {
         // Device specific credentials
         $temp = $this->m_devices_components->read(intval($device->id), 'y', 'credential', '', '*');
         if (count($temp) > 0) {
@@ -334,6 +336,22 @@ foreach ($xml->children() as $input) {
         }
         unset($temp);
     }
+
+    if (!empty($device->id)) {
+        // Previous working credentials
+        $sql = "/* input::discoveries */ " . "SELECT `credentials` FROM `system` WHERE id = " . intval($device->id);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $temp = $result[0]->credentials;
+        $temp = @json_decode($temp);
+        if (is_array($temp) and count($temp) > 0) {
+            foreach ($temp as $item => $value) {
+                $tempcred = $this->m_credentials->read(intval($value));
+                $credentials[] = @$tempcred[0];
+            }
+        }
+    }
+
     // We need to set the user orgs to the org of this particular discovery run
     $this->user = new stdClass();
     if (!empty($discovery->org_id)) {
@@ -356,7 +374,7 @@ foreach ($xml->children() as $input) {
         $log->message = "No credentials returned from database";
         discovery_log($log);
     }
-    unset($temp);
+
     # TODO - replace the ugly code below
     # We don't want the usual id (int), name (string), attributes (object) list, we just want the attributes.
     $creds = array();
