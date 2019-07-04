@@ -97,9 +97,6 @@ try {
     $syslog->summary = 'Invalid data';
     $syslog->message = 'Invalid XML input for discovery from '.$_SERVER['REMOTE_ADDR'];
     stdlog($syslog);
-    #unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    #exit;
-
     print_r($syslog);
     header('Connection: close');
     header('Content-Length: '.ob_get_length());
@@ -266,18 +263,6 @@ foreach ($xml->children() as $input) {
 
     if ($this->config->item('discovery_use_dns') == 'y') {
         $device = dns_validate($device);
-        if (!empty($device->dns_hostname)) {
-            $log->command_status = 'success';
-            $log->message = 'IP ' . $device->ip . ' resolved to DNS hostname ' . $device->dns_hostname;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
-        if (!empty($device->dns_domain)) {
-            $log->command_status = 'success';
-            $log->message = 'IP ' . $device->ip . ' resolved to DNS domain ' . $device->dns_domain;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
     }
 
     $parameters = new stdCLass();

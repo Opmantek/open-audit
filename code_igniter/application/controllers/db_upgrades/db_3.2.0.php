@@ -41,6 +41,8 @@ $this->log_db('Upgrade database to 3.2.0 commenced');
 
 $this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
 
+$this->alter_table('system', 'dns_fqdn', "ADD `dns_fqdn` TEXT NOT NULL AFTER fqdn", 'add');
+
 $this->alter_table('system', 'cluster_id', "ADD `cluster_id` int(10) unsigned DEFAULT NULL AFTER cluster_type", 'add');
 
 $this->alter_table('system', 'manufacturer_code', "ADD `manufacturer_code` varchar(200) NOT NULL DEFAULT '' AFTER manufacturer", 'add');
@@ -48,6 +50,14 @@ $this->alter_table('system', 'manufacturer_code', "ADD `manufacturer_code` varch
 $this->alter_table('system', 'snmp_enterprise_id', "ADD `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0' AFTER snmp_version", 'add');
 
 $this->alter_table('system', 'snmp_enterprise_name', "ADD `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '' AFTER snmp_enterprise_id", 'add');
+
+$sql = "DELETE FROM configuration WHERE name = 'match_dns_fqdn'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $this->drop_table("clusters");
 
@@ -104,7 +114,6 @@ if (php_uname('s') != 'Windows NT') {
 } else {
 	$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' conditions < c:\\xampp\\open-audit\\other\\assets\\conditions.sql';
 }
-
 $this->log_db($command);
 exec($command);
 

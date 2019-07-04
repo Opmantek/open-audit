@@ -238,18 +238,6 @@ if (!function_exists('process_scan')) {
         // Use local DNS if requested
         if ($CI->config->item('discovery_use_dns') == 'y') {
             $device = dns_validate($device);
-            if (!empty($device->dns_hostname)) {
-                $log->command_status = 'notice';
-                $log->message = 'IP ' . $device->ip . ' resolved to DNS hostname ' . $device->dns_hostname;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-            }
-            if (!empty($device->domain)) {
-                $log->command_status = 'notice';
-                $log->message = 'IP ' . $device->ip . ' resolved to DNS domain ' . $device->dns_domain;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-            }
         }
 
         // See if what little we have matches an existing device

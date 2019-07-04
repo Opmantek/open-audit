@@ -223,7 +223,7 @@ class Nmis extends MY_Controller
                         $device->hostname =  $node['host'];
                     }
                 }
-                dns_validate($device, 'n');
+                #dns_validate($device, 'n');
                 if (!empty($device->ip)) {
                     $device->ip = ip_address_to_db($device->ip);
                 }

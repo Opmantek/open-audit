@@ -835,6 +835,7 @@ INSERT INTO `configuration` VALUES (NULL,'maps_api_key','','text','y','system','
 INSERT INTO `configuration` VALUES (NULL,'maps_url','/omk/open-audit/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
 INSERT INTO `configuration` VALUES (NULL,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (NULL,'match_fqdn','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
+INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname_dbus','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and dbus id.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
@@ -3327,6 +3328,7 @@ CREATE TABLE `system` (
   `dns_domain` varchar(100) NOT NULL DEFAULT '',
   `dbus_identifier` varchar(255) NOT NULL DEFAULT '',
   `fqdn` text NOT NULL,
+  `dns_fqdn` text NOT NULL,
   `description` text NOT NULL,
   `type` varchar(50) NOT NULL DEFAULT 'unknown',
   `comments` text NOT NULL,

@@ -399,179 +399,63 @@ if (! function_exists('ip_address_to_db')) {
 if (! function_exists('dns_validate')) {
     # pass this function the $details object and it will check hostname, domain and fqdn
     # we need an ip or a hostname and a working DNS to get all details
-    function dns_validate($details, $display = 'n')
+    function dns_validate($details)
     {
         if (!isset($details)) {
             # no object passed
             return;
         }
-        #$this->load->helper('log_helper');
-        $log_details = new stdClass();
-        $log_details->message = 'Start DNS checking for ' . @$details->ip;
-        $log_details->severity = 7;
-        $log_details->file = 'system';
-        if ($display != 'y') {
-            $display = 'n';
-        }
-        $log_details->display = $display;
-        unset($display);
-        stdlog($log_details);
-
         if (empty($details->ip)) {
-            $details->ip = '';
-            $log_details->message = 'No ip set for ' . @$details->hostname;
-            stdlog($log_details);
-        } else {
-            if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
-                # we have something in the ip address that is not an ip
-                $log_details->message = 'Invalid entry in ip is ' . @$details->ip;
-                stdlog($log_details);
-                $details->ip = '';
-                # Removed as we don't necessarily have a valid hostname, just an invalid IP
-                // if (empty($details->hostname)) {
-                //     $log_details->message = 'Hostname is empty so filling with ip for ' . @$details->ip;
-                //     stdlog($log_details);
-                //     $details->hostname = $details->ip;
-                //     $details->ip = '';
-                // }
-            }
+            // $log->command_status = 'fail';
+            // $log->severity = 4;
+            // $log->message = 'No IP passed to network_helper::dns_validate.';
+            // discovery_log($log);
+            return $details;
         }
-
-        if (empty($details->hostname)) {
-            $details->hostname = '';
-            $log_details->message = 'No hostname set for ' . @$details->ip;
-            stdlog($log_details);
-        } else {
-            if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                # we have an ip in the hostname field
-                $log_details->message = 'Hostname contains an ip ' . @$details->hostname;
-                stdlog($log_details);
-                if ($details->ip == '') {
-                    # ip is empty, set it to the ip address from the hostname
-                    $log_details->message = 'IP is empty so filling with hostname for ' . @$details->hostname;
-                    stdlog($log_details);
-                    $details->ip = $details->hostname;
-                }
-                $details->hostname = '';
-            } elseif (strpos($details->hostname, '.') !== false) {
-                # we have a FQDN in the hostname field
-                $log_details->message = 'Hostname is actually a FQDN ' . @$details->hostname;
-                stdlog($log_details);
-                if (empty($details->fqdn)) {
-                    $log_details->message = 'FQDN is empty so filling with hostname for ' . @$details->hostname;
-                    stdlog($log_details);
-                    $details->fqdn = strtolower($details->hostname);
-                }
-                $i = explode(".", $details->hostname);
-                $details->hostname = $i[0];
-                $log_details->message = 'Setting hostname to ' . @$details->hostname;
-                stdlog($log_details);
-                unset($i[0]);
-                if (empty($details->domain)) {
-                    $details->domain = implode(".", $i);
-                    $log_details->message = 'Setting domain to ' . @$details->domain;
-                    stdlog($log_details);
-                }
-                unset($i);
-            }
+        if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
+            // $log->command_status = 'fail';
+            // $log->severity = 4;
+            // $log->message = 'Invalid IP passed to network_helper::dns_validate.';
+            // discovery_log($log);
+            return $details;
         }
-
-        if (!isset($details->domain)) {
-            $details->domain = '';
-            $log_details->message = 'No domain set for ' . @$details->ip;
-            stdlog($log_details);
-        } else {
-            if (filter_var($details->domain, FILTER_VALIDATE_IP)) {
-                 # we have an ip in the domain field
-                $log_details->message = 'Domain contains an ip ' . @$details->domain;
-                stdlog($log_details);
-                if (empty($details->ip)) {
-                    # ip is empty, set it to the ip address from the domain
-                    $details->ip = $details->domain;
-                    $log_details->message = 'IP is empty so filling from domain for ' . @$details->hostname;
-                    stdlog($log_details);
-                }
-                $details->domain = '';
-            }
+        $log = new stdClass();
+        $log->ip = $details->ip;
+        $log->severity = 7;
+        $log->command_status = 'notice';
+        if (!empty($details->discovery_id)) {
+            $log->discovery_id = $details->discovery_id;
         }
+        $details->dns_hostname = strtolower(gethostbyaddr($details->ip));
+        if (strpos($details->dns_hostname, ".") !== false) {
+            if (!filter_var($details->dns_hostname, FILTER_VALIDATE_IP)) {
+                # we got a FQDN back from DNS - split it up
+                $details->dns_fqdn = strtolower($details->dns_hostname);
+                $log->message = 'Set DNS FQDN for ' . $details->ip . ' in network_helper::dns_validate';
+                $log->command_output = $details->dns_fqdn;
+                discovery_log($log);
 
-        if (empty($details->fqdn)) {
-            $details->fqdn = '';
-            $log_details->message = 'No FQDN set for ' . @$details->ip;
-            stdlog($log_details);
-        } else {
-            if (filter_var($details->fqdn, FILTER_VALIDATE_IP)) {
-                 # we have an ip in the fqdn field
-                $log_details->message = 'FQDN contains an ip ' . @$details->fqdn;
-                stdlog($log_details);
-                if (empty($details->ip)) {
-                    # ip is empty, set it to the ip address from the fqdn
-                    $details->ip = $details->fqdn;
-                    $log_details->message = 'IP is empty so filling from fqdn for ' . @$details->fqdn;
-                    stdlog($log_details);
-                }
-                $details->fqdn = '';
+                $temp = explode(".", $details->dns_hostname);
+                $details->dns_hostname = $temp[0];
+                unset($temp[0]);
+                $log->message = 'Set DNS hostname for ' . $details->ip . ' in network_helper::dns_validate';
+                $log->command_output = $details->dns_hostname;
+                discovery_log($log);
+
+                $details->dns_domain = implode(".", $temp);
+                unset($temp);
+                $log->message = 'Set DNS domain for ' . $details->ip . ' in network_helper::dns_validate';
+                $log->command_output = $details->dns_domain;
+                discovery_log($log);
             } else {
-                if (strpos($details->fqdn, '.') === false) {
-                    # if it is a real FQDN, there should be at least one .
-                    $details->fqdn = '';
-                    $log_details->message = 'FQDN does not contain a . so removing ' . @$details->fqdn;
-                    stdlog($log_details);
-                }
+                # we got an ip address back from DNS, remove it
+                $details->dns_hostname = '';
             }
+        } else {
+            $log->message = 'DNS returned a hostname only for ' . $details->ip . ' in network_helper::dns_validate';
+            $log->command_output = $details->dns_hostname;
+            discovery_log($log);
         }
-
-        if (empty($details->dns_hostname) and filter_var($details->ip, FILTER_VALIDATE_IP)) {
-            # we have nothing for a hostname and a valid ip
-            # try getting the dns hostname
-            $log_details->message = 'Using gethostbyaddr because no hostname set but IP is set for ' . @$details->ip;
-            stdlog($log_details);
-            $details->dns_hostname = strtolower(gethostbyaddr($details->ip));
-            # make sure we use the hostname and not a fqdn if returned
-            if (strpos($details->dns_hostname, ".") !== false) {
-                if (!filter_var($details->dns_hostname, FILTER_VALIDATE_IP)) {
-                    # we got a FQDN back from DNS - split it up
-                    $log_details->message = 'Received a FQDN back from gethostbyaddr for ' . @$details->ip;
-                    stdlog($log_details);
-                    $details->fqdn = strtolower($details->dns_hostname);
-                    $i = explode(".", $details->dns_hostname);
-                    $details->dns_hostname = $i[0];
-                    unset($i[0]);
-                    $log_details->message = 'Split FQDN and set DNS hostname to ' . @$details->dns_hostname;
-                    stdlog($log_details);
-                    $details->domain = implode(".", $i);
-                    unset($i);
-                    $log_details->message = 'Split FQDN and set DNS domain to ' . @$details->dns_domain;
-                    stdlog($log_details);
-                } else {
-                    # we got an ip address back from DNS, remove it
-                    $details->dns_hostname = '';
-                }
-            }
-        }
-
-        if (empty($details->ip) and !empty($details->fqdn)) {
-            $details->ip = gethostbyname($details->fqdn);
-            if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
-                $details->ip = '';
-            } else {
-                $log_details->message = 'Using gethostbyname because no valid ip address, but valid fqdn ' . @$details->fqdn;
-                stdlog($log_details);
-            }
-        }
-
-        if (empty($details->ip) and !empty($details->hostname)) {
-            $details->ip = gethostbyname($details->hostname);
-            if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
-                $details->ip = '';
-            } else {
-                $log_details->message = 'Using gethostbyname because no valid ip address, but valid hostname ' . @$details->hostname;
-                stdlog($log_details);
-            }
-        }
-
-        $log_details->message = 'Finish DNS checking for ' . @$details->ip;
-        stdlog($log_details);
         return $details;
     }
 }
