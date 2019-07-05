@@ -110,6 +110,7 @@
 
                 <div class="col-md-6">
                     <span id="options"></span>
+                    <?php echo $this->response->dictionary->notes; ?>
                 </div>
             </div>
             <div class="row">

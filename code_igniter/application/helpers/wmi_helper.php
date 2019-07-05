@@ -463,8 +463,9 @@ if (! function_exists('copy_to_windows')) {
             $return = false;
             $password = str_replace('"', '\"', $credentials->credentials->password);
 
-                 $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . $password;
-            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '******';
+                 $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' "' . $password . '"';
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '"*******' . '"';
+            $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
             $log->message = 'Net Use';
@@ -476,11 +477,12 @@ if (! function_exists('copy_to_windows')) {
 
                  $command = 'copy "' . $source . '" "\\\\' . $ip . '\\admin$\\' .  $destination . '"';
             $log->command = 'copy "' . $source . '" "\\\\' . $ip . '\\admin$\\' .  $destination . '"';
+            $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
             $log->message = 'Copy to ' . $ip;
             $log->command_output = json_encode($output);
-            if ($output[0] == "The command completed successfully.") {
+            if (stripos($output[0], "file(s) copied.") !== false) {
                 $log->command_status = 'success';
                 $return = true;
             }
@@ -488,11 +490,12 @@ if (! function_exists('copy_to_windows')) {
 
                  $command = 'net use "\\\\' . $ip . '\\admin$" /D';
             $log->command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
             $log->message = 'Net Use Delete';
             $log->command_output = json_encode($output);
-            if ($output[0] == "The command completed successfully.") {
+            if (stripos($output[0] == "was deleted successfully") !== false) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
@@ -826,8 +829,9 @@ if (! function_exists('copy_from_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             $password = str_replace('"', '\"', $credentials->credentials->password);
-                 $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . $password;
-            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' ' . '******';
+                 $command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' "' . $password . '"';
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $credentials->credentials->username . ' "' . '*******' . '"';
+            $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
             $log->message = 'Net Use';
@@ -839,22 +843,24 @@ if (! function_exists('copy_from_windows')) {
 
                  $command = 'copy "\\\\' . $ip . '\\admin$\\' . $source . '" "' . $destination . '"';
             $log->command = 'copy "\\\\' . $ip . '\\admin$\\' . $source . '" "' . $destination . '"';
+            $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
             $log->message = 'Copy from ' . $source;
             $log->command_output = json_encode($output);
-            if ($output[0] == "The command completed successfully.") {
+            if (stripos($output[0], "file(s) copied.") !== false) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
 
                  $command = 'net use "\\\\' . $ip . '\\admin$" /D';
             $log->command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
             $log->message = 'Net Use Delete';
             $log->command_output = json_encode($output);
-            if ($output[0] == "The command completed successfully.") {
+            if (stripos($output[0] == "was deleted successfully") !== false) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
@@ -1027,35 +1033,20 @@ if (! function_exists('wmi_command')) {
             # $ doesn't require escaping
             # ' doesn't require escaping when using "password"
             # " doesn't seem to work even when escaped using \"
-            $log->message = 'Attempting to execute command';
-            $log->command = '';
-            $command_string = '';
-            $log->severity = 7;
-            $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:\'******\' ' . $command;
-
+            # | can only be escaped by "
             if ((strpos($password, '"') !== false) and (strpos($password, "'") !== false)) {
                 $log->severity = 5;
-                $log->message = 'Incompatible password (cannot have " and \' together in a wmic password).';
+                $log->message = 'Incompatible password (cannot have " or \' in a wmic password).';
+                $log->command = '';
                 discovery_log($log);
                 return false;
             }
-
-            if (strpos($password, '"') !== false) {
-                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:\'******\' ' . $command;
-                $log->message = 'Password contains double quotes.';
-            }
-
-            if (strpos($password, "'") !== false) {
-                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
-                $log->message = 'Password contains single quotes.';
-            }
-
+            $log->message = 'Attempting to execute command';
             $log->severity = 7;
-            $log->command = $command_string;
-            $log->id = discovery_log($log);
-            $command_string = str_replace("******", $password, $command_string);
+            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . '*******' . '" ' . $command;
+            $command =      '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . $password . '" ' . $command;
             $item_start = microtime(true);
-            exec($command_string, $return['output'], $return['status']);
+            exec($command, $return['output'], $return['status']);
             if (empty($return['output'][0])) {
                 $return['status'] = 1;
             }
