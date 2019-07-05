@@ -1147,7 +1147,7 @@ if (!function_exists('process_scan')) {
             $share = '\\admin$';
             $destination = 'audit_windows.vbs';
 
-            if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->config['discovery_linux_script_directory']) and $this->config->config['discovery_linux_script_directory'] == 'y') {
+            if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->config['discovery_use_vintage_service']) and $this->config->config['discovery_use_vintage_service'] == 'y') {
 
                 $log->message = 'Running discovery the old way using the code for Apache service account.';
                 discovery_log($log);
