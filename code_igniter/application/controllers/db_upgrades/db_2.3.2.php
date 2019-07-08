@@ -55,88 +55,126 @@ $this->log_db($this->db->last_query());
 
 $this->load->helper('security');
 if (php_uname('s') != 'Windows NT') {
-  # re-encode or credentials
-  $sql = "SELECT * FROM `credentials` WHERE (`edited_by` != 'system' or `id` = 1)";
-  $query = $this->db->query($sql);
-  $this->log_db($this->db->last_query());
-  $result = $query->result();
-  if (!empty($result)) {
-      foreach ($result as $item) {
-          $credentials = json_decode(simpleDecrypt($item->credentials));
-          if (!empty($credentials)) {
-              $item->credentials = simpleEncrypt(json_encode($credentials));
-              $sql = "UPDATE `credentials` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
-              $data = array($item->credentials, intval($item->id));
-              $this->db->query($sql, $data);
-              $this->log_db($this->db->last_query());
-          } else {
-              $this->log_db("WARNING - Could not unencrypt credentials " . $item->name);
-              $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
-          }
-      }
-  }
+    # re-encode the credentials
+    $sql = "SELECT * FROM `credentials` WHERE (`edited_by` != 'system' or `id` = 1)";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+    $result = $query->result();
+    if (!empty($result)) {
+        foreach ($result as $item) {
+            $credentials = json_decode(simpleDecrypt($item->credentials));
+            if (!empty($credentials)) {
+                $item->credentials = simpleEncrypt(json_encode($credentials));
+                $sql = "UPDATE `credentials` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                $data = array($item->credentials, intval($item->id));
+                $this->db->query($sql, $data);
+                $this->log_db($this->db->last_query());
+            } else {
+                $credentials = json_decode($this->encrypt->decode($item->credentials));
+                if (!empty($credentials)) {
+                    $item->credentials = simpleEncrypt(json_encode($credentials));
+                    $sql = "UPDATE `credentials` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                    $data = array($item->credentials, intval($item->id));
+                    $this->db->query($sql, $data);
+                    $this->log_db($this->db->last_query());
+                } else {
+                    $this->log_db("WARNING - Could not unencrypt credentials " . $item->name);
+                    $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
+                }
+            }
+        }
+    }
 
-  # device specific credentials
-  $sql = "SELECT * FROM `credential` WHERE `edited_by` != 'system'";
-  $query = $this->db->query($sql);
-  $this->log_db($this->db->last_query());
-  $result = $query->result();
-  if (!empty($result)) {
-      foreach ($result as $item) {
-          $credentials = json_decode(simpleDecrypt($item->credentials));
-          if (!empty($credentials)) {
-              $item->credentials = simpleEncrypt(json_encode($credentials));
-              $sql = "UPDATE `credential` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
-              $data = array($item->credentials, intval($item->id));
-              $this->db->query($sql, $data);
-              $this->log_db($this->db->last_query());
-          } else {
-              $this->log_db("WARNING - Could not unencrypt device credentials " . $item->name);
-              $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
-          }
-      }
-  }
+    # re-encode the device specific credentials
+    $sql = "SELECT * FROM `credential` WHERE `edited_by` != 'system'";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+    $result = $query->result();
+    if (!empty($result)) {
+        foreach ($result as $item) {
+            $credentials = json_decode(simpleDecrypt($item->credentials));
+            if (!empty($credentials)) {
+                $item->credentials = simpleEncrypt(json_encode($credentials));
+                $sql = "UPDATE `credential` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                $data = array($item->credentials, intval($item->id));
+                $this->db->query($sql, $data);
+                $this->log_db($this->db->last_query());
+            } else {
+                $credentials = json_decode($this->encrypt->decode($item->credentials));
+                if (!empty($credentials)) {
+                    $item->credentials = simpleEncrypt(json_encode($credentials));
+                    $sql = "UPDATE `credential` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                    $data = array($item->credentials, intval($item->id));
+                    $this->db->query($sql, $data);
+                    $this->log_db($this->db->last_query());
+                } else {
+                    $this->log_db("WARNING - Could not unencrypt device credentials " . $item->name);
+                    $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
+                }
+            }
+        }
+    }
 
-  # re-encode the ldap_servers.dn_password
-  $sql = "SELECT * FROM `ldap_servers` WHERE `edited_by` != 'system'";
-  $query = $this->db->query($sql);
-  $this->log_db($this->db->last_query());
-  $result = $query->result();
-  if (!empty($result)) {
-      foreach ($result as $item) {
-          $dn_password = simpleDecrypt($item->dn_password);
-          if (!empty($dn_password)) {
-              $item->dn_password = simpleEncrypt($dn_password);
-              $sql = "UPDATE `ldap_servers` SET `dn_password` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
-              $data = array($item->dn_password, intval($item->id));
-              $this->db->query($sql, $data);
-              $this->log_db($this->db->last_query());
-          } else {
-              $this->log_db("WARNING - Could not unencrypt ldap credentials " . $item->name);
-              $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
-          }
-      }
-  }
+    # re-encode the ldap_servers.dn_password
+    $sql = "SELECT * FROM `ldap_servers` WHERE `edited_by` != 'system'";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+    $result = $query->result();
+    if (!empty($result)) {
+        foreach ($result as $item) {
+            $dn_password = simpleDecrypt($item->dn_password);
+            if (!empty($dn_password)) {
+                $item->dn_password = simpleEncrypt($dn_password);
+                $sql = "UPDATE `ldap_servers` SET `dn_password` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                $data = array($item->dn_password, intval($item->id));
+                $this->db->query($sql, $data);
+                $this->log_db($this->db->last_query());
+            } else {
+                $dn_password = $this->encrypt->decode($item->dn_password);
+                if (!empty($dn_password)) {
+                    $item->dn_password = simpleEncrypt($dn_password);
+                    $sql = "UPDATE `ldap_servers` SET `dn_password` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                    $data = array($item->dn_password, intval($item->id));
+                    $this->db->query($sql, $data);
+                    $this->log_db($this->db->last_query());
+                } else {
+                    $this->log_db("WARNING - Could not unencrypt ldap credentials " . $item->name);
+                    $this->data['alert'] = "WARNING - Could not unencrypt credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
+                }
+            }
+        }
+    }
 
-  $sql = "SELECT * FROM `clouds` WHERE `edited_by` != 'system'";
-  $query = $this->db->query($sql);
-  $this->log_db($this->db->last_query());
-  $result = $query->result();
-  if (!empty($result)) {
-      foreach ($result as $item) {
-          $credentials = json_decode(simpleDecrypt($item->credentials));
-          if (!empty($credentials)) {
-              $item->credentials = simpleEncrypt(json_encode($credentials));
-              $sql = "UPDATE `clouds` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
-              $data = array($item->credentials, intval($item->id));
-              $this->db->query($sql, $data);
-              $this->log_db($this->db->last_query());
-          } else {
-              $this->log_db("WARNING - Could not unencrypt cloud credentials " . $item->name);
-              $this->data['alert'] = "WARNING - Could not cloud credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
-          }
-      }
-  }
+    # re-encode the clouds credentials
+    $sql = "SELECT * FROM `clouds` WHERE `edited_by` != 'system'";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+    $result = $query->result();
+    if (!empty($result)) {
+        foreach ($result as $item) {
+            $credentials = json_decode(simpleDecrypt($item->credentials));
+            if (!empty($credentials)) {
+                $item->credentials = simpleEncrypt(json_encode($credentials));
+                $sql = "UPDATE `clouds` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                $data = array($item->credentials, intval($item->id));
+                $this->db->query($sql, $data);
+                $this->log_db($this->db->last_query());
+            } else {
+                $credentials = json_decode($this->encrypt->decode($item->credentials));
+                if (!empty($credentials)) {
+                    $item->credentials = simpleEncrypt(json_encode($credentials));
+                    $sql = "UPDATE `credential` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+                    $data = array($item->credentials, intval($item->id));
+                    $this->db->query($sql, $data);
+                    $this->log_db($this->db->last_query());
+                } else {
+                    $this->log_db("WARNING - Could not unencrypt cloud credentials " . $item->name);
+                    $this->data['alert'] = "WARNING - Could not cloud credentials, you will need to recreate all credentials, ldap_servers, credential and clouds items.";
+                }
+            }
+        }
+    }
+
 } else {
     # We're upgrading a Windows install from XamppLite (PHP 5.3.1) to Xampp (PHP 7.3.1)
     # The installer should have created a file c:\xampplite\open-audit\migrate.json containing the unencrypted credentials
