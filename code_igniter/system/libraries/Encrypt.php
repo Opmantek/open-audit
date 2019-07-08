@@ -288,7 +288,7 @@ class CI_Encrypt {
 	function mcrypt_decode($data, $key)
 	{
 		$data = $this->_remove_cipher_noise($data, $key);
-		if (function_exists(mcrypt_get_iv_size)) {
+		if (function_exists('mcrypt_get_iv_size')) {
 			$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
 		} else {
 			return FALSE;
