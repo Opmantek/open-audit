@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 class M_device extends MY_Model
@@ -201,6 +201,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             } else {
                 $message = new stdClass();
@@ -232,6 +233,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -294,6 +296,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -356,6 +359,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -418,6 +422,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -530,6 +535,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -586,6 +592,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -648,6 +655,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -703,6 +711,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -764,6 +773,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
         } else {
@@ -821,6 +831,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -881,6 +892,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
             $message = new stdClass();
@@ -947,6 +959,7 @@ class M_device extends MY_Model
                             $log->command_output = $message->command_output;
                             discovery_log($log);
                         }
+                        $message->command_output = '';
                         return $details->id;
                     }
                 }
@@ -1012,6 +1025,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
 
@@ -1036,6 +1050,7 @@ class M_device extends MY_Model
                         $log->command_output = $message->command_output;
                         discovery_log($log);
                     }
+                    $message->command_output = '';
                     return $details->id;
                 }
             }
@@ -1093,6 +1108,7 @@ class M_device extends MY_Model
                     $log->command_output = $message->command_output;
                     discovery_log($log);
                 }
+                $message->command_output = '';
                 return $details->id;
             }
 
@@ -1123,6 +1139,7 @@ class M_device extends MY_Model
                                 $log->command_output = $message->command_output;
                                 discovery_log($log);
                             }
+                            $message->command_output = '';
                             return $details->id;
                         }
                     }
@@ -1189,6 +1206,7 @@ class M_device extends MY_Model
             }
         }
         unset($log);
+        $message->command_output = '';
         return $details->id;
     }
 

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 class M_configuration extends MY_Model
@@ -219,9 +219,9 @@ class M_configuration extends MY_Model
         $result = $this->run_sql($sql, array());
         $this->config->config['timezone'] = $result[0]->tz;
         if ($this->config->config['timezone'] >= 0) {
-            $this->config->config['timezone'] = 'GMT +' . $this->config->config['timezone'];
+            $this->config->config['timezone'] = 'UTC +' . $this->config->config['timezone'];
         } else {
-            $this->config->config['timezone'] = 'GMT ' . $this->config->config['timezone'];
+            $this->config->config['timezone'] = 'UTC ' . $this->config->config['timezone'];
         }
 
         # get the server OS

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
 */
 
@@ -56,7 +56,7 @@ class Agents extends MY_Controller
         parent::__construct();
         $this->load->model('m_agents');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
     }
 
     /**

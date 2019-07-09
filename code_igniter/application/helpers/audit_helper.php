@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
@@ -323,11 +323,11 @@ if (!function_exists('audit_format_system')) {
         }
 
         if (empty($input->last_seen)) {
-            $input->last_seen = $CI->config->item('timestamp');
+            $input->last_seen = $CI->config->config['timestamp'];
         }
 
         if (empty($input->timestamp)) {
-            $input->timestamp = $CI->config->item('timestamp');
+            $input->timestamp = $CI->config->config['timestamp'];
         }
 
         if (!empty($input->type)) {

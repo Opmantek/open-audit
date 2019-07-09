@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 class M_charts extends MY_Model
@@ -84,7 +84,7 @@ class M_charts extends MY_Model
             $filter = new stdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
-            $temp = $this->config->item('graph_days');
+            $temp = $this->config->config['graph_days'];
             $days = intval($temp);
             if (empty($temp)) {
                 $days = 30;

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
 */
 
@@ -58,7 +58,7 @@ class Database extends MY_Controller
         $this->load->helper('error');
         $this->load->model('m_database');
         inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
+        $this->output->url = $this->config->config['oa_web_index'];
     }
 
     /**
@@ -577,7 +577,7 @@ class Database extends MY_Controller
         stdlog($log);
 
         $this->log_db = array();
-        $db_internal_version = $this->config->item('internal_version');
+        $db_internal_version = $this->config->config['internal_version'];
         $this->data['output'] = "";
         
         include "db_upgrades/db_1.08.04.php";
@@ -786,6 +786,11 @@ class Database extends MY_Controller
         if (($db_internal_version < '20190620') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 3.1.1
             include "db_upgrades/db_3.1.1.php";
+        }
+
+        if (($db_internal_version < '20190630') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 3.1.2
+            include "db_upgrades/db_3.1.2.php";
         }
 
         $this->data['include'] = 'v_database_update';

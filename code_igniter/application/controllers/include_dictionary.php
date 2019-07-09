@@ -211,7 +211,7 @@ Define a query and have your external program call the API and retrieve the data
 
 if ($table == 'collectors') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Collectors. Have a single Open-AudIT server control many other servers that perform discovery and collect device information.';
-    if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+    if ($this->config->item('oae_product') !== 'Open-AudIT Cloud') {
         $dictionary->about = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
             It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />
         ' . $link . '<br /><br /></p>';

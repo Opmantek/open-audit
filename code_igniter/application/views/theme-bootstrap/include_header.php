@@ -21,7 +21,7 @@ if (!empty($this->config->config['servers'])) {
                 } else {
                     $product = 'Open-AudIT Community';
                 }
-                echo $product . ' ' . htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET);
+                echo $product . ' ' . htmlspecialchars($this->config->config['display_version'], REPLACE_FLAGS, CHARSET);
                 ?>
                 </a>
             </div>
@@ -432,7 +432,7 @@ if (!empty($this->config->config['servers'])) {
 
                     <?php
                     if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") {
-                        $link = htmlspecialchars($this->config->item('nmis_url'), REPLACE_FLAGS, CHARSET);
+                        $link = htmlspecialchars($this->config->config['nmis_url'], REPLACE_FLAGS, CHARSET);
                     } else {
                         $link = "https://opmantek.com";
                     }

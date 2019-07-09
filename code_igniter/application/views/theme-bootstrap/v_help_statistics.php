@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 if (php_uname('s') == "Windows NT") {
@@ -49,7 +49,7 @@ if (php_uname('s') == "Windows NT") {
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12">
-                You are running version <?php echo $this->config->item('display_version'); ?> of Open-AudIT.<br />
+                You are running version <?php echo $this->config->config['display_version']; ?> of Open-AudIT.<br />
                 Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
                 Your database platform is <?php echo $this->db->platform()." (version ".$this->db->version().")"; ?>.<br />
                 Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .<br />

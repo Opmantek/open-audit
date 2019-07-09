@@ -398,8 +398,8 @@ $this->log_db($this->db->last_query());
 $options = array();
 $options['submit_online'] = 'y';
 $options['create_file'] = 'n';
-if ($this->config->item('default_network_address') != '') {
-    $options['url'] = 'http://' . $this->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
+if ($this->config->config['default_network_address'] != '') {
+    $options['url'] = 'http://' . $this->config->config['default_network_address'] . '/open-audit/index.php/system/add_system';
 } else {
     $options['url'] = 'http://localhost/open-audit/index.php/system/add_system';
 }

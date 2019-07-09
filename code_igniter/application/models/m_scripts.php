@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 class M_scripts extends MY_Model
@@ -202,7 +202,7 @@ class M_scripts extends MY_Model
             # TODO - insert an error
             return;
         }
-        $filename = $CI->config->item('base_path') . '/other/' . $data->based_on;
+        $filename = $CI->config->config['base_path'] . '/other/' . $data->based_on;
         if (! file_exists($filename)) {
             # TODO - insert an error
             return;
@@ -216,8 +216,8 @@ class M_scripts extends MY_Model
             $options->url == 'http://localhost/open-audit/index.php/system/add_system' or 
             $options->url == 'http://localhost/open-audit/index.php/input/devices') {
             # inject our default network address
-            if (!empty($CI->config->item('default_network_address'))) {
-                $options->url = $CI->config->item('default_network_address') . 'index.php/input/devices';
+            if (!empty($CI->config->config['default_network_address'])) {
+                $options->url = $CI->config->config['default_network_address'] . 'index.php/input/devices';
             } else {
                 unset($options->url);
             }

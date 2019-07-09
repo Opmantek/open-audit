@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 class M_devices_components extends MY_Model
@@ -882,13 +882,24 @@ class M_devices_components extends MY_Model
             return;
         }
 
+        # TODO - validate this is working correctly.
+        #        I had to add the !empty test to the below, otherwise was seeing the below when manually running audit_linux.sh
+        /*
+            <p>Severity: Notice</p>
+            <p>Message:  Trying to get property 'id' of non-object</p>
+            <p>Filename: models/m_devices_components.php</p>
+            <p>Line Number: 889</p>
+        */
+        # Line 889 (was) $data = array($db_result[$i]->id);
         if (!empty($this->config->config['delete_noncurrent_' . $table]) and strtolower($this->config->config['delete_noncurrent_' . $table]) == 'y') {
             for ($i=0; $i < count($db_result); $i++) {
                 $sql = "DELETE FROM `$table` WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array($db_result[$i]->id);
-                $query = $this->db->query($sql, $data);
-                unset($db_result[$i]);
+                if (!empty($db_result[$i]->id)) {
+                    $data = array($db_result[$i]->id);
+                    $query = $this->db->query($sql, $data);
+                    unset($db_result[$i]);
+                }
             }
             return;
         }

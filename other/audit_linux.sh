@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   3.1.1
+# @version   3.1.2
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="3.1.1"
+version="3.1.2"
 
 # Display help
 help="n"
@@ -2767,7 +2767,7 @@ if [ -e "/etc/mysql/my.cnf" ]; then
 	fi
 fi
 
-datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ | cut -d= -f2 | cut -d" " -f2)
+datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2)
 if [ -n "$datadir" ]; then
 	for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
 		size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
@@ -2864,7 +2864,7 @@ fi
 
 # Custom addition - alexander.szele@umanitoba.ca
 # Pull website info from nginx
-for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 | xargs -0 egrep '^([[:space:]])*server_name ' | awk '{ print $1 }' | cut -d':' -f1 | sort | uniq); do
+for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 2>/dev/null | xargs -0 egrep '^([[:space:]])*server_name ' | awk '{ print $1 }' | cut -d':' -f1 | sort | uniq); do
 	if [ -n "$i" ]; then
 		name=$(echo "$i" | rev | cut -d/ -f1 | rev)
 		name=${name%.conf}

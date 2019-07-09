@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.1
+* @version   3.1.2
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
@@ -237,7 +237,7 @@ if (!function_exists('process_scan')) {
         $device->credentials = array();
 
         // Use local DNS if requested
-        if ($CI->config->item('discovery_use_dns') == 'y') {
+        if ($CI->config->config['discovery_use_dns'] == 'y') {
             $device = dns_validate($device);
         }
 
@@ -1136,7 +1136,7 @@ if (!function_exists('process_scan')) {
             $share = '\\admin$';
             $destination = 'audit_windows.vbs';
 
-            if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_linux_script_directory')) and $this->config->item('discovery_linux_script_directory') == 'y') {
+            if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->config['discovery_use_vintage_service']) and $this->config->config['discovery_use_vintage_service'] == 'y') {
 
                 $log->message = 'Running discovery the old way using the code for Apache service account.';
                 discovery_log($log);
@@ -1275,7 +1275,7 @@ if (!function_exists('process_scan')) {
             discovery_log($log);
 
             # copy the audit script to the target ip
-            $destination = $CI->config->item('discovery_linux_script_directory');
+            $destination = $CI->config->config['discovery_linux_script_directory'];
             if (substr($destination, -1) != '/') {
                 $destination .= '/';
             }
@@ -1305,7 +1305,7 @@ if (!function_exists('process_scan')) {
                 return false;
             }
             # Successfully copied the audit script, now chmod it
-            $command = 'chmod ' . $CI->config->item('discovery_linux_script_permissions') . ' ' . $destination;
+            $command = 'chmod ' . $CI->config->config['discovery_linux_script_permissions'] . ' ' . $destination;
             # No use testing for a result as a chmod produces no output
             $parameters = new stdClass();
             $parameters->log = $log;
@@ -1324,7 +1324,7 @@ if (!function_exists('process_scan')) {
             if ($audit_script != '') {
                 $log->command = '';
                 $log->command_output = '';
-                $command = $CI->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+                $command = $CI->config->config['discovery_linux_script_directory'].$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' last_seen_by=audit_ssh discovery_id='.$discovery->id;
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
                 if ($credentials_ssh->credentials->username == 'root') {
                     $log->message = 'Running audit using root user.';

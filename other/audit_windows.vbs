@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-' @version   3.1.1
+' @version   3.1.2
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -104,7 +104,7 @@ self_delete = "n"
 debugging = "1"
 
 ' Version - NOTE, special formatted so we match the *nix scripts and can do find/replace
-version="3.1.1"
+version="3.1.2"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
@@ -460,31 +460,33 @@ error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then 
 for each objItem in colItems
     net_mac_address = objItem.MACAddress
     if net_mac_address > "" then
-    for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
-    local_net = local_net & " " & objItem.IPAddress(i) & " "
-    next
+        for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
+            local_net = local_net & " " & objItem.IPAddress(i) & " "
+        next
     end if
 next
-local_net = local_net & " " & local_hostname & " "
+local_net = " " & local_net & " " & local_hostname & " " & " . "
 if debugging > "1" then
     wscript.echo "LocalNet: " & local_net
     wscript.echo "Target: " & strcomputer
-    if (instr(lcase(local_net), lcase(strcomputer) & " ") <> 0) then
-    wscript.echo "Match: Auditing localhost."
+    if (instr(lcase(local_net), " " & lcase(strcomputer) & " ") <> 0) then
+        wscript.echo "Match: Auditing localhost."
+        if (strcomputer <> ".") then
+            strcomputer = "."
+            if debugging > "0" then
+                wscript.echo "Changed strcomputer from " & strcomputer & " to . because we're auditing this local machine."
+            end if
+        end if
     else
-    wscript.echo "No Match: Auditing remote host."
+        wscript.echo "No Match: Auditing remote host."
     end if
 end if
 
-' Are we auditing the local machine?
-if (instr(lcase(local_net), lcase(strcomputer) & " ") <> 0) and (strcomputer <> ".") then
-    if debugging > "0" then wscript.echo "Changed strcomputer from " & strcomputer & " to . because we're auditing this local machine." end if
-    strcomputer = "."
-end if
-
 ' If auditing the local machine, disregard and supplied credentials
-if (struser <> "" and strcomputer = ".") then
-    if debugging > "0" then wscript.echo "Disregarding username / password as WMI does not support connecting to localhost with credentials." end if
+if (strcomputer = "." and (struser <> "" or strpass <> "")) then
+    if debugging > "0" then
+        wscript.echo "Disregarding username / password as WMI does not support connecting to localhost with credentials."
+    end if
     struser = ""
     strpass = ""
 end if
@@ -493,39 +495,41 @@ end if
 pc_alive = 0
 if ping_target = "y" then
     if (strcomputer = ".") then
-    pc_alive = 1
-    if debugging > "0" then wscript.echo "Disregarding ping_target because we're auditing localhost." end if
+        pc_alive = 1
+        if debugging > "0" then
+            wscript.echo "Disregarding ping_target because we're auditing localhost."
+        end if
     else
-    if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then
-    On Error Resume Next
-    set ping = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Timeout = 200 and Address = '" & strcomputer & "'")
-    on error goto 0
-    for each item in ping
-    if (IsNull(item.StatusCode) or (item.Statuscode <> 0)) then
-    ' it is not switched on
-    pc_alive = 0
-    if debugging > "0" then wscript.echo "PC " & strcomputer & " not responding to ping" end if
-    else
-    pc_alive = 1
-    if debugging > "0" then wscript.echo "PC " & strcomputer & " responding to ping" end if
-    end if
-    next
-    else
-    pc_alive = 1
-    if debugging > "0" then wscript.echo "Auditing PC is older than Win2000, Cannot ping target PC." end if
-    end if
+        if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then
+            On Error Resume Next
+            set ping = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Timeout = 200 and Address = '" & strcomputer & "'")
+            on error goto 0
+            for each item in ping
+                if (IsNull(item.StatusCode) or (item.Statuscode <> 0)) then
+                    ' it is not switched on
+                    pc_alive = 0
+                    if debugging > "0" then wscript.echo "PC " & strcomputer & " not responding to ping" end if
+                else
+                    pc_alive = 1
+                    if debugging > "0" then wscript.echo "PC " & strcomputer & " responding to ping" end if
+                end if
+            next
+        else
+            pc_alive = 1
+            if debugging > "0" then wscript.echo "Auditing PC is older than Win2000, Cannot ping target PC." end if
+        end if
     end if
 else
     if (strcomputer = ".") then
-    pc_alive = 1
-    if debugging > "0" then wscript.echo "Not pinging target because we're auditing localhost." end if
+        pc_alive = 1
+        if debugging > "0" then wscript.echo "Not pinging target because we're auditing localhost." end if
     else
-    if debugging > "0" then wscript.echo "Not pinging target (override with ping_target=y)." end if
+        if debugging > "0" then wscript.echo "Not pinging target (override with ping_target=y)." end if
     end if
 end if
 
 error_returned = 0
-if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
+if (struser <> "" and instr(lcase(local_net), " " & lcase(strcomputer) & " ") = 0) then
     ' credentials passed and not localhost
 
     if ((pc_alive = 1) or (ping_target = "n")) then

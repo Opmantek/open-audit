@@ -1,7 +1,5 @@
-<?php  if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
- }
-#
+<?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -26,25 +24,28 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+**/
 
 /*
-* @category  Helper
-* @package   Open-AudIT
-* @author    Mark Unwin <marku@opmantek.com>
-* @copyright 2014 Opmantek
-* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.1.2
-* @link      http://www.open-audit.org
- */
 
-# Vendor Mimosa
+UPDATE `configuration` SET `value` = '20190630' WHERE `name` = 'internal_version';
 
-$get_oid_details = function ($ip, $credentials, $oid) {
-    $details = new stdClass();
-    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.2.0");
-    $details->location_longitude = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.2.1.0");
-    $details->location_latitude = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.2.2.0");
-    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.3.0");
-    $details->os_installation_date = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.4.0");
-    return($details);
-};
+UPDATE `configuration` SET `value` = '3.1.2' WHERE `name` = 'display_version';
+*/
+
+$this->log_db('Upgrade database to 3.1.2 commenced');
+
+
+# set our versions
+$sql = "UPDATE `configuration` SET `value` = '20190630' WHERE `name` = 'internal_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `configuration` SET `value` = '3.1.2' WHERE `name` = 'display_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->log_db("Upgrade database to 3.1.2 completed");
+$this->config->config['internal_version'] = '20190630';
+$this->config->config['display_version'] = '3.1.2';

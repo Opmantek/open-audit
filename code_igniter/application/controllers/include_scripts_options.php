@@ -189,7 +189,7 @@ $options['system_id']->values = '';
 
 $options['url'] = new stdClass();
 $options['url']->name = 'url';
-$options['url']->default = $this->config->item('default_network_address') . 'index.php/input/devices';
+$options['url']->default = $this->config->config['default_network_address'] . 'index.php/input/devices';
 $options['url']->help = 'The address of the Open-AudIT server "submit" page.';
 $options['url']->type = 'url';
 $options['url']->values = '';

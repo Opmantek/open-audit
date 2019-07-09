@@ -40,7 +40,7 @@ class CI_Session
         // manually via the $params array above or via the config file
         foreach (array('sess_table_name', 'sess_expiration', 'sess_match_ip', 'sess_match_useragent', 'sess_time_to_update', 'time_reference', 'encryption_key') as $key)
         {
-            $this->$key = (isset($params[$key])) ? $params[$key] : $this->CI->config->item($key);
+            $this->$key = (isset($params[$key])) ? $params[$key] : $this->CI->config->config[$key];
         }
 
         // Sessions, start your engines!

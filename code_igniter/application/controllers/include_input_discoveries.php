@@ -264,7 +264,7 @@ foreach ($xml->children() as $input) {
     $device->mac_address = (string)$input->mac_address;
     $device->credentials = array();
 
-    if ($this->config->item('discovery_use_dns') == 'y') {
+    if ($this->config->config['discovery_use_dns'] == 'y') {
         $device = dns_validate($device);
     }
 
@@ -1105,7 +1105,8 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
         $share = '\\admin$';
         $destination = 'audit_windows.vbs';
-        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_use_vintage_service')) and $this->config->item('discovery_use_vintage_service') == 'y') {
+
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->config['discovery_use_vintage_service']) and $this->config->config['discovery_use_vintage_service'] == 'y') {
 
             $log->message = 'Running discovery the old way using the code for Apache service account.';
             discovery_log($log);
@@ -1135,9 +1136,9 @@ foreach ($xml->children() as $input) {
                 }
                 unset($temp);
 
-                $command_string = "%comspec% /c start /b cscript //nologo " . "$filepath\\scripts\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
+                $command_string = "%comspec% /c start /b cscript " . "$filepath\\scripts\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
 
-                $log->command = "%comspec% /c start /b cscript //nologo " . "$filepath\\scripts\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=****** url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
+                $log->command = "%comspec% /c start /b cscript " . "$filepath\\scripts\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=****** url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
 
                 $command_start = microtime(true);
                 exec($command_string, $output, $return_var);
@@ -1246,7 +1247,7 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
 
         # copy the audit script to the target ip
-        $destination = $this->config->item('discovery_linux_script_directory');
+        $destination = $this->config->config['discovery_linux_script_directory'];
         if (substr($destination, -1) != '/') {
             $destination .= '/';
         }
@@ -1268,7 +1269,7 @@ foreach ($xml->children() as $input) {
             $log->severity = 7;
         } else {
             # Successfully copied the audit script, now chmod it
-            $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
+            $command = 'chmod ' . $this->config->config['discovery_linux_script_permissions'] . ' ' . $destination;
             # No use testing for a result as a chmod produces no output
             $parameters = new stdClass();
             $parameters->log = $log;
@@ -1295,7 +1296,7 @@ foreach ($xml->children() as $input) {
         }
         if ($audit_script != '') {
             $log->command = '';
-            $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+            $command = $this->config->config['discovery_linux_script_directory'].$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
             $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
             $log->command_output = '';
             $log->command = '';
