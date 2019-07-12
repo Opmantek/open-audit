@@ -372,7 +372,30 @@ class MY_Model extends CI_Model
 
         // filter
         $filter = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection and !empty($CI->response->meta->filter)) {
+
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
+            foreach ($CI->response->meta->query_parameters as $parameter) {
+                if ($parameter->name == 'search') {
+                    if ($CI->db->table_exists($CI->response->meta->collection)) {
+                        $fields = $CI->db->list_fields($CI->response->meta->collection);
+                        $excluded_fields = array('id', 'org_id', 'edited_by', 'edited_date');
+                        $filter = '     (';
+                        foreach ($fields as $field) {
+                            if (!in_array($field, $excluded_fields)) {
+                                $filter .= $CI->response->meta->collection . '.' . $field . ' LIKE "%' . str_replace('"', '\"', $parameter->value) . '%" OR ';
+                            }
+                        }
+                        if ($filter != '     (') {
+                            $filter = substr($filter, 0, strlen($filter)-3) . ')';
+                        } else {
+                            $filter = '';
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection and !empty($CI->response->meta->filter) and empty($filter)) {
             $reserved = ' properties limit resource action sort current offset format ';
             foreach ($CI->response->meta->filter as $item) {
                 if (empty($item->operator)) {
