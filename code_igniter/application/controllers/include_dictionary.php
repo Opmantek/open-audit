@@ -259,6 +259,24 @@ if ($table == 'conditions') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','weight','inputs','outputs');
     $dictionary->attributes->update = array('name','org_id','description','weight','inputs','outputs');
+
+
+    $tables = array('bios', 'credential', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+    $columns = array();
+    foreach ($tables as $table) {
+        $fields = $this->db->list_fields($table);
+        $myfields = array();
+        foreach ($fields as $field) {
+            if ($field != 'id' and $field != 'current' and $field != 'system_id' and $field != 'first_seen' and $field != 'last_seen' and strpos($field, '_id') != strlen($field)-3) {
+                $myfields[] = $field;
+            }
+        }
+        sort($myfields);
+        $columns[$table] = $myfields;
+    }
+    $dictionary->attributes->tables = $tables;
+    $dictionary->attributes->columns = $columns;
+
 }
 
 if ($table == 'connections') {
