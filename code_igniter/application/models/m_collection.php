@@ -429,6 +429,28 @@ class M_collection extends MY_Model
             $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
 
+        if ($collection === 'conditions') {
+            $new_inputs = array();
+            foreach ($data->inputs as $input) {
+                $item = new stdClass();
+                foreach ($input as $key => $value) {
+                    $item->{$key} = $value;
+                }
+                $new_inputs[] = $item;
+            }
+            $data->inputs = json_encode($new_inputs);
+
+            $new_outputs = array();
+            foreach ($data->outputs as $output) {
+                $item = new stdClass();
+                foreach ($output as $key => $value) {
+                    $item->{$key} = $value;
+                }
+                $new_outputs[] = $item;
+            }
+            $data->outputs = json_encode($new_outputs);
+        }
+
         if ($collection === 'credentials') {
             $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
