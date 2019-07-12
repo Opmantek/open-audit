@@ -417,7 +417,7 @@ if (! function_exists('inputRead')) {
         #$CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
         if (empty($CI->response->meta->sub_resource_id)) {
             if (!empty($CI->response->meta->sub_resource)) {
-                $CI->response->meta->sub_resource_id = (string)$CI->uri->segment(4, '');
+                $CI->response->meta->sub_resource_id = (string)urldecode($CI->uri->segment(4, ''));
                 $log->summary = 'set sub_resource_id';
                 $log->detail = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
                 stdlog($log);
@@ -435,7 +435,9 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to POST.';
             stdlog($log);
         }
-        $CI->response->meta->sub_resource_id = intval($CI->response->meta->sub_resource_id);
+        if (is_numeric($CI->response->meta->sub_resource_id)) {
+            $CI->response->meta->sub_resource_id = intval($CI->response->meta->sub_resource_id);
+        }
 
         # TODO - fit this somewhere nicer. Need to account for multiple id's being sent
         if (!empty($_GET['ids'])) {

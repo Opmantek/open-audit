@@ -125,6 +125,75 @@ class Conditions extends MY_Controller
     }
 
     /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function sub_resource_delete()
+    {
+        #echo json_encode($this->response->meta);
+
+        $condition = $this->m_conditions->read($this->meta->response->id);
+        if (empty($condition)) {
+            return;
+        } else {
+            $condition = $condition[0];
+        }
+
+        $temp = explode('.', $this->response->meta->sub_resource_id);
+        $item = new stdClass();
+
+        if ($this->response->meta->sub_resource == 'inputs') {
+            $item->table = $temp[0];
+            $item->attribute = $temp[1];
+            $item->operator = $temp[2];
+            $item->value = html_entity_decode(implode(array_slice($temp, 3)));
+            $inputs = json_decode($condition->attributes->inputs);
+            $newinputs = array();
+            foreach ($inputs as $input) {
+                if ($input->table != $item->table or $input->attribute != $item->attribute or $input->operator != $item->operator or $input->value != $item->value) {
+                    $newinputs[] = $input;
+                }
+            }
+            $condition->attributes->inputs = json_encode($newinputs);
+            $sql = "UPDATE conditions SET inputs = ? WHERE id = ?";
+            $data = array($condition->attributes->inputs, $condition->id);
+            $this->db->query($sql, $data);
+        }
+
+        if ($this->response->meta->sub_resource == 'outputs') {
+            $item->table = $temp[0];
+            $item->attribute = $temp[1];
+            $item->value_type = $temp[2];
+            $item->value = implode(array_slice($temp, 3));
+            $outputs = json_decode($condition->attributes->outputs);
+            $newoutputs = array();
+            foreach ($outputs as $db_output) {
+                if ($db_output->table != $item->table or $db_output->attribute != $item->attribute or $db_output->value_type != $item->value_type or $db_output->value != $item->value) {
+                    $newoutputs[] = $db_output;
+                }
+            }
+            $condition->attributes->outputs = json_encode($newoutputs);
+            $sql = "UPDATE conditions SET outputs = ? WHERE id = ?";
+            $data = array($condition->attributes->outputs, $condition->id);
+            $this->db->query($sql, $data);
+        }
+
+        $this->response->data[] = $condition;
+        output($this->response);
+        $log = new stdClass();
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
+        $log->severity = 7;
+        $log->status = 'success';
+        $log->summary = 'finish';
+        $log->type = 'access';
+        $log->detail = json_encode($this->response);
+        stdLog($log);
+    }
+
+    /**
     * Collection of objects
     *
     * @access public
