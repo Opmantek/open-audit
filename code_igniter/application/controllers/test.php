@@ -100,6 +100,53 @@ class Test extends CI_Controller
         }
     }
 
+    public function read_oui_unique()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
+        echo "<pre>\n";
+        $ouis = array();
+        $manufacturers = array();
+        for ($i=0; $i < count($file); $i++) { 
+            if (strpos($file[$i], "   (hex)\t\t")) {
+                $oui = str_replace('-', ':',strtolower(trim(substr($file[$i], 0, 8))));
+                $manufacturer = trim(substr($file[$i], 17));
+                $ouis[$oui] = $manufacturer;
+                $value = $manufacturer;
+                $value = trim($value);
+                if ($value == 'TP-LINK TECHNOLOGIES CO.,LTD.') { $value = 'TP-Link'; }
+                if (stripos($value, '3Com') === 0) { $value = '3Com Ltd'; }
+                if (stripos($value, 'Alcatel') === 0) { $value = 'Alcatel-Lucent'; }
+                if (stripos($value, 'Arista') !== false) { $value = 'Arista Networks'; }
+                if (stripos($value, 'Aruba') !== false) { $value = 'Aruba'; }
+                if ( strpos($value, 'Broadcom') === 0) { $value = 'Broadcom'; }
+                if ( strpos($value, 'Cisco') === 0) { $value = 'Cisco Systems'; }
+                if (stripos($value, 'Giga-Byte') === 0) { $value = 'Giga-Byte Technology'; }
+                if (stripos($value, 'Hewlett Packard') !== false) { $value = 'Hewlett Packard'; }
+                if (stripos($value, 'HUAWEI') === 0) { $value = 'Huawei Technologies'; }
+                if (stripos($value, 'Intel') === 0) { $value = 'Intel'; }
+                if (stripos($value, 'IBM') === 0) { $value = 'IBM'; }
+                if (stripos($value, 'LG Electronics') === 0) { $value = 'LG Electronics'; }
+                if (stripos($value, 'LITE-ON') === 0) { $value = 'LITE-ON'; }
+                if (stripos($value, 'LUCENT') === 0) { $value = 'Alcatel-Lucent'; }
+                if (stripos($value, 'Lenovo') === 0) { $value = 'Lenovo'; }
+                if (stripos($value, 'MICRO-STAR') === 0) { $value = 'MICRO-STAR'; }
+                if (stripos($value, 'MRV Communication') === 0) { $value = 'MRV Communications'; }
+                if (stripos($value, 'Microsoft') === 0) { $value = 'Microsoft'; }
+                if (stripos($value, 'Samsung Electronics') === 0) { $value = 'Samsung Electronics'; }
+                if (stripos($value, 'SonicWall') === 0) { $value = 'SonicWall'; }
+                $manufacturers[] = $value;
+            }
+        }
+        $manufacturers = array_unique($manufacturers);
+        sort($manufacturers);
+        echo "<pre>\n";
+        echo "Count: " . count($manufacturers) . "\n\n";
+        print_r($manufacturers);
+        echo "</pre>\n";
+    }
+
     public function read_oui()
     {
         $this->load->model('m_configuration');
@@ -121,24 +168,125 @@ class Test extends CI_Controller
             }
         }
         foreach ($ouis as $key => $value) {
+            $value = trim($value);
+            if ($value == 'TP-LINK TECHNOLOGIES CO.,LTD.') { $value = 'TP-Link'; }
+            if (stripos($value, '3Com') === 0) { $value = '3Com Ltd'; }
+            if (stripos($value, 'Alcatel') === 0) { $value = 'Alcatel-Lucent'; }
+            if (stripos($value, 'Arista') !== false) { $value = 'Arista Networks'; }
+            if (stripos($value, 'Aruba') !== false) { $value = 'Aruba'; }
+            if ( strpos($value, 'Broadcom') === 0) { $value = 'Broadcom'; }
+            if ( strpos($value, 'Cisco') === 0) { $value = 'Cisco Systems'; }
+            if (stripos($value, 'Giga-Byte') === 0) { $value = 'Giga-Byte Technology'; }
+            if (stripos($value, 'Hewlett Packard') !== false) { $value = 'Hewlett Packard'; }
+            if (stripos($value, 'HUAWEI') === 0) { $value = 'Huawei Technologies'; }
+            if (stripos($value, 'Intel') === 0) { $value = 'Intel'; }
+            if (stripos($value, 'IBM') === 0) { $value = 'IBM'; }
+            if (stripos($value, 'LG Electronics') === 0) { $value = 'LG Electronics'; }
+            if (stripos($value, 'LITE-ON') === 0) { $value = 'LITE-ON'; }
+            if (stripos($value, 'LUCENT') === 0) { $value = 'Alcatel-Lucent'; }
+            if (stripos($value, 'Lenovo') === 0) { $value = 'Lenovo'; }
+            if (stripos($value, 'MICRO-STAR') === 0) { $value = 'MICRO-STAR'; }
+            if (stripos($value, 'MRV Communication') === 0) { $value = 'MRV Communications'; }
+            if (stripos($value, 'Microsoft') === 0) { $value = 'Microsoft'; }
+            if (stripos($value, 'Samsung Electronics') === 0) { $value = 'Samsung Electronics'; }
+            if (stripos($value, 'SonicWall') === 0) { $value = 'SonicWall'; }
+
+            $inputs = array();
+            $outputs = array();
+
+            $item = new stdClass();
+            $item->table = 'network';
+            $item->attribute = 'mac';
+            $item->operator = 'st';
+            $item->value = $key;
+            $inputs[] = $item;
+
+            $item = new stdClass();
+            $item->table = 'system';
+            $item->attribute = 'manufacturer';
+            $item->operator = 'ne';
+            $item->value = '';
+            $inputs[] = $item;
+
+            $item = new stdClass();
+            $item->table = 'system';
+            $item->attribute = 'manufacturer';
+            $item->value = $value;
+            $item->value_type = 'string';
+            $outputs[] = $item;
+
             $insert = true;
-            // $input = "[{\"attribute\":\"mac\",\"operator\":\"st\",\"value\":\"$key\"}]";
             // foreach ($conditions as $condition) {
-            //     if ($condition->name = "MAC Address for $value" and $condition->inputs == $input) {
+            //     if ($condition->name = "MAC Address for $value" and $condition->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
             //         $insert = false;
             //         break;
             //     }
             // }
-            if ($insert) {
-                $value = str_replace("'", "''", $value);
-                $sql = "INSERT INTO `conditions` VALUES (NULL, 'MAC Address for $value', 1, 'Set the manufacturer based on the MAC prefix.', 100, '[{\"attribute\":\"mac\",\"operator\":\"st\",\"value\":\"$key\"},{\"attribute\":\"manufacturer\",\"operator\":\"ne\",\"value\":\"\"}]', '[{\"attribute\":\"manufacturer\",\"value\":\"$value\",\"value_type\":\"string\"}]', 'system', '2000-01-01 00:00:00');";
+
+            if ($insert and $value != '') {
+                $sql = "INSERT INTO `conditions` VALUES (NULL, " . $this->db->escape('Mac Address for ' . $value) . ", 1, 'Set the manufacturer based on the MAC prefix.', 90, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
+
                 echo $sql . "\n";
+
                 # $query = $this->db->query($sql);
             }
+
         }
     }
 
+    public function read_iana_unique()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
 
+        // $sql = "SELECT * FROM `conditions`";
+        // $query = $this->db->query($sql);
+        // $conditions = $query->result();
+
+        $file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers.txt');
+        echo "<pre>\n";
+        $oids = array();
+        for ($i=0; $i < count($file); $i++) { 
+            if (preg_match('/^\d.*/', $file[$i])) {
+                $oid = trim($file[$i]);
+                $manufacturer = $file[$i+1];
+                $oids[$oid] = trim($manufacturer);
+                $value = trim($manufacturer);
+                if ($value == 'TP-Link Technology Co.,Ltd') { $value = 'TP-Link'; }
+                if (stripos($value, '3Com') === 0) { $value = '3Com Ltd'; }
+                if (stripos($value, 'Alcatel') === 0) { $value = 'Alcatel-Lucent'; }
+                if ($value == 'Apple Computer, Inc.') { $value = 'Apple, Inc.'; }
+                if ($value == 'Apple Inc') { $value = 'Apple, Inc.'; }
+                if (stripos($value, 'Arista') === 0) { $value = 'Arista Networks'; }
+                if (stripos($value, 'Aruba Networks') !== false) { $value = 'Aruba'; }
+                if ( strpos($value, 'Broadcom') === 0) { $value = 'Broadcom'; }
+                if (stripos($value, 'Cisco') === 0) { $value = 'Cisco Systems'; }
+                if (stripos($value, 'Giga-Byte') === 0) { $value = 'Giga-Byte Technology'; }
+                if (stripos($value, 'Hewlett Packard') !== false) { $value = 'Hewlett Packard'; }
+                if (stripos($value, 'Hewlett-Packard') !== false) { $value = 'Hewlett Packard'; }
+                if (stripos($value, 'HUAWEI') === 0) { $value = 'Huawei Technologies'; }
+                if (stripos($value, 'Intel') === 0) { $value = 'Intel'; }
+                if (stripos($value, 'IBM') === 0) { $value = 'IBM'; }
+                if (stripos($value, 'LG Electronics') === 0) { $value = 'LG Electronics'; }
+                if (stripos($value, 'LITE-ON') === 0) { $value = 'LITE-ON'; }
+                if (stripos($value, 'LUCENT') === 0) { $value = 'Alcatel-Lucent'; }
+                if (stripos($value, 'Lenovo') === 0) { $value = 'Lenovo'; }
+                if (stripos($value, 'MICRO-STAR') === 0) { $value = 'MICRO-STAR'; }
+                if (stripos($value, 'MRV Communication') === 0) { $value = 'MRV Communications'; }
+                if (stripos($value, 'Microsoft') === 0) { $value = 'Microsoft'; }
+                if ($value == 'net-snmp') { $value = ''; }
+                if (stripos($value, 'Samsung Electronics') === 0) { $value = 'Samsung Electronics'; }
+                if (stripos($value, 'SonicWall') === 0) { $value = 'SonicWall'; }
+                $manufacturers[] = trim($value);
+            }
+        }
+        $manufacturers = array_unique($manufacturers);
+        sort($manufacturers);
+        echo "<pre>\n";
+        echo "Count: " . count($manufacturers) . "\n\n";
+        print_r($manufacturers);
+        echo "</pre>\n";
+    }
 
 
     public function read_iana()
@@ -161,57 +309,76 @@ class Test extends CI_Controller
                 $oids[$oid] = trim($manufacturer);
             }
         }
-        $count = 0;
+
         foreach ($oids as $key => $value) {
-            $insert = true;
             $value = trim($value);
-            $value = str_replace('"', '', $value);
-            $value = str_replace('\\', '', $value);
             $newvalue = $value;
-            if ($newvalue == 'Apple Computer, Inc.') { $newvalue = 'Apple, Inc.'; }
-            if ($newvalue == 'Apple Inc') { $newvalue = 'Apple, Inc.'; }
-            if ($newvalue == 'net-snmp') { $newvalue = ''; }
-            $newvalue = str_replace("'", "''", $newvalue);
-            // $input = '[{\"attribute\":\"snmp_enterprise_id\",\"operator\":\"eq\",\"value\":\"$key\"}]';
+            if (       $newvalue == 'TP-Link Technology Co.,Ltd') {  $newvalue = 'TP-Link'; }
+            if (stripos( $newvalue, '3Com') === 0) {  $newvalue = '3Com Ltd'; }
+            if (stripos( $newvalue, 'Alcatel') === 0) {  $newvalue = 'Alcatel-Lucent'; }
+            if (       $newvalue == 'Apple Computer, Inc.') {  $newvalue = 'Apple, Inc.'; }
+            if (       $newvalue == 'Apple Inc') {  $newvalue = 'Apple, Inc.'; }
+            if (stripos( $newvalue, 'Arista') === 0) {  $newvalue = 'Arista Networks'; }
+            if (stripos( $newvalue, 'Aruba Networks') !== false) {  $newvalue = 'Aruba'; }
+            if ( strpos( $newvalue, 'Broadcom') === 0) {  $newvalue = 'Broadcom'; }
+            if (stripos( $newvalue, 'Cisco') === 0) {  $newvalue = 'Cisco Systems'; }
+            if (stripos( $newvalue, 'Giga-Byte') === 0) {  $newvalue = 'Giga-Byte Technology'; }
+            if (stripos( $newvalue, 'Hewlett Packard') !== false) {  $newvalue = 'Hewlett Packard'; }
+            if (stripos( $newvalue, 'Hewlett-Packard') !== false) {  $newvalue = 'Hewlett Packard'; }
+            if (stripos( $newvalue, 'HUAWEI') === 0) {  $newvalue = 'Huawei Technologies'; }
+            if (stripos( $newvalue, 'Intel') === 0) {  $newvalue = 'Intel'; }
+            if (stripos( $newvalue, 'IBM') === 0) {  $newvalue = 'IBM'; }
+            if (stripos( $newvalue, 'LG Electronics') === 0) {  $newvalue = 'LG Electronics'; }
+            if (stripos( $newvalue, 'LITE-ON') === 0) {  $newvalue = 'LITE-ON'; }
+            if (stripos( $newvalue, 'LUCENT') === 0) {  $newvalue = 'Alcatel-Lucent'; }
+            if (stripos( $newvalue, 'Lenovo') === 0) {  $newvalue = 'Lenovo'; }
+            if (stripos( $newvalue, 'MICRO-STAR') === 0) {  $newvalue = 'MICRO-STAR'; }
+            if (stripos( $newvalue, 'MRV Communication') === 0) {  $newvalue = 'MRV Communications'; }
+            if (stripos( $newvalue, 'Microsoft') === 0) {  $newvalue = 'Microsoft'; }
+            if (       $newvalue == 'net-snmp') {  $newvalue = ''; }
+            if (stripos( $newvalue, 'Samsung Electronics') === 0) {  $newvalue = 'Samsung Electronics'; }
+            if (stripos( $newvalue, 'SonicWall') === 0) {  $newvalue = 'SonicWall'; }
+
+            $inputs = array();
+            $outputs = array();
+
+            $item = new stdClass();
+            $item->table = 'system';
+            $item->attribute = 'snmp_enterprise_id';
+            $item->operator = 'eq';
+            $item->value = $key;
+            $inputs[] = $item;
+
+            $item = new stdClass();
+            $item->table = 'system';
+            $item->attribute = 'manufacturer';
+            $item->value = $newvalue;
+            $item->value_type = 'string';
+            $outputs[] = $item;
+
+            $item = new stdClass();
+            $item->table = 'system';
+            $item->attribute = 'snmp_enterprise_name';
+            $item->value = $value;
+            $item->value_type = 'string';
+            $outputs[] = $item;
+
+            $insert = true;
             // foreach ($conditions as $condition) {
-            //     if ($condition->name = "SNMP Enterprise Number for $value" and $condition->inputs == $input) {
+            //     if ($condition->name = "SNMP Enterprise Number for $value" and $condition->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
             //         $insert = false;
             //         break;
             //     }
             // }
-            if ($insert) {
-                $value = str_replace("'", "''", $value);
 
-                $inputs = array();
-                $outputs = array();
- 
-                $item = new stdClass();
-                $item->attribute = 'snmp_enterprise_id';
-                $item->operator = 'eq';
-                $item->value = $key;
-                $inputs[] = $item;
-
-                $item = new stdClass();
-                $item->attribute = 'manufacturer';
-                $item->value = $newvalue;
-                $item->value_type = 'string';
-                $outputs[] = $item;
-
-                $item = new stdClass();
-                $item->attribute = 'snmp_enterprise_name';
-                $item->value = $value;
-                $item->value_type = 'string';
-                $outputs[] = $item;
-
-                #$sql = "INSERT INTO `conditions` VALUES (NULL, 'SNMP Enterprise Number for $value1', 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, '[{\"attribute\":\"snmp_enterprise_id\",\"operator\":\"eq\",\"value\":\"$key\"}]', '[{\"attribute\":\"manufacturer\",\"value\":\"$newvalue\",\"value_type\":\"string\"},{\"attribute\":\"snmp_enterprise_name\",\"value\":\"$value2\",\"value_type\":\"string\"}]', 'system', '2000-01-01 00:00:00');";
-                $sql = "INSERT INTO `conditions` VALUES (NULL, 'SNMP Enterprise Number for $value', 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, '" . json_encode($inputs) . "', '" . json_encode($outputs) . "', 'system', '2000-01-01 00:00:00');";
+            if ($insert and $value != '') {
+                $sql = "INSERT INTO `conditions` VALUES (NULL, " . $this->db->escape('SNMP Enterprise Number for ' . $value) . ", 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
 
                 echo "$sql\n";
+
                 #$query = $this->db->query($sql);
             }
-            $count++;
         }
-        #echo "Count: $count\n";
     }
 
     public function import_json_device()
