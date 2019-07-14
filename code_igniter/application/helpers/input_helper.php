@@ -984,94 +984,18 @@ if (! function_exists('inputRead')) {
         }
 
         # get the filter
-        $log->summary = 'set filter';
-        $reserved_words = array('action','as_at','current','debug','format','graph','group','groupby','ids','include','limit','offset','properties','query','report_name','search','sort','sub_resource','sub_resource_id');
-        $temp = $CI->input->get();
-        if (!empty($temp)) {
-            foreach ($temp as $key => $value) {
-                $query = new stdClass();
-                $query->name = $key;
-                $query->operator = '=';
-                $query->value = $value;
-
-                if (strtolower($query->name) == 'as_at') {
-                    $CI->response->meta->internal->as_at = $query->value;
-                    $CI->response->meta->current = 'all';
-                    $log->detail = 'Set current to all because as_at specified.';
-                    stdlog($log);
-                }
-
-                if (strtolower(substr($query->value, 0, 8)) == 'not like') {
-                    $query->value = '%' . substr($query->value, 8) . '%';
-                    $query->operator = 'not like';
-                }
-
-                if (strtolower(substr($query->value, 0, 5)) == '!like') {
-                    $query->value = '%' . substr($query->value, 5) . '%';
-                    $query->operator = 'not like';
-                }
-
-                $operator = substr($query->value, 0, 4);
-                if (strtolower($operator) == 'like') {
-                    $query->value = '%' . substr($query->value, 4) . '%';
-                    $query->operator = $operator;
-                }
-
-                if (strtolower(substr($query->value, 0, 3)) === 0 and strpos($query->value, ')') === strlen($query->value)) {
-                    $temp_value = substr($query->value, 3, strlen($query->value)-1);
-                    $temp_value = str_replace(",", "','", $temp_value);
-                    $query->value = "('" . $temp_value . "')";
-                    $query->operator = 'in';
-                }
-
-                $operator = strtolower(substr($query->value, 0, 2));
-                if ($operator == 'in' and $query->value != 'info' and $query->value != 'innotek' and $query->value != 'intel' and $query->value != 'inputs') {
-                    $temp_value = substr($query->value, 2);
-                    $temp_value = str_replace(",", "','", $temp_value);
-                    $query->value = "('" . $temp_value . "')";
-                    $query->operator = $operator;
-                }
-
-                $operator = substr($query->value, 0, 2);
-                if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
-                    $query->value = substr($query->value, 2);
-                    $query->operator = $operator;
-                }
-
-                $operator = substr($query->value, 0, 1);
-                if ($operator == '=' or $operator == '>' or $operator == '<') {
-                    $query->value = substr($query->value, 1);
-                    $query->operator = $operator;
-                }
-
-                $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
-                if ($query->value == false) {
-                    $query->value = '';
-                }
-
-                if (in_array($query->name, $reserved_words)) {
-                    $CI->response->meta->filter[] = $query;
-                }
-                $CI->response->meta->query_parameters[] = $query;
-                unset($query);
-            }
-        }
-
-
-
-
-        // # get the filter
-        // $filter = array();
+        # NOTE - below is commented out because PHP converts .'s to underscores 
+        #        in the incoming varuable names, hence system.class breaks.
+        #        Implemented below, with the consequence that you can not use & in a variable value
         // $log->summary = 'set filter';
-        // $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
-        // $CI->response->meta->query_string = str_replace('&amp;', '&', $CI->response->meta->query_string);
-        // if ($CI->response->meta->query_string != '') {
-        //     $reserved_words = ' action as_at current debug format graph group groupby ids include limit offset properties query report_name search sort sub_resource sub_resource_id ';
-        //     foreach (explode('&', $CI->response->meta->query_string) as $item) {
+        // $reserved_words = array('action','as_at','current','debug','format','graph','group','groupby','ids','include','limit','offset','properties','query','report_name','search','sort','sub_resource','sub_resource_id');
+        // $temp = $CI->input->get();
+        // if (!empty($temp)) {
+        //     foreach ($temp as $key => $value) {
         //         $query = new stdClass();
-        //         $query->name = substr($item, 0, strpos($item, '='));
+        //         $query->name = $key;
         //         $query->operator = '=';
-        //         $query->value = str_replace($query->name.'=', '', $item);
+        //         $query->value = $value;
 
         //         if (strtolower($query->name) == 'as_at') {
         //             $CI->response->meta->internal->as_at = $query->value;
@@ -1096,19 +1020,14 @@ if (! function_exists('inputRead')) {
         //             $query->operator = $operator;
         //         }
 
-        //         // $operator = substr($query->value, 0, 3);
-        //         // $test = substr($query->value, 0, 4);
-        //         // if ($operator == 'in(' and strpos($test, ')') != false) {
-        //         //     $temp_value = substr($query->value, 3, strlen($query->value)-1);
-        //         //     $temp_value = str_replace(",", "','", $temp_value);
-        //         //     $query->value = "('" . $temp_value . "')";
-        //         //     $query->operator = $operator;
-        //         // }
+        //         if (strtolower(substr($query->value, 0, 3)) === '(in' and strpos($query->value, ')') === strlen($query->value)) {
+        //             $temp_value = substr($query->value, 3, strlen($query->value)-1);
+        //             $temp_value = str_replace(",", "','", $temp_value);
+        //             $query->value = "('" . $temp_value . "')";
+        //             $query->operator = 'in';
+        //         }
 
         //         $operator = strtolower(substr($query->value, 0, 2));
-        //         $test = substr($query->value, 0, 4);
-        //         $test2 = substr($query->value, 0, 4);
-        //         # if ($operator == 'in' and strtolower($test) != 'info' and strtolower($test2) != 'innotek' and strtolower($test2) != 'intel') {
         //         if ($operator == 'in' and $query->value != 'info' and $query->value != 'innotek' and $query->value != 'intel' and $query->value != 'inputs') {
         //             $temp_value = substr($query->value, 2);
         //             $temp_value = str_replace(",", "','", $temp_value);
@@ -1133,13 +1052,102 @@ if (! function_exists('inputRead')) {
         //             $query->value = '';
         //         }
 
-        //         if (strpos($reserved_words, ' '.$query->name.' ') === false and $query->name != '') {
+        //         if (!in_array($query->name, $reserved_words)) {
         //             $CI->response->meta->filter[] = $query;
         //         }
         //         $CI->response->meta->query_parameters[] = $query;
         //         unset($query);
         //     }
         // }
+
+
+
+
+        # get the filter
+        # NOTE - Had to mangle our own parsing routine because PHP replaces .'s with underscores
+        #        in incoming variable names. The unfortunate result is that we can not use & in
+        #        a variable value when using GET.
+        #        PHP Bug Report - https://bugs.php.net/bug.php?id=45272
+        #        PHP Docs - https://php.net/manual/en/language.variables.external.php
+        $filter = array();
+        $log->summary = 'set filter';
+        $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
+        $CI->response->meta->query_string = str_replace('&amp;', '&', $CI->response->meta->query_string);
+        if ($CI->response->meta->query_string != '') {
+            $reserved_words = ' action as_at current debug format graph group groupby ids include limit offset properties query report_name search sort sub_resource sub_resource_id ';
+            foreach (explode('&', $CI->response->meta->query_string) as $item) {
+                $query = new stdClass();
+                $query->name = substr($item, 0, strpos($item, '='));
+                $query->operator = '=';
+                $query->value = str_replace($query->name.'=', '', $item);
+
+                if (strtolower($query->name) == 'as_at') {
+                    $CI->response->meta->internal->as_at = $query->value;
+                    $CI->response->meta->current = 'all';
+                    $log->detail = 'Set current to all because as_at specified.';
+                    stdlog($log);
+                }
+
+                if (strtolower(substr($query->value, 0, 8)) == 'not like') {
+                    $query->value = '%' . substr($query->value, 8) . '%';
+                    $query->operator = 'not like';
+                }
+
+                if (strtolower(substr($query->value, 0, 5)) == '!like') {
+                    $query->value = '%' . substr($query->value, 5) . '%';
+                    $query->operator = 'not like';
+                }
+
+                $operator = substr($query->value, 0, 4);
+                if (strtolower($operator) == 'like') {
+                    $query->value = '%' . substr($query->value, 4) . '%';
+                    $query->operator = $operator;
+                }
+
+                // $operator = substr($query->value, 0, 3);
+                // $test = substr($query->value, 0, 4);
+                // if ($operator == 'in(' and strpos($test, ')') != false) {
+                //     $temp_value = substr($query->value, 3, strlen($query->value)-1);
+                //     $temp_value = str_replace(",", "','", $temp_value);
+                //     $query->value = "('" . $temp_value . "')";
+                //     $query->operator = $operator;
+                // }
+
+                $operator = strtolower(substr($query->value, 0, 2));
+                $test = substr($query->value, 0, 4);
+                $test2 = substr($query->value, 0, 4);
+                # if ($operator == 'in' and strtolower($test) != 'info' and strtolower($test2) != 'innotek' and strtolower($test2) != 'intel') {
+                if ($operator == 'in' and $query->value != 'info' and $query->value != 'innotek' and $query->value != 'intel' and $query->value != 'inputs') {
+                    $temp_value = substr($query->value, 2);
+                    $temp_value = str_replace(",", "','", $temp_value);
+                    $query->value = "('" . $temp_value . "')";
+                    $query->operator = $operator;
+                }
+
+                $operator = substr($query->value, 0, 2);
+                if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
+                    $query->value = substr($query->value, 2);
+                    $query->operator = $operator;
+                }
+
+                $operator = substr($query->value, 0, 1);
+                if ($operator == '=' or $operator == '>' or $operator == '<') {
+                    $query->value = substr($query->value, 1);
+                    $query->operator = $operator;
+                }
+
+                $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
+                if ($query->value == false) {
+                    $query->value = '';
+                }
+
+                if (strpos($reserved_words, ' '.$query->name.' ') === false and $query->name != '') {
+                    $CI->response->meta->filter[] = $query;
+                }
+                $CI->response->meta->query_parameters[] = $query;
+                unset($query);
+            }
+        }
 
         $CI->response->meta->internal->filter = filter($CI->response->meta->filter, $CI->response->meta->collection, $CI->user);
 
