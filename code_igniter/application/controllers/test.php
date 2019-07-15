@@ -204,7 +204,7 @@ class Test extends CI_Controller
             $item = new stdClass();
             $item->table = 'system';
             $item->attribute = 'manufacturer';
-            $item->operator = 'ne';
+            $item->operator = 'eq';
             $item->value = '';
             $inputs[] = $item;
 
