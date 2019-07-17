@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class Conditions extends MY_Controller
+class Rules extends MY_Controller
 {
     /**
     * Constructor
@@ -54,7 +54,7 @@ class Conditions extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('m_conditions');
+        $this->load->model('m_rules');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
     }
@@ -132,13 +132,12 @@ class Conditions extends MY_Controller
     */
     public function sub_resource_delete()
     {
-        #echo json_encode($this->response->meta);
 
-        $condition = $this->m_conditions->read($this->response->meta->id);
-        if (empty($condition)) {
+        $rule = $this->m_rules->read($this->response->meta->id);
+        if (empty($rule)) {
             return;
         } else {
-            $condition = $condition[0];
+            $rule = $rule[0];
         }
 
         $temp = explode('.', $this->response->meta->sub_resource_id);
@@ -149,16 +148,16 @@ class Conditions extends MY_Controller
             $item->attribute = $temp[1];
             $item->operator = $temp[2];
             $item->value = html_entity_decode(implode(array_slice($temp, 3)));
-            $inputs = json_decode($condition->attributes->inputs);
+            $inputs = json_decode($rule->attributes->inputs);
             $newinputs = array();
             foreach ($inputs as $input) {
                 if ($input->table != $item->table or $input->attribute != $item->attribute or $input->operator != $item->operator or $input->value != $item->value) {
                     $newinputs[] = $input;
                 }
             }
-            $condition->attributes->inputs = json_encode($newinputs);
-            $sql = "UPDATE conditions SET inputs = ? WHERE id = ?";
-            $data = array($condition->attributes->inputs, $condition->id);
+            $rule->attributes->inputs = json_encode($newinputs);
+            $sql = "UPDATE rules SET inputs = ? WHERE id = ?";
+            $data = array($rule->attributes->inputs, $rule->id);
             $this->db->query($sql, $data);
         }
 
@@ -167,20 +166,20 @@ class Conditions extends MY_Controller
             $item->attribute = $temp[1];
             $item->value_type = $temp[2];
             $item->value = implode(array_slice($temp, 3));
-            $outputs = json_decode($condition->attributes->outputs);
+            $outputs = json_decode($rule->attributes->outputs);
             $newoutputs = array();
             foreach ($outputs as $db_output) {
                 if ($db_output->table != $item->table or $db_output->attribute != $item->attribute or $db_output->value_type != $item->value_type or $db_output->value != $item->value) {
                     $newoutputs[] = $db_output;
                 }
             }
-            $condition->attributes->outputs = json_encode($newoutputs);
-            $sql = "UPDATE conditions SET outputs = ? WHERE id = ?";
-            $data = array($condition->attributes->outputs, $condition->id);
+            $rule->attributes->outputs = json_encode($newoutputs);
+            $sql = "UPDATE rules SET outputs = ? WHERE id = ?";
+            $data = array($rule->attributes->outputs, $rule->id);
             $this->db->query($sql, $data);
         }
 
-        $this->response->data[] = $condition;
+        $this->response->data[] = $rule;
         output($this->response);
         $log = new stdClass();
         $log->object = $this->response->meta->collection;
@@ -235,7 +234,7 @@ class Conditions extends MY_Controller
     public function import_form()
     {
         $this->load->model('m_database');
-        $this->response->data = $this->m_database->read('conditions');
+        $this->response->data = $this->m_database->read('rules');
         include 'include_import_form.php';
     }
 
@@ -262,5 +261,5 @@ class Conditions extends MY_Controller
     }
 }
 
-// End of file conditions.php
-// Location: ./controllers/conditions.php
+// End of file rules.php
+// Location: ./controllers/rules.php

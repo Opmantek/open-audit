@@ -73,7 +73,7 @@ if (!function_exists('process_scan')) {
 
         // our required models
         $CI->load->model('m_audit_log');
-        $CI->load->model('m_conditions');
+        $CI->load->model('m_rules');
         $CI->load->model('m_credentials');
         $CI->load->model('m_devices');
         $CI->load->model('m_device');

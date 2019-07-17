@@ -1091,7 +1091,7 @@ class M_devices extends MY_Model
         // We assign a weight to the submitted data and compare it to what we already have for each column
         // Valid weights and the sources are:
         // 1000 - user or import (import should set as user as well)
-        // 1500 - conditions rulesets
+        // 1500 - rules
         // 2000 - audit, audit_ssh, audit_wmi, windows, wmi
         // 3000 - snmp, ssh, nmis (note - ssh and snmp because they may contain data from nmap)
         // 4000 - ipmi
@@ -1104,7 +1104,7 @@ class M_devices extends MY_Model
                 $weight = 1000;
                 break;
 
-            case 'conditions':
+            case 'rules':
                 $weight = 1500;
                 break;
 

@@ -241,44 +241,6 @@ if ($table == 'collectors') {
     $dictionary->attributes->update = array('name','org_id','description','ip','status','check_minutes','user_id','uuid','network_address','options');
 }
 
-if ($table == 'conditions') {
-    $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
-    $dictionary->marketing = '<p>Conditions are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />
-    ' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>Conditions are used to apply attribute details to a device, depending on it\'s other attributes<br /><br />
-    ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
-    $dictionary->columns->id = $id;
-    $dictionary->columns->name = $name;
-    $dictionary->columns->org_id = $org_id;
-    $dictionary->columns->description = $description;
-    $dictionary->columns->weight = 'A lower number means it will have a lower preference for being applied, versus other conditions.';
-    $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match.';
-    $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
-    $dictionary->columns->edited_by = $edited_by;
-    $dictionary->columns->edited_date = $edited_date;
-    $dictionary->attributes->create = array('name','org_id','weight','inputs','outputs');
-    $dictionary->attributes->update = array('name','org_id','description','weight','inputs','outputs');
-
-
-    $tables = array('bios', 'credential', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
-    $columns = array();
-    foreach ($tables as $table) {
-        $fields = $this->db->list_fields($table);
-        $myfields = array();
-        foreach ($fields as $field) {
-            if ($field != 'id' and $field != 'current' and $field != 'system_id' and $field != 'first_seen' and $field != 'last_seen' and strpos($field, '_id') != strlen($field)-3) {
-                $myfields[] = $field;
-            }
-        }
-        sort($myfields);
-        $columns[$table] = $myfields;
-    }
-    $dictionary->attributes->tables = $tables;
-    $dictionary->attributes->columns = $columns;
-
-}
-
 if ($table == 'connections') {
     $dictionary->sentence = 'Track your connections to branch offices, the internet, where-ever else you need to. Simple, easy, intuitive.';
     $dictionary->marketing = '<p>Attributes such as the locations, the speed, provider, connected devices, type of connection and more are available.<br /><br />
@@ -852,6 +814,43 @@ if ($table == 'rows') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','room_id');
     $dictionary->attributes->update = array('name','org_id','room_id','description','options','notes','tags');
+}
+
+if ($table == 'rules') {
+    $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
+    $dictionary->marketing = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->weight = 'A lower number means it will have a lower preference for being applied, versus other rules.';
+    $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match.';
+    $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','weight','inputs','outputs');
+    $dictionary->attributes->update = array('name','org_id','description','weight','inputs','outputs');
+
+
+    $tables = array('bios', 'credential', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+    $columns = array();
+    foreach ($tables as $table) {
+        $fields = $this->db->list_fields($table);
+        $myfields = array();
+        foreach ($fields as $field) {
+            if ($field != 'id' and $field != 'current' and $field != 'system_id' and $field != 'first_seen' and $field != 'last_seen' and strpos($field, '_id') != strlen($field)-3) {
+                $myfields[] = $field;
+            }
+        }
+        sort($myfields);
+        $columns[$table] = $myfields;
+    }
+    $dictionary->attributes->tables = $tables;
+    $dictionary->attributes->columns = $columns;
 }
 
 if ($table == 'servers') {

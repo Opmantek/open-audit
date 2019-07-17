@@ -78,24 +78,24 @@ class Test extends CI_Controller
         redirect('/');
     }
 
-    public function test_conditions_json()
+    public function test_rules_json()
     {
-        $sql = "SELECT * FROM conditions";
+        $sql = "SELECT * FROM rules";
         $query = $this->db->query($sql);
-        $conditions = $query->result();
+        $rules = $query->result();
         echo "<pre>\n";
-        foreach ($conditions as $condition) {
+        foreach ($rules as $rule) {
             unset($json);
-            $json = @json_decode($condition->inputs);
+            $json = @json_decode($rule->inputs);
             if (empty($json)) {
-                echo "BAD input JSON for ID: " . $condition->id . ", Name: " . $condition->name . "\n";
-                echo $condition->inputs . "\n\n";
+                echo "BAD input JSON for ID: " . $rule->id . ", Name: " . $rule->name . "\n";
+                echo $rule->inputs . "\n\n";
             }
             unset($json);
-            $json = @json_decode($condition->outputs);
+            $json = @json_decode($rule->outputs);
             if (empty($json)) {
-                echo "BAD output JSON for ID: " . $condition->id . ", Name: " . $condition->name . "\n";
-                echo $condition->outputs . "\n\n";
+                echo "BAD output JSON for ID: " . $rule->id . ", Name: " . $rule->name . "\n";
+                echo $rule->outputs . "\n\n";
             }
         }
     }
@@ -152,9 +152,9 @@ class Test extends CI_Controller
         $this->load->model('m_configuration');
         $this->m_configuration->load();
 
-        // $sql = "SELECT * FROM `conditions`";
+        // $sql = "SELECT * FROM `rules`";
         // $query = $this->db->query($sql);
-        // $conditions = $query->result();
+        // $rules = $query->result();
 
         $file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
         echo "<pre>\n";
@@ -216,15 +216,15 @@ class Test extends CI_Controller
             $outputs[] = $item;
 
             $insert = true;
-            // foreach ($conditions as $condition) {
-            //     if ($condition->name = "MAC Address for $value" and $condition->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
+            // foreach ($rules as $rule) {
+            //     if ($rule->name = "MAC Address for $value" and $rule->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
             //         $insert = false;
             //         break;
             //     }
             // }
 
             if ($insert and $value != '') {
-                $sql = "INSERT INTO `conditions` VALUES (NULL, " . $this->db->escape('Mac Address for ' . $value) . ", 1, 'Set the manufacturer based on the MAC prefix.', 90, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
+                $sql = "INSERT INTO `rules` VALUES (NULL, " . $this->db->escape('Mac Address for ' . $value) . ", 1, 'Set the manufacturer based on the MAC prefix.', 90, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
 
                 echo $sql . "\n";
 
@@ -239,9 +239,9 @@ class Test extends CI_Controller
         $this->load->model('m_configuration');
         $this->m_configuration->load();
 
-        // $sql = "SELECT * FROM `conditions`";
+        // $sql = "SELECT * FROM `rules`";
         // $query = $this->db->query($sql);
-        // $conditions = $query->result();
+        // $rules = $query->result();
 
         $file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers.txt');
         echo "<pre>\n";
@@ -294,9 +294,9 @@ class Test extends CI_Controller
         $this->load->model('m_configuration');
         $this->m_configuration->load();
 
-        // $sql = "SELECT * FROM `conditions`";
+        // $sql = "SELECT * FROM `rules`";
         // $query = $this->db->query($sql);
-        // $conditions = $query->result();
+        // $rules = $query->result();
 
         $file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers.txt');
         echo "<pre>\n";
@@ -371,15 +371,15 @@ class Test extends CI_Controller
             $outputs[] = $item;
 
             $insert = true;
-            // foreach ($conditions as $condition) {
-            //     if ($condition->name = "SNMP Enterprise Number for $value" and $condition->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
+            // foreach ($rules as $rule) {
+            //     if ($rule->name = "SNMP Enterprise Number for $value" and $rule->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
             //         $insert = false;
             //         break;
             //     }
             // }
 
             if ($insert and $value != '') {
-                $sql = "INSERT INTO `conditions` VALUES (NULL, " . $this->db->escape('SNMP Enterprise Number for ' . $value) . ", 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
+                $sql = "INSERT INTO `rules` VALUES (NULL, " . $this->db->escape('SNMP Enterprise Number for ' . $value) . ", 1, 'Set the manufacturer based on the SNMP Enterprise Number.', 100, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
 
                 echo "$sql\n";
 

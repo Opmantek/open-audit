@@ -562,7 +562,7 @@ if (!function_exists('snmp_audit')) {
         $parameters->device = $details;
         $parameters->discovery_id = intval($log->discovery_id);
         $parameters->action = 'return';
-        $details = $CI->m_conditions->execute($parameters);
+        $details = $CI->m_rules->execute($parameters);
 
         // Ubiquiti specific items to determine manufacturer
         $temp_services = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.1.9.1.3");

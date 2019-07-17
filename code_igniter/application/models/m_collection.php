@@ -429,7 +429,7 @@ class M_collection extends MY_Model
             $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
 
-        if ($collection === 'conditions') {
+        if ($collection === 'rules') {
             $new_inputs = array();
             foreach ($data->inputs as $input) {
                 $item = new stdClass();
@@ -1240,10 +1240,6 @@ class M_collection extends MY_Model
                 return(' name org_id description ip status check_minutes user_id uuid network_address options ');
                 break;
 
-            case "conditions":
-                return(' name org_id description weight inputs outputs ');
-                break;
-
             case "configuration":
                 return(' value ');
                 break;
@@ -1332,6 +1328,10 @@ class M_collection extends MY_Model
                 return(' name org_id room_id description notes tags ');
                 break;
 
+            case "rules":
+                return(' name org_id description weight inputs outputs ');
+                break;
+
             case "scripts":
                 return(' name org_id description options based_on ');
                 break;
@@ -1382,10 +1382,6 @@ class M_collection extends MY_Model
 
             case "collectors":
                 return(array('name','org_id','status'));
-                break;
-
-            case "conditions":
-                return(array('name','org_id','weight','inputs','outputs'));
                 break;
 
             case "configuration":
@@ -1474,6 +1470,10 @@ class M_collection extends MY_Model
 
             case "rows":
                 return(array('name','org_id','room_id'));
+                break;
+
+            case "rules":
+                return(array('name','org_id','weight','inputs','outputs'));
                 break;
 
             case "scripts":

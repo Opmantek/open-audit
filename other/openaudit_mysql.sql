@@ -664,36 +664,6 @@ LOCK TABLES `collectors` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `conditions`
---
-
-DROP TABLE IF EXISTS `conditions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `conditions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT '100',
-  `inputs` text NOT NULL,
-  `outputs` text NOT NULL,
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `conditions`
---
-
-LOCK TABLES `conditions` WRITE;
-/*!40000 ALTER TABLE `conditions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `conditions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `configuration`
 --
 
@@ -2894,6 +2864,36 @@ LOCK TABLES `rows` WRITE;
 /*!40000 ALTER TABLE `rows` DISABLE KEYS */;
 INSERT INTO `rows` VALUES (1, 'Default Row', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rows` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rules`
+--
+
+DROP TABLE IF EXISTS `rules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rules` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `weight` int(10) unsigned NOT NULL DEFAULT '100',
+  `inputs` text NOT NULL,
+  `outputs` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rules`
+--
+
+LOCK TABLES `rules` WRITE;
+/*!40000 ALTER TABLE `rules` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

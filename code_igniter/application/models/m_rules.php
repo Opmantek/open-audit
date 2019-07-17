@@ -33,7 +33,7 @@
 * @version   3.0.0
 * @link      http://www.open-audit.org
  */
-class M_conditions extends MY_Model
+class M_rules extends MY_Model
 {
     public function __construct()
     {
@@ -53,10 +53,10 @@ class M_conditions extends MY_Model
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         }
-        $sql = "SELECT * FROM `conditions` WHERE id = ?";
+        $sql = "SELECT * FROM `rules` WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'conditions');
+        $result = $this->format_data($result, 'rules');
         $this->log->summary = 'finish';
         stdlog($this->log);
         return ($result);
@@ -75,7 +75,7 @@ class M_conditions extends MY_Model
         }
         if ($id != 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `conditions` WHERE id = ?";
+            $sql = "DELETE FROM `rules` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             $this->log->summary = 'finish';
@@ -134,13 +134,13 @@ class M_conditions extends MY_Model
             }
         }
 
-        # NOTE - don't set the id or last_seen_by here as we test if empty after conditions
+        # NOTE - don't set the id or last_seen_by here as we test if empty after rules
         #        have been run and only update if not empty (after adding id and last_seen_by).
         $newdevice = new stdClass();
 
         # TODO - Orgs
-        $sql = "SELECT * FROM conditions ORDER BY weight ASC, id";
-        $conditions = $this->run_sql($sql);
+        $sql = "SELECT * FROM rules ORDER BY weight ASC, id";
+        $rules = $this->run_sql($sql);
         $device_sub = array();
 
         $CI =& get_instance();
@@ -149,7 +149,7 @@ class M_conditions extends MY_Model
         $log = new stdClass();
         $log->discovery_id = @intval($discovery_id);
         $log->message = '';
-        $log->command = 'Condition match';
+        $log->command = 'Rule match';
         $item_start = microtime(true);
         $log->command_output = '';
         $log->command_status = 'notice';
@@ -158,19 +158,19 @@ class M_conditions extends MY_Model
             $log->ip = ip_address_from_db($device->ip);
         }
 
-        foreach ($conditions as $condition) {
-            $condition->inputs = json_decode($condition->inputs);
-            $condition->outputs = json_decode($condition->outputs);
+        foreach ($rules as $rule) {
+            $rule->inputs = json_decode($rule->inputs);
+            $rule->outputs = json_decode($rule->outputs);
 
-            if (is_array($condition->inputs)) {
-                $input_count = count($condition->inputs);
+            if (is_array($rule->inputs)) {
+                $input_count = count($rule->inputs);
             } else {
                 # TODO - log an error, but continue
                 break;
             }
             
             $hit = 0;
-            foreach ($condition->inputs as $input) {
+            foreach ($rule->inputs as $input) {
 
                 $log->message = '';
 
@@ -191,56 +191,56 @@ class M_conditions extends MY_Model
                     switch ($input->operator) {
                         case 'eq':
                             if (isset($device->{$input->attribute}) and $device->{$input->attribute} == $input->value) {
-                                $log->message .= " Hit on " . $device->{$input->attribute} . " eq " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " . $device->{$input->attribute} . " eq " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'ne':
                             if (!isset($device->{$input->attribute}) or $device->{$input->attribute} != $input->value) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " ne " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " ne " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'gt':
                             if (isset($device->{$input->attribute}) and $device->{$input->attribute} > $input->value) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " gt " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " gt " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'ge':
                             if (isset($device->{$input->attribute}) and $device->{$input->attribute} >= $input->value) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " ge " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " ge " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'lt':
                             if (isset($device->{$input->attribute}) and $device->{$input->attribute} < $input->value) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " lt " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " lt " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'le':
                             if (isset($device->{$input->attribute}) and $device->{$input->attribute} <= $input->value) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " le" . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " le" . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'li':
                             if (isset($device->{$input->attribute}) and stripos($device->{$input->attribute}, $input->value) !== false) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " li " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " li " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'nl':
                             if (isset($device->{$input->attribute}) and stripos($device->{$input->attribute}, $input->value) === false) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " nl " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " nl " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
@@ -248,7 +248,7 @@ class M_conditions extends MY_Model
                         case 'in':
                             $values = explode(',', $input->value);
                             if (isset($device->{$input->attribute}) and in_array($device->{$input->attribute}, $values)) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " in " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " in " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
@@ -256,21 +256,21 @@ class M_conditions extends MY_Model
                         case 'ni':
                             $values = explode(',', $input->value);
                             if (isset($device->{$input->attribute}) and !in_array($device->{$input->attribute}, $values)) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " ni " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " ni " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
 
                         case 'st':
                             if (isset($device->{$input->attribute}) and stripos($device->{$input->attribute},$input->value) === 0) {
-                                $log->message .= " Hit on " .$device->{$input->attribute} . " st " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " .$device->{$input->attribute} . " st " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
                         
                         default:
                             if (isset($device->{$input->attribute}) and $device->{$input->attribute} == $input->value) {
-                                $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value . " for " . $condition->name . ".";
+                                $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value . " for " . $rule->name . ".";
                                 $hit++;
                             }
                         break;
@@ -281,7 +281,7 @@ class M_conditions extends MY_Model
                             case 'eq':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and $dsub->{$input->attribute} == $input->value) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " eq " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " eq " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -291,7 +291,7 @@ class M_conditions extends MY_Model
                             case 'ne':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (!isset($dsub->{$input->attribute}) or $dsub->{$input->attribute} != $input->value) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " ne " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " ne " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -301,7 +301,7 @@ class M_conditions extends MY_Model
                             case 'gt':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and $dsub->{$input->attribute} > $input->value) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " gt " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " gt " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -311,7 +311,7 @@ class M_conditions extends MY_Model
                             case 'ge':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and $dsub->{$input->attribute} >= $input->value) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " ge " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " ge " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -321,7 +321,7 @@ class M_conditions extends MY_Model
                             case 'lt':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and $dsub->{$input->attribute} < $input->value) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " lt " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " lt " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -331,7 +331,7 @@ class M_conditions extends MY_Model
                             case 'le':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and $dsub->{$input->attribute} <= $input->value) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " le" . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " le" . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -341,7 +341,7 @@ class M_conditions extends MY_Model
                             case 'li':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and stripos($dsub->{$input->attribute}, $input->value) !== false) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " li " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " li " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -351,7 +351,7 @@ class M_conditions extends MY_Model
                             case 'nl':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and stripos($dsub->{$input->attribute}, $input->value) === false) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " nl " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " nl " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -362,7 +362,7 @@ class M_conditions extends MY_Model
                                 $values = explode(',', $input->value);
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and in_array($dsub->{$input->attribute}, $values)) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " in " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " in " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -373,7 +373,7 @@ class M_conditions extends MY_Model
                                 $values = explode(',', $input->value);
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and !in_array($dsub->{$input->attribute}, $values)) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " ni " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " ni " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -383,7 +383,7 @@ class M_conditions extends MY_Model
                             case 'st':
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and stripos($dsub->{$input->attribute},$input->value) === 0) {
-                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " st " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " .$dsub->{$input->attribute} . " st " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -393,7 +393,7 @@ class M_conditions extends MY_Model
                             default:
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (isset($dsub->{$input->attribute}) and $dsub->{$input->attribute} == $input->value) {
-                                        $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value . " for " . $condition->name . ".";
+                                        $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value . " for " . $rule->name . ".";
                                         $hit++;
                                         break;
                                     }
@@ -404,7 +404,7 @@ class M_conditions extends MY_Model
                 }
                 if ($hit >= $input_count) {
                     $attributes = new stdClass();
-                    foreach ($condition->outputs as $output) {
+                    foreach ($rule->outputs as $output) {
                         switch ($output->value_type) {
                             case 'string':
                                 $newdevice->{$output->attribute} = (string)$output->value;
@@ -428,7 +428,7 @@ class M_conditions extends MY_Model
                         }
                         $attributes->{$output->attribute} = $newdevice->{$output->attribute};
                     }
-                    $log->message = trim($log->message) . '(Condition: ' . $condition->id . ')';
+                    $log->message = trim($log->message) . '(Rule: ' . $rule->id . ')';
                     $log->command_output = json_encode($attributes);
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     discovery_log($log);
@@ -438,7 +438,7 @@ class M_conditions extends MY_Model
         if (count(get_object_vars($newdevice)) > 0) {
             $newdevice->id = $device->id;
             if ($action == 'update') {
-                $newdevice->last_seen_by = 'conditions';
+                $newdevice->last_seen_by = 'rules';
                 $CI->m_devices->update($device);
                 return;
             } else {

@@ -216,8 +216,8 @@ foreach ($xml->children() as $input) {
         continue;
     }
 
-    # Load the conditions model as we'll use this in SNMP Helper, SSH Helper and here
-    $this->load->model('m_conditions');
+    # Load the rules model as we'll use this in SNMP Helper, SSH Helper and here
+    $this->load->model('m_rules');
 
     if (!empty($input->system_id)) {
         $log->system_id = intval($input->system_id);
@@ -576,12 +576,12 @@ foreach ($xml->children() as $input) {
     # Set our device->credentials to a JSON array of working interger credentials.id
     $device->credentials = json_encode($device->credentials);
 
-    // Now run our conditions to update the device if any match
+    // Now run our rules to update the device if any match
     $parameters = new stdClass();
     $parameters->device = $device;
     $parameters->discovery_id = intval($discovery->id);
     $parameters->action = 'return';
-    $device = $this->m_conditions->execute($parameters);
+    $device = $this->m_rules->execute($parameters);
 
     # If we don't have a device.id, check with our updated device attributes (if any)
     if (empty($device->id)) {
@@ -856,13 +856,13 @@ foreach ($xml->children() as $input) {
         $this->m_devices_components->process_component($parameters);
     }
 
-    // Now run our conditions to update the device if any match
+    // Now run our rules to update the device if any match
     $parameters = new stdClass();
     $parameters->id = intval($device->id);
     $parameters->discovery_id = intval($discovery->id);
     $parameters->ip = $device->ip;
     $parameters->action = 'update';
-    $this->m_conditions->execute($parameters);
+    $this->m_rules->execute($parameters);
 
     // insert a blank to indicate we're finished this part of the discovery
     // if required, the audit scripts will insert their own audit logs
@@ -1565,13 +1565,13 @@ foreach ($xml->children() as $input) {
             unset($dns);
         }
 
-        // Run our conditions to update the device if any match
+        // Run our rules to update the device if any match
         $parameters = new stdClass();
         $parameters->id = intval($audit->system->id);
         $parameters->discovery_id = intval($discovery->id);
         $parameters->ip = @$audit->system->ip;
         $parameters->action = 'update';
-        $this->m_conditions->execute($parameters);
+        $this->m_rules->execute($parameters);
 
         $this->m_audit_log->update('debug', 'finished processing', $audit->system->id, $audit->system->last_seen);
         $log->message = 'Processed audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';
