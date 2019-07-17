@@ -100,7 +100,7 @@ class Test extends CI_Controller
         }
     }
 
-    public function read_oui_unique()
+    public function read_mac_unique()
     {
         $this->load->model('m_configuration');
         $this->m_configuration->load();
@@ -147,7 +147,7 @@ class Test extends CI_Controller
         echo "</pre>\n";
     }
 
-    public function read_oui()
+    public function read_mac()
     {
         $this->load->model('m_configuration');
         $this->m_configuration->load();
@@ -234,7 +234,7 @@ class Test extends CI_Controller
         }
     }
 
-    public function read_iana_unique()
+    public function read_snmp_unique()
     {
         $this->load->model('m_configuration');
         $this->m_configuration->load();
@@ -289,7 +289,7 @@ class Test extends CI_Controller
     }
 
 
-    public function read_iana()
+    public function read_snmp()
     {
         $this->load->model('m_configuration');
         $this->m_configuration->load();
@@ -347,6 +347,13 @@ class Test extends CI_Controller
             $item->attribute = 'snmp_enterprise_id';
             $item->operator = 'eq';
             $item->value = $key;
+            $inputs[] = $item;
+
+            $item = new stdClass();
+            $item->table = 'system';
+            $item->attribute = 'manufacturer';
+            $item->operator = 'eq';
+            $item->value = '';
             $inputs[] = $item;
 
             $item = new stdClass();
