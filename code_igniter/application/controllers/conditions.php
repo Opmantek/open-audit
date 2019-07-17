@@ -134,7 +134,7 @@ class Conditions extends MY_Controller
     {
         #echo json_encode($this->response->meta);
 
-        $condition = $this->m_conditions->read($this->meta->response->id);
+        $condition = $this->m_conditions->read($this->response->meta->id);
         if (empty($condition)) {
             return;
         } else {
