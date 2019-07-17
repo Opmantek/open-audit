@@ -30,6 +30,32 @@
 /*
 ALTER TABLE `discovery_scan_options` CHANGE `ssh_ports` `ssh_ports` TEXT NOT NULL AFTER `exclude_ip`;
 
+ALTER TABLE `system` ADD `dns_fqdn` TEXT NOT NULL AFTER `fqdn`;
+
+ALTER TABLE `system` ADD `cluster_id` int(10) unsigned DEFAULT NULL AFTER cluster_type;
+
+ALTER TABLE `system` ADD `manufacturer_code` varchar(200) NOT NULL DEFAULT '' AFTER manufacturer;
+
+ALTER TABLE `system` ADD `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0' AFTER snmp_version;
+
+ALTER TABLE `system` ADD `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '' AFTER snmp_enterprise_id;
+
+DELETE FROM configuration WHERE name = 'match_dns_fqdn';
+
+INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
+
+DROP TABLE IF EXISTS `clusters`;
+
+CREATE TABLE `clusters` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `org_id` int(10) unsigned NOT NULL DEFAULT '1',   `description` text NOT NULL,   `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',   `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',   `status` varchar(100) NOT NULL DEFAULT '',   `edited_by` varchar(200) NOT NULL DEFAULT '',   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',   PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS conditions;
+
+CREATE TABLE `conditions` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `org_id` int(10) unsigned NOT NULL DEFAULT '1',  `description` text NOT NULL,  `weight` int(10) unsigned NOT NULL DEFAULT '100',  `inputs` text NOT NULL,  `outputs` text NOT NULL,  `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' conditions < c:\\xampp\\open-audit\\other\\assets\\conditions.sql';
+}
+exec($command);
+
 UPDATE `roles` SET `permissions` = '{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"conditions\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}' WHERE `name` = 'org_admin';
 
 UPDATE `configuration` SET `value` = '20190810' WHERE `name` = 'internal_version';
@@ -116,6 +142,8 @@ if (php_uname('s') != 'Windows NT') {
 }
 $this->log_db($command);
 exec($command);
+
+$this->m_roles->update_permissions('org_admin', 'conditions', 'crud');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190810' WHERE `name` = 'internal_version'";
