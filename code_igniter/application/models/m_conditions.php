@@ -428,7 +428,7 @@ class M_conditions extends MY_Model
                         }
                         $attributes->{$output->attribute} = $newdevice->{$output->attribute};
                     }
-                    $log->message = trim($log->message);
+                    $log->message = trim($log->message) . '(Condition: ' . $condition->id . ')';
                     $log->command_output = json_encode($attributes);
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     discovery_log($log);
