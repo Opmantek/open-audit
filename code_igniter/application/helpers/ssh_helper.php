@@ -170,11 +170,17 @@ if (! function_exists('scp')) {
         $log->command = 'sftp ' . $source . ' to ' . $ip . ':' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file to ' . $ip;
-        try {
-            $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
-        } catch (Exception $e) {
-            $log->command = $ssh->getLog();
-            $log->command_output = '';
+        // try {
+        //     $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
+        // } catch (Exception $e) {
+        //     $log->command = $ssh->getLog();
+        //     $log->command_output = '';
+        //     $log->command_status = 'fail';
+        //     $status = false;
+        // }
+        if ($ssh->put($destination, $source, NET_SFTP_LOCAL_FILE) === false) {
+            $log->command = '';
+            $log->command_output = $ssh->getLog();
             $log->command_status = 'fail';
             $status = false;
         }
