@@ -304,6 +304,13 @@ class M_discoveries extends MY_Model
                     unset($exclude_ip);
                 }
             }
+            if (!empty($this->config->config['discovery_ip_exclude'])) {
+                if (!empty($options->exclude_ip)) {
+                    $options->exclude_ip .= ',' . $this->config->config['discovery_ip_exclude'];
+                } else {
+                    $options->exclude_ip = $this->config->config['discovery_ip_exclude'];
+                }
+            }
             // SSH ports check
             if (empty($options->ssh_ports)) {
                 if (!empty($discovery_scan_options->ssh_ports)) {
