@@ -235,6 +235,16 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection == 'discoveries') {
+            if ((string) php_uname('s') === 'Windows NT') {
+                $user = get_current_user();
+                if ($user == 'SYSTEM') {
+                    $CI->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
+                    $CI->session->set_flashdata('warning', $CI->response->meta->warning);
+                }
+            }
+        }
+
         if ($collection == 'discoveries' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 // $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND (`command_status` LIKE '% of %' OR `command_status` LIKE 'stopped%') ORDER BY `timestamp` DESC LIMIT 1";

@@ -48,12 +48,26 @@ class M_discoveries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
+        $CI = & get_instance();
         if ($id == '') {
-            $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
+
+        if ((string) php_uname('s') === 'Windows NT') {
+            $user = get_current_user();
+            if ($user == 'SYSTEM') {
+                $sql = "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `discovery_id` = ? AND `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
+                $data = array(intval($id));
+                $data_result = $this->run_sql($sql, $data);
+                if ($data_result[0]->count > 0){
+                    $CI->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
+                    $CI->session->set_flashdata('warning', $CI->response->meta->warning);
+                }
+            }
+        }
+
         $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
