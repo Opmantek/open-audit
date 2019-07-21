@@ -78,6 +78,152 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+    public function google()
+    {
+        echo "<pre>\n";
+        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/google-api-php-client-2.2.3/vendor');
+        require_once "autoload.php";
+        $client = new Google_Client();
+        $client->setAuthConfig('/home/mark/Downloads/gentle-bot-242304-ad64a6f038c1.json');
+        $scope = array("https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform.read-only","https://www.googleapis.com/auth/cloudplatformprojects","https://www.googleapis.com/auth/cloudplatformprojects.readonly");
+        $client->addScope($scope);
+        $httpClient = $client->authorize();
+        $response = $httpClient->get('https://cloudresourcemanager.googleapis.com/v1/projects');
+
+        $projects = array();
+        if ($response->getBody()) {
+            $temp = json_decode($response->getBody());
+            $projects = $temp->projects;
+        }
+
+        foreach ($projects as &$project) {
+            $project->instances = array();
+            $project->networks = array();
+            $project->projects = array();
+            $project->zones = array();
+        }
+
+        if (!empty($projects)) {
+
+            # Projects
+            foreach ($projects as &$project) {
+                $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId;
+                $response = $httpClient->get($url);
+                if ($response->getBody()) {
+                    $temp = json_decode($response->getBody());
+                    $item = new stdClass();
+                    $item->id = $temp->id;
+                    $item->creationTimestamp = $temp->creationTimestamp;
+                    $item->name = $temp->name;
+                    $item->selfLink = $temp->selfLink;
+                    $item->defaultServiceAccount = $temp->defaultServiceAccount;
+                    $item->xpnProjectStatus = $temp->xpnProjectStatus;
+                    $item->defaultNetworkTier = $temp->defaultNetworkTier;
+                    $item->kind = $temp->kind;
+                    $project->projects[] = $item;
+                }
+            }
+
+            # Zones
+            foreach ($projects as &$project) {
+                unset($response);
+                $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/zones';
+                $response = $httpClient->get($url);
+                if ($response->getBody()) {
+                    $temp = json_decode($response->getBody());
+                    foreach ($temp->items as $zone) {
+                            $item = new stdClass();
+                            $item->kind = $zone->kind;
+                            $item->id = $zone->id;
+                            $item->name = $zone->name;
+                            $item->status = $zone->status;
+                            $item->region = $zone->region;
+                            $item->notes = implode(', ', $zone->availableCpuPlatforms);
+                            $project->zones[] = $item;
+                            unset($item);
+                        #}
+                    }
+                }
+            }
+
+            # Instances
+            foreach ($projects as &$project) {
+                foreach ($project->zones as $zone) {
+                    unset($response);
+                    if ($zone->name == 'australia-southeast1-b') {
+                        $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/zones/' . $zone->name . '/instances';
+                        $response = $httpClient->get($url);
+                        if ($response->getBody()) {
+                            $instances = json_decode($response->getBody());
+                            if (!empty($instances->items)) {
+                                foreach ($instances->items as $instance) {
+                                    $item = new stdClass();
+                                    $item->type = 'computer';
+                                    $temp = explode('/', $instance->machineType);
+                                    $item->instance_type = $temp[count($temp)-1];
+                                    $item->location_name = $zone->name;
+                                    $item->instance_ident = $instance->id;
+                                    $item->instance_state = $instance->status;
+                                    $item->instance_reservation_ident = '';
+                                    $item->instance_tags = json_encode($instance->tags);
+                                    $item->instance_name = $instance->name;
+                                    if (!empty($instance->networkInterfaces)) {
+                                        foreach ($instance->networkInterfaces as $interface) {
+                                            if (!empty($interface->accessConfigs[0])) {
+                                                $item->ip = $interface->accessConfigs[0]->natIP;
+                                            } else {
+                                                $item->ip = $interface->networkIP;
+                                            }
+                                        }
+                                    }
+                                    $item->instance_options = json_encode($instance);
+                                    $project->instances[] = $item;
+                                    unset($item);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Only keep zones with instances
+            foreach ($projects as &$project) {
+                $zones = array();
+                foreach ($project->instances as $instance) {
+                    $zones[] = $instance->location_name;
+                }
+                foreach ($project->zones as $key => $zone) {
+                    if (!in_array($zone->name, $zones)) {
+                        unset($project->zones[$key]);
+                    }
+                }
+            }
+
+            // # Networks
+            // foreach ($projects as &$project) {
+            //     unset($response);
+            //     $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/networks';
+            //     $response = $httpClient->get($url);
+            //     if ($response->getBody()) {
+            //         $temp = json_decode($response->getBody());
+            //         if (!empty($temp->items)) {
+            //             foreach ($temp->items as $zone) {
+            //                 $item = new stdClass();
+            //                 $item->kind = $zone->kind;
+            //                 $item->id = $zone->id;
+            //                 $item->name = $zone->name;
+            //                 $project->networks[] = $item;
+            //                 unset($item);
+            //             }
+            //         }
+            //     }
+            // }
+        }
+
+
+        print_r(json_encode($projects));
+    }
+
     public function test_rules_json()
     {
         $sql = "SELECT * FROM rules";
