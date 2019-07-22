@@ -445,7 +445,6 @@ class M_devices_components extends MY_Model
                 }
                 # If we have a CIDR, but no netmask, create it
                 if ($input[$i]->version == 4 and !empty($input[$i]->cidr) and empty($input[$i]->netmask)) {
-                    $this->load->helper('network');
                     $temp_network = network_details($input[$i]->ip . '/' . $input[$i]->cidr);
                     $input[$i]->netmask = $temp_network->netmask;
                 }
@@ -460,7 +459,6 @@ class M_devices_components extends MY_Model
                     $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
                     $net = network_details($input[$i]->ip.'/'.$temp_subnet);
                     if (isset($net->network) and $net->network != '') {
-                        #$input[$i]->network = $net->network.' / '.$temp_subnet;
                         $input[$i]->network = $net->network.'/'.$temp_subnet;
                     } else {
                         $input[$i]->network = '';
