@@ -2115,7 +2115,7 @@ CREATE TABLE `networks` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `network` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('Personal Area Network','Home Area Network','Local Area Network','Wireless Local Area Network','Campus Area Network','Metropolitan Area Network','Wide Area Network','Storage-Area Network','System-Area Network','Passive Optical Local Area Network','Enterprise Private Network','Virtual Private Network') NOT NULL DEFAULT 'Local Area Network',
+  `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network',
   `description` text NOT NULL,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
   `cloud_id` int(10) unsigned DEFAULT NULL,
