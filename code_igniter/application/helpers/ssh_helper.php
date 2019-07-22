@@ -787,6 +787,7 @@ if (! function_exists('ssh_audit')) {
             'os_name' => 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2',
             'os_family' => 'cat /etc/os-release 2>/dev/null | grep -i ^NAME | cut -d= -f2 | cut -d\" -f2',
             'os_version' => 'cat /etc/os-release 2>/dev/null | grep -i ^VERSION_ID | cut -d= -f2 | cut -d\" -f2',
+            'google_instance_ident' => 'grep instance_id /etc/default/instance_configs.cfg 2>/dev/null | cut -d= -f2',
             'redhat_os_name' => 'cat /etc/redhat-release 2>/dev/null',
             'ubuntu_os_codename' => 'cat /etc/os-release 2>/dev/null | grep -i ^UBUNTU_CODENAME | cut -d= -f2 | cut -d\" -f2',
             'vmware_os_version' => 'uname -r 2>/dev/null',
@@ -881,6 +882,11 @@ if (! function_exists('ssh_audit')) {
         unset($device->solaris_domain);
         if (empty($device->fqdn) and !empty($device->hostname) and !empty($device->domain)) {
             $device->fqdn = $device->hostname . '.' . $device->domain;
+        }
+
+        if (!empty($device->google_instance_ident) and empty($device->instance_ident)) {
+            $device->instance_ident = $device->google_instance_ident;
+            unset($device->google_instance_ident);
         }
 
         if (!empty($device->ubiquiti_os)) {

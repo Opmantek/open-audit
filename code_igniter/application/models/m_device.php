@@ -212,6 +212,38 @@ class M_device extends MY_Model
             }
         }
 
+        # Match based on the Google Cloud id (instance_ident)
+        if (!empty($details->instance_ident) and empty($details->id)) {
+            $sql = "SELECT system.id FROM system WHERE system.instance_ident = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->instance_ident");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $message = new stdClass();
+                $message->message = 'HIT on instance_ident';
+                $message->command_status = 'success';
+                $message->command_output = 'Instance Ident: ' . $details->instance_ident . ', SystemID : ' . $details->id;
+                $log_message[] = $message;
+                foreach ($log_message as $message) {
+                    $log->message = $message->message;
+                    $log->command_status = $message->command_status;
+                    $log->command_output = $message->command_output;
+                    discovery_log($log);
+                }
+                $message->command_output = '';
+                return $details->id;
+            } else {
+                $message = new stdClass();
+                $message->message = 'MISS on instance_ident';
+                $message->command_status = 'notice';
+                $message->command_output = 'Instance Ident: ' . $details->instance_ident;
+                $log_message[] = $message;
+            }
+        }
+
         if (strtolower($match->match_hostname_uuid) == 'y' and empty($details->id) and !empty($details->uuid) and !empty($details->hostname)) {
             #$log_message[] = "Running match_hostname_uuid for uuid: " . $details->uuid . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";

@@ -558,7 +558,7 @@ if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	fi
 fi
 
-
+instance_ident=`grep instance_id /etc/default/instance_configs.cfg 2>/dev/null | cut -d= -f2`
 
 for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
@@ -866,6 +866,9 @@ echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_cou
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
 echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
+if [ -n "$instance_ident" ]; then
+echo "		<instance_ident>$(escape_xml "$instance_ident")</instance_ident>"
+fi
 echo "		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>"
 echo "		<id>$(escape_xml "$system_id")</id>"
 echo "		<discovery_id>$(escape_xml "$discovery_id")</discovery_id>"
