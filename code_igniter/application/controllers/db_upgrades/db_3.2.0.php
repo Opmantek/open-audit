@@ -32,6 +32,8 @@ ALTER TABLE `discovery_scan_options` CHANGE `ssh_ports` `ssh_ports` TEXT NOT NUL
 
 ALTER TABLE `networks` CHANGE `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network';
 
+ALTER TABLE `network` ADD `gateways` TEXT NOT NULL AFTER `cloud_id`;
+
 ALTER TABLE `system` ADD `dns_fqdn` TEXT NOT NULL AFTER `fqdn`;
 
 ALTER TABLE `system` ADD `cluster_id` int(10) unsigned DEFAULT NULL AFTER cluster_type;
@@ -70,6 +72,9 @@ $this->log_db('Upgrade database to 3.2.0 commenced');
 $this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
 
 $this->alter_table('networks', 'type', "`type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network'");
+
+
+$this->alter_table('network', 'gateways', "ADD `gateways` TEXT NOT NULL AFTER `cloud_id`", 'add');
 
 $this->alter_table('system', 'dns_fqdn', "ADD `dns_fqdn` TEXT NOT NULL AFTER fqdn", 'add');
 

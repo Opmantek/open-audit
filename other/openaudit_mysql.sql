@@ -2119,6 +2119,7 @@ CREATE TABLE `networks` (
   `description` text NOT NULL,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
   `cloud_id` int(10) unsigned DEFAULT NULL,
+  `gateways` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
