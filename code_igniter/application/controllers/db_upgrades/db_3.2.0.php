@@ -30,6 +30,8 @@
 /*
 ALTER TABLE `collectors` ADD `os` varchar(100) NOT NULL DEFAULT '' AFTER `network_address`;
 
+UPDATE `configuration` SET value = 5 WHERE `name` = 'collector_check_minutes';
+
 ALTER TABLE `discovery_scan_options` CHANGE `ssh_ports` `ssh_ports` TEXT NOT NULL AFTER `exclude_ip`;
 
 ALTER TABLE `networks` CHANGE `type` `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network';
@@ -89,6 +91,10 @@ $this->alter_table('system', 'manufacturer_code', "ADD `manufacturer_code` varch
 $this->alter_table('system', 'snmp_enterprise_id', "ADD `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0' AFTER snmp_version", 'add');
 
 $this->alter_table('system', 'snmp_enterprise_name', "ADD `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '' AFTER snmp_enterprise_id", 'add');
+
+$sql = "UPDATE `configuration` SET value = 5 WHERE `name` = 'collector_check_minutes'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "DELETE FROM configuration WHERE name = 'match_dns_fqdn'";
 $this->db->query($sql);

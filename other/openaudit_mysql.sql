@@ -693,7 +693,7 @@ LOCK TABLES `configuration` WRITE;
 INSERT INTO `configuration` VALUES (NULL,'access_token_count','20','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.');
 INSERT INTO `configuration` VALUES (NULL,'access_token_enable','y','bool','y','system','2000-01-01 00:00:00','Should we enable access tokens for CSRF mitigation.');
 INSERT INTO `configuration` VALUES (NULL,'blessed_subnets_use','y','bool','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
-INSERT INTO `configuration` VALUES (NULL,'collector_check_minutes','15','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
+INSERT INTO `configuration` VALUES (NULL,'collector_check_minutes','5','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_bios','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the bios table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_disk','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the disk table.');
