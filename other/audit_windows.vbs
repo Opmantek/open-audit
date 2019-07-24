@@ -1595,7 +1595,7 @@ if (not isempty(objWMIService3)) then
         end if
     next
     on error goto 0
-    wscript.quit
+
     on error resume next
     Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingString")
     for each objItem in colItems
