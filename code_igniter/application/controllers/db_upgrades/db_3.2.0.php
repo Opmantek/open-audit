@@ -32,7 +32,7 @@ ALTER TABLE `discovery_scan_options` CHANGE `ssh_ports` `ssh_ports` TEXT NOT NUL
 
 ALTER TABLE `networks` CHANGE `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network';
 
-ALTER TABLE `network` ADD `gateways` TEXT NOT NULL AFTER `cloud_id`;
+ALTER TABLE `networks` ADD `gateways` TEXT NOT NULL AFTER `cloud_id`;
 
 ALTER TABLE `system` ADD `dns_fqdn` TEXT NOT NULL AFTER `fqdn`;
 

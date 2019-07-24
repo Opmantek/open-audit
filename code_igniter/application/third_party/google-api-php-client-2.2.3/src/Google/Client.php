@@ -865,17 +865,37 @@ class Google_Client
    */
   public function setAuthConfig($config)
   {
+    // if (is_string($config)) {
+    //   if (!file_exists($config)) {
+    //     throw new InvalidArgumentException(sprintf('file "%s" does not exist', $config));
+    //   }
+
+    //   $json = file_get_contents($config);
+
+    //   if (!$config = json_decode($json, true)) {
+    //     throw new LogicException('invalid json for auth config');
+    //   }
+    // }
+
+
     if (is_string($config)) {
-      if (!file_exists($config)) {
-        throw new InvalidArgumentException(sprintf('file "%s" does not exist', $config));
+      $test = @json_decode($config);
+      if (!file_exists($config) and empty($test)) {
+        throw new InvalidArgumentException(sprintf('file does not exist or invalid JSON provided'));
       }
 
-      $json = file_get_contents($config);
+      if (file_exists($config)) {
+        $json = file_get_contents($config);
+      } else {
+        $json = $config;
+      }
 
       if (!$config = json_decode($json, true)) {
         throw new LogicException('invalid json for auth config');
       }
     }
+
+
 
     $key = isset($config['installed']) ? 'installed' : 'web';
     if (isset($config['type']) && $config['type'] == 'service_account') {

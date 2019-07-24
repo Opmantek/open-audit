@@ -202,6 +202,162 @@ class Util extends CI_Controller
     //     header('Content-Type: application/json');
     //     echo json_encode($json);
     // }
+
+
+
+    public function google()
+    {
+        $response = new stdClass();
+        $credentials = @$this->input->post('credentials');
+        if (empty($credentials)) {
+            $response->errors = array();
+            $error = new stdClass();
+            $error->code = 400;
+            $error->detail = "A request was sent to the Google API, but no credentials were in the POST.";
+            $error->status = "HTTP/1.1 400 Bad Request";
+            $error->title = "No credentials supplied to util/google.";
+            $response->errors[] = $error;
+            print_r(json_encode($response));
+            return;
+        }
+        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/google-api-php-client-2.2.3/vendor');
+        require_once "autoload.php";
+        $client = new Google_Client();
+        $client->setAuthConfig($credentials);
+        $scope = array("https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform.read-only","https://www.googleapis.com/auth/cloudplatformprojects","https://www.googleapis.com/auth/cloudplatformprojects.readonly");
+        $client->addScope($scope);
+        $httpClient = $client->authorize();
+        $response = $httpClient->get('https://cloudresourcemanager.googleapis.com/v1/projects');
+
+        $projects = array();
+        if ($response->getBody()) {
+            $temp = json_decode($response->getBody());
+            $projects = $temp->projects;
+        }
+
+        foreach ($projects as &$project) {
+            $project->instances = array();
+            $project->networks = array();
+            $project->projects = array();
+            $project->zones = array();
+        }
+
+        if (!empty($projects)) {
+            # Projects
+            foreach ($projects as &$project) {
+                $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId;
+                $response = $httpClient->get($url);
+                if ($response->getBody()) {
+                    $temp = json_decode($response->getBody());
+                    $item = new stdClass();
+                    foreach ($temp as $key => $value) {
+                        $item->{$key} = $value;
+                    }
+                    unset($item->commonInstanceMetadata);
+                    unset($item->quotas);
+                    $project->projects[] = $item;
+                }
+            }
+
+            # Zones
+            foreach ($projects as &$project) {
+                unset($response);
+                $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/zones';
+                $response = $httpClient->get($url);
+                if ($response->getBody()) {
+                    $temp = json_decode($response->getBody());
+                    foreach ($temp->items as $zone) {
+                        $item = new stdClass();
+                        foreach ($zone as $key => $value) {
+                            $item->{$key} = $value;
+                        }
+                        $temp = explode('/', $zone->region);
+                        $item->region = end($temp);
+                        $item->notes = implode(', ', $zone->availableCpuPlatforms);
+                        $project->zones[] = $item;
+                    }
+                }
+            }
+
+            # Instances
+            foreach ($projects as &$project) {
+                foreach ($project->zones as $zone) {
+                    unset($response);
+                    $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/zones/' . $zone->name . '/instances';
+                    $response = $httpClient->get($url);
+                    if ($response->getBody()) {
+                        $instances = json_decode($response->getBody());
+                        if (!empty($instances->items)) {
+                            foreach ($instances->items as $each_instance) {
+                                $item = new stdClass();
+                                foreach ($each_instance as $key => $value) {
+                                    $item->{$key} = $value;
+                                }
+                                $temp = explode('/', $each_instance->machineType);
+                                $item->instance_type = end($temp);
+                                $item->location_name = $zone->name;
+                                if (!empty($item->networkInterfaces)) {
+                                    foreach ($item->networkInterfaces as $interface) {
+                                        if (!empty($interface->accessConfigs[0])) {
+                                            $item->ip = $interface->accessConfigs[0]->natIP;
+                                        } else {
+                                            $item->ip = $interface->networkIP;
+                                        }
+                                    }
+                                }
+                                $project->instances[] = $item;
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Only keep zones with instances
+            foreach ($projects as &$project) {
+                $zones = array();
+                foreach ($project->instances as $instance) {
+                    $zones[] = $instance->location_name;
+                }
+                foreach ($project->zones as $key => $zone) {
+                    if (!in_array($zone->name, $zones)) {
+                        unset($project->zones[$key]);
+                    }
+                }
+                $project->zones = array_values($project->zones);
+            }
+
+            # Networks
+            foreach ($projects as &$project) {
+                foreach ($project->zones as $zone) {
+                    unset($response);
+                    $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/regions/' . $zone->region . '/subnetworks';
+                    $response = $httpClient->get($url);
+                    if ($response->getBody()) {
+                        $temp = json_decode($response->getBody());
+                        if (!empty($temp->items)) {
+                            foreach ($temp->items as $zone) {
+                                $item = new stdClass();
+                                foreach ($zone as $key => $value) {
+                                    $item->{$key} = $value;
+                                }
+                                $project->networks[] = $item;
+                                unset($item);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        header('Content-Type: application/json');
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $response->data = array();
+        $response->data[] = $projects;
+        print_r(json_encode($response));
+    }
+
 }
 // End of file util.php
 // Location: ./controllers/util.php
