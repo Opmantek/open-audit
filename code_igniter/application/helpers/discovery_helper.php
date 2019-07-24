@@ -539,82 +539,12 @@ if (!function_exists('process_scan')) {
         # Set our device->credentials to a JSON array of working interger credentials.id
         $device->credentials = json_encode($device->credentials);
 
-        # Intelligent guesses at various attributes
-
-        # Set manufacturer based on MAC address (if not already set)
-        if (empty($device->manufacturer) and !empty($input->mac_address)) {
-            $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
-            $log->severity = 7;
-            $log->command_status = 'notice';
-            $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
-            $log->command_output = '';
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
-        if (empty($device->manufacturer) and !empty($device->mac_address)) {
-            $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
-            $log->severity = 7;
-            $log->command_status = 'notice';
-            $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
-        # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
-        if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_ports, '5060/') !== false) {
-            $device->type = 'voip phone';
-        }
-        # Port 62078 is used by IOS for iTunes wifi sync
-        if (stripos($input->nmap_ports, '62078/tcp/iphone-sync') !== false) {
-            # this could be an iPad (tablet), iPod (media device) or iPhone (smart phone).
-            $log->message = 'Detected port TCP 62078 open. Assuming an Apple IOS device';
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-            $device->type = 'iphone';
-            $device->model = 'Apple iPhone';
-            $device->manufacturer = 'Apple';
-            $device->os_group = 'Apple IOS';
-            $device->os_family = 'Apple IOS';
-            $device->os_name = 'Apple IOS';
-            if (stripos($device->hostname, 'ipad') !== false or stripos($device->dns_hostname, 'ipad') !== false) {
-                $device->type = 'ipad';
-                $device->model = 'Apple iPad';
-            }
-            if (stripos($device->hostname, 'ipod') !== false or stripos($device->dns_hostname, 'ipod') !== false) {
-                $device->type = 'ipod';
-                $device->model = 'Apple iPod';
-            }
-        }
-        # Android devices typically have a hostname of android-***
-        if ((!empty($device->hostname) and stripos($device->hostname, 'android') !== false) or (!empty($device->dns_hostname) and stripos($device->dns_hostname, 'android') !== false)) {
-            # Could be a table or smart phone or anything else.
-            # We have no way of knowing so simply setting it to android.
-            $device->type = 'android';
-            $device->os_group = 'Android';
-            $device->os_family = 'Android';
-            $device->os_name = 'Android';
-        }
-        # Ubiquiti guessing
-        if (empty($device->model) and stripos($device->manufacturer, 'Ubiquiti') !== false) {
-            $device = $CI->m_devices->model_guess($device);
-            if (!empty($device->model)) {
-                $log->message = 'Best guess at Ubiquiti model to be ' . $device->model . ' for sysDesc: ' . $device->sysDescr;
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-            }
-            if (empty($device->type)) {
-                $device->type = 'router';
-                $log->message = 'No device type assigned to Ubiquiti device, assigning router.';
-                discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-            }
-        }
-        # Playstation guess
-        if (stripos($device->manufacturer, 'Sony') !== false and ($device->hostname == 'playstation' or $device->dns_hostname == 'playstation')) {
-            $device->type = 'game console';
-            $log->message = 'Assigning type = game console to Sony Playstation.';
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
+        // Now run our rules to update the device if any match
+        $parameters = new stdClass();
+        $parameters->device = $device;
+        $parameters->discovery_id = intval($discovery->id);
+        $parameters->action = 'return';
+        $device = $this->m_rules->execute($parameters);
 
         # If we don't have a device.id, check with our updated device attributes (if any)
         if (empty($device->id)) {
@@ -881,6 +811,14 @@ if (!function_exists('process_scan')) {
                 $CI->m_devices_components->process_component($parameters);
             }
         }
+
+        // Now run our rules to update the device if any match
+        $parameters = new stdClass();
+        $parameters->id = intval($device->id);
+        $parameters->discovery_id = intval($discovery->id);
+        $parameters->ip = $device->ip;
+        $parameters->action = 'update';
+        $this->m_rules->execute($parameters);
 
         // insert a blank to indicate we're finished this part of the discovery
         // if required, the audit scripts will insert their own audit logs
@@ -1540,6 +1478,14 @@ if (!function_exists('process_scan')) {
                 }
                 unset($dns);
             }
+
+            // Run our rules to update the device if any match
+            $parameters = new stdClass();
+            $parameters->id = intval($audit->system->id);
+            $parameters->discovery_id = intval($discovery->id);
+            $parameters->ip = @$audit->system->ip;
+            $parameters->action = 'update';
+            $this->m_rules->execute($parameters);
 
             $CI->m_audit_log->update('debug', 'finished processing', $audit->system->id, $audit->system->last_seen);
             $log->message = 'Processed audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';

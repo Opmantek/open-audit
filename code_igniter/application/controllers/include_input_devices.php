@@ -302,6 +302,16 @@ if(!empty($json)){
         unset($dns);
     }
 
+    $this->load->model('m_rules');
+    $parameters = new stdClass();
+    $parameters->id = intval($device->id);
+    $parameters->discovery_id = '';
+    if (!empty($details->discovery_id)) {
+        $parameters->discovery_id = intval($details->discovery_id);
+    }
+    $parameters->action = 'update';
+    $this->m_rules->execute($parameters);
+
     $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
     $log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
     discovery_log($log);
