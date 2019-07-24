@@ -28,9 +28,11 @@
 **/
 
 /*
+ALTER TABLE `collectors` ADD `os` varchar(100) NOT NULL DEFAULT '' AFTER `network_address`;
+
 ALTER TABLE `discovery_scan_options` CHANGE `ssh_ports` `ssh_ports` TEXT NOT NULL AFTER `exclude_ip`;
 
-ALTER TABLE `networks` CHANGE `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network';
+ALTER TABLE `networks` CHANGE `type` `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network';
 
 ALTER TABLE `networks` ADD `gateways` TEXT NOT NULL AFTER `cloud_id`;
 
@@ -68,6 +70,8 @@ UPDATE `configuration` SET `value` = '3.2.0' WHERE `name` = 'display_version';
 */
 
 $this->log_db('Upgrade database to 3.2.0 commenced');
+
+$this->alter_table('collectors', 'os', "ADD `os` varchar(100) NOT NULL DEFAULT '' AFTER `network_address`", 'add');
 
 $this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
 

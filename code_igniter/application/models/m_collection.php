@@ -1252,7 +1252,7 @@ class M_collection extends MY_Model
                 break;
 
             case "collectors":
-                return(' name org_id description ip status check_minutes user_id uuid network_address options ');
+                return(' name org_id description ip status check_minutes user_id uuid network_address os options ');
                 break;
 
             case "configuration":
