@@ -251,7 +251,11 @@ class M_scripts extends MY_Model
                         $value = str_replace('\\', '\\\\', $value);
                         $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
                     } else {
-                        $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
+                        if (strpos($value, '/') === 0) {
+                            # skip this file as it starts with /, hence is a Unix style path
+                        } else {
+                            $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
+                        }
                     }
                     $file = str_replace($find, $replace, $file);
                 }
