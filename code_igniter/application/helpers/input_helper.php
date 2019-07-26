@@ -1104,24 +1104,13 @@ if (! function_exists('inputRead')) {
                     $query->operator = $operator;
                 }
 
-                // $operator = substr($query->value, 0, 3);
-                // $test = substr($query->value, 0, 4);
-                // if ($operator == 'in(' and strpos($test, ')') != false) {
-                //     $temp_value = substr($query->value, 3, strlen($query->value)-1);
-                //     $temp_value = str_replace(",", "','", $temp_value);
-                //     $query->value = "('" . $temp_value . "')";
-                //     $query->operator = $operator;
-                // }
-
-                $operator = strtolower(substr($query->value, 0, 2));
-                $test = substr($query->value, 0, 4);
-                $test2 = substr($query->value, 0, 4);
-                # if ($operator == 'in' and strtolower($test) != 'info' and strtolower($test2) != 'innotek' and strtolower($test2) != 'intel') {
-                if ($operator == 'in' and $query->value != 'info' and $query->value != 'innotek' and $query->value != 'intel' and $query->value != 'inputs') {
-                    $temp_value = substr($query->value, 2);
+                if (substr($query->value, 0, 3) == 'in(' and strpos($query->value, ')') === strlen($query->value)-1) {
+                    # note strlen of -four characters because in( + ).
+                    $temp_value = substr($query->value, 3, strlen($query->value)-4);
+                    $temp_value = str_replace("'", "\'", $temp_value);
                     $temp_value = str_replace(",", "','", $temp_value);
                     $query->value = "('" . $temp_value . "')";
-                    $query->operator = $operator;
+                    $query->operator = 'in';
                 }
 
                 $operator = substr($query->value, 0, 2);

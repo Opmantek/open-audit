@@ -330,7 +330,7 @@ class Nmis extends MY_Controller
         } else {
             $this->session->set_flashdata('success', $flash_message . count($nodes_array) . ' devices imported (' . intval($inserted) . ' inserted and ' . intval($updated) . ' updated).');
             #redirect('devices?action=update&ids='.$ids);
-            redirect('devices?system.id=in'.htmlentities($ids).'&properties=system.id,name,nmis_name,ip,nmis_business_service,nmis_group,nmis_role,nmis_notes');
+            redirect('devices?system.id=in('.htmlentities($ids).')&properties=system.id,name,nmis_name,ip,nmis_business_service,nmis_group,nmis_role,nmis_notes');
         }
     }
 
