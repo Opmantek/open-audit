@@ -231,12 +231,12 @@ class Discoveries extends MY_Controller
     {
         $this->load->model('m_help');
         $this->m_help->support();
-        $os = $this->response->data[0]->os->name;
-        if ((stripos($os, 'redhat') !== false or stripos($os, 'centos') !== false) and stripos($os, '6') !== false) {
+        $os = $this->response->data[0]->os->version;
+        if ((stripos($os, 'redhat') !== false or stripos($os, 'centos') !== false) and stripos($os, 'release 6') !== false) {
             # we have a RH/Centos 6 machine. Insert an attribute for showing the Samba warning
-            $this->response->meta->warning = 'y';
-        } else {
-            $this->response->meta->warning = 'n';
+            $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed.
+            Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br />
+            We very much recommend upgrading to Centos/RedHat 7 as support for Centos/RedHat 6 will be ending very soon.';
         }
         unset($this->response->data);
         $this->response->data = array();
