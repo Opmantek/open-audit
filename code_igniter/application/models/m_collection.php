@@ -1264,7 +1264,7 @@ class M_collection extends MY_Model
                 break;
 
             case "credentials":
-                return(' name org_id description type credentials ');
+                return(' id name org_id description type credentials ');
                 break;
 
             case "dashboards":
@@ -1308,7 +1308,7 @@ class M_collection extends MY_Model
                 break;
 
             case "locations":
-                return(' name org_id type description room suite level address suburb city district region area state postcode country tags phone picture external_ident options latitude longitude geo cloud_id ');
+                return(' id name org_id type description room suite level address suburb city district region area state postcode country tags phone picture external_ident options latitude longitude geo cloud_id ');
                 break;
 
             case "networks":
@@ -1316,7 +1316,7 @@ class M_collection extends MY_Model
                 break;
 
             case "orgs":
-                return(' name description parent_id ad_group type ');
+                return(' id name description parent_id ad_group type ');
                 break;
 
             case "queries":
