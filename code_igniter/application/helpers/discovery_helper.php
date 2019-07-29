@@ -249,8 +249,12 @@ if (!function_exists('process_scan')) {
             $device->id = $CI->m_device->match($parameters);
 
             if (!empty($device->id)) {
+                $sql = "SELECT name FROM system WHERE id = " . intval($device->id);
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                $name = $result[0]->name;
                 $log->system_id = $device->id;
-                $log->message = "Device with ID " . $device->id . " found on initial Nmap result.";
+                $log->message = "Device named " . $name . " found on initial Nmap result.";
                 discovery_log($log);
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             }
@@ -330,9 +334,6 @@ if (!function_exists('process_scan')) {
 
         $log->command_status = 'notice';
         $log->message = 'WMI Status is '.$input->wmi_status.' on '.$device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         discovery_log($log);
 
         $input->ssh_port = '22';
@@ -353,24 +354,15 @@ if (!function_exists('process_scan')) {
         }
 
         $log->message = 'SSH Status is '.$input->ssh_status.' on '.$device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         discovery_log($log);
 
         $log->message = 'SNMP Status is '.$input->snmp_status.' on '.$device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         discovery_log($log);
 
         # SNMP
         $credentials_snmp = false;
         if (!extension_loaded('snmp') and $input->snmp_status == 'true') {
             $log->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $device->ip;
-            if (!empty($device->id)) {
-                $log->message .= ' (System ID ' . $device->id . ')';
-            }
             discovery_log($log);
         }
         if (extension_loaded('snmp') and $input->snmp_status == 'true') {
@@ -383,9 +375,6 @@ if (!function_exists('process_scan')) {
             }
             if ($run_snmp) {
                 $log->message = 'Testing SNMP credentials for '.$device->ip;
-                if (!empty($device->id)) {
-                    $log->message .= ' (System ID ' . $device->id . ')';
-                }
                 discovery_log($log);
                 $credentials_snmp = snmp_credentials($device->ip, $credentials, $log);
             } else {
@@ -437,9 +426,6 @@ if (!function_exists('process_scan')) {
         if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and stripos($device->manufacturer, 'Ubiquiti') === false ) {
             $log->severity = 7;
             $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
-            if (!empty($device->id)) {
-                $log->message .= ' (System ID ' . $device->id . ')';
-            }
             $log->severity = 5;
             discovery_log($log);
             $log->severity = 7;
@@ -453,9 +439,6 @@ if (!function_exists('process_scan')) {
         # SSH
         if ($input->ssh_status == 'true') {
             $log->message = 'Testing SSH credentials for '.$device->ip;
-            if (!empty($device->id)) {
-                $log->message .= ' (System ID ' . $device->id . ')';
-            }
             discovery_log($log);
             $parameters = new stdClass();
             $parameters->ip = $device->ip;
@@ -505,9 +488,6 @@ if (!function_exists('process_scan')) {
         # WMI
         if ($input->wmi_status == 'true') {
             $log->message = 'Testing Windows credentials for ' . $device->ip;
-            if (!empty($device->id)) {
-                $log->message .= ' (System ID ' . $device->id . ')';
-            }
             discovery_log($log);
             $credentials_windows = windows_credentials($device->ip, $credentials, $log);
         } else {
@@ -616,14 +596,14 @@ if (!function_exists('process_scan')) {
             $action = 'update';
             $log->severity = 7;
             $log->command_status = 'notice';
-            $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip;
             discovery_log($log);
             $CI->m_device->update($device);
             $device->ip = ip_address_from_db($device->ip);
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
             $log->ip = $device->ip;
-            $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip;
             discovery_log($log);
         } else {
             // we have a new system - INSERT
@@ -638,7 +618,7 @@ if (!function_exists('process_scan')) {
             $log->system_id = $device->id;
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
-            $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
             discovery_log($log);
             // update the previous log entries with our new system_id
             $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
@@ -677,7 +657,7 @@ if (!function_exists('process_scan')) {
 
         // update any network interfaces retrieved by SNMP
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-            $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Processing found network interfaces for ' . $device->ip;
             #$log->command = json_encode($network_interfaces);
             $log->command_output = '';
             discovery_log($log);
@@ -696,7 +676,7 @@ if (!function_exists('process_scan')) {
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
             $log->command_status = 'notice';
-            $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Processing found ip addresses for ' . $device->ip;
             #$log->command = json_encode($ip);
             $log->command_output = '';
             discovery_log($log);
@@ -712,7 +692,7 @@ if (!function_exists('process_scan')) {
         //     so our 'networks' endpoint and functions can find the device
         if (empty($ip->item)) {
             $log->command_status = 'notice';
-            $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip;
             discovery_log($log);
             $item = new stdClass();
             $item->system_id = $device->id;
@@ -753,7 +733,7 @@ if (!function_exists('process_scan')) {
             $log->discovery_id = $device->discovery_id;
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
-            $log->message = 'Processing found modules for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Processing found modules for ' . $device->ip;
             discovery_log($log);
             $parameters = new stdClass();
             $parameters->table = 'module';
@@ -769,7 +749,7 @@ if (!function_exists('process_scan')) {
             $log->discovery_id = $device->discovery_id;
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
-            $log->message = 'Processing found VMs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Processing found VMs for ' . $device->ip;
             discovery_log($log);
             $parameters = new stdClass();
             $parameters->table = 'vm';
@@ -801,7 +781,7 @@ if (!function_exists('process_scan')) {
                 $log->discovery_id = $device->discovery_id;
                 $log->file = 'discovery_helper';
                 $log->function = 'discoveries';
-                $log->message = 'Processing Nmap ports for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->message = 'Processing Nmap ports for ' . $device->ip;
                 discovery_log($log);
                 $parameters = new stdClass();
                 $parameters->table = 'nmap';
@@ -1048,7 +1028,7 @@ if (!function_exists('process_scan')) {
             } else {
                 $log->severity = 6;
                 $log->command_status = 'notice';
-                $log->message = "Discovery could not match the OS Group ($device->os_group) to an audit script for $device->ip (System ID $device->id).";
+                $log->message = "Discovery could not match the OS Group ($device->os_group) to an audit script for $device->ip.";
                 discovery_log($log);
                 return true;
             }
@@ -1056,7 +1036,7 @@ if (!function_exists('process_scan')) {
             // go back now as we don't have a script
             $log->severity = 7;
             $log->command_status = 'notice';
-            $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
+            $log->message = "Discovery has completed processing $device->ip";
             discovery_log($log);
             return true;
         }
@@ -1069,7 +1049,7 @@ if (!function_exists('process_scan')) {
             $log->command_time_to_execute = '';
             $log->command = '';
             $log->command_status = 'notice';
-            $log->message = 'Starting windows script audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Starting windows script audit for ' . $device->ip;
             discovery_log($log);
             $share = '\\admin$';
             $destination = 'audit_windows.vbs';
@@ -1113,11 +1093,11 @@ if (!function_exists('process_scan')) {
 
                     $log->severity = 7;
                     $log->command_time_to_execute = $command_end - $command_start;
-                    $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                    $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip;
                     $log->command_status = 'success';
                     if ($return_var != '0') {
                         $log->command_status = 'fail';
-                        $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                        $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip;
                         $log->severity = 4;
                     }
                     discovery_log($log);
@@ -1185,7 +1165,7 @@ if (!function_exists('process_scan')) {
                     $audit_result = file_get_contents($destination);
                     if (empty($audit_result)) {
                         $log->command_status = 'fail';
-                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
+                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . '. Cannot process audit result.';
                         $log->command = "file_get_contents('$destination')";
                         $log->command_output = '';
                         discovery_log($log);
@@ -1206,7 +1186,7 @@ if (!function_exists('process_scan')) {
 
         # Audit via SSH
         if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh) and !empty($audit_script)) {
-            $log->message = 'Starting SSH audit script for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Starting SSH audit script for ' . $device->ip;
             $log->file = 'discovery_helper';
             $log->command_time_to_execute = '';
             $log->command = '';
@@ -1545,7 +1525,7 @@ if (!function_exists('process_scan')) {
         $log->severity = 7;
         $log->command_status = 'notice';
         $log->command = '';
-        $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
+        $log->message = "Discovery has completed processing $device->ip";
         discovery_log($log);
         return true;
     }

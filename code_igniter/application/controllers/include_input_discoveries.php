@@ -276,8 +276,12 @@ foreach ($xml->children() as $input) {
     $log->command_output = '';
 
     if (!empty($device->id)) {
+        $sql = "SELECT name FROM system WHERE id = " . intval($device->id);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $name = $result[0]->name;
         $log->system_id = $device->id;
-        $log->message = "Device with ID " . $device->id . " found on initial Nmap result.";
+        $log->message = "Device named " . $name . " found on initial Nmap result.";
         discovery_log($log);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
 
@@ -378,9 +382,6 @@ foreach ($xml->children() as $input) {
     // output to log file and DEBUG the status of the three main services
     $log->command_status = 'notice';
     $log->message = 'WMI Status is '.$input->wmi_status.' on '.$device->ip;
-    if (!empty($device->id)) {
-        $log->message .= ' (System ID ' . $device->id . ')';
-    }
     discovery_log($log);
 
     $input->ssh_port = '22';
@@ -401,32 +402,20 @@ foreach ($xml->children() as $input) {
     }
 
     $log->message = 'SSH Status is '.$input->ssh_status.' on '.$device->ip;
-    if (!empty($device->id)) {
-        $log->message .= ' (System ID ' . $device->id . ')';
-    }
     discovery_log($log);
 
     $log->message = 'SNMP Status is '.$input->snmp_status.' on '.$device->ip;
-    if (!empty($device->id)) {
-        $log->message .= ' (System ID ' . $device->id . ')';
-    }
     discovery_log($log);
 
     # test for working SNMP credentials
     if (!extension_loaded('snmp') and $input->snmp_status == 'true') {
         $log->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         discovery_log($log);
     }
 
     $credentials_snmp = false;
     if (extension_loaded('snmp') and $input->snmp_status == 'true') {
         $log->message = 'Testing SNMP credentials for '.$device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         discovery_log($log);
         $credentials_snmp = snmp_credentials($device->ip, $credentials, $log);
 
@@ -478,9 +467,6 @@ foreach ($xml->children() as $input) {
         and !empty($device->manufacturer) and stripos($device->manufacturer, 'Ubiquiti') === false) {
         $log->severity = 7;
         $log->message = 'Not a computer and not a DD-WRT or Ubiquiti device setting SSH status to false for ' . $device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         $log->severity = 5;
         discovery_log($log);
         $log->severity = 7;
@@ -493,6 +479,8 @@ foreach ($xml->children() as $input) {
 
     # test for working SSH credentials
     if ($input->ssh_status == 'true') {
+        $log->message = 'Testing SSH credentials for '.$device->ip;
+        discovery_log($log);
         $parameters = new stdClass();
         $parameters->ip = $device->ip;
         $parameters->system_id = '';
@@ -541,9 +529,6 @@ foreach ($xml->children() as $input) {
     # test for working WMI credentials
     if ($input->wmi_status == 'true') {
         $log->message = 'Testing Windows credentials for ' . $device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
         discovery_log($log);
         $credentials_windows = windows_credentials($device->ip, $credentials, $log);
     } else {
@@ -655,14 +640,14 @@ foreach ($xml->children() as $input) {
         $action = 'update';
         $log->severity = 7;
         $log->command_status = 'notice';
-        $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip;
         discovery_log($log);
         $this->m_device->update($device);
         $device->ip = ip_address_from_db($device->ip);
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';
         $log->ip = $device->ip;
-        $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip;
         discovery_log($log);
     } else {
         // we have a new system - INSERT
@@ -677,7 +662,7 @@ foreach ($xml->children() as $input) {
         $log->system_id = $device->id;
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';
-        $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         discovery_log($log);
         // update the previous log entries with our new system_id
         $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
@@ -717,7 +702,7 @@ foreach ($xml->children() as $input) {
 
     // update any network interfaces retrieved by SNMP
     if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-        $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Processing found network interfaces for ' . $device->ip;
         $log->command = '';
         $log->command_output = '';
         discovery_log($log);
@@ -735,7 +720,7 @@ foreach ($xml->children() as $input) {
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
-        $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Processing found ip addresses for ' . $device->ip;
         $log->command = '';
         $log->command_output = '';
         discovery_log($log);
@@ -751,7 +736,7 @@ foreach ($xml->children() as $input) {
     //     so our 'networks' endpoint and functions can find the device
     if (empty($ip->item)) {
         $log->command = '';
-        $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip;
         discovery_log($log);
         $item = new stdClass();
         $item->system_id = $device->id;
@@ -791,7 +776,7 @@ foreach ($xml->children() as $input) {
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
-        $log->message = 'Processing found modules for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Processing found modules for ' . $device->ip;
         $log->command = '';
         discovery_log($log);
         $parameters = new stdClass();
@@ -808,7 +793,7 @@ foreach ($xml->children() as $input) {
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
-        $log->message = 'Processing found VMs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Processing found VMs for ' . $device->ip;
         $log->command = '';
         discovery_log($log);
         $parameters = new stdClass();
@@ -845,7 +830,7 @@ foreach ($xml->children() as $input) {
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
-        $log->message = 'Processing Nmap ports for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Processing Nmap ports for ' . $device->ip;
         $log->command = '';
         discovery_log($log);
         $parameters = new stdClass();
@@ -1101,7 +1086,7 @@ foreach ($xml->children() as $input) {
         $log->command_time_to_execute = '';
         $log->command = '';
         $log->command_status = 'notice';
-        $log->message = 'Starting windows script audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Starting windows script audit for ' . $device->ip;
         discovery_log($log);
         $share = '\\admin$';
         $destination = 'audit_windows.vbs';
@@ -1146,11 +1131,11 @@ foreach ($xml->children() as $input) {
 
                 $log->severity = 7;
                 $log->command_time_to_execute = $command_end - $command_start;
-                $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip;
                 $log->command_status = 'success';
                 if ($return_var != '0') {
                     $log->command_status = 'fail';
-                    $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                    $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip;
                     $log->severity = 4;
                 }
                 discovery_log($log);
@@ -1170,7 +1155,7 @@ foreach ($xml->children() as $input) {
             } else {
                 $log->severity = 3;
                 $log->command_time_to_execute = '';
-                $log->message = 'Could not copy audit script to ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->message = 'Could not copy audit script to ' . $device->ip;
                 $log->command_status = 'fail';
                 discovery_log($log);
                 $log->severity = 7;
@@ -1185,7 +1170,7 @@ foreach ($xml->children() as $input) {
             } else {
                 $log->severity = 3;
                 $log->command_time_to_execute = '';
-                $log->message = 'No script output from ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                $log->message = 'No script output from ' . $device->ip . '. Cannot retrieve audit result.';
                 $log->command_status = 'fail';
                 discovery_log($log);
                 $log->severity = 7;
@@ -1205,7 +1190,7 @@ foreach ($xml->children() as $input) {
                     if (empty($audit_result)) {
                         $log->severity = 3;
                         $log->command_time_to_execute = '';
-                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
+                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . '. Cannot process audit result.';
                         $log->command_output = $destination;
                         $log->command_status = 'fail';
                         discovery_log($log);
@@ -1214,7 +1199,7 @@ foreach ($xml->children() as $input) {
                 } else {
                     $log->severity = 3;
                     $log->command_time_to_execute = '';
-                    $log->message = 'Could not copy audit result file to localhost for ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                    $log->message = 'Could not copy audit result file to localhost for ' . $device->ip . '. Cannot retrieve audit result.';
                     $log->command_status = 'fail';
                     discovery_log($log);
                     $log->severity = 7;
@@ -1230,7 +1215,7 @@ foreach ($xml->children() as $input) {
             } else {
                 $log->severity = 3;
                 $log->command_time_to_execute = '';
-                $log->message = 'Could not find audit result path in script output from ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                $log->message = 'Could not find audit result path in script output from ' . $device->ip . '. Cannot retrieve audit result.';
                 $log->command_status = 'fail';
                 discovery_log($log);
                 $log->severity = 7;
@@ -1240,7 +1225,7 @@ foreach ($xml->children() as $input) {
 
     # Audit via SSH
     if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh) and !empty($audit_script)) {
-        $log->message = 'Starting SSH audit script for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->message = 'Starting SSH audit script for ' . $device->ip;
         $log->file = 'include_input_discoveries';
         $log->command_time_to_execute = '';
         $log->command = '';
@@ -1283,7 +1268,7 @@ foreach ($xml->children() as $input) {
                 $log->function = 'discoveries';
                 $log->severity = 3;
                 $log->command_time_to_execute = '';
-                $log->message = 'Could not chmod script on ' . $device->ip . ' (System ID ' . $device->id . ').';
+                $log->message = 'Could not chmod script on ' . $device->ip;
                 $log->command_status = 'fail';
                 discovery_log($log);
                 $log->severity = 7;
@@ -1323,7 +1308,7 @@ foreach ($xml->children() as $input) {
         } else {
             $log->severity = 3;
             $log->command_time_to_execute = '';
-            $log->message = 'No audit script for ' . $device->ip . ' (System ID ' . $device->id . ').';
+            $log->message = 'No audit script for ' . $device->ip;
             $log->command_status = 'fail';
             discovery_log($log);
             $log->severity = 7;
@@ -1638,6 +1623,6 @@ foreach ($xml->children() as $input) {
     $log->severity = 7;
     $log->command_status = 'notice';
     $log->command = '';
-    $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
+    $log->message = "Discovery has completed processing $device->ip";
     discovery_log($log);
 }
