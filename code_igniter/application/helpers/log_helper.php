@@ -66,7 +66,7 @@ if (! function_exists('log_error')) {
         $error->file = 'system';
         stdlog($error);
 
-        if (!empty($error->controller) and !empty($eror->function)) {
+        if (!empty($error->controller) and !empty($error->function)) {
             $error->controller = $error->controller . '::' . $error->function;
         } else {
             $error->controller = '';
@@ -227,6 +227,35 @@ if (! function_exists('discovery_log')) {
                             $log->command_output);
             $query = $CI->db->query($sql, $data);
             $return_id = intval($CI->db->insert_id());
+        }
+
+        # If we are a collector, forward the log
+        if ($CI->config->config['servers'] !== '') {
+            foreach ( $log as $key => $value) {
+                if ($key != 'id' and $key != 'system_id') {
+                    $post_items[] = $key . '=' . urlencode($value);
+                }
+            }
+            $post = implode('&', $post_items);
+            $server = json_decode($this->config->config['servers']);
+            if (!empty($server->host) and !empty($server->community)) {
+                $connection = curl_init($server->host . $server->community . '/index.php/input/devices');
+                curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
+                curl_setopt($connection, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+                curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
+                curl_setopt($connection, CURLOPT_POSTFIELDS, $post);
+                curl_exec($connection);
+                // if (curl_errno($connection)) {
+                //     $log->message = 'Failed to send log to ' . $server->host;
+                //     $log->severity = 4;
+                //     $log->command = json_encode(curl_getinfo($connection));
+                //     $log->command_output = curl_errno($connection) . ' - ' . curl_error($connection);
+                //     discovery_log($log);
+                // }
+                curl_close($connection);
+            }
         }
 
         # Special case because the log submit may work, but the discovery process may not.

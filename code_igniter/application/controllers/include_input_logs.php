@@ -84,31 +84,4 @@ if ($this->response->meta->format == 'json') {
     print_r(json_encode($input));
 }
 
-# If we are a collector, forward the log
-if ($this->config->config['servers'] !== '' and $log->type == 'discovery') {
-    foreach ( $log as $key => $value) {
-        $post_items[] = $key . '=' . $value;
-    }
-    $post = implode ('&', $post_items);
-    $server = json_decode($this->config->config['servers']);
-    if (!empty($server->host) and !empty($server->community)) {
-        $connection = curl_init($server->host . $server->community . '/index.php/input/devices');
-        curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($connection, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-        curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($connection, CURLOPT_POSTFIELDS, $post);
-        $result = curl_exec($connection);
-        if (curl_errno($connection)) {
-            $log->message = 'Failed to send log to ' . $server->host;
-            $log->severity = 4;
-            $log->command = json_encode(curl_getinfo($connection));
-            $log->command_output = curl_errno($connection) . ' - ' . curl_error($connection);
-            discovery_log($log);
-        }
-        curl_close($connection);
-    }
-}
-
 exit();
