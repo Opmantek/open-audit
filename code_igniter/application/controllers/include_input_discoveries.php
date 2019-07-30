@@ -917,8 +917,8 @@ foreach ($xml->children() as $input) {
             }
         }
         unset($device_json->system->id);
-        unset($device_json->system->discovery_id);
-        unset($device_json->system->org_id);
+        #unset($device_json->system->discovery_id);
+        #unset($device_json->system->org_id);
         unset($device_json->system->first_seen);
         $device_json = json_encode($device_json);
         $url = $server->host . $server->community . '/index.php/input/devices';
@@ -1562,21 +1562,19 @@ foreach ($xml->children() as $input) {
         $log->message = 'Processed audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';
         discovery_log($log);
 
-        // set the ip (if not already set)
-        #$this->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
-        #$this->m_devices_components->set_initial_address($audit->system->id);
         $this->m_audit_log->update('debug', '', $audit->system->id, $audit->system->last_seen);
+
         # If we are configured as a collector, forward the information to the server
         if ($this->config->config['servers'] !== '') {
             $server = json_decode($this->config->config['servers']);
             $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
             discovery_log($log);
             unset($audit->system->id);
-            unset($audit->system->discovery_id);
+            #unset($audit->system->discovery_id);
             unset($audit->system->original_last_seen_by);
             unset($audit->system->original_last_seen);
             unset($audit->system->first_seen);
-            unset($audit->system->org_id);
+            #unset($audit->system->org_id);
             $audit->system->collector_uuid = $this->config->config['uuid'];
 
             $device_json = json_encode($audit);
