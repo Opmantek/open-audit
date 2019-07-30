@@ -867,8 +867,8 @@ if (!function_exists('process_scan')) {
                 }
             }
             unset($device_json->system->id);
-            unset($device_json->system->discovery_id);
-            unset($device_json->system->org_id);
+            #unset($device_json->system->discovery_id);
+            #unset($device_json->system->org_id);
             unset($device_json->system->first_seen);
             $device_json = json_encode($device_json);
             $url = $server->host . $server->community . '/index.php/input/devices';
@@ -1481,11 +1481,11 @@ if (!function_exists('process_scan')) {
                 $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
                 discovery_log($log);
                 unset($audit->system->id);
-                unset($audit->system->discovery_id);
+                #unset($audit->system->discovery_id);
+                #unset($audit->system->org_id);
                 unset($audit->system->original_last_seen_by);
                 unset($audit->system->original_last_seen);
                 unset($audit->system->first_seen);
-                unset($audit->system->org_id);
                 $audit->system->collector_uuid = $CI->config->config['uuid'];
 
                 $device_json = json_encode($audit);

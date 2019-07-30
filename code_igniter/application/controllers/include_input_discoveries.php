@@ -1571,10 +1571,10 @@ foreach ($xml->children() as $input) {
             discovery_log($log);
             unset($audit->system->id);
             #unset($audit->system->discovery_id);
+            #unset($audit->system->org_id);
             unset($audit->system->original_last_seen_by);
             unset($audit->system->original_last_seen);
             unset($audit->system->first_seen);
-            #unset($audit->system->org_id);
             $audit->system->collector_uuid = $this->config->config['uuid'];
 
             $device_json = json_encode($audit);
