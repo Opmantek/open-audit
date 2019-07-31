@@ -36,6 +36,7 @@ if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
     $get = $this->input->get();
     if (!empty($get)) {
         foreach ($get as $key => $value) {
+            $log->$key = $value;
             $input->$key = $value;
         }
     }
@@ -63,12 +64,15 @@ if (!empty($log->type) and $log->type == 'discovery') {
         $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'complete' WHERE id = ?";
         $data = array($log->discovery_id);
         $query = $this->db->query($sql, $data);
-    } else {
-        # STATUS
-        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'running' WHERE `id` = ?";
-        $data = array($log->discovery_id);
-        $query = $this->db->query($sql, $data);
     }
+    // Removed the below because the Server injests the Collector logs and receives logs after the Nmap Discovery has
+    // completed, hence sets the status back to running.
+    // else {
+    //     # STATUS
+    //     $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'running' WHERE `id` = ?";
+    //     $data = array($log->discovery_id);
+    //     $query = $this->db->query($sql, $data);
+    // }
 
     $sql = '/* input::logs */ ' . "UPDATE discoveries SET `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
     $data = array($log->discovery_id);
