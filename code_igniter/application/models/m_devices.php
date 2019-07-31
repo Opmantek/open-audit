@@ -1212,7 +1212,7 @@ class M_devices extends MY_Model
 
         $log_details = new stdClass();
         $log_details->ip = ip_address_from_db($details->ip);
-        $log_details->message = 'System insert start for '.ip_address_from_db($details->ip).' ('.$name.')';
+        $log_details->message = 'System insert start for '.ip_address_from_db($details->ip);
         $log_details->severity = 7;
         $log_details->file = 'system';
         stdlog($log_details);
@@ -1324,7 +1324,7 @@ class M_devices extends MY_Model
         }
 
         $log_details->ip = ip_address_from_db($details->ip);
-        $log_details->message = 'System insert end for '.ip_address_from_db($details->ip).' ('.$name.') (System ID '.$details->id.')';
+        $log_details->message = 'System insert end for '.ip_address_from_db($details->ip);
         stdlog($log_details);
         unset($log_details);
         return $details->id;
