@@ -131,11 +131,13 @@ foreach ($xml->children() as $input) {
             $discovery = $result[0];
             $discovery->other = json_decode($discovery->other);
             $syslog->ip = $input->ip;
-            $syslog->severity = 7;
-            $syslog->command_status = 'success';
-            $syslog->summary = 'Discovery ID ' . $input->discovery_id . ', named ' . $discovery->name . ' staring to process.';
-            $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
-            discovery_log($syslog);
+            if (!empty($syslog->ip)) {
+                $syslog->severity = 7;
+                $syslog->command_status = 'success';
+                $syslog->summary = 'Discovery ID ' . $input->discovery_id . ', named ' . $discovery->name . ' staring to process.';
+                $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
+                discovery_log($syslog);
+            }
         } else {
             $discovery = new stdClass();
             $discovery->id = '';
@@ -176,6 +178,7 @@ foreach ($xml->children() as $input) {
         $syslog->summary = 'Set discovery entry status to complete';
         $syslog->detail = $this->db->last_query();
         stdlog($syslog);
+        $syslog->ip = '127.0.0.1';
         $syslog->discovery_id = $log->discovery_id;
         $syslog->message = 'Set discovery entry status to complete';
         discovery_log($syslog);
