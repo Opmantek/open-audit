@@ -212,7 +212,7 @@ if ($queue == 'scans' and empty($id)) {
                         $execute = true;
                         $log->status = 'Sleeping';
                         $log->summary = 'Sleeping - no jobs in queue to process, first time.';
-                        $log->detail = 'This is our first time we have detected no discovieries are running so sleep for ' . $sleep . ' seconds, then check once more.';
+                        $log->detail = 'This is our first time we have detected no discoveries are running so sleep for ' . $sleep . ' seconds, then check once more.';
                         stdlog($log);
                         sleep($sleep);
                     }
@@ -372,7 +372,7 @@ if ($queue == 'discoveries') {
                         $execute = true;
                         $log->status = 'Sleeping';
                         $log->summary = 'Sleeping - no jobs in queue to process, first time.';
-                        $log->detail = 'This is our first time we have detected no discovieries are running, sleep then check once more.';
+                        $log->detail = 'This is our first time we have detected no discoveries are running, sleep then check once more.';
                         stdlog($log);
                         sleep($sleep);
                     }
