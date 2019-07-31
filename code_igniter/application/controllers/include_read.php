@@ -43,8 +43,10 @@ $table = $this->response->meta->collection;
 if ($table == 'database') {
     $table = $this->response->meta->id;
 }
-include 'include_dictionary.php';
-$this->response->dictionary = $dictionary;
+if ($this->response->meta->format == 'screen') {
+    include 'include_dictionary.php';
+    $this->response->dictionary = $dictionary;
+}
 
 $collection = $this->response->meta->collection;
 
@@ -167,13 +169,25 @@ if ($this->response->meta->collection == 'database') {
 
 # discoveries
 if ($this->response->meta->collection == 'discoveries') {
-    $this->load->model('m_collection');
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
+    #$this->load->model('m_collection');
+    #$this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
+
+    # Assign Devices to Location
     $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
-    # The discovery log
+    if (!empty($this->response->data[0]->attributes->devices_assigned_to_location)) {
+        $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->devices_assigned_to_location));
+    }
+    # Assign Devices to Org
+    $this->load->model('m_orgs');
+    if (!empty($this->response->data[0]->attributes->devices_assigned_to_org)) {
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
+    }
+
     if ($this->response->meta->format === 'screen') {
+        # Discovery log
         $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+        # All Locations
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
     }
 }
 
