@@ -178,7 +178,7 @@ class M_users extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'pre';
         $this->log->summary = 'retrieving org';
-        stdlog($this->log);
+        #stdlog($this->log);
         $org_list = array();
         foreach ($this->orgs as $org) {
             if ($org->parent_id == $org_id and $org->id != 1) {
