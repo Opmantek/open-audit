@@ -586,28 +586,23 @@ foreach ($xml->children() as $input) {
             $log->command_status = 'notice';
             $log->command = $sql;
             $log->command_output = '';
-            $command_log_id = discovery_log($log);
             $command_start = microtime(true);
             $query = $this->db->query($sql);
             $command_end = microtime(true);
-            $log->command = $this->db->last_query();
             $log->command_time_to_execute = $command_end - $command_start;
-            $log->id = $command_log_id;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
+
             // update the previous log entries with our new system_id
             $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
             $log->message = 'Update the previous log entries with the system_id';
             $log->command_status = 'notice';
             $log->command = $sql;
-            $command_log_id = discovery_log($log);
             $command_start = microtime(true);
             $query = $this->db->query($sql);
             $command_end = microtime(true);
-            $log->command = $this->db->last_query();
             $log->command_time_to_execute = $command_end - $command_start;
-            $log->id = $command_log_id;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
@@ -1439,6 +1434,7 @@ foreach ($xml->children() as $input) {
         $audit->system->ip = $device->ip;
 
         $log->message = 'Matching device from audit result';
+        $log->command = '';
         discovery_log($log);
         $parameters = new stdCLass();
         $parameters->details = $audit->system;
@@ -1611,14 +1607,14 @@ foreach ($xml->children() as $input) {
         if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_use_vintage_service')) and $this->config->item('discovery_use_vintage_service') == 'y') {
             $log->message = 'Audit result incoming from target.';
             $log->severity = 6;
+            discovery_log($log);
         } else if (!empty($audit_script)) {
             $log->message = 'WARNING - No audit result retrieved for processing';
             $log->severity = 4;
+            discovery_log($log);
         } else {
-            $log->message = 'In theory, we should never see this log.';
-            $log->severity = 5;
+            # no audit script result and no audit script - we're done.
         }
-        discovery_log($log);
     }
     $this->m_device->set_identification($device->id);
     $log->severity = 7;

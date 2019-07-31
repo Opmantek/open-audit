@@ -100,6 +100,7 @@ if (!function_exists('audit_convert')) {
         $log = $parameters->log;
         $log->file = 'audit_helper';
         $log->function = 'audit_convert';
+        $log->command = '';
 
         if (is_string($input)) {
             # See if we have stringified JSON
@@ -245,6 +246,9 @@ if (!function_exists('audit_convert')) {
             }
             if (!empty($audit->system->id)) {
                 $log->system_id = intval($audit->system->id);
+            }
+            if (!empty($audit->system->ip)) {
+                $log->ip = $audit->system->ip;
             }
         }
 

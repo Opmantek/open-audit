@@ -81,7 +81,6 @@ if (!function_exists('snmp_credentials')) {
             discovery_log($log);
             return false;
         }
-        $connected = array();
 
         foreach ($credentials as $credential) {
             $from = ' ';
@@ -410,74 +409,61 @@ if (!function_exists('snmp_audit')) {
         $details->model = '';
         $details->type = '';
 
-        $log->message = 'sysDescr retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.1.0';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
+        $log->command_status = 'notice';
+
         $item_start = microtime(true);
         $details->sysDescr = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysDescr retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.1.0';
         $log->command_output = (string)$details->sysDescr;
-        $log->command_status = 'notice';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        unset($log->command_time_to_execute, $log->command_output);
 
         $details->description = $details->sysDescr;
 
-        $log->message = 'sysContact retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.4.0';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $details->sysContact =  my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.4.0");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysContact retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.4.0';
         $log->command_output = (string)$details->sysContact;
-        $log->command_status = 'notice';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        unset($log->command_time_to_execute, $log->command_output);
 
         $details->contact = $details->sysContact;
 
-        $log->message = 'sysName retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.5.0';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $details->sysName = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.5.0");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysName retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.5.0';
         $log->command_output = (string)$details->sysName;
-        $log->command_status = 'notice';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        unset($log->command_time_to_execute, $log->command_output);
 
-        $details->name = $details->sysName;
+        #$details->name = $details->sysName;
 
-        $log->message = 'sysLocation retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.6.0';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $details->sysLocation = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.6.0");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysLocation retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.6.0';
         $log->command_output = (string)$details->sysLocation;
-        $log->command_status = 'notice';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        unset($log->command_time_to_execute, $log->command_output);
+
         $details->location = $details->sysLocation;
 
-        $log->message = 'sysUpTime retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.3.0';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $details->sysUpTime = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.3.0");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysUpTime retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.3.0';
         $log->command_output = (string)$details->sysUpTime;
-        $log->command_status = 'notice';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        unset($log->command_time_to_execute, $log->command_output);
 
-        $item_start = microtime(true);
         if (!empty($details->sysUpTime) and strpos($details->sysUpTime, ")") !== false) {
             $temp = explode("(", $details->sysUpTime);
             $temp2 = explode(")", $temp[1]);
@@ -486,17 +472,14 @@ if (!function_exists('snmp_audit')) {
             $details->uptime = intval($details->sysUpTime / 100);
         }
 
-        $log->message = 'sysObjectID retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.2.0';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $details->sysObjectID = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.2.0");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysObjectID retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.2.0';
         $log->command_output = (string)$details->sysObjectID;
-        $log->command_status = 'notice';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute);
+        unset($log->command_time_to_execute);
 
         $details->snmp_oid = (string)$details->sysObjectID;
         $details->snmp_enterprise_id = '';
@@ -514,12 +497,10 @@ if (!function_exists('snmp_audit')) {
 
         $log->message = 'snmp_enterprise_id set for '.$ip;
         $log->command = 'snmp_enterprise_id';
-        $log->command_status = 'notice';
-        $item_start = microtime(true);
-        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_time_to_execute = 0;
         $log->command_output = $details->snmp_enterprise_id;
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        unset($log->command_time_to_execute, $log->command_output);
 
         # sometimes we get an OID, but not enough to specify a manufacturer
         if (empty($details->snmp_enterprise_id)) {
@@ -569,22 +550,22 @@ if (!function_exists('snmp_audit')) {
         foreach ($temp_services as $line) {
             if (strpos($line, 'Ubiquiti') !== false) {
                 $details->manufacturer = 'Ubiquiti Networks Inc.';
+                $log->command_time_to_execute = 0;
                 $log->message = 'Manufacturer set to Ubiquiti '.$ip . ', because in services list.';
                 $log->command = 'snmpwalk 1.3.6.1.2.1.1.9.1.3';
                 $log->command_output = (string)$line;
+                $log->command_status = 'notice';
                 discovery_log($log);
                 break;
             }
         }
         // guess at manufacturer using entity mib
         if (empty($details->manufacturer)) {
-            $log->message = 'Manufacturer based on Entity MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.12.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->manufacturer = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.12.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Manufacturer based on Entity MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.12.1';
             $log->command_output = (string)$details->manufacturer;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -592,13 +573,11 @@ if (!function_exists('snmp_audit')) {
         }
         // guess at model using entity mib
         if (empty($details->model)) {
-            $log->message = 'Model based on Entity MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.13';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Model based on Entity MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.13';
             $log->command_output = (string)$details->model;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -606,13 +585,11 @@ if (!function_exists('snmp_audit')) {
         }
         // guess at model using entity mib #2
         if (empty($details->model)) {
-            $log->message = 'Model based on Entity MIB OID retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.2.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.2.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Model based on Entity MIB OID retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.2.1';
             $log->command_output = (string)$details->model;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -620,13 +597,11 @@ if (!function_exists('snmp_audit')) {
         }
         // guess at model using host resources mib
         if (empty($details->model)) {
-            $log->message = 'Model based on Host Resources MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.25.3.2.1.3.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.25.3.2.1.3.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Model based on Host Resources MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.25.3.2.1.3.1';
             $log->command_output = (string)$details->model;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -634,15 +609,11 @@ if (!function_exists('snmp_audit')) {
         }
         //  guess at model parsing host resources mib
         if (empty($details->model)) {
+            $item_start = microtime(true);
+            $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.25.1.4.0");
+            $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Model based on Host Resources MIB retrieval for '.$ip;
             $log->command = 'snmpget 1.3.6.1.2.1.25.1.4.0';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-
-            $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.25.1.4.0");
-
-            $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (string)$temp;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -660,39 +631,33 @@ if (!function_exists('snmp_audit')) {
 
         // serial
         if (empty($details->serial)) {
-            $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11';
             $log->command_output = (string)$details->serial;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
         if (empty($details->serial)) {
-            $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11.1';
             $log->command_output = (string)$details->serial;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
         if (empty($details->serial)) {
-            $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11.1.0';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1.0");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11.1.0';
             $log->command_output = (string)$details->serial;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -700,13 +665,11 @@ if (!function_exists('snmp_audit')) {
         }
         # generic snmp
         if (empty($details->serial)) {
-            $log->message = 'Serial retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.43.5.1.1.17.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.43.5.1.1.17.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Serial retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.43.5.1.1.17.1';
             $log->command_output = (string)$details->serial;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -714,13 +677,11 @@ if (!function_exists('snmp_audit')) {
         }
         # below is another generic attempt - works for my NetGear Cable Modem
         if (empty($details->serial)) {
-            $log->message = 'Serial retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.4.1.4491.2.4.1.1.1.3.0';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Serial retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.4.1.4491.2.4.1.1.1.3.0';
             $log->command_output = (string)$details->serial;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -739,13 +700,11 @@ if (!function_exists('snmp_audit')) {
 
         // subnet
         if (empty($details->subnet)) {
-            $log->message = 'Subnet retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.4.20.1.3.'.$details->ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->subnet = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.4.20.1.3.".$details->ip);
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Subnet retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.4.20.1.3.'.$details->ip;
             $log->command_output = (string)$details->subnet;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -754,29 +713,25 @@ if (!function_exists('snmp_audit')) {
 
         // mac address
         if (empty($details->mac_address)) {
-            $log->message = 'Interface number for ' . $ip . '  retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.4.20.1.3.'.$details->ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $interface_number = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.4.20.1.2.".$ip);
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Interface number for ' . $ip . '  retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.4.20.1.3.'.$details->ip;
             $log->command_output = (string)$interface_number;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
 
             if (!empty($interface_number)) {
-                $log->message = 'MAC Address for interface ' . $interface_number . ' using IP ' . $ip . '  retrieval for '.$ip;
-                $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.'.$interface_number;
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
                 $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.".$interface_number);
                 snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-                $log->command_time_to_execute = (microtime(true) - $item_start);
                 $details->mac_address = format_mac($details->mac_address);
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'MAC Address for interface ' . $interface_number . ' using IP ' . $ip . '  retrieval for '.$ip;
+                $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.'.$interface_number;
                 $log->command_output = (string)$details->mac_address;
                 $log->command_status = 'notice';
                 discovery_log($log);
@@ -785,48 +740,42 @@ if (!function_exists('snmp_audit')) {
         }
         // last attempt at a MAC - just use whatever's in the first interface MAC
         if (empty($details->mac_address)) {
-            $log->message = 'MAC Address retrieval (oid #1) for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.1");
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
             $details->mac_address = format_mac($details->mac_address);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'MAC Address retrieval (oid #1) for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.1';
             $log->command_output = (string)$details->mac_address;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         if (empty($details->mac_address)) {
-            $log->message = 'MAC Address retrieval (oid #2) for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.2';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.2");
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
             $details->mac_address = format_mac($details->mac_address);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'MAC Address retrieval (oid #2) for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.2';
             $log->command_output = (string)$details->mac_address;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         if (empty($details->mac_address)) {
-            $log->message = 'MAC Address retrieval (oid #3) for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.3';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.3");
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
             $details->mac_address = format_mac($details->mac_address);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'MAC Address retrieval (oid #3) for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.3';
             $log->command_output = (string)$details->mac_address;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -835,31 +784,21 @@ if (!function_exists('snmp_audit')) {
 
         // type
         if (empty($details->type) or $details->type == 'network printer') {
-            $log->message = 'Determining type for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.25.3.2.1.2.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $h = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.25.3.2.1.2.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Determining type for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.25.3.2.1.2.1';
             $log->command_output = (string)$h;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
+
             if ($h == '1.3.6.1.2.1.25.3.1.5') {
                 # we have a printer
                 $details->type = 'network printer';
-                $log->message = 'Printer duplex retrieval for '.$ip;
-                $log->command = 'snmpwalk 1.3.6.1.2.1.43.13.4.1.10.1';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.43.13.4.1.10.1");
-                $log->command_time_to_execute = (microtime(true) - $item_start);
-                $log->command_output = (string)$i;
-                $log->command_status = 'notice';
-                discovery_log($log);
-                unset($log->id, $log->command, $log->command_time_to_execute);
                 if (count($i) > 0) {
                     $details->printer_duplex = 'n';
                     for ($k = 0; $k < count($i); $k++) {
@@ -868,14 +807,20 @@ if (!function_exists('snmp_audit')) {
                         }
                     }
                 }
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Printer duplex retrieval for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.43.13.4.1.10.1';
+                $log->command_output = (string)$i;
+                $log->command_status = 'notice';
+                discovery_log($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
+
                 if (empty($details->manufacturer)) {
-                    $log->message = 'Manufacturer retrieval for '.$ip;
-                    $log->command = 'snmpwalk 1.3.6.1.2.1.43.8.2.1.14.1';
-                    $log->command_status = 'fail';
-                    $log->id = discovery_log($log);
                     $item_start = microtime(true);
                     $hex = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.43.8.2.1.14.1");
                     $log->command_time_to_execute = (microtime(true) - $item_start);
+                    $log->message = 'Manufacturer retrieval for '.$ip;
+                    $log->command = 'snmpwalk 1.3.6.1.2.1.43.8.2.1.14.1';
                     $log->command_output = (string)$hex;
                     $log->command_status = 'notice';
                     discovery_log($log);
@@ -894,14 +839,13 @@ if (!function_exists('snmp_audit')) {
                         }
                     }
                 }
+
                 $details->printer_color = 'n';
-                $log->message = 'Printer colour retrieval for '.$ip;
-                $log->command = 'snmpget 1.3.6.1.2.1.43.11.1.1.6.1.2';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $i = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.43.11.1.1.6.1.2");
                 $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Printer colour retrieval for '.$ip;
+                $log->command = 'snmpget 1.3.6.1.2.1.43.11.1.1.6.1.2';
                 $log->command_output = (string)$i;
                 $log->command_status = 'notice';
                 discovery_log($log);
@@ -913,25 +857,21 @@ if (!function_exists('snmp_audit')) {
             } else {
                 # If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 is an integer and
                 #                                OID 1.3.6.1.2.1.4.1.0    should have a value of 2
-                $log->message = 'Checking dot1dBaseNumPorts for '.$ip;
-                $log->command = 'snmpget 1.3.6.1.2.1.17.1.2.0';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $i = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.17.1.2.0");
                 $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Checking dot1dBaseNumPorts for '.$ip;
+                $log->command = 'snmpget 1.3.6.1.2.1.17.1.2.0';
                 $log->command_output = (string)$i;
                 $log->command_status = 'notice';
                 discovery_log($log);
                 unset($log->id, $log->command, $log->command_time_to_execute);
 
-                $log->message = 'Checking ipRoutingCfgIpMode for '.$ip;
-                $log->command = 'snmpget 1.3.6.1.2.1.4.1.0';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $j = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.4.1.0");
                 $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Checking ipRoutingCfgIpMode for '.$ip;
+                $log->command = 'snmpget 1.3.6.1.2.1.4.1.0';
                 $log->command_output = (string)$j;
                 $log->command_status = 'notice';
                 discovery_log($log);
@@ -959,13 +899,11 @@ if (!function_exists('snmp_audit')) {
                 }
 
                 # If the device is a Printer, the OID 1.3.6.1.2.1.43.5.1.1.1.1 should have a value
-                $log->message = 'Checking prtGeneral for '.$ip;
-                $log->command = 'snmpget 1.3.6.1.2.1.43.5.1.1.1.1';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $i = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.43.5.1.1.1.1");
                 $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Checking prtGeneral for '.$ip;
+                $log->command = 'snmpget 1.3.6.1.2.1.43.5.1.1.1.1';
                 $log->command_output = (string)$i;
                 $log->command_status = 'notice';
                 discovery_log($log);
@@ -975,13 +913,11 @@ if (!function_exists('snmp_audit')) {
                     $details->type = 'network printer';
                     // printer duplex
                     $details->printer_duplex = '';
-                    $log->message = 'Printer duplex retrieval for '.$ip;
-                    $log->command = 'snmpgwalk 1.3.6.1.2.1.43.13.4.1.10.1';
-                    $log->command_status = 'fail';
-                    $log->id = discovery_log($log);
                     $item_start = microtime(true);
                     $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.43.13.4.1.10.1");
                     $log->command_time_to_execute = (microtime(true) - $item_start);
+                    $log->message = 'Printer duplex retrieval for '.$ip;
+                    $log->command = 'snmpgwalk 1.3.6.1.2.1.43.13.4.1.10.1';
                     $log->command_output = (string)$i;
                     $log->command_status = 'notice';
                     discovery_log($log);
@@ -996,13 +932,11 @@ if (!function_exists('snmp_audit')) {
                         }
                     }
                     if (empty($details->manufacturer)) {
-                        $log->message = 'Manufacturer retrieval for '.$ip;
-                        $log->command = 'snmpwalk 1.3.6.1.2.1.43.8.2.1.14.1';
-                        $log->command_status = 'fail';
-                        $log->id = discovery_log($log);
                         $item_start = microtime(true);
                         $hex = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.43.8.2.1.14.1");
                         $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Manufacturer retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.2.1.43.8.2.1.14.1';
                         $log->command_output = (string)$hex;
                         $log->command_status = 'notice';
                         discovery_log($log);
@@ -1024,14 +958,11 @@ if (!function_exists('snmp_audit')) {
                     }
 
                     $details->printer_color = 'n';
-
-                    $log->message = 'Printer colour retrieval for '.$ip;
-                    $log->command = 'snmpget 1.3.6.1.2.1.43.11.1.1.6.1.2';
-                    $log->command_status = 'fail';
-                    $log->id = discovery_log($log);
                     $item_start = microtime(true);
                     $i = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.43.11.1.1.6.1.2");
                     $log->command_time_to_execute = (microtime(true) - $item_start);
+                    $log->message = 'Printer colour retrieval for '.$ip;
+                    $log->command = 'snmpget 1.3.6.1.2.1.43.11.1.1.6.1.2';
                     $log->command_output = (string)$i;
                     $log->command_status = 'notice';
                     discovery_log($log);
@@ -1047,127 +978,108 @@ if (!function_exists('snmp_audit')) {
 
         // modules - NOTE, we call these 'entities' in the web interface
         unset($log->command_output);
-        $log->message = 'Module retrieval for '.$ip;
-        $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.2';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $modules = array();
         $modules_list = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.2");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'Module retrieval for '.$ip;
+        $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.2';
         $log->command_output = 'Count is ' . @count($modules_list);
         $log->command_status = 'notice';
         discovery_log($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
         if (isset($modules_list) and is_array($modules_list) and count($modules_list) > 0) {
-            $log->message = 'Object_id retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.3';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_object_id = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.3');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Object_id retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.3';
             $log->command_output = 'Count is ' . @count($temp_object_id);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Contained_in retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.4';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_contained_in = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.4');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Contained_in retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.4';
             $log->command_output = 'Count is ' . @count($temp_contained_in);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Class retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.5';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_class = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.5');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Class retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.5';
             $log->command_output = 'Count is ' . @count($temp_class);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Hardware_revision retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.8';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_hardware_revision = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.8');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Hardware_revision retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.8';
             $log->command_output = 'Count is ' . @count($temp_hardware_revision);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Firmware_revision retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.9';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_firmware_revision = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.9');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Firmware_revision retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.9';
             $log->command_output = 'Count is ' . @count($temp_firmware_revision);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Software_revision retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.10';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_software_revision = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.10');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Software_revision retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.10';
             $log->command_output = 'Count is ' . @count($temp_software_revision);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Serial_number retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.11';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_serial_number = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.11');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Serial_number retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.11';
             $log->command_output = 'Count is ' . @count($temp_serial_number);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Asset_id retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.15';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_asset_id = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.15');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Asset_id retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.15';
             $log->command_output = 'Count is ' . @count($temp_asset_id);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Is_fru retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.16';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $temp_is_fru = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.16');
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Is_fru retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.16';
             $log->command_output = 'Count is ' . @count($temp_is_fru);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
             foreach ($modules_list as $key => $value) {
                 $module = new stdClass();
                 $module->description = $value;
@@ -1234,50 +1146,42 @@ if (!function_exists('snmp_audit')) {
         // network intereface details
         $interfaces = array();
         $interfaces_filtered = array();
-        $log->message = 'Interfaces retrieval for '.$ip;
-        $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.1';
-        $log->command_status = 'fail';
-        $log->id = discovery_log($log);
         $item_start = microtime(true);
         $interfaces = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.1");
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'Interfaces retrieval for '.$ip;
+        $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.1';
         $log->command_output = 'Count is ' . @count($interfaces);
         $log->command_status = 'notice';
         discovery_log($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
         if (is_array($interfaces) and count($interfaces) > 0) {
-            $log->message = 'Models retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.2';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $models = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.2");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Models retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.2';
             $log->command_output = 'Count is ' . @count($models);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Types retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.3';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $types = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.3");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Types retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.3';
             $log->command_output = 'Count is ' . @count($types);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Speeds retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.5';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $speeds = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.5");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Speeds retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.5';
             $log->command_output = 'Count is ' . @count($speeds);
             $log->command_status = 'notice';
             discovery_log($log);
@@ -1291,13 +1195,11 @@ if (!function_exists('snmp_audit')) {
                 }
             }
             if ($temp) {
-                $log->message = 'HighSpeeds retrieval for '.$ip;
-                $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.15';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $high_speeds = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.31.1.1.1.15');
                 $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'HighSpeeds retrieval for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.15';
                 $log->command_output = 'Count is ' . @count($high_speeds);
                 $log->command_status = 'notice';
                 discovery_log($log);
@@ -1313,111 +1215,93 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
-            $log->message = 'Mac_addresses retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $mac_addresses = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.6");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Mac_addresses retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
             $log->command_output = 'Count is ' . @count($mac_addresses);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Ip_enableds retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.8';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $ip_enableds = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.8");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Ip_enableds retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.8';
             $log->command_output = 'Count is ' . @count($ip_enableds);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Ip_addresses retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.4.20.1.2';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $ip_addresses = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.4.20.1.2");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Ip_addresses retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.20.1.2';
             $log->command_output = 'Count is ' . @count($ip_addresses);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'IfAdminStatus retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.7';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $ifAdminStatus = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.7");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'IfAdminStatus retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.7';
             $log->command_output = 'Count is ' . @count($ifAdminStatus);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'IfLastChange retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.9';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $ifLastChange = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.2.2.1.9");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'IfLastChange retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.9';
             $log->command_output = 'Count is ' . @count($ifLastChange);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             if (isset($details->os_group) and $details->os_group == "VMware") {
-                $log->message = 'Ip_addresses_2 retrieval for '.$ip;
-                $log->command = 'snmpwalk 1.3.6.1.2.1.4.34.1.3.1.4';
-                $log->command_status = 'fail';
-                $log->id = discovery_log($log);
                 $item_start = microtime(true);
                 $ip_addresses_2 = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.4.34.1.3.1.4");
                 $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Ip_addresses_2 retrieval for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.4.34.1.3.1.4';
                 $log->command_output = 'Count is ' . @count($ip_addresses_2);
                 $log->command_status = 'notice';
                 discovery_log($log);
                 unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
             }
 
-            $log->message = 'Subnets retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.4.20.1.3';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $subnets = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.4.20.1.3");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Subnets retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.20.1.3';
             $log->command_output = 'Count is ' . @count($subnets);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Connection_ids retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.1';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $connection_ids = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.31.1.1.1.1");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Connection_ids retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.1';
             $log->command_output = 'Count is ' . @count($connection_ids);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Aliases retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.18';
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
             $item_start = microtime(true);
             $aliases = my_snmp_real_walk($ip, $credentials, "1.3.6.1.2.1.31.1.1.1.18");
             $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Aliases retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.18';
             $log->command_output = 'Count is ' . @count($aliases);
             $log->command_status = 'notice';
             discovery_log($log);
