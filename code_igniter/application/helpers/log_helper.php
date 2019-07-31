@@ -231,15 +231,17 @@ if (! function_exists('discovery_log')) {
 
         # If we are a collector, forward the log
         if ($CI->config->config['servers'] !== '') {
+            $post_items = array();
+            $post_items[] = 'type=discovery';
             foreach ( $log as $key => $value) {
                 if ($key != 'id' and $key != 'system_id') {
                     $post_items[] = $key . '=' . urlencode($value);
                 }
             }
             $post = implode('&', $post_items);
-            $server = json_decode($this->config->config['servers']);
+            $server = json_decode($CI->config->config['servers']);
             if (!empty($server->host) and !empty($server->community)) {
-                $connection = curl_init($server->host . $server->community . '/index.php/input/devices');
+                $connection = curl_init($server->host . $server->community . '/index.php/input/logs');
                 curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
                 curl_setopt($connection, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
                 curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
@@ -254,6 +256,17 @@ if (! function_exists('discovery_log')) {
                 //     $log->command_output = curl_errno($connection) . ' - ' . curl_error($connection);
                 //     discovery_log($log);
                 // }
+                if (curl_errno($connection)) {
+                    $standard_log = new stdClass();
+                    $standard_log->action = 'log_helper::discoverylog';
+                    $standard_log->function = curl_errno($connection) . ' - ' . curl_error($connection);
+                    $standard_log->summary = 'Failed to send log to ' . $server->host . $server->community . '/index.php/input/logs';
+                    $standard_log->status = 'fail';
+                    $standard_log->detail  = json_encode(curl_getinfo($connection));
+                    $standard_log->severity = 4;
+                    $standard_log->type = 'system';
+                    stdlog($standard_log);
+                }
                 curl_close($connection);
             }
         }
