@@ -285,7 +285,24 @@ class Input extends CI_Controller
 
     public function logs()
     {
-        if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '::1') {
+        $sql = "SELECT `ip` FROM `collectors`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $collector_ips = array();
+        foreach ($result as $ip) {
+            $collector_ips[] = $ip->ip;
+        }
+        if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '::1' and !in_array($_SERVER['REMOTE_ADDR'], $collector_ips)) {
+            $log = new stdClass();
+            $log->type = 'system';
+            $log->severity = 6;
+            $log->status = 'warning';
+            $log->collection = 'input';
+            $log->action = 'logs';
+            $log->function = strtolower($log->collection) . '::' . strtolower($log->action);
+            $log->summary = 'Log post from unknown IP, rejected.';
+            $log->detail = 'Rejecting log post from ' . $_SERVER['REMOTE_ADDR'] . ' as it\'s not localhost and not in the list of collector IPs, which are: ' . json_encode($collector_ips);
+            stdlog($log);
             return;
         }
         include "include_input_logs.php";
