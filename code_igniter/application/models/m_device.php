@@ -1274,7 +1274,7 @@ class M_device extends MY_Model
         $log->function = 'insert';
         $log->system_id = '';
         $log->file = 'm_device';
-        $log->message = 'System insert start for '.ip_address_from_db($details->ip).' ('.$details->hostname.')';
+        $log->message = 'System insert start for '.ip_address_from_db($details->ip);
         $log->command = '';
         $log->command_status = 'start';
         $log->command_time_to_execute = '';
@@ -1443,7 +1443,7 @@ class M_device extends MY_Model
         }
 
         $log->ip = ip_address_from_db($details->ip);
-        $log->message = 'System insert end for '.ip_address_from_db($details->ip).' ('.$details->hostname.')';
+        $log->message = 'System insert end for '.ip_address_from_db($details->ip);
         $log->command_status = 'finish';
         discovery_log($log);
 
