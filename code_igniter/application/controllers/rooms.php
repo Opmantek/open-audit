@@ -176,7 +176,8 @@ class rooms extends MY_Controller
     }
 
     /**
-    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
+    * The requested table will have optimize run upon it and it's autoincrement reset to 1
+
     *
     * @access public
     * @return NULL
