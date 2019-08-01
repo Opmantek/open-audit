@@ -249,13 +249,7 @@ if (! function_exists('discovery_log')) {
                 curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
                 curl_setopt($connection, CURLOPT_POSTFIELDS, $post);
                 curl_exec($connection);
-                // if (curl_errno($connection)) {
-                //     $log->message = 'Failed to send log to ' . $server->host;
-                //     $log->severity = 4;
-                //     $log->command = json_encode(curl_getinfo($connection));
-                //     $log->command_output = curl_errno($connection) . ' - ' . curl_error($connection);
-                //     discovery_log($log);
-                // }
+                curl_close($connection);
                 if (curl_errno($connection)) {
                     $standard_log = new stdClass();
                     $standard_log->action = 'log_helper::discoverylog';
@@ -267,7 +261,6 @@ if (! function_exists('discovery_log')) {
                     $standard_log->type = 'system';
                     stdlog($standard_log);
                 }
-                curl_close($connection);
             }
         }
 
