@@ -82,9 +82,7 @@ class M_collection extends MY_Model
             return false;
         }
 
-        #$count = count($result);
         $count = intval($result[0]->count);
-        #if ($count === 0) {
         if ($count !== 0) {
             $this->log->severity = 3;
             $this->log->status = 'fail';
