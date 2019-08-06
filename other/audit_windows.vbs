@@ -6747,7 +6747,7 @@ if (strcomputer = ".") then
                     set objExecObj = Nothing
                     hash = replace(hash, " ", "")
                 on error goto 0
-                Set colFiles = objWMIService.ExecQuery ("SELECT * FROM CIM_Datafile WHERE Name LIKE '" & replace(file, "\", "\\") & "'")
+                Set colFiles = objWMIService.ExecQuery ("SELECT * FROM CIM_Datafile WHERE Name = '" & replace(file, "\", "\\") & "'")
                 for each objFile in colFiles
                     ' get the file owner
                     Set colItems = objWMIService.ExecQuery ("ASSOCIATORS OF {Win32_LogicalFileSecuritySetting='" & replace(file, "\", "\\") & "'}" & " WHERE AssocClass=Win32_LogicalFileOwner ResultRole=Owner")
