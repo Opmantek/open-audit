@@ -357,7 +357,8 @@
                         <div class="form-group">
                             <label for="upload_file" class="col-sm-3 control-label"><?php echo __('File Input'); ?></label>
                             <div class="col-sm-8">
-                                <input type="file" id="upload_file" name="upload_file">
+                                <input type="file" class="filestyle" id="upload_file" name="upload_file" data-icon="false" />
+                                <p class="help-block">Select your audit file.</p>
                             </div>
                         </div>
                     </div>
