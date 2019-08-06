@@ -304,7 +304,7 @@ if(!empty($json)){
 
     $this->load->model('m_rules');
     $parameters = new stdClass();
-    $parameters->id = intval($device->id);
+    $parameters->id = intval($details->id);
     $parameters->discovery_id = '';
     if (!empty($details->discovery_id)) {
         $parameters->discovery_id = intval($details->discovery_id);
