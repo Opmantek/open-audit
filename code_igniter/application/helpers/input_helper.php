@@ -1113,6 +1113,9 @@ if (! function_exists('inputRead')) {
                     $query->operator = 'in';
                 }
 
+                # NOTE - TODO
+                # Should we have a "not in" filter?
+
                 $operator = substr($query->value, 0, 2);
                 if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
                     $query->value = substr($query->value, 2);
@@ -1126,6 +1129,7 @@ if (! function_exists('inputRead')) {
                 }
 
                 $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
+
                 if ($query->value == false) {
                     $query->value = '';
                 }
