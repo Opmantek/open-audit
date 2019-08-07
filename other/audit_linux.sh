@@ -1851,7 +1851,7 @@ if [ "$old" = "yes" ]; then
 else
 	echo "	<disk>" >> "$xml_file"
 	partition_result=""
-	for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
+	for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null | grep -v loop); do
 
 		hard_drive_caption="/dev/$disk"
 		hard_drive_index="$disk"
@@ -2968,7 +2968,7 @@ echo "	</netstat>" >> "$xml_file"
 # CUSTOM FILES                                         #
 ########################################################
 if [ "$debugging" -gt "0" ]; then
-	echo "Custom File Info"
+	echo "Custom Files Info"
 fi
 echo "	<file>" >> "$xml_file"
 for dir in ${files[@]}; do
