@@ -3696,6 +3696,7 @@ if (audit_software = "y") then
     dx_version = replace(dx_version, "6.0.", "6.00.")
     dx_version = replace(dx_version, "6.1.", "6.01.")
     dx_version = replace(dx_version, "6.2.", "6.02.")
+    dx_version = replace(dx_version, "6.3.", "6.03.")
     if dx_version = "4.07.00.0700" then dx_name = "DirectX 7" end if
     if dx_version = "4.08.01.0810" then dx_name = "DirectX 8.1" end if
     if dx_version = "4.08.01.0881" then dx_name = "DirectX 8.1" end if
@@ -3714,6 +3715,7 @@ if (audit_software = "y") then
     if dx_version = "6.01.7601" then dx_name = "DirectX 11" end if
     if dx_version = "6.00.6002" then dx_name = "DirectX 11" end if
     if dx_version = "6.02.8250" then dx_name = "DirectX 11.1" end if
+    if dx_version = "6.03.9600" then dx_name = "DirectX 11.2" end if
     if dx_name = "" then dx_name = "DirectX (unknown version)" end if
     result.WriteText "      <item>" & vbcrlf
     result.WriteText "          <name>" & escape_xml(dx_name) & "</name>" & vbcrlf
