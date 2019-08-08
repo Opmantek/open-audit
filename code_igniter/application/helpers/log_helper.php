@@ -233,7 +233,9 @@ if (! function_exists('discovery_log')) {
         if ($CI->config->config['servers'] !== '') {
             $post_items = array();
             $post_items[] = 'type=discovery';
-            foreach ( $log as $key => $value) {
+            $log->message = str_replace('Collector - ', '', $log->message);
+            $log->message = 'Collector - ' . $log->message;
+            foreach ($log as $key => $value) {
                 if ($key != 'id' and $key != 'system_id') {
                     $post_items[] = $key . '=' . urlencode($value);
                 }
@@ -262,6 +264,7 @@ if (! function_exists('discovery_log')) {
                     stdlog($standard_log);
                 }
             }
+            $log->message = str_replace('Collector - ', '', $log->message);
         }
 
         # Special case because the log submit may work, but the discovery process may not.
