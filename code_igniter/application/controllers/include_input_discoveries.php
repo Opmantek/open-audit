@@ -176,6 +176,7 @@ foreach ($xml->children() as $input) {
         $query = $this->db->query($sql, $data);
         $syslog->severity = 7;
         $syslog->summary = 'Set discovery entry status to complete';
+        $syslog->status = 'notice';
         $syslog->detail = $this->db->last_query();
         stdlog($syslog);
         $syslog->ip = '127.0.0.1';
@@ -654,6 +655,7 @@ foreach ($xml->children() as $input) {
         $log->ip = $device->ip;
         $log->command_status = 'notice';
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
+        $log->command_output = '';
         discovery_log($log);
         $device->id = $this->m_device->insert($device);
         $device->ip = ip_address_from_db($device->ip);
@@ -1475,12 +1477,12 @@ foreach ($xml->children() as $input) {
             $audit->system->id = $this->m_device->insert($audit->system);
             $log->system_id = $audit->system->id;
             $log->ip = @$audit->system->ip;
-            $log->message = 'CREATE entry for ' . $audit->system->hostname . ', System ID ' . $audit->system->id;
+            $log->message = 'CREATE entry for ' . $audit->system->name . ', System ID ' . $audit->system->id;
             discovery_log($log);
             $audit->system->original_last_seen = "";
         } else {
             // update an existing system
-            $log->message = 'UPDATE entry for ' . $audit->system->hostname . ', System ID ' . $audit->system->id;
+            $log->message = 'UPDATE entry for ' . $audit->system->name . ', System ID ' . $audit->system->id;
             $log->system_id = $audit->system->id;
             $log->ip = @$audit->system->ip;
             discovery_log($log);
@@ -1619,7 +1621,8 @@ foreach ($xml->children() as $input) {
     $this->m_device->set_identification($device->id);
     $log->severity = 7;
     $log->command_status = 'notice';
-    $log->command = '';
+    $log->command = 'Peak Memory';
+    $log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB";
     $log->message = "Discovery has completed processing $device->ip";
     discovery_log($log);
 }
