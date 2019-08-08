@@ -212,7 +212,7 @@ if(!empty($json)){
         $details->id = $this->m_device->insert($details);
         $log->system_id = $details->id;
         $log->ip = @$details->ip;
-        $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
+        $log->message = 'CREATE entry for ' . $details->name . ', System ID ' . $details->id;
         discovery_log($log);
         # In the case where we inserted a new device, m_device::match will add a log entry, but have no
         # associated system_id. Update this one row.
@@ -225,7 +225,7 @@ if(!empty($json)){
         }
     } else {
         // update an existing system
-        $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
+        $log->message = 'UPDATE entry for ' . $details->name . ', System ID ' . $details->id;
         $log->system_id = $details->id;
         $log->ip = @$details->ip;
         discovery_log($log);
