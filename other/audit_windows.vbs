@@ -3685,44 +3685,47 @@ if (audit_software = "y") then
     end if
 
 
-
-    if debugging > "0" then wscript.echo "DirectX info" end if
-    strKeyPath = "SOFTWARE\Microsoft\DirectX"
-    strValueName = "Version"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dx_version
-    if (isnull(dx_version)) then dx_version = "" end if
-    dx_name = ""
-    if system_os_version > "6" then dx_version = system_os_version end if
-    dx_version = replace(dx_version, "6.0.", "6.00.")
-    dx_version = replace(dx_version, "6.1.", "6.01.")
-    dx_version = replace(dx_version, "6.2.", "6.02.")
-    dx_version = replace(dx_version, "6.3.", "6.03.")
-    if dx_version = "4.07.00.0700" then dx_name = "DirectX 7" end if
-    if dx_version = "4.08.01.0810" then dx_name = "DirectX 8.1" end if
-    if dx_version = "4.08.01.0881" then dx_name = "DirectX 8.1" end if
-    if dx_version = "4.08.01.0901" then dx_name = "DirectX 8.1a" end if
-    if dx_version = "4.08.01.0901" then dx_name = "DirectX 8.1b" end if
-    if dx_version = "4.08.02.0134" then dx_name = "DirectX 8.2" end if
-    if dx_version = "4.09.00.0900" then dx_name = "DirectX 9" end if
-    if dx_version = "4.09.00.0901" then dx_name = "DirectX 9a" end if
-    if dx_version = "4.09.00.0902" then dx_name = "DirectX 9b" end if
-    if dx_version = "4.09.00.0903" then dx_name = "DirectX 9c" end if
-    if dx_version = "4.09.00.0904" then dx_name = "DirectX 9c" end if
-    if dx_version = "6.00.6000" then dx_name = "DirectX 10" end if
-    if dx_version = "6.00.6001" then dx_name = "DirectX 10.1" end if
-    if dx_version = "6.00.6002" then dx_name = "DirectX 10.1" end if
-    if dx_version = "6.01.7600" then dx_name = "DirectX 11" end if
-    if dx_version = "6.01.7601" then dx_name = "DirectX 11" end if
-    if dx_version = "6.00.6002" then dx_name = "DirectX 11" end if
-    if dx_version = "6.02.8250" then dx_name = "DirectX 11.1" end if
-    if dx_version = "6.03.9600" then dx_name = "DirectX 11.2" end if
-    if dx_name = "" then dx_name = "DirectX (unknown version)" end if
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(dx_name) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(dx_version) & "</version>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
+    ' Note - disabled as it stops at 4.09.00.0904 in the registry
+    ' Possible way around - run "dxdiag /x dxdiag.xml" then parse that for DirectXVersion
+    if 1 > 1 then
+        if debugging > "0" then wscript.echo "DirectX info" end if
+        strKeyPath = "SOFTWARE\Microsoft\DirectX"
+        strValueName = "Version"
+        oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dx_version
+        if (isnull(dx_version)) then dx_version = "" end if
+        dx_name = ""
+        if system_os_version > "6" then dx_version = system_os_version end if
+        dx_version = replace(dx_version, "6.0.", "6.00.")
+        dx_version = replace(dx_version, "6.1.", "6.01.")
+        dx_version = replace(dx_version, "6.2.", "6.02.")
+        dx_version = replace(dx_version, "6.3.", "6.03.")
+        if dx_version = "4.07.00.0700" then dx_name = "DirectX 7" end if
+        if dx_version = "4.08.01.0810" then dx_name = "DirectX 8.1" end if
+        if dx_version = "4.08.01.0881" then dx_name = "DirectX 8.1" end if
+        if dx_version = "4.08.01.0901" then dx_name = "DirectX 8.1a" end if
+        if dx_version = "4.08.01.0901" then dx_name = "DirectX 8.1b" end if
+        if dx_version = "4.08.02.0134" then dx_name = "DirectX 8.2" end if
+        if dx_version = "4.09.00.0900" then dx_name = "DirectX 9" end if
+        if dx_version = "4.09.00.0901" then dx_name = "DirectX 9a" end if
+        if dx_version = "4.09.00.0902" then dx_name = "DirectX 9b" end if
+        if dx_version = "4.09.00.0903" then dx_name = "DirectX 9c" end if
+        if dx_version = "4.09.00.0904" then dx_name = "DirectX 9c" end if
+        if dx_version = "6.00.6000" then dx_name = "DirectX 10" end if
+        if dx_version = "6.00.6001" then dx_name = "DirectX 10.1" end if
+        if dx_version = "6.00.6002" then dx_name = "DirectX 10.1" end if
+        if dx_version = "6.01.7600" then dx_name = "DirectX 11" end if
+        if dx_version = "6.01.7601" then dx_name = "DirectX 11" end if
+        if dx_version = "6.00.6002" then dx_name = "DirectX 11" end if
+        if dx_version = "6.02.8250" then dx_name = "DirectX 11.1" end if
+        if dx_version = "6.03.9600" then dx_name = "DirectX 11.2" end if
+        if dx_name = "" then dx_name = "DirectX (unknown version)" end if
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>" & escape_xml(dx_name) & "</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(dx_version) & "</version>" & vbcrlf
+        result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
+    end if
 
 
 
