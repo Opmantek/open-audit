@@ -1399,12 +1399,12 @@ if (!function_exists('process_scan')) {
                 $audit->system->id = $CI->m_device->insert($audit->system);
                 $log->system_id = $audit->system->id;
                 #$log->ip = @$audit->system->ip;
-                $log->message = 'CREATE entry for ' . $audit->system->hostname . ', System ID ' . $audit->system->id;
+                $log->message = 'CREATE entry for ' . $audit->system->name . ', System ID ' . $audit->system->id;
                 discovery_log($log);
                 $audit->system->original_last_seen = "";
             } else {
                 // update an existing system
-                $log->message = 'UPDATE entry for ' . $audit->system->hostname . ', System ID ' . $audit->system->id;
+                $log->message = 'UPDATE entry for ' . $audit->system->name . ', System ID ' . $audit->system->id;
                 $log->system_id = $audit->system->id;
                 #$log->ip = @$audit->system->ip;
                 discovery_log($log);
