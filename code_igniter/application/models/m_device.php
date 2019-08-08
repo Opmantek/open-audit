@@ -80,7 +80,7 @@ class M_device extends MY_Model
             $match = $parameters->match;
         }
         // Ensure we have a fully populated (even if blank) match list
-        $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+        $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
         foreach ($matches as $item) {
             if (empty($match->{$item})) {
                 $match->{$item} = $this->config->config[$item];
@@ -245,7 +245,6 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_hostname_uuid) == 'y' and empty($details->id) and !empty($details->uuid) and !empty($details->hostname)) {
-            #$log_message[] = "Running match_hostname_uuid for uuid: " . $details->uuid . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", "$details->uuid");
@@ -540,6 +539,61 @@ class M_device extends MY_Model
             } else {
                 $message = new stdClass();
                 $message->message = 'Not running match_dns_fqdn.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            }
+        }
+
+        if (strtolower($match->match_dns_hostname) == 'y' and empty($details->id) and !empty($details->dns_hostname)) {
+            $sql = "SELECT system.id FROM system WHERE system.dns_hostname = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->dns_hostname");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (!empty($row)) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $message = new stdClass();
+                $message->message = 'HIT on dns_hostname.';
+                $message->command_status = 'success';
+                $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname . ', SystemID : ' . $details->id;
+                $log_message[] = $message;
+                foreach ($log_message as $message) {
+                    $log->message = $message->message;
+                    $log->command_status = $message->command_status;
+                    $log->command_output = $message->command_output;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+            $message = new stdClass();
+            $message->message = 'MISS on dns_hostname.';
+            $message->command_status = 'notice';
+            $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname;
+            $log_message[] = $message;
+        } else {
+            if (strtolower($match->match_dns_hostname) != 'y') {
+                $message = new stdClass();
+                $message->message = 'Not running match_dns_hostname, matching rule set to: ' . $match->match_dns_hostname .  '.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (!empty($details->id)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_dns_hostname, device id already set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($details->dns_hostname)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_dns_hostname, dns_fqdn not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else {
+                $message = new stdClass();
+                $message->message = 'Not running match_dns_hostname.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
