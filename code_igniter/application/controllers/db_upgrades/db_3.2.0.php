@@ -52,6 +52,10 @@ DELETE FROM configuration WHERE name = 'match_dns_fqdn';
 
 INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
 
+DELETE FROM configuration WHERE name = 'match_dns_hostname';
+
+INSERT INTO `configuration` VALUES (NULL,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.');
+
 DROP TABLE IF EXISTS `clusters`;
 
 CREATE TABLE `clusters` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `org_id` int(10) unsigned NOT NULL DEFAULT '1',   `description` text NOT NULL,   `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',   `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',   `status` varchar(100) NOT NULL DEFAULT '',   `edited_by` varchar(200) NOT NULL DEFAULT '',   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',   PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -101,6 +105,14 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM configuration WHERE name = 'match_dns_hostname'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

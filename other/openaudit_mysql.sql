@@ -807,6 +807,7 @@ INSERT INTO `configuration` VALUES (NULL,'maps_url','/omk/open-audit/map','text'
 INSERT INTO `configuration` VALUES (NULL,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (NULL,'match_fqdn','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
 INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
+INSERT INTO `configuration` VALUES (NULL,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname_dbus','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and dbus id.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
