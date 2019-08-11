@@ -443,7 +443,8 @@ class M_discoveries extends MY_Model
         if (!empty($CI->response->meta->limit)) {
             $limit = intval($CI->response->meta->limit);
         }
-        $sql = "UPDATE `discoveries` SET `status` = 'starting', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
+        #$sql = "UPDATE `discoveries` SET `status` = 'starting', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
+        $sql = "UPDATE `discoveries` SET `status` = 'running', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
         $data = array($limit, intval($id));
         $this->run_sql($sql, $data);
 
