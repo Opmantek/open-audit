@@ -1163,8 +1163,8 @@ foreach ($xml->children() as $input) {
             $audit_file = false;
             if (!empty($output) and $copy) {
                 foreach ($output as $line) {
-                    if (strpos($line, 'File    ') !== false) {
-                        $audit_file = trim(str_replace('File    ', '', $line));
+                    if (strpos($line, 'File ') !== false) {
+                        $audit_file = trim(str_replace('File ', '', $line));
                     }
                 }
             } else {
