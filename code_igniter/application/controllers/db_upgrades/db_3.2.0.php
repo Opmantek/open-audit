@@ -70,6 +70,8 @@ exec($command);
 
 UPDATE `roles` SET `permissions` = '{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}' WHERE `name` = 'org_admin';
 
+UPDATE `roles`SET `permissions` = '{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}' WHERE `name` = 'user';
+
 UPDATE `configuration` SET `value` = '20190810' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.2.0' WHERE `name` = 'display_version';
@@ -175,6 +177,7 @@ $this->log_db($command);
 exec($command);
 
 $this->m_roles->update_permissions('org_admin', 'rules', 'crud');
+$this->m_roles->update_permissions('user', 'rules', 'r');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190810' WHERE `name` = 'internal_version'";
