@@ -476,8 +476,25 @@ class devices extends MY_Controller
             #        therefore the logs are rejected.
             # NOTE #2 - Need to account for Collectors from Enterprise and Cloud
             #if ($this->config->config['default_network_address'] == '') {
-                $this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
+                #$this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
             #}
+            # NOTE #3 - Improved version of above to account for vintage Windows running as per include_input_discoveries.php
+            if (php_uname('s') == 'Windows NT' and
+                    exec('whoami') == 'nt authority\system' and
+                    !empty($this->config->config['discovery_use_vintage_service']) and
+                    $this->config->config['discovery_use_vintage_service'] == 'y') {
+                if ($this->config->config['default_network_address'] == '') {
+                    $this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
+                } else {
+                    # leave it alone and use the config item as is
+                }
+            } else {
+                $this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
+            }
+
+
+
+
             $ids = array();
             if (!empty($this->response->meta->id)) {
                 $ids[] = intval($this->response->meta->id);
