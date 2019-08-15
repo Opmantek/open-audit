@@ -472,9 +472,12 @@ class devices extends MY_Controller
             unset($temp);
             output($this->response);
         } elseif ($this->response->meta->sub_resource == 'discovery') {
-            if ($this->config->config['default_network_address'] == '') {
+            # NOTE - removed because setting this (for use in Audit My PC), means the script submits to the IP, not localhost and
+            #        therefore the logs are rejected.
+            # NOTE #2 - Need to account for Collectors from Enterprise and Cloud
+            #if ($this->config->config['default_network_address'] == '') {
                 $this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
-            }
+            #}
             $ids = array();
             if (!empty($this->response->meta->id)) {
                 $ids[] = intval($this->response->meta->id);
