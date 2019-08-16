@@ -173,7 +173,7 @@ class M_logon extends MY_Model
                         stdlog($log);
                         continue;
                     }
-                    if (count($ldap_servers == 1)) {
+                    if (count($ldap_servers) == 1) {
                         // We only have a single ldap_server. Add the domain to the username if not already present
                         if (empty($user['domain'])) {
                             $user['domain'] = $ldap->domain;

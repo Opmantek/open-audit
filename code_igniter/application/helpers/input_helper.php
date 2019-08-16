@@ -354,6 +354,13 @@ if (! function_exists('inputRead')) {
             }
             if ($sql != '') {
                 $data = array(urldecode($CI->uri->segment(2)));
+                if ($CI->response->meta->collection == 'users' and strpos($data[0], '@') !== false) {
+                    # Special case the username as we may be given user.name@domain.com for LDAP user, but
+                    #  we only use user.name in users.name
+                    $temp = explode('@', $data[0]);
+                    $data = array($temp[0]);
+                    unset($temp);
+                }
                 $query = $CI->db->query($sql, $data);
                 $result = $query->result();
                 if (count($result) > 0) {

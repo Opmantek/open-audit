@@ -391,6 +391,11 @@ class M_users extends MY_Model
         }
 
         if (!empty($_SERVER['HTTP_USER'])) {
+            if (stripos($_SERVER['HTTP_USER'], '@') !== false) {
+                $temp = explode('@', $_SERVER['HTTP_USER']);
+                $_SERVER['HTTP_USER'] = $temp[0];
+                unset($temp);
+            }
             $sql = "SELECT * FROM `users` WHERE `name` = ?";
             $data = array($_SERVER['HTTP_USER']);
             $sql = $this->clean_sql($sql);
@@ -484,7 +489,9 @@ class M_users extends MY_Model
             unset($_GET['uuid']);
             $CI->user = $user;
             $access_token = array();
-            $access_token = @json_decode($CI->user->access_token);
+            if (!empty($CI->user->access_token)) {
+                $access_token = @json_decode($CI->user->access_token);
+            }
             $temp = bin2hex(openssl_random_pseudo_bytes(30));
             $access_token[] = $temp;
             $access_token = array_slice($access_token, -intval($CI->config->config['access_token_count']));
