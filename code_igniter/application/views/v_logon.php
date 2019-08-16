@@ -130,7 +130,7 @@ if (!empty($this->config->config['internal_version']) and $this->config->config[
                         <div class="sol-sm-8">
                         <br />Don't forget about the Open-AudIT wiki for all your documentation.<br /><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
                         </div>
-                        <?php if (strpos($this->config->config['default_network_address'], '127.0.0.1') === false and !empty($this->config->config['default_network_address'])) { ?>
+                        <?php if (strpos($this->config->config['default_network_address'], '127.0.0.1') === false and strpos($this->config->config['default_network_address'], 'localhost') === false and !empty($this->config->config['default_network_address'])) { ?>
                         <span align='center'>
                             <br />
                             <input type="button" class="btn btn-sm btn-default" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" />
