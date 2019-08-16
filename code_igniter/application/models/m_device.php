@@ -95,11 +95,11 @@ class M_device extends MY_Model
         # check if we have an ip address or a hostname (possibly a fqdn)
         if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
             if (strpos($details->hostname, '.') !== false) {
-                    $message = new stdClass();
-                    $message->message = "Provided hostname contains a '.' and is not a valid IP. Assuming a FQDN.";
-                    $message->command_status = 'notice';
-                    $message->command_output = 'Hostname: ' . $details->hostname;
-                    $log_message[] = $message;
+                $message = new stdClass();
+                $message->message = "Provided hostname contains a '.' and is not a valid IP. Assuming a FQDN.";
+                $message->command_status = 'notice';
+                $message->command_output = 'Hostname: ' . $details->hostname;
+                $log_message[] = $message;
                 if (empty($details->fqdn)) {
                     $details->fqdn = $details->hostname;
                     $message = new stdClass();
