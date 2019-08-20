@@ -235,6 +235,11 @@ if (! function_exists('discovery_log')) {
             $post_items[] = 'type=discovery';
             $log->message = str_replace('Collector - ', '', $log->message);
             $log->message = 'Collector - ' . $log->message;
+            if (stripos($log->command, 'Rules Match - ') === 0 and stripos($log->command, ', ID: ') !== false) {
+                $original_command = $log->command;
+                $temp = explode(':', $log->command);
+                $log->command = str_replace(', ID', '', $temp[0]);
+            }
             foreach ($log as $key => $value) {
                 if ($key != 'id' and $key != 'system_id') {
                     $post_items[] = $key . '=' . urlencode($value);
@@ -264,6 +269,7 @@ if (! function_exists('discovery_log')) {
                     stdlog($standard_log);
                 }
             }
+            $log->command = $original_command;
             $log->message = str_replace('Collector - ', '', $log->message);
         }
 
