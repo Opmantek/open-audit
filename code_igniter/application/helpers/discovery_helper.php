@@ -1274,60 +1274,71 @@ if (!function_exists('process_scan')) {
             $log->ip = $device->ip;
             discovery_log($log);
 
+            $audit_result = '';
+
             if (!empty($result) and gettype($result) == 'array') {
+                $audit_file = '';
                 foreach ($result as $line) {
                     if (strpos($line, 'File    ') !== false) {
                         $audit_file = $line;
                     }
                 }
-                $audit_file = str_replace('File                ', '', $audit_file);
-                $temp = explode('/', $audit_file);
-                if (php_uname('s') == 'Windows NT') {
-                    $destination = $filepath . '\\scripts\\' . end($temp);
-                } else {
-                    $destination = $filepath . '/scripts/' . end($temp);
-                }
-                $parameters = new stdClass();
-                $parameters->log = $log;
-                $parameters->ip = $device->ip;
-                $parameters->credentials = $credentials_ssh;
-                $parameters->source = $audit_file;
-                $parameters->destination = $destination;
-                $parameters->ssh_port = $input->ssh_port;
-                # Allow 20 seconds to copy the file
-                $CI->config->config['discovery_ssh_timeout'] = 20;
-                $temp = scp_get($parameters);
-                if ($temp) {
-                    $audit_result = file_get_contents($destination);
-                    if (empty($audit_result)) {
-                        $log->command_status = 'fail';
-                        $log->message = 'Could not read audit result file.';
-                        $log->command = "file_get_contents('$destination')";
-                        $log->command_output = '';
-                        discovery_log($log);
-                    }
-                } else {
+                if ($audit_file == '') {
                     $log->severity = 5;
                     $log->command_status = 'fail';
-                    $log->message = 'Could not SCP GET to ' . $destination;
+                    $log->message = 'No audit file returned in output.';
                     discovery_log($log);
                     $log->severity = 7;
+                } else {
+                    $audit_file = str_replace('File                ', '', $audit_file);
+                    $temp = explode('/', $audit_file);
+                    if (php_uname('s') == 'Windows NT') {
+                        $destination = $filepath . '\\scripts\\' . end($temp);
+                    } else {
+                        $destination = $filepath . '/scripts/' . end($temp);
+                    }
+                    $parameters = new stdClass();
+                    $parameters->log = $log;
+                    $parameters->ip = $device->ip;
+                    $parameters->credentials = $credentials_ssh;
+                    $parameters->source = $audit_file;
+                    $parameters->destination = $destination;
+                    $parameters->ssh_port = $input->ssh_port;
+                    # Allow 20 seconds to copy the file
+                    $CI->config->config['discovery_ssh_timeout'] = 20;
+                    $temp = scp_get($parameters);
+                    if ($temp) {
+                        $audit_result = file_get_contents($destination);
+                        if (empty($audit_result)) {
+                            $log->command_status = 'fail';
+                            $log->message = 'Could not read audit result file.';
+                            $log->command = "file_get_contents('$destination')";
+                            $log->command_output = '';
+                            discovery_log($log);
+                        }
+                    } else {
+                        $log->severity = 5;
+                        $log->command_status = 'fail';
+                        $log->message = 'Could not SCP GET to ' . $destination;
+                        discovery_log($log);
+                        $log->severity = 7;
+                    }
+                    // Delete the remote file
+                    $command = 'rm ' . $audit_file;
+                    if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
+                        // add sudo, we need this if we have run the audit using sudo
+                        $command = 'sudo ' . $command;
+                        // Allow 10 seconds to run the command
+                        $CI->config->config['discovery_ssh_timeout'] = 10;
+                    }
+                    $parameters = new stdClass();
+                    $parameters->log = $log;
+                    $parameters->ip = $device->ip;
+                    $parameters->credentials = $credentials_ssh;
+                    $parameters->command = $command;
+                    $parameters->ssh_port = $input->ssh_port;
+                    ssh_command($parameters);
                 }
-                // Delete the remote file
-                $command = 'rm ' . $audit_file;
-                if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
-                    // add sudo, we need this if we have run the audit using sudo
-                    $command = 'sudo ' . $command;
-                    // Allow 10 seconds to run the command
-                    $CI->config->config['discovery_ssh_timeout'] = 10;
-                }
-                $parameters = new stdClass();
-                $parameters->log = $log;
-                $parameters->ip = $device->ip;
-                $parameters->credentials = $credentials_ssh;
-                $parameters->command = $command;
-                $parameters->ssh_port = $input->ssh_port;
-                ssh_command($parameters);
             }
         }
 
