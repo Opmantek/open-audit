@@ -51,37 +51,33 @@ if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
 
 if (!empty($log->type) and $log->type == 'discovery') {
     $log_id = discovery_log($log);
+    if (strpos($log->message, 'Starting discovery for ') !== false) {
+        # Set the Status to running
+        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'running', last_run = NOW(), last_log = NOW() WHERE id = ?";
+        $data = array($log->discovery_id);
+        $query = $this->db->query($sql, $data);
+    }
     if (strpos($log->command_status, ' of ') !== false) {
-        # PROGRESS
+        # Update the Progress
         $progress = str_replace('(', '', $log->command_status);
         $progress = str_replace(')', '', $progress);
-        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `discovered` = ?, `last_log` = (SELECT `timestamp` FROM discovery_log WHERE `id` = ?) WHERE id = ?";
+        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `discovered` = ?, `last_log` = (SELECT `timestamp` FROM discovery_log WHERE `id` = ?), `status` = 'running' WHERE id = ?";
         $data = array($progress, $log_id, $log->discovery_id);
         $query = $this->db->query($sql, $data);
     }
     if (strpos($log->message, 'Completed discovery') !== false) {
-        # STATUS
-        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'complete' WHERE id = ?";
+        # Update the status
+        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'complete', `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
         $data = array($log->discovery_id);
         $query = $this->db->query($sql, $data);
     }
-    // else {
-    //      Removed the below because the Server injests the Collector logs and receives logs after the Nmap Discovery has
-    //      completed, hence sets the status back to running.
-    //     # STATUS
-    //     $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'running' WHERE `id` = ?";
-    //     $data = array($log->discovery_id);
-    //     $query = $this->db->query($sql, $data);
-    // }
-
+    # Update the duration
     $sql = '/* input::logs */ ' . "UPDATE discoveries SET `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
     $data = array($log->discovery_id);
     $query = $this->db->query($sql, $data);
-
+    # Mark any discoveries where status != complete and last_log is greater than 20minutes ago as Zombie
     $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'zombie' WHERE `last_log` < (NOW() - INTERVAL 20 MINUTE) AND `last_log` != '2000-01-01 00:00:00' AND `status` != 'complete'";
     $query = $this->db->query($sql);
-    # TODO - check the discovery PID (discovery_log.pid) and kill it if required
-
 }
 
 if ($this->response->meta->format == 'json') {
