@@ -96,7 +96,7 @@ if ($nmap_warning != '') {
 }
 ?>
 
-<?php if ($this->response->{'meta'}->{'warning'} == 'y') { ?>
+<?php if (isset($this->response->{'meta'}->{'warning'}) and $this->response->{'meta'}->{'warning'} == 'y') { ?>
 <div class="container-fluid">
     <div class="alert alert-danger alert-dismissable" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
