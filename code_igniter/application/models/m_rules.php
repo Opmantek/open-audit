@@ -344,7 +344,7 @@ class M_rules extends MY_Model
                                         if ($input->value != '') {
                                             $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " eq " . $input->value . " for " . $rule->name . ".";
                                         } else {
-                                            $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " is empty";
+                                            $log->message .= " Hit on $dsub $input->attribute is empty";
                                         }
                                         $hit++;
                                         break;
@@ -358,7 +358,7 @@ class M_rules extends MY_Model
                                         if ($input->value != '') {
                                             $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " ne " . $input->value;
                                         } else {
-                                            $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " is empty";
+                                            $log->message .= " Hit on $dsub $input->attribute is empty";
                                         }
                                         $hit++;
                                         break;
