@@ -561,4 +561,31 @@ class MY_Model extends CI_Model
         }
         return($original);
     }
+
+    function validate_network_address($network_address) {
+        $network_address = strtolower($network_address);
+        $accept = true;
+        $valid = range('a', 'z');
+        $valid[] = ":";
+        $valid[] = "/";
+        $valid[] = ".";
+        $valid[] = "-";
+        $valid[] = "1";
+        $valid[] = "2";
+        $valid[] = "3";
+        $valid[] = "4";
+        $valid[] = "5";
+        $valid[] = "6";
+        $valid[] = "7";
+        $valid[] = "8";
+        $valid[] = "9";
+        $valid[] = "0";
+        for( $i = 0; $i <= strlen($network_address); $i++ ) {
+            $char = substr( $network_address, $i, 1 );
+            if (!in_array($char, $valid)) {
+                $accept = false;
+            }
+        }
+        return $accept;
+    }
 }

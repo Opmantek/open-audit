@@ -504,6 +504,18 @@ class M_collection extends MY_Model
                 $data->network_address = $data->network_address.'/';
             }
 
+            if ($this->validate_network_address($data->network_address) !== true) {
+                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for network address');
+                $this->session->set_flashdata('error', 'Discovery could not be created - invalid Network Address supplied.');
+                $data->other->subnet = '';
+                if ($CI->response->meta->format == 'screen') {
+                    redirect('/discoveries');
+                } else {
+                    output($CI->response);
+                    exit();
+                }
+            }
+
             if (empty($data->other)) {
                 $data->other = new stdClass();
             }

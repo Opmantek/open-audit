@@ -368,6 +368,10 @@ class M_discoveries extends MY_Model
             }
         }
 
+        if ($this->validate_network_address($discovery->network_address) !== true) {
+            return '# Invalid network address, discovery will not run.';
+        }
+
         if (php_uname('s') != 'Windows NT') {
             $filepath = $this->config->config['base_path'] . '/other';
             $command = "$filepath/discover_subnet.sh" .
