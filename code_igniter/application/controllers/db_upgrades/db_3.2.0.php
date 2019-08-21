@@ -32,6 +32,46 @@ ALTER TABLE `collectors` ADD `os` varchar(100) NOT NULL DEFAULT '' AFTER `networ
 
 UPDATE `configuration` SET value = 5 WHERE `name` = 'collector_check_minutes';
 
+ALTER TABLE `connections` CHANGE `provider` `provider` varchar(100) NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `service_type` `service_type` varchar(100) NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `product_name` `product_name` varchar(100) NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `service_identifier` `service_identifier` varchar(100) NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `line_number_a` `line_number_a` varchar(100) NOT NULL NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `line_number_b` `line_number_b` varchar(100) NOT NULL NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `ip_address_external_a` `ip_address_external_a` varchar(30) NOT NULL NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `ip_address_external_b` `ip_address_external_b` varchar(30) NOT NULL NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `ip_address_internal_a` `ip_address_internal_a` varchar(30) NOT NULL NOT NULL DEFAULT '';
+
+ALTER TABLE `connections` CHANGE `ip_address_internal_b` `ip_address_internal_b` varchar(30) NOT NULL NOT NULL DEFAULT '';
+
+ALTER TABLE `discovery_log` CHANGE `command_time_to_execute` `command_time_to_execute` decimal(12,6) NOT NULL DEFAULT '0.000000';
+
+ALTER TABLE `locations` CHANGE `latitude` `latitude` float(10,6) NOT NULL DEFAULT '0.000000';
+
+ALTER TABLE `locations` CHANGE `longitude` `longitude` float(10,6) NOT NULL DEFAULT '0.000000';
+
+ALTER TABLE `maps` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '';
+
+ALTER TABLE `oa_user_sessions` CHANGE `user_agent` `user_agent` varchar(120) NOT NULL DEFAULT '';
+
+ALTER TABLE `system` CHANGE `location_latitude` `location_latitude` float(10,6) NOT NULL DEFAULT '0.000000';
+
+ALTER TABLE `system` CHANGE `location_longitude` `location_longitude` float(10,6) NOT NULL DEFAULT '0.000000';
+
+ALTER TABLE `users` CHANGE `password` `password` varchar(250) NOT NULL DEFAULT '';
+
+ALTER TABLE `users` CHANGE `full_name` `full_name` varchar(100) NOT NULL DEFAULT '';
+
+ALTER TABLE `users` CHANGE `email` `email` varchar(100) NOT NULL DEFAULT '';
+
 ALTER TABLE `discovery_scan_options` CHANGE `ssh_ports` `ssh_ports` TEXT NOT NULL AFTER `exclude_ip`;
 
 ALTER TABLE `networks` CHANGE `type` `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network';
@@ -81,22 +121,61 @@ $this->log_db('Upgrade database to 3.2.0 commenced');
 
 $this->alter_table('collectors', 'os', "ADD `os` varchar(100) NOT NULL DEFAULT '' AFTER `network_address`", 'add');
 
+$this->alter_table('connections', 'ip_address_external_a', "`ip_address_external_a` varchar(30) NOT NULL NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'ip_address_external_b', "`ip_address_external_b` varchar(30) NOT NULL NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'ip_address_internal_a', "`ip_address_internal_a` varchar(30) NOT NULL NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'ip_address_internal_b', "`ip_address_internal_b` varchar(30) NOT NULL NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'line_number_a', "`line_number_a` varchar(100) NOT NULL NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'line_number_b', "`line_number_b` varchar(100) NOT NULL NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'product_name', "`product_name` varchar(100) NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'provider', "`provider` varchar(100) NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'service_identifier', "`service_identifier` varchar(100) NOT NULL DEFAULT ''");
+
+$this->alter_table('connections', 'service_type', "`service_type` varchar(100) NOT NULL DEFAULT ''");
+
+$this->alter_table('discovery_log', 'command_time_to_execute', "`command_time_to_execute` decimal(12,6) NOT NULL DEFAULT '0.000000'");
+
 $this->alter_table('discovery_scan_options', 'ssh_ports', "`ssh_ports` TEXT NOT NULL AFTER exclude_ip");
 
-$this->alter_table('networks', 'type', "`type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network'");
+$this->alter_table('locations', 'latitude', "`latitude` float(10,6) NOT NULL DEFAULT '0.000000'");
 
+$this->alter_table('locations', 'longitude', "`longitude` float(10,6) NOT NULL DEFAULT '0.000000'");
+
+$this->alter_table('maps', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 $this->alter_table('network', 'gateways', "ADD `gateways` TEXT NOT NULL AFTER `cloud_id`", 'add');
 
-$this->alter_table('system', 'dns_fqdn', "ADD `dns_fqdn` TEXT NOT NULL AFTER fqdn", 'add');
+$this->alter_table('networks', 'type', "`type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network'");
+
+$this->alter_table('oa_user_sessions', 'user_agent', "`user_agent` varchar(120) NOT NULL DEFAULT ''");
 
 $this->alter_table('system', 'cluster_id', "ADD `cluster_id` int(10) unsigned DEFAULT NULL AFTER cluster_type", 'add');
+
+$this->alter_table('system', 'dns_fqdn', "ADD `dns_fqdn` TEXT NOT NULL AFTER fqdn", 'add');
+
+$this->alter_table('system', 'location_latitude', "`location_latitude` float(10,6) NOT NULL DEFAULT '0.000000'");
+
+$this->alter_table('system', 'location_longitude', "`location_longitude` float(10,6) NOT NULL DEFAULT '0.000000'");
 
 $this->alter_table('system', 'manufacturer_code', "ADD `manufacturer_code` varchar(200) NOT NULL DEFAULT '' AFTER manufacturer", 'add');
 
 $this->alter_table('system', 'snmp_enterprise_id', "ADD `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0' AFTER snmp_version", 'add');
 
 $this->alter_table('system', 'snmp_enterprise_name', "ADD `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '' AFTER snmp_enterprise_id", 'add');
+
+$this->alter_table('users', 'email', "`email` varchar(100) NOT NULL DEFAULT ''");
+
+$this->alter_table('users', 'full_name', "`full_name` varchar(100) NOT NULL DEFAULT ''");
+
+$this->alter_table('users', 'password', "`password` varchar(250) NOT NULL DEFAULT ''");
 
 $sql = "UPDATE `configuration` SET value = 5 WHERE `name` = 'collector_check_minutes'";
 $this->db->query($sql);
