@@ -78,6 +78,16 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][expose]" class="col-sm-3 control-label"><?php echo __('Expose in Menu'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][expose]" name="data[attributes][expose]">
+                                <option value="y">Yes</option>
+                                <option value="n">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][sql]" class="col-sm-3 control-label"><?php echo __('SQL'); ?></label>
                         <div class="col-sm-8 input-group">
                             <textarea class="form-control" rows="5" id="data[attributes][sql]" name="data[attributes][sql]" ></textarea>
