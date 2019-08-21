@@ -91,6 +91,7 @@ class MY_Controller extends CI_Controller
         $this->load->helper('error');
         $this->load->helper('json');
         $this->load->helper('security');
+        $this->load->helper('collections');
         $this->load->model('m_orgs');
         $timer_end = microtime(true);
         $entry = new stdClass();

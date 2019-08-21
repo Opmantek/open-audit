@@ -432,36 +432,12 @@ class M_collection extends MY_Model
             return false;
         }
 
-        $db_table = $collection;
-
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data (' . $collection . ')';
         stdlog($this->log);
 
         if ($collection === 'clouds') {
             $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
-        }
-
-        if ($collection === 'rules') {
-            $new_inputs = array();
-            foreach ($data->inputs as $input) {
-                $item = new stdClass();
-                foreach ($input as $key => $value) {
-                    $item->{$key} = $value;
-                }
-                $new_inputs[] = $item;
-            }
-            $data->inputs = json_encode($new_inputs);
-
-            $new_outputs = array();
-            foreach ($data->outputs as $output) {
-                $item = new stdClass();
-                foreach ($output as $key => $value) {
-                    $item->{$key} = $value;
-                }
-                $new_outputs[] = $item;
-            }
-            $data->outputs = json_encode($new_outputs);
         }
 
         if ($collection === 'credentials') {
@@ -671,6 +647,28 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'rules') {
+            $new_inputs = array();
+            foreach ($data->inputs as $input) {
+                $item = new stdClass();
+                foreach ($input as $key => $value) {
+                    $item->{$key} = $value;
+                }
+                $new_inputs[] = $item;
+            }
+            $data->inputs = json_encode($new_inputs);
+
+            $new_outputs = array();
+            foreach ($data->outputs as $output) {
+                $item = new stdClass();
+                foreach ($output as $key => $value) {
+                    $item->{$key} = $value;
+                }
+                $new_outputs[] = $item;
+            }
+            $data->outputs = json_encode($new_outputs);
+        }
+
         if ($collection === 'scripts') {
             if (empty($data->options) and !empty($CI->response->meta->received_data->options)) {
                 $data->options = $CI->response->meta->received_data->options;
@@ -720,39 +718,8 @@ class M_collection extends MY_Model
                 unset($salt);
             }
         }
-        $mandatory_fields = $this->mandatory_fields($collection);
-        foreach ($mandatory_fields as $mandatory_field) {
-            if (!isset($data->{$mandatory_field}) or $data->{$mandatory_field} == '') {
-                $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
-                log_error('ERR-0021', 'm_collection::create (' . $collection . ' ' . $mandatory_field . ')', 'Missing field: ' . $mandatory_field);
-                return false;
-            }
-        }
 
-        $data_array = array();
-        $sql = "INSERT INTO `" . $db_table . "` (";
-        $sql_data = "";
-        $update_fields = $this->update_fields($collection);
-        foreach ($data as $key => $value) {
-            if (strpos($update_fields, ' '.$key.' ') !== false) {
-                $sql .= "`" . $key . "`, ";
-                $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$key};
-            }
-        }
-
-        if ($this->db->field_exists('edited_by', $db_table)) {
-            $sql .= '`edited_by`, `edited_date`';    // the user.name and timestamp
-            $sql_data .= '?, NOW()';                 // the user.name and timestamp
-            if (empty($CI->user->full_name)) {
-                $data_array[] = 'system';
-            } else {
-                $data_array[] = $CI->user->full_name;    // the user.name
-            }
-        }
-
-        $sql .= ") VALUES (" . $sql_data . ")";
-        $id = intval($this->run_sql($sql, $data_array));
+        $id = $this->insert_collection($collection, $data);
 
         if (!empty($id) and $collection == 'locations') {
             # Need to insert default entries for buildings, floors, rooms and rows
@@ -787,13 +754,6 @@ class M_collection extends MY_Model
             log_error('ERR-0023', 'Database error in resource create routine.');
             return false;
         }
-        // if ($this->db->_error_message()) {
-        //     $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
-        //     log_error('ERR-0023', $this->db->_error_message());
-        //     return false;
-        // } else {
-        //     $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
-        // }
     }
 
 
@@ -1212,13 +1172,11 @@ class M_collection extends MY_Model
         $sql = '';
         $items = array();
         foreach ($data as $key => $value) {
-            if (strpos($update_fields, ' '.$key.' ') !== false) {
+            if (in_array($key, $update_fields)) {
                 if ($sql == '') {
-                    #$sql = "SET `" . $key . "` = '" . str_replace("'", "\'", $value) . "'";
                     $sql = "SET `" . $key . "` = ?";
                     $items[] = $value;
                 } else {
-                    #$sql .= ", `" . $key . "` = '" . str_replace("'", "\'", $value) . "'";
                     $sql .= ", `" . $key . "` = ?";
                     $items[] = $value;
                 }
@@ -1233,293 +1191,5 @@ class M_collection extends MY_Model
         $sql = "UPDATE `" . $db_table . "` " . $sql . " WHERE id = " . intval($data->id);
         $test = $this->run_sql($sql, $items);
         return $test;
-    }
-
-    public function update_fields($collection = '')
-    {
-        if (empty($collection)) {
-            return('');
-        }
-        switch ($collection) {
-            case "applications":
-                return(' name org_id description ');
-                break;
-
-            case "agents":
-                return(' name org_id description ip status check_minutes user_id uuid options ');
-                break;
-
-            case "attributes":
-                return(' name org_id resource type value ');
-                break;
-
-            case "buildings":
-                return(' name org_id location_id description notes tags ');
-                break;
-
-            case "clouds":
-                return(' name org_id description type credentials ');
-                break;
-
-            case "collectors":
-                return(' name org_id description ip status check_minutes user_id uuid network_address os options ');
-                break;
-
-            case "configuration":
-                return(' value ');
-                break;
-
-            case "connections":
-                return(' name org_id description provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ');
-                break;
-
-            case "credentials":
-                return(' id name org_id description type credentials ');
-                break;
-
-            case "dashboards":
-                return(' name org_id description type options sidebar ');
-                break;
-
-            case "discoveries":
-                return(' id name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete status ');
-                break;
-
-            case "discovery_scan_options":
-                return(' name org_id description ping service_version filtered timeout timing nmap_tcp_ports nmap_udp_ports tcp_ports udp_ports exclude_tcp_ports exclude_udp_ports exclude_ip ssh_ports ');
-                break;
-
-            case "fields":
-                return(' name org_id type values placement group_id ');
-                break;
-
-            case "files":
-                return(' name org_id description path ');
-                break;
-
-            case "floors":
-                return(' name org_id building_id description notes tags ');
-                break;
-
-            case "groups":
-                return(' name org_id description expose sql ');
-                break;
-
-            case "integrations":
-                return(' name org_id description options last_run ');
-                break;
-
-            case "ldap_servers":
-                return(' name org_id description lang host port secure domain type version base_dn user_dn user_membership_attribute use_roles dn_account dn_password refresh ');
-                break;
-
-            case "licenses":
-                return(' name org_id description org_descendants purchase_count match_string ');
-                break;
-
-            case "locations":
-                return(' id name org_id type description room suite level address suburb city district region area state postcode country tags phone picture external_ident options latitude longitude geo cloud_id ');
-                break;
-
-            case "networks":
-                return(' name org_id description type network external_ident options cloud_id ');
-                break;
-
-            case "orgs":
-                return(' id name description parent_id ad_group type ');
-                break;
-
-            case "queries":
-                return(' name org_id description sql menu_category menu_display ');
-                break;
-
-            case "racks":
-                return(' name org_id description row_id row_position pod physical_height physical_width physical_depth weight_empty weight_current weight_max ru_start ru_height type purpose manufacturer model series serial asset_number asset_tag bar_code power_circuit power_sockets circuit_count btu_total btu_max options notes ');
-                break;
-
-            case "rack_devices":
-                return(' name org_id rack_id system_id position height width orientation options type ');
-                break;
-
-            case "roles":
-                return(' name description permissions ad_group ');
-                break;
-
-            case "rooms":
-                return(' name org_id floor_id description notes tags ');
-                break;
-
-            case "rows":
-                return(' name org_id room_id description notes tags ');
-                break;
-
-            case "rules":
-                return(' name org_id description weight inputs outputs ');
-                break;
-
-            case "scripts":
-                return(' name org_id description options based_on ');
-                break;
-
-            case "summaries":
-                return(' name org_id table column menu_category extra_columns ');
-                break;
-
-            case "tasks":
-                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options last_run first_run ');
-                break;
-
-            case "users":
-                return(' name org_id permissions password full_name email lang active roles orgs type dashboard_id ');
-                break;
-
-            case "widgets":
-                return(' name org_id description type table primary secondary ternary dataset_title where limit group_by options sql link ');
-                break;
-        }
-    }
-
-    public function mandatory_fields($collection = '')
-    {
-        if (empty($collection)) {
-            return('');
-        }
-        switch ($collection) {
-            case "applications":
-                return(array('name','org_id'));
-                break;
-
-            case "agents":
-                return(array('name','org_id','status'));
-                break;
-
-            case "attributes":
-                return(array('name','org_id','type','resource','value'));
-                break;
-
-            case "buildings":
-                return(array('name','org_id','location_id'));
-                break;
-
-            case "clouds":
-                return(array('name','org_id','type'));
-                break;
-
-            case "collectors":
-                return(array('name','org_id','status'));
-                break;
-
-            case "configuration":
-                return(array('value'));
-                break;
-
-            case "connections":
-                return(array('name','org_id'));
-                break;
-
-            case "credentials":
-                return(array('name','org_id','type','credentials'));
-                break;
-
-            case "dashboards":
-                return(array('name','options'));
-                break;
-
-            case "discoveries":
-                return(array('name','org_id','type','network_address','other'));
-                break;
-
-            case "discovery_scan_options":
-                return(array('name','org_id'));
-                break;
-
-            case "fields":
-                return(array('name','org_id','type','placement','group_id'));
-                break;
-
-            case "files":
-                return(array('name','org_id','path'));
-                break;
-
-            case "floors":
-                return(array('name','org_id','building_id'));
-                break;
-
-            case "groups":
-                return(array('name','org_id','sql'));
-                break;
-
-            case "integrations":
-                return(array('name','org_id','options'));
-                break;
-
-            case "ldap_servers":
-                return(array('name','org_id','lang','host','port','secure','domain','type','version','use_roles','refresh'));
-                break;
-
-            case "licenses":
-                return(array('name','org_id','org_descendants','purchase_count','match_string'));
-                break;
-
-            case "locations":
-                return(array('name','org_id'));
-                break;
-
-            case "networks":
-                return(array('name','org_id','network'));
-                break;
-
-            case "orgs":
-                return(array('name','parent_id'));
-                break;
-
-            case "queries":
-                return(array('name','org_id','sql','menu_category','menu_display'));
-                break;
-
-            case "racks":
-                return(array('name','org_id','row_id'));
-                break;
-
-            case "rack_devices":
-                return(array('rack_id','system_id','position','height'));
-                break;
-
-            case "roles":
-                return(array('name','permissions'));
-                break;
-
-            case "rooms":
-                return(array('name','org_id','floor_id'));
-                break;
-
-            case "rows":
-                return(array('name','org_id','room_id'));
-                break;
-
-            case "rules":
-                return(array('name','org_id','weight','inputs','outputs'));
-                break;
-
-            case "scripts":
-                return(array('name','org_id','options','based_on'));
-                break;
-
-            case "summaries":
-                return(array('name','org_id','table','column','menu_category'));
-                break;
-
-            case "tasks":
-                return(array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week'));
-                break;
-
-            case "users":
-                return(array('name','org_id','lang','active','roles','orgs'));
-                break;
-
-            case "widgets":
-                return(array('name','org_id','type'));
-                break;
-        }
     }
 }

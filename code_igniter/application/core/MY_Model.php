@@ -41,6 +41,7 @@ class MY_Model extends CI_Model
     {
         parent::__construct();
         $this->load->library('encrypt');
+        $this->load->helper('collections');
     }
 
     public function format_data($result, $type)
@@ -587,5 +588,82 @@ class MY_Model extends CI_Model
             }
         }
         return $accept;
+    }
+
+    function insert_collection($collection, $data) {
+        if (empty($collection) or empty($data)) {
+            return false;
+        }
+        $CI = & get_instance();
+        $insert_fields = insert_fields($collection);
+        $mandatory_fields = mandatory_fields($collection);
+        $fields = $this->db->field_data($collection);
+        foreach ($mandatory_fields as $field) {
+            if (!isset($data->{$field}) or $data->{$field} == '') {
+                $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created, no ' . $field . ' supplied.');
+                log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $field);
+                return false;
+            }
+        }
+        $insert_data = new stdClass();
+        foreach ($insert_fields as $field) {
+            if (!empty($data->{$field})) {
+                $insert_data->{$field} = $data->{$field};
+            } else {
+                foreach ($fields as $def) {
+                    if ($def->name === $field) {
+                        if ($def->type === 'text') {
+                            # NOTE - Only provide a blank string if column type is TEXT
+                            #        because TEXT cannot have a default value in MySQL
+                            #        If we don't do this, strict mode MySQL will fail
+                            # NOTE #2 - All columns in our schema except IDs (and *_id) have
+                            #           NOT NULL DEFAULT <default> set, except TEXT type.
+                            $insert_data->{$field} = '';
+                        }
+                    }
+                }
+            }
+        }
+        if ($this->db->field_exists('edited_by', $collection)) {
+            $insert_data->edited_by = 'system';
+            if (!empty($CI->user->full_name)) {
+                $insert_data->edited_by = $CI->user->full_name;
+            }
+            $insert_data->edited_date = $CI->config->config['timestamp'];
+        }
+        $temp_debug = $this->db->db_debug;
+        $this->db->db_debug = false;
+        $this->db->insert($collection, $insert_data);
+        $id = intval($id = $this->db->insert_id());
+        $this->load->helper('log');
+        $sqllog = new stdClass();
+        $sqllog->function =  'my_model::insert_collection';
+        $sqllog->status = 'success';
+        $sqllog->summary = 'running sql';
+        $sqllog->type = 'system';
+        $sqllog->detail = $this->db->last_query();
+        $sqllog->severity = 7;
+        $this->db->db_debug = $temp_debug;
+        if ($this->db->_error_message()) {
+            $db_error = $this->db->_error_message();
+            $sqllog->severity = 3;
+            $sqllog->status = 'failure';
+            $sqllog->detail .= ' - FAILURE - ' . $db_error;
+            stdlog($sqllog);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            if (!empty($CI->response)) {
+                if (!empty($CI->response->errors)) {
+                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $db_error;
+                } else {
+                    $CI->response->errors = array();
+                    $item = new stdClass();
+                    $item->detail_specific = $db_error;
+                    $CI->response->errors[0] = $item;
+                }
+            }
+            return false;
+        }
+        stdlog($sqllog);
+        return $id;
     }
 }
