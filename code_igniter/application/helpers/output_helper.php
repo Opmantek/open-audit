@@ -223,6 +223,23 @@ if (! function_exists('output')) {
         $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
+        if ($CI->response->meta->debug === true) {
+            $CI->response->meta->user = $CI->user;
+            $CI->response->meta->timing = $GLOBALS['timer_log'];
+            $CI->response->meta->time_end = microtime(true);
+            $CI->response->meta->time_elapsed = '';
+            if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
+                $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
+            }
+        } else {
+            unset($CI->response->meta->internal);
+            unset($CI->response->meta->sql);
+            unset($CI->response->meta->time_start);
+            unset($CI->response->meta->time_end);
+            unset($CI->response->meta->time_elapsed);
+            unset($CI->response->meta->timing);
+        }
+
         switch ($CI->response->meta->format) {
             case 'screen':
                 output_screen($CI->response);
@@ -315,8 +332,7 @@ if (! function_exists('output')) {
 
         # TODO - individual credentials.credentials.password (discoveries.other, tasks.options, etc)
 
-
-        # TOTO - move there into output function. Need to check credentials.credentials isn't being used anywhere (and tasks.options, files.options, discoveries.other, etc).
+        # TODO - move there into output function. Need to check credentials.credentials isn't being used anywhere (and tasks.options, files.options, discoveries.other, etc).
         if ($CI->response->meta->collection == 'credentials') {
             foreach ($CI->response->meta->data_order as $key => $value) {
                 if ($value == 'credentials') {
@@ -440,26 +456,6 @@ if (! function_exists('output')) {
         header("Pragma: no-cache");
         header("Expires: 0");
         header($CI->response->meta->header);
-
-        if ($CI->response->meta->debug) {
-            $CI->response->meta->user = $CI->user;
-        } else {
-            unset($CI->response->meta->internal);
-            unset($CI->response->meta->sql);
-        }
-
-        $timer_end = microtime(true);
-        $entry = new stdClass();
-        $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'output_helper::output_json';
-        $entry->time_now = time();
-        $GLOBALS['timer_log'][] = $entry;
-        $CI->response->meta->timing = $GLOBALS['timer_log'];
-        $CI->response->meta->time_end = microtime(true);
-        $CI->response->meta->time_elapsed = '';
-        if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
-            $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
-        }
         echo json_encode($CI->response);
     }
 
@@ -484,7 +480,6 @@ if (! function_exists('output')) {
         $timer_start = microtime(true);
         $CI = & get_instance();
         header($CI->response->meta->header);
-        $CI->response->meta->user = $CI->user;
 
         $enterprise_report = new stdClass();
         $enterprise_report->id =  "10000";
@@ -683,16 +678,6 @@ if (! function_exists('output')) {
             $CI->response->heading = $CI->response->meta->heading;
         }
 
-        $timer_end = microtime(true);
-        $entry = new stdClass();
-        $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'output_helper::output_screen';
-        $entry->time_now = time();
-        $GLOBALS['timer_log'][] = $entry;
-
-        $CI->response->meta->timing = $GLOBALS['timer_log'];
-        $CI->response->meta->time_end = microtime(true);
-        $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
         $CI->load->view('v_template', $CI->response);
     }
 

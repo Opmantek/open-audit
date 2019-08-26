@@ -132,7 +132,7 @@ if (!empty($this->response->meta->action) and $this->response->meta->action == '
     include($include.'.php');
 }
 
-unset($this->response->meta->user->password);
+unset($this->user->password);
 unset($this->response->data);
 unset($this->response->meta->sql);
 ?>
@@ -153,8 +153,7 @@ unset($this->response->meta->sql);
             <?php
             } ?>
             <h3><?php echo __('User'); ?></h3>
-            <pre><?php print_r(json_format(json_encode($this->response->meta->user))); ?></pre>
-            <?php unset($this->response->meta->user); ?>
+            <pre><?php print_r(json_format(json_encode($this->user))); ?></pre>
             <h3>Meta</h3>
             <pre><?php print_r(json_format(json_encode($this->response->meta))); ?></pre>
             <h3><?php echo __('SQL Queries'); ?></h3>
