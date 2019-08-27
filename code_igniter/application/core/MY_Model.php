@@ -564,7 +564,7 @@ class MY_Model extends CI_Model
     }
 
     function validate_network_address($network_address) {
-        $network_address = strtolower($network_address);
+        $network_address = strtolower(trim($network_address));
         $accept = true;
         $valid = range('a', 'z');
         $valid[] = ":";
