@@ -288,13 +288,6 @@ class devices extends MY_Controller
             $entry->detail = 'm_devices::create';
             $entry->time_now = time();
             $GLOBALS['timer_log'][] = $entry;
-
-            if ($this->response->meta->format == 'screen') {
-                redirect('devices/' . $id);
-            } else {
-                $this->response->data = $this->m_devices->read($id);
-                output($this->response);
-            }
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'audit_input') {
@@ -303,26 +296,28 @@ class devices extends MY_Controller
             $input = $_POST['upload_input'];
             $discovery_id = null;
             include "include_input_devices.php";
-            if ($this->response->meta->format == 'screen') {
-                redirect('devices/' . $details->id);
-            } else {
-                if (!empty($details->id)) {
-                    $this->response->data = $this->m_devices->read($details->id);
-                }
-                output($this->response);
-            }
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'file_input') {
             unset($_POST['data']);
             $discovery_id = null;
             include "include_input_devices.php";
-            if ($this->response->meta->format == 'screen') {
-                redirect('devices/' . $details->id);
-            } else {
-                $this->response->data = $this->m_devices->read($details->id);
-                output($this->response);
-            }
+        }
+
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->detail = 'Finished creating device.';
+        $log->severity = 7;
+        $log->status = 'finish';
+        $log->object = 'devices';
+        $log->function = 'devices::create';
+        stdLog($log);
+
+        if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_devices->read($id);
+            output($this->response);
+        } else {
+            redirect('devices/' . $id);
         }
     }
 
