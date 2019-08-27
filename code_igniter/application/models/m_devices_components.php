@@ -446,7 +446,7 @@ class M_devices_components extends MY_Model
                 # If we have a CIDR, but no netmask, create it
                 if ($input[$i]->version == 4 and !empty($input[$i]->cidr) and empty($input[$i]->netmask)) {
                     $temp_network = network_details($input[$i]->ip . '/' . $input[$i]->cidr);
-                    $input[$i]->netmask = $temp_network->netmask;
+                    $input[$i]->netmask = @$temp_network->netmask;
                 }
                 # Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
                 if ($input[$i]->version == 4 and (empty($input[$i]->netmask) or $input[$i]->netmask == '0.0.0.0')) {
