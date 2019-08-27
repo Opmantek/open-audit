@@ -212,7 +212,7 @@ if(!empty($json)){
         $details->id = $this->m_device->insert($details);
         $log->system_id = $details->id;
         $log->ip = @$details->ip;
-        $log->message = 'CREATE entry for ' . $details->name . ', System ID ' . $details->id;
+        $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
         discovery_log($log);
         # In the case where we inserted a new device, m_device::match will add a log entry, but have no
         # associated system_id. Update this one row.
@@ -221,11 +221,11 @@ if(!empty($json)){
         $query = $this->db->query($sql, $data);
         $details->original_last_seen = "";
         if ($this->response->meta->format == 'screen') {
-            echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            #echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         }
     } else {
         // update an existing system
-        $log->message = 'UPDATE entry for ' . $details->name . ', System ID ' . $details->id;
+        $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
         $log->system_id = $details->id;
         $log->ip = @$details->ip;
         discovery_log($log);
@@ -233,7 +233,7 @@ if(!empty($json)){
         // $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
         $this->m_device->update($details);
         if ($this->response->meta->format == 'screen') {
-            echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            #echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         }
     }
 
@@ -327,7 +327,7 @@ if(!empty($json)){
     $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
     $this->benchmark->mark('code_end');
     if ($this->response->meta->format == 'screen') {
-        echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
+        #echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
     }
     $i = (string) $json->system->hostname;
 
@@ -336,7 +336,7 @@ if(!empty($json)){
     $log->status = 'complete';
     stdlog($log);
     if ($this->response->meta->format == 'screen') {
-        echo '</body></html>';
+        #echo '</body></html>';
     }
 
 
