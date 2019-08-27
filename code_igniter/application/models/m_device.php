@@ -40,7 +40,6 @@ class M_device extends MY_Model
         parent::__construct();
     }
 
-    #public function match($details, $command = '')
     public function match($parameters)
     {
         if (empty($parameters) or empty($parameters->details) or empty($parameters->log)) {
@@ -66,6 +65,10 @@ class M_device extends MY_Model
         $log->file = 'm_device';
         $log->function = 'match';
         $log->severity = 7;
+        $log->ip = '';
+        if (!empty($details->ip)) {
+            $log->ip = ip_address_from_db($details->ip);
+        }
 
         $log_message = array(); // we will store our messages until we get a system.id, then wrtie them to the log
 
@@ -177,7 +180,7 @@ class M_device extends MY_Model
             $message->command_output = '';
             $log_message[] = $message;
         } else {
-            $log->ip = $details->ip;
+            $log->ip = ip_address_from_db($details->ip);
         }
 
         # Match based on the OMK uuid

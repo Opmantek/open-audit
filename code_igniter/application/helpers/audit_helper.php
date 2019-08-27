@@ -302,8 +302,10 @@ if (!function_exists('audit_format_system')) {
         }
 
         if (!empty($input->ip)) {
-            $mylog->ip = $input->ip;
+            $mylog->ip = ip_address_from_db($input->ip);
         }
+        $mylog->function = 'audit_convert';
+        $mylog->file = 'audit_helper';
         $mylog->command_status = 'notice';
         $mylog->message = 'Formatting system details';
         discovery_log($mylog);

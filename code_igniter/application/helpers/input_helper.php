@@ -307,7 +307,7 @@ if (! function_exists('inputRead')) {
                     $CI->response->meta->sub_resource = $CI->uri->segment(2);
                     break;
                 case 'configuration':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM configuration WHERE name = ?";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM configuration WHERE name = ?";
                     $table = 'configuration';
                     break;
                 case "database":
@@ -323,11 +323,11 @@ if (! function_exists('inputRead')) {
                     $CI->response->meta->id = $CI->uri->segment(2);
                     break;
                 case 'devices':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM system WHERE name LIKE ? ORDER BY id DESC LIMIT 1";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM system WHERE name LIKE ? ORDER BY id DESC LIMIT 1";
                     $table = 'system';
                     break;
                 case 'groups':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM groups WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM groups WHERE name LIKE ? LIMIT 1";
                     $table = 'groups';
                     break;
                 case 'logs':
@@ -336,19 +336,19 @@ if (! function_exists('inputRead')) {
                     $CI->response->meta->sub_resource = $CI->uri->segment(2);
                     break;
                 case 'orgs':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM orgs WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM orgs WHERE name LIKE ? LIMIT 1";
                     $table = 'orgs';
                     break;
                 case 'queries':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM queries WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM queries WHERE name LIKE ? LIMIT 1";
                     $table = 'queries';
                     break;
                 case 'scripts':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM scripts WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM scripts WHERE name LIKE ? LIMIT 1";
                     $table = 'scripts';
                     break;
                 case 'users':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM users WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */ " . "SELECT id FROM users WHERE name LIKE ? LIMIT 1";
                     $table = 'users';
                     break;
             }

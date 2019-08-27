@@ -94,6 +94,14 @@ class M_rules extends MY_Model
     */
     public function execute($parameters = null)
     {
+        $log = new stdClass();
+        $log->discovery_id = @intval($discovery_id);
+        $log->message = 'Running rules::match function.';
+        $item_start = microtime(true);
+        $log->severity = 7;
+        $log->file = 'm_rules';
+        $log->function = 'execute';
+
         # Device
         if (empty($parameters->id) and empty($parameters->device)) {
             return false;
@@ -102,11 +110,15 @@ class M_rules extends MY_Model
         if (!empty($parameters->device)) {
             $device = $parameters->device;
             $device->where = 'supplied';
+            $log->command_output = json_encode($device);
+            $log->command = 'Device Input ';
         }
         if (!empty($parameters->id)) {
             # Get our device
             $id = intval($parameters->id);
-            $sql = "SELECT * FROM system WHERE id = ?";
+            $log->command_output = "Device ID supplied: " . $parameters->id;
+            $log->command = 'Device ID Input ';
+            $sql = "SELECT * FROM `system` WHERE id = ?";
             $data = array($id);
             $result = $this->run_sql($sql, $data);
             if (!empty($result[0])) {
@@ -132,6 +144,10 @@ class M_rules extends MY_Model
                     $device->switch_port = '';
                 }
             } else {
+                $log->severity = 4;
+                $log->command_status = 'fail';
+                $log->message = 'Could not retrieve data from system table for ID: ' . $parameters->id . '. Not running Rules function.';
+                discovery_log($log);
                 return false;
             }
         }
@@ -150,22 +166,20 @@ class M_rules extends MY_Model
         $action = 'update';
         if (!empty($parameters->action) and $parameters->action == 'return') {
             $action = 'return';
+            $log->command .= '(return).';
+        } else {
+            $log->command .= '(update).';
         }
 
-        $log = new stdClass();
-        $log->discovery_id = @intval($discovery_id);
-        $log->message = 'Running rules::match function.';
-        #$log->command = '';
-        #$log->command = 'Device Input. Memory Use Start ' . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB";
-        $log->command = 'Device Input.';
-        $item_start = microtime(true);
-        #$log->command_output = '';
-        $log->command_output = json_encode($device);
-        $log->command_status = 'notice';
         $log->ip = '';
         if (!empty($device->ip)) {
             $log->ip = ip_address_from_db($device->ip);
         }
+        $log->system_id = '';
+        if (!empty($device->id)) {
+            $log->system_id = $device->id;
+        }
+
         discovery_log($log);
 
         # NOTE - don't set the id or last_seen_by here as we test if empty after rules
@@ -173,7 +187,7 @@ class M_rules extends MY_Model
         $newdevice = new stdClass();
 
         # TODO - Orgs
-        $sql = "SELECT * FROM rules ORDER BY weight ASC, id";
+        $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
         $rules = $this->run_sql($sql);
 
         $other_tables = array();
@@ -507,6 +521,13 @@ class M_rules extends MY_Model
             $log->message = '';
         }
         unset($rules);
+
+        $log->message = 'Completed rules::match function.';
+        $log->command = '';
+        $log->command_output = '';
+        $log->command_status = 'debug';
+        discovery_log($log);
+
         if (count(get_object_vars($newdevice)) > 0) {
             $newdevice->id = $device->id;
             if ($action == 'update') {

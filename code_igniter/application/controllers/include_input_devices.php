@@ -206,12 +206,18 @@ if(!empty($json)){
         $ids[] = discovery_log($log);
     }
     $details->id = $i;
-
+    $log->file = 'include_input_devices';
+    $log->function = 'devices';
+    $log->command_status = 'success';
+    $log->severity = 7;
+    $log->command = '';
+    $log->command_output = '';
+    $log->message = '';
     if (empty($i)) {
         // insert a new system
         $details->id = $this->m_device->insert($details);
         $log->system_id = $details->id;
-        $log->ip = @$details->ip;
+        $log->ip = @ip_address_from_db($details->ip);
         $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
         discovery_log($log);
         # In the case where we inserted a new device, m_device::match will add a log entry, but have no
@@ -227,7 +233,7 @@ if(!empty($json)){
         // update an existing system
         $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
         $log->system_id = $details->id;
-        $log->ip = @$details->ip;
+        $log->ip = @ip_address_from_db($details->ip);
         discovery_log($log);
         // $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
         // $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
@@ -314,6 +320,9 @@ if(!empty($json)){
 
     $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
     $log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+    $log->file = 'include_input_devices';
+    $log->function = 'devices';
+    $log->ip = ip_address_from_db($log->ip);
     discovery_log($log);
 
     // set the ip (if not already set)
