@@ -53,7 +53,6 @@ class Input extends CI_Controller
     */
     public function __construct()
     {
-        ini_set('memory_limit','1024M');
         parent::__construct();
 
         $this->data['title'] = 'Open-AudIT';

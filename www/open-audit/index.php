@@ -35,6 +35,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+ini_set('memory_limit','1024M');
 $query_count = 0;
 ob_start();
 
