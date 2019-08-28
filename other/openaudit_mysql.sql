@@ -2103,7 +2103,7 @@ CREATE TABLE `network` (
 LOCK TABLES `network` WRITE;
 /*!40000 ALTER TABLE `network` DISABLE KEYS */;
 /*!40000 ALTER TABLE `network` ENABLE KEYS */;
-UNLOCK TABLES; 
+UNLOCK TABLES;
 
 --
 -- Table structure for table `networks`
