@@ -216,7 +216,7 @@ $this->log_db($this->db->last_query());
 
 if ($this->db->table_exists('cluster')) {
     $sql = "SELECT COUNT(*) AS `count` FROM `cluster`";
-    $this->db->query($sql);
+    $query = $this->db->query($sql);
     $this->log_db($this->db->last_query());
     $result = $query->result();
     if (!empty($result[0]->count)) {
@@ -252,7 +252,8 @@ if (php_uname('s') != 'Windows NT') {
 } else {
 	$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' rules < c:\\xampp\\open-audit\\other\\assets\\rules.sql';
 }
-$this->log_db($command);
+$log_command = str_replace($this->db->password, '******', $command);
+$this->log_db($log_command);
 exec($command);
 
 $this->m_roles->update_permissions('org_admin', 'rules', 'crud');
