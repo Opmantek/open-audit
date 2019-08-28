@@ -531,7 +531,10 @@ class Database extends MY_Controller
         } else {
             if (count($result) === 0) {
                 $sql = "ALTER TABLE `" . $table . "` " . $change;
+                $temp_debug = $this->db->db_debug;
+                $this->db->db_debug = false;
                 $query = $this->db->query($sql);
+                $this->db->db_debug = $temp_debug;
                 $this->log_db($this->db->last_query());
                 if ($this->db->_error_message()) {
                     $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
