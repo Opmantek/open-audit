@@ -583,7 +583,7 @@ class MY_Model extends CI_Model
         $valid[] = "0";
         for( $i = 0; $i <= strlen($network_address); $i++ ) {
             $char = substr( $network_address, $i, 1 );
-            if (!in_array($char, $valid)) {
+            if (!empty($char) and !in_array($char, $valid)) {
                 $accept = false;
             }
         }
