@@ -248,9 +248,9 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 if (php_uname('s') != 'Windows NT') {
-	$command = 'mysql -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' rules < /usr/local/open-audit/other/assets/rules.sql';
+	$command = 'mysql -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < /usr/local/open-audit/other/assets/rules.sql';
 } else {
-	$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' rules < c:\\xampp\\open-audit\\other\\assets\\rules.sql';
+	$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < c:\\xampp\\open-audit\\other\\assets\\rules.sql';
 }
 $log_command = str_replace($this->db->password, '******', $command);
 $this->log_db($log_command);
