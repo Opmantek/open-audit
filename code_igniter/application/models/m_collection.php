@@ -437,37 +437,49 @@ class M_collection extends MY_Model
         stdlog($this->log);
 
         if ($collection === 'clouds') {
-            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
+            if (!empty($data->credentials) and is_string($data->credentials)) {
+                $data->credentials = (string)simpleEncrypt($data->credentials);
+            } else {
+                $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
+            }
         }
 
         if ($collection === 'credentials') {
-            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
+            if (!empty($data->credentials) and is_string($data->credentials)) {
+                $data->credentials = (string)simpleEncrypt($data->credentials);
+            } else {
+                $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
+            }
         }
 
         if ($collection === 'dashboards') {
-            if (empty($CI->response->meta->received_data->attributes->options)) {
-                $options = new stdClass();
-                $options->widget_count = 0;
-                $options->widgets = new stdClass();
+            if (!empty($CI->response->meta->received_data->attributes->options) and is_string($CI->response->meta->received_data->attributes->options)) {
+                $data->options = $CI->response->meta->received_data->attributes->options;
             } else {
-                $options = $CI->response->meta->received_data->attributes->options;
-            }
-            $my_options = new stdClass();
-            $my_options->layout = '3x2';
-            if (!empty($options->widget_count)) {
-                $my_options->widget_count = intval($options->widget_count);
-            } else {
-                $my_options->widget_count = 0;
-            }
-            $my_options->widgets = array();
-            for ($i=1; $i <= $my_options->widget_count; $i++) {
-                $widget = new stdClass();
-                foreach ($options->widgets->$i as $key => $value) {
-                    $widget->{$key} = $value;
+                if (empty($CI->response->meta->received_data->attributes->options)) {
+                    $options = new stdClass();
+                    $options->widget_count = 0;
+                    $options->widgets = new stdClass();
+                } else {
+                    $options = $CI->response->meta->received_data->attributes->options;
                 }
-                $my_options->widgets[] = $widget;
+                $my_options = new stdClass();
+                $my_options->layout = '3x2';
+                if (!empty($options->widget_count)) {
+                    $my_options->widget_count = intval($options->widget_count);
+                } else {
+                    $my_options->widget_count = 0;
+                }
+                $my_options->widgets = array();
+                for ($i=1; $i <= $my_options->widget_count; $i++) {
+                    $widget = new stdClass();
+                    foreach ($options->widgets->$i as $key => $value) {
+                        $widget->{$key} = $value;
+                    }
+                    $my_options->widgets[] = $widget;
+                }
+                $data->options = json_encode($my_options);
             }
-            $data->options = json_encode($my_options);
         }
         if ($collection === 'discoveries') {
             if (empty($data->devices_assigned_to_org)) {
@@ -490,6 +502,10 @@ class M_collection extends MY_Model
                     output($CI->response);
                     exit();
                 }
+            }
+
+            if (!empty($data->other) and is_string($data->other)) {
+                $data->other = json_decode($data->other);
             }
 
             if (empty($data->other)) {
@@ -648,32 +664,38 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'rules') {
-            $new_inputs = array();
-            foreach ($data->inputs as $input) {
-                $item = new stdClass();
-                foreach ($input as $key => $value) {
-                    $item->{$key} = $value;
+            if (is_array($data->inputs) or is_object($data->inputs)) {
+                $new_inputs = array();
+                foreach ($data->inputs as $input) {
+                    $item = new stdClass();
+                    foreach ($input as $key => $value) {
+                        $item->{$key} = $value;
+                    }
+                    $new_inputs[] = $item;
                 }
-                $new_inputs[] = $item;
+                $data->inputs = json_encode($new_inputs);
             }
-            $data->inputs = json_encode($new_inputs);
 
-            $new_outputs = array();
-            foreach ($data->outputs as $output) {
-                $item = new stdClass();
-                foreach ($output as $key => $value) {
-                    $item->{$key} = $value;
+            if (is_array($data->outputs) or is_object($data->outputs)) {
+                $new_outputs = array();
+                foreach ($data->outputs as $output) {
+                    $item = new stdClass();
+                    foreach ($output as $key => $value) {
+                        $item->{$key} = $value;
+                    }
+                    $new_outputs[] = $item;
                 }
-                $new_outputs[] = $item;
+                $data->outputs = json_encode($new_outputs);
             }
-            $data->outputs = json_encode($new_outputs);
         }
 
         if ($collection === 'scripts') {
             if (empty($data->options) and !empty($CI->response->meta->received_data->options)) {
                 $data->options = $CI->response->meta->received_data->options;
             }
-            $data->options = json_encode($data->options);
+            if (!is_string($data->options)) {
+                $data->options = json_encode($data->options);
+            }
         }
 
         if ($collection === 'tasks') {
@@ -1168,7 +1190,7 @@ class M_collection extends MY_Model
             }
         }
 
-        $update_fields = $this->update_fields($collection);
+        $update_fields = update_fields($collection);
         $sql = '';
         $items = array();
         foreach ($data as $key => $value) {

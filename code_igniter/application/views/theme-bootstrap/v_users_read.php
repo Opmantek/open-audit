@@ -80,18 +80,18 @@ $item = $this->response->data[0];
                     </div>
                 </div>
 
-                    <div class="form-group">
-                        <label for="full_name" class="col-sm-3 control-label"><?php echo __('Full Name'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_full_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="full_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
+                <div class="form-group">
+                    <label for="full_name" class="col-sm-3 control-label"><?php echo __('Full Name'); ?></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <?php if (!empty($edit)) { ?>
+                        <span class="input-group-btn">
+                            <button id="edit_full_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="full_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        </span>
+                        <?php } ?>
                     </div>
-<?php echo $this->config->config['oae_product'] ?>
+                </div>
+
                 <div class="form-group">
                     <label for="password" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                     <div class="col-sm-8 input-group">
@@ -173,7 +173,7 @@ $item = $this->response->data[0];
                             <select multiple size="6" class="data_type form-control" id="roles" name="roles" disabled>
                                 <?php foreach ($this->response->included as $role) {
                                 if ($role->type == 'roles') { ?>
-                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>" <?php if (strpos($item->attributes->roles, '"'.$role->attributes->name.'"') !== false) { echo "selected"; } ?>><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>" <?php if (in_array($role->attributes->name, $item->attributes->roles)) { echo "selected"; } ?>><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php } } ?>
                             </select>
                             <?php if (!empty($edit)) { ?>
@@ -224,7 +224,7 @@ $item = $this->response->data[0];
                 }
                 $checked = '';
                 if (!empty($item->attributes->orgs) and $item->attributes->orgs !== 'Array') {
-                    $orgs = json_decode($item->attributes->orgs);
+                    $orgs = $item->attributes->orgs;
                     if (is_array($orgs)) {
                         foreach($orgs as $key => $value) {
                             if ($org->id == $value) {

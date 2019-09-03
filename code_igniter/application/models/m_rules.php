@@ -56,6 +56,12 @@ class M_rules extends MY_Model
         $sql = "SELECT * FROM `rules` WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+        if (!empty($result[0]->inputs)) {
+            $result[0]->inputs = json_decode($result[0]->inputs);
+        }
+        if (!empty($result[0]->outputs)) {
+            $result[0]->outputs = json_decode($result[0]->outputs);
+        }
         $result = $this->format_data($result, 'rules');
         $this->log->summary = 'finish';
         stdlog($this->log);

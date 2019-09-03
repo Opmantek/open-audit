@@ -56,6 +56,12 @@ class M_users extends MY_Model
         $sql = "SELECT users.*, orgs.name AS `org_name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) WHERE users.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+        if (!empty($result[0]->roles)) {
+            $result[0]->roles = json_decode($result[0]->roles);
+        }
+        if (!empty($result[0]->orgs)) {
+            $result[0]->orgs = json_decode($result[0]->orgs);
+        }
         $result = $this->format_data($result, 'users');
         return ($result);
     }

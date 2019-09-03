@@ -106,6 +106,9 @@ class M_roles extends MY_Model
         $sql = "SELECT * FROM roles WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+        if (!empty($result[0]->permissions)) {
+            $result[0]->permissions = json_decode($result[0]->permissions);
+        }
         $result = $this->format_data($result, 'roles');
         return ($result);
     }
