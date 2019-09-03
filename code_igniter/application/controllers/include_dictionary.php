@@ -113,7 +113,7 @@ if ($table == 'buildings') {
     $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
     $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
-    $dictionary->notes = '<p></p>';
+    $dictionary->notes = '<p>Buildings go inside your Locations and contain Floors.</p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
