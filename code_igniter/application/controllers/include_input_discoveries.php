@@ -1617,7 +1617,7 @@ foreach ($xml->children() as $input) {
             }
         }
     } else {
-        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->item('discovery_use_vintage_service')) and $this->config->item('discovery_use_vintage_service') == 'y') {
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system' and !empty($this->config->config['discovery_use_vintage_service']) and $this->config->config['discovery_use_vintage_service'] == 'y') {
             $log->message = 'Audit result incoming from target.';
             $log->severity = 6;
             discovery_log($log);
