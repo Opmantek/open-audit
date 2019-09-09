@@ -313,6 +313,10 @@ class devices extends MY_Controller
         $log->function = 'devices::create';
         stdLog($log);
 
+        if (empty($id) and !empty($details->id)) {
+            $id = $details->id;
+        }
+
         if ($this->response->meta->format == 'json') {
             $this->response->data = $this->m_devices->read($id);
             output($this->response);
