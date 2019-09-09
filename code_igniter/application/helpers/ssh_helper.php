@@ -247,6 +247,7 @@ if (! function_exists('scp_get')) {
         $log->command_output = '';
         if (!empty($message)) {
             $log->message = $message;
+            $log->status = 'fail';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
