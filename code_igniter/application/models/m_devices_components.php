@@ -378,7 +378,7 @@ class M_devices_components extends MY_Model
             $log->message = 'No log object passed in for ' . $table;
         }
         $log->severity = 7;
-        $log->file = 'm_devices_componenets';
+        $log->file = 'm_devices_components';
         $log->function = 'process_component';
         $log->command = 'process audit';
         $log->message = '';
