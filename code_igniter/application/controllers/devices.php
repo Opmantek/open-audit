@@ -105,7 +105,8 @@ class devices extends MY_Controller
         $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
         $log->severity = 7;
-        $log->status = 'finish';
+        $log->summary = 'finish';
+        $log->status = 'success';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
@@ -491,9 +492,6 @@ class devices extends MY_Controller
                 $this->config->config['default_network_address'] = 'http://127.0.0.1/open-audit/';
             }
 
-
-
-
             $ids = array();
             if (!empty($this->response->meta->id)) {
                 $ids[] = intval($this->response->meta->id);
@@ -577,7 +575,6 @@ class devices extends MY_Controller
             unset($this->response->data);
             $this->response->data = array();
             if ($this->response->meta->format != 'json') {
-                #redirect('devices/'.$this->response->data[0]->attributes->id);
                 redirect('devices');
             } else {
                 $this->response->data = $this->m_discoveries->read($discovery_id);
@@ -606,7 +603,8 @@ class devices extends MY_Controller
         $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
         $log->severity = 7;
-        $log->status = 'finish';
+        $log->status = 'success';
+        $log->summary = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
