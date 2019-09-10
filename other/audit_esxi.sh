@@ -379,7 +379,7 @@ for address in $(esxcli network ip interface ipv4 get | grep "$net_description" 
 done
 
 
-echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
+echo "data=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file
 echo "		<script_version>$version</script_version>" >> $xml_file
@@ -811,16 +811,30 @@ if [ "$echo_output" = "y" ]; then
 	cat $xml_file
 fi
 
-# if [ "$submit_online" = "y" ]; then
-# 	sed -i -e 's/+/%2B/g' $xml_file
-# 	if [ $debugging -gt 1 ]; then
-# 		echo "Submitting results to server"
-# 		echo "URL: $url"
-# 	fi
-# 	wget --delete-after --post-file="$xml_file" $url 2>/dev/null
-# fi
+
+ if [ "$submit_online" = "y" ]; then
+        if [ $debugging -gt 1 ]; then
+                echo "Submitting results to server with NetCat"
+                echo "URL: $url"
+        fi
+       
+        sed -i -e 's/+/%2B/g' "$xml_file"
+        sed -i -e 's/"/%22/g' "$xml_file"
+        sed -i -e 's/&/%26/g' "$xml_file"
+
+        HOST=$(echo $url | awk -F/ '{ print $3}' )
+        POST_PATH="$(echo $url | awk -F "$HOST" '{ print $2 }')"
+        IFS=" "
+        BODY=$(cat $xml_file )
+        BODY_LEN=$( echo ${BODY} | wc -c )
+        echo -ne "POST ${POST_PATH} HTTP/1.0\r\nHost: ${HOST}\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: ${BODY_LEN}\r\n\r\n${BODY}" | \
+          nc ${HOST} 80 2>/dev/null
+
+ fi
 
 sed -i -e 's/data=//g' $xml_file
+sed -i -e 's/%22/"/g' $xml_file
+sed -i -e 's/%26/&/g' $xml_file
 sed -i -e 's/%2B/+/g' $xml_file
 if [ "$create_file" != "y" ]; then
 	`rm $PWD/$xml_file`
