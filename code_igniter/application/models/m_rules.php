@@ -101,7 +101,7 @@ class M_rules extends MY_Model
     public function execute($parameters = null)
     {
         $log = new stdClass();
-        $log->discovery_id = @intval($discovery_id);
+        $log->discovery_id = @intval($parameters->discovery_id);
         $log->message = 'Running rules::match function.';
         $item_start = microtime(true);
         $log->severity = 7;
