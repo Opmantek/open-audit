@@ -237,8 +237,8 @@ class M_collection extends MY_Model
             if ((string) php_uname('s') === 'Windows NT') {
                 $user = get_current_user();
                 if ($user == 'SYSTEM') {
-                    $sql = "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `discovery_id` = ? AND `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
-                    $data = array(intval($id));
+                    $sql = "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
+                    $data = array();
                     $data_result = $this->run_sql($sql, $data);
                     if ($data_result[0]->count > 0){
                         $CI->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
