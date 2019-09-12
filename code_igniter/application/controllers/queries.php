@@ -194,7 +194,7 @@ class Queries extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
+    * Return the result of running a query
     *
     * @access public
     * @return NULL
