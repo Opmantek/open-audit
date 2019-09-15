@@ -1860,6 +1860,12 @@ else
 		if [ "$test" = "1" ]; then
 			hard_drive_interface_type="sata"
 		fi
+		if [ -z "$hard_drive_interface_type" ]; then
+			test=$(nvme --list 2>/dev/null | grep "/dev/$disk")
+			if [ -n "$test" ]; then
+				hard_drive_interface_type="nvme"
+			fi
+		fi
 
 		hard_drive_model=$(udevadm info -a -n /dev/"$disk" 2>/dev/null | grep "ATTRS{model}==" | head -n 1 | cut -d\" -f2)
 		if [ -z "$hard_drive_model" ]; then
@@ -1877,6 +1883,9 @@ else
 		hard_drive_status=""
 		hard_drive_model_family=""
 		hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
+		if [ -z "$hard_drive_firmware" ]; then
+			hard_drive_firmware=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Firmware Version" | cut -d: -f2)
+		fi
 
 		mycommand="lshw -class disk 2>/dev/null"
 		mydelimiter="*-disk"
@@ -1898,6 +1907,14 @@ else
 		# some hacks
 		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Crucial" ; then
 			hard_drive_manufacturer="Crucial"
+		fi
+
+		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Samsung" ; then
+			hard_drive_manufacturer="Samsung"
+		fi
+
+		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "WDC " ; then
+			hard_drive_manufacturer="Western Digital"
 		fi
 
 		if echo "$hard_drive_manufacturer" | grep -q "VMware" ; then
