@@ -1032,10 +1032,12 @@ for each objItem in colItems
     'This is not used because it is not available on Win2000 or WinXP
     'system_hostname = LCase(objItem.DNSHostName)
     system_domain = objItem.Domain
-    if details_to_lower = "y" then system_domain = lcase(system_domain) end if
+    if details_to_lower = "y" then
+        system_domain = lcase(system_domain)
+    end if
 
     if (cint(windows_build_number) =< 3790) or (system_pc_num_processor = 0) then
-    system_pc_num_processor = objItem.NumberOfProcessors
+        system_pc_num_processor = objItem.NumberOfProcessors
     end if
 
     system_model = objItem.Model
@@ -1043,13 +1045,13 @@ for each objItem in colItems
     ' below only checks when OS is XP or later (not 2000 or NT)
     windows_part_of_domain = False
     if (cint(windows_build_number) >= 2600) then
-    windows_part_of_domain = objItem.PartOfDomain
+        windows_part_of_domain = objItem.PartOfDomain
     end if
 
     ' as at 1.5.3 do not store the workgroup in the domain field
     if (windows_part_of_domain <> True) then
-    windows_workgroup = system_domain
-    system_domain = ""
+        windows_workgroup = system_domain
+        system_domain = ""
     end if
 next
 
@@ -1058,7 +1060,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkAdapterConfiguration " : end if
 for each objItem in colItems
     if (system_hostname = "" or isnull(system_hostname)) then
-    system_hostname = objItem.DNSHostName
+        system_hostname = objItem.DNSHostName
     end if
 next
 if system_hostnme = "" then
@@ -1071,44 +1073,44 @@ if (cint(windows_build_number) > 5000) then
     ' Win7 or Win2008 last logged on info
     oreg.getstringvalue hkey_local_machine, "software\microsoft\windows\currentversion\authentication\logonui", "lastloggedonuser", windows_user_name
     if isnull(windows_user_name) then
-    oreg.getstringvalue hkey_local_machine, "software\microsoft\windows\currentversion\authentication\logonui", "lastloggedonsamuser", windows_user_name
+        oreg.getstringvalue hkey_local_machine, "software\microsoft\windows\currentversion\authentication\logonui", "lastloggedonsamuser", windows_user_name
     end if
     if (instr(windows_user_name, "\")) then
-    split_user = split(windows_user_name, "\")
-    windows_user_name = split_user(1)
-    if split_user(0) > "" then
-    windows_user_domain = "@" & split_user(0)
-    else
-    windows_user_domain = ""
-    end if
+        split_user = split(windows_user_name, "\")
+        windows_user_name = split_user(1)
+        if split_user(0) > "" then
+            windows_user_domain = "@" & split_user(0)
+        else
+            windows_user_domain = ""
+        end if
     end if
     if ((windows_user_domain = "@") or (windows_user_domain = ".") or (windows_user_domain = "@.")) then
     ' do not add the domain to the username - add the name of the PC (it's a local user)
-    windows_user_name = windows_user_name & "@" & system_hostname
+        windows_user_name = windows_user_name & "@" & system_hostname
     else
-    windows_user_name = windows_user_name & windows_user_domain
+        windows_user_name = windows_user_name & windows_user_domain
     end if
 else
     ' older style user name and domain
     oreg.getstringvalue hkey_local_machine, "software\microsoft\windows nt\currentversion\winlogon", "DefaultUserName", windows_user_name
     oreg.getstringvalue hkey_local_machine, "software\microsoft\windows nt\currentversion\winlogon", "DefaultDomainName", windows_user_domain
     if (instr(windows_user_name, "\")) then
-    split_user = split(windows_user_name, "\")
-    windows_user_name = split_user(1)
-    if ((isnull(windows_user_domain) or (windows_user_domain = "")) and (split_user(0) > "")) then
-    windows_user_domain = split_user(0)
-    end if
+        split_user = split(windows_user_name, "\")
+        windows_user_name = split_user(1)
+        if ((isnull(windows_user_domain) or (windows_user_domain = "")) and (split_user(0) > "")) then
+            windows_user_domain = split_user(0)
+        end if
     end if
     if (isnull(windows_user_domain)) then
-    windows_user_domain = ""
+        windows_user_domain = ""
     else
-    windows_user_domain = "@" & windows_user_domain
+        windows_user_domain = "@" & windows_user_domain
     end if
     if ((windows_user_domain = "@") or (windows_user_domain = ".") or (windows_user_domain = "@.")) then
-    ' do not add the domain to the username - add the name of the PC (it's a local user)
-    windows_user_name = windows_user_name & "@" & system_hostname
+        ' do not add the domain to the username - add the name of the PC (it's a local user)
+        windows_user_name = windows_user_name & "@" & system_hostname
     else
-    windows_user_name = windows_user_name & windows_user_domain
+        windows_user_name = windows_user_name & windows_user_domain
     end if
 end if
 if details_to_lower = "y" then
@@ -1146,9 +1148,9 @@ if (cint(windows_build_number) > 2195) then
     on error resume next
     Set colItems = objWMIService.ExecQuery("Select * From Win32_PerfFormattedData_PerfOS_System",,32)
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PerfFormattedData_PerfOS_System)" : audit_wmi_fails = audit_wmi_fails & "Win32_PerfFormattedDataPerfOS_System " : end if
-    For Each objItem in colItems
-    system_uptime = objItem.SystemUpTime
-    Next
+    for each objItem in colItems
+        system_uptime = objItem.SystemUpTime
+    next
     on error goto 0
 end if
 
@@ -1366,62 +1368,62 @@ if (( windows_part_of_domain = True Or windows_part_of_domain = "True" ) and (us
     on error goto 0
 
     if not isempty(full_ad_domain) then
-    full_domain = oTranslate.Get(2)
-    domain_nb = oTranslate.Get(3)
-    domain_nb = Left(domain_nb,Len(domain_nb)-1)
-    set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,32)
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTDomain)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTDomain " : end if
-    for each objItem in colItems
-    windows_client_site_name = objItem.ClientSiteName
-    windows_domain_controller_address = replace(objItem.DomainControllerAddress, "\\", "")
-    windows_domain_controller_name = replace(objItem.DomainControllerName, "\\", "")
-    next
-    set objconnection = createobject("adodb.connection")
-    set objcommand = createobject("adodb.command")
-    objconnection.provider = "adsdsoobject"
-    objconnection.open "active directory provider"
-    set objcommand.activeconnection = objconnection
-    objcommand.commandtext = "select distinguishedName, name from 'GC://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
-    objcommand.properties("page size") = 1000
-    objcommand.properties("searchscope") = ads_scope_subtree
-    objcommand.properties("sort on") = "name"
-    set objrecordset = objcommand.execute
-    on error resume next
-    objrecordset.movefirst
-    if err.number <> 0 then
-    error = 1
-    end if
-    do until objrecordset.eof
-    windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-    objrecordset.movenext
-    loop
-    on error goto 0
-    if error = 1 then
-    ' we failed when using GC:// - try using LDAP://
-    error = 0
-    objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
-    set objrecordset = objcommand.execute
-    on error resume next
-    objrecordset.movefirst
-    if err.number <> 0 then error = 1 end if
-    do until objrecordset.eof
-    windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-    objrecordset.movenext
-    loop
-    on error goto 0
-    end if
+        full_domain = oTranslate.Get(2)
+        domain_nb = oTranslate.Get(3)
+        domain_nb = Left(domain_nb,Len(domain_nb)-1)
+        set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,32)
+        error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTDomain)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTDomain " : end if
+        for each objItem in colItems
+            windows_client_site_name = objItem.ClientSiteName
+            windows_domain_controller_address = replace(objItem.DomainControllerAddress, "\\", "")
+            windows_domain_controller_name = replace(objItem.DomainControllerName, "\\", "")
+        next
+        set objconnection = createobject("adodb.connection")
+        set objcommand = createobject("adodb.command")
+        objconnection.provider = "adsdsoobject"
+        objconnection.open "active directory provider"
+        set objcommand.activeconnection = objconnection
+        objcommand.commandtext = "select distinguishedName, name from 'GC://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+        objcommand.properties("page size") = 1000
+        objcommand.properties("searchscope") = ads_scope_subtree
+        objcommand.properties("sort on") = "name"
+        set objrecordset = objcommand.execute
+        on error resume next
+        objrecordset.movefirst
+        if err.number <> 0 then
+            error = 1
+        end if
+        do until objrecordset.eof
+            windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+            objrecordset.movenext
+        loop
+        on error goto 0
+        if error = 1 then
+            ' we failed when using GC:// - try using LDAP://
+            error = 0
+            objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+            set objrecordset = objcommand.execute
+            on error resume next
+            objrecordset.movefirst
+            if err.number <> 0 then error = 1 end if
+                do until objrecordset.eof
+                    windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+                    objrecordset.movenext
+                loop
+            on error goto 0
+        end if
 
-    if error = 1 then
-    windows_active_directory_ou = full_ad_domain
-    else
-    stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
-    stemp(0) = ""
-    ttemp = join(stemp, ",")
-    ttemp = mid(ttemp, 2)
-    windows_active_directory_ou = replace(ttemp, "X!X",",")
-    erase stemp
-    ttemp = NULL
-    end if
+        if error = 1 then
+            windows_active_directory_ou = full_ad_domain
+        else
+            stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
+            stemp(0) = ""
+            ttemp = join(stemp, ",")
+            ttemp = mid(ttemp, 2)
+            windows_active_directory_ou = replace(ttemp, "X!X",",")
+            erase stemp
+            ttemp = NULL
+        end if
     end if
 else
     domain_nb = ""
