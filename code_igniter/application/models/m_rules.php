@@ -105,6 +105,7 @@ class M_rules extends MY_Model
         $log->message = 'Running rules::match function.';
         $item_start = microtime(true);
         $log->severity = 7;
+        $log->command_status = 'notice';
         $log->file = 'm_rules';
         $log->function = 'execute';
 
@@ -192,341 +193,354 @@ class M_rules extends MY_Model
         #        have been run and only update if not empty (after adding id and last_seen_by).
         $newdevice = new stdClass();
 
-        # TODO - Orgs
-        $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
-        $rules = $this->run_sql($sql);
 
-        $other_tables = array();
-        foreach ($rules as $rule) {
-            $rule->inputs = json_decode($rule->inputs);
-            $rule->outputs = json_decode($rule->outputs);
-            foreach ($rule->inputs as $input) {
-                if (!$this->db->table_exists($input->table)) {
+        $rule_iterator = 100;
+        $sql = "SELECT COUNT(id) AS `count` FROM rules";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $rules_count = intval($result[0]->count + $rule_iterator);
+        for ($i=0; $i < ($rule_iterator); $i++) {
+            $offset = intval(($rules_count / $rule_iterator) * $i);
+            $limit = intval(($rules_count / $rule_iterator));
+            $sql = "SELECT * FROM rules ORDER BY weight ASC, id LIMIT $limit OFFSET $offset";
+            $rules = $this->run_sql($sql);
+
+            # TODO - Orgs
+            // $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
+            // $rules = $this->run_sql($sql);
+
+            $other_tables = array();
+            foreach ($rules as $rule) {
+                $rule->inputs = json_decode($rule->inputs);
+                $rule->outputs = json_decode($rule->outputs);
+                foreach ($rule->inputs as $input) {
+                    if (!$this->db->table_exists($input->table)) {
+                        $l = new stdClass();
+                        $l->command_status = 'error';
+                        $l->discovery_id = $log->discovery_id;
+                        $l->ip = $log->ip;
+                        $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
+                        $l->command = json_encode($rule);
+                        $l->command_output = '';
+                        discovery_log($l);
+                        continue;
+                    }
+                    if ($input->table !== 'system' and !in_array($input->table, $other_tables)) {
+                        $other_tables[] = $input->table;
+                    }
+                }
+            }
+
+            foreach ($other_tables as $table) {
+                $sql = "SELECT * FROM `" . $table . "` WHERE system_id = ? AND current = 'y'";
+                $data = array($id);
+                $result = $this->run_sql($sql, $data);
+                $device_sub[$table] = $result;
+            }
+            unset($other_tables);
+
+            // $l = new stdClass();
+            // $l->command_status = 'notice';
+            // $l->discovery_id = $log->discovery_id;
+            // $l->ip = $log->ip;
+            // $l->message = 'Memory Use - ' . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB";
+            // $l->command = '';
+            // $l->command_output = '';
+            // discovery_log($l);
+
+            # Special case the MAC as we might have it in the device entry, but no network table yet
+            if (!empty($device->mac_address) and empty($device_sub['network'])) {
+                $item = new stdClass();
+                $item->mac = $device->mac_address;
+                $device_sub['network'] = array($item);
+            }
+
+            foreach ($rules as $rule) {
+                if (is_array($rule->inputs)) {
+                    $input_count = count($rule->inputs);
+                } else {
+                    # Log an error, but continue
                     $l = new stdClass();
                     $l->command_status = 'error';
                     $l->discovery_id = $log->discovery_id;
                     $l->ip = $log->ip;
-                    $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
-                    $l->command = json_encode($rule);
+                    $l->message = 'Rule ' . $rule->id . ' inputs is not an array.';
+                    $l->command = $rule->inputs;
                     $l->command_output = '';
                     discovery_log($l);
                     continue;
                 }
-                if ($input->table !== 'system' and !in_array($input->table, $other_tables)) {
-                    $other_tables[] = $input->table;
-                }
-            }
-        }
-
-        foreach ($other_tables as $table) {
-            $sql = "SELECT * FROM `" . $table . "` WHERE system_id = ? AND current = 'y'";
-            $data = array($id);
-            $result = $this->run_sql($sql, $data);
-            $device_sub[$table] = $result;
-        }
-        unset($other_tables);
-
-        // $l = new stdClass();
-        // $l->command_status = 'notice';
-        // $l->discovery_id = $log->discovery_id;
-        // $l->ip = $log->ip;
-        // $l->message = 'Memory Use - ' . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB";
-        // $l->command = '';
-        // $l->command_output = '';
-        // discovery_log($l);
-
-        # Special case the MAC as we might have it in the device entry, but no network table yet
-        if (!empty($device->mac_address) and empty($device_sub['network'])) {
-            $item = new stdClass();
-            $item->mac = $device->mac_address;
-            $device_sub['network'] = array($item);
-        }
-
-        foreach ($rules as $rule) {
-            if (is_array($rule->inputs)) {
-                $input_count = count($rule->inputs);
-            } else {
-                # Log an error, but continue
-                $l = new stdClass();
-                $l->command_status = 'error';
-                $l->discovery_id = $log->discovery_id;
-                $l->ip = $log->ip;
-                $l->message = 'Rule ' . $rule->id . ' inputs is not an array.';
-                $l->command = $rule->inputs;
-                $l->command_output = '';
-                discovery_log($l);
-                continue;
-            }
-            $hit = 0;
-            foreach ($rule->inputs as $input) {
-                if ($input->table == 'system') {
-                    switch ($input->operator) {
-                        case 'eq':
-                            if ((string)$device->{$input->attribute} === (string)$input->value) {
-                                if ((string)$input->value !== '') {
-                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " eq " . $input->value;
-                                } else {
-                                    $log->message .= " Hit on $input->attribute is empty";
-                                }
-                                $hit++;
-                            }
-                        break;
-
-                        case 'ne':
-                            if ((string)$device->{$input->attribute} !== (string)$input->value) {
-                                if ((string)$input->value !== '') {
-                                    $log->message .= " Hit on $input->attribute " .$device->{$input->attribute} . " ne " . $input->value;
-                                } else {
-                                    $log->message .= " Hit on $input->attribute is not empty";
-                                }
-                                $hit++;
-                            }
-                        break;
-
-                        case 'gt':
-                            if ((string)$device->{$input->attribute} > (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " gt " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'ge':
-                            if ((string)$device->{$input->attribute} >= (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ge " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'lt':
-                            if ((string)$device->{$input->attribute} < (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " lt " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'le':
-                            if ((string)$device->{$input->attribute} <= (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " le" . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'li':
-                            if (stripos((string)$device->{$input->attribute}, $input->value) !== false) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " li " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'nl':
-                            if (stripos((string)$device->{$input->attribute}, $input->value) === false) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " nl " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'in':
-                            $values = explode(',', $input->value);
-                            if (in_array((string)$device->{$input->attribute}, $values)) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " in " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'ni':
-                            $values = explode(',', $input->value);
-                            if (!in_array((string)$device->{$input->attribute}, $values)) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ni " . $input->value;
-                                $hit++;
-                            }
-                        break;
-
-                        case 'st':
-                            if (stripos((string)$device->{$input->attribute},$input->value) === 0) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " st " . $input->value;
-                                $hit++;
-                            }
-                        break;
-                        
-                        default:
-                            if ((string)$device->{$input->attribute} === (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " default " . $input->value;
-                                $hit++;
-                            }
-                        break;
-                    }
-                } else {
-                    if (!empty($input->table) and !empty($device_sub[$input->table])) {
+                $hit = 0;
+                foreach ($rule->inputs as $input) {
+                    if ($input->table == 'system') {
                         switch ($input->operator) {
                             case 'eq':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} === (string)$input->value) {
-                                        if ($input->value != '') {
-                                            $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " eq " . $input->value . " for " . $rule->name . ".";
-                                        } else {
-                                            $log->message .= " Hit on $dsub $input->attribute is empty";
-                                        }
-                                        $hit++;
-                                        break;
+                                if ((string)$device->{$input->attribute} === (string)$input->value) {
+                                    if ((string)$input->value !== '') {
+                                        $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " eq " . $input->value;
+                                    } else {
+                                        $log->message .= " Hit on $input->attribute is empty";
                                     }
+                                    $hit++;
                                 }
                             break;
 
                             case 'ne':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} !== (string)$input->value) {
-                                        if ($input->value != '') {
-                                            $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " ne " . $input->value;
-                                        } else {
-                                            $log->message .= " Hit on $dsub $input->attribute is empty";
-                                        }
-                                        $hit++;
-                                        break;
+                                if ((string)$device->{$input->attribute} !== (string)$input->value) {
+                                    if ((string)$input->value !== '') {
+                                        $log->message .= " Hit on $input->attribute " .$device->{$input->attribute} . " ne " . $input->value;
+                                    } else {
+                                        $log->message .= " Hit on $input->attribute is not empty";
                                     }
+                                    $hit++;
                                 }
                             break;
 
                             case 'gt':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} > (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " gt " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if ((string)$device->{$input->attribute} > (string)$input->value) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " gt " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'ge':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} >= (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " ge " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if ((string)$device->{$input->attribute} >= (string)$input->value) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ge " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'lt':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} < (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " lt " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if ((string)$device->{$input->attribute} < (string)$input->value) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " lt " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'le':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} <= (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " le" . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if ((string)$device->{$input->attribute} <= (string)$input->value) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " le" . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'li':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (stripos((string)$dsub->{$input->attribute}, $input->value) !== false) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " li " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if (stripos((string)$device->{$input->attribute}, $input->value) !== false) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " li " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'nl':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (stripos((string)$dsub->{$input->attribute}, $input->value) === false) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " nl " . $input->value ;
-                                        $hit++;
-                                        break;
-                                    }
+                                if (stripos((string)$device->{$input->attribute}, $input->value) === false) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " nl " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'in':
                                 $values = explode(',', $input->value);
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (in_array((string)$dsub->{$input->attribute}, $values)) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " in " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if (in_array((string)$device->{$input->attribute}, $values)) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " in " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'ni':
                                 $values = explode(',', $input->value);
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (!in_array((string)$dsub->{$input->attribute}, $values)) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " ni " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if (!in_array((string)$device->{$input->attribute}, $values)) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ni " . $input->value;
+                                    $hit++;
                                 }
                             break;
 
                             case 'st':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (stripos((string)$dsub->{$input->attribute},$input->value) === 0) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " st " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if (stripos((string)$device->{$input->attribute},$input->value) === 0) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " st " . $input->value;
+                                    $hit++;
                                 }
                             break;
                             
                             default:
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} == (string)$input->value) {
-                                        $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
+                                if ((string)$device->{$input->attribute} === (string)$input->value) {
+                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " default " . $input->value;
+                                    $hit++;
                                 }
                             break;
                         }
+                    } else {
+                        if (!empty($input->table) and !empty($device_sub[$input->table])) {
+                            switch ($input->operator) {
+                                case 'eq':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} === (string)$input->value) {
+                                            if ($input->value != '') {
+                                                $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " eq " . $input->value . " for " . $rule->name . ".";
+                                            } else {
+                                                $log->message .= " Hit on $dsub $input->attribute is empty";
+                                            }
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'ne':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} !== (string)$input->value) {
+                                            if ($input->value != '') {
+                                                $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " ne " . $input->value;
+                                            } else {
+                                                $log->message .= " Hit on $dsub $input->attribute is empty";
+                                            }
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'gt':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} > (string)$input->value) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " gt " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'ge':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} >= (string)$input->value) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " ge " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'lt':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} < (string)$input->value) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " lt " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'le':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} <= (string)$input->value) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " le" . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'li':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if (stripos((string)$dsub->{$input->attribute}, $input->value) !== false) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " li " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'nl':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if (stripos((string)$dsub->{$input->attribute}, $input->value) === false) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " nl " . $input->value ;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'in':
+                                    $values = explode(',', $input->value);
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if (in_array((string)$dsub->{$input->attribute}, $values)) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " in " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'ni':
+                                    $values = explode(',', $input->value);
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if (!in_array((string)$dsub->{$input->attribute}, $values)) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " ni " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+
+                                case 'st':
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if (stripos((string)$dsub->{$input->attribute},$input->value) === 0) {
+                                            $log->message .= " Hit on " . $dsub->{$input->attribute} . " st " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+                                
+                                default:
+                                    foreach ($device_sub[$input->table] as $dsub) {
+                                        if ((string)$dsub->{$input->attribute} == (string)$input->value) {
+                                            $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value;
+                                            $hit++;
+                                            break;
+                                        }
+                                    }
+                                break;
+                            }
+                        }
                     }
-                }
-                if ($hit >= $input_count) {
-                    $attributes = new stdClass();
-                    foreach ($rule->outputs as $output) {
-                        switch ($output->value_type) {
-                            case 'string':
-                                $newdevice->{$output->attribute} = (string)$output->value;
-                            break;
-                            
-                            case 'integer':
-                                $newdevice->{$output->attribute} = intval($output->value);
-                            break;
-                            
-                            case 'timestamp':
-                                if ($output->value == '') {
-                                    $newdevice->{$output->attribute} = $this->config->config['timestamp'];
-                                } else {
+                    if ($hit >= $input_count) {
+                        $attributes = new stdClass();
+                        foreach ($rule->outputs as $output) {
+                            switch ($output->value_type) {
+                                case 'string':
+                                    $newdevice->{$output->attribute} = (string)$output->value;
+                                break;
+                                
+                                case 'integer':
                                     $newdevice->{$output->attribute} = intval($output->value);
-                                }
-                            break;
-                            
-                            default:
-                                $newdevice->{$output->attribute} = (string)$output->value;
-                            break;
+                                break;
+                                
+                                case 'timestamp':
+                                    if ($output->value == '') {
+                                        $newdevice->{$output->attribute} = $this->config->config['timestamp'];
+                                    } else {
+                                        $newdevice->{$output->attribute} = intval($output->value);
+                                    }
+                                break;
+                                
+                                default:
+                                    $newdevice->{$output->attribute} = (string)$output->value;
+                                break;
+                            }
+                            $attributes->{$output->attribute} = $newdevice->{$output->attribute};
+                            $device->{$output->attribute} = $newdevice->{$output->attribute};
                         }
-                        $attributes->{$output->attribute} = $newdevice->{$output->attribute};
-                        $device->{$output->attribute} = $newdevice->{$output->attribute};
+                        $log->message = trim($log->message);
+                        $log->command = 'Rules Match - ' . $rule->name . ', ID: ' . $rule->id;
+                        $log->command_output = json_encode($attributes);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        discovery_log($log);
                     }
-                    $log->message = trim($log->message);
-                    $log->command = 'Rules Match - ' . $rule->name . ', ID: ' . $rule->id;
-                    $log->command_output = json_encode($attributes);
-                    $log->command_time_to_execute = (microtime(true) - $item_start);
-                    discovery_log($log);
                 }
+                $log->message = '';
             }
-            $log->message = '';
+            unset($rules);
         }
-        unset($rules);
 
         $log->message = 'Completed rules::match function.';
         $log->command = '';
