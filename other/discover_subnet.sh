@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   3.2.1
+# @version   3.2.2
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,7 +53,7 @@ discovery_id=""
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
-version="3.2.1"
+version="3.2.2"
 int='^[0-9]+$'
 #range='^[0-9\.\//-]+$'
 range='^[0-9\.\,\/\-]+$'

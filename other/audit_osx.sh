@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   3.2.1
+# @version   3.2.2
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -49,7 +49,7 @@ system_id=""
 last_seen_by="audit"
 
 # Version
-version="3.2.1"
+version="3.2.2"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
