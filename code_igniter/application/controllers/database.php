@@ -806,6 +806,11 @@ class Database extends MY_Controller
             include "db_upgrades/db_3.2.1.php";
         }
 
+        if (($db_internal_version < '20190923') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 3.2.2
+            include "db_upgrades/db_3.2.2.php";
+        }
+
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
         $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->config['display_version']." (".$this->config->config['internal_version'].")";
