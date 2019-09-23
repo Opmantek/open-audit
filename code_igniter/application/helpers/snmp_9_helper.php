@@ -128,7 +128,7 @@ if (count($i) > 0) {
                 $k = "1.3.6.1.2.1.47.1.1.1.1.3." . $k;
                 $oid = my_snmp_get($ip, $credentials, $k);
                 $oid = str_replace("OID: .", "", $oid);
-                $module->$count = get_oid($oid);
+                $module->$count = get_manufacturer_from_oid($oid);
                 $module->$count->serial = str_replace("STRING: ", "", $i[$j]);
                 $module->$count->serial = str_replace('"', '', $module->$count->serial);
                 $count++;
