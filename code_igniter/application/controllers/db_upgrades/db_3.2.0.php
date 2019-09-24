@@ -247,14 +247,14 @@ $sql = "CREATE TABLE `rules` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-if (php_uname('s') != 'Windows NT') {
-	$command = 'mysql -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < /usr/local/open-audit/other/assets/rules.sql';
-} else {
-	$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < c:\\xampp\\open-audit\\other\\assets\\rules.sql';
-}
-$log_command = str_replace($this->db->password, '******', $command);
-$this->log_db($log_command);
-exec($command);
+// if (php_uname('s') != 'Windows NT') {
+// 	$command = 'mysql -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < /usr/local/open-audit/other/assets/rules.sql';
+// } else {
+// 	$command = 'c:\\xampp\\mysql\\bin\\mysql.exe -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < c:\\xampp\\open-audit\\other\\assets\\rules.sql';
+// }
+// $log_command = str_replace($this->db->password, '******', $command);
+// $this->log_db($log_command);
+// exec($command);
 
 $this->m_roles->update_permissions('org_admin', 'rules', 'crud');
 $this->m_roles->update_permissions('user', 'rules', 'r');
