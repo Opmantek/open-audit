@@ -57,6 +57,7 @@ $this->load->helper('audit');
 $this->load->helper('mac');
 $this->load->helper('network');
 $this->load->helper('snmp');
+$this->load->helper('snmp_model');
 $this->load->helper('snmp_oid');
 $this->load->helper('ssh');
 $this->load->helper('wmi');

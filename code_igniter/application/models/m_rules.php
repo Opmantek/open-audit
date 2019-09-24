@@ -193,21 +193,78 @@ class M_rules extends MY_Model
         #        have been run and only update if not empty (after adding id and last_seen_by).
         $newdevice = new stdClass();
 
+        # Details based on SNMP OID
+        if (!empty($device->snmp_oid)) {
+            $log_start = microtime(true);
+            $newdevice = get_details_from_oid($device->snmp_oid);
+            if (!empty($newdevice)) {
+                $log->message = "Hit on \$device->snmp_oid " . $device->snmp_oid . " eq " . $device->snmp_oid;
+                $log->command = 'Rules Match - SNMP OID for  ' . $newdevice->model;
+                $log->command_output = json_encode($newdevice);
+                $log->command_time_to_execute = (microtime(true) - $log_start);
+                discovery_log($log);
+                foreach ($newdevice as $key => $value) {
+                    $device->{$key} = $value;
+                }
+            }
+        }
 
-        $rule_iterator = 100;
-        $sql = "SELECT COUNT(id) AS `count` FROM rules";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        $rules_count = intval($result[0]->count + $rule_iterator);
-        for ($i=0; $i < ($rule_iterator); $i++) {
-            $offset = intval(($rules_count / $rule_iterator) * $i);
-            $limit = intval(($rules_count / $rule_iterator));
-            $sql = "SELECT * FROM rules ORDER BY weight ASC, id LIMIT $limit OFFSET $offset";
-            $rules = $this->run_sql($sql);
+        # Manufacturer based on MAC Address
+        if (!empty($device->mac_address) and empty($device->manufacturer)) {
+            $log_start = microtime(true);
+            $newdevice->manufacturer = get_manufacturer_from_mac($device->mac_address);
+            if (!empty($newdevice->manufacturer)) {
+                $log->message = "Hit on \$device->mac_address " . $device->mac_address . " st " . substr(strtolower($device->mac_address ), 0, 8);
+                $log->command = 'Rules Match - Mac Address for ' . $newdevice->manufacturer;
+                $log->command_output = json_encode($newdevice);
+                $log->command_time_to_execute = (microtime(true) - $log_start);
+                discovery_log($log);
+                $device->manufacturer = $newdevice->manufacturer;
+            }
+        }
+
+        # Manufacturer based on SNMP Enterprise ID
+        if (!empty($device->snmp_enterprise_id) and empty($newdevice->manufacturer)) {
+            $log_start = microtime(true);
+            $newdevice->manufacturer = get_manufacturer_from_oid($device->snmp_enterprise_id);
+            if (!empty($newdevice->manufacturer)) {
+                $log->message = "Hit on \$device->snmp_enterprise_id " . $device->snmp_enterprise_id . " eq " . $device->snmp_enterprise_id;
+                $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
+                $log->command_output = json_encode($newdevice);
+                $log->command_time_to_execute = (microtime(true) - $log_start);
+                discovery_log($log);
+                $device->manufacturer = $newdevice->manufacturer;
+            }
+        }
+
+        # Mac Description based on Manufacturer Code (derived from Serial)
+        if (!empty($device->manufacturer_code)) {
+            $log_start = microtime(true);
+            $newdevice->description = get_description_from_manufacturer_code($device->manufacturer_code);
+            if (!empty($newdevice->description)) {
+                $log->message .= " Hit on \$device->manufacturer_code " . $device->manufacturer_code . " eq " . $device->manufacturer_code;
+                $log->command = 'Rules Match - Mac Model into description';
+                $log->command_output = json_encode($newdevice->description);
+                $log->command_time_to_execute = (microtime(true) - $log_start);
+                discovery_log($log);
+                $device->description = $newdevice->description;
+            }
+        }
+
+        // $rule_iterator = 100;
+        // $sql = "SELECT COUNT(id) AS `count` FROM rules";
+        // $query = $this->db->query($sql);
+        // $result = $query->result();
+        // $rules_count = intval($result[0]->count + $rule_iterator);
+        // for ($i=0; $i < ($rule_iterator); $i++) {
+        //     $offset = intval(($rules_count / $rule_iterator) * $i);
+        //     $limit = intval(($rules_count / $rule_iterator));
+        //     $sql = "SELECT * FROM rules ORDER BY weight ASC, id LIMIT $limit OFFSET $offset";
+        //     $rules = $this->run_sql($sql);
 
             # TODO - Orgs
-            // $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
-            // $rules = $this->run_sql($sql);
+            $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
+            $rules = $this->run_sql($sql);
 
             $other_tables = array();
             foreach ($rules as $rule) {
@@ -540,12 +597,12 @@ class M_rules extends MY_Model
                 $log->message = '';
             }
             unset($rules);
-        }
+        #}
 
         $log->message = 'Completed rules::match function.';
         $log->command = '';
         $log->command_output = '';
-        $log->command_status = 'debug';
+        $log->command_status = 'notice';
         discovery_log($log);
 
         if (count(get_object_vars($newdevice)) > 0) {
