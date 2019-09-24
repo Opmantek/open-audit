@@ -84,8 +84,10 @@ if (!function_exists('process_scan')) {
         // our required helpers
         $CI->load->helper('audit');
         $CI->load->helper('mac');
+        $CI->load->helper('mac_model');
         $CI->load->helper('network');
         $CI->load->helper('snmp');
+        $CI->load->helper('snmp_model');
         $CI->load->helper('snmp_oid');
         $CI->load->helper('ssh');
         $CI->load->helper('wmi');
