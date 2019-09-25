@@ -8392,6 +8392,7 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'HRMG': $description = 'MacBook (Retina, 12-inch, Early 2016)'; break;
 			case 'HTD6': $description = 'MacBook Pro (15-inch, 2017)'; break;
 			case 'HTD9': $description = 'MacBook Pro (15-inch, 2017)'; break;
+			case 'HTD9': $description = 'MacBook Pro (15-inch, 2017)'; break;
 			case 'HTDF': $description = 'MacBook Pro (15-inch, 2017)'; break;
 			case 'HV29': $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; break;
 			case 'HV2D': $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; break;
@@ -8407,6 +8408,7 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'HV5K': $description = 'MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)'; break;
 			case 'HX8F': $description = 'iMac Pro (2017)'; break;
 			case 'J1GG': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
+			case 'J1GH': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GN': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GP': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GQ': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
@@ -8417,7 +8419,13 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'JGH7': $description = 'MacBook Pro (15-inch, 2018)'; break;
 			case 'JGH8': $description = 'MacBook Pro (15-inch, 2018)'; break;
 			case 'JHCD': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
+			case 'JHCD': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
 			case 'JHD4': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
+			case 'JHD4': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
+			case 'JV3Y': $description = 'iMac (Retina 5K, 27-inch, 2019)'; break;
+			case 'L415': $description = 'MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)'; break;
+			case 'M0XV': $description = 'iMac Pro (2017)'; break;
+
 			default: $description = 'Unknown model, please send ' . $manufacturer_code . ' to code@opmantek.com for inclusion and/or add to your Rules.'; break;
 		}
 		return $description;
