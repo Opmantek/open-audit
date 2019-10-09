@@ -220,7 +220,7 @@ if ($this->db->table_exists('cluster')) {
     $this->log_db($this->db->last_query());
     $result = $query->result();
     if (!empty($result[0]->count)) {
-        $sql = "INSERT INTO `clusters` SELECT (NULL, name, org_id, description, type, purpose, 'active', edited_by, edited_date FROM `cluster`)";
+        $sql = "INSERT INTO `clusters` (SELECT NULL, name, org_id, description, type, purpose, 'active', edited_by, edited_date FROM `cluster`)";
         $this->db->query($sql);
         $this->log_db($this->db->last_query());
     } else {
