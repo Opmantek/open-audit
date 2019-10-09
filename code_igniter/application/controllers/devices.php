@@ -243,6 +243,7 @@ class devices extends MY_Controller
     private function create()
     {
         $timer_start = microtime(true);
+        $this->load->helper('snmp_model');
         if (empty($_POST['input_type']) or $_POST['input_type'] == 'manual_input') {
             $device = new stdClass();
             foreach ($this->response->meta->received_data->attributes as $key => $value) {
