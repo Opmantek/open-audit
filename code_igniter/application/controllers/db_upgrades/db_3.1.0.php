@@ -249,6 +249,22 @@ CREATE TABLE `integrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP INDEX audit_log_system_id_type ON audit_log;
+
+CREATE INDEX audit_log_system_id_type ON audit_log (`system_id`, `type`);
+
+DROP INDEX change_log_timestamp ON change_log;
+
+DROP INDEX change_log_db_table ON change_log;
+
+DROP INDEX change_log_db_action ON change_log;
+
+CREATE INDEX change_log_timestamp ON change_log (`timestamp`);
+
+CREATE INDEX change_log_db_table ON change_log (`db_table`);
+
+CREATE INDEX change_log_db_action ON change_log (`db_action`);
+
 UPDATE `configuration` SET `value` = '20190512' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.1.0' WHERE `name` = 'display_version';
