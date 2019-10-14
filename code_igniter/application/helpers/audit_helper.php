@@ -211,6 +211,13 @@ if (!function_exists('audit_convert')) {
                                         $new->{$k} = (string) $v;
                                     }
                                     $newitem->options = @json_encode($new);
+
+                                } else if ($key == 'keys' and $section = 'user') {
+                                    $new = array();
+                                    foreach ($value->key as $k => $v) {
+                                        $new[] = (string)$v;
+                                    }
+                                    $newitem->keys = @json_encode($new);
                                 } else {
                                     if ((string)$value != '') {
                                         $newitem->{$key} = (string)$value;

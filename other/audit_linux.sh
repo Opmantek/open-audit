@@ -2290,10 +2290,56 @@ if [ "$debugging" -gt "0" ]; then
 	echo "User Info"
 fi
 echo "	<user>" >> "$xml_file"
+IFS="$NEWLINEIFS"
+for line in $(grep -v '^ *#' /etc/passwd ); do
+	name=$(echo "$line" | cut -d: -f1)
+	full_name=$(echo "$line" | cut -d: -f5 | cut -d, -f1)
+	sid=$(echo "$line" | cut -d: -f3)
+	home=$(echo "$line" | cut -d: -f6)
+	shell=$(echo "$line" | cut -d: -f7)
+	echo "		<item>" >> $xml_file
+	echo "			<name>$(escape_xml "$name")</name>" >> $xml_file
+	echo "			<full_name>$(escape_xml "$full_name")</full_name>" >> $xml_file
+	echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
+	echo "			<home>$(escape_xml "$home")</home>" >> $xml_file
+	echo "			<shell>$(escape_xml "$shell")</shell>" >> $xml_file
+	test1=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f8)
+	test2=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f2)
+	today=$(($(date --utc --date "$1" +%s)/86400))
+	if [ "$test1" ] || [ "$test2" ]; then
+		status="enabled"
+		disabled="false"
+		if [ -n "$test1" ] && [ $(($test1+0)) -lt $today ]; then
+			status="expired"
+			disabled="true"
+		fi
+		if [ "$test1" = "0" ] || [ "$test2" = "\*" ]; then
+			status="disabled"
+			disabled="true"
+		fi
+		echo "			<status>$status</status>" >> $xml_file
+		echo "			<disabled>$disabled</disabled>" >> $xml_file
 
-IFS=$(echo -n "\n\b");
-grep -v '^ *#' < /etc/passwd | while IFS= read -r line; do
-	echo "$line" | awk -F: ' { print "\t\t<item>\n" "\t\t\t<name>"$1"</name>\n" "\t\t\t<full_name><![CDATA["$5"]]></full_name>\n" "\t\t\t<sid>"$3"</sid>\n" "\t\t</item>" } ' >> "$xml_file"
+		if [[ "$test2" == "" ]]; then
+			echo "			<password_required>n</password_required>" >> $xml_file
+		else
+			echo "			<password_required>y</password_required>" >> $xml_file
+		fi
+
+		if [[ "$test2" == !* ]]; then
+			echo "			<password_disabled>y</password_disabled>" >> $xml_file
+		else
+			echo "			<password_disabled>n</password_disabled>" >> $xml_file
+		fi
+		password_expires=$(chage -l "$name" 2>/dev/null | grep -i "^Password expires" | cut -d: -f2)
+		echo "			<password_expires>$(escape_xml "$password_expires")</password_expires>" >> $xml_file
+	fi
+	echo "			<keys>" >> $xml_file
+	for keyline in $(grep -v ^$ "$home/.ssh/authorized_keys" 2>/dev/null | grep -v ^#); do
+		echo "				<key>$(escape_xml "$keyline")</key>" >> $xml_file
+	done
+	echo "			</keys>" >> $xml_file
+	echo "		</item>" >> $xml_file
 done
 echo "	</user>" >> "$xml_file"
 

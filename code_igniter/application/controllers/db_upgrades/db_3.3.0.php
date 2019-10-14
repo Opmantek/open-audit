@@ -29,7 +29,13 @@
 
 /*
 
+ALTER TABLE `user` ADD `password_disabled` varchar(20) NOT NULL DEFAULT '' AFTER `password_required`;
+
 ALTER TABLE `user` ADD `keys` text NOT NULL AFTER `status`;
+
+ALTER TABLE `user` ADD `home` varchar(255) NOT NULL DEFAULT '' AFTER `keys`;
+
+ALTER TABLE `user` ADD `shell` varchar(255) NOT NULL DEFAULT '' AFTER `home`;
 
 DELETE FROM configuration WHERE `name` = 'device_delete_prompt';
 
@@ -42,7 +48,13 @@ UPDATE `configuration` SET `value` = '3.3.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.3.0 commenced');
 
+$this->alter_table('user', 'password_disabled', "ADD `password_disabled` varchar(20) NOT NULL DEFAULT '' AFTER `password_required`", 'add');
+
 $this->alter_table('user', 'keys', "ADD `keys` text NOT NULL AFTER `status`", 'add');
+
+$this->alter_table('user', 'home', "ADD `home` text NOT NULL AFTER `keys`", 'add');
+
+$this->alter_table('user', 'shell', "ADD `shell` text NOT NULL AFTER `home`", 'add');
 
 $sql = "DELETE FROM configuration WHERE `name` = 'device_delete_prompt'";
 $this->db->query($sql);
