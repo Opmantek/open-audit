@@ -265,7 +265,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'task');
         }
         if ($table == 'user') {
-                $match_columns = array('name', 'sid');
+                $match_columns = array('name', 'sid', 'keys');
         }
         if ($table == 'user_group') {
                 $match_columns = array('name', 'sid');
@@ -645,6 +645,21 @@ class M_devices_components extends MY_Model
                 }
             }
         }
+
+        ### USER ###
+        if ((string)$table == 'user') {
+            for ($i=0; $i<count($input); $i++) {
+                # Ensure we have a keys item.
+                #       Should be a JSON array (if populated) or an empty string (if not populated, ie: here).
+                # We use an empty string because of existing entries on an upgraded database.
+                # If we used an empty JSON array (ie: "[]"), nothing would match and we'd generate a lot of
+                #       false positive changes first audit after an upgrade.
+                if (empty($input[$i]->keys)) {
+                    $input[$i]->keys = '';
+                }
+            }
+        }
+
 
         ### VIRTUAL MACHINE ###
         if ((string)$table == 'vm') {
