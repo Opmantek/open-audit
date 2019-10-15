@@ -2305,7 +2305,7 @@ for line in $(grep -v '^ *#' /etc/passwd ); do
 	echo "			<shell>$(escape_xml "$shell")</shell>" >> $xml_file
 	test1=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f8)
 	test2=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f2)
-	today=$(($(date --utc --date "$1" +%s)/86400))
+	today=$(($(date --utc +%s)/86400))
 	if [ "$test1" ] || [ "$test2" ]; then
 		status="enabled"
 		disabled="false"
@@ -2335,7 +2335,7 @@ for line in $(grep -v '^ *#' /etc/passwd ); do
 		echo "			<password_expires>$(escape_xml "$password_expires")</password_expires>" >> $xml_file
 	fi
 	echo "			<keys>" >> $xml_file
-	for keyline in $(grep -v ^$ "$home/.ssh/authorized_keys" 2>/dev/null | grep -v ^#); do
+	for keyline in $(grep -v ^$ "$home/.ssh/authorized_keys" 2>/dev/null | grep -v ^# | sort -d); do
 		echo "				<key>$(escape_xml "$keyline")</key>" >> $xml_file
 	done
 	echo "			</keys>" >> $xml_file
