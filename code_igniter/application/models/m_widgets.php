@@ -190,19 +190,31 @@ class M_widgets extends MY_Model
             unset($temp);
             if ($primary_table == 'system' or in_array($primary_table, $device_tables)) {
                 $collection = 'devices';
-                $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+                $filter = "system.org_id IN (" . $org_list . ")";
+                if (!empty($CI->response->meta->requestor)) {
+                    $filter = "system.org_id IN (" . $org_list . ") AND system.oae_manage = 'y'";
+                }
+                $sql = str_replace('@filter', $filter, $sql);
             } else if (in_array($primary_table, $other_tables)) {
                 $collection = $primary_table;
                 if ($collection != 'orgs') {
                     $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
                 } else {
-                    $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+                    $filter = "system.org_id in (" . $org_list . ")";
+                    if (!empty($CI->response->meta->requestor)) {
+                        $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
+                    }
+                    $sql = str_replace('@filter', $filter, $sql);
                 }
             } else {
                 # invalid query
                 #return false;
                 $collection = 'devices';
-                $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+                $filter = "system.org_id in (" . $org_list . ")";
+                if (!empty($CI->response->meta->requestor)) {
+                    $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
+                }
+                $sql = str_replace('@filter', $filter, $sql);
             }
 
         } else if (in_array($primary_table, $device_tables)) {
@@ -216,11 +228,14 @@ class M_widgets extends MY_Model
                                 " ON (" . $this->sql_esc('system.id') . ' = ' . $this->sql_esc($primary_table . '.system_id') . 
                                 " AND " . $this->sql_esc($primary_table.'.current') . " = 'y' ) " . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
-            if (!empty($widget->where)) {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
-            } else {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            $filter = "system.org_id in (" . $org_list . ")";
+            if (!empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
             }
+            if (!empty($widget->where)) {
+                $filter .= " AND " . $widget->where;
+            }
+            $sql = str_replace('@filter', $filter, $sql);
             if (!empty($widget->limit)) {
                 $limit = intval($widget->limit);
                 $sql .= ' LIMIT ' . $limit;
@@ -236,11 +251,13 @@ class M_widgets extends MY_Model
                                 " CAST((COUNT(*) / (SELECT COUNT(" . $this->sql_esc($widget->primary) . ") FROM " . $this->sql_esc($primary_table) . " WHERE " . $this->sql_esc('system.org_id') . " IN (" . $org_list . ")) * 100) AS unsigned) AS 'percent'" . 
                                 " FROM " .  $this->sql_esc('system') . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
-            if (!empty($widget->where)) {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
-            } else {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            if (!empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
             }
+            if (!empty($widget->where)) {
+                $filter .= " AND " . $widget->where;
+            }
+            $sql = str_replace('@filter', $filter, $sql);
             if (!empty($widget->limit)) {
                 $limit = intval($widget->limit);
                 $sql .= ' ORDER BY `count` DESC LIMIT ' . $limit;
@@ -320,7 +337,11 @@ class M_widgets extends MY_Model
                 # return false;
                 # These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
             } else {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+                $filter = "system.org_id IN (" . $org_list . ")";
+                if (!empty($CI->response->meta->requestor)) {
+                    $filter = "system.org_id IN (" . $org_list . ") AND oae_manage = 'y'";
+                }
+                $sql = str_replace('@filter', $filter, $sql);
             }
             $result = $this->run_sql($sql, array());
             if (!empty($result)) {
@@ -400,11 +421,14 @@ class M_widgets extends MY_Model
                 return false;
             }
             $sql = "SELECT DATE(" . $this->sql_esc('change_log.timestamp') . ") AS " . $this->sql_esc('date') . ", count(DATE(" . $this->sql_esc('change_log.timestamp') . " )) AS " . $this->sql_esc('count') . "  FROM " . $this->sql_esc('change_log') . " LEFT JOIN " . $this->sql_esc('system') . " ON (" . $this->sql_esc('system.id') . " = " . $this->sql_esc('change_log.system_id') . ") WHERE @filter AND " . $this->sql_esc('change_log.timestamp') . " >= DATE_SUB(CURDATE(), INTERVAL " . intval($widget->limit) . " DAY) AND " . $this->sql_esc('change_log.db_table') . " = '" . $widget->primary . "'  AND " . $this->sql_esc('change_log.db_action') . " = '" . $widget->secondary . "' GROUP BY DATE(" . $this->sql_esc('change_log.timestamp') . ")";
-            if (!empty($widget->where)) {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
-            } else {
-                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            $filter = "system.org_id IN (" . $org_list . ")";
+            if (!empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id IN (" . $org_list . ") AND system.oae_manage = 'y'";
             }
+            if (!empty($widget->where)) {
+                $sql .= " AND " . $widget->where;
+            }
+            $sql = str_replace('@filter', $filter, $sql);
             $result = $this->run_sql($sql, array());
             if (!empty($result)) {
                 foreach ($result as $row) {

@@ -176,6 +176,10 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->query_string = '';
         $REQUEST_METHOD = strtoupper($CI->input->server('REQUEST_METHOD'));
         $CI->response->meta->request_method = $REQUEST_METHOD;
+        $CI->response->meta->requestor = '';
+        if (!empty($_SERVER['HTTP_REQUESTOR'])) {
+            $CI->response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
+        }
         $CI->response->meta->sort = '';
         $CI->response->meta->sub_resource = '';
         $CI->response->meta->sub_resource_id = 0;

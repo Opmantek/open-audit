@@ -698,6 +698,9 @@ class M_devices extends MY_Model
             }
         }
         $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+        if (!empty($CI->response->meta->requestor)) {
+            $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby;
+        }
         $result = $this->run_sql($sql, array());
         if (!empty($result[0]->total)) {
             $CI->response->meta->total = intval($result[0]->total);
@@ -707,6 +710,9 @@ class M_devices extends MY_Model
         }
         unset($result);
         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        if (!empty($CI->response->meta->requestor)) {
+            $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        }
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
         return $result;
@@ -818,18 +824,6 @@ class M_devices extends MY_Model
         $result = $this->run_sql($sql, array());
         $query = $result[0];
         $CI->response->meta->sub_resource_name = $query->menu_category . ' - ' . $query->name;
-        #$sql = "SELECT a.* FROM (" . $query->query . ") a WHERE a.`system.id` IN (" . $device_sql . ")";
-
-        // $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
-        // $sql = $query->query;
-        // if (stripos($sql, 'where ') !== false) {
-        //     $sql = str_replace('WHERE ', $device_sql . ' AND ', $sql);
-        // } else {
-        //     $sql .= ' ' . $device_sql;
-        // }
-
-        // $filter = 'WHERE system.id IN (' . $CI->user->org_list . ') AND ' . $filter . ' AND ';
-        // $sql = str_replace('WHERE ', $filter, $sql);
 
         if (!empty($CI->response->meta->group)) {
             $my_sql = "/* m_devices_components::read */" . "SELECT `sql` FROM `groups` WHERE `id` = " . intval($CI->response->meta->group);
@@ -837,6 +831,9 @@ class M_devices extends MY_Model
             $result = $my_query->result();
             $group_sql = $result[0]->sql;
             $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+            if (!empty($CI->response->meta->requestor)) {
+                $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y')";
+            }
             $group_sql = str_replace('WHERE @filter', $device_sql, $group_sql);
             $group_sql = " AND system.id IN (" . $group_sql . ")";
         } else {
@@ -844,7 +841,9 @@ class M_devices extends MY_Model
         }
 
         $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
-        #$device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+        if (!empty($CI->respone->meta->requestor)) {
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby . ")"; 
+        }
         $sql = $query->sql;
         $sql = str_replace('WHERE @filter', $device_sql . $group_sql, $sql);
         $result = $this->run_sql($sql, array());
@@ -893,7 +892,9 @@ class M_devices extends MY_Model
         }
 
         $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))" . $filter;
-
+        if (!empty($CI->response->meta->requestor)) {
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y')" . $filter;
+        }
 
         $sql = $group->sql;
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
@@ -982,7 +983,6 @@ class M_devices extends MY_Model
 
         // loop through our supplied data and test if it's a custom field or a system field,
         // then update any supplied device id's
-        #foreach ($CI->response->meta->received_data->attributes as $key => $value) {
         foreach ($received_data as $key => $value) {
             $previous_value = '';
 
@@ -1000,7 +1000,11 @@ class M_devices extends MY_Model
                         $data = array($field->group_id);
                         $result = $this->run_sql($sql, $data);
                         $test_sql = $result[0]->sql;
-                        $test_sql = str_replace('@filter', 'system.org_id IN (' . $field_orgs . ')', $test_sql);
+                        if (!empty($CI->response->meta->requestor)) {
+                            $test_sql = str_replace('@filter', 'system.org_id IN (' . $field_orgs . ') AND system.oae_manage = "y"', $test_sql);
+                        } else {
+                            $test_sql = str_replace('@filter', 'system.org_id IN (' . $field_orgs . ')', $test_sql);
+                        }
                         $test_sql .= ' AND system.id = ?';
                         # get the original value (if it exists)
                         foreach ($ids as $id) {

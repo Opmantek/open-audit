@@ -234,6 +234,9 @@ class M_queries extends MY_Model
             }
             unset($queries);
             $filter = "system.org_id IN (" . $CI->user->org_list . ")";
+            if (!empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y'";
+            }
             $user_filter = $this->build_filter();
             if (!empty($user_filter)) {
                 $filter .= $user_filter;

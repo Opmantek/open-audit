@@ -97,6 +97,9 @@ class M_devices_components extends MY_Model
             $result = $query->result();
             $group_sql = $result[0]->sql;
             $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+            if (!empty($CU->response->meta->requestor)) {
+                $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y')";
+            }
             $group_sql = str_replace('WHERE @filter', $device_sql, $group_sql);
             $group_sql = " AND system.id IN (" . $group_sql . ")";
         } else {
