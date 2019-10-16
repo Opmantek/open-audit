@@ -1268,6 +1268,66 @@ class M_device extends MY_Model
             }
         }
 
+        # check IP Address in system table for a device with no other data
+        if ((empty($match->match_ip_no_data) or strtolower($match->match_ip_no_data) == 'y') and empty($details->id) and !empty($details->ip) and filter_var($details->ip, FILTER_VALIDATE_IP)) {
+            # Check the system table for an ip match on a device without a type or serial
+            if (empty($details->id)) {
+                $sql = "SELECT system.id FROM system WHERE system.ip = ? AND system.ip NOT LIKE '127%' AND system.ip NOT LIKE '1::%' AND system.status != 'deleted' and (system.type = 'unknown' or system.type = 'unclassified') and system.serial = ''";
+                $sql = $this->clean_sql($sql);
+                $data = array(ip_address_to_db($details->ip));
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                if (count($row) > 0) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on IP Address No Data (system table).';
+                    $message->command_status = 'success';
+                    $message->command_output = 'IP: ' . $details->ip . ', SystemID : ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        discovery_log($log);
+                    }
+                    $message->command_output = '';
+                    return $details->id;
+                }
+            }
+            $message = new stdClass();
+            $message->message = 'MISS on IP Address No Data.';
+            $message->command_status = 'notice';
+            $message->command_output = 'IP: ' . $details->ip;
+            $log_message[] = $message;
+        } else {
+            if (strtolower($match->match_ip) != 'y') {
+                $message = new stdClass();
+                $message->message = 'Not running match_ip_no_data, matching rule set to: ' . $match->match_ip .  '.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (!empty($details->id)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_ip_no_data, device id already set';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($details->ip)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_ip_no_data, ip not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else  {
+                $message = new stdClass();
+                $message->message = 'Not running match_ip_no_data.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            }
+        }
+
         $temp = @(string)$details->id;
         if (is_null($temp) or $temp == '') {
             $message = new stdClass();
