@@ -1029,7 +1029,7 @@ class M_devices extends MY_Model
             }
 
             // now check the regular system table fields
-            if (empty($value) and ($key == 'system.id' or $key == 'id' or $key == 'system.oae_manage' or $key == 'oae_manage' or $key == 'system.status' or $key == 'status' or $key == 'system.nmis_manage' or $key == 'nmis_manage' or $key == 'system.environment' or $key == 'environment' or $key == 'system.location_id' or $key == 'location_id' or $key == 'system.org_id' or $key == 'org_id' or $key == 'system.type' or $key == 'type')) {
+            if ((string)$value == '' and ($key == 'system.id' or $key == 'id' or $key == 'system.oae_manage' or $key == 'oae_manage' or $key == 'system.status' or $key == 'status' or $key == 'system.nmis_manage' or $key == 'nmis_manage' or $key == 'system.environment' or $key == 'environment' or $key == 'system.location_id' or $key == 'location_id' or $key == 'system.org_id' or $key == 'org_id' or $key == 'system.type' or $key == 'type')) {
                 # We cannot set these fields to blank, they MUST contain a value
 
             } else {
@@ -1080,7 +1080,7 @@ class M_devices extends MY_Model
     }
 
     /**
-    * Pass in a string detailing what has attempted to set a value and recieve a result containing the weight
+    * Pass in a string detailing what has attempted to set a value and receive a result containing the weight
     *
     * @param   string $set_by The source
     * @access  public
