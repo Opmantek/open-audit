@@ -814,6 +814,7 @@ INSERT INTO `configuration` VALUES (NULL,'match_hostname_dbus','y','bool','y','s
 INSERT INTO `configuration` VALUES (NULL,'match_hostname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
 INSERT INTO `configuration` VALUES (NULL,'match_hostname_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and UUID.');
 INSERT INTO `configuration` VALUES (NULL,'match_ip','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip.');
+INSERT INTO `configuration` VALUES (NULL,'match_ip_no_data','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip if we have an existing device with no data.');
 INSERT INTO `configuration` VALUES (NULL,'match_mac','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its mac address.');
 INSERT INTO `configuration` VALUES (NULL,'match_mac_vmware','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if its a known likely duplicate from VMware.');
 INSERT INTO `configuration` VALUES (NULL,'match_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial number.');
