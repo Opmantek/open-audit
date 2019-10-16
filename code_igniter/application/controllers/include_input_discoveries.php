@@ -611,9 +611,6 @@ foreach ($xml->children() as $input) {
         }
     }
 
-    # Set the device org_id based on this discovery
-    $device->org_id = $discovery->org_id;
-
     # If we have specifically assigned another org_id, set it
     if (!empty($discovery->devices_assigned_to_org)) {
         $device->org_id = $discovery->devices_assigned_to_org;
@@ -658,6 +655,8 @@ foreach ($xml->children() as $input) {
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         $log->command_output = '';
         discovery_log($log);
+        # Set the device org_id based on this discovery
+        $device->org_id = $discovery->org_id;
         $device->id = $this->m_device->insert($device);
         $device->ip = ip_address_from_db($device->ip);
         $log->system_id = $device->id;
@@ -1486,6 +1485,8 @@ foreach ($xml->children() as $input) {
         $log->message = '';
         if (empty($i)) {
             // insert a new system
+            # Set the device org_id based on this discovery
+            $audit->system->org_id = $discovery->org_id;
             $audit->system->id = $this->m_device->insert($audit->system);
             $log->system_id = $audit->system->id;
             $log->ip = @$audit->system->ip;
