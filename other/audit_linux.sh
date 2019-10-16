@@ -2041,7 +2041,7 @@ vm_result=""
 ##################################
 # Docker Machines                #
 ##################################
-if [ "$debugging" -gt "0" ] && [ -n $(which docker 2>/dev/null)]; then
+if [ "$debugging" -gt "0" ] && [ -n $(which docker 2>/dev/null) ]; then
 	echo "Docker Info"
 fi
 PREVIFS=$IFS
