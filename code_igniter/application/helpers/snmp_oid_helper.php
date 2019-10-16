@@ -45,6 +45,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			$oid = $temp[6];
 		}
 		$oid = intval($oid);
+		$manufacturer = '';
 		switch ($oid) {
 			case 0: $manufacturer = 'Reserved'; break;
 			case 1: $manufacturer = 'Nxnetworks'; break;
@@ -54069,6 +54070,6 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 54136: $manufacturer = 'Notarchiv Kft.'; break;
 			default: $manufacturer = '';
 		}		
-		return ($new->manufacturer);
+		return ($manufacturer);
 	}
 }
