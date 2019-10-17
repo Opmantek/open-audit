@@ -482,7 +482,6 @@ class MY_Model extends CI_Model
             if ($collection == 'configuration') {
                 $sql = "SELECT configuration.* FROM configuration " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
-
             } else if ($collection == 'discovery_log') {
                 $sql = "SELECT " . $return['properties'] . " FROM `discovery_log` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
@@ -490,16 +489,25 @@ class MY_Model extends CI_Model
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'locations') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name`, orgs.name AS `orgs.name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `orgs.name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+                if (!empty($CI->response->meta->requestor)) {
+                    $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `orgs.name` FROM `locations` LEFT JOIN orgs ON (locations.org_id = orgs.id) LEFT JOIN system ON (locations.id = system.location_id AND system.oae_manage = 'y') " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+                }
 
             } else if ($collection == 'logs') {
                 $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'networks') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+                if (!empty($CI->response->meta->requestor)) {
+                    $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id AND system.oae_manage = 'y') " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+                }
 
             } else if ($collection == 'orgs') {
                 $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) " . $return['filter'] . " GROUP BY orgs.id " . $return['sort'] . " " . $return['limit'];
+                if (!empty($CI->response->meta->requestor)) {
+                    $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id AND system.oae_manage = 'y') " . $return['filter'] . " GROUP BY orgs.id " . $return['sort'] . " " . $return['limit'];
+                }
 
             } else if ($collection == 'queries') {
                 $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(orgs.name) AS `org_name` FROM `queries` LEFT JOIN orgs ON (`queries`.org_id = orgs.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
