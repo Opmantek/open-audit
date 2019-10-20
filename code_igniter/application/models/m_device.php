@@ -96,7 +96,7 @@ class M_device extends MY_Model
         }
 
         # check if we have an ip address or a hostname (possibly a fqdn)
-        if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+        if (!empty($details->hostname) and !filter_var($details->hostname, FILTER_VALIDATE_IP)) {
             if (strpos($details->hostname, '.') !== false) {
                 $message = new stdClass();
                 $message->message = "Provided hostname contains a '.' and is not a valid IP. Assuming a FQDN.";
@@ -122,20 +122,29 @@ class M_device extends MY_Model
                 unset($temp);
             }
         } else {
-            # we have an ip address in the hostname field - remove it
-            # likely because DNS is not fully setup and working correctly
+            if (empty($details->hostname)) {
+                $message = new stdClass();
+                $message->message = "Provided hostname is empty.";
+                $message->command_status = 'notice';
+                $message->command_output = 'Hostname: ';
+                $log_message[] = $message;
+
+            } else {
+                # we have an ip address in the hostname field - remove it
+                # likely because DNS is not fully setup and working correctly
                 $message = new stdClass();
                 $message->message = "Provided hostname is actually an IP address.";
                 $message->command_status = 'notice';
-                $message->command_output = 'Hostname: ' . $details->hostname;
+                $message->command_output = 'Hostname: ' . (string)$details->hostname;
                 $log_message[] = $message;
-            if (empty($details->ip)) {
-                $details->ip = $details->hostname;
-                $message = new stdClass();
-                $message->message = "No IP provided, but provided hostname is an IP. Storing in IP.";
-                $message->command_status = 'notice';
-                $message->command_output = 'IP: ' . $details->ip;
-                $log_message[] = $message;
+                if (empty($details->ip)) {
+                    $details->ip = @($details->hostname);
+                    $message = new stdClass();
+                    $message->message = "No IP provided, but provided hostname is an IP. Storing in IP.";
+                    $message->command_status = 'notice';
+                    $message->command_output = 'IP: ' . $details->ip;
+                    $log_message[] = $message;
+                }
             }
             $message = new stdClass();
             $message->message = "Provided hostname is actually an IP, removing.";
@@ -1277,7 +1286,7 @@ class M_device extends MY_Model
                 $data = array(ip_address_to_db($details->ip));
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
-                if (count($row) > 0) {
+                if (!empty($row) and is_array($row) and count($row) > 0) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
