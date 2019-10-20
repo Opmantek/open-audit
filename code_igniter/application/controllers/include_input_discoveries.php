@@ -141,8 +141,11 @@ foreach ($xml->children() as $input) {
             }
         } else {
             $discovery = new stdClass();
-            $discovery->id = '';
+            $discovery->id = 0;
+            $discovery->org_id = 1;
             $discovery->discard = '';
+            $discovery->other = new stdClass();
+            $discovery->other->match = array();
             $syslog->ip = $input->ip;
             $syslog->severity = 4;
             $syslog->status = 'fail';
@@ -158,8 +161,11 @@ foreach ($xml->children() as $input) {
         $syslog->message = 'When processing discover_subnet, no discovery_id was provided in the input.';
         stdlog($syslog);
         $discovery = new stdClass();
-        $discovery->id = '';
+        $discovery->id = 0;
+        $discovery->org_id = 1;
         $discovery->discard = '';
+        $discovery->other = new stdClass();
+        $discovery->other->match = array();
         if (!empty($this->config->default_network_address)) {
             $discovery->network_address = $this->config->default_network_address;
         } else {
@@ -193,7 +199,7 @@ foreach ($xml->children() as $input) {
             $syslog->message = $this->db->last_query();
             stdlog($syslog);
         }
-        if (!empty($discovery->other->single) and $discovery->other->single == 'y' and $discovery->discard == 'y') {
+        if (!empty($discovery->other->single) and !empty($discovery->discard) and $discovery->other->single == 'y' and $discovery->discard == 'y') {
             sleep(10);
             $sql = "/* input::discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
             $data = array();
@@ -280,7 +286,7 @@ foreach ($xml->children() as $input) {
     $device->id = $this->m_device->match($parameters);
     $log->command_output = '';
 
-    if (!empty($device->id)) {
+    if (!empty($device->id) and !empty($discovery_id)) {
         $sql = "SELECT name FROM system WHERE id = " . intval($device->id);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -377,8 +383,13 @@ foreach ($xml->children() as $input) {
     # We don't want the usual id (int), name (string), attributes (object) list, we just want the attributes.
     $creds = array();
     foreach ($credentials as $credential) {
-        $credential->attributes->foreign = $credential->type;
-        $creds[] = $credential->attributes;
+        if (!empty($credential->type)) {
+            if (empty($credential->attributes)) {
+                $credential->attributes = new stdClass();
+            }
+            $credential->attributes->foreign = $credential->type;
+            $creds[] = $credential->attributes;
+        }
     }
     unset($credentials);
     $credentials = $creds;
@@ -390,7 +401,7 @@ foreach ($xml->children() as $input) {
     discovery_log($log);
 
     $input->ssh_port = '22';
-    if ($discovery->other->nmap->ssh_ports != '22') {
+    if (!empty($discovery->other->nmap->ssh_ports) and $discovery->other->nmap->ssh_ports != '22') {
         $nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
         foreach (explode(',', $input->nmap_ports) as $port) {
             $temp = explode('/', $port);
@@ -656,7 +667,7 @@ foreach ($xml->children() as $input) {
         $log->command_output = '';
         discovery_log($log);
         # Set the device org_id based on this discovery
-        $device->org_id = $discovery->org_id;
+        $device->org_id = intval($discovery->org_id);
         $device->id = $this->m_device->insert($device);
         $device->ip = ip_address_from_db($device->ip);
         $log->system_id = $device->id;
@@ -827,7 +838,7 @@ foreach ($xml->children() as $input) {
     }
     if (count($nmap_result) > 0) {
         $log->ip = $device->ip;
-        $log->discovery_id = $device->discovery_id;
+        $log->discovery_id = @intval($device->discovery_id);
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing Nmap ports for ' . $device->ip;
