@@ -750,7 +750,7 @@ for host in $alive_ips; do
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 		result="$result		<ip>$host</ip>"$'\n'
 		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
-		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
+		result="$result		<manufacturer></manufacturer>"$'\n'
 		result="$result		<description></description>"$'\n'
 		result="$result		<org_id>$org_id</org_id>"$'\n'
 		result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
