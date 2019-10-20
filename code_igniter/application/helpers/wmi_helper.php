@@ -1051,12 +1051,6 @@ if (! function_exists('wmi_command')) {
             return false;
         }
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to wmi_helper::wmi_command';
-            discovery_log($log);
-            return false;
-        }
-
         if (!is_object($credentials)) {
             $log->message = 'No credentials passed to wmi_helper::wmi_command';
             discovery_log($log);
