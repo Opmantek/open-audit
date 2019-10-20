@@ -246,7 +246,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'type', 'full_name', 'version');
         }
         if ($table == 'server_item') {
-                $match_columns = array('name', 'type', 'instance');
+                $match_columns = array('name', 'type', 'instance', 'port');
         }
         if ($table == 'service') {
                 #$match_columns = array('description', 'name', 'executable');
