@@ -102,12 +102,13 @@ class M_rules extends MY_Model
     {
         $log = new stdClass();
         $log->discovery_id = @intval($parameters->discovery_id);
-        $log->message = 'Running rules::match function.';
+        $log->message = 'Running rules::execute function.';
         $item_start = microtime(true);
         $log->severity = 7;
         $log->command_status = 'notice';
         $log->file = 'm_rules';
         $log->function = 'execute';
+        $id = '';
 
         # Device
         if (empty($parameters->id) and empty($parameters->device)) {
@@ -185,6 +186,7 @@ class M_rules extends MY_Model
         $log->system_id = '';
         if (!empty($device->id)) {
             $log->system_id = $device->id;
+            $id = $device->id;
         }
 
         discovery_log($log);
@@ -332,7 +334,7 @@ class M_rules extends MY_Model
                     if ($input->table == 'system') {
                         switch ($input->operator) {
                             case 'eq':
-                                if ((string)$device->{$input->attribute} === (string)$input->value) {
+                                if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} === (string)$input->value) {
                                     if ((string)$input->value !== '') {
                                         $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " eq " . $input->value;
                                     } else {
@@ -343,9 +345,9 @@ class M_rules extends MY_Model
                             break;
 
                             case 'ne':
-                                if ((string)$device->{$input->attribute} !== (string)$input->value) {
+                                if (!isset($device->{$input->attribute}) or (string)$device->{$input->attribute} !== (string)$input->value) {
                                     if ((string)$input->value !== '') {
-                                        $log->message .= " Hit on $input->attribute " .$device->{$input->attribute} . " ne " . $input->value;
+                                        $log->message .= " Hit on $input->attribute " . @$device->{$input->attribute} . " ne " . $input->value;
                                     } else {
                                         $log->message .= " Hit on $input->attribute is not empty";
                                     }
@@ -354,42 +356,42 @@ class M_rules extends MY_Model
                             break;
 
                             case 'gt':
-                                if ((string)$device->{$input->attribute} > (string)$input->value) {
+                                if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} > (string)$input->value) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " gt " . $input->value;
                                     $hit++;
                                 }
                             break;
 
                             case 'ge':
-                                if ((string)$device->{$input->attribute} >= (string)$input->value) {
+                                if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} >= (string)$input->value) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ge " . $input->value;
                                     $hit++;
                                 }
                             break;
 
                             case 'lt':
-                                if ((string)$device->{$input->attribute} < (string)$input->value) {
+                                if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} < (string)$input->value) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " lt " . $input->value;
                                     $hit++;
                                 }
                             break;
 
                             case 'le':
-                                if ((string)$device->{$input->attribute} <= (string)$input->value) {
+                                if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} <= (string)$input->value) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " le" . $input->value;
                                     $hit++;
                                 }
                             break;
 
                             case 'li':
-                                if (stripos((string)$device->{$input->attribute}, $input->value) !== false) {
+                                if (isset($device->{$input->attribute}) and stripos((string)$device->{$input->attribute}, $input->value) !== false) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " li " . $input->value;
                                     $hit++;
                                 }
                             break;
 
                             case 'nl':
-                                if (stripos((string)$device->{$input->attribute}, $input->value) === false) {
+                                if (isset($device->{$input->attribute}) and stripos((string)$device->{$input->attribute}, $input->value) === false) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " nl " . $input->value;
                                     $hit++;
                                 }
@@ -397,7 +399,7 @@ class M_rules extends MY_Model
 
                             case 'in':
                                 $values = explode(',', $input->value);
-                                if (in_array((string)$device->{$input->attribute}, $values)) {
+                                if (isset($device->{$input->attribute}) and in_array((string)$device->{$input->attribute}, $values)) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " in " . $input->value;
                                     $hit++;
                                 }
@@ -405,21 +407,21 @@ class M_rules extends MY_Model
 
                             case 'ni':
                                 $values = explode(',', $input->value);
-                                if (!in_array((string)$device->{$input->attribute}, $values)) {
+                                if (!isset($device->{$input->attribute}) or !in_array((string)$device->{$input->attribute}, $values)) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ni " . $input->value;
                                     $hit++;
                                 }
                             break;
 
                             case 'st':
-                                if (stripos((string)$device->{$input->attribute},$input->value) === 0) {
+                                if (!empty($device->{$input->attribute}) and stripos((string)$device->{$input->attribute},$input->value) === 0) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " st " . $input->value;
                                     $hit++;
                                 }
                             break;
                             
                             default:
-                                if ((string)$device->{$input->attribute} === (string)$input->value) {
+                                if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} === (string)$input->value) {
                                     $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " default " . $input->value;
                                     $hit++;
                                 }
