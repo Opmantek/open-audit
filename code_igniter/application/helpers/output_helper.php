@@ -223,7 +223,7 @@ if (! function_exists('output')) {
         $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
-        if ($CI->response->meta->debug === true) {
+        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug === true) {
             $CI->response->meta->user = $CI->user;
             $CI->response->meta->timing = $GLOBALS['timer_log'];
             $CI->response->meta->time_end = microtime(true);
