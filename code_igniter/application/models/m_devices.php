@@ -974,6 +974,13 @@ class M_devices extends MY_Model
             $received_data = $CI->response->meta->received_data->attributes;
         }
 
+        if (!empty($CI->response->meta->received_data->attributes->status) and $CI->response->meta->received_data->attributes->status === 'deleted' and !empty($CI->config->config['device_auto_delete']) and $CI->config->config['device_auto_delete'] === 'y') {
+            $sql = "DELETE FROM `system` WHERE id IN ( " . implode(',', $ids) . " )";
+            $data = array();
+            $this->run_sql($sql, $data);
+            return;
+        }
+
         $CI->load->model('m_edit_log');
         $CI->load->model('m_orgs');
         $system_fields = implode(' ', $this->db->list_fields('system'));

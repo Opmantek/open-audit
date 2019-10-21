@@ -170,6 +170,13 @@ $(document).ready(function () {
             data["data"]["id"] = id;
             data["data"]["type"] = collection;
             data["data"]["attributes"] = {};
+
+            if (attribute == 'status' && value == 'deleted' && device_auto_delete == 'y') {
+                if (confirm("Are you sure?\n\nYour settings mean this will permanently DELETE this device and remove all its data from the database.\n\nIs this acceptable?") !== true) {
+                    return;
+                }
+            }
+
             if (attribute.indexOf(".") === -1) {
                 data["data"]["attributes"][attribute] = value;
             } else {
@@ -200,6 +207,9 @@ $(document).ready(function () {
             document.getElementById('submit_'+attribute).remove();
             // need this for regular fields (name, description, etc)
             $('#submit_' + attribute).remove();
+            if (attribute == 'status' && value == 'deleted' && device_auto_delete == 'y') {
+                window.location = baseurl + 'index.php/devices';
+            }
         }
     });
 });

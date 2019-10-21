@@ -89,7 +89,7 @@ $this->alter_table('user', 'home', "ADD `home` text NOT NULL AFTER `keys`", 'add
 
 $this->alter_table('user', 'shell', "ADD `shell` text NOT NULL AFTER `home`", 'add');
 
-$sql = "DELETE FROM configuration WHERE `name` = 'device_delete_prompt'";
+$sql = "DELETE FROM configuration WHERE `name` = 'device_auto_delete'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
