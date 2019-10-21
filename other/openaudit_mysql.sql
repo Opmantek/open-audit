@@ -3469,6 +3469,7 @@ CREATE TABLE `system` (
   `nmis_notes` text NOT NULL,
   `nmis_business_service` varchar(50) NOT NULL DEFAULT '',
   `nmis_poller` text NOT NULL,
+  `nmis_customer` varchar(200) NOT NULL DEFAULT'',
   `oae_manage` enum('y','n') NOT NULL DEFAULT 'y',
   `snmp_oid` text NOT NULL,
   `sysDescr` text NOT NULL,

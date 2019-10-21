@@ -54,6 +54,8 @@ DELETE FROM configuration WHERE `name` = 'match_ip_no_data';
 
 INSERT INTO `configuration` VALUES (NULL,'match_ip_no_data','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip if we have an existing device with no data.');
 
+ALTER TABLE `system` ADD `nmis_customer` varchar(200) NOT NULL DEFAULT '' AFTER `nmis_poller`;
+
 UPDATE `configuration` SET `value` = '20191010' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.3.0' WHERE `name` = 'display_version';
@@ -104,6 +106,8 @@ $this->log_db($this->db->last_query());
 $sql = "INSERT INTO `configuration` VALUES (NULL,'match_ip_no_data','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip if we have an existing device with no data.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$this->alter_table('system', 'nmis_customer', "ADD `nmis_customer` varchar(200) NOT NULL DEFAULT '' AFTER `nmis_poller`", 'add');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20191010' WHERE `name` = 'internal_version'";
