@@ -44,7 +44,7 @@ ALTER TABLE `user` ADD `home` varchar(255) NOT NULL DEFAULT '' AFTER `keys`;
 
 ALTER TABLE `user` ADD `shell` varchar(255) NOT NULL DEFAULT '' AFTER `home`;
 
-DELETE FROM configuration WHERE `name` = 'device_delete_prompt';
+DELETE FROM configuration WHERE `name` = 'device_auto_delete';
 
 INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y', 'system', '2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
 
