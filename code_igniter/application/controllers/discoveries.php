@@ -185,6 +185,7 @@ class Discoveries extends MY_Controller
     */
     public function read()
     {
+        $this->test_windows_apache_user();
         include 'include_read.php';
     }
 
@@ -218,6 +219,8 @@ class Discoveries extends MY_Controller
     */
     public function collection()
     {
+        $this->discovery_status();
+        $this->test_windows_apache_user();
         include 'include_collection.php';
     }
 
@@ -303,7 +306,6 @@ class Discoveries extends MY_Controller
 
     /**
     * The requested table will have optimize run upon it and it's autoincrement reset to 1
-
     *
     * @access public
     * @return NULL
@@ -311,6 +313,33 @@ class Discoveries extends MY_Controller
     public function reset()
     {
         include 'include_reset.php';
+    }
+
+    private function test_windows_apache_user()
+    {
+        if ((string) php_uname('s') === 'Windows NT') {
+            $user = get_current_user();
+            if ($user == 'SYSTEM') {
+                $sql = '/* discoveries */ ' . "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
+                $data = array();
+                $data_result = $this->run_sql($sql, $data);
+                if ($data_result[0]->count > 0){
+                    $this->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
+                    $this->session->set_flashdata('warning', $this->response->meta->warning);
+                }
+            }
+        }
+    }
+
+    private function discovery_status()
+    {
+        # Mark any discoveries where status != complete and last_log is greater than 20 minutes ago as Zombie
+        $sql = '/* discoveries */ ' . " UPDATE `discoveries` SET `status` = 'failed' WHERE `last_log` < (NOW() - INTERVAL 20 MINUTE) AND `last_log` != '2000-01-01 00:00:00' AND `status` != 'complete'";
+        $this->db->query($sql);
+
+        // $sql = '/* discoveries */ ' . " UPDATE `discoveries` SET `status` = 'complete' WHERE `id` IN (SELECT `id` FROM (SELECT `id` FROM `discoveries` WHERE `discovered` = concat(`device_count`, ' of ', `device_count`) AND `id` = 4) `a`)";
+        // $query = $this->db->query($sql);
+
     }
 }
 // End of file discoveries.php

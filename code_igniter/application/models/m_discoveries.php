@@ -55,19 +55,6 @@ class M_discoveries extends MY_Model
             $id = intval($id);
         }
 
-        if ((string) php_uname('s') === 'Windows NT') {
-            $user = get_current_user();
-            if ($user == 'SYSTEM') {
-                $sql = "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `discovery_id` = ? AND `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
-                $data = array(intval($id));
-                $data_result = $this->run_sql($sql, $data);
-                if ($data_result[0]->count > 0){
-                    $CI->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
-                    $CI->session->set_flashdata('warning', $CI->response->meta->warning);
-                }
-            }
-        }
-
         $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -88,7 +75,7 @@ class M_discoveries extends MY_Model
                 $result[0]->other->nmap->discovery_scan_option_id = 1;
             }
         }
-        # Do not check if 0 as 0 is for custom scans
+        # Do not check if 0 because 0 is for custom scans
         if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
             $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
             $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
@@ -112,6 +99,11 @@ class M_discoveries extends MY_Model
         }
         if ($result[0]->type == 'subnet') {
             $result[0]->command = $this->create_command($result[0]);
+        }
+        if ($result[0]->status === 'failed') {
+            $sql = '/* m_discoveries::read */ ' . "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE `message` LIKE 'Discovery has completed processing%' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') GROUP BY `ip`) AND discovery_id = " . $id;
+            $last_logs = $this->run_sql($sql);
+            $result[0]->last_logs_for_failed_devices = $last_logs;
         }
         $result = $this->format_data($result, 'discoveries');
         return ($result);
@@ -146,6 +138,14 @@ class M_discoveries extends MY_Model
         stdlog($this->log);
         $sql = $this->collection_sql('discoveries', 'sql');
         $result = $this->run_sql($sql, array());
+        for ($i=0; $i < count($result); $i++) {
+            if (!empty($result[$i]->other)) {
+                $result[$i]->other = json_decode($result[$i]->other);
+                foreach ($result[$i]->other as $key => $value) {
+                    $result[$i]->{'other.'.$key} = $value;
+                }
+            }
+        }
         $result = $this->format_data($result, 'discoveries');
         return ($result);
     }

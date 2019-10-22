@@ -28,11 +28,21 @@ $timer_start = microtime(true);
 unset($this->response->data);
 $this->load->model('m_collection');
 
-if ($this->response->meta->collection === 'database' or $this->response->meta->collection === 'roles' ) {
+// if ($this->response->meta->collection === 'database' or $this->response->meta->collection === 'roles' ) {
+//     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
+// } else if ($this->response->meta->collection === 'summaries' and $this->response->meta->format == 'screen') {
+//     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
+// } else if ($this->response->meta->collection === 'buildings' or $this->response->meta->collection === 'floors' or $this->response->meta->collection === 'rooms' or $this->response->meta->collection === 'rows' or $this->response->meta->collection === 'racks' or $this->response->meta->collection === 'rack_devices') {
+//     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
+// } else {
+//     $this->response->data = $this->m_collection->collection($this->response->meta->collection);
+// }
+
+$individuals = array('buildings', 'floors', 'database', 'discoveries', 'rack_devices', 'roles', 'rooms', 'rows');
+
+if (in_array($this->response->meta->collection, $individuals)) {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else if ($this->response->meta->collection === 'summaries' and $this->response->meta->format == 'screen') {
-    $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
-} else if ($this->response->meta->collection === 'buildings' or $this->response->meta->collection === 'floors' or $this->response->meta->collection === 'rooms' or $this->response->meta->collection === 'rows' or $this->response->meta->collection === 'racks' or $this->response->meta->collection === 'rack_devices') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else {
     $this->response->data = $this->m_collection->collection($this->response->meta->collection);

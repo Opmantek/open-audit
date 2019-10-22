@@ -124,7 +124,7 @@ foreach ($xml->children() as $input) {
         $syslog->discovery_id = intval($input->discovery_id);
         $GLOBALS['discovery_id'] = intval($input->discovery_id);
         $log->discovery_id = intval($input->discovery_id);
-        $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
+        $sql = "/* include_input_discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
         $data = array($log->discovery_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -178,20 +178,8 @@ foreach ($xml->children() as $input) {
 
     // The end submit from the script that indicates there are no more items to be submitted
     if (!empty($input->complete) and $input->complete == 'y') {
-        $sql = "/* input::discoveries */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
-        $data = array($log->discovery_id);
-        $query = $this->db->query($sql, $data);
-        $syslog->severity = 7;
-        $syslog->summary = 'Set discovery entry status to complete';
-        $syslog->status = 'notice';
-        $syslog->detail = $this->db->last_query();
-        stdlog($syslog);
-        $syslog->ip = '127.0.0.1';
-        $syslog->discovery_id = $log->discovery_id;
-        $syslog->message = 'Set discovery entry status to complete';
-        discovery_log($syslog);
         if ($discovery->discard == 'y') {
-            $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
+            $sql = "/* include_input_discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
             $syslog->severity = 7;
@@ -201,7 +189,7 @@ foreach ($xml->children() as $input) {
         }
         if (!empty($discovery->other->single) and !empty($discovery->discard) and $discovery->other->single == 'y' and $discovery->discard == 'y') {
             sleep(10);
-            $sql = "/* input::discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
+            $sql = "/* include_input_discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
             $data = array();
             $query = $this->db->query($sql, $data);
             $syslog->severity = 7;
@@ -254,7 +242,7 @@ foreach ($xml->children() as $input) {
     unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
 
     if (!empty($discovery->id)) {
-        $sql = "/* input::discoveries */ " . "UPDATE discoveries SET device_count = device_count + 1 WHERE id = ?";
+        $sql = "/* include_input_discoveries */ " . "UPDATE discoveries SET device_count = device_count + 1 WHERE id = ?";
         $data = array($discovery->id);
         $query = $this->db->query($sql, $data);
     }
@@ -287,7 +275,7 @@ foreach ($xml->children() as $input) {
     $log->command_output = '';
 
     if (!empty($device->id) and !empty($discovery_id)) {
-        $sql = "SELECT name FROM system WHERE id = " . intval($device->id);
+        $sql = "/* include_input_discoveries */ " . "SELECT name FROM system WHERE id = " . intval($device->id);
         $query = $this->db->query($sql);
         $result = $query->result();
         $name = $result[0]->name;
@@ -298,7 +286,7 @@ foreach ($xml->children() as $input) {
 
         // remove any old logs for this device
         #$sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
-        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and discovery_id != " . $discovery->id;
+        $sql = "/* include_input_discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and discovery_id != " . $discovery->id;
         $log->message = 'Delete the previous log entries for this device';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -313,8 +301,7 @@ foreach ($xml->children() as $input) {
         unset($log->id, $command_log_id);
         
         // update the previous log entries with our new system_id
-        #$sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
-        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
+        $sql = "/* include_input_discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
         $log->message = 'Update the current log entries with our new device';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -342,7 +329,7 @@ foreach ($xml->children() as $input) {
 
     if (!empty($device->id)) {
         // Previous working credentials
-        $sql = "/* input::discoveries */ " . "SELECT `credentials` FROM `system` WHERE id = " . intval($device->id);
+        $sql = "/* include_input_discoveries */ " . "SELECT `credentials` FROM `system` WHERE id = " . intval($device->id);
         $query = $this->db->query($sql);
         $result = $query->result();
         if (!empty($result[0]->credentials)) {
@@ -594,7 +581,7 @@ foreach ($xml->children() as $input) {
         if (!empty($device->id)) {
             $log->system_id = $device->id;
             // remove any old logs for this device
-            $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " AND (discovery_id != " . $discovery->id . " OR pid != " . $log->pid . ")";
+            $sql = "/* include_input_discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " AND (discovery_id != " . $discovery->id . " OR pid != " . $log->pid . ")";
             $log->message = 'Delete the previous log entries for this system_id';
             $log->command_status = 'notice';
             $log->command = $sql;
@@ -608,7 +595,7 @@ foreach ($xml->children() as $input) {
             unset($log->id, $command_log_id);
 
             // update the previous log entries with our new system_id
-            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
+            $sql = "/* include_input_discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
             $log->message = 'Update the previous log entries with the system_id';
             $log->command_status = 'notice';
             $log->command = $sql;
@@ -676,7 +663,7 @@ foreach ($xml->children() as $input) {
         $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         discovery_log($log);
         // update the previous log entries with our new system_id
-        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
+        $sql = "/* include_input_discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
         $log->message = 'Update the previous log entries with our new system_id';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -1029,7 +1016,7 @@ foreach ($xml->children() as $input) {
             } else {
                 $source = $filepath . '/scripts/' . $source_name;
             }
-            $sql = "/* discovery::process_subnet */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
+            $sql = "/* include_input_discoveries */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
             $query = $this->db->query($sql);
             $result = $query->result();
             if (!empty($result[0])) {
@@ -1480,7 +1467,7 @@ foreach ($xml->children() as $input) {
             // nmap and/or snmp and/or SSH) we couldn't match an existing system
             // Now we have an actual audit result with plenty of data
             // we have found a match and it's not the original
-            $sql = "/* include_input_devices */ DELETE FROM system WHERE id = ?";
+            $sql = "/* include_input_discoveries */ DELETE FROM system WHERE id = ?";
             $query = $this->db->query($sql, array($audit->system->id));
             $log->system_id = $i;
             $log->message = 'System Id provided differs from System Id found for ' . $audit->system->hostname;
@@ -1528,7 +1515,7 @@ foreach ($xml->children() as $input) {
         unset($log->command, $log->message, $log->command_status);
         $log->severity = 7;
 
-        $sql = "/* include_input_devices */ " . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
+        $sql = "/* include_input_discoveries */ " . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
         $data = array($log->system_id, $log->pid);
         $query = $this->db->query($sql, $data);
         $script_version = '';
@@ -1649,4 +1636,20 @@ foreach ($xml->children() as $input) {
     $log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB";
     $log->message = "Discovery has completed processing $device->ip";
     discovery_log($log);
+
+    # Check if this discovery is complete and set status if so
+    $sql = '/* include_input_discoveries */ ' . "SELECT COUNT(*) AS `count` FROM `discovery_log` WHERE `discovery_id` = " . intval($discovery->id) . " AND `message` LIKE 'Discovery has completed processing%'";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    if (!empty($result[0]->count)) {
+        $count = intval($result[0]->count);
+        $sql = '/* include_input_discoveries */ ' . "SELECT `device_count` FROM `discoveries` WHERE `id` = " . intval($discovery->id);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $device_count = intval($result[0]->device_count);
+        if ($count === $device_count) {
+            $sql = '/* include_input_discoveries */ ' . "UPDATE `discoveries` SET `complete` = 'y', `status` = 'complete', `duration` = TIMEDIFF(`last_log`, `last_run`) WHERE `id` = " . intval($discovery->id) . "\n";
+            $this->db->query($sql);
+        }
+    }
 }

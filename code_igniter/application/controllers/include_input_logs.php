@@ -65,19 +65,16 @@ if (!empty($log->type) and $log->type == 'discovery') {
         $data = array($progress, $log_id, $log->discovery_id);
         $query = $this->db->query($sql, $data);
     }
-    if (strpos($log->message, 'Completed discovery') !== false) {
-        # Update the status
-        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'complete', `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
-        $data = array($log->discovery_id);
-        $query = $this->db->query($sql, $data);
-    }
+    // if (strpos($log->message, 'Completed discovery') !== false) {
+    //     # Update the status
+    //     $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'complete', `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
+    //     $data = array($log->discovery_id);
+    //     $query = $this->db->query($sql, $data);
+    // }
     # Update the duration
     $sql = '/* input::logs */ ' . "UPDATE discoveries SET `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
     $data = array($log->discovery_id);
     $query = $this->db->query($sql, $data);
-    # Mark any discoveries where status != complete and last_log is greater than 20minutes ago as Zombie
-    $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'zombie' WHERE `last_log` < (NOW() - INTERVAL 20 MINUTE) AND `last_log` != '2000-01-01 00:00:00' AND `status` != 'complete'";
-    $query = $this->db->query($sql);
 }
 
 if ($this->response->meta->format == 'json') {
