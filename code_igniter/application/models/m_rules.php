@@ -199,7 +199,7 @@ class M_rules extends MY_Model
         if (!empty($device->snmp_oid)) {
             $log_start = microtime(true);
             $newdevice = get_details_from_oid($device->snmp_oid);
-            if (!empty($newdevice)) {
+            if (!empty($newdevice->model)) {
                 $log->message = "Hit on \$device->snmp_oid " . $device->snmp_oid . " eq " . $device->snmp_oid;
                 $log->command = 'Rules Match - SNMP OID for  ' . $newdevice->model;
                 $log->command_output = json_encode($newdevice);
