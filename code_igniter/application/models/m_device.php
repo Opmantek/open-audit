@@ -1576,7 +1576,7 @@ class M_device extends MY_Model
         return $details->id;
     }
 
-    public function update($details, $display = 'n')
+    public function update($details)
     {
         if (empty($details->id)) {
             # this is an update - we need a system.id
@@ -1588,13 +1588,7 @@ class M_device extends MY_Model
         $log_details = new stdClass();
         $log_details->message = 'System update start for '.@ip_address_from_db(@$details->ip).'('.@$details->hostname.') (System ID '.@$details->id.')';
         $log_details->severity = 7;
-        $log_details->file = 'system';
-        if ($display != 'y') {
-            $display = 'n';
-        }
-        $log_details->display = $display;
-        unset($display);
-        stdlog($log_details);
+        $log_details->file = 'm_device';
 
         if (!empty($GLOBALS['discovery_id'])) {
             $log_details->discovery_id = $GLOBALS['discovery_id'];
@@ -1604,6 +1598,7 @@ class M_device extends MY_Model
         } else {
             $log_details->discovery_id = '';
         }
+        stdlog($log_details);
 
         $parameters = new stdClass();
         $parameters->log = $log_details;
@@ -1630,7 +1625,7 @@ class M_device extends MY_Model
 
         # we check a few items when we are submitting an audit script result
         # if they are blank (previously submitted info is incomplete) we over write them
-        $sql = "SELECT * FROM system WHERE id = ? LIMIT 1";
+        $sql = "/* m_device::update */ " . "SELECT * FROM system WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array("$details->id");
         $query = $this->db->query($sql, $data);
@@ -1644,7 +1639,6 @@ class M_device extends MY_Model
             } // end of row count > 0
         }
 
-
         $details->original_last_seen_by = $db_entry->last_seen_by;
         $details->original_last_seen = $db_entry->last_seen;
         $details->original_timestamp = $db_entry->last_seen;
@@ -1652,8 +1646,7 @@ class M_device extends MY_Model
             $details->timestamp = $details->last_seen;
         }
 
-
-        $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column, weight, value, previous_value, source";
+        $sql = "/* m_device::update */ " . "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column, weight, value, previous_value, source";
         $sql = $this->clean_sql($sql);
         $data = array($details->id);
         $query = $this->db->query($sql, $data);
@@ -1680,7 +1673,7 @@ class M_device extends MY_Model
                         $update->key = $key;
                         $update->value = $value;
                         $update_device[] = $update;
-                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, ?, ?, ?)";
+                        $sql = "/* m_device::update */ " . "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, ?, ?, ?)";
                         $sql = $this->clean_sql($sql);
                         $data = array(0, intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$details->timestamp, (string)$value, (string)$previous_value);
                         $query = $this->db->query($sql, $data);
@@ -1703,7 +1696,7 @@ class M_device extends MY_Model
         $sql = '';
         $data = array();
         if (count($update_device) > 0) {
-            $sql = "UPDATE `system` SET ";
+            $sql = "/* m_device::update */ " . "UPDATE `system` SET ";
             foreach ($update_device as $field) {
                 $sql .= "`" . $field->key . "` = ?, ";
                 $data[] = (string)$field->value;
@@ -1727,20 +1720,20 @@ class M_device extends MY_Model
             # ideally this would have already been done when the device was initially discovered, but we cannot count on that.
             # need to check if an entry in `network` exists and if it does not AND we have details, insert something
             # search for any entries in `ip`
-            $sql = "SELECT * FROM ip WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
+            $sql = "/* m_device::update */ " . "SELECT * FROM ip WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
             $sql = $this->clean_sql($sql);
             $data = array("$details->id", "$details->mac_address", "$details->ip");
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             if (count($result) == 0) {
                 # no match - insert
-                $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES(NULL, ?, 'y', ?, ?, ?, '', ?, ?, '', '', '')";
+                $sql = "/* m_device::update */ " . "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES(NULL, ?, 'y', ?, ?, ?, '', ?, ?, '', '', '')";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->id", "$details->timestamp", "$details->timestamp", "$details->mac_address", "$details->ip", "$details->subnet");
                 $query = $this->db->query($sql, $data);
             } else {
                 # match - update timestamp only
-                $sql = "UPDATE ip SET last_seen = ? WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
+                $sql = "/* m_device::update */ " . "UPDATE ip SET last_seen = ? WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->timestamp", "$details->id", "$details->mac_address", "$details->ip");
                 $query = $this->db->query($sql, $data);
@@ -1754,7 +1747,7 @@ class M_device extends MY_Model
         }
 
         # check if we have a matching entry in the vm table and update it if required
-        $sql = "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.current = 'y' and vm.system_id = system.id;";
+        $sql = "/* m_device::update */ " . "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.current = 'y' and vm.system_id = system.id;";
         $sql = $this->clean_sql($sql);
         $data = array("$details->uuid", "$details->vm_uuid");
         $query = $this->db->query($sql, $data);
@@ -1763,13 +1756,13 @@ class M_device extends MY_Model
             $temp_vm_id = $row->{'vm.id'};
             $details->vm_system_id = $row->{'vm.system_id'};
             $details->vm_server_name = $row->{'system.hostname'};
-            $sql = "SELECT icon, 'vm' FROM system WHERE system.id = ?";
+            $sql = "/* m_device::update */ " . "SELECT icon, 'vm' FROM system WHERE system.id = ?";
             $sql = $this->clean_sql($sql);
             $data = array($details->id);
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             $details->icon = $row->icon;
-            $sql = "UPDATE vm SET guest_system_id = ?, icon = ?, name = ? WHERE id = ?";
+            $sql = "/* m_device::update */ " . "UPDATE vm SET guest_system_id = ?, icon = ?, name = ? WHERE id = ?";
             $sql = $this->clean_sql($sql);
             $name = $details->name;
             if (empty($details->name)) {
@@ -1780,14 +1773,14 @@ class M_device extends MY_Model
             }
             $data = array($details->id, "$details->icon", "$name", "$temp_vm_id");
             $query = $this->db->query($sql, $data);
-            $sql = "UPDATE system SET vm_system_id = ?, vm_server_name = ? WHERE id = ?";
+            $sql = "/* m_device::update */ " . "UPDATE system SET vm_system_id = ?, vm_server_name = ? WHERE id = ?";
             $sql = $this->clean_sql($sql);
             $data = array($details->vm_system_id, $details->vm_server_name, $details->id);
             $query = $this->db->query($sql, $data);
         }
 
         if (empty($details->org_id)) {
-            $sql = "SELECT org_id FROM system WHERE id = ?";
+            $sql = "/* m_device::update */ " . "SELECT org_id FROM system WHERE id = ?";
             $sql = $this->clean_sql($sql);
             $data = array($details->id);
             $query = $this->db->query($sql, $data);
@@ -1796,7 +1789,7 @@ class M_device extends MY_Model
         }
 
         # add a count to our chart table
-        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = "/* m_device::update */ " . "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
