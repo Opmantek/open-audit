@@ -150,7 +150,7 @@ class M_devices_components extends MY_Model
 
         $result = false;
         if ($sql != '') {
-            $query = $this->db->query($sql, $data);
+            $query = $this->db->query("/* m_devices_components::read */" . $sql, $data);
             $result = $query->result();
             if ($table == 'credential') {
                 $this->load->library('encrypt');
