@@ -1717,7 +1717,7 @@ echo "	</network>" >> "$xml_file"
 # fi
 IFS="$NEWLINEIFS"
 echo "	<ip>" >> "$xml_file"
-for line in $(ip -o a | grep -v "^1: lo"); do
+for line in $(ip -o a | grep -v "^1: lo" | grep -v 'ff:ff:ff:ff:ff:ff'); do
 	interface=$(echo "$line" | awk '{print $2}')
 	mac=$(ip a show "$interface" | grep ether | awk '{print $2}')
 	net_index=$(echo "$line" | cut -d: -f1)
