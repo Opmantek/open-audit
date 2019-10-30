@@ -53,6 +53,17 @@ select:not([multiple]) {
     border-color: #aaa;
 }
 
+/* discovery log */
+.output {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #4f7bbc;
+    background-color: #edf4ff;
+    /* white-space: nowrap; */
+    border-radius: 4px;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    word-wrap: break-word;
+}
 
 /* collection */
 .glyphicon:hover { 
