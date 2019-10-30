@@ -782,7 +782,6 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_directory','/tm
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
-INSERT INTO `configuration` VALUES (NULL,'discovery_scan_limit','50','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should process.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
@@ -832,6 +831,8 @@ INSERT INTO `configuration` VALUES (NULL,'oae_url','/omk/open-audit','text','y',
 INSERT INTO `configuration` VALUES (NULL,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');
 INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
 INSERT INTO `configuration` VALUES (NULL,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
+INSERT INTO `configuration` VALUES (NULL,'queue_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should run.');
+INSERT INTO `configuration` VALUES (NULL,'queue_count','0','number','n','system','2000-01-01 00:00:00','The current number of concurrent device scans running.');
 INSERT INTO `configuration` VALUES (NULL,'rss_enable','y','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
 INSERT INTO `configuration` VALUES (NULL,'rss_url','https://community.opmantek.com/rss/OA.xml','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
 INSERT INTO `configuration` VALUES (NULL,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
@@ -995,22 +996,21 @@ CREATE TABLE `discoveries` (
   `type` varchar(100) NOT NULL DEFAULT '',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
-  `network_address` varchar(100) NOT NULL DEFAULT '',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
   `other` text NOT NULL,
   `options` text NOT NULL,
-  `device_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `limit` int(10) unsigned NOT NULL DEFAULT '0',
   `discard` enum('y','n') NOT NULL DEFAULT 'n',
+  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_finished` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `duration` time NOT NULL DEFAULT '00:00:00',
+  `status` varchar(20) NOT NULL DEFAULT '',
+  `ip_all_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `ip_responding_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `ip_discovered_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `ip_audited_count` int(10) unsigned NOT NULL DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `complete` enum('y','n') NOT NULL DEFAULT 'y',
-  `status` varchar(20) NOT NULL DEFAULT '',
-  `discovered` varchar(20) NOT NULL DEFAULT '',
-  `last_log` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `duration` time NOT NULL DEFAULT '00:00:00',
-  `pid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
