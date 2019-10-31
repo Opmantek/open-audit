@@ -56,11 +56,18 @@ if (!function_exists('snmp_credentials')) {
      *
      * @return    false || credentials object with an additional flag for 'sudo' and root
      */
-    function snmp_credentials($ip = '', $credentials = array(), $log)
+    function snmp_credentials($ip = '', $credentials = array(), $log = null, $discovery_id = null)
     {
         $retries = '0';
         $timeout = '5000000'; # 5 seconds to respond
 
+
+        if (is_null($log)) {
+            $log = new stdClass();
+        }
+        if (!is_null($discovery_id)) {
+            $log->discovery_id = $discovery_id;
+        }
         $log->file = 'snmp_helper';
         $log->function = 'snmp_credentials';
 
@@ -80,6 +87,7 @@ if (!function_exists('snmp_credentials')) {
             discovery_log($log);
             return false;
         }
+        $log->ip = $ip;
 
         foreach ($credentials as $credential) {
             $from = ' ';
@@ -348,22 +356,27 @@ if (!function_exists('my_snmp_real_walk')) {
 
 
 if (!function_exists('snmp_audit')) {
-    function snmp_audit($ip, $credentials, $log)
+    function snmp_audit($ip, $credentials, $log = null, $discovery_id = null)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
 
+        if (is_null($log)) {
+            $log = new stdClass();
+        }
+        if (!is_null($discovery_id)) {
+            $log->discovery_id = $discovery_id;
+        }
         $log->file = 'snmp_helper';
         $log->function = 'snmp_audit';
+        $log->ip = @$ip;
+        $log->severity = 7;
 
         if (!extension_loaded('snmp')) {
             $log->message = 'SNMP PHP function not loaded hence not attempting to run snmp_helper::snmp_audit function';
             $log->severity = 5;
             discovery_log($log);
             return false;
-        } else {
-            #$log->message = 'SNMP PHP function loaded and attempting to run snmp_helper::snmp_audit function';
-            #discovery_log($log);
         }
 
         # we need an ip address
@@ -377,9 +390,6 @@ if (!function_exists('snmp_audit')) {
             $log->severity = 5;
             discovery_log($log);
             return false;
-        } else {
-            #$log->message = 'Received ip ' . $ip;
-            #discovery_log($log);
         }
 
         if (empty($credentials) or !is_object($credentials)) {
@@ -387,9 +397,6 @@ if (!function_exists('snmp_audit')) {
             $log->severity = 5;
             discovery_log($log);
             return false;
-        } else {
-            #$log->message = 'Received credentials for ip ' . $ip;
-            #discovery_log($log);
         }
 
         # new in 1.5 - remove the type from the returned SNMP query.

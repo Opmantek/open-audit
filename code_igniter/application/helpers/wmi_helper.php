@@ -1190,8 +1190,14 @@ if (! function_exists('wmi_command')) {
 
 
 if (! function_exists('wmi_audit')) {
-    function wmi_audit($ip = '', $credentials, $log)
+    function wmi_audit($ip = '', $credentials, $log = null, $discovery_id = null)
     {
+        if (is_null($log)) {
+            $log = new stdClass();
+        }
+        if (!is_null($discovery_id)) {
+            $log->discovery_id = $discovery_id;
+        }
         $log->file = 'wmi_helper';
         $log->function = 'wmi_audit';
         $log->severity = 7;

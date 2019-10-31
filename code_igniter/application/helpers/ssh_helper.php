@@ -82,6 +82,9 @@ if (! function_exists('scp')) {
         }
         if (!empty($parameters->log)) {
             $log = $parameters->log;
+            if (!empty($parameters->discovery_id)) {
+                $log->discovery_id = $parameters->discovery_id;
+            }
         } else {
             $log = new stdClass();
         }
@@ -114,7 +117,9 @@ if (! function_exists('scp')) {
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
-        define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+        if (!defined('NET_SFTP_LOGGING')) {
+            define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+        }
         $ssh = new Net_SFTP($ip, $ssh_port);
         if (empty($ssh)) {
             $log->message = 'Could not instanciate SSH object to ' . $ip . ':' . $ssh_port . '.';
@@ -241,7 +246,11 @@ if (! function_exists('scp_get')) {
             $log = $parameters->log;
         } else {
             $log = new stdClass();
+            if (!empty($parameters->discovery_id)) {
+                $log->discovery_id = $parameters->discovery_id;
+            }
         }
+        $log->ip = @$parameters->ip;
         $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'scp_get';
@@ -376,7 +385,18 @@ if (! function_exists('ssh_command')) {
             return;
         }
 
-        $log = $parameters->log;
+        if (empty($parameters->log)) {
+            $log = new stdClass();
+            if (!empty($parameters->discovery_id)) {
+                $log->discovery_id = $parameters->discovery_id;
+            }
+        } else {
+            $log = $parameters->log;
+        }
+        $log->file = 'ssh_helper';
+        $log->function = 'ssh_command';
+        $log->ip = $parameters->ip;
+
         $ip = $parameters->ip;
         $credentials = $parameters->credentials;
         $command = $parameters->command;
@@ -387,8 +407,6 @@ if (! function_exists('ssh_command')) {
             $ssh_port = '22';
         }
 
-        $log->file = 'ssh_helper';
-        $log->function = 'ssh_command';
 
         $item_start = microtime(true);
         $return = array('output' => '', 'status' => 1);
@@ -523,7 +541,7 @@ if (! function_exists('ssh_audit')) {
     function ssh_audit($parameters)
     {
 
-        if (empty($parameters) or empty($parameters->log) or empty($parameters->credentials) or empty($parameters->ip)) {
+        if (empty($parameters) or empty($parameters->credentials) or empty($parameters->ip)) {
             $mylog = new stdClass();
             $mylog->severity = 4;
             $mylog->status = 'fail';
@@ -534,11 +552,20 @@ if (! function_exists('ssh_audit')) {
             return;
         }
 
-        $log = $parameters->log;
+        if (empty($parameters->log)) {
+            $log = new stdClass();
+            if (!empty($parameters->discovery_id)) {
+                $log->discovery_id = $parameters->discovery_id;
+            }
+        } else {
+            $log = $parameters->log;
+        }
+        $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'ssh_audit';
         $log->message = 'SSH audit starting';
         $log->command_status = 'notice';
+        $log->ip = $parameters->ip;
         discovery_log($log);
 
         if (is_array($parameters->credentials)) {
@@ -570,9 +597,11 @@ if (! function_exists('ssh_audit')) {
         $CI = & get_instance();
 
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
-        include 'Crypt/RSA.php';
-        include('Net/SSH2.php');
-        define('NET_SSH2_LOGGING', 2);
+        include_once('Crypt/RSA.php');
+        include_once('Net/SSH2.php');
+        if (!defined('NET_SSH2_LOGGING')) {
+            define('NET_SSH2_LOGGING', 2);
+        }
 
         foreach ($credentials as $credential) {
             if ($credential->type == 'ssh_key') {
@@ -1067,16 +1096,42 @@ if (! function_exists('ssh_audit')) {
 
         unset($array);
         if (empty($device->dbus_identifier) and empty($device->uuid) and $username != 'root') {
-            if (($CI->config->config['discovery_linux_use_sudo'] == 'y' and strtolower($device->os_group) == 'linux') or
-                ($CI->config->config['discovery_sunos_use_sudo'] == 'y' and strtolower($device->os_group) == 'sunos') or
-                (strtolower($device->os_group) != 'linux' and strtolower($device->os_group) != 'sunos')) {
-                if (!empty($device->which_sudo)) {
-                    # Run DMIDECODE to get the UUID (requires root or sudo)
+             if ($device->use_sudo) {
+                # Run DMIDECODE to get the UUID (requires root or sudo)
+                $output = '';
+                $item_start = microtime(true);
+                $command = $device->which_sudo . " dmidecode -s system-uuid 2>/dev/null";
+                if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                    $command = $device->bash . " -c '" . $command . "'\n";
+                } else {
+                    $command .= "\n";
+                }
+                $ssh->write($command);
+                $output = $ssh->read('assword');
+                if (stripos($output, 'assword') !== false) {
+                    $ssh->write($password."\n");
+                    $output = $ssh->read('[prompt]');
+                }
+                $lines = explode("\n", $output);
+                $device->uuid = trim($lines[count($lines)-2]);
+                if ($device->uuid == ':' or strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
+                    $device->uuid = '';
+                }
+                $log->command = trim($command) . '; # uuid';
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->command_output = '';
+                $log->message = 'SSH command';
+
+                if (empty($device->uuid)) {
+                    $log->command_status = 'notice';
+                    discovery_log($log);
+
+                    # Try to cat a file to get the UUID
                     $output = '';
                     $item_start = microtime(true);
-                    $command = $device->which_sudo . " dmidecode -s system-uuid 2>/dev/null";
+                    $command = $device->which_sudo . " cat /sys/class/dmi/id/product_uuid 2>/dev/null";
                     if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
-                        $command = $device->bash . " -c '" . $command . "'\n";
+                        $command = $device->bash . " -c '" . $command . "'";
                     } else {
                         $command .= "\n";
                     }
@@ -1088,54 +1143,24 @@ if (! function_exists('ssh_audit')) {
                     }
                     $lines = explode("\n", $output);
                     $device->uuid = trim($lines[count($lines)-2]);
-                    if ($device->uuid == ':' or strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
+                    if (stripos($device->uuid, 'cat /sys/class/dmi/id/product_uuid 2>/dev/null') !== false) {
                         $device->uuid = '';
                     }
                     $log->command = trim($command) . '; # uuid';
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     $log->command_output = '';
                     $log->message = 'SSH command';
-
-                    if (empty($device->uuid)) {
-                        $log->command_status = 'notice';
-                        discovery_log($log);
-
-                        # Try to cat a file to get the UUID
-                        $output = '';
-                        $item_start = microtime(true);
-                        $command = $device->which_sudo . " cat /sys/class/dmi/id/product_uuid 2>/dev/null";
-                        if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
-                            $command = $device->bash . " -c '" . $command . "'";
-                        } else {
-                            $command .= "\n";
-                        }
-                        $ssh->write($command);
-                        $output = $ssh->read('assword');
-                        if (stripos($output, 'assword') !== false) {
-                            $ssh->write($password."\n");
-                            $output = $ssh->read('[prompt]');
-                        }
-                        $lines = explode("\n", $output);
-                        $device->uuid = trim($lines[count($lines)-2]);
-                        if (stripos($device->uuid, 'cat /sys/class/dmi/id/product_uuid 2>/dev/null') !== false) {
-                            $device->uuid = '';
-                        }
-                        $log->command = trim($command) . '; # uuid';
-                        $log->command_time_to_execute = (microtime(true) - $item_start);
-                        $log->command_output = '';
-                        $log->message = 'SSH command';
-                        if (!empty($device->uuid)) {
-                            $log->command_output = $device->uuid;
-                            $log->command_status = 'success';
-                        } else {
-                            $log->command_status = 'notice';
-                        }
-                        discovery_log($log);
-                    } else {
+                    if (!empty($device->uuid)) {
                         $log->command_output = $device->uuid;
                         $log->command_status = 'success';
-                        discovery_log($log);
+                    } else {
+                        $log->command_status = 'notice';
                     }
+                    discovery_log($log);
+                } else {
+                    $log->command_output = $device->uuid;
+                    $log->command_status = 'success';
+                    discovery_log($log);
                 }
                 if (empty($device->uuid)) {
                     unset($device->uuid);
