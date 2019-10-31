@@ -93,7 +93,7 @@ if ($nmap_warning != '') {
                     <th><?php echo __('Description')?></th>
                     <th><?php echo __('Last Run')?></th>
                     <th class="text-center"><?php echo __('Status')?></th>
-                    <th class="text-center"><?php echo __('Discovered')?></th>
+                    <th class="text-center"><?php echo __('Responding IPs')?></th>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -112,7 +112,7 @@ if ($nmap_warning != '') {
                     <?php refine('discoveries.description',$item->attributes->description); ?>
                     <?php refine('discoveries.last_run',$item->attributes->last_run); ?>
                     <?php refine('discoveries.status',$item->attributes->status); ?>
-                    <td class="text-center"><?php echo $item->attributes->discovered ?></td>
+                    <td class="text-center"><?php echo $item->attributes->ip_responding_count ?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>

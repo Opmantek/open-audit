@@ -84,7 +84,6 @@ class M_audit_log extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'updating data';
-        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id == '' or $system_id == 0) {
             return;

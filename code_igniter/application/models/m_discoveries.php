@@ -47,14 +47,13 @@ class M_discoveries extends MY_Model
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
+        #stdlog($this->log);
         $CI = & get_instance();
         if ($id == '') {
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-
         $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -96,9 +95,6 @@ class M_discoveries extends MY_Model
                     }
                 }
             }
-        }
-        if ($result[0]->type == 'subnet') {
-            $result[0]->command = $this->create_command($result[0]);
         }
         if ($result[0]->status === 'failed') {
             $sql = '/* m_discoveries::read */ ' . "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE `message` LIKE 'Discovery has completed processing%' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') GROUP BY `ip`) AND discovery_id = " . $id;
@@ -161,507 +157,152 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        #$sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id` LIMIT " . $this->config->config['database_show_row_limit'];
         $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id`";
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
         return ($result);
     }
 
-    public function execute($id = 0)
+
+    public function execute($id = null)
     {
-        $this->load->model('m_queue');
-        $this->log->function = strtolower(__METHOD__);
-        $sql = "SELECT * FROM `discoveries` WHERE `id` = ?";
-        $data = array(intval($id));
-        $discovery = $this->run_sql($sql, $data);
-        if (!empty($discovery)) {
-            $this->m_queue->create('discoveries', json_encode($discovery[0]));
-            $sql = 'UPDATE `discoveries` SET `status` = "queued", `discovered` = "" WHERE `id` = ?';
-            $data = array(intval($discovery[0]->id));
-            $this->run_sql($sql, $data);
-            $proto = 'http';
-            if ($this->config->config['is_ssl'] === true) {
-                $proto = 'https';
-            }
-            if (stripos($this->config->config['default_network_address'], 'https:') !== false) {
-                $proto = 'https';
-            }
-            # run the script and continue (do not wait for result)
-            if (php_uname('s') != 'Windows NT') {
-                $instance = '';
-                if ($this->db->database != 'openaudit') {
-                    $instance = '/' . $this->db->database;
-                }
-                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost' . $instance . '/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
-                #$command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $discovery[0]->network_address . 'index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
-                if (php_uname('s') == 'Linux') {
-                    $command_string = 'nohup ' . $command_string;
-                }
-                @exec($command_string, $output, $return_var);
-            } else {
-                $filepath = $this->config->config['base_path'] . '\\other';
-                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=" . $proto . "://localhost/open-audit/index.php/input/queue/discoveries method=post";
-                pclose(popen($command_string, "r"));
-            }
-            $this->log->detail = $command_string;
-            stdlog($this->log);
-
-
-            if (!empty($discovery[0]->other)) {
-                $discovery[0]->other = json_decode($discovery[0]->other);
-            }
-            if ($discovery[0]->type == 'subnet') {
-                $discovery[0]->command = $this->create_command($discovery[0]);
-            }
-            $result = $this->format_data($discovery[0], 'discoveries');
-            return $result;
-        } else {
+        if (is_null($id)) {
             return false;
         }
+        $start = microtime(true);
+        $sql = "/* m_discoveries::execute */ " . "DELETE from discovery_log WHERE discovery_id = ?";
+        $data = array($id);
+        $this->db->query($sql, $data);
+        $item = $this->m_discoveries->read($id);
+        $discovery = $item[0];
+        $log = new stdClass();
+        $log->discovery_id = $id;
+        $log->command_status = 'start';
+        $log->message = 'Starting discovery for ' . $discovery->attributes->name;
+        $log->ip = '127.0.0.1';
+        $log->severity = 6;
+        $this->load->helper('discoveries');
+        $sql = "/* m_discoveries::execute */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
+        $data = array($id);
+        $this->db->query($sql, $data);
+        $all_ip_list = all_ip_list($discovery);
+        $responding_ip_list = responding_ip_list($discovery);
+        $log->command_time_to_execute = microtime(true) - $start;
+        discovery_log($log);
+        update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
+        queue_responding($discovery->id, $responding_ip_list);
+        if (!empty($all_ip_list) and is_array($all_ip_list)) {
+            $ip_all_count = count($all_ip_list);
+        }
+        if (!empty($responding_ip_list) and is_array($responding_ip_list)) {
+            $ip_responding_count = count($responding_ip_list);
+        }
+        $sql = "/* m_discoveries::execute */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE id = ?";
+        $data = array($ip_all_count, $ip_responding_count, $id);
+        $this->db->query($sql, $data);
     }
 
-    public function create_command($discovery = null)
+
+    # Take a discover ID and optionally a device ID
+    # Return an array of credentials in the order of device specific, device previously worked, 
+    # discovery associated (IE: discovery.org_id (and children) = orgs.id = credentials.org_id)
+    public function get_device_discovery_credentials($id = null, $discovery_id = null, $ip = null)
     {
-        if (empty($discovery)) {
-            // log an error
-            return '';
+        $CI =& get_instance();
+        $CI->load->model('m_credentials');
+        $CI->load->library('encrypt');
+        $credentials = array();
+        $id = intval($id);
+        $discovery_id = intval($discovery_id);
+        if (empty($discovery_id)) {
+            return $credentials;
         }
-        if (empty($discovery->other->nmap)) {
-            return '';
+        $retrieved_types = array();
+        # set up a log object
+        $log = new stdClass();
+        $log->discovery_id = $discovery_id;
+        $log->file = 'm_device';
+        $log->function = 'get_device_discovery_credentials';
+        $log->ip = $ip;
+        $log->message = 'Credentials retrieved for: ';
+        $log->pid = getmypid();
+        $log->severity = 7;
+        $log->command_status = 'notice';
+        $log->system_id = intval($id);
+        $log->timestamp = null;
+        # Get the discovery details
+        $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT * FROM discoveries WHERE id = ?";
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $org_id = 1;
+        if (!empty($result[0]->org_id)) {
+            $org_id = intval($result[0]->org_id);
         }
-        $options = $discovery->other->nmap;
-        $command_options = '';
-        $discovery_scan_options = new stdClass();
-        $nmap_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'ping', 'tcp_ports', 'timing', 'udp_ports', 'service_version', 'ssh_ports');
 
-        if (!empty($options->discovery_scan_option_id)) {
-            $sql = "SELECT * FROM `discovery_scan_options` WHERE id = ?";
-            $data = array(intval($options->discovery_scan_option_id));
-            $result = $this->run_sql($sql, $data);
-            if (!empty($result)) {
-                $discovery_scan_options = $result[0];
+        // Device specific credentials
+        $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT * FROM `credential` WHERE `system_id` = ?";
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
             }
-            // Take selected attributes from the discovery_options as authoritative
-            $options->ping = $discovery_scan_options->ping;
-            $options->service_version = $discovery_scan_options->service_version;
-            $options->filtered = $discovery_scan_options->filtered;
-            $options->timing = $discovery_scan_options->timing;
-            $options->nmap_tcp_ports = $discovery_scan_options->nmap_tcp_ports;
-            $options->nmap_udp_ports = $discovery_scan_options->nmap_udp_ports;
-            $options->tcp_ports = $discovery_scan_options->tcp_ports;
-            $options->udp_ports = $discovery_scan_options->udp_ports;
-            if (empty($options->timeout)) {
-                if (!empty($discovery_scan_options->timeout)) {
-                    $options->timeout = $discovery_scan_options->timeout;
-                } else {
-                    $options->timeout = '';
-                }
-            }
-            // Combine the exclude_tcp_ports attributes
-            if (empty($options->exclude_tcp_ports)) {
-                if (!empty($discovery_scan_options->exclude_tcp_ports)) {
-                    $options->exclude_tcp_ports = $discovery_scan_options->exclude_tcp_ports;
-                } else {
-                    $options->exclude_tcp_ports = '';
-                }
-            } else {
-                if (!empty($discovery_scan_options->exclude_tcp_ports)) {
-                    $temp_db = explode(',', $discovery_scan_options->exclude_tcp_ports);
-                    $temp_submit = explode(',', $options->exclude_tcp_ports);
-                    $exclude_tcp_ports = array_merge($temp_db, $temp_submit);
-                    $exclude_tcp_ports = array_unique($exclude_tcp_ports);
-                    $exclude_tcp_ports = implode(',', $exclude_tcp_ports);
-                    $options->exclude_tcp_ports = $exclude_tcp_ports;
-                    unset($temp_db);
-                    unset($temp_submit);
-                    unset($exclude_tcp_ports);
-                }
-            }
-            // Combine the exclude_udp_ports attributes
-            if (empty($options->exclude_udp_ports)) {
-                if (!empty($discovery_scan_options->exclude_udp_ports)) {
-                    $options->exclude_udp_ports = $discovery_scan_options->exclude_udp_ports;
-                } else {
-                    $options->exclude_udp_ports = '';
-                }
-            } else {
-                if (!empty($discovery_scan_options->exclude_udp_ports)) {
-                    $temp_db = explode(',', $discovery_scan_options->exclude_udp_ports);
-                    $temp_submit = explode(',', $options->exclude_udp_ports);
-                    $exclude_udp_ports = array_merge($temp_db, $temp_submit);
-                    $exclude_udp_ports = array_unique($exclude_udp_ports);
-                    $exclude_udp_ports = implode(',', $exclude_udp_ports);
-                    $options->exclude_udp_ports = $exclude_udp_ports;
-                    unset($temp_db);
-                    unset($temp_submit);
-                    unset($exclude_udp_ports);
-                }
-            }
-            // Combine the exclude_ip attributes
-            if (empty($options->exclude_ip)) {
-                if (!empty($discovery_scan_options->exclude_ip)) {
-                    $options->exclude_ip = $discovery_scan_options->exclude_ip;
-                } else {
-                    $options->exclude_ip = '';
-                }
-            } else {
-                if (!empty($discovery_scan_options->exclude_ip)) {
-                    $temp_db = explode(',', $discovery_scan_options->exclude_ip);
-                    $temp_submit = explode(',', $options->exclude_ip);
-                    $exclude_ip = array_merge($temp_db, $temp_submit);
-                    $exclude_ip = array_unique($exclude_ip);
-                    $exclude_ip = implode(',', $exclude_ip);
-                    $options->exclude_ip = $exclude_ip;
-                    unset($temp_db);
-                    unset($temp_submit);
-                    unset($exclude_ip);
-                }
-            }
-            if (!empty($this->config->config['discovery_ip_exclude'])) {
-                if (!empty($options->exclude_ip)) {
-                    $options->exclude_ip .= ',' . $this->config->config['discovery_ip_exclude'];
-                } else {
-                    $options->exclude_ip = $this->config->config['discovery_ip_exclude'];
-                }
-            }
-            // SSH ports check
-            if (empty($options->ssh_ports)) {
-                if (!empty($discovery_scan_options->ssh_ports)) {
-                    $options->ssh_ports = $discovery_scan_options->ssh_ports;
-                } else {
-                    $options->ssh_ports = '22';
-                }
-            } else {
-                if (!empty($discovery_scan_options->ssh_ports)) {
-                    $temp_db = explode(',', $discovery_scan_options->ssh_ports);
-                    $temp_submit = explode(',', $options->ssh_ports);
-                    $ssh_ports = array_merge($temp_db, $temp_submit);
-                    $ssh_ports = array_unique($ssh_ports);
-                    $ssh_ports = implode(',', $ssh_ports);
-                    $options->ssh_ports = $ssh_ports;
-                    unset($temp_db);
-                    unset($temp_submit);
-                    unset($ssh_ports);
-                }
-            }
+            $credentials = $result;
+            $retrieved_types[] = 'Device specific';
         }
 
-        if (!empty($options->ssh_ports)) {
-            $temp_db = explode(',', $options->tcp_ports);
-            $temp_submit = explode(',', $options->ssh_ports);
-            $tcp_ports = array_merge($temp_db, $temp_submit);
-            $tcp_ports = array_unique($tcp_ports);
-            $tcp_ports = implode(',', $tcp_ports);
-            $options->tcp_ports = $tcp_ports;
-            unset($temp_db);
-            unset($temp_submit);
-            unset($tcp_ports);
-        }
-
-        // ended retrieval and populate from discovery_scan_options
-        // Loop through and set option where !empty
-        $command_options = '';
-        foreach ($options as $key => $value) {
-            if (!empty($value) and $key != 'discovery_scan_option_id') {
-                $command_options .= ' ' . $key . '=' . $value;
-            }
-        }
-
-        if ($this->validate_network_address($discovery->network_address) !== true) {
-            return '# Invalid network address, discovery will not run.';
-        }
-
-        if (php_uname('s') != 'Windows NT') {
-            $filepath = $this->config->config['base_path'] . '/other';
-            $command = "$filepath/discover_subnet.sh" .
-                        " subnet_range=" .  $discovery->other->subnet .
-                        " url=".            $discovery->network_address . "index.php/input/discoveries" .
-                        " submit_online=y" .
-                        " echo_output=n" .
-                        " create_file=n" .
-                        " debugging=0" .
-                        " discovery_id=" . $discovery->id . " " . $command_options . " > /dev/null 2>&1 &";
-            if (php_uname('s') == 'Linux') {
-                $command = 'nohup ' . $command;
-            }
-        } else if (php_uname('s') == 'Windows NT') {
-            $filepath = $this->config->config['base_path'] . '\\other';
-            // run the script and continue (do not wait for result)
-            $command = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
-                        " subnet_range=" . $discovery->other->subnet .
-                        " url=".           $discovery->network_address . "index.php/input/discoveries" .
-                        " submit_online=y" .
-                        " echo_output=n" .
-                        " create_file=n" .
-                        " debugging=0" .
-                        " discovery_id=" . $discovery->id . " " . $command_options;
-        }
-        return $command;
-    }
-
-    public function run($id = '')
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'executing discovery';
-        stdlog($this->log);
-        $CI = & get_instance();
-
-        if ($id == '') {
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-
-        if (empty($id)) {
-            $this->log->severity = 3;
-            $this->log->status = 'error';
-            $this->log->status = 'No discovery ID passed to execute.';
-            stdlog($this->log);
-            return false;
-        }
-
-        $this->load->model('m_collection');
-
-        $sql = "SELECT * FROM discoveries WHERE id = ?";
-        $data = array(intval($id));
-        $temp = $this->run_sql($sql, $data);
-        if (!empty($temp[0])) {
-            $discovery = $temp[0];
-            $CI->response->data = $temp;
-        } else {
-            $this->log->status = 'error';
-            $this->log->summary = 'Discovery ID provided does not exist';
-            stdlog($this->log);
-            return false;
-        }
-        // decode our other attributes
-        $discovery->other = json_decode($discovery->other);
-
-        // delete our previous logs
-        $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` = ?";
-        $this->run_sql($sql, array(intval($id)));
-
-        // reset our device counter
-        $limit = 0;
-        if (!empty($CI->response->meta->limit)) {
-            $limit = intval($CI->response->meta->limit);
-        }
-        #$sql = "UPDATE `discoveries` SET `status` = 'starting', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
-        $sql = "UPDATE `discoveries` SET `status` = 'running', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
-        $data = array($limit, intval($id));
-        $this->run_sql($sql, $data);
-
-        if (!empty($CI->response->meta->debug)) {
-            $debugging = 1;
-        } else {
-            $debugging = 0;
-        }
-
-        if ($discovery->type == 'subnet') {
-            // Ensure we have some defaults
-            if (empty($discovery->other->nmap)) {
-                $discovery->other->nmap = new stdClass();
-            }
-            if (!isset($discovery->other->nmap->discovery_scan_option_id) or !is_numeric($discovery->other->nmap->discovery_scan_option_id)) {
-                $discovery->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
-            }
-
-            # Only check if we're not 0 as 0 is for custom scans
-            if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
-                $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
-                $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
-                $result = $this->run_sql($sql, $data);
-                $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
-                $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
+        // Previous working credentials
+        $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT `credentials` FROM `system` WHERE id = ?";
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        # $result[0]->credentials is a string. A JSON encoded array of integers referring to credentials.id
+        if (!empty($result[0]->credentials)) {
+            $temp = @json_decode($result[0]->credentials);
+            if (!empty($temp)) {
+                $id_list = implode(', ', $temp);
+                $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE id IN (" . $id_list . ")";
+                $query = $this->db->query($sql);
+                $result = $query->result();
                 if (!empty($result)) {
-                    $options = $result[0];
-                    foreach ($options as $key => $value) {
-                        if (!in_array($key, $do_not_use)) {
-                            if (in_array($key, $prefer_individual)) {
-                                if (!empty($value) and empty($discovery->other->nmap->{$key})) {
-                                    $discovery->other->nmap->{$key} = $value;
-                                }
-                            } else {
-                                $discovery->other->nmap->{$key} = $value;
-                            }
-                        }
+                    for ($i=0; $i < count($result); $i++) {
+                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                     }
                 }
+                $credentials = array_merge($credentials, $result);
             }
+            $retrieved_types[] = 'Device previously working';
         }
+        unset($temp);
 
-        if ($discovery->type == 'subnet') {
-            $command_string = $this->create_command($discovery);
-            // Unix based discovery
-            if (php_uname('s') != 'Windows NT') {
-                exec($command_string, $output, $return_var);
-                $this->log->detail = $command_string;
-                if ($return_var != '0') {
-                    $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has failed';
-                    $this->session->set_flashdata('error', $message);
-                    $this->log->status = 'executing script - failure';
-                    $this->log->summary = $message;
-                    stdlog($this->log);
-                } else {
-                    $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has started';
-                    $this->session->set_flashdata('success', $message);
-                    $this->log->status = 'executing script - success';
-                    $this->log->summary = $message;
-                    $this->log->command = $command_string;
-                    stdlog($this->log);
-                }
+        # Discovery associated credentials
+        # get our Orgs List
+        $temp = $CI->m_orgs->get_children($org_id);
+        $org_list = $org_id . ', ' . implode(', ', $temp);
+        unset($temp);
+        # And now get any credentials
+        $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ")";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
             }
-            // Windows based discovery
-            if (php_uname('s') == 'Windows NT') {
-                pclose(popen($command_string, "r"));
-            }
+            $credentials = array_merge($credentials, $result);
+            $retrieved_types[] = 'Discovery related';
         }
-
-        if ($discovery->type == 'active directory') {
-            $log = new stdClass();
-            $log->discovery_id = $discovery->id;
-            $log->system_id = null;
-            $log->timestamp = $this->config->config['timestamp'];
+        if (count($credentials) == 0) {
+            $log->message = 'No credentials retrieved.';
             $log->severity = 5;
-            $log->pid = getmypid();
-            $log->file = 'm_discoveries';
-            $log->function = 'run';
-
-            $CI->load->helper('wmi');
-            $CI->load->model('m_credentials');
-            $CI->load->model('m_orgs');
-            $this->load->model('m_networks');
-            // We need to set the user orgs to the org of this particular discovery run
-            $this->user = new stdClass();
-            $this->user->orgs = $this->m_orgs->get_children($discovery->org_id);
-
-            if (count($this->user->orgs) > 0) {
-                $this->user->org_list = $discovery->org_id . ',' . implode(',', $this->user->orgs);
-            } else {
-                $this->user->org_list = $discovery->org_id;
-            }
-            // Stored credential sets
-            $credentials = $this->m_credentials->collection($this->user->org_list);
-            # get the list of subnets from AD
-            # TODO - make the below able to use LDAPS as well as LDAP
-            $ad_ldap_connect = 'ldap://' . $discovery->other->ad_server;
-            $error_reporting = error_reporting();
-            error_reporting(0);
-            $ad = @ldap_connect($ad_ldap_connect);
-            error_reporting($error_reporting);
-            unset($error_reporting);
-            if (!$ad) {
-                // log the failed attempt to connect to AD
-                $log->severity = 3;
-                $log->details = 'Could not connect to AD ' . $discovery->other->ad_domain . ' at ' . $discovery->other->ad_server;
-                discovery_log($log);
-                return false;
-            } else {
-                // successful connect to AD, now try to bind using the credentials
-                ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
-                ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-                foreach ($credentials as $credential) {
-                    if ($credential->attributes->type == 'windows') {
-                        if ($bind = ldap_bind($ad, $credential->attributes->credentials->username, $credential->attributes->credentials->password)) {
-                            $log->severity = 7;
-                            $log->message = 'Successful bind to AD using ' . $credential->attributes->name;
-                            discovery_log($log);
-                            $dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $discovery->other->ad_domain));
-                            $filter = "(&(objectclass=*))";
-                            $justthese = array("distinguishedName", "name", "siteobject");
-                            $sr = ldap_search($ad, $dn, $filter, $justthese);
-                            $info = ldap_get_entries($ad, $sr);
-                            if (empty($info)) {
-                                $log->message = 'Could not Retrieve subnets from ' . $discovery->other->ad_domain . ' on ' . $discovery->other->ad_server . ' using ' . $credential->attributes->name;
-                                $log->severity = 6;
-                                $log->command_output = '';
-                                discovery_log($log);
-                            } else {
-                                $log->severity = 7;
-                                $log->message = 'Retrieved subnets from ' . $discovery->other->ad_domain . ' on ' . $discovery->other->ad_server;
-                                discovery_log($log);
-                                break;
-                            }
-                        } else {
-                            $log->severity = 7;
-                            $log->message = 'Could not bind to AD using ' . $credential->attributes->name;
-                            discovery_log($log);
-                            unset($bind);
-                        }
-                    }
-                }
-                if ($bind and !empty($info)) {
-                    foreach ($info as $subnet) {
-                        if (!empty($subnet['name'][0]) and $subnet['name'][0] != 'Subnets') {
-
-                            unset($network);
-                            $network = new stdClass();
-                            //$network->id = 0;
-                            if (!empty($subnet['siteobject'][0])) {
-                                $temp = explode(',', $subnet['siteobject'][0]);
-                                $temp_name = explode('=', $temp[0]);
-                                $name = $temp_name[1] . ' - ';
-                            } else {
-                                $name = '';
-                            }
-                            $network->name = $name . $subnet['name'][0];
-                            $network->network = $subnet['name'][0];
-                            $network->org_id = $discovery->org_id;
-                            $network->description = @$subnet['description'][0];
-                            if (!empty($subnet['location'][0])) {
-                                $network->description .= ' (' . $subnet['location'][0] . ')';
-                            }
-                            $log->message = 'Upserting network - ' . $network->name;
-                            discovery_log($log);
-                            $this->m_networks->upsert($network);
-
-                            $ad_discovery = new stdClass();
-                            $ad_discovery->name = $network->name;
-                            $ad_discovery->org_id = $discovery->org_id;
-                            $ad_discovery->type = 'subnet';
-                            $ad_discovery->devices_assigned_to_org = $discovery->devices_assigned_to_org;
-                            $ad_discovery->devices_assigned_to_location = $discovery->devices_assigned_to_location;
-                            $ad_discovery->network_address = $discovery->network_address;
-                            $ad_discovery->complete = 'y';
-                            if (gettype($discovery->other) == 'string') {
-                                $ad_discovery->other = json_decode($discovery->other);
-                            } else {
-                                $ad_discovery->other = $discovery->other;
-                            }
-                            $ad_discovery->other->subnet = $subnet['name'][0];
-                            $sql = "/* m_discoveries::execute */ " . 'SELECT * FROM discoveries WHERE name = ? AND org_id = ?';
-                            $result = $this->run_sql($sql, array($ad_discovery->name, intval($discovery->org_id)));
-                            # TODO - JSON decode this and test the subnet. We know have other items stored inside 'other' (nmap options, etc).
-                            if (empty($result)) {
-                                $log->message = "Creating and executing discovery on subnet " . $network->name;
-                                discovery_log($log);
-                                $this_id = $this->m_collection->create($ad_discovery, 'discoveries');
-                            } else {
-                                $this_id = $result[0]->id;
-                                $log->message = "Discovery for " . $network->name . " exists, running.";
-                                discovery_log($log);
-                            }
-                            if (!empty($this_id)) {
-                                $this->execute($this_id);
-                            }
-                        }
-                    }
-                    $sql = "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
-                    $this->run_sql($sql, array($discovery->id));
-                } else {
-                    $log->severity = 5;
-                    $log->command_status = 'fail';
-                    $log->message = 'Could not bind to AD ' . $discovery->other->ad_domain . ' at ' . $discovery->other->ad_server;
-                    discovery_log($log);
-                    return false;
-                }
-
-                $sql = "UPDATE `discoveries` SET `status` = 'complete', `device_count` = 0, `complete` = 'y', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00' WHERE id = ?";
-                $data = array($limit, intval($id));
-                $this->run_sql($sql, $data);
-
-            }
+            $log->command_status = 'warning';
+            discovery_log($log);
+        } else {
+            $log->message = $log->message . implode(', ', $retrieved_types) . '.';
+            discovery_log($log);
         }
+        return $credentials;
     }
+
 }

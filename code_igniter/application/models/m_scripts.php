@@ -267,4 +267,107 @@ class M_scripts extends MY_Model
         #}
         return $file;
     }
+
+
+
+    public function build($operating_system) {
+        // Get and make the audit script
+        $timestamp = date('y_m_d_H_i_s') . '_' . explode(' ', explode('.', microtime())[1])[0];
+        $CI = & get_instance();
+        $audit_script = false;
+        switch (strtolower($operating_system)) {
+            case 'aix':
+                $audit_script = 'audit_aix.sh';
+                $source_name = 'audit_aix_' . $timestamp . '.sh';
+                break;
+            
+            case 'vmkernel':
+            case 'vmware':
+                $audit_script = 'audit_esxi.sh';
+                $source_name = 'audit_esxi_' . $timestamp . '.sh';
+                break;
+            
+            case 'linux':
+                $audit_script = 'audit_linux.sh';
+                $source_name = 'audit_linux_' . $timestamp . '.sh';
+                break;
+            
+            case 'darwin':
+                $audit_script = 'audit_osx.sh';
+                $source_name = 'audit_osx_' . $timestamp . '.sh';
+                break;
+            
+            case 'windows':
+                $audit_script = 'audit_windows.vbs';
+                $source_name = 'audit_windows_' . $timestamp . '.vbs';
+                break;
+            
+            case 'sunos':
+                $audit_script = 'audit_solaris.sh';
+                $source_name = 'audit_solaris_' . $timestamp . '.sh';
+                break;
+            
+            default:
+                $audit_script = '';
+                $source_name = '';
+                $source = false;
+                break;
+        }
+        if ($audit_script != '') {
+            if (php_uname('s') == 'Windows NT') {
+                $source = $CI->config->config['base_path'] . '\\other' . '\\scripts\\' . $source_name;
+            } else {
+                $source = $CI->config->config['base_path'] . '/other' . '/scripts/' . $source_name;
+            }
+            $sql = "/* m_scripts::build */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $log = new stdClass();
+            $log->type = 'system';
+            $log->severity = 4;
+            $log->collection = 'scripts';
+            $log->function = 'build';
+            $log->status = 'fail';
+            $log->summary = '';
+            $log->details = '';
+            if (!empty($result[0])) {
+                $script_details = $result[0];
+                # Just ensure we delete any audit scripts that might exist.
+                # Shouldn't be required because we're creating based on the timestamp
+                # Then open the file for writing
+                @unlink($source);
+                try {
+                    $handle = fopen($source, 'w');
+                } catch (Exception $e) {
+                    $source = false;
+                    $log->summary = 'Could not create temporary script';
+                    $log->detail = $e;
+                    stdlog($log);
+                }
+                $script = $CI->m_scripts->download($script_details->id);
+                if (!empty($audit_script) and empty($script)) {
+                    $source = false;
+                    $log->summary = 'Could not retrieve script using configured options';
+                    $log->details = "\$CI->m_scripts->download($script_details->id)";
+                    stdlog($log);
+                } else {
+                    try {
+                        fwrite($handle, $script);
+                    } catch (Exception $e) {
+                        $source = false;
+                        $log->summary = 'Could not write to temporary script';
+                        $log->details = $e;
+                        stdlog($log);
+                    }
+                }
+                fclose($handle);
+            } else {
+                $source = false;
+                $log->summary = 'Could not retrieve script from database.';
+                $log->detail = '';
+                stdlog($log);
+            }
+        }
+        return array($source, $audit_script);
+    }
 }

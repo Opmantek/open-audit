@@ -294,10 +294,24 @@ class Discoveries extends MY_Controller
     */
     public function execute()
     {
-        #$this->response->data = $this->m_discoveries->read();
-        $this->response->data = $this->m_discoveries->execute($this->response->meta->id);
+        if (php_uname('s') != 'Windows NT') {
+            $instance = '';
+            if ($this->db->database != 'openaudit') {
+                $instance = '/' . $this->db->database;
+            }
+            $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/execute_discovery/' . $this->response->meta->id . ' method=get > /dev/null 2>&1 &';
+            if (php_uname('s') == 'Linux') {
+                $command = 'nohup ' . $command;
+            }
+            @exec($command);
+        } else {
+            $filepath = $this->config->config['base_path'] . '\\other';
+            $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/execute_discovery/" . $this->response->meta->id . " method=post";
+            pclose(popen($command, "r"));
+        }
         sleep(2);
         if ($this->response->meta->format === 'json') {
+            $this->response->data = $this->m_discoveries->read($this->response->meta->id);
             output($this->response);
         } else {
             redirect('discoveries/'.$this->response->meta->id);
@@ -334,12 +348,16 @@ class Discoveries extends MY_Controller
     private function discovery_status()
     {
         # Mark any discoveries where status != complete and last_log is greater than 20 minutes ago as Zombie
-        $sql = '/* discoveries */ ' . " UPDATE `discoveries` SET `status` = 'failed' WHERE `last_log` < (NOW() - INTERVAL 20 MINUTE) AND `last_log` != '2000-01-01 00:00:00' AND `status` != 'complete'";
+        $sql = '/* discoveries */ ' . " UPDATE discoveries SET status = 'failed' WHERE last_finished != '2000-01-01 00:00:00' AND last_finished < (NOW() - INTERVAL 20 MINUTE) AND status = 'running'";
         $this->db->query($sql);
 
-        // $sql = '/* discoveries */ ' . " UPDATE `discoveries` SET `status` = 'complete' WHERE `id` IN (SELECT `id` FROM (SELECT `id` FROM `discoveries` WHERE `discovered` = concat(`device_count`, ' of ', `device_count`) AND `id` = 4) `a`)";
-        // $query = $this->db->query($sql);
-
+        $sql = '/* discoveries */ ' . "SELECT COUNT(*) AS `count` FROM `discoveries` WHERE status = 'running'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (empty($result[0]->count)) {
+            $sql = "UPDATE `configuration` SET `value` = 0 WHERE `name` = 'queue_count'";
+            $this->db->query($sql);
+        }
     }
 }
 // End of file discoveries.php

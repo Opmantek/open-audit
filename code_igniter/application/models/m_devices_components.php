@@ -315,6 +315,7 @@ class M_devices_components extends MY_Model
             } else {
                 $message .= ' Input supplied.';
             }
+
             # Don't bother to log the below as most of the time, they're empty
             if (@$table !== 'file' and @$table !== 'share' and @$table !== 'server_item') {
                 $mylog = new stdClass();
@@ -329,13 +330,41 @@ class M_devices_components extends MY_Model
             return;
         }
 
+        if (empty($parameters->log)) {
+            $log = new stdClass();
+        } else {
+            $log = $parameters->log;
+        }
+        if (!empty($parameters->discovery_id)) {
+            $log->discovery_id = $parameters->discovery_id;
+        }
+        if (!empty($parameters->details->ip)) {
+            $log->ip = $parameters->details->ip;
+        } else {
+            $log->ip = '127.0.0.1';
+        }
+        if (!empty($GLOBALS['discovery_id']) and empty($log->discovery_id)) {
+            $log->discovery_id = intval($GLOBALS['discovery_id']);
+        }
+        if (!empty($details->discovery_id) and empty($log->discovery_id)) {
+            $log->discovery_id = intval($details->discovery_id);
+        }
+        $log->command = 'process audit';
+        $log->file = 'm_devices_components';
+        $log->function = 'process_component';
+        $log->message = '';
+        $log->pid = getmypid();
+        $log->severity = 7;
+        $log->severity_text = '';
+        $log->system_id = @intval($parameters->details->id);
+        $log->timestamp = null;
+
         $table = '';
         if (!empty($parameters->table)) {
             $table = $parameters->table;
         }
 
         if (!$this->db->table_exists($table)) {
-            $log = new stdClass();
             $log->message = 'Table supplied does not exist (' . @$table . ') for '. @$details->ip . ' (' . @$name . ')';
             $log->command_status = 'fail';
             $log->severity = 4;
@@ -360,31 +389,6 @@ class M_devices_components extends MY_Model
         } else {
             $match_columns = $this->match_columns($table);
         }
-
-        if (!empty($parameters->log)) {
-            $log = $parameters->log;
-        } else {
-            $log = new stdClass();
-            if (!empty($GLOBALS['discovery_id'])) {
-                $log->discovery_id = intval($GLOBALS['discovery_id']);
-            } else if (!empty($details->discovery_id)) {
-                $log->discovery_id = intval($details->discovery_id);
-            }
-            $log->system_id = (string)$details->id;
-            $log->timestamp = null;
-            $log->severity_text = '';
-            $log->pid = getmypid();
-            $log->ip = '127.0.0.1';
-            if (!empty($details->ip)) {
-                $log->ip = (string)$details->ip;
-            }
-            $log->message = 'No log object passed in for ' . $table;
-        }
-        $log->severity = 7;
-        $log->file = 'm_devices_components';
-        $log->function = 'process_component';
-        $log->command = 'process audit';
-        $log->message = '';
 
         $name = '';
         if (empty($details->name) and !empty($details->hostname)) {
@@ -1674,11 +1678,9 @@ class M_devices_components extends MY_Model
 
     public function create_dns_entries($id = 0)
     {
-
-        $this->load->helper('log');
-        $log_details = new stdClass();
-        $log_details->file = 'system';
-        $log_details->severity = 7;
+        if (empty($id)) {
+            return array();
+        }
         $sql = "SELECT DISTINCT `ip`.`ip` FROM `ip` LEFT JOIN `system` ON (ip.system_id = system.id AND ip.current = 'y') WHERE system.id = ? AND ip.version = '4'";
         $sql = $this->clean_sql($sql);
         $data = array($id);

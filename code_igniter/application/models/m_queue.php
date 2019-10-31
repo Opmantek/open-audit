@@ -43,13 +43,38 @@ class M_queue extends MY_Model
         $this->log->type = 'system';
     }
 
+    # Return a queue item or FALSE
+    # If nothing left in queue table, reset auto-inc
+    public function pop()
+    {
+        $queue_item = false;
+        $sql = '/* m_queue::pop */ ' . "LOCK TABLES queue WRITE";
+        $query = $this->db->query($sql);
+        #$sql = '/* m_queue::pop */ ' . 'SELECT * FROM `queue` WHERE type = "ip_scan" ORDER BY `id` LIMIT 1';
+        $sql = '/* m_queue::pop */ ' . 'SELECT * FROM `queue` ORDER BY `id` LIMIT 1';
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (empty($result)) {
+            $sql = '/* m_queue::pop */ ' . 'ALTER TABLE queue AUTO_INCREMENT = 1';
+            $query = $this->db->query($sql);
+        } else {
+            $queue_item = $result[0];
+            $sql = '/* m_queue::pop */ ' . 'DELETE FROM `queue` WHERE `id` = ?';
+            $data = array($queue_item->id);
+            $query = $this->db->query($sql, $data);
+        }
+        $sql = '/* m_queue::pop */ ' . "UNLOCK TABLES";
+        $query = $this->db->query($sql);
+        return $queue_item;
+    }
+
     # Return a queue object on success or FALSE on failure
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->action = 'read';
         $this->log->summary = intval($id);
-        $sql = "SELECT * FROM `queue` WHERE `id` = ?";
+        $sql = "/* m_queue::read */ " . "SELECT * FROM `queue` WHERE `id` = ?";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         if (!empty($result)) {
@@ -68,7 +93,7 @@ class M_queue extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->action = 'delete';
         $this->log->summary = intval($id);
-        $sql = "DELETE FROM `queue` WHERE `id` = ?";
+        $sql = "/* m_queue::delete */ " . "DELETE FROM `queue` WHERE `id` = ?";
         $data = array(intval($id));
         $this->db->query($sql, $data);
         $affected_rows = $this->db->affected_rows();
@@ -93,9 +118,9 @@ class M_queue extends MY_Model
         }
         $this->log->summary = 'Passed type: ' . string($type);
         if ($type != 'discoveries' and $type != 'scans' and $type != 'audits') {
-            $sql = "SELECT * FROM `queue`";
+            $sql = "/* m_queue::collection */ " . "SELECT * FROM `queue`";
         } else {
-            $sql = "SELECT * FROM `queue` WHERE `type` = '$type'";
+            $sql = "/* m_queue::collection */ " . "SELECT * FROM `queue` WHERE `type` = '$type'";
         }
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -118,7 +143,6 @@ class M_queue extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->action = 'insert';
         $this->log->summary = (string)$type;
-        stdlog($this->log);
         if (empty($details) or empty($type)) {
             $this->log->status = 'fail';
             $this->log->message = 'Empty type or details supplied.';
@@ -137,12 +161,12 @@ class M_queue extends MY_Model
         if (!empty($temp_details->org_id)) {
             $org_id = intval($temp_details->org_id);
         }
-        $this->log->details = $details;
-        $sql = "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
+        $sql = "/* m_queue::create */ " . "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
         $data = array($name, $type, $org_id, $details);
         $this->db->query($sql, $data);
         $result = intval($this->db->insert_id());
-        if (empty($result)) {
+        $this->log->detail = $this->db->last_query();
+        if (!empty($result)) {
             stdlog($this->log);
             return $result;
         } else {

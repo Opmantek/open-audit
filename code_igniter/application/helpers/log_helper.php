@@ -273,13 +273,25 @@ if (! function_exists('discovery_log')) {
             $log->message = str_replace('Collector - ', '', $log->message);
         }
 
-        # Special case because the log submit may work, but the discovery process may not.
-        # If we have this special string, mark the discovery as complete.
-        // if (stripos($log->message, 'Completed discovery, scanned') !== false and !empty($log->discovery_id)) {
-        //     $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
-        //     $data = array($log->discovery_id);
-        //     $query = $CI->db->query($sql, $data);
-        // }
+        if (strpos($log->message, 'Discovered device at ') !== false) {
+            $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `ip_discovered_count` = `ip_discovered_count` + 1 WHERE id = ?";
+            $data = array($log->discovery_id);
+            $CI->db->query($sql, $data);
+        }
+
+        if (strpos($log->message, 'Audited device at ') !== false) {
+            $sql = "/* discoveries_helper::ip_audit */ " . "UPDATE `discoveries` SET `ip_audited_count` = `ip_audited_count` + 1 WHERE id = ?";
+            $data = array($log->discovery_id);
+            $CI->db->query($sql, $data);
+        }
+
+        # If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
+        if ($log->message == 'Discovery has finished.' and !empty($log->discovery_id)) {
+            $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
+            $data = array($log->discovery_id);
+            $query = $CI->db->query($sql, $data);
+        }
+
 
         return $return_id;
     }

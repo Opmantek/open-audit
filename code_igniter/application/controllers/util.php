@@ -357,6 +357,165 @@ class Util extends CI_Controller
         $response->data[] = $projects;
         print_r(json_encode($response));
     }
+
+    public function execute_discovery()
+    {
+        $start = microtime(true);
+        echo "<pre>\n";
+        $this->load->helper('url');
+        $discovery_id = $this->uri->segment(3, 0);
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $this->load->model('m_discoveries');
+        $this->load->model('m_queue');
+        $sql = "/* util::execute_discovery */ " . "DELETE from discovery_log WHERE discovery_id = ?";
+        $data = array($discovery_id);
+        $this->db->query($sql, $data);
+        $item = $this->m_discoveries->read($discovery_id);
+        $discovery = $item[0];
+        $log = new stdClass();
+        $log->discovery_id = $discovery_id;
+        $log->command_status = 'start';
+        $log->message = 'Starting discovery for ' . $discovery->attributes->name;
+        $log->ip = '127.0.0.1';
+        $log->severity = 6;
+        $this->load->helper('discoveries');
+        $sql = "/* util::execute_discovery */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
+        $data = array($discovery_id);
+        $this->db->query($sql, $data);
+        $all_ip_list = all_ip_list($discovery);
+        $responding_ip_list = responding_ip_list($discovery);
+        $log->command_time_to_execute = microtime(true) - $start;
+        discovery_log($log);
+        update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
+        queue_responding($discovery->id, $responding_ip_list);
+
+        if (!empty($all_ip_list) and is_array($all_ip_list)) {
+            $ip_all_count = count($all_ip_list);
+        }
+        if (!empty($responding_ip_list) and is_array($responding_ip_list)) {
+            $ip_responding_count = count($responding_ip_list);
+        }
+        $sql = "/* util::execute_discovery */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE id = ?";
+        $data = array($ip_all_count, $ip_responding_count, $discovery_id);
+        $this->db->query($sql, $data);
+
+        # Spawn another process
+        if (php_uname('s') != 'Windows NT') {
+            $instance = '';
+            if ($this->db->database != 'openaudit') {
+                $instance = '/' . $this->db->database;
+            }
+            $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
+            if (php_uname('s') == 'Linux') {
+                $command = 'nohup ' . $command;
+            }
+            @exec($command);
+        } else {
+            $filepath = $this->config->config['base_path'] . '\\other';
+            $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+            pclose(popen($command, "r"));
+        }
+
+    }
+
+    public function queue()
+    {
+        echo "<pre>\n";
+        $pid = getmypid();
+
+        $this->load->model('m_audit_log');
+        $this->load->model('m_configuration');
+        $this->load->model('m_credentials');
+        $this->load->model('m_device');
+        $this->load->model('m_devices');
+        $this->load->model('m_devices_components');
+        $this->load->model('m_discoveries');
+        $this->load->model('m_orgs');
+        $this->load->model('m_rules');
+        $this->load->model('m_scripts');
+
+        $this->load->helper('audit');
+        $this->load->helper('discoveries');
+        $this->load->helper('mac');
+        $this->load->helper('network');
+        $this->load->helper('security');
+        $this->load->helper('snmp');
+        $this->load->helper('snmp_model');
+        $this->load->helper('snmp_oid');
+        $this->load->helper('ssh');
+        $this->load->helper('wmi');
+
+        $this->m_configuration->load();
+
+        # queue count is the number of registered processes
+        # queue limit is set by the user
+        # check it config['queue_count'] > config['queue_limit']
+        if (intval($this->config->config['queue_count']) > intval($this->config->config['queue_limit'])) {
+            echo "QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']);
+            exit;
+        }
+        # Increase the queue count in the config table
+        $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
+        $this->db->query($sql);
+        # POP an item off the queue
+        $this->load->model('m_queue');
+        while ( true ) {
+            $item = $this->m_queue->pop();
+            $details = @json_decode($item->details);
+
+            # If we don't get an item, there's nothing left to do so exit.
+            if ($item === false) {
+                # Remove the queue count
+                $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
+                $this->db->query($sql);
+                break;
+            }
+            if ($details === false) {
+                # Remove the queue count
+                $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
+                $this->db->query($sql);
+                break;
+            }
+
+            # Spawn another process
+            if (php_uname('s') != 'Windows NT') {
+                $instance = '';
+                if ($this->db->database != 'openaudit') {
+                    $instance = '/' . $this->db->database;
+                }
+                $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
+                if (php_uname('s') == 'Linux') {
+                    $command = 'nohup ' . $command;
+                }
+                @exec($command);
+            } else {
+                $filepath = $this->config->config['base_path'] . '\\other';
+                $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+                pclose(popen($command, "r"));
+            }
+
+            # Process the item
+            if ($item->type === 'ip_scan') {
+                $result = ip_scan($details);
+                $result = json_encode($result);
+                if (!empty($result)) {
+                    $queue_item = new stdClass();
+                    $queue_item->ip = $details->ip;
+                    $queue_item->discovery_id = $details->discovery_id;
+                    $queue_item->details = $result;
+                    $this->m_queue->create('ip_audit', $queue_item);
+                    $sql = "/* util::queue $pid */ " . "UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?";
+                    $data = array($details->discovery_id);
+                    $this->db->query($sql, $data);
+                }
+            }
+
+            if ($item->type === 'ip_audit') {
+                $result = ip_audit($details);
+            }
+        }
+    }
 }
 // End of file util.php
 // Location: ./controllers/util.php

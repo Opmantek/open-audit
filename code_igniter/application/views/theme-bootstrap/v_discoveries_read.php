@@ -136,96 +136,7 @@ if ($nmap_warning != '') {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="network_address" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="network_address" name="network_address" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit) and $this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_network_address" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network_address"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="devices_assigned_to_org" class="col-sm-3 control-label"><?php echo __('Assign devices to Org'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <select class="form-control" id="devices_assigned_to_org" name="devices_assigned_to_org" disabled>
-                                <option value="" label=" "></option>
-                                <?php
-                                foreach ($this->response->included as $org) {
-                                    if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
-                                <?php
-                                    }
-                                } ?>
-                                </select>
-                                <?php if (!empty($edit)) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_devices_assigned_to_org" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="devices_assigned_to_org"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                                </span>
-                                <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="devices_assigned_to_location" class="col-sm-3 control-label"><?php echo __('Assign devices to Location'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <select class="form-control" id="devices_assigned_to_location" name="devices_assigned_to_location" disabled>
-                                <option value="" label=" "></option>
-                                <?php
-                                foreach ($this->response->included as $location) {
-                                    if ($location->type == 'locations') { ?>
-                                        <option value="<?php echo intval($location->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo htmlspecialchars($location->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
-                                <?php
-                                    }
-                                } ?>
-                                </select>
-                                <?php if (!empty($edit)) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_devices_assigned_to_location" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="devices_assigned_to_location"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                                </span>
-                                <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="updated_on" class="col-sm-3 control-label"><?php echo __('Last Run'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->last_run, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complete" class="col-sm-3 control-label"><?php echo __('Complete'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_complete" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="complete"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="col-md-6">
                     <?php
                     if ($item->attributes->type == 'subnet') { ?>
                     <div class="form-group">
@@ -266,30 +177,128 @@ if ($nmap_warning != '') {
                     </div>
                     <?php } ?>
 
-                    <?php
-                    if ($item->attributes->complete == 'n') { ?>
-                        <div class="form-group">
-                            <label for="refresh" class="col-sm-3 control-label"><?php echo __('Not Complete'); ?></label>
-                            <div class="col-sm-8 input-group">
-                                <a class="btn btn-sm btn-warning" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo __('Refresh'); ?></a>
-                            </div>
-                        </div>
-                    <?php
-                    } else {
-                    ?>
+
+
+
+<!--
                     <div class="form-group">
-                        <label class="col-sm-3 control-label"><?php echo __('Execute'); ?></label>
+                        <label for="network_address" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a class="btn btn-sm btn-primary" id="execute" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute"><?php echo __('Execute'); ?></a>
+                            <input type="text" class="form-control" id="network_address" name="network_address" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit) and $this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_network_address" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network_address"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
-                    <?php } ?>
+-->
+                    <div class="form-group">
+                        <label for="devices_assigned_to_org" class="col-sm-3 control-label"><?php echo __('Assign to Org'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="devices_assigned_to_org" name="devices_assigned_to_org" disabled>
+                                <option value="" label=" "></option>
+                                <?php
+                                foreach ($this->response->included as $org) {
+                                    if ($org->type == 'orgs') { ?>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                <?php
+                                    }
+                                } ?>
+                                </select>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_devices_assigned_to_org" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="devices_assigned_to_org"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="devices_assigned_to_location" class="col-sm-3 control-label"><?php echo __('Assign to Location'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="devices_assigned_to_location" name="devices_assigned_to_location" disabled>
+                                <option value="" label=" "></option>
+                                <?php
+                                foreach ($this->response->included as $location) {
+                                    if ($location->type == 'locations') { ?>
+                                        <option value="<?php echo intval($location->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo htmlspecialchars($location->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                <?php
+                                    }
+                                } ?>
+                                </select>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_devices_assigned_to_location" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="devices_assigned_to_location"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="status" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="status" name="status" value="<?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="updated_on" class="col-sm-3 control-label"><?php echo __('Started On'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->last_run, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last_finished" class="col-sm-3 control-label"><?php echo __('Completed On'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="last_finished" name="last_finished" value="<?php echo htmlspecialchars($item->attributes->last_finished, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-8 input-group">
+                            <a class="btn btn-sm btn-primary" id="execute" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute"><?php echo __('Execute'); ?></a>
+                            <?php if ($item->attributes->status == 'running') { ?>
+                            &nbsp;
+                            <a class="btn btn-sm btn-success" id="execute" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo __('Refresh to Update Logs'); ?></a>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
-
+<!--
 <?php if (!empty($item->attributes->command)) { ?>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -307,7 +316,7 @@ if ($nmap_warning != '') {
     </div>
 </div>
 <?php } ?>
-
+-->
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -318,37 +327,35 @@ if ($nmap_warning != '') {
 
     <div class="panel-body">
         <div class="row">
-            <table class="table">
+            <table class="table" style="width:90%; table-layout:fixed">
                 <thead>
                     <tr>
+                        <th style="white-space: nowrap;"><?php echo __('Timestamp'); ?></th>
                         <th class="text-center"><?php echo __('ID')?></th>
-                        <th><?php echo __('Timestamp'); ?></th>
-                        <th><?php echo __('File'); ?></th>
-                        <th><?php echo __('Function'); ?></th>
+                        <th class="text-center"><?php echo __('IP'); ?></th>
+                        <th class="text-center"><?php echo __('Status'); ?></th>
                         <th><?php echo __('Message'); ?></th>
-                        <th><?php echo __('Duration'); ?></th>
-                        <th><?php echo __('Status'); ?></th>
-                        <th><?php echo __('Output'); ?></th>
-                        <th><?php echo __('Command'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->included as $item) {
                         if ($item->type == 'discovery_log') { ?>
                     <tr>
+                        <td style="white-space: nowrap;"><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
                         <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->file, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->function, REPLACE_FLAGS, CHARSET)?></td>
-                        <?php if (strpos($item->attributes->message, 'Error when submitting discovery result') !== false) { ?>
-                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars( $item->attributes->message, REPLACE_FLAGS, CHARSET); ?></td>
-                        <?php } else { ?>
-                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?></td>
+                        <td class="text-center"><?php echo htmlspecialchars($item->attributes->ip, REPLACE_FLAGS, CHARSET)?></td>
+                        <td class="text-center"><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
+                        <td style="word-wrap:break-word;"><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?>
+                        <?php if (!empty($item->attributes->command)) { ?>
+                            <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
                         <?php } ?>
-                        <td><?php if ($item->attributes->command_time_to_execute != '0.000000') { echo htmlspecialchars($item->attributes->command_time_to_execute, REPLACE_FLAGS, CHARSET); } ?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php if ($item->attributes->command_output != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlspecialchars($item->attributes->command_output, REPLACE_FLAGS, CHARSET) . '</pre>'; } ?></td>
-                        <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET) . '</pre>'; } ?></td>
+                        <?php if (!empty($item->attributes->command_output)) {
+                            $output = $item->attributes->command_output;
+                            $output = str_replace("\",", "\", ", $output);
+                            $output = str_replace("\n", "<br />", $output); ?>
+                            <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>
+                        <?php } ?>
+                        </td>
                     </tr>
                     <?php
                         }

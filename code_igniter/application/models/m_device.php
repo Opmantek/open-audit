@@ -42,7 +42,7 @@ class M_device extends MY_Model
 
     public function match($parameters)
     {
-        if (empty($parameters) or empty($parameters->details) or empty($parameters->log)) {
+        if (empty($parameters) or empty($parameters->details) or (empty($parameters->log) and empty($parameters->discovery_id))) {
             $mylog = new stdClass();
             $mylog->severity = 4;
             $mylog->status = 'fail';
@@ -61,7 +61,12 @@ class M_device extends MY_Model
         $CI = & get_instance();
         $CI->load->helper('log');
 
-        $log = $parameters->log;
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else if (!empty($parameters->discovery_id)) {
+            $log = new stdClass();
+            $log->discovery_id = $parameters->discovery_id;
+        }
         $log->file = 'm_device';
         $log->function = 'match';
         $log->severity = 7;
@@ -199,7 +204,7 @@ class M_device extends MY_Model
             $data = array("$details->omk_uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -231,7 +236,7 @@ class M_device extends MY_Model
             $data = array("$details->instance_ident");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -262,7 +267,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname", "$details->uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -325,7 +330,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname", "$details->dbus_identifier");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -388,7 +393,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname", "$details->serial");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -451,7 +456,7 @@ class M_device extends MY_Model
             $data = array("$details->dbus_identifier");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -508,7 +513,7 @@ class M_device extends MY_Model
             $data = array("$details->dns_fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -563,7 +568,7 @@ class M_device extends MY_Model
             $data = array("$details->dns_hostname");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -619,7 +624,7 @@ class M_device extends MY_Model
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -676,7 +681,7 @@ class M_device extends MY_Model
             $data = array("$details->serial", "$details->type");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -739,7 +744,7 @@ class M_device extends MY_Model
             $data = array("$details->serial");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -795,7 +800,7 @@ class M_device extends MY_Model
             $data = array("$details->sysName", "$details->serial");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -857,7 +862,7 @@ class M_device extends MY_Model
             $data = array("$details->sysName");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -976,7 +981,7 @@ class M_device extends MY_Model
             $data = array("$details->mac_address");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -1105,7 +1110,7 @@ class M_device extends MY_Model
             $data = array(ip_address_to_db($details->ip));
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 if (!empty($details->system_id)) {
                     $log->system_id = $details->id;
@@ -1134,7 +1139,7 @@ class M_device extends MY_Model
                 $data = array(ip_address_to_db($details->ip));
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
-                if (count($row) > 0) {
+                if (!empty($row->id)) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -1192,7 +1197,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (!empty($row)) {
+            if (!empty($row->id)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -1286,7 +1291,7 @@ class M_device extends MY_Model
                 $data = array(ip_address_to_db($details->ip));
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
-                if (!empty($row) and is_array($row) and count($row) > 0) {
+                if (!empty($row->id)) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -1586,15 +1591,18 @@ class M_device extends MY_Model
         $this->load->model('m_devices');
 
         $log_details = new stdClass();
-        $log_details->message = 'System update start for '.@ip_address_from_db(@$details->ip).'('.@$details->hostname.') (System ID '.@$details->id.')';
+        $log_details->message = 'System update start for '.@ip_address_from_db(@$details->ip).' ('.@$details->hostname.') (System ID '.@$details->id.')';
         $log_details->severity = 7;
         $log_details->file = 'm_device';
+        $log_details->function = 'm_device::update';
+        $log_details->status = 'success';
+        $log_details->summary = 'start function';
 
-        if (!empty($GLOBALS['discovery_id'])) {
-            $log_details->discovery_id = $GLOBALS['discovery_id'];
-        } else if (!empty($details->discovery_id)) {
+        if (!empty($details->discovery_id)) {
             $log_details->discovery_id = $details->discovery_id;
             $GLOBALS['discovery_id'] = $details->discovery_id;
+        } else if (!empty($GLOBALS['discovery_id'])) {
+            $log_details->discovery_id = $GLOBALS['discovery_id'];
         } else {
             $log_details->discovery_id = '';
         }
@@ -1794,6 +1802,7 @@ class M_device extends MY_Model
         $query = $this->db->query($sql);
 
         $log_details->message = 'System update end for '.ip_address_from_db($temp_ip).'('.$details->hostname.') (System ID '.$details->id.')';
+        $log_details->summary = 'finish function';
         stdlog($log_details);
         unset($log_details);
         unset($temp_ip);
