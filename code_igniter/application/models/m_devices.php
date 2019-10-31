@@ -331,7 +331,8 @@ class M_devices extends MY_Model
             $sql = "SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? " . $limit;
             $data = array($id);
         } elseif ($sub_resource == 'network') {
-            $sql = "SELECT ip.ip,  network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') LEFT JOIN ip ON (ip.system_id = network.system_id and ip.net_index = network.net_index and ip.current = 'y') WHERE system.id = ? ";
+            # $sql = "SELECT ip.ip,  network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') LEFT JOIN ip ON (ip.system_id = network.system_id and ip.net_index = network.net_index and ip.current = 'y') WHERE system.id = ? ";
+            $sql = "SELECT network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') WHERE system.id = ? ";
             $data = array($id);
         } else {
             $currency = false;
@@ -1072,7 +1073,7 @@ class M_devices extends MY_Model
                                 $this->run_sql($sql, $data);
                                 // insert an entry into the edit table
                                 $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                                $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);
+                                $data = array(@intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);
                                 $this->run_sql($sql, $data);
                                 // Special case the 'type' - set the icon to match
                                 if ($key == 'type') {
