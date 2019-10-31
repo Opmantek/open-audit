@@ -608,7 +608,7 @@ class M_rules extends MY_Model
         discovery_log($log);
 
         if (count(get_object_vars($newdevice)) > 0) {
-            $newdevice->id = $device->id;
+            $newdevice->id = @$device->id;
             if ($action == 'update') {
                 $newdevice->last_seen_by = 'rules';
                 $this->load->model('m_devices');

@@ -125,7 +125,6 @@ class M_networks extends MY_Model
         $function = $router->fetch_method();
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'upserting data';
-        stdlog($this->log);
         if (is_null($network)) {
             return false;
         }
