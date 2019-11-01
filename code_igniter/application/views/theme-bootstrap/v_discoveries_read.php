@@ -177,22 +177,6 @@ if ($nmap_warning != '') {
                     </div>
                     <?php } ?>
 
-
-
-
-<!--
-                    <div class="form-group">
-                        <label for="network_address" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="network_address" name="network_address" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit) and $this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_network_address" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network_address"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
-                    </div>
--->
                     <div class="form-group">
                         <label for="devices_assigned_to_org" class="col-sm-3 control-label"><?php echo __('Assign to Org'); ?></label>
                         <div class="col-sm-8 input-group">
@@ -234,13 +218,6 @@ if ($nmap_warning != '') {
                                 <?php } ?>
                         </div>
                     </div>
-
-
-
-
-
-
-
                 </div>
                 <div class="col-md-6">
 
@@ -279,10 +256,6 @@ if ($nmap_warning != '') {
                         </div>
                     </div>
 
-
-
-
-
                     <div class="form-group">
                         <label class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
@@ -298,25 +271,7 @@ if ($nmap_warning != '') {
         </div>
     </div>
 </form>
-<!--
-<?php if (!empty($item->attributes->command)) { ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            <span class="text-left"><?php echo __('Command Line'); ?></span>
-        </h3>
-    </div>
 
-    <div class="panel-body">
-        <div class="row">
-            <pre>
-                <?php echo htmlspecialchars($item->attributes->command); ?>
-            </pre>
-        </div>
-    </div>
-</div>
-<?php } ?>
--->
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -324,43 +279,44 @@ if ($nmap_warning != '') {
             <span class="pull-right"></span>
         </h3>
     </div>
-
     <div class="panel-body">
         <div class="row">
-            <table class="table" style="width:90%; table-layout:fixed">
-                <thead>
-                    <tr>
-                        <th style="white-space: nowrap;"><?php echo __('Timestamp'); ?></th>
-                        <th class="text-center"><?php echo __('ID')?></th>
-                        <th class="text-center"><?php echo __('IP'); ?></th>
-                        <th class="text-center"><?php echo __('Status'); ?></th>
-                        <th><?php echo __('Message'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($this->response->included as $item) {
-                        if ($item->type == 'discovery_log') { ?>
-                    <tr>
-                        <td style="white-space: nowrap;"><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
-                        <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
-                        <td class="text-center"><?php echo htmlspecialchars($item->attributes->ip, REPLACE_FLAGS, CHARSET)?></td>
-                        <td class="text-center"><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
-                        <td style="word-wrap:break-word;"><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?>
-                        <?php if (!empty($item->attributes->command)) { ?>
-                            <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
-                        <?php } ?>
-                        <?php if (!empty($item->attributes->command_output)) {
-                            $output = $item->attributes->command_output;
-                            $output = str_replace("\",", "\", ", $output);
-                            $output = str_replace("\n", "<br />", $output); ?>
-                            <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>
-                        <?php } ?>
-                        </td>
-                    </tr>
-                    <?php
-                        }
-                    } ?></tbody>
-            </table>
+            <div class="col-md-12">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th style="white-space: nowrap;"><?php echo __('Timestamp'); ?></th>
+                            <th class="text-center"><?php echo __('ID')?></th>
+                            <th class="text-center"><?php echo __('IP'); ?></th>
+                            <th class="text-center"><?php echo __('Status'); ?></th>
+                            <th><?php echo __('Message'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->response->included as $item) {
+                            if ($item->type == 'discovery_log') { ?>
+                        <tr>
+                            <td style="white-space: nowrap;"><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
+                            <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                            <td class="text-center"><?php echo htmlspecialchars($item->attributes->ip, REPLACE_FLAGS, CHARSET)?></td>
+                            <td class="text-center"><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?>
+                            <?php if (!empty($item->attributes->command)) { ?>
+                                <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
+                            <?php } ?>
+                            <?php if (!empty($item->attributes->command_output)) {
+                                $output = $item->attributes->command_output;
+                                $output = str_replace("\",", "\", ", $output);
+                                $output = str_replace("\n", "<br />", $output); ?>
+                                <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>
+                            <?php } ?>
+                            </td>
+                        </tr>
+                        <?php
+                            }
+                        } ?></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

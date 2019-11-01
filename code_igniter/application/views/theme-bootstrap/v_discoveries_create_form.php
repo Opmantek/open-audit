@@ -33,27 +33,6 @@
 * @version   3.2.2
 * @link      http://www.open-audit.org
  */
-$network_address_array = array();
-if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
-        $selected = '';
-        if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
-            $selected = 'selected';
-        }
-        $network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
-    $selected = '';
-    if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
-        $selected = 'selected';
-    }
-    $network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
-    if (!empty($this->config->config['default_network_address'])) {
-        $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
-        $network_address_array[] =  $network_address;
-    }
-    $network_address_array[] = "                                <option value='other'>Other</option>";
-} else {
-    $network_address_array[] = "                                <option value='" . $this->config->config['default_network_address'] . "' selected>" . $this->config->config['default_network_address'] . "</option>";
-}
-
 
 # check if we have nmap installed
 $nmap_installed = 'n';
@@ -116,13 +95,6 @@ if ($nmap_warning != '') {
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
@@ -143,46 +115,6 @@ if ($nmap_warning != '') {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][description]" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" disabled>
-                        </div>
-                    </div>
-
-
-                    <input type="hidden" value="" id="data[attributes][network_address]" name="data[attributes][network_address]" />
-                    <div class="form-group">
-                        <label for="network_address_select" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <select required class="form-control" id="network_address_select" name="network_address_select">
-                                <?php if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') { ?>
-                                <option value='' label=' '></option>
-                                <?php } ?>
-                                <?php
-                                foreach ($network_address_array as $key => $value) {
-                                    if ($value != '') {
-                                        echo $value;
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group" id="network_address_other_div" style="display:none;">
-                        <label for="network_address_other" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input required type="text" class="form-control" id="network_address_other" name="network_address_other" value="http://YOUR_SERVER/open-audit/">
-                        </div>
-                    </div>
-<!--
-                    <div class="form-group">
-                        <label for="data[attributes][network_address]" class="col-sm-3 control-label">Network Address</label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="http://YOUR_SERVER/open-audit">
-                        </div>
-                    </div>
--->
-                    <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="data[attributes][type]" name="data[attributes][type]">
@@ -191,6 +123,9 @@ if ($nmap_warning != '') {
                             </select>
                         </div>
                     </div>
+
+                    <span id="options">
+                    </span>
 
                     <div class="form-group">
                         <label for="data[attributes][devices_assigned_to_org]" class="col-sm-3 control-label"><?php echo __('Assign devices to Org'); ?></label>
@@ -220,31 +155,9 @@ if ($nmap_warning != '') {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="<?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][last_run]" class="col-sm-3 control-label"><?php echo __('Last Run'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][last_run]" name="data[attributes][last_run]" disabled>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="col-md-6">
-                    <span id="options">
-                    </span>
                     <div class="form-group">
                         <label class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group" id="notes">
@@ -254,8 +167,7 @@ if ($nmap_warning != '') {
                                     <li>192.168.1.0/24 (a subnet)</li>
                                     <li>192.168.1-3.1-20 (a range of IP addresses)</li>
                                 </ul>
-            <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />
-            As at Open-AudIT 2.3.1, the network address should be set to localhost. Only use https if you have configured and enabled HTTPS on this server and HTTP has been disabled from localhost.
+            <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT.<br /><br />If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br /><br />
                         </div>
                     </div>
                 </div>
@@ -266,7 +178,6 @@ if ($nmap_warning != '') {
                     <label for="submit" class="col-sm-3 control-label"></label>
                     <div class="col-sm-8 input-group">
                         <input type="hidden" value="discoveries" id="data[type]" name="data[type]" />
-                        <input type="hidden" value="y" id="data[attributes][complete]" name="data[attributes][complete]" />
                         <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                     </div>
                 </div>
@@ -279,20 +190,20 @@ if ($nmap_warning != '') {
 <script>
 $(document).ready(function(){
     var $subnet_text = "                                <div class=\"form-group\">\
-                                <label for=\"data[attributes][subnet]\" class=\"col-sm-4 control-label\"><?php echo __('Subnet'); ?></label>\
-                                <div class=\"col-sm-7 input-group\">\
+                                <label for=\"data[attributes][subnet]\" class=\"col-sm-3 control-label\"><?php echo __('Subnet'); ?></label>\
+                                <div class=\"col-sm-8 input-group\">\
                                     <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][subnet]\" name=\"data[attributes][other][subnet]\" placeholder=\"192.168.1.0/24\">\
                                 </div>\
                             </div>";
     var $active_directory_text = "                            <div class=\"form-group\">\
-                                <label for=\"data[attributes][other][ad_server]\" class=\"col-sm-4 control-label\"><?php echo __('Active Directory Server'); ?></label>\
-                                <div class=\"col-sm-7 input-group\">\
+                                <label for=\"data[attributes][other][ad_server]\" class=\"col-sm-3 control-label\"><?php echo __('Active Directory Server'); ?></label>\
+                                <div class=\"col-sm-8 input-group\">\
                                     <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_server]\" name=\"data[attributes][other][ad_server]\" placeholder=\"192.168.1.20\">\
                                 </div>\
                             </div>\
                             <div class=\"form-group\">\
-                                <label for=\"data[attributes][other][ad_domain]\" class=\"col-sm-4 control-label\"><?php echo __('Active Directory Domain'); ?></label>\
-                                <div class=\"col-sm-7 input-group\">\
+                                <label for=\"data[attributes][other][ad_domain]\" class=\"col-sm-3 control-label\"><?php echo __('Active Directory Domain'); ?></label>\
+                                <div class=\"col-sm-8 input-group\">\
                                     <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_domain]\" name=\"data[attributes][other][ad_domain]\" placeholder=\"open-audit.local\">\
                                 </div>\
                             </div>";
