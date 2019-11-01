@@ -294,23 +294,12 @@ class Discoveries extends MY_Controller
     */
     public function execute()
     {
-        if (php_uname('s') != 'Windows NT') {
-            $instance = '';
-            if ($this->db->database != 'openaudit') {
-                $instance = '/' . $this->db->database;
-            }
-            $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/execute_discovery/' . $this->response->meta->id . ' method=get > /dev/null 2>&1 &';
-            if (php_uname('s') == 'Linux') {
-                $command = 'nohup ' . $command;
-            }
-            @exec($command);
-        } else {
-            $filepath = $this->config->config['base_path'] . '\\other';
-            $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/execute_discovery/" . $this->response->meta->id . " method=post";
-            pclose(popen($command, "r"));
-        }
+        $this->m_discoveries->queue($this->response->meta->id);
+        $this->load->model('m_queue');
+        $this->m_queue->start();
         sleep(2);
         if ($this->response->meta->format === 'json') {
+            $this->response->meta->format = 'json';
             $this->response->data = $this->m_discoveries->read($this->response->meta->id);
             output($this->response);
         } else {

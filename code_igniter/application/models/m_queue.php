@@ -68,6 +68,25 @@ class M_queue extends MY_Model
         return $queue_item;
     }
 
+    public function start()
+    {
+        if (php_uname('s') != 'Windows NT') {
+            $instance = '';
+            if ($this->db->database != 'openaudit') {
+                $instance = '/' . $this->db->database;
+            }
+            $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
+            if (php_uname('s') == 'Linux') {
+                $command = 'nohup ' . $command;
+            }
+            @exec($command);
+        } else {
+            $filepath = $this->config->config['base_path'] . '\\other';
+            $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+            pclose(popen($command, "r"));
+        }
+    }
+
     # Return a queue object on success or FALSE on failure
     public function read($id = '')
     {

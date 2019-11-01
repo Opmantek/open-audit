@@ -47,7 +47,6 @@ class M_discoveries extends MY_Model
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
-        #stdlog($this->log);
         $CI = & get_instance();
         if ($id == '') {
             $id = intval($CI->response->meta->id);
@@ -96,6 +95,7 @@ class M_discoveries extends MY_Model
                 }
             }
         }
+
         if ($result[0]->status === 'failed') {
             $sql = '/* m_discoveries::read */ ' . "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE `message` LIKE 'Discovery has completed processing%' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') GROUP BY `ip`) AND discovery_id = " . $id;
             $last_logs = $this->run_sql($sql);
@@ -164,44 +164,34 @@ class M_discoveries extends MY_Model
     }
 
 
-    public function execute($id = null)
+    public function queue($id = null)
     {
         if (is_null($id)) {
             return false;
         }
-        $start = microtime(true);
+        $item = $this->m_discoveries->read($id);
+        $discovery = $item[0];
+        if (empty($discovery)) {
+            return false;
+        }
         $sql = "/* m_discoveries::execute */ " . "DELETE from discovery_log WHERE discovery_id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
-        $item = $this->m_discoveries->read($id);
-        $discovery = $item[0];
-        $log = new stdClass();
-        $log->discovery_id = $id;
-        $log->command_status = 'start';
-        $log->message = 'Starting discovery for ' . $discovery->attributes->name;
-        $log->ip = '127.0.0.1';
-        $log->severity = 6;
-        $this->load->helper('discoveries');
         $sql = "/* m_discoveries::execute */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
-        $all_ip_list = all_ip_list($discovery);
-        $responding_ip_list = responding_ip_list($discovery);
-        $log->command_time_to_execute = microtime(true) - $start;
-        discovery_log($log);
-        update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
-        queue_responding($discovery->id, $responding_ip_list);
-        if (!empty($all_ip_list) and is_array($all_ip_list)) {
-            $ip_all_count = count($all_ip_list);
+        $this->load->model('m_queue');
+        $queue_item = new stdClass();
+        $queue_item->name = $discovery->attributes->name;
+        $queue_item->org_id = $discovery->attributes->org_id;
+        $queue_item->discovery_id = $id;
+        $temp = $this->m_queue->create($discovery->attributes->type, $queue_item);
+        if (!empty($temp)) {
+            return true;
+        } else {
+            return false;
         }
-        if (!empty($responding_ip_list) and is_array($responding_ip_list)) {
-            $ip_responding_count = count($responding_ip_list);
-        }
-        $sql = "/* m_discoveries::execute */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE id = ?";
-        $data = array($ip_all_count, $ip_responding_count, $id);
-        $this->db->query($sql, $data);
     }
-
 
     # Take a discover ID and optionally a device ID
     # Return an array of credentials in the order of device specific, device previously worked, 

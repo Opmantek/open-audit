@@ -488,21 +488,6 @@ class M_collection extends MY_Model
             if (empty($data->devices_assigned_to_location)) {
                 unset($data->devices_assigned_to_location);
             }
-            if(substr($data->network_address, -1) !== '/'){
-                $data->network_address = $data->network_address.'/';
-            }
-
-            if ($this->validate_network_address($data->network_address) !== true) {
-                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for network address');
-                $this->session->set_flashdata('error', 'Discovery could not be created - invalid Network Address supplied.');
-                $data->other->subnet = '';
-                if ($CI->response->meta->format == 'screen') {
-                    redirect('/discoveries');
-                } else {
-                    output($CI->response);
-                    exit();
-                }
-            }
 
             if (!empty($data->other) and is_string($data->other)) {
                 $data->other = json_decode($data->other);
@@ -768,11 +753,15 @@ class M_collection extends MY_Model
         }
 
         if (!empty($id)) {
-            $CI->session->set_flashdata('success', 'New object in ' . $collection . ' created "' . htmlentities($data->name) . '".');
+            if (!empty($CI->session)) {
+                $CI->session->set_flashdata('success', 'New object in ' . $collection . ' created "' . htmlentities($data->name) . '".');
+            }
             return ($id);
         } else {
             # TODO - log a better error
-            $CI->session->set_flashdata('failure', 'Failed to create resource (please see detailed logs).');
+            if (!empty($CI->session)) {
+                $CI->session->set_flashdata('failure', 'Failed to create resource (please see detailed logs).');
+            }
             log_error('ERR-0023', 'Database error in resource create routine.');
             return false;
         }
@@ -858,10 +847,6 @@ class M_collection extends MY_Model
         if ($collection === 'discoveries') {
 
             $all_options = array('ping', 'service_version', 'filtered', 'timeout', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports', 'tcp_ports', 'udp_ports', 'exclude_tcp_ports', 'exclude_udp_ports', 'exclude_ip', 'ssh_ports');
-
-            if(!empty($data->network_address) and substr($data->network_address, -1) !== '/'){
-                $data->network_address = $data->network_address.'/';
-            }
 
             $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
             $result = $query->result();

@@ -358,79 +358,20 @@ class Util extends CI_Controller
         print_r(json_encode($response));
     }
 
-    public function execute_discovery()
-    {
-        $start = microtime(true);
-        echo "<pre>\n";
-        $this->load->helper('url');
-        $discovery_id = $this->uri->segment(3, 0);
-        $this->load->model('m_configuration');
-        $this->m_configuration->load();
-        $this->load->model('m_discoveries');
-        $this->load->model('m_queue');
-        $sql = "/* util::execute_discovery */ " . "DELETE from discovery_log WHERE discovery_id = ?";
-        $data = array($discovery_id);
-        $this->db->query($sql, $data);
-        $item = $this->m_discoveries->read($discovery_id);
-        $discovery = $item[0];
-        $log = new stdClass();
-        $log->discovery_id = $discovery_id;
-        $log->command_status = 'start';
-        $log->message = 'Starting discovery for ' . $discovery->attributes->name;
-        $log->ip = '127.0.0.1';
-        $log->severity = 6;
-        $this->load->helper('discoveries');
-        $sql = "/* util::execute_discovery */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
-        $data = array($discovery_id);
-        $this->db->query($sql, $data);
-        $all_ip_list = all_ip_list($discovery);
-        $responding_ip_list = responding_ip_list($discovery);
-        $log->command_time_to_execute = microtime(true) - $start;
-        discovery_log($log);
-        update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
-        queue_responding($discovery->id, $responding_ip_list);
-
-        if (!empty($all_ip_list) and is_array($all_ip_list)) {
-            $ip_all_count = count($all_ip_list);
-        }
-        if (!empty($responding_ip_list) and is_array($responding_ip_list)) {
-            $ip_responding_count = count($responding_ip_list);
-        }
-        $sql = "/* util::execute_discovery */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE id = ?";
-        $data = array($ip_all_count, $ip_responding_count, $discovery_id);
-        $this->db->query($sql, $data);
-
-        # Spawn another process
-        if (php_uname('s') != 'Windows NT') {
-            $instance = '';
-            if ($this->db->database != 'openaudit') {
-                $instance = '/' . $this->db->database;
-            }
-            $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
-            if (php_uname('s') == 'Linux') {
-                $command = 'nohup ' . $command;
-            }
-            @exec($command);
-        } else {
-            $filepath = $this->config->config['base_path'] . '\\other';
-            $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
-            pclose(popen($command, "r"));
-        }
-
-    }
-
     public function queue()
     {
         echo "<pre>\n";
         $pid = getmypid();
 
         $this->load->model('m_audit_log');
+        $this->load->model('m_collection');
         $this->load->model('m_configuration');
         $this->load->model('m_credentials');
         $this->load->model('m_device');
         $this->load->model('m_devices');
         $this->load->model('m_devices_components');
         $this->load->model('m_discoveries');
+        $this->load->model('m_networks');
         $this->load->model('m_orgs');
         $this->load->model('m_rules');
         $this->load->model('m_scripts');
@@ -495,7 +436,14 @@ class Util extends CI_Controller
                 pclose(popen($command, "r"));
             }
 
-            # Process the item
+            if ($item->type == 'subnet') {
+                discover_subnet($details);
+            }
+
+            if ($item->type == 'active directory') {
+                discover_ad($details);
+            }
+
             if ($item->type === 'ip_scan') {
                 $result = ip_scan($details);
                 $result = json_encode($result);

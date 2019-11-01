@@ -166,6 +166,56 @@ if (!function_exists('queue_responding')) {
 	}
 }
 
+
+if (!function_exists('discover_subnet')) {
+	function discover_subnet($queue_item = null)
+	{
+		if (empty($queue_item)) {
+			return false;
+		}
+		$start = microtime(true);
+		$CI = get_instance();
+
+		$discovery_id = $queue_item->discovery_id;
+
+		$item = $CI->m_discoveries->read($discovery_id);
+		$discovery = $item[0];
+
+		$log = new stdClass();
+		$log->discovery_id = $discovery_id;
+		$log->command_status = 'start';
+		$log->message = 'Starting discovery for ' . $discovery->attributes->name;
+		$log->ip = '127.0.0.1';
+		$log->severity = 6;
+
+		$sql = "/* discoveries_helper::discover_subnet */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
+		$data = array($discovery_id);
+		$CI->db->query($sql, $data);
+		echo $CI->db->last_query() . "\n";
+
+		$all_ip_list = all_ip_list($discovery);
+		$responding_ip_list = responding_ip_list($discovery);
+		$log->command_time_to_execute = microtime(true) - $start;
+		discovery_log($log);
+		update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
+		queue_responding($discovery->id, $responding_ip_list);
+
+		if (!empty($all_ip_list) and is_array($all_ip_list)) {
+			$ip_all_count = count($all_ip_list);
+		}
+		if (!empty($responding_ip_list) and is_array($responding_ip_list)) {
+			$ip_responding_count = count($responding_ip_list);
+		}
+		$sql = "/* discoveries_helper::discover_subnet */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE id = ?";
+		$data = array($ip_all_count, $ip_responding_count, $discovery_id);
+		$CI->db->query($sql, $data);
+		echo $CI->db->last_query() . "\n";
+	}
+}
+
+
+
+
 if (!function_exists('ip_scan')) {
 	function ip_scan($details = null)
 	{
@@ -1565,7 +1615,7 @@ if (!function_exists('ip_audit')) {
 				unset($audit->system->original_last_seen_by);
 				unset($audit->system->original_last_seen);
 				unset($audit->system->first_seen);
-				$audit->system->collector_uuid = $this->config->config['uuid'];
+				$audit->system->collector_uuid = $CI->config->config['uuid'];
 				$device_json = json_encode($audit);
 			}
 
@@ -1640,8 +1690,173 @@ if (!function_exists('ip_audit')) {
 
 
 
+if (!function_exists('discover_ad')) {
+	function discover_ad($queue_item = null)
+	{
+		if (empty($queue_item)) {
+			return false;
+		}
+		$start = microtime(true);
+		$CI = get_instance();
+		$discovery_id = $queue_item->discovery_id;
+		$item = $CI->m_discoveries->read($discovery_id);
+		$discovery = $item[0];
+		unset($item);
+		$log = new stdClass();
+		$log->discovery_id = $discovery_id;
+		$log->command_status = 'start';
+		$log->message = 'Starting discovery for ' . $discovery->attributes->name;
+		$log->ip = '127.0.0.1';
+		$log->severity = 6;
+		discovery_log($log);
 
+		$sql = "/* discoveries_helper::discover_ad */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
+		$data = array($discovery_id);
+		$CI->db->query($sql, $data);
 
+		// We need to get the Org Children of this particular discovery run
+		$orgs = $CI->m_orgs->get_children($discovery->attributes->org_id);
 
+		if (count($orgs) > 0) {
+			$orgs = $discovery->attributes->org_id . ',' . implode(',', $orgs);
+		} else {
+			$orgs = $discovery->attributes->org_id;
+		}
+		// Stored credential sets
+		$credentials = $CI->m_credentials->collection($orgs);
+		# get the list of subnets from AD
+		# TODO - make the below able to use LDAPS as well as LDAP
+		$ldapuri = 'ldap://' . $discovery->attributes->other->ad_server;
+		$error_reporting = error_reporting();
+		error_reporting(0);
+		$ldapconn = @ldap_connect($ldapuri);
+		error_reporting($error_reporting);
+		unset($error_reporting);
+		if (!$ldapconn) {
+			// log the failed attempt to connect to AD
+			$log->severity = 3;
+			$log->details = 'Could not connect to AD ' . $discovery->attributes->other->ad_domain . ' at ' . $discovery->attributes->other->ad_server;
+			discovery_log($log);
+			return false;
+		}
+		// successful connect to AD, now try to bind using the credentials
+		ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+		ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+		foreach ($credentials as $credential) {
+			if ($credential->attributes->type == 'windows') {
+				if ($bind = @ldap_bind($ldapconn, $credential->attributes->credentials->username, $credential->attributes->credentials->password)) {
+					$log->severity = 7;
+					$log->message = 'Successful bind to AD using ' . $credential->attributes->name;
+					discovery_log($log);
+					$dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $discovery->attributes->other->ad_domain));
+					$filter = "(&(objectclass=*))";
+					$justthese = array("distinguishedName", "name", "siteobject");
+					$sr = ldap_search($ldapconn, $dn, $filter, $justthese);
+					$info = ldap_get_entries($ldapconn, $sr);
+					if (empty($info)) {
+						$log->message = 'Could not Retrieve subnets from ' . $discovery->attributes->other->ad_domain . ' on ' . $discovery->attributes->other->ad_server . ' using ' . $credential->attributes->name;
+						$log->severity = 6;
+						$log->command_output = '';
+						discovery_log($log);
+					} else {
+						$log->severity = 7;
+						$log->message = 'Retrieved subnets from ' . $discovery->attributes->other->ad_domain . ' on ' . $discovery->attributes->other->ad_server;
+						discovery_log($log);
+						break;
+					}
+				} else {
+					$log->severity = 7;
+					$log->message = 'Could not bind to AD using ' . $credential->attributes->name;
+					discovery_log($log);
+					unset($bind);
+				}
+			}
+		}
+		if (!$bind or empty($info)) {
+			$log->severity = 5;
+			$log->command_status = 'fail';
+			$log->message = 'Could not bind to AD ' . $discovery->attributes->other->ad_domain . ' at ' . $discovery->attributes->other->ad_server;
+			discovery_log($log);
+			return false;
+		}
+		foreach ($info as $subnet) {
+			if (!empty($subnet['name'][0]) and $subnet['name'][0] != 'Subnets') {
+				unset($network);
+				$network = new stdClass();
+				if (!empty($subnet['siteobject'][0])) {
+					$temp = explode(',', $subnet['siteobject'][0]);
+					$temp_name = explode('=', $temp[0]);
+					$name = $temp_name[1] . ' - ';
+				} else {
+					$name = '';
+				}
+				$network->name = $name . $subnet['name'][0];
+				$network->network = $subnet['name'][0];
+				$network->org_id = $discovery->attributes->org_id;
+				$network->description = @$subnet['description'][0];
+				if (!empty($subnet['location'][0])) {
+					$network->description .= ' (' . $subnet['location'][0] . ')';
+				}
+				$log->message = 'Upserting network - ' . $network->name;
+				discovery_log($log);
+				$CI->m_networks->upsert($network);
 
+				$ad_discovery = new stdClass();
+				$ad_discovery->name = $network->name;
+				$ad_discovery->org_id = $discovery->attributes->org_id;
+				$ad_discovery->type = 'subnet';
+				$ad_discovery->devices_assigned_to_org = $discovery->attributes->devices_assigned_to_org;
+				$ad_discovery->devices_assigned_to_location = $discovery->attributes->devices_assigned_to_location;
+				if (gettype($discovery->attributes->other) == 'string') {
+					$ad_discovery->other = json_decode($discovery->attributes->other);
+				} else {
+					$ad_discovery->other = $discovery->attributes->other;
+				}
+				unset($ad_discovery->other->ad_server);
+				unset($ad_discovery->other->ad_comain);
+				$ad_discovery->other->match = new stdClass();
+				$ad_discovery->other->subnet = $subnet['name'][0];
 
+				$sql = "/* discoveries_helper::discover_ad */ " . 'SELECT * FROM discoveries WHERE name = ? AND org_id = ?';
+				$query = $CI->db->query($sql, array($ad_discovery->name, intval($discovery->attributes->org_id)));
+				$result = $query->result();
+				# TODO - JSON decode this and test the subnet. We have other items stored inside 'other' (nmap options, etc).
+				$this_id = false;
+				if (empty($result)) {
+					$log->message = "Creating and executing discovery on subnet " . $network->name;
+					discovery_log($log);
+					$this_id = $CI->m_collection->create($ad_discovery, 'discoveries');
+				} else {
+					$this_id = $result[0]->id;
+					$log->message = "Discovery for " . $network->name . " exists, running.";
+					discovery_log($log);
+				}
+				if (!empty($this_id)) {
+					# put the discovery into the queue
+					$details = new stdClass();
+					$details->name = $network->name;
+					$details->type = 'subnet';
+					$details->org_id =  $discovery->attributes->org_id;
+					$details->discovery_id = $this_id;
+					if ($CI->m_queue->create('subnet', $details)) {
+						$log->command_status = 'success';
+						$log->message = "Discovery " . $network->name . " placed in queue for execution.";
+					} else {
+						$log->command_status = 'failed';
+						$log->message = "Discovery " . $network->name . " could not be placed 9in the queue. See system log for more details.";
+						$log->severity = 4;
+					}
+					$log->command = '';
+					$log->command_time_to_execute = microtime(true) - $start;
+					discovery_log($log);
+					$log->severity = 7;
+				}
+			}
+		}
+
+		$sql = "UPDATE `discoveries` SET `status` = 'complete', `last_run` = NOW(), `duration` = ? WHERE id = ?";
+		$duration = gmdate("H:i:s", (microtime(true) - $start));
+		$data = array($duration, $discovery_id);
+		$CI->db->query($sql, $data);
+	}
+}
