@@ -92,7 +92,7 @@ ALTER TABLE `discoveries` CHANGE `edited_by` `edited_by` varchar(200) NOT NULL D
 
 ALTER TABLE `discoveries` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`;
 
-
+ALTER TABLE `discovery_scan_options` ADD `open|filtered` enum('','y','n') NOT NULL DEFAULT 'y' AFTER `service_version`;
 
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS';
 
@@ -194,6 +194,8 @@ $this->alter_table('discoveries', 'ip_audited_count', "ADD `ip_audited_count` in
 $this->alter_table('discoveries', 'duration', "`duration` time NOT NULL DEFAULT '00:00:00' AFTER `last_finished`");
 $this->alter_table('discoveries', 'edited_by', "`edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `ip_audited_count`");
 $this->alter_table('discoveries', 'edited_date', "`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`");
+
+$this->alter_table('discovery_scan_options', 'open|filtered', "ADD `open|filtered` enum('','y','n') NOT NULL DEFAULT 'y' AFTER `service_version`", 'add');
 
 $sql = "UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS'";
 $this->db->query($sql);

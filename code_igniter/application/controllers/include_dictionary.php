@@ -369,15 +369,20 @@ if ($table == 'discoveries') {
 
     $dictionary->columns->match_dbus = "Should we match a device based on its dbus id.";
     $dictionary->columns->match_fqdn = "Should we match a device based on its fqdn.";
+    $dictionary->columns->match_dns_fqdn = "Should we match a device based on its DNS fqdn.";
+    $dictionary->columns->match_dns_hostname = "Should we match a device based on its DNS hostname.";
     $dictionary->columns->match_hostname = "Should we match a device based only on its hostname.";
     $dictionary->columns->match_hostname_dbus = "Should we match a device based on its hostname and dbus id.";
     $dictionary->columns->match_hostname_serial = "Should we match a device based on its hostname and serial.";
     $dictionary->columns->match_hostname_uuid = "Should we match a device based on its hostname and UUID.";
     $dictionary->columns->match_ip = "Should we match a device based on its ip.";
+    $dictionary->columns->match_ip_no_data = "Should we match a device based on its ip if we have an existing device with no data.";
     $dictionary->columns->match_mac = "Should we match a device based on its mac address.";
     $dictionary->columns->match_mac_vmware = "Should we match a device based mac address even if its a known likely duplicate from VMware.";
     $dictionary->columns->match_serial = "Should we match a device based on its serial number.";
     $dictionary->columns->match_serial_type = "Should we match a device based on its serial and type.";
+    $dictionary->columns->match_sysname = "Should we match a device based only on its SNMP sysName.";
+    $dictionary->columns->match_sysname_serial = "Should we match a device based only on its SNMP sysName and serial.";
     $dictionary->columns->match_uuid = "Should we match a device based on its UUID.";
 }
 
@@ -394,6 +399,7 @@ if ($table == 'discovery_scan_options') {
     $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.";
     $dictionary->columns->service_version = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
     $dictionary->columns->filtered = "Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?";
+    $dictionary->columns->{'open|filtered'} = "Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?";
     $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
     $dictionary->columns->timeout = "The number of seconds to try and communicate with the target IP.";
     $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";

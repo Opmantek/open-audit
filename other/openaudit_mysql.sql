@@ -1077,6 +1077,7 @@ CREATE TABLE `discovery_scan_options` (
   `description` text NOT NULL,
   `ping` enum('','y','n') NOT NULL DEFAULT 'y',
   `service_version` enum('','y','n') NOT NULL DEFAULT 'n',
+  `open|filtered` enum('','y','n') NOT NULL DEFAULT 'y',
   `filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `timeout` int(10) unsigned NOT NULL DEFAULT '0',
   `timing` int(1) unsigned NOT NULL DEFAULT '4',
