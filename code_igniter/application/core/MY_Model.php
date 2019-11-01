@@ -608,7 +608,9 @@ class MY_Model extends CI_Model
         $fields = $this->db->field_data($collection);
         foreach ($mandatory_fields as $field) {
             if (!isset($data->{$field}) or $data->{$field} == '') {
-                $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created, no ' . $field . ' supplied.');
+                if (!empty($this->session)) {
+                    $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created, no ' . $field . ' supplied.');
+                }
                 log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $field);
                 return false;
             }
