@@ -134,8 +134,8 @@ if (!function_exists('update_non_responding')) {
 				discovery_log($log);
 			}
 		}
-		$command_time_to_execute = microtime(true) - $start;
-		$sql = "UPDATE discovery_log SET command_time_to_execute = '" . $command_time_to_execute . "' WHERE id = ?";
+		$log->command_time_to_execute = microtime(true) - $start;
+		$sql = "UPDATE discovery_log SET command_time_to_execute = '" . $log->command_time_to_execute . "' WHERE id = ?";
 		$data = array($id);
 		$CI->db->query($sql, $data);
 	}
@@ -187,6 +187,7 @@ if (!function_exists('discover_subnet')) {
 		$log->message = 'Starting discovery for ' . $discovery->attributes->name;
 		$log->ip = '127.0.0.1';
 		$log->severity = 6;
+		discovery_log($log);
 
 		$sql = "/* discoveries_helper::discover_subnet */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
 		$data = array($discovery_id);
@@ -194,9 +195,18 @@ if (!function_exists('discover_subnet')) {
 		echo $CI->db->last_query() . "\n";
 
 		$all_ip_list = all_ip_list($discovery);
-		$responding_ip_list = responding_ip_list($discovery);
-		$log->command_time_to_execute = microtime(true) - $start;
+		$count = @count($all_ip_list);
+		$log->command_status = 'notice';
+		$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
 		discovery_log($log);
+
+
+		$responding_ip_list = responding_ip_list($discovery);
+
+		$log->command_time_to_execute = microtime(true) - $start;
+		$log->message = 'Nmap response scanning completed.';
+		discovery_log($log);
+
 		update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
 		queue_responding($discovery->id, $responding_ip_list);
 
@@ -206,10 +216,22 @@ if (!function_exists('discover_subnet')) {
 		if (!empty($responding_ip_list) and is_array($responding_ip_list)) {
 			$ip_responding_count = count($responding_ip_list);
 		}
-		$sql = "/* discoveries_helper::discover_subnet */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE id = ?";
+		$sql = "/* discoveries_helper::discover_subnet */ " . "UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE `id` = ?";
 		$data = array($ip_all_count, $ip_responding_count, $discovery_id);
 		$CI->db->query($sql, $data);
-		echo $CI->db->last_query() . "\n";
+		if (empty($responding_ip_list)) {
+			$log->message = 'No IPs are responding. You may wish to check your discovery configuration.';
+			$log->command_time_to_execute = microtime(true) - $start;
+			discovery_log($log);
+			# NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
+			$log->message = 'Discovery has finished.';
+			$log->command = '';
+			$log->command_output = '';
+			$log->command_status = 'finished';
+			$log->command_time_to_execute = microtime(true) - $start;
+			$log->ip = '127.0.0.1';
+			discovery_log($log);
+		}
 	}
 }
 
