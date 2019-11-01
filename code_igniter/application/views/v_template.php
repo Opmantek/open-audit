@@ -81,7 +81,11 @@ function refine($property, $value, $display = '', $align = 'left')
     $exclude_link = create_url($query_parameters);
     unset($query_parameters);
 
-    echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . htmlspecialchars($value) . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</span></td>\n";
+    if (!empty($value)) {
+        echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . htmlspecialchars($value) . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</span></td>\n";
+    } else {
+        echo '            <td class="text-' . $align . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</td>\n";
+    }
 }
 
 include "theme-bootstrap/v_template.php";

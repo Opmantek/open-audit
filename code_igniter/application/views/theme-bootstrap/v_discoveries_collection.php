@@ -111,7 +111,7 @@ if ($nmap_warning != '') {
                     <?php refine('discoveries.type',$item->attributes->type); ?>
                     <?php refine('discoveries.description',$item->attributes->description); ?>
                     <?php refine('discoveries.last_run',$item->attributes->last_run); ?>
-                    <?php refine('discoveries.status',$item->attributes->status); ?>
+                    <?php refine('discoveries.status',$item->attributes->status, '', 'center'); ?>
                     <td class="text-center"><?php echo $item->attributes->ip_responding_count ?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
