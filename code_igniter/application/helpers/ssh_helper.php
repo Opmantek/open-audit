@@ -1175,7 +1175,8 @@ if (! function_exists('ssh_audit')) {
                 $command = $device->bash . " -c '" . $command . "'";
             }
             $device->uuid = trim($ssh->exec($command));
-            $log->command_output = json_encode(explode($device->uuid, "\n"));
+            $log->command_output = json_encode(explode("\n", $device->uuid));
+
             if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
                 $device->uuid = '';
             }
