@@ -1812,7 +1812,7 @@ class M_device extends MY_Model
 
     public function set_identification($id)
     {
-        if (empty($id) or ! is_numeric($id)) {
+        if (empty($id) or !is_numeric($id)) {
             return false;
         }
         $identification = '';

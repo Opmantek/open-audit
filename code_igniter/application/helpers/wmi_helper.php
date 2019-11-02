@@ -563,6 +563,9 @@ if (! function_exists('delete_windows_result')) {
         }
         $log->file = 'wmi_helper';
         $log->function = 'delete_windows_result';
+        if (!empty($parameters->discovery_id)) {
+            $log->discovery_id = $parameters->discovery_id;
+        }
         $CI = & get_instance();
 
         if (empty($parameters->ip)) {

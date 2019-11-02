@@ -197,9 +197,12 @@ if (!function_exists('discover_subnet')) {
 		$all_ip_list = all_ip_list($discovery);
 		$count = @count($all_ip_list);
 		$log->command_status = 'notice';
-		$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
+		if ($discovery->attributes->other->nmap->ping == 'y') {
+			$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
+		} else {
+			$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
+		}
 		discovery_log($log);
-
 
 		$responding_ip_list = responding_ip_list($discovery);
 
@@ -304,26 +307,31 @@ if (!function_exists('ip_scan')) {
 
 		$tcp_ports = '';
 		if (!empty($nmap->tcp_ports)) {
+			$nmap->tcp_ports = str_replace(' ', '', $nmap->tcp_ports);
 			$tcp_ports = '-p ' . $nmap->tcp_ports;
 		}
 
 		$udp_ports = '';
 		if (!empty($nmap->udp_ports)) {
+			$nmap->udp_ports = str_replace(' ', '', $nmap->udp_ports);
 			$udp_ports = '-p ' . $nmap->udp_ports;
 		}
 
 		$exclude_ip = '';
 		if (!empty($nmap->exclude_ip)) {
+			$nmap->exclude_ip = str_replace(' ', '', $nmap->exclude_ip);
 			$exclude_ip = '--exclude ' . $nmap->exclude_ip;
 		}
 
 		$exclude_tcp_ports = '';
 		if (!empty($nmap->exclude_tcp_ports)) {
+			$nmap->exclude_tcp_ports = str_replace(' ', '', $nmap->exclude_tcp_ports);
 			$exclude_tcp_ports = '--exclude-ports T:' . $nmap->exclude_tcp_ports;
 		}
 
 		$exclude_udp_ports = '';
 		if (!empty($nmap->exclude_udp_ports)) {
+			$nmap->exclude_udp_ports = str_replace(' ', '', $nmap->exclude_udp_ports);
 			$exclude_udp_ports = '--exclude-ports U:' . $nmap->exclude_udp_ports;
 		}
 
@@ -483,6 +491,7 @@ if (!function_exists('ip_scan')) {
 			if (stripos($line, "Host $ip is up, received arp-response") !== false) {
 				$device['host_is_up'] = "true";
 				$log->message = "Host $ip is up, received arp-response";
+				$log->command_output = $line;
 				discovery_log($log);
 				// echo "$command\n";
 				// echo "$line\n";
@@ -493,6 +502,7 @@ if (!function_exists('ip_scan')) {
 				$device['mac_address'] = strtolower($keywords[2]);
 				$device['host_is_up'] = "true";
 				$log->message = "Host $ip is up, received mac addess " . $device['mac_address'];
+				$log->command_output = $line;
 				discovery_log($log);
 				// echo "$command\n";
 				// echo "$line\n";
@@ -501,6 +511,7 @@ if (!function_exists('ip_scan')) {
 			if (stripos($line, "Nmap done: 1 IP address (1 host up)") !== false) {
 				$device['host_is_up'] = "true";
 				$log->message = "Host $ip is up, received Nmap ping response";
+				$log->command_output = $line;
 				discovery_log($log);
 				// echo "$command\n";
 				// echo "$line\n";
@@ -509,6 +520,7 @@ if (!function_exists('ip_scan')) {
 			if (stripos($line, "due to host timeout") !== false and $discovery->other->nmap->ping == 'y') {
 				$device['host_is_up'] = "true";
 				$log->message = "Host $ip timed out. Exceeded timeout seconds.";
+				$log->command_output = $line;
 				discovery_log($log);
 				// echo "$command\n";
 				// echo "$line\n";
@@ -1020,6 +1032,7 @@ if (!function_exists('ip_audit')) {
 		$log->command = '';
 		$log->command_output = '';
 		$log->command_time_to_execute = '';
+		$log->command_status = 'notice';
 
 		// insert a blank to indicate we're finished this part of the discovery
 		// if required, the audit scripts will insert their own audit logs
@@ -1188,7 +1201,7 @@ if (!function_exists('ip_audit')) {
 				} else {
 					// delete the remote audit result
 					$parameters = new stdClass();
-					$parameters->log = $log;
+					$parameters->discovery_id = $discovery->id;
 					$parameters->ip = $device->ip;
 					$parameters->share = 'admin$';
 					$parameters->file = end($temp);
@@ -1459,7 +1472,7 @@ if (!function_exists('ip_audit')) {
 			discovery_log($log);
 			$parameters = new stdCLass();
 			$parameters->details = $audit->system;
-			$parameters->log = $log;
+			$parameters->discovery_id = $discovery->id;
 			$parameters->match = $discovery->other->match;
 			$audit_device = $CI->m_device->match($parameters);
 			$audit->system->discovery_id = $discovery->id;
@@ -1523,7 +1536,7 @@ if (!function_exists('ip_audit')) {
 					$parameters->table = $key;
 					$parameters->details = $audit->system;
 					$parameters->input = $value;
-					$parameters->log = $log;
+					$parameters->discovery_id = $discovery->id;
 					$CI->m_devices_components->process_component($parameters);
 				}
 			}
@@ -1555,7 +1568,7 @@ if (!function_exists('ip_audit')) {
 				$parameters = new stdClass();
 				$parameters->table = 'dns';
 				$parameters->input = $dns;
-				$parameters->log = $log;
+				$parameters->discovery_id = $discovery->id;
 				if (!empty($audit->system->id)) {
 					$parameters->details = $audit->system;
 					$CI->m_devices_components->process_component($parameters);
@@ -1675,11 +1688,13 @@ if (!function_exists('ip_audit')) {
 		}
 
 		$CI->m_device->set_identification($device->id);
+
 		$log->command = 'Peak Memory';
 		$log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB";
 		$log->command_status = 'device complete';
 		$log->command_time_to_execute = microtime(true)  - $start;
-		$log->message = 'IP Audit finish on device ' . $device->ip;
+		$log->message = 'IP Audit finish on device ' . ip_address_from_db($device->ip);
+		$log->ip = ip_address_from_db($device->ip);
 		discovery_log($log);
 
 		# Check if this discovery is complete and set status if so
@@ -1731,6 +1746,7 @@ if (!function_exists('discover_ad')) {
 		$log->ip = '127.0.0.1';
 		$log->severity = 6;
 		discovery_log($log);
+		$log->command_status = 'notice';
 
 		$sql = "/* discoveries_helper::discover_ad */ " . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
 		$data = array($discovery_id);
@@ -1756,8 +1772,9 @@ if (!function_exists('discover_ad')) {
 		unset($error_reporting);
 		if (!$ldapconn) {
 			// log the failed attempt to connect to AD
-			$log->severity = 3;
+			$log->severity = 4;
 			$log->details = 'Could not connect to AD ' . $discovery->attributes->other->ad_domain . ' at ' . $discovery->attributes->other->ad_server;
+			$log->command_status = 'fail';
 			discovery_log($log);
 			return false;
 		}
@@ -1769,6 +1786,7 @@ if (!function_exists('discover_ad')) {
 				if ($bind = @ldap_bind($ldapconn, $credential->attributes->credentials->username, $credential->attributes->credentials->password)) {
 					$log->severity = 7;
 					$log->message = 'Successful bind to AD using ' . $credential->attributes->name;
+					$log->command_status = 'success';
 					discovery_log($log);
 					$dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $discovery->attributes->other->ad_domain));
 					$filter = "(&(objectclass=*))";
@@ -1779,16 +1797,19 @@ if (!function_exists('discover_ad')) {
 						$log->message = 'Could not Retrieve subnets from ' . $discovery->attributes->other->ad_domain . ' on ' . $discovery->attributes->other->ad_server . ' using ' . $credential->attributes->name;
 						$log->severity = 6;
 						$log->command_output = '';
+						$log->command_status = 'fail';
 						discovery_log($log);
 					} else {
 						$log->severity = 7;
 						$log->message = 'Retrieved subnets from ' . $discovery->attributes->other->ad_domain . ' on ' . $discovery->attributes->other->ad_server;
+						$log->command_status = 'success';
 						discovery_log($log);
 						break;
 					}
 				} else {
 					$log->severity = 7;
 					$log->message = 'Could not bind to AD using ' . $credential->attributes->name;
+					$log->command_status = 'warning';
 					discovery_log($log);
 					unset($bind);
 				}
@@ -1802,6 +1823,7 @@ if (!function_exists('discover_ad')) {
 			return false;
 		}
 		foreach ($info as $subnet) {
+			$log->command_status = 'notice';
 			if (!empty($subnet['name'][0]) and $subnet['name'][0] != 'Subnets') {
 				unset($network);
 				$network = new stdClass();
@@ -1839,7 +1861,7 @@ if (!function_exists('discover_ad')) {
 				$ad_discovery->other->match = new stdClass();
 				$ad_discovery->other->subnet = $subnet['name'][0];
 
-				$sql = "/* discoveries_helper::discover_ad */ " . 'SELECT * FROM discoveries WHERE name = ? AND org_id = ?';
+				$sql = "/* discoveries_helper::discover_ad */ " . "SELECT * FROM discoveries WHERE name = ? AND org_id = ? and description = 'Subnet - " . $subnet['name'][0] . "'";
 				$query = $CI->db->query($sql, array($ad_discovery->name, intval($discovery->attributes->org_id)));
 				$result = $query->result();
 				# TODO - JSON decode this and test the subnet. We have other items stored inside 'other' (nmap options, etc).
@@ -1875,10 +1897,14 @@ if (!function_exists('discover_ad')) {
 				}
 			}
 		}
-
-		$sql = "UPDATE `discoveries` SET `status` = 'complete', `last_run` = NOW(), `duration` = ? WHERE id = ?";
-		$duration = gmdate("H:i:s", (microtime(true) - $start));
-		$data = array($duration, $discovery_id);
-		$CI->db->query($sql, $data);
+		# NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
+		$log->severity = 6;
+		$log->message = 'Discovery has finished.';
+		$log->command = '';
+		$log->command_output = '';
+		$log->command_status = 'finished';
+		$log->command_time_to_execute = gmdate("H:i:s", (microtime(true) - $start));
+		$log->ip = '127.0.0.1';
+		discovery_log($log);
 	}
 }

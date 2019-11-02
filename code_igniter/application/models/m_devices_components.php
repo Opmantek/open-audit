@@ -339,7 +339,7 @@ class M_devices_components extends MY_Model
             $log->discovery_id = $parameters->discovery_id;
         }
         if (!empty($parameters->details->ip)) {
-            $log->ip = $parameters->details->ip;
+            $log->ip = ip_address_from_db($parameters->details->ip);
         } else {
             $log->ip = '127.0.0.1';
         }
@@ -1598,7 +1598,7 @@ class M_devices_components extends MY_Model
     }
 
     public function nmap_ip($parameters) {
-        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($parameters->device->id) or empty($parameters->ip->ip)) {
+        if (empty($parameters) or empty($parameters->device) or empty($parameters->ip) or empty($parameters->device->id) or empty($parameters->ip->ip)) {
             $log = new stdClass();
             $log->severity = 4;
             $log->message = "Function nmap_ip called without parameters object.";
@@ -1607,7 +1607,19 @@ class M_devices_components extends MY_Model
             return false;
         }
 
-        $log = $parameters->log;
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        }
+        if (!empty($parameters->discovery_id)) {
+            $log->discovery_id = $parameters->discovery_id;
+        }
+        $log->severity = 6;
+        $log->ip = $parameters->ip;
+        $log->file = 'm_devices_components';
+        $log->function = 'nmap_ip';
+        $log->command_status = 'notice';
+        $log->message = '';
+
         $device = $parameters->device;
         $ip = $parameters->ip;
 

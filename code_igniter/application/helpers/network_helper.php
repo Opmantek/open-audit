@@ -450,6 +450,9 @@ if (! function_exists('dns_validate')) {
             } else {
                 # we got an ip address back from DNS, remove it
                 $details->dns_hostname = '';
+                $log->message = 'Received IP, not hostname for ' . $details->ip . ' in network_helper::dns_validate';
+                $log->command_output = $details->dns_domain;
+                discovery_log($log);
             }
         } else {
             $log->message = 'DNS returned a hostname only for ' . $details->ip . ' in network_helper::dns_validate';
