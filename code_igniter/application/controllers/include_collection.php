@@ -38,7 +38,7 @@ $this->load->model('m_collection');
 //     $this->response->data = $this->m_collection->collection($this->response->meta->collection);
 // }
 
-$individuals = array('buildings', 'floors', 'database', 'discoveries', 'rack_devices', 'roles', 'rooms', 'rows');
+$individuals = array('buildings', 'floors', 'database', 'discoveries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows');
 
 if (in_array($this->response->meta->collection, $individuals)) {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
