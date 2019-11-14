@@ -949,6 +949,14 @@ if (! function_exists('inputRead')) {
             if ($temp == 'devices') {
                 $temp = 'system';
             }
+            // Uncomment the below to enable fully qualified column names.
+            // NOTE - this would break the current HTML templates and change the API response.
+            // Maybe enable for v4 (if ever)
+            // $fields = $CI->db->list_fields($temp);
+            // for ($i=0; $i < count($fields); $i++) {
+            //     $fields[$i] = $temp . '.' . $fields[$i] . ' AS `' . $temp . '.' . $fields[$i] . '`';
+            // }
+            // $CI->response->meta->internal->properties = implode(', ', $fields);
             $CI->response->meta->internal->properties = $temp . '.*';
         }
 
@@ -1154,6 +1162,9 @@ if (! function_exists('inputRead')) {
         }
 
         $CI->response->meta->internal->filter = filter($CI->response->meta->filter, $CI->response->meta->collection, $CI->user);
+        if (count($CI->response->meta->filter) > 0 and $CI->response->meta->collection === 'devices') {
+            $CI->response->meta->internal->join = build_join();
+        }
 
         # Accept first_seen, last_seen, edited_date and timestamp as numeric unix_timestamp's and convert them to a local timestamp string
         foreach ($CI->response->meta->filter as $filter) {
@@ -1250,7 +1261,7 @@ if (! function_exists('inputRead')) {
 
         if (empty($CI->roles) and $CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_roles');
-            $CI->roles = $CI->m_roles->collection();
+            $CI->roles = $CI->m_roles->collection(1);
             if (empty($CI->roles)) {
                 $CI->session->set_flashdata('error', 'No Roles retrieved from database.');
                 $CI->session->unset_userdata('user_id');
@@ -1365,6 +1376,29 @@ if (! function_exists('inputRead')) {
     }
 }
 
+if (! function_exists('build_join')) {
+    function build_join()
+    {
+        $CI = & get_instance();
+        $join = '';
+        $tables = '';
+        foreach ($CI->response->meta->filter as $item) {
+            if (strpos($item->name, '.') !== false) {
+                $table = substr($item->name, 0, strpos($item->name, '.'));
+                if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
+                    if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
+                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
+                    } else {
+                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
+                    }
+                }
+                $tables .= " $table ";
+            }
+        }
+        return($join);
+    }
+}
+
 if (! function_exists('filter')) {
     function filter($response_filter, $collection, $user)
     {
@@ -1386,32 +1420,38 @@ if (! function_exists('filter')) {
             }
         }
         if ($filter != '') {
-            if ($collection == 'configuration' or $collection == 'logs' ) {
-                $filter = ' WHERE ' . substr($filter, 4);
-            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
-                $filter = substr($filter, 5);
-                if (!empty($user->org_parents)) {
-                    $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . ')) AND ' . $filter;
-                } else {
-                    $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
-                }
-            } else {
-                $filter = substr($filter, 5);
-                $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
-            }
+            $filter = substr($filter, 5);
+            $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
         } else {
-            if ($collection == 'configuration' or $collection == 'logs' ) {
-                $filter = '';
-            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
-                if (!empty($user->org_parents)) {
-                    $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . '))';
-                } else {
-                    $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
-                }
-            } else {
-                $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
-            }
+            $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
         }
+        // if ($filter != '') {
+        //     if ($collection == 'configuration' or $collection == 'logs' ) {
+        //         $filter = ' WHERE ' . substr($filter, 4);
+        //     } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+        //         $filter = substr($filter, 5);
+        //         if (!empty($user->org_parents)) {
+        //             $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . ')) AND ' . $filter;
+        //         } else {
+        //             $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+        //         }
+        //     } else {
+        //         $filter = substr($filter, 5);
+        //         $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+        //     }
+        // } else {
+        //     if ($collection == 'configuration' or $collection == 'logs' ) {
+        //         $filter = '';
+        //     } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+        //         if (!empty($user->org_parents)) {
+        //             $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . '))';
+        //         } else {
+        //             $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+        //         }
+        //     } else {
+        //         $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+        //     }
+        // }
         return $filter;
     }
 }
