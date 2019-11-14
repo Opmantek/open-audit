@@ -197,10 +197,9 @@ if (!function_exists('discover_subnet')) {
 		$all_ip_list = all_ip_list($discovery);
 		$count = @count($all_ip_list);
 		$log->command_status = 'notice';
+		$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
 		if ($discovery->attributes->other->nmap->ping == 'y') {
 			$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
-		} else {
-			$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
 		}
 		discovery_log($log);
 
@@ -640,7 +639,10 @@ if (!function_exists('ip_audit')) {
 			unset($log->id, $command_log_id);
 		}
 
-		$credentials = $CI->m_discoveries->get_device_discovery_credentials($device->id, $discovery->id, $device->ip);
+		$credentials = array();
+		if (!empty($device->id)) {
+			$credentials = $CI->m_discoveries->get_device_discovery_credentials($device->id, $discovery->id, $device->ip);
+		}
 
 		// output to log file and DEBUG the status of the three main services
 		$ip_scan->details->ssh_port = '22';
@@ -1754,12 +1756,9 @@ if (!function_exists('discover_ad')) {
 
 		// We need to get the Org Children of this particular discovery run
 		$orgs = $CI->m_orgs->get_children($discovery->attributes->org_id);
+		$orgs[] = $discovery->attributes->org_id;
+		$orgs = implode(',', $orgs);
 
-		if (count($orgs) > 0) {
-			$orgs = $discovery->attributes->org_id . ',' . implode(',', $orgs);
-		} else {
-			$orgs = $discovery->attributes->org_id;
-		}
 		// Stored credential sets
 		$credentials = $CI->m_credentials->collection($orgs);
 		# get the list of subnets from AD
