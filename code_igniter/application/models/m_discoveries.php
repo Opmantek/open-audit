@@ -270,7 +270,8 @@ class M_discoveries extends MY_Model
         # Discovery associated credentials
         # get our Orgs List
         $temp = $CI->m_orgs->get_children($org_id);
-        $org_list = $org_id . ', ' . implode(', ', $temp);
+        $temp[] = $org_id;
+        $org_list = implode(', ', $temp);
         unset($temp);
         # And now get any credentials
         $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ")";
