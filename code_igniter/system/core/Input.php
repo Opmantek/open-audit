@@ -743,9 +743,11 @@ class CI_Input {
 	*/
 	function _clean_input_keys($str)
 	{
+		if (strpos($str, 'open|filtered') === false) {
 		if ( ! preg_match("/^[a-z0-9:_\/-]+$/i", $str))
 		{
 			exit('Disallowed Key Characters.');
+		}
 		}
 
 		// Clean UTF-8 if supported
