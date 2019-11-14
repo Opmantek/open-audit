@@ -379,6 +379,7 @@ class Util extends CI_Controller
         $this->load->helper('audit');
         $this->load->helper('discoveries');
         $this->load->helper('mac');
+        $this->load->helper('mac_model_helper');
         $this->load->helper('network');
         $this->load->helper('security');
         $this->load->helper('snmp');
@@ -393,7 +394,7 @@ class Util extends CI_Controller
         # queue limit is set by the user
         # check it config['queue_count'] > config['queue_limit']
         if (intval($this->config->config['queue_count']) > intval($this->config->config['queue_limit'])) {
-            echo "QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']);
+            #echo "QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']);
             exit;
         }
         # Increase the queue count in the config table
