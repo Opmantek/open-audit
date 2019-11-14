@@ -114,6 +114,8 @@ ALTER TABLE `user` DROP `shell`;
 
 ALTER TABLE `user` ADD `shell` varchar(255) NOT NULL DEFAULT '' AFTER `home`;
 
+DELETE FROM `users` WHERE `name` = 'nmis' AND `edited_by` = 'system';
+
 UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'
 
 UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(dns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day'
@@ -210,6 +212,10 @@ $this->alter_table('user', 'keys', "ADD `keys` text NOT NULL AFTER `status`", 'a
 $this->alter_table('user', 'home', "ADD `home` text NOT NULL AFTER `keys`", 'add');
 
 $this->alter_table('user', 'shell', "ADD `shell` text NOT NULL AFTER `home`", 'add');
+
+$sql = "DELETE FROM `users` WHERE `name` = 'nmis' AND `edited_by` = 'system'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'";
 $this->db->query($sql);
