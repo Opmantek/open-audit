@@ -344,6 +344,26 @@ class Logon extends CI_Controller
         $server_ip = server_ip();
         $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 
+        # If the default_network_address has not been altered by the user, update it.
+        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+            $sql = "/* logon::check_defaults */ " . "SELECT * FROM configuration WHERE name = 'default_network_address'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $config_item = $result[0];
+            if ($config_item->edited_by == 'system') {
+                # Build a new default network address
+                $myip = explode(',', $server_ip)[0];
+                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                    $my_network_address = 'https://'.$myip.'/open-audit/';
+                } else {
+                    $my_network_address = 'http://'.$myip.'/open-audit/';
+                }
+                $sql = "UPDATE configuration SET value = ?, edited_date = NOW(), edited_by = 'system' WHERE name = 'default_network_address'";
+                $data = array($my_network_address);
+                $query = $this->db->query($sql, $data);
+            }
+        }
+
         // Delete any old sessions stored in the DB
         $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
         $query = $this->db->query($sql);
