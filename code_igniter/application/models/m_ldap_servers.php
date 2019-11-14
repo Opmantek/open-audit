@@ -60,7 +60,7 @@ class M_ldap_servers extends MY_Model
             log_error('ERR-0010', 'm_ldap_servers::create_network');
             return false;
         }
-        $sql = "INSERT INTO `ldap_servers` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0000-00-00 00:00:00', NOW())";
+        $sql = "INSERT INTO `ldap_servers` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0000-00-00 00:00:00', NOW())";
         $data = array(  (string)$CI->response->meta->received_data->attributes->name,
                          intval($CI->response->meta->received_data->attributes->org_id),
                         (string)$CI->response->meta->received_data->attributes->description,
@@ -74,6 +74,7 @@ class M_ldap_servers extends MY_Model
                         (string)$CI->response->meta->received_data->attributes->base_dn,
                         (string)$CI->response->meta->received_data->attributes->user_dn,
                         (string)$CI->response->meta->received_data->attributes->user_membership_attribute,
+                        (string)$CI->response->meta->received_data->attributes->use_auth,
                         (string)$CI->response->meta->received_data->attributes->use_roles,
                         (string)$CI->response->meta->received_data->attributes->dn_account,
                         (string)$CI->response->meta->received_data->attributes->dn_password,

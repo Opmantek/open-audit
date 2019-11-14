@@ -134,11 +134,11 @@ class M_logon extends MY_Model
         // Auth against any configured LDAP servers
         if ($this->db->table_exists('ldap_servers')) {
             if (!empty($user['domain'])) {
-                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE domain LIKE ?";
+                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE domain LIKE ? AND `use_auth` = 'y'";
                 $data = array($user['domain']);
                 $query = $this->db->query($sql, $data);
             } else {
-                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers";
+                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE `use_auth` = 'y'";
                 $query = $this->db->query($sql);
             }
             $ldap_servers = $query->result();
