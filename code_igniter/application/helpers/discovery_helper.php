@@ -296,26 +296,13 @@ if (!function_exists('process_scan')) {
             unset($log->id, $command_log_id);
         }
 
-        // We need a user object when retrieving various collections and
-        // we should set the 'user' orgs to the org of this particular discovery run (and its children)
-        $CI->user = new stdClass();
-        if (!empty($discovery->org_id)) {
-            $CI->user->orgs = $CI->m_orgs->get_children($discovery->org_id);
-            if (count($CI->user->orgs) > 0) {
-                $CI->user->org_list = $discovery->org_id . ',' . implode(',', $CI->user->orgs);
-            } else {
-                $CI->user->org_list = $discovery->org_id;
-            }
-        } else {
-            $CI->user->org_list = '';
-        }
-
-
         // Get any credential sets
         if (empty($credentials)) {
             $credentials = array();
         }
-        $temp = $CI->m_credentials->collection();
+
+        # Stored credential sets
+        $temp = $this->m_credentials->get_discovery_credentials($discovery->id);
         if (count($temp) > 0) {
             $credentials = array_merge($credentials, $temp);
         } else {
