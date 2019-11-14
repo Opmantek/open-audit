@@ -54,7 +54,7 @@ class Discovery_log extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        #$this->load->model('m_discovery_log');
+        $this->load->model('m_discovery_log');
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
     }
@@ -115,7 +115,6 @@ class Discovery_log extends MY_Controller
 
     /**
     * The requested table will have optimize run upon it and it's autoincrement reset to 1
-
     *
     * @access public
     * @return NULL
