@@ -115,6 +115,7 @@ if (! function_exists('output')) {
                 }
             }
 
+            # TODO - do we need this is the models already do this for us?
             $special = array('credentials' => 'credentials', 'discoveries' => 'other', 'queue' => 'details', 'tasks' => 'options');
             foreach ($special as $table => $column) {
                 if ($CI->response->meta->collection == $table) {
@@ -640,28 +641,30 @@ if (! function_exists('output')) {
 
         if ($CI->config->config['internal_version'] >= 20170620) {
             $CI->load->model('m_queries');
-            $result = $CI->m_queries->collection();
+            $result = $CI->m_queries->collection($CI->user->id);
             $CI->response->included = array_merge($CI->response->included, $result);
-            $CI->load->model('m_collection');
-            $result = $CI->m_collection->collection('summaries');
+
+            $CI->load->model('m_summaries');
+            $result = $CI->m_summaries->collection($CI->user->id);
             $CI->response->included = array_merge($CI->response->included, $result);
         }
 
-
-        $CI->load->model('m_collection');
-        $result = @$CI->m_collection->collection('dashboards');
+        $CI->load->model('m_dashboards');
+        $result = @$CI->m_dashboards->collection($CI->user->id);
         $CI->response->included = @array_merge($CI->response->included, $result);
 
         $include = true;
-        foreach ($CI->response->included as $item) {
-            if ($item->type == 'attributes') {
-                $include = false;
+        if (is_array($CI->response->included)) {
+            foreach ($CI->response->included as $item) {
+                if (!empty($item->type) and $item->type == 'attributes') {
+                    $include = false;
+                }
             }
         }
         if ($include and $CI->response->meta->collection !== 'attributes') {
             if ($CI->db->table_exists('attributes')) {
                 $CI->load->model('m_attributes');
-                $attributes = $CI->m_attributes->collection();
+                $attributes = $CI->m_attributes->collection($CI->user->id);
                 usort($attributes, "sort_attributes");
                 $CI->response->included = array_merge($CI->response->included, $attributes);
             }
