@@ -73,17 +73,23 @@ if (!function_exists('snmp_credentials')) {
 
         if (!extension_loaded('snmp')) {
             $log->message = 'SNMP extension for PHP is not present, aborting credential test on '.$ip;
+            $log->ip = @$ip;
+            $log->status = 'error';
             discovery_log($log);
             return false;
         }
 
         if (empty($credentials)) {
             $log->message = 'No credentials array passed to snmp_credentials.';
+            $log->ip = @$ip;
+            $log->status = 'error';
             discovery_log($log);
             return false;
         }
         if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No IP or bad IP passed to snmp_credentials.';
+            $log->ip = @$ip;
+            $log->status = 'error';
             discovery_log($log);
             return false;
         }

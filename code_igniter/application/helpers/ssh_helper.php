@@ -566,6 +566,11 @@ if (! function_exists('ssh_audit')) {
         $log->message = 'SSH audit starting';
         $log->command_status = 'notice';
         $log->ip = $parameters->ip;
+        $log->system_id = '';
+        if (!empty($parameters->system_id)) {
+            $log->system_id = $parameters->system_id;
+        }
+
         discovery_log($log);
 
         if (is_array($parameters->credentials)) {
