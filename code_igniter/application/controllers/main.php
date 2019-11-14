@@ -56,7 +56,7 @@ class Main extends MY_Controller
         parent::__construct();
         $this->load->model('m_users');
         $this->load->model('m_roles');
-        $this->roles = $this->m_roles->collection();
+        $this->roles = $this->m_roles->collection(1);
     }
 
 

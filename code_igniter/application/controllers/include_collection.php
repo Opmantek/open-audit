@@ -28,39 +28,10 @@ $timer_start = microtime(true);
 unset($this->response->data);
 $this->load->model('m_collection');
 
-// if ($this->response->meta->collection === 'database' or $this->response->meta->collection === 'roles' ) {
-//     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
-// } else if ($this->response->meta->collection === 'summaries' and $this->response->meta->format == 'screen') {
-//     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
-// } else if ($this->response->meta->collection === 'buildings' or $this->response->meta->collection === 'floors' or $this->response->meta->collection === 'rooms' or $this->response->meta->collection === 'rows' or $this->response->meta->collection === 'racks' or $this->response->meta->collection === 'rack_devices') {
-//     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
-// } else {
-//     $this->response->data = $this->m_collection->collection($this->response->meta->collection);
-// }
+$this->{'m_'.$this->response->meta->collection}->collection(0,1);
 
-$individuals = array('buildings', 'floors', 'database', 'discoveries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows');
-
-if (in_array($this->response->meta->collection, $individuals)) {
-    $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
-} else if ($this->response->meta->collection === 'summaries' and $this->response->meta->format == 'screen') {
-    $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
-} else {
-    $this->response->data = $this->m_collection->collection($this->response->meta->collection);
-}
-
-$this->response->meta->filtered = count($this->response->data);
-
-$this->response->meta->total = intval($this->m_collection->collection_total($this->response->meta->collection));
-
-if (empty($this->response->meta->total) and !empty($this->response->meta->filtered)) {
-    $this->response->meta->total = $this->response->meta->filtered;
-}
-
-if ($this->response->meta->collection === 'discoveries') {
-    $this->load->model('m_collection');
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
-}
-
+# If we have less than 100 license entries, run them all and include the used count.
+# Can't do this in the controller, as we load the response->data above (in this file)
 if ($this->response->meta->collection === 'licenses') {
     if (intval($this->response->meta->total) < 100) {
         for ($i=0; $i < count($this->response->data); $i++) {
@@ -69,10 +40,6 @@ if ($this->response->meta->collection === 'licenses') {
         }
     }
 }
-
-// if ($this->response->meta->collection == 'configuration') {
-//     $this->response->meta->total = $this->response->meta->filtered;
-// }
 
 $timer_end = microtime(true);
 $entry = new stdClass();

@@ -60,41 +60,26 @@ class M_logs extends MY_Model
         return ($result);
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
         $CI = & get_instance();
-
-        $limit = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'logs') {
-            # get the total
-            $sql = "SELECT COUNT(*) AS `count` FROM `logs`";
-            $result = $this->run_sql($sql);
-            $CI->response->meta->total = $result[0]->count;
-            # construct our limit and offset if required
-            if (!empty($CI->response->meta->limit)) {
-                if (!empty($CI->response->meta->offset)) {
-                    $limit = 'LIMIT ' . intval($CI->response->meta->offset) . ', ' . intval($CI->response->meta->limit);
-                } else {
-                    $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                }
-            } else {
-                if ($CI->response->meta->format == 'screen') {
-                    $limit = 'LIMIT 1000';
-                } else {
-                    $limit = '';
-                }
-            }
+        if (!empty($user_id)) {
+            $sql = "SELECT * FROM logs";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'logs');
+            return $result;
         }
-
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->detail = "SELECT * FROM logs ORDER BY `id` $limit";
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = "SELECT * FROM logs ORDER BY `id` $limit";
-        $data = array(intval($CI->response->meta->limit));
-        $result = $this->run_sql($sql, $data);
-        $CI->response->meta->filtered = count($result);
-        $result = $this->format_data($result, 'logs');
-        return ($result);
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM logs " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'logs');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 }

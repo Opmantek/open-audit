@@ -99,6 +99,32 @@ class Buildings extends MY_Controller
     */
     public function read()
     {
+        $this->load->model('m_floors');
+        $this->load->model('m_rooms');
+        $this->load->model('m_rows');
+        $this->load->model('m_racks');
+        $floors = $this->m_buildings->children($this->response->meta->id);
+        if (!empty($floors) and is_array($floors)) {
+            $this->response->included = array_merge($this->response->included, $floors);
+            foreach ($floors as $floor) {
+                $rooms = $this->m_floors->children($floor->id);
+                if (!empty($rooms) and is_array($rooms)) {
+                    $this->response->included = array_merge($this->response->included, $rooms);
+                    foreach ($rooms as $room) {
+                        $rows = $this->m_rooms->children($room->id);
+                        if (!empty($rows) and is_array($rows)) {
+                            $this->response->included = array_merge($this->response->included, $rows);
+                            foreach ($rows as $row) {
+                                $racks = $this->m_rows->children($row->id);
+                                if (!empty($racks) and is_array($racks)) {
+                                    $this->response->included = array_merge($this->response->included, $racks);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         include 'include_read.php';
     }
 

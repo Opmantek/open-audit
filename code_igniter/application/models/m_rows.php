@@ -48,7 +48,7 @@ class M_rows extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT rows.*, orgs.id AS `orgs.id`, locations.id AS `locations.id`, buildings.id AS `buildings.id`, floors.id AS `floors.id`, rooms.id AS `rooms.id` FROM `rows` LEFT JOIN `rooms` ON (rooms.id = rows.room_id) LEFT JOIN `floors` ON (floors.id = rooms.floor_id) LEFT JOIN `buildings` ON (buildings.id = floors.building_id) LEFT JOIN `locations` ON (locations.id = buildings.location_id) LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE rows.id = ?";
+        $sql = "SELECT rows.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = rows.id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) WHERE rows.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rows');
@@ -97,38 +97,27 @@ class M_rows extends MY_Model
         return ($result)    ;
     }
 
-    public function collection($parent = '')
+    public function collection(int $user_id = null, int $response = null)
     {
-
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
-
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'rows') {
-            $properties = $CI->response->meta->internal->properties;
-            $filter = $CI->response->meta->internal->filter;
-            $sort = $CI->response->meta->internal->sort;
-            $limit = $CI->response->meta->internal->limit;
-        } else {
-            $properties = 'rows.*';
-            $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
-            $sort = 'ORDER BY rows.name';
-            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM rows WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'rows');
+            return $result;
         }
-        $group_by = 'GROUP BY rows.id';
-        if (!empty($parent)) {
-            $filter .= ' AND rows.room_id IN (' . $parent . ')';
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.is AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) ' . 
+                    $CI->response->meta->internal->filter . " " . 
+                    "GROUP BY rows.id " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'rows');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-
-        #$sql = 'SELECT rows.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = rows.id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
-
-        $sql = 'SELECT ' . $properties . ', orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = rows.id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) ' . $filter . ' ' . $group_by . ' ' . $sort . ' ' . $limit;
-
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'rows');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return ($result);
     }
 }

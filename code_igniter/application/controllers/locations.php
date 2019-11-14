@@ -100,6 +100,52 @@ class Locations extends MY_Controller
     */
     public function read()
     {
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_attributes');
+            $attributes = $this->m_attributes->collection($this->user->id);
+            $location_attributes = array();
+            if (is_array($attributes)) {
+                foreach ($attributes as $attribute) {
+                    if ($attribute->attributes->resource == 'locations') {
+                        $location_attributes[] = $attribute;
+                    }
+                }
+            }
+            $this->response->included = array_merge($this->response->included, $location_attributes);
+        }
+        $this->load->model('m_buildings');
+        $this->load->model('m_floors');
+        $this->load->model('m_rooms');
+        $this->load->model('m_rows');
+        $this->load->model('m_racks');
+        $buildings = $this->m_locations->children($this->response->meta->id);
+        if (!empty($buildings) and is_array($buildings)) {
+            $this->response->included = array_merge($this->response->included, $buildings);
+            foreach ($buildings as $building) {
+                $floors = $this->m_buildings->children($building->id);
+                if (!empty($floors) and is_array($floors)) {
+                    $this->response->included = array_merge($this->response->included, $floors);
+                    foreach ($floors as $floor) {
+                        $rooms = $this->m_floors->children($floor->id);
+                        if (!empty($rooms) and is_array($rooms)) {
+                            $this->response->included = array_merge($this->response->included, $rooms);
+                            foreach ($rooms as $room) {
+                                $rows = $this->m_rooms->children($room->id);
+                                if (!empty($rows) and is_array($rows)) {
+                                    $this->response->included = array_merge($this->response->included, $rows);
+                                    foreach ($rows as $row) {
+                                        $racks = $this->m_rows->children($row->id);
+                                        if (!empty($racks) and is_array($racks)) {
+                                            $this->response->included = array_merge($this->response->included, $racks);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         include 'include_read.php';
     }
 

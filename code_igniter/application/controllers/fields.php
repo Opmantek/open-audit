@@ -99,6 +99,8 @@ class Fields extends MY_Controller
     */
     public function read()
     {
+        $this->load->model('m_groups');
+        $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
         include 'include_read.php';
     }
 

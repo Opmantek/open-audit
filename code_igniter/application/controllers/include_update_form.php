@@ -40,7 +40,7 @@ if (count($this->response->data) == 0) {
 
 # all
 $this->load->model('m_orgs');
-$this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+$this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
 
 # attributes
 if ($this->response->meta->collection == 'attributes') {
@@ -56,8 +56,9 @@ if ($this->response->meta->collection == 'connections') {
 
 # credentials
 if ($this->response->meta->collection == 'credentials') {
+    # TODO - code search, do we need locations included here?
     $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
 }
 
 # database
@@ -74,7 +75,7 @@ if ($this->response->meta->collection == 'discoveries') {
 # fields
 if ($this->response->meta->collection == 'fields') {
     $this->load->model('m_groups');
-    $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+    $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
 }
 
 # groups
@@ -116,7 +117,7 @@ if ($this->response->meta->collection == 'queries') {
 # scripts
 if ($this->response->meta->collection == 'scripts') {
         $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection($this->user->id));
 }
 
 # summaries
@@ -131,7 +132,7 @@ if ($this->response->meta->collection == 'roles') {
 # users
 if ($this->response->meta->collection == 'users') {
     $this->load->model('m_roles');
-    $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
+    $this->response->included = array_merge($this->response->included, $this->m_roles->collection($this->user->id));
     if (!empty($this->response->data[0]->attributes)) {
         $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
     }

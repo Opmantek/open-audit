@@ -93,6 +93,22 @@ class tasks extends MY_Controller
     */
     public function read()
     {
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_collectors');
+            $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
+            $this->load->model('m_clouds');
+            $this->response->included = array_merge($this->response->included, $this->m_clouds->collection($this->user->id));
+            $this->load->model('m_discoveries');
+            $this->response->included = array_merge($this->response->included, $this->m_discoveries->collection($this->user->id));
+            $this->load->model('m_groups');
+            $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
+            $this->load->model('m_integrations');
+            $this->response->included = array_merge($this->response->included, $this->m_integrations->collection($this->user->id));
+            $this->load->model('m_queries');
+            $this->response->included = array_merge($this->response->included, $this->m_queries->collection($this->user->id));
+            $this->load->model('m_summaries');
+            $this->response->included = array_merge($this->response->included, $this->m_summaries->collection($this->user->id));
+        }
         include 'include_read.php';
     }
 

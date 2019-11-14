@@ -89,14 +89,35 @@ class M_users extends MY_Model
         }
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $sql = $this->collection_sql('users', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'users');
-        return ($result);
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM users WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'users');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, dashboards.id AS `dashboards.id`, dashboards.name AS `dashboards.name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) LEFT JOIN dashboards ON (users.dashboard_id = dashboards.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            if (!empty($result)) {
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->roles = json_decode($result[$i]->roles);
+                    $result[$i]->orgs = json_decode($result[$i]->orgs);
+                    $result[$i]->access_token = json_decode($result[$i]->access_token);
+                }
+            }
+            $CI->response->data = $this->format_data($result, 'users');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 
     public function get_parent_orgs($org_id = 0)
@@ -230,7 +251,7 @@ class M_users extends MY_Model
                     $roles = $CI->roles;
                 } else {
                     $CI->load->model('m_roles');
-                    $roles = $CI->m_roles->collection();
+                    $roles = $CI->m_roles->collection(1);
                 }
             }
         } else {
@@ -251,7 +272,7 @@ class M_users extends MY_Model
                 $user_roles = array();
             }
             $CI->load->model('m_roles');
-            $roles = $CI->m_roles->collection();
+            $roles = $CI->m_roles->collection(1);
         }
         if (empty($user_roles)) {
             return false;

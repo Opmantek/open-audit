@@ -93,6 +93,11 @@ class rows extends MY_Controller
     */
     public function read()
     {
+        $this->load->model('m_racks');
+        $racks = $this->m_rows->children($this->response->meta->id);
+        if (!empty($racks) and is_array($racks)) {
+            $this->response->included = array_merge($this->response->included, $racks);
+        }
         include 'include_read.php';
     }
 

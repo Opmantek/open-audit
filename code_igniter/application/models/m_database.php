@@ -340,6 +340,7 @@ class M_database extends MY_Model
 
     public function collection()
     {
+        $CI = & get_instance();
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $return = array();
@@ -384,6 +385,8 @@ class M_database extends MY_Model
             $return[] = $item;
         }
 
-        return $return;
+        $CI->response->data = $return;
+        $CI->response->meta->filtered = count($CI->response->data);
+        $CI->response->meta->total = count($CI->response->data);
     }
 }

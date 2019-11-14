@@ -56,6 +56,8 @@ class Credentials extends MY_Controller
         parent::__construct();
         $this->load->library('encrypt');
         $this->load->model('m_credentials');
+        $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
+        unset($this->user->org_parents);
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
     }

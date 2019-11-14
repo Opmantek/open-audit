@@ -88,13 +88,15 @@ class Reports extends MY_Controller
     */
     public function collection()
     {
-        $this->load->model('m_collection');
-        $this->response->data = $this->m_collection->collection('queries');
-        $summaries = $this->m_collection->collection('summaries');
+        $this->load->model('m_queries');
+        $this->response->data = $this->m_queries->collection($this->user->id);
+        $this->load->model('m_summaries');
+        $summaries = $this->m_summaries->collection($this->user->id);
         foreach ($summaries as $summary) {
             $summary->attributes->menu_display = 'y';
         }
         $this->response->data = array_merge($this->response->data, $summaries);
+        usort($this->response->data, "sort_attributes");
         $this->response->meta->total = count($this->response->data);
         output($this->response);
 

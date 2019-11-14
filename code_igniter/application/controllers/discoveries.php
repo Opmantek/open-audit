@@ -186,6 +186,24 @@ class Discoveries extends MY_Controller
     public function read()
     {
         $this->test_windows_apache_user();
+        $this->load->model('m_collectors');
+        $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
+        if ($this->response->meta->format === 'screen') {
+            # Discovery log
+            $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+            # All Locations
+            $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        } else {
+           # Assign Devices to Location
+            $this->load->model('m_locations');
+            if (!empty($this->response->data[0]->attributes->devices_assigned_to_location)) {
+                $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->devices_assigned_to_location));
+            }
+            # Assign Devices to Org
+            if (!empty($this->response->data[0]->attributes->devices_assigned_to_org)) {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
+            }
+        }
         include 'include_read.php';
     }
 
@@ -221,6 +239,10 @@ class Discoveries extends MY_Controller
     {
         $this->discovery_status();
         $this->test_windows_apache_user();
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_collectors');
+            $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
+        }
         include 'include_collection.php';
     }
 

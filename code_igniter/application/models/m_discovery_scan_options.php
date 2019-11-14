@@ -82,14 +82,39 @@ class M_discovery_scan_options extends MY_Model
         }
     }
 
-    public function collection()
+    // public function collection()
+    // {
+    //     $this->log->function = strtolower(__METHOD__);
+    //     stdlog($this->log);
+    //     # TODO - add the users allowed Orgs here
+    //     $sql = "SELECT * FROM `discovery_scan_options`";
+    //     $result = $this->run_sql($sql);
+    //     $result = $this->format_data($result, 'discovery_scan_options');
+    //     return ($result);
+    // }
+
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        # TODO - add the users allowed Orgs here
-        $sql = "SELECT * FROM `discovery_scan_options`";
-        $result = $this->run_sql($sql);
-        $result = $this->format_data($result, 'discovery_scan_options');
-        return ($result);
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = $CI->m_orgs->get_user_all($user_id);
+            $sql = "SELECT * FROM discovery_scan_options WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'discovery_scan_options');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM discovery_scan_options LEFT JOIN orgs ON (discovery_scan_options.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'discovery_scan_options');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
+
 }

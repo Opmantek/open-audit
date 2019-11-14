@@ -99,6 +99,8 @@ class Dashboards extends MY_Controller
     */
     public function read()
     {
+        $this->load->model('m_widgets');
+        $this->response->included = array_merge($this->response->included, $this->m_widgets->collection($this->user->id));
         include 'include_read.php';
     }
 

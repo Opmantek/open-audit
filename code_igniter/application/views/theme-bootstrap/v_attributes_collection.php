@@ -44,7 +44,6 @@
             <thead>
                 <tr>
                     <th class="text-center"><?php echo __('Details')?></th>
-                    <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Resource')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Name (display)')?></th>
@@ -58,7 +57,6 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="attributes/<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                    <?php refine('attributes.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('attributes.resource', $item->attributes->resource); ?>
                     <?php refine('attributes.type', $item->attributes->type); ?>
                     <?php refine('attributes.name', $item->attributes->name); ?>

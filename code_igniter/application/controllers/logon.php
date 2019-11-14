@@ -339,6 +339,8 @@ class Logon extends CI_Controller
         }
 
         // Set our Server's IP addresses
+        # TODO - check we can remove this as it's provided in m_configuration::collection.
+        #      - might be required in a ::read.
         $server_ip = server_ip();
         $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 

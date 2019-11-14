@@ -79,16 +79,6 @@ class M_applications extends MY_Model
         return false;
     }
 
-    public function collection()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $sql = $this->collection_sql('applications', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'applications');
-        return ($result);
-    }
-
     public function read_sub_resource($id)
     {
         $this->log->function = strtolower(__METHOD__);
@@ -99,5 +89,29 @@ class M_applications extends MY_Model
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
         return ($result);
+    }
+
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM applications WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'applications');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM applications LEFT JOIN orgs ON (applications.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'applications');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 }

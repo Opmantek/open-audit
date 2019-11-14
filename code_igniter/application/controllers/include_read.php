@@ -26,387 +26,47 @@
 # *****************************************************************************
 $timer_start = microtime(true);
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
-$this->response->meta->filtered = count($this->response->data);
-
-if (count($this->response->data) == 0) {
-    log_error('ERR-0002', $this->response->meta->collection . ':read');
-    $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
-    if ($this->response->meta->format === 'json') {
-        output($this->response);
-        exit();
-    } else {
-        redirect($this->response->meta->collection);
-    }
+$this->response->meta->total = 0;
+$this->response->meta->filtered = 0;
+if (!empty($this->response->data) and is_array($this->response->data)) {
+    $this->response->meta->total = count($this->response->data);
+    $this->response->meta->filtered = count($this->response->data);
 }
 
-$table = $this->response->meta->collection;
-if ($table == 'database') {
-    $table = $this->response->meta->id;
-}
 if ($this->response->meta->format == 'screen') {
+    $table = $this->response->meta->collection;
+    if ($table == 'database') {
+        $table = $this->response->meta->id;
+    }
     include 'include_dictionary.php';
     $this->response->dictionary = $dictionary;
 }
 
-$collection = $this->response->meta->collection;
-
-# All
-$this->load->model('m_orgs');
-$org_id = 1;
-if ($this->response->meta->format != 'screen') {
-    if (!empty($this->response->data[0]->attributes->org_id)) {
-        $org_id = $this->response->data[0]->attributes->org_id;
-    }
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($org_id));
-} else {
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+# Add the Org if it's in the result
+ if (!empty($this->response->data[0]->attributes->org_id)) {
+    $this->load->model('m_orgs');
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
 }
 
-# applications
-if ($this->response->meta->collection == 'applications') {
-    $this->load->model('m_applications');
-    # Associated devices
-    $this->response->included = array_merge($this->response->included, $this->m_applications->read_sub_resource($this->response->meta->id));
+# Add the location if it's in the result.
+if (!empty($this->response->data[0]->attributes->location_id)) {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id));
 }
 
-# attributes
-if ($this->response->meta->collection == 'attributes') {
-}
-
-# buildings
-if ($this->response->meta->collection == 'buildings') {
-    $this->load->model('m_floors');
-    $this->load->model('m_rooms');
-    $this->load->model('m_rows');
-    $this->load->model('m_racks');
-
-    $floors = $this->m_floors->collection($this->response->meta->id);
-    $this->response->included = array_merge($this->response->included, $floors);
-
-    if (!empty($floors)) {
-        $temp = array();
-        foreach ($floors as $floor) {
-            $temp[] = $floor->id;
-        }
-        $temp = implode(',', $temp);
-        $rooms = $this->m_rooms->collection($temp);
-        $this->response->included = array_merge($this->response->included, $rooms);
-        unset($temp);
-    }
-
-
-    if (!empty($rooms)) {
-        $temp = array();
-        foreach ($rooms as $room) {
-            $temp[] = $room->id;
-        }
-        $temp = implode(',', $temp);
-        $rows = $this->m_rows->collection($temp);
-        $this->response->included = array_merge($this->response->included, $rows);
-        unset($temp);
-    }
-
-    if (!empty($rows)) {
-        $temp = array();
-        foreach ($rows as $row) {
-            $temp[] = $row->id;
-        }
-        $temp = implode(',', $temp);
-        $racks = $this->m_racks->collection($temp);
-        $this->response->included = array_merge($this->response->included, $racks);
-        unset($temp);
-    }
-}
-
-# clouds
-if ($this->response->meta->collection == 'clouds') {
-    # get the cloud_log
-    $this->response->included = array_merge($this->response->included, $this->m_clouds->read_sub_resource($this->response->meta->id));
-}
-
-# collectors
-if ($this->response->meta->collection == 'collectors') {
+# All orgs if screen
+if ($this->response->meta->format == 'screen') {
+    $this->orgs = $this->m_orgs->collection($this->user->id);
 }
 
 # configuration
+# Leave this here and not in the controller because we load the response->data above (in this file) and not tin the controller
 if ($this->response->meta->collection == 'configuration') {
     if (!empty($this->response->data) and $this->response->data[0]->attributes->name == 'discovery_default_scan_option') {
         $this->load->model('m_discovery_scan_options');
-        $options = $this->m_discovery_scan_options->collection();
+        $options = $this->m_discovery_scan_options->collection($this->user->id);
         $this->response->included = array_merge($this->response->included, $options);
     }
-}
-
-# connections
-if ($this->response->meta->collection == 'connections') {
-    $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-}
-
-# credentials
-if ($this->response->meta->collection == 'credentials') {
-}
-
-# dashboards
-if ($this->response->meta->collection == 'dashboards') {
-    $this->load->model('m_widgets');
-    $this->response->included = array_merge($this->response->included, $this->m_widgets->collection());
-}
-
-# database
-if ($this->response->meta->collection == 'database') {
-    if ($this->response->meta->format == 'screen') {
-        $table = $this->response->meta->id;
-        if ($table === 'devices') {
-            $table = 'system';
-        }
-        include 'include_dictionary.php';
-        $this->response->dictionary = $dictionary;
-        unset($dictionary);
-    }
-}
-
-
-# discoveries
-if ($this->response->meta->collection == 'discoveries') {
-    #$this->load->model('m_collection');
-    #$this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
-
-    # Assign Devices to Location
-    $this->load->model('m_locations');
-    if (!empty($this->response->data[0]->attributes->devices_assigned_to_location)) {
-        $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->devices_assigned_to_location));
-    }
-    # Assign Devices to Org
-    $this->load->model('m_orgs');
-    if (!empty($this->response->data[0]->attributes->devices_assigned_to_org)) {
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
-    }
-
-    if ($this->response->meta->format === 'screen') {
-        # Discovery log
-        $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
-        # All Locations
-        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-    }
-}
-
-# fields
-if ($this->response->meta->collection == 'fields') {
-    $this->load->model('m_groups');
-    $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
-}
-
-# floors
-if ($this->response->meta->collection == 'floors') {
-    $this->load->model('m_rooms');
-    $this->load->model('m_rows');
-    $this->load->model('m_racks');
-
-    $rooms = $this->m_rooms->collection($this->response->meta->id);
-    $this->response->included = array_merge($this->response->included, $rooms);
-
-    if (!empty($rooms)) {
-        $temp = array();
-        foreach ($rooms as $room) {
-            $temp[] = $room->id;
-        }
-        $temp = implode(',', $temp);
-        $rows = $this->m_rows->collection($temp);
-        $this->response->included = array_merge($this->response->included, $rows);
-        unset($temp);
-    }
-
-    if (!empty($rows)) {
-        $temp = array();
-        foreach ($rows as $row) {
-            $temp[] = $row->id;
-        }
-        $temp = implode(',', $temp);
-        $racks = $this->m_racks->collection($temp);
-        $this->response->included = array_merge($this->response->included, $racks);
-        unset($temp);
-    }
-}
-
-# groups
-if ($this->response->meta->collection == 'groups') {
-}
-
-# ldap_servers
-if ($this->response->meta->collection == 'ldap_servers') {
-}
-
-# licenses
-if ($this->response->meta->collection == 'licenses') {
-    $this->load->model('m_licenses');
-    $temp = $this->m_licenses->execute();
-    $this->response->included = array_merge($this->response->included, $temp);
-    $this->response->data[0]->attributes->used_count = intval(count($temp));
-}
-
-# locations
-if ($this->response->meta->collection == 'locations') {
-    $this->load->model('m_attributes');
-    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection('locations'));
-    $this->load->model('m_buildings');
-    $this->load->model('m_floors');
-    $this->load->model('m_rooms');
-    $this->load->model('m_rows');
-    $this->load->model('m_racks');
-    $buildings = $this->m_buildings->collection($this->response->meta->id);
-    $this->response->included = array_merge($this->response->included, $buildings);
-
-    if (!empty($buildings)) {
-        $temp = array();
-        foreach ($buildings as $building) {
-            $temp[] = $building->id;
-        }
-        $temp = implode(',', $temp);
-        $floors = $this->m_floors->collection($temp);
-        $this->response->included = array_merge($this->response->included, $floors);
-        unset($temp);
-    }
-
-
-    if (!empty($floors)) {
-        $temp = array();
-        foreach ($floors as $floor) {
-            $temp[] = $floor->id;
-        }
-        $temp = implode(',', $temp);
-        $rooms = $this->m_rooms->collection($temp);
-        $this->response->included = array_merge($this->response->included, $rooms);
-        unset($temp);
-    }
-
-
-    if (!empty($rooms)) {
-        $temp = array();
-        foreach ($rooms as $room) {
-            $temp[] = $room->id;
-        }
-        $temp = implode(',', $temp);
-        $rows = $this->m_rows->collection($temp);
-        $this->response->included = array_merge($this->response->included, $rows);
-        unset($temp);
-    }
-
-    if (!empty($rows)) {
-        $temp = array();
-        foreach ($rows as $row) {
-            $temp[] = $row->id;
-        }
-        $temp = implode(',', $temp);
-        $racks = $this->m_racks->collection($temp);
-        $this->response->included = array_merge($this->response->included, $racks);
-        unset($temp);
-    }
-}
-
-# logs
-if ($this->response->meta->collection == 'logs') {
-}
-
-# networks
-if ($this->response->meta->collection == 'networks') {
-}
-
-# nmis
-if ($this->response->meta->collection == 'nmis') {
-    $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-}
-
-# orgs
-if ($this->response->meta->collection == 'orgs') {
-    $this->load->model('m_attributes');
-    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
-}
-
-# queries
-if ($this->response->meta->collection == 'queries') {
-    $this->load->model('m_attributes');
-    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
-}
-
-# racks
-if ($this->response->meta->collection == 'racks') {
-    $this->load->model('m_rack_devices');
-    $this->response->included = array_merge($this->response->included, $this->m_rack_devices->collection($this->response->meta->id));
-}
-
-
-# roles
-if ($this->response->meta->collection == 'roles') {
-    # Associated users
-    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
-}
-
-# rooms
-if ($this->response->meta->collection == 'rooms') {
-    $this->load->model('m_rows');
-    $this->load->model('m_racks');
-
-    $rows = $this->m_rows->collection($this->response->meta->id);
-    $this->response->included = array_merge($this->response->included, $rows);
-
-    if (!empty($rows)) {
-        $temp = array();
-        foreach ($rows as $row) {
-            $temp[] = $row->id;
-        }
-        $temp = implode(',', $temp);
-        $racks = $this->m_racks->collection($temp);
-        $this->response->included = array_merge($this->response->included, $racks);
-        unset($temp);
-    }
-}
-
-# rows
-if ($this->response->meta->collection == 'rows') {
-    $this->load->model('m_racks');
-    $rows = $this->m_racks->collection($this->response->meta->id);
-    $this->response->included = array_merge($this->response->included, $rows);
-}
-
-# scripts
-if ($this->response->meta->collection == 'scripts') {
-    $this->load->model('m_files');
-    $this->response->included = array_merge($this->response->included, $this->m_files->collection());
-}
-
-# summaries
-if ($this->response->meta->collection == 'summaries') {
-    $this->load->model('m_attributes');
-    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
-}
-
-# tasks
-if ($this->response->meta->collection == 'tasks') {
-    $this->load->model('m_collection');
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('discoveries'));
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('groups'));
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('integrations'));
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('queries'));
-    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('summaries'));
-}
-
-# users
-if ($this->response->meta->collection == 'users') {
-    $this->load->model('m_roles');
-    $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
-    if (!empty($this->response->data[0]->attributes)) {
-        $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
-    }
-    $this->load->model('m_dashboards');
-    $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection());
-}
-
-if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
-    $this->response->edit = true;
 }
 
 $timer_end = microtime(true);
@@ -416,7 +76,20 @@ $entry->detail = 'include_read::read';
 $entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
-output($this->response);
+# required for the templates
+if ($this->m_users->get_user_permission("", $this->response->meta->collection, "u")) {
+    $this->response->edit = true;
+}
+
+if (empty($this->response->data) or !is_array($this->response->data) or count($this->response->data) == 0) {
+    log_error('ERR-0002', $this->response->meta->collection . ':read');
+    $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+    if ($this->response->meta->format != 'json') {
+        redirect($this->response->meta->collection);
+    }
+} else {
+    output($this->response);
+}
 
 $log = new stdClass();
 $log->object = $this->response->meta->collection;

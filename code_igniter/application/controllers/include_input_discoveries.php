@@ -343,21 +343,8 @@ foreach ($xml->children() as $input) {
         }
     }
 
-    // We need to set the user orgs to the org of this particular discovery run
-    $this->user = new stdClass();
-    if (!empty($discovery->org_id)) {
-        $this->user->orgs = $this->m_orgs->get_children($discovery->org_id);
-        if (count($this->user->orgs) > 0) {
-            $this->user->org_list = $discovery->org_id . ',' . implode(',', $this->user->orgs);
-        } else {
-            $this->user->org_list = $discovery->org_id;
-        }
-    } else {
-        $this->user->org_list = '';
-    }
-
-    // Stored credential sets
-    $temp = $this->m_credentials->collection();
+    # Stored credential sets
+    $temp = $this->m_credentials->get_discovery_credentials($discovery->id);
 
     if (count($temp) > 0) {
         $credentials = array_merge($credentials, $temp);

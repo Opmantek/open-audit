@@ -103,6 +103,8 @@ class Applications extends MY_Controller
     */
     public function read()
     {
+        # Include the device list
+        $this->response->included = array_merge($this->response->included, $this->m_applications->read_sub_resource($this->response->meta->id));
         include 'include_read.php';
     }
 

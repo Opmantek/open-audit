@@ -72,13 +72,6 @@ class M_credentials extends MY_Model
         }
     }
 
-    /*
-    ssh - username, password
-    windows - username, password
-    snmp - community
-    snmp_v3 - security_name, security_level, authentication_protocol, authentication_passphrase, privacy_protocol, privacy_passphrase
-    */
-
     public function update()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -152,23 +145,83 @@ class M_credentials extends MY_Model
         return true;
     }
 
-    public function collection($orgs = null)
+    public function get_discovery_credentials(int $discovery_id = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        // We use $orgs when requesting credentials for AD Discovery. Seem's the $this->user, $CI doesn't work.
-        if (!empty($orgs)) {
-            $sql = 'SELECT credentials.*, orgs.name AS `org_name` FROM `credentials` LEFT JOIN orgs ON (`credentials`.org_id = orgs.id) WHERE orgs.id IN (' . $orgs . ')';
-        } else {
-            $sql = $this->collection_sql('credentials', 'sql');
+        # Get the credentials of all orgs with discoveries.org_id and
+        #     that Orgs descendants and ascendants (no siblings or other parts of the tree).
+        if (empty($discovery_id)) {
+            return array();
         }
+        $CI = & get_instance();
+        $sql = "SELECT org_id FROM discoveries WHERE discovery_id = " . $discovery_id;
+        $query = $this->db->query();
+        $result = $query->result;
+        if (empty($result)) {
+            return array();
+        }
+        $org_id = $result[0]->org_id;
+        $org_list = array();
+        $org_list[] = $org_id;
+        $org_list = array_merge($org_list, $CI->m_orgs->get_children($org_id));
+        $org_list = array_merge($org_list, $CI->m_orgs->get_ascendants($org_id));
+        $org_list = array_unique($org_list);
+
+        $sql = "SELECT * FROM credentials WHERE org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'credentials');
         for ($i=0; $i < count($result); $i++) {
-            if (!empty($result[$i]->attributes->credentials)) {
-                $result[$i]->attributes->credentials = json_decode(simpleDecrypt($result[$i]->attributes->credentials));
+            if (!empty($result[$i]->credentials)) {
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                if (!empty($result[$i]->credentials)) {
+                    foreach ($result[$i]->credentials as $key => $value) {
+                        $result[$i]->{'credentials.'.$key} = $value;
+                    }
+                }
             }
         }
-        return ($result);
+        return $result;
+    }
+
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = $CI->m_orgs->get_user_all($user_id);
+            $sql = "SELECT * FROM credentials WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->credentials)) {
+                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                    if (!empty($result[$i]->credentials)) {
+                        foreach ($result[$i]->credentials as $key => $value) {
+                            $result[$i]->{'credentials.'.$key} = $value;
+                        }
+                    }
+                }
+            }
+            $result = $this->format_data($result, 'credentials');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM credentials LEFT JOIN orgs ON (credentials.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->credentials)) {
+                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                    if (!empty($result[$i]->credentials)) {
+                        foreach ($result[$i]->credentials as $key => $value) {
+                            $result[$i]->{'credentials.'.$key} = $value;
+                        }
+                    }
+                }
+            }
+            $CI->response->data = $this->format_data($result, 'credentials');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 }

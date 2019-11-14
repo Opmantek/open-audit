@@ -100,6 +100,19 @@ class Orgs extends MY_Controller
     */
     public function read()
     {
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_attributes');
+            $attributes = $this->m_attributes->collection($this->user->id);
+            $org_attributes = array();
+            if (is_array($attributes)) {
+                foreach ($attributes as $attribute) {
+                    if ($attribute->attributes->resource == 'orgs') {
+                        $org_attributes[] = $attribute;
+                    }
+                }
+            }
+            $this->response->included = array_merge($this->response->included, $org_attributes);
+        }
         include 'include_read.php';
     }
 

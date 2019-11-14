@@ -93,46 +93,28 @@ class M_summaries extends MY_Model
         }
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
-        if (empty($this->log)) {
-            $this->log = new stdClass();
-        }
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
         $CI = & get_instance();
-        if (empty($CI->response->meta->sort)) {
-            $CI->response->meta->sort = 'name';
+        if (!empty($user_id)) {
+            $org_list = $CI->m_orgs->get_user_all($user_id);
+            $sql = "SELECT * FROM summaries WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'summaries');
+            return $result;
         }
-        $sql = $this->collection_sql('summaries', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'summaries');
-        $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
-        for ($i=0; $i < count($result); $i++) {
-            if ($result[$i]->attributes->table == 'orgs') {
-                $org_id = 'id';
-            } else {
-                $org_id = 'org_id';
-            }
-            if (stripos($tables, $result[$i]->attributes->table) !== false) {
-                $sql = "SELECT COUNT(DISTINCT " . $result[$i]->attributes->table . "." . $result[$i]->attributes->column . ") AS `count` FROM system LEFT JOIN " . $result[$i]->attributes->table . " ON (system.id = " . $result[$i]->attributes->table . ".system_id and " . $result[$i]->attributes->table . ".current = 'y') WHERE system.org_id IN (" . $CI->user->org_list . ")";
-            } else {
-                $sql = "SELECT COUNT(DISTINCT " . $result[$i]->attributes->column . ") AS `count` FROM " . $result[$i]->attributes->table . " WHERE `" . $org_id . "` IN (" . $CI->user->org_list . ")";
-                #$sql = "SELECT COUNT(DISTINCT " . $result[$i]->attributes->column . ") AS `count` FROM " . $result[$i]->attributes->table . " WHERE `" . $org_id . "` IN (" . $CI->user->org_list . ") WHERE " . $result[$i]->attributes->table . "." . $result[$i]->attributes->column . " IS NOT NULL AND " . $result[$i]->attributes->table . "." . $result[$i]->attributes->column . " != ''";
-            }
-            $count = $this->run_sql($sql, array());
-            if (!empty($count[0]->count)) {
-                $result[$i]->attributes->count = intval($count[0]->count);
-            } else {
-                $result[$i]->attributes->count = 0;
-            }
-            $result[$i]->attributes->link_execute = $result[$i]->links->self . '?action=execute&format=json&debug=true';
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM summaries LEFT JOIN orgs ON (summaries.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'summaries');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        unset($this->log);
-        return ($result);
     }
 
     public function execute($id = '')

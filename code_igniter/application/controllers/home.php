@@ -72,7 +72,8 @@ class Home extends MY_Controller
     public function index()
     {
         $this->load->model('m_collection');
-        $this->data['tasks'] = $this->m_collection->collection('tasks');
+        $this->load->model('m_tasks');
+        $this->data['tasks'] = $this->m_tasks->collection($this->user->id);
         $this->data['include'] = 'v_dashboard_collector';
         $this->load->view('v_template', $this->data);
     }

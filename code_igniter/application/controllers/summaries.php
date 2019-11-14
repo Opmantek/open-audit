@@ -54,12 +54,13 @@ class Summaries extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-
-        $temp = @$this->uri->segment(1);
-        if (empty($temp)) {
-            redirect('summaries');
-        }
+        // $temp = @$this->uri->segment(1);
+        // if (empty($temp)) {
+        //     redirect('summaries');
+        // }
         $this->load->model('m_summaries');
+        $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
+        unset($this->user->org_parents);
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
         return;
@@ -108,18 +109,32 @@ class Summaries extends MY_Controller
     */
     public function read()
     {
-        $tables_temp = $this->db->list_tables();
-        $tables = array();
-        for ($i=0; $i < count($tables_temp); $i++) {
-            $table = new stdClass();
-            $table->type = 'table';
-            $table->id = '';
-            $table->attributes = new stdClass();
-            $table->attributes->name = $tables_temp[$i];
-            $tables[] = $table;
-            unset($table);
+        if ($this->response->meta->format == 'screen') {
+            $tables_temp = $this->db->list_tables();
+            $tables = array();
+            for ($i=0; $i < count($tables_temp); $i++) {
+                $table = new stdClass();
+                $table->type = 'table';
+                $table->id = '';
+                $table->attributes = new stdClass();
+                $table->attributes->name = $tables_temp[$i];
+                $tables[] = $table;
+                unset($table);
+            }
+            $this->response->included = array_merge($this->response->included, $tables);
+
+            $this->load->model('m_attributes');
+            $attributes = $this->m_attributes->collection($this->user->id);
+            $summary_attributes = array();
+            if (is_array($attributes)) {
+                foreach ($attributes as $attribute) {
+                    if ($attribute->attributes->resource == 'summaries') {
+                        $summary_attributes[] = $attribute;
+                    }
+                }
+            }
+            $this->response->included = array_merge($this->response->included, $summary_attributes);
         }
-        $this->response->included = array_merge($this->response->included, $tables);
         include 'include_read.php';
         return;
     }

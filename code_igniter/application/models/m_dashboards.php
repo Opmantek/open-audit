@@ -123,80 +123,112 @@ class M_dashboards extends MY_Model
         }
     }
 
-    public function collection()
+    // public function collection()
+    // {
+    //     $this->log->function = strtolower(__METHOD__);
+    //     stdlog($this->log);
+    //     $CI = & get_instance();
+    //     if (!$this->db->table_exists('dashboards')) {
+    //         return;
+    //     }
+    //     if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'dashboards') {
+    //         $filter = $this->build_filter();
+    //         $properties = $this->build_properties();
+    //         if ($CI->response->meta->sort == '') {
+    //             $sort = 'ORDER BY id';
+    //         } else {
+    //             $sort = 'ORDER BY ' . $CI->response->meta->sort;
+    //         }
+    //         if ($CI->response->meta->limit == '') {
+    //             $limit = '';
+    //         } else {
+    //             $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+    //             if ($CI->response->meta->offset != '') {
+    //                 $limit = $limit . ', ' . intval($CI->response->meta->offset);
+    //             }
+    //         }
+    //         # get the total count
+    //         $sql = "SELECT COUNT(*) as `count` FROM `dashboards`";
+    //         $sql = $this->clean_sql($sql);
+    //         $query = $this->db->query($sql);
+    //         $result = $query->result();
+    //         if (!empty($CI->response->meta->total)) {
+    //             $CI->response->meta->total = intval($result[0]->count);
+    //         }
+    //     } else {
+    //         $properties = '*';
+    //         $filter = '';
+    //         $sort = '';
+    //         $limit = '';
+    //     }
+    //     # get the response data
+    //     $sql = "SELECT " . $properties . " FROM `dashboards` " . $filter . " " . $sort . " " . $limit;
+    //     #$sql = "SELECT * FROM `dashboards`";
+    //     $result = $this->run_sql($sql, array());
+    //     $result = $this->format_data($result, 'dashboards');
+    //     return ($result);
+    // }
+
+    // private function build_properties() {
+    //     $CI = & get_instance();
+    //     $properties = '';
+    //     $temp = explode(',', $CI->response->meta->properties);
+    //     for ($i=0; $i<count($temp); $i++) {
+    //         if (strpos($temp[$i], '.') === false) {
+    //             $temp[$i] = 'roles.'.trim($temp[$i]);
+    //         } else {
+    //             $temp[$i] = trim($temp[$i]);
+    //         }
+    //     }
+    //     $properties = implode(',', $temp);
+    //     return($properties);
+    // }
+
+    // private function build_filter() {
+    //     $CI = & get_instance();
+    //     $reserved = ' properties limit resource action sort current offset format ';
+    //     $filter = '';
+    //     foreach ($CI->response->meta->filter as $item) {
+    //         if (strpos(' '.$item->name.' ', $reserved) === false) {
+    //             $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+    //         }
+    //     }
+    //     if ($filter != '') {
+    //         $filter = substr($filter, 5);
+    //         $filter = ' WHERE ' . $filter;
+    //     }
+    //     return($filter);
+    // }
+
+
+
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
-        if (!$this->db->table_exists('dashboards')) {
-            return;
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM dashboards WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'dashboards');
+            return $result;
         }
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'dashboards') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM dashboards LEFT JOIN orgs ON (dashboards.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->options = json_decode($result[$i]->options);
             }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-            # get the total count
-            $sql = "SELECT COUNT(*) as `count` FROM `dashboards`";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if (!empty($CI->response->meta->total)) {
-                $CI->response->meta->total = intval($result[0]->count);
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
+            $CI->response->data = $this->format_data($result, 'dashboards');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-        # get the response data
-        $sql = "SELECT " . $properties . " FROM `dashboards` " . $filter . " " . $sort . " " . $limit;
-        #$sql = "SELECT * FROM `dashboards`";
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'dashboards');
-        return ($result);
     }
 
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'roles.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
 
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-            }
-        }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
-        }
-        return($filter);
-    }
+
 }

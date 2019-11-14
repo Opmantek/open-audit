@@ -56,28 +56,11 @@ class M_licenses extends MY_Model
         $sql = "SELECT * FROM licenses WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-
-        if ($result[0]->org_descendants == 'n') {
-            $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id = ? AND software.name LIKE ?";
-            $data = array(intval($result[0]->org_id), (string)$result[0]->match_string);
-            $data_result = $this->run_sql($sql, $data);
-            if (!empty($data_result[0]->count)) {
-                $result[0]->used_count = $data_result[0]->count;
+        if (is_array($result) and !empty($result)) {
+            for ($i=0; $i < count($result); $i++) { 
+                $result[$i]->used_count = $this->count($result[$i]->id);
             }
-            unset($sql, $data, $data_result);
-        } else {
-            $children = $CI->m_orgs->get_children($result[0]->org_id);
-            $children[] = $result[0]->org_id;
-            $children = implode(',', $children);
-            $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id IN (?) AND software.name LIKE ?";
-            $data = array((string)$children, (string)$result[0]->match_string);
-            $data_result = $this->run_sql($sql, $data);
-            if (!empty($data_result[0]->count)) {
-                $result[0]->used_count = $data_result[0]->count;
-            }
-            unset($sql, $data, $data_result);
         }
-
         $result = $this->format_data($result, 'licenses');
         return($result);
     }
@@ -99,40 +82,38 @@ class M_licenses extends MY_Model
         return true;
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
-        $CI->load->model('m_orgs');
-        $sql = $this->collection_sql('licenses', 'sql');
-        $result = $this->run_sql($sql, array());
-        if (!empty($result)) {
-            foreach ($result as $item) {
-                if ($item->org_descendants == 'n') {
-                    $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id = ? AND software.name LIKE ?";
-                    $data = array(intval($item->org_id), (string)$item->match_string);
-                    $data_result = $this->run_sql($sql, $data);
-                    if (!empty($data_result[0]->count)) {
-                        $item->used_count = $data_result[0]->count;
-                    }
-                    unset($sql, $data, $data_result);
-                } else {
-                    $children = $CI->m_orgs->get_children($item->org_id);
-                    $children[] = $item->org_id;
-                    $children = implode(',', $children);
-                    $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id IN (?) AND software.name LIKE ?";
-                    $data = array((string)$children, (string)$item->match_string);
-                    $data_result = $this->run_sql($sql, $data);
-                    if (!empty($data_result[0]->count)) {
-                        $item->used_count = $data_result[0]->count;
-                    }
-                    unset($sql, $data, $data_result);
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM licenses WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            if (is_array($result) and !empty($result)) {
+                for ($i=0; $i < count($result); $i++) { 
+                    $result[$i]->used_count = $this->count($result[$i]->id);
                 }
             }
+            $result = $this->format_data($result, 'licenses');
+            return $result;
         }
-        $result = $this->format_data($result, 'licenses');
-        return ($result);
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM licenses LEFT JOIN orgs ON (licenses.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'licenses');
+            if (is_array($result) and !empty($result)) {
+                for ($i=0; $i < count($result); $i++) { 
+                    $result[$i]->used_count = $this->count($result[$i]->id);
+                }
+            }
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 
     public function execute($id = 0)
@@ -154,5 +135,46 @@ class M_licenses extends MY_Model
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'licenses');
         return ($result);
+    }
+
+
+
+    public function count($id = 0)
+    {
+        $CI = & get_instance();
+        $id = intval($id);
+        $sql = "SELECT * FROM licenses WHERE id = $id";
+        $result = $this->run_sql($sql, array());
+        if (empty($result[0])) {
+            // TODO log an error, no matching license
+            return 0;
+        } else {
+            $license = $result[0];
+        }
+        if (!empty($license)) {
+            if ($license->org_descendants == 'n') {
+                $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id = ? AND software.name LIKE ?";
+                $data = array(intval($license->org_id), (string)$license->match_string);
+                $data_result = $this->run_sql($sql, $data);
+                if (!empty($data_result[0]->count)) {
+                    $license->used_count = $data_result[0]->count;
+                }
+                unset($sql, $data, $data_result);
+            } else {
+                $children = $CI->m_orgs->get_children($license->org_id);
+                $children[] = $license->org_id;
+                $children = implode(',', $children);
+                $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id IN (?) AND software.name LIKE ?";
+                $data = array((string)$children, (string)$license->match_string);
+                $data_result = $this->run_sql($sql, $data);
+                if (!empty($data_result[0]->count)) {
+                    $license->used_count = $data_result[0]->count;
+                }
+                unset($sql, $data, $data_result);
+            }
+            return intval($license->used_count);
+        } else {
+            return 0;
+        }
     }
 }

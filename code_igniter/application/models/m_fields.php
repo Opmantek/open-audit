@@ -82,14 +82,27 @@ class M_fields extends MY_Model
         }
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $sql = $this->collection_sql('fields', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'fields');
-        return ($result);
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM fields WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'fields');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, groups.id AS `groups.id`, groups.name AS `groups.name` FROM fields LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN groups ON (fields.group_id = groups.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'fields');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 }

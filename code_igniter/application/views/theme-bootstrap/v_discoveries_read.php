@@ -280,43 +280,39 @@ if ($nmap_warning != '') {
         </h3>
     </div>
     <div class="panel-body">
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th style="white-space: nowrap;"><?php echo __('Timestamp'); ?></th>
-                            <th class="text-center"><?php echo __('ID')?></th>
-                            <th class="text-center"><?php echo __('IP'); ?></th>
-                            <th class="text-center"><?php echo __('Status'); ?></th>
-                            <th><?php echo __('Message'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($this->response->included as $item) {
-                            if ($item->type == 'discovery_log') { ?>
-                        <tr>
-                            <td style="white-space: nowrap;"><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($item->attributes->ip, REPLACE_FLAGS, CHARSET)?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?>
-                            <?php if (!empty($item->attributes->command)) { ?>
-                                <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
-                            <?php } ?>
-                            <?php if (!empty($item->attributes->command_output)) {
-                                $output = $item->attributes->command_output;
-                                $output = str_replace("\",", "\", ", $output);
-                                $output = str_replace("\n", "<br />", $output); ?>
-                                <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>
-                            <?php } ?>
-                            </td>
-                        </tr>
-                        <?php
-                            }
-                        } ?></tbody>
-                </table>
-            </div>
-        </div>
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th style="white-space: nowrap;"><?php echo __('Timestamp'); ?></th>
+                    <th class="text-center"><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('IP'); ?></th>
+                    <th class="text-center"><?php echo __('Status'); ?></th>
+                    <th><?php echo __('Message'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->response->included as $item) {
+                    if ($item->type == 'discovery_log') { ?>
+                <tr>
+                    <td style="white-space: nowrap;"><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->ip, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?>
+                    <?php if (!empty($item->attributes->command)) { ?>
+                        <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
+                    <?php } ?>
+                    <?php if (!empty($item->attributes->command_output)) {
+                        $output = $item->attributes->command_output;
+                        $output = str_replace("\",", "\", ", $output);
+                        $output = str_replace("\n", "<br />", $output); ?>
+                        <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>
+                    <?php } ?>
+                    </td>
+                </tr>
+                <?php
+                    }
+                } ?></tbody>
+        </table>
     </div>
 </div>

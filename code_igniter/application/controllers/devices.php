@@ -80,12 +80,11 @@ class devices extends MY_Controller
             $this->response->data = $this->m_devices->query();
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'group') {
             $this->response->data = $this->m_devices->group();
+        } else if (!empty($this->response->meta->groupby)) {
+            $this->response->data = $this->m_devices->collection_group_by();
         } else {
-            if (!empty($this->response->meta->groupby)) {
-                $this->response->data = $this->m_devices->collection_group_by();
-            } else {
-                $this->response->data = $this->m_devices->collection();
-            }
+            #$this->response->data = $this->m_devices->collection();
+            $this->m_devices->collection(null, 1);
         }
         if (is_array($this->response->data)) {
             $this->response->meta->filtered = count($this->response->data);
@@ -201,14 +200,11 @@ class devices extends MY_Controller
         if ($this->response->meta->format == 'screen') {
             // return a list of all orgs and locations so we can create the edit functionality on the web page
             if (isset($this->response->data[0]->attributes->org_id)) {
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             }
             if (isset($this->response->data[0]->attributes->location_id)) {
-                $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+                $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
             }
-            # Below removed as now included in output_helper
-            #$this->load->model('m_collection');
-            #$this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         } else {
             // return only the details of the linked org and location
             if (isset($this->response->data[0]->attributes->org_id)) {
@@ -280,7 +276,7 @@ class devices extends MY_Controller
                     $parameters->table = 'ip';
                     $parameters->details = $device;
                     $parameters->input = $input;
-                    $error = $this->m_devices_components->process_component($parameters);
+                    $this->m_devices_components->process_component($parameters);
                 }
             }
 
@@ -348,11 +344,11 @@ class devices extends MY_Controller
 
     private function create_form()
     {
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         $this->load->model('m_locations');
-        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-        $this->load->model('m_collection');
-        $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        $this->load->model('m_attributes');
+        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection($this->user->id));
         output($this->response);
         $log = new stdClass();
         $log->type = 'access';
@@ -406,13 +402,13 @@ class devices extends MY_Controller
             $this->load->model('m_locations');
             $this->load->model('m_fields');
             $this->load->model('m_attributes');
-            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
-            $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-            $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection($this->user->id));
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+            $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
             unset($temp);
-            $temp = @$this->m_fields->collection();
+            $temp = @$this->m_fields->collection($this->user->id);
             if (!empty($temp)) {
-                $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
+                $this->response->included = array_merge($this->response->included, $this->m_fields->collection($this->user->id));
             }
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';

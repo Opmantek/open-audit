@@ -128,22 +128,56 @@ class M_discoveries extends MY_Model
         return true;
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $sql = $this->collection_sql('discoveries', 'sql');
-        $result = $this->run_sql($sql, array());
-        for ($i=0; $i < count($result); $i++) {
-            if (!empty($result[$i]->other)) {
-                $result[$i]->other = json_decode($result[$i]->other);
-                foreach ($result[$i]->other as $key => $value) {
-                    $result[$i]->{'other.'.$key} = $value;
+        $CI = & get_instance();
+        if ((string) php_uname('s') === 'Windows NT') {
+            $user = get_current_user();
+            if ($user == 'SYSTEM') {
+                $sql = "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
+                $data = array();
+                $data_result = $this->run_sql($sql, $data);
+                if ($data_result[0]->count > 0){
+                    $CI->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
+                    $CI->session->set_flashdata('warning', $CI->response->meta->warning);
                 }
             }
         }
-        $result = $this->format_data($result, 'discoveries');
-        return ($result);
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM discoveries WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->other)) {
+                    $result[$i]->other = json_decode($result[$i]->other);
+                    foreach ($result[$i]->other as $key => $value) {
+                        $result[$i]->{'other.'.$key} = $value;
+                    }
+                }
+            }
+            $result = $this->format_data($result, 'discoveries');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM discoveries LEFT JOIN orgs ON (discoveries.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->other)) {
+                    $result[$i]->other = json_decode($result[$i]->other);
+                    foreach ($result[$i]->other as $key => $value) {
+                        $result[$i]->{'other.'.$key} = $value;
+                    }
+                }
+            }
+            $CI->response->data = $this->format_data($result, 'discoveries');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 
     public function read_sub_resource($id = '')
@@ -229,7 +263,6 @@ class M_discoveries extends MY_Model
         if (!empty($result[0]->org_id)) {
             $org_id = intval($result[0]->org_id);
         }
-
         // Device specific credentials
         $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT * FROM `credential` WHERE `system_id` = ?";
         $data = array($id);
@@ -242,7 +275,6 @@ class M_discoveries extends MY_Model
             $credentials = $result;
             $retrieved_types[] = 'Device specific';
         }
-
         // Previous working credentials
         $sql = "/* m_device::get_device_discovery_credentials */ " . "SELECT `credentials` FROM `system` WHERE id = ?";
         $data = array($id);

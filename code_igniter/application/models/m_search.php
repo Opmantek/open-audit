@@ -236,11 +236,6 @@ class M_search extends MY_Model
 
     public function collection()
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $sql = $this->collection_sql('files', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'files');
-        return ($result);
+        return array();
     }
 }

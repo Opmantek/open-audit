@@ -157,4 +157,28 @@ class M_collectors extends MY_Model
             return;
         }
     }
+
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM collectors WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'collectors');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, users.id AS `users.id`, users.name AS `users.name` FROM collectors LEFT JOIN orgs ON (collectors.org_id = orgs.id) LEFT JOIN users ON (collectors.user_id = users.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'collectors');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
+    }
 }

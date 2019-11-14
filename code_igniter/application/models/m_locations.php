@@ -53,7 +53,7 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT locations.*, orgs.id AS `orgs.id` FROM `locations` LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE locations.id = ?";
+        $sql = "SELECT locations.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM `locations` LEFT JOIN `orgs` ON (orgs.id = locations.org_id) LEFT JOIN clouds ON (locations.cloud_id = clouds.id) WHERE locations.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'locations');
@@ -68,7 +68,7 @@ class M_locations extends MY_Model
         $id = intval($id);
         # never allowed to delete the default location
         if ($id != 1) {
-            $CI = & get_instance();
+            #$CI = & get_instance(); # don't think we need this
             $sql = "DELETE FROM `locations` WHERE id = ?";
             $data = array($id);
             $test = $this->run_sql($sql, $data);
@@ -89,21 +89,11 @@ class M_locations extends MY_Model
         $this->log->status = 'reading children data';
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT buildings.* from buildings WHERE buildings.location_id = ?";
+        $sql = "SELECT buildings.*, orgs.name AS `orgs.name`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.location_id = ?";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'buildings');
         return ($result)    ;
-    }
-
-    public function collection()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $sql = $this->collection_sql('locations', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'locations');
-        return ($result);
     }
 
     public function sub_resource($id = '')
@@ -120,5 +110,37 @@ class M_locations extends MY_Model
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'devices');
         return $result;
+    }
+
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM locations WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'locations');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, COUNT(DISTINCT system.id) AS `device_count` FROM `locations` LEFT JOIN orgs ON (locations.org_id = orgs.id) LEFT JOIN system ON (locations.id = system.location_id) " . 
+                $CI->response->meta->internal->filter . 
+                " GROUP BY locations.id " . 
+                $CI->response->meta->internal->sort  . " " .
+                $CI->response->meta->internal->limit;
+
+            if (!empty($CI->response->meta->requestor)) {
+                $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, COUNT(DISTINCT system.id) AS `device_count` FROM `locations` LEFT JOIN orgs ON (locations.org_id = orgs.id) LEFT JOIN system ON (locations.id = system.location_id AND system.oae_manage = 'y') " . 
+                    $CI->response->meta->internal->filter . 
+                    " GROUP BY locations.id " . 
+                    $CI->response->meta->internal->sort  . " " .
+                    $CI->response->meta->internal->limit;
+            }
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'locations');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 }

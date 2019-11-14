@@ -99,6 +99,8 @@ class Clouds extends MY_Controller
     */
     public function read()
     {
+        # Include the cloud log
+        $this->response->included = array_merge($this->response->included, $this->m_clouds->read_sub_resource($this->response->meta->id));
         include 'include_read.php';
     }
 

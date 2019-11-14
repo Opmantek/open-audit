@@ -134,8 +134,8 @@ class M_queue extends MY_Model
         $type = '';
         if (!empty($parameters->type)) {
             $type = strtolower($parameters->type);
+            $this->log->summary = 'Passed type: ' . $type;
         }
-        $this->log->summary = 'Passed type: ' . string($type);
         if ($type != 'discoveries' and $type != 'scans' and $type != 'audits') {
             $sql = "/* m_queue::collection */ " . "SELECT * FROM `queue`";
         } else {
@@ -145,7 +145,14 @@ class M_queue extends MY_Model
         $result = $query->result();
         if (!empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $result[$i]->{'details'} = json_decode($result[$i]->{'details'});
+                if (!empty($result[$i]->details)) {
+                    $result[$i]->details = json_decode($result[$i]->details);
+                    foreach ($result[$i]->details as $key => $value) {
+                        $result[$i]->{'details.'.$key} = $value;
+                    }
+                } else {
+                    $result[$i]->details = new stdClass();
+                }
             }
             stdlog($this->log);
             return $result;

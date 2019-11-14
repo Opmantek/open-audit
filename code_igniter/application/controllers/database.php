@@ -100,6 +100,12 @@ class Database extends MY_Controller
     */
     public function read()
     {
+        if ($this->response->meta->format == 'screen') {
+            $table = $this->response->meta->id;
+            if ($table === 'devices') {
+                $table = 'system';
+            }
+        }
         include 'include_read.php';
     }
 

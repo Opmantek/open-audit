@@ -203,13 +203,6 @@ class M_help extends MY_Model
         $result = $query->result();
         $data->logs = $result;
 
-        // $this->load->model('m_database');
-        // $tables = $this->m_database->collection();
-        // $data->database->tables = new stdClass();
-        // foreach ($tables as $table) {
-        //     $data->database->tables->{$table->attributes->name} = intval($table->attributes->count);
-        // }
-
         $sql = "SELECT COUNT(*) AS `count`, `type`, `manufacturer`, `model`, `snmp_oid` FROM system GROUP BY type, manufacturer, model, snmp_oid ORDER BY type, manufacturer, model";
         $query = $this->db->query($sql);
         $data->devices = $query->result();

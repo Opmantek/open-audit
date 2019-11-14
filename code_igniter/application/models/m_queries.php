@@ -193,19 +193,43 @@ class M_queries extends MY_Model
         }
     }
 
-    public function collection()
+    // public function collection()
+    // {
+    //     $this->log->function = strtolower(__METHOD__);
+    //     $this->log->summary = 'start';
+    //     stdlog($this->log);
+    //     $CI = & get_instance();
+    //     $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
+    //     $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.id";
+    //     $result = $this->run_sql($sql, array());
+    //     $result = $this->format_data($result, 'queries');
+    //     $this->log->summary = 'finish';
+    //     stdlog($this->log);
+    //     return ($result);
+    // }
+
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
         $CI = & get_instance();
-        $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
-        $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.id";
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'queries');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return ($result);
+        if (!empty($user_id)) {
+            $org_list = $CI->m_orgs->get_user_all($user_id);
+            $sql = "SELECT * FROM queries WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'queries');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'queries');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 
     public function execute($id = '')
@@ -255,7 +279,7 @@ class M_queries extends MY_Model
             if (isset($result[0]->attributes->{'system.credentials'}))  {
                 $this->load->library('encrypt');
                 $this->load->model('m_credentials');
-                $credentials = $this->m_credentials->collection();
+                $credentials = $this->m_credentials->collection($this->user->id);
                 $device_ids = array();
                 foreach ($result as $device) {
                     $device_ids[] = $device->attributes->{'system.id'};

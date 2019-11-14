@@ -107,7 +107,7 @@ if ($nmap_warning != '') {
                     <?php } ?>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('discoveries.name',$item->attributes->name); ?>
-                    <?php refine('discoveries.org_id',$item->attributes->org_id,$item->attributes->org_name); ?>
+                    <?php refine('discoveries.org_id',$item->attributes->org_id,$item->attributes->{'orgs.name'}); ?>
                     <?php refine('discoveries.type',$item->attributes->type); ?>
                     <?php refine('discoveries.description',$item->attributes->description); ?>
                     <?php refine('discoveries.last_run',$item->attributes->last_run); ?>

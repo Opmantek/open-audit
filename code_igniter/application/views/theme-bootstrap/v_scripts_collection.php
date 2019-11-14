@@ -64,7 +64,7 @@
                           <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                           <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo$item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
                             <?php refine('scripts.name',$item->attributes->name); ?>
-                            <?php refine('scripts.org_id',$item->attributes->org_id,$item->attributes->org_name); ?>
+                            <?php refine('scripts.org_id',$item->attributes->org_id,$item->attributes->{'orgs.name'}); ?>
                             <?php refine('scripts.description',$item->attributes->description); ?>
                             <?php refine('scripts.based_on',$item->attributes->based_on); ?>
                             <?php refine('scripts.edited_by',$item->attributes->edited_by); ?>

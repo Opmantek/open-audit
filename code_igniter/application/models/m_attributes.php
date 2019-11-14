@@ -87,20 +87,27 @@ class M_attributes extends MY_Model
         return false;
     }
 
-    public function collection($resource = '')
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        $sql = $this->collection_sql('attributes', 'sql');
-        if (!empty($resource)) {
-            $sql .= ' AND attributes.resource = \'' . $resource . '\'';
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = $CI->m_orgs->get_user_all($user_id);
+            $sql = "SELECT * FROM attributes WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'attributes');
+            return $result;
         }
-        $sql .= " ORDER BY `resource`, `type`, `name`";
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'attributes');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return ($result);
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM attributes LEFT JOIN orgs ON (attributes.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'attributes');
+            $CI->response->meta->filtered = count($CI->response->data);
+        }
     }
 }

@@ -125,7 +125,6 @@ class M_clouds extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $id = intval($id);
         $sql = "SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY `id` LIMIT " . $this->config->config['database_show_row_limit'];
         $result = $this->run_sql($sql, array(intval($id)));
@@ -152,6 +151,30 @@ class M_clouds extends MY_Model
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM clouds WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'clouds');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM clouds LEFT JOIN orgs ON (clouds.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'clouds');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
     }
 }

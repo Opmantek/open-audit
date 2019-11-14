@@ -53,7 +53,20 @@
                     if ($endpoint->attributes->name == 'Logs') {
                         $endpoint->attributes->collection = $endpoint->attributes->collection . "?logs.type=system";
                     }
-                    echo '<div class="col-sm-1 text-center">' . __($endpoint->attributes->name) . '<br /><a class="btn btn-app" href="' . htmlspecialchars( $endpoint->attributes->collection, REPLACE_FLAGS, CHARSET) . '"><span class="badge">' . htmlspecialchars( $endpoint->attributes->count, REPLACE_FLAGS, CHARSET) . '</span><i class="fa fa-' . htmlspecialchars( $endpoint->attributes->icon, REPLACE_FLAGS, CHARSET) . ' fa-3x fa-fw" style="font-size: 2vw;"></i></a></div>';
+                    ?>
+                    <div class="col-lg-1 text-center"><?php echo __($endpoint->attributes->name) ?><br />
+                        <div class="row">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <span class="badge" style="position:absolute; bottom:-8px; right:15%; font-size:1em; font-weight:400;"><?php echo htmlspecialchars( $endpoint->attributes->count, REPLACE_FLAGS, CHARSET) ?></span>
+                                <a href="<?php echo htmlspecialchars( $endpoint->attributes->collection, REPLACE_FLAGS, CHARSET) ?>">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fa fa-<?php echo htmlspecialchars( $endpoint->attributes->icon, REPLACE_FLAGS, CHARSET) ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
                     if ($i == 12) {
                         echo "</div><br /><br /><div class=\"row\">";
                     }
@@ -62,7 +75,6 @@
             ?>
             </div>
         </div>
-    </div>
 
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
@@ -85,7 +97,7 @@
                 <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->id); ?>?action=execute"><?php echo ucwords(htmlspecialchars($item->attributes->count, REPLACE_FLAGS, CHARSET))?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                         <td class="text-center"><a class="btn btn-sm btn-primary" href="summaries/<?php echo intval($item->attributes->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                         <td><?php echo ucwords(htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET))?></td>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'd')) { ?>

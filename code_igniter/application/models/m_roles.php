@@ -166,55 +166,6 @@ class M_roles extends MY_Model
         }
     }
 
-    public function collection()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        #$this->log->summary = 'start';
-        #stdlog($this->log);
-        $CI = & get_instance();
-        if (!$this->db->table_exists('roles')) {
-            return;
-        }
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'roles') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-            # get the total count
-            $sql = "SELECT COUNT(*) as `count` FROM `roles`";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if (!empty($CI->response->meta->total)) {
-                $CI->response->meta->total = intval($result[0]->count);
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . " FROM `roles` " . $filter . " " . $sort . " " . $limit;
-        $sql = "SELECT * FROM `roles`";
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'roles');
-        #$this->log->summary = 'finish';
-        #stdlog($this->log);
-        return ($result);
-    }
-
     public function read_sub_resource($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -270,34 +221,25 @@ class M_roles extends MY_Model
         return true;
     }
 
-    private function build_properties() {
+    public function collection(int $user_id = null, int $response = null)
+    {
         $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'roles.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
+        if (!empty($user_id)) {
+            $sql = "SELECT * FROM roles";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'roles');
+            return $result;
         }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-            }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM roles " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'roles');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
-        }
-        return($filter);
     }
 }

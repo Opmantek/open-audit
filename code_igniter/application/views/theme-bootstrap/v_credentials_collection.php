@@ -61,7 +61,7 @@
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="credentials/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('credentials.name',$item->attributes->name); ?>
-                    <?php refine('credentials.org_id',$item->attributes->org_id,$item->attributes->org_name); ?>
+                    <?php refine('credentials.org_id',$item->attributes->org_id,$item->attributes->{'orgs.name'}); ?>
                     <?php refine('credentials.description',$item->attributes->description); ?>
                     <?php refine('credentials.type',$item->attributes->type); ?>
                     <?php refine('credentials.edited_by',$item->attributes->edited_by); ?>

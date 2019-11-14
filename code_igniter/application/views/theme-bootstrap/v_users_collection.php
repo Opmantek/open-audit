@@ -61,10 +61,10 @@
                     <tr>
                         <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                             <?php refine('users.name', $item->attributes->name); ?>
-                            <?php refine('users.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                            <?php refine('users.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
                             <?php refine('users.name', $item->attributes->full_name); ?>
                             <?php refine('users.name', $item->attributes->email); ?>
-                            <?php refine('users.roles', $item->attributes->roles, $roles); ?>
+                            <?php refine('users.roles', implode(', ', $item->attributes->roles), $roles); ?>
                         <?php if ($this->m_users->get_user_permission('', 'users', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>

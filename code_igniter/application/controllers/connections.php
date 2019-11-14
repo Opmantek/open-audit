@@ -99,6 +99,16 @@ class Connections extends MY_Controller
     */
     public function read()
     {
+        $this->load->model('m_locations');
+        if (!empty($this->response->data[0]->attributes->location_id_a)) {
+            $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_a));
+        }
+        if (!empty($this->response->data[0]->attributes->location_id_b) and $this->response->data[0]->attributes->location_id_b != $this->response->data[0]->attributes->location_id_a) {
+            $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_b));
+        }
+        if ($this->response->meta->format == 'screen') {
+            $this->locations = $this->m_locations->collection($this->user->id);
+        }
         include 'include_read.php';
     }
 

@@ -48,7 +48,7 @@ class M_rack_devices extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT * FROM `rack_devices` WHERE `id` = ?";
+        $sql = "SELECT rack_devices.*, orgs.name AS `orgs.name`, racks.name as `racks.name`, racks.id as `racks.id`, 0 as `system_count`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, image.filename as `image.filename`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.id as `system.id`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = \"front\") LEFT JOIN system ON (system.id = rack_devices.system_id) WHERE rack_devices.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rack_devices');
@@ -84,38 +84,23 @@ class M_rack_devices extends MY_Model
         return ($result);
     }
 
-    public function collection($parent = '')
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
-
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'rack_devices') {
-            $properties = $CI->response->meta->internal->properties;
-            $filter = $CI->response->meta->internal->filter;
-            $sort = $CI->response->meta->internal->sort;
-            $limit = $CI->response->meta->internal->limit;
-        } else {
-            $properties = 'rack_devices.*';
-            $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
-            $sort = 'ORDER BY rack_devices.name';
-            $limit = 'LIMIT 0,' . $CI->config->config['page_size'];
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM rack_devices WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'rack_devices');
+            return $result;
         }
-        $group_by = 'GROUP BY rack_devices.id';
-        if (!empty($parent)) {
-            $filter .= ' AND rack_devices.rack_id IN (' . $parent . ')';
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, racks.id AS `racks.id`, racks.name as `racks.name`, 0 as `system_count`, rows.id AS `rows.id`, rows.name as `rows.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, image.filename as `image.filename`, system.id as `system.id`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = "front") LEFT JOIN system ON (system.id = rack_devices.system_id) ' . $CI->response->meta->internal->filter . ' ' . $CI->response->meta->internal->groupby . ' ' . $CI->response->meta->internal->sort . ' ' . $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'racks');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-
-        #$sql = 'SELECT rack_devices.*, orgs.name AS `orgs.name`, racks.name as `racks.name`, racks.id as `racks.id`, 0 as `system_count`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, image.filename as `image.filename`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.id as `system.id`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = "front") LEFT JOIN system ON (system.id = rack_devices.system_id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
-
-        $sql = 'SELECT ' . $properties . ', orgs.name AS `orgs.name`, racks.name as `racks.name`, racks.id as `racks.id`, 0 as `system_count`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, image.filename as `image.filename`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.id as `system.id`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = "front") LEFT JOIN system ON (system.id = rack_devices.system_id) ' . $filter . ' ' . $group_by . ' ' . $sort . ' ' . $limit;
-
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'rack_devices');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return ($result);
     }
-
 }

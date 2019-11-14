@@ -116,6 +116,8 @@ class Scripts extends MY_Controller
             $this->response->included[] = $option;
             unset($option);
         }
+        $this->load->model('m_files');
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection($this->user->id));
         include 'include_read.php';
     }
 

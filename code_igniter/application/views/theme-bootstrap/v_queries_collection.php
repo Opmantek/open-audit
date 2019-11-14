@@ -47,7 +47,6 @@
                 <th style="text-align:center;"><?php echo __('View')?></th>
                 <th style="text-align:center;"><?php echo __('Details')?></th>
                 <th><?php echo __('Name')?></th>
-                <th><?php echo __('Organisation')?></th>
                 <th><?php echo __('Description')?></th>
                 <?php if ($this->m_users->get_user_permission('', 'queries', 'd')) { ?>
                 <th style="text-align:center;"><?php echo __('Delete')?></th>
@@ -61,7 +60,6 @@
                     <td class="text-center"><a class="btn btn-sm btn-success" href="devices?sub_resource=query&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('queries.name', $item->attributes->name); ?>
-                    <?php refine('queries.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('queries.description', $item->attributes->description); ?>
                     <?php if ($this->m_users->get_user_permission('', 'queries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>

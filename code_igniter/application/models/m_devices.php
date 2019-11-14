@@ -86,30 +86,30 @@ class M_devices extends MY_Model
         return($filter);
     }
 
-    private function build_join()
-    {
-        $CI = & get_instance();
-        #$reserved = ' properties limit sub_resource action sort current offset format ';
-        $join = '';
-        $tables = '';
-        if (count($CI->response->meta->filter) > 0) {
-            foreach ($CI->response->meta->filter as $item) {
-                if (strpos($item->name, '.') !== false) {
-                    $table = substr($item->name, 0, strpos($item->name, '.'));
-                    if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
-                        if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
-                            $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
-                        } else {
-                            $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
-                        }
-                    }
-                    $tables .= " $table ";
-                }
-            }
-        }
-        $CI->response->meta->internal->join = $join;
-        return($join);
-    }
+    // private function build_join()
+    // {
+    //     $CI = & get_instance();
+    //     #$reserved = ' properties limit sub_resource action sort current offset format ';
+    //     $join = '';
+    //     $tables = '';
+    //     if (count($CI->response->meta->filter) > 0) {
+    //         foreach ($CI->response->meta->filter as $item) {
+    //             if (strpos($item->name, '.') !== false) {
+    //                 $table = substr($item->name, 0, strpos($item->name, '.'));
+    //                 if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
+    //                     if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
+    //                         $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
+    //                     } else {
+    //                         $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
+    //                     }
+    //                 }
+    //                 $tables .= " $table ";
+    //             }
+    //         }
+    //     }
+    //     $CI->response->meta->internal->join = $join;
+    //     return($join);
+    // }
 
     public function get_related_tables($id = '')
     {
@@ -686,38 +686,64 @@ class M_devices extends MY_Model
         }
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $join = $this->build_join();
-        $properties = $this->build_properties();
-
-        if ($CI->response->meta->sort == '') {
-            if (stripos($properties, 'system.id') !== false) {
-                $CI->response->meta->internal->sort = 'ORDER BY system.id';
-            }
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM system WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'system');
+            return $result;
         }
-        $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
-        if (!empty($CI->response->meta->requestor)) {
-            $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby;
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->join . " " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+#echo $sql; exit;
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'system');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-        $result = $this->run_sql($sql, array());
-        if (!empty($result[0]->total)) {
-            $CI->response->meta->total = intval($result[0]->total);
-        } else {
-            $result = array();
-            return false;
-        }
-        unset($result);
-        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
-        if (!empty($CI->response->meta->requestor)) {
-            $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
-        }
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'devices');
-        return $result;
     }
+
+    // public function collection()
+    // {
+    //     $CI = & get_instance();
+    //     $filter = $this->build_filter();
+    //     $join = $this->build_join();
+    //     $properties = $this->build_properties();
+
+    //     if ($CI->response->meta->sort == '') {
+    //         if (stripos($properties, 'system.id') !== false) {
+    //             $CI->response->meta->internal->sort = 'ORDER BY system.id';
+    //         }
+    //     }
+    //     $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+    //     if (!empty($CI->response->meta->requestor)) {
+    //         $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby;
+    //     }
+    //     $result = $this->run_sql($sql, array());
+    //     if (!empty($result[0]->total)) {
+    //         $CI->response->meta->total = intval($result[0]->total);
+    //     } else {
+    //         $result = array();
+    //         return false;
+    //     }
+    //     unset($result);
+    //     $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+    //     if (!empty($CI->response->meta->requestor)) {
+    //         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+    //     }
+    //     $result = $this->run_sql($sql, array());
+    //     $result = $this->format_data($result, 'devices');
+    //     return $result;
+    // }
 
     public function collection_group_by()
     {

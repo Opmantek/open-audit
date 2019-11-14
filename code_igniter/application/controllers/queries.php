@@ -55,6 +55,8 @@ class Queries extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_queries');
+        $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
+        unset($this->user->org_parents);
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
     }
@@ -119,6 +121,19 @@ class Queries extends MY_Controller
     */
     public function read()
     {
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_attributes');
+            $attributes = $this->m_attributes->collection($this->user->id);
+            $query_attributes = array();
+            if (is_array($attributes)) {
+                foreach ($attributes as $attribute) {
+                    if ($attribute->attributes->resource == 'queries') {
+                        $query_attributes[] = $attribute;
+                    }
+                }
+            }
+            $this->response->included = array_merge($this->response->included, $query_attributes);
+        }
         include 'include_read.php';
     }
 

@@ -82,41 +82,69 @@ class M_connections extends MY_Model
         return false;
     }
 
-    public function collection()
+    public function collection(int $user_id = null, int $response = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        // get a list of Orgs and Locations so we can populate the names
-        $sql = "SELECT id, name FROM orgs";
-        $result = $this->run_sql($sql, array());
-        $orgs = $result;
-        $sql = "SELECT id, name FROM locations";
-        $result = $this->run_sql($sql, array());
-        $items = $result;
-
-        $sql = $this->collection_sql('connections', 'sql');
-        $result = $this->run_sql($sql, array());
-        if ($result !== false) {
-            for ($i=0; $i < count($result); $i++) {
-                $result[$i]->location_name_a = '';
-                $result[$i]->location_name_b = '';
-                foreach ($orgs as $org) {
-                    if ($org->id == $result[$i]->org_id) {
-                        $result[$i]->org_name = $org->name;
-                    }
-                }
-                foreach ($items as $item) {
-                    if ($item->id == $result[$i]->location_id_a) {
-                        $result[$i]->location_name_a = $item->name;
-                    }
-                    if ($item->id == $result[$i]->location_id_b) {
-                        $result[$i]->location_name_b = $item->name;
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM connections WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'connections');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM connections LEFT JOIN orgs ON (connections.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . " " . 
+                    $CI->response->meta->internal->groupby . " " . 
+                    $CI->response->meta->internal->sort . " " . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            # Add in locations.name for location_name_a and _b
+            if (is_array($result)) {
+                $CI->load->model('m_locations');
+                $locations = $CI->m_locations->collection($CI->user->id);
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->location_id_a = intval($result[$i]->location_id_a);
+                    $result[$i]->location_id_b = intval($result[$i]->location_id_b);
+                    $result[$i]->location_name_a = '';
+                    $result[$i]->location_name_b = '';
+                    foreach ($locations as $location) {
+                        if ($location->id == $result[$i]->location_id_a) {
+                            $result[$i]->location_name_a = $location->attributes->name;
+                        }
+                        if ($location->id == $result[$i]->location_id_b) {
+                            $result[$i]->location_name_b = $location->attributes->name;
+                        }
                     }
                 }
             }
+            # Add in device names for system_id_a and _b
+            if (is_array($result)) {
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->system_id_a = intval($result[$i]->system_id_a);
+                    $result[$i]->system_id_b = intval($result[$i]->system_id_b);
+                    if (!empty($result[$i]->system_id_a)) {
+                        $sql = "SELECT `name` FROM system WHERE id = " . $result[$i]->system_id_a;
+                        $query = $this->db->query($sql);
+                        $result = $query->result();
+                        if (!empty($result[0]->name)) {
+                            $result[$i]->system_name_a = $result[0]->name;
+                        }
+                    }
+                    if (!empty($result[$i]->system_id_b)) {
+                        $sql = "SELECT `name` FROM system WHERE id = " . $result[$i]->system_id_b;
+                        $query = $this->db->query($sql);
+                        $result = $query->result();
+                        if (!empty($result[0]->name)) {
+                            $result[$i]->system_name_b = $result[0]->name;
+                        }
+                    }
+                }
+            }
+            $CI->response->data = $this->format_data($result, 'connections');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
-
-        $result = $this->format_data($result, 'connections');
-        return ($result);
     }
 }

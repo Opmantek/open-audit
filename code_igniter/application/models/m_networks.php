@@ -54,7 +54,7 @@ class M_networks extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) WHERE networks.id = ? AND networks.org_id IN (" . $CI->user->org_list . ")";
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
@@ -77,16 +77,6 @@ class M_networks extends MY_Model
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
-    }
-
-    public function collection()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $sql = $this->collection_sql('networks', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'networks');
-        return ($result);
     }
 
     public function sub_resource($id = '')
@@ -229,6 +219,30 @@ class M_networks extends MY_Model
             stdlog($log_details);
             unset($log_details);
             return false;
+        }
+    }
+
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if (!empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = "SELECT * FROM networks WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'networks');
+            return $result;
+        }
+        if (!empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) " . $CI->response->meta->internal->filter . " GROUP BY networks.id " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+
+            if (!empty($CI->response->meta->requestor)) {
+            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id AND system.oae_manage = 'y') " . $CI->response->meta->internal->filter . " GROUP BY networks.id " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+            }
+            $result = $this->run_sql($sql, array());
+            $CI->response->data = $this->format_data($result, 'networks');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
     }
 }

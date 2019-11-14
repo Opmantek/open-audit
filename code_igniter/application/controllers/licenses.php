@@ -100,6 +100,9 @@ class Licenses extends MY_Controller
     */
     public function read()
     {
+        $temp = $this->m_licenses->execute();
+        $this->response->included = array_merge($this->response->included, $temp);
+        $this->response->data[0]->attributes->used_count = intval(count($temp));
         include 'include_read.php';
     }
 

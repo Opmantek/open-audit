@@ -62,7 +62,7 @@
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="connections/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('connections.name', $item->attributes->name); ?>
-                    <?php refine('connections.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('connections.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
                     <?php refine('connections.location_name_a', $item->attributes->location_name_a); ?>
                     <?php refine('connections.location_name_b', $item->attributes->location_name_b); ?>
                     <?php refine('connections.provider', $item->attributes->provider); ?>

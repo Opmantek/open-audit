@@ -109,6 +109,15 @@ class Users extends MY_Controller
     {
         $this->load->helper('url');
         if ( $this->uri->segment(3) != 'cookie') {
+            $this->load->model('m_roles');
+            if ($this->response->meta->format == 'screen') {
+                $this->response->included = array_merge($this->response->included, $this->m_roles->collection($this->user->id));
+                if (!empty($this->response->data[0]->attributes)) {
+                    $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
+                }
+                $this->load->model('m_dashboards');
+                $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection($this->user->id));
+            }
             include 'include_read.php';
         } else {
             # Only allow users with config update permission (which should only be those with Admin role)
