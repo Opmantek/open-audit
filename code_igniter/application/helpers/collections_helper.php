@@ -59,12 +59,6 @@ if (!function_exists('update_fields')) {
             if ($value === 'edited_date') {
                 unset($fields[$key]);
             }
-            if ($collection === 'discoveries' and $value === 'device_count') {
-                    unset($fields[$key]);
-            }
-            if ($collection === 'discoveries' and $value === 'limit') {
-                    unset($fields[$key]);
-            }
         }
         $fields = array_values($fields);
         return $fields;
@@ -175,7 +169,7 @@ if (!function_exists('mandatory_fields')) {
                 break;
 
             case "ldap_servers":
-                return(array('name','org_id','lang','host','port','secure','domain','type','version','use_roles','refresh'));
+                return(array('name','org_id','lang','host','port','secure','domain','type','version','use_auth','use_roles','refresh'));
                 break;
 
             case "licenses":
