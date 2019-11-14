@@ -151,7 +151,7 @@ class Input extends CI_Controller
             $this->response->meta->query_string = '';
             $this->response->meta->time_start = microtime(true);
             $this->load->model('m_roles');
-            $this->roles = $this->m_roles->collection();
+            $this->roles = $this->m_roles->collection(1);
             $this->response->meta->collection = 'input';
             $this->response->data = array();
             $this->response->meta->id = null;
