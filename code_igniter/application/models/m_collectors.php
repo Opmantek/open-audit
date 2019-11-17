@@ -1,4 +1,5 @@
 <?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,8 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
 * @category  Model
 * @package   Open-AudIT
 * @author    Mark Unwin <marku@opmantek.com>
@@ -53,7 +53,7 @@ class M_collectors extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT collectors.*, users.name AS `users.name` FROM `collectors` LEFT JOIN `users` ON (collectors.user_id = users.id) WHERE collectors.id = ?";
+        $sql = "SELECT collectors.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, users.id AS `users.id`, users.name AS `users.name` FROM `collectors` LEFT JOIN orgs ON (collectors.org_id = orgs.id)  LEFT JOIN `users` ON (collectors.user_id = users.id) WHERE collectors.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'collectors');
