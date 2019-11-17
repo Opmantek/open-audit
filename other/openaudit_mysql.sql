@@ -996,6 +996,7 @@ CREATE TABLE `discoveries` (
   `type` varchar(100) NOT NULL DEFAULT '',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
+  `network_address` varchar(100) NOT NULL DEFAULT '',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
   `other` text NOT NULL,
   `options` text NOT NULL,

@@ -58,8 +58,6 @@ ALTER TABLE `discoveries` DROP `complete`;
 
 ALTER TABLE `discoveries` DROP `discovered`;
 
-ALTER TABLE `discoveries` DROP `network_address`;
-
 ALTER TABLE `discoveries` DROP `last_log`;
 
 ALTER TABLE `discoveries` DROP `ip_all_count`;
@@ -183,7 +181,6 @@ $this->alter_table('discoveries', 'pid', "DROP pid", 'drop');
 $this->alter_table('discoveries', 'device_count', "DROP device_count", 'drop');
 $this->alter_table('discoveries', 'complete', "DROP complete", 'drop');
 $this->alter_table('discoveries', 'discovered', "DROP discovered", 'drop');
-$this->alter_table('discoveries', 'network_address', "DROP network_address", 'drop');
 $this->alter_table('discoveries', 'last_log', "DROP last_log", 'drop');
 $this->alter_table('discoveries', 'ip_all_count', "DROP ip_all_count", 'drop');
 $this->alter_table('discoveries', 'ip_responding_count', "DROP ip_responding_count", 'drop');
