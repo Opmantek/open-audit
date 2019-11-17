@@ -73,7 +73,7 @@ class M_configuration extends MY_Model
         }
         // We might also use the received data
         if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration' and !empty($CI->response->meta->received_data->attributes->name)) {
-            $sql = "/* m_configuration::read */ " . "SELECT id FROM configuration WHERE name = ?";
+            $sql = "SELECT id FROM configuration WHERE name = ?";
             $data = array($CI->response->meta->received_data->attributes->name);
             $result = $this->run_sql($sql, array());
             if (!empty($result[0]->id)) {
@@ -84,7 +84,7 @@ class M_configuration extends MY_Model
         if (empty($id)) {
             return;
         }
-        $sql = "/* m_configuration::read */ " . "SELECT * FROM configuration WHERE id = ?";
+        $sql = "SELECT * FROM configuration WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'configuration');
