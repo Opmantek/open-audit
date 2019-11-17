@@ -1162,7 +1162,7 @@ if (! function_exists('inputRead')) {
         }
 
         $CI->response->meta->internal->filter = filter($CI->response->meta->filter, $CI->response->meta->collection, $CI->user);
-        if (count($CI->response->meta->filter) > 0 and $CI->response->meta->collection === 'devices') {
+        if ($CI->response->meta->collection == 'devices') {
             $CI->response->meta->internal->join = build_join();
         }
 
