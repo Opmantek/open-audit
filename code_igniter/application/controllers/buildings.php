@@ -25,12 +25,14 @@
 #
 # *****************************************************************************
 *
+* PHP version 5.3.3
+* 
 * @category  Controller
-* @package   Open-AudIT
+* @package   Buildings
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -38,8 +40,8 @@
 * Base Object Buildings
 *
 * @access   public
-* @category Object
-* @package  Open-AudIT
+* @category Controller
+* @package  Buildings
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
@@ -104,19 +106,19 @@ class Buildings extends MY_Controller
         $this->load->model('m_rows');
         $this->load->model('m_racks');
         $floors = $this->m_buildings->children($this->response->meta->id);
-        if (!empty($floors) and is_array($floors)) {
+        if ( ! empty($floors) && is_array($floors)) {
             $this->response->included = array_merge($this->response->included, $floors);
             foreach ($floors as $floor) {
                 $rooms = $this->m_floors->children($floor->id);
-                if (!empty($rooms) and is_array($rooms)) {
+                if ( ! empty($rooms) && is_array($rooms)) {
                     $this->response->included = array_merge($this->response->included, $rooms);
                     foreach ($rooms as $room) {
                         $rows = $this->m_rooms->children($room->id);
-                        if (!empty($rows) and is_array($rows)) {
+                        if ( ! empty($rows) && is_array($rows)) {
                             $this->response->included = array_merge($this->response->included, $rows);
                             foreach ($rows as $row) {
                                 $racks = $this->m_rows->children($row->id);
-                                if (!empty($racks) and is_array($racks)) {
+                                if ( ! empty($racks) && is_array($racks)) {
                                     $this->response->included = array_merge($this->response->included, $racks);
                                 }
                             }
@@ -170,17 +172,6 @@ class Buildings extends MY_Controller
     public function create_form()
     {
         include 'include_create_form.php';
-    }
-
-    /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function update_form()
-    {
-        include 'include_update_form.php';
     }
 
     /**
