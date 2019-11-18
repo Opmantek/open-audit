@@ -39,8 +39,8 @@
 /**
 * Base Object Agents
 *
-* @category Controller
 * @access   public
+* @category Controller
 * @package  Agents
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
