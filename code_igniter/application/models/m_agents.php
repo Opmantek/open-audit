@@ -1,4 +1,5 @@
 <?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,18 +24,36 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
+* PHP version 5.3.3
+* 
 * @category  Model
-* @package   Open-AudIT
+* @package   Agents
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
+*/
+
+
+/**
+* Base Model Agents
+*
+* @category Model
+* @access   public
+* @package  Agents
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class M_agents extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -43,42 +62,84 @@ class M_agents extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        $id = intval($id);
+        if (empty($id)) {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
         }
-        $sql = "SELECT * FROM `agents` WHERE `id` = ?";
+        $sql = 'SELECT * FROM `agents` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'agents');
         return ($result);
     }
 
+    /**
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
+        $id = intval($id);
+        $CI = & get_instance();
+        if (empty($id)) {
             $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
         }
-        if ($id != 0) {
-            $CI = & get_instance();
-            $sql = "DELETE FROM `agents` WHERE `id` = ?";
+        $return = false;
+        if ($id !== 0) {
+            $sql = 'DELETE FROM `agents` WHERE `id` = ?';
             $data = array(intval($id));
             $this->run_sql($sql, $data);
-            return true;
-        } else {
-            return false;
+            $return = true;
+        }
+        return $return;
+    }
+
+    /**
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
+    public function collection(int $user_id = null, int $response = null)
+    {
+        $CI = & get_instance();
+        if ( ! empty($user_id)) {
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = 'SELECT * FROM agents WHERE org_id IN (' . implode(',', $org_list) . ')';
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'agents');
+            return $result;
+        }
+        if ( ! empty($response)) {
+            $total = $this->collection($CI->user->id);
+            $CI->response->meta->total = count($total);
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM agents LEFT JOIN orgs ON (agents.org_id = orgs.id) ' . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->options = json_decode($result[$i]->options);
+            }
+            $CI->response->data = $this->format_data($result, 'agents');
+            $CI->response->meta->filtered = count($CI->response->data);
         }
     }
 }
+// End of file m_agents.php
+// Location: ./models/m_agents.php

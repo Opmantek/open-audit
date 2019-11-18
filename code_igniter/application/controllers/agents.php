@@ -25,21 +25,23 @@
 #
 # *****************************************************************************
 *
+* PHP version 5.3.3
+* 
 * @category  Controller
-* @package   Open-AudIT
+* @package   Agents
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
 */
 
 /**
 * Base Object Agents
 *
+* @category Controller
 * @access   public
-* @category Object
-* @package  Open-AudIT
+* @package  Agents
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
@@ -49,7 +51,7 @@ class Agents extends MY_Controller
     /**
     * Constructor
     *
-    * @access    public
+    * @access public
     */
     public function __construct()
     {
@@ -144,17 +146,6 @@ class Agents extends MY_Controller
     public function create_form()
     {
         include 'include_create_form.php';
-    }
-
-    /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function update_form()
-    {
-        include 'include_update_form.php';
     }
 
     /**
