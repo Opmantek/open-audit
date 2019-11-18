@@ -36,12 +36,11 @@
 * @link      http://www.open-audit.org
 */
 
-
 /**
-* Base Model Agents
+* Base Model Applications
 *
-* @category Model
 * @access   public
+* @category Model
 * @package  Applications
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
