@@ -56,9 +56,6 @@ class M_buildings extends MY_Model
     public function __construct()
     {
         parent::__construct();
-        $this->log = new stdClass();
-        $this->log->status = 'reading data';
-        $this->log->type = 'system';
     }
 
     /**
@@ -66,11 +63,8 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $id = intval($id);
         $sql = 'SELECT buildings.*, orgs.name AS `orgs.name`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -83,12 +77,8 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        $id = intval($id);
         $sql = 'DELETE FROM `buildings` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
@@ -104,12 +94,8 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items parent
      */
-    public function parent($id = '')
+    public function parent(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'reading parent data';
-        stdlog($this->log);
-        $id = intval($id);
         $sql = 'SELECT locations.* FROM locations, buildings WHERE locations.id = buildings.location_id AND buildings.id = ?';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
@@ -121,17 +107,13 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested items parent
      * @return array The array of requested items children
      */
-    public function children($id = '')
+    public function children(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'reading children data';
-        stdlog($this->log);
-        $id = intval($id);
         $sql = 'SELECT floors.*, orgs.name AS `orgs.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rooms.id) as `rooms_count` FROM `floors` LEFT JOIN orgs ON (floors.org_id = orgs.id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rooms ON (rooms.floor_id = floors.id)  WHERE floors.building_id = ?';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'floors');
-        return ($result)    ;
+        return ($result);
     }
 
     /**

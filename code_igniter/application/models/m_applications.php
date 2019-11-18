@@ -56,9 +56,6 @@ class M_applications extends MY_Model
     public function __construct()
     {
         parent::__construct();
-        $this->log = new stdClass();
-        $this->log->status = 'reading data';
-        $this->log->type = 'system';
     }
 
     /**
@@ -66,15 +63,8 @@ class M_applications extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $id = intval($id);
-        if ($id === 0) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
         $sql = 'SELECT * FROM `applications` WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -87,38 +77,29 @@ class M_applications extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        $id = intval($id);
-        if ($id === 0) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
-        if ($id !== 0) {
-            $CI = & get_instance();
-            $sql = 'DELETE FROM `applications` WHERE id = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
+        $sql = 'DELETE FROM `applications` WHERE `id` = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
      *
+     * @param  int $id The ID of the requested item
      * @return array The array of devices assigned to this application
      */
-    public function read_sub_resource()
+    public function read_sub_resource(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
         $org_ids = implode(',', $CI->user->orgs);
-        $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `system`.`org_id` IN  (' . $org_ids . ')';
-        $result = $this->run_sql($sql, array());
+        $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `application`.`id` = ? and `system`.`org_id` IN  (' . $org_ids . ')';
+        $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'devices');
         return ($result);
     }

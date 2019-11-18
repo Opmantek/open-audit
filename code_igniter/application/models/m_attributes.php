@@ -56,9 +56,6 @@ class M_attributes extends MY_Model
     public function __construct()
     {
         parent::__construct();
-        $this->log = new stdClass();
-        $this->log->status = 'reading data';
-        $this->log->type = 'system';
     }
 
     /**
@@ -66,22 +63,12 @@ class M_attributes extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        $id = intval($id);
-        if ($id === 0) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
         $sql = 'SELECT * FROM `attributes` WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'attributes');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
         return ($result);
     }
 
@@ -90,27 +77,16 @@ class M_attributes extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        $id = intval($id);
-        if ($id === 0) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
-        if ($id !== 0) {
-            $CI = & get_instance();
-            $sql = 'DELETE FROM `attributes` WHERE id = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            $this->log->summary = 'finish';
-            stdlog($this->log);
+        $sql = 'DELETE FROM `attributes` WHERE `id` = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**

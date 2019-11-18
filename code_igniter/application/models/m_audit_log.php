@@ -1,4 +1,5 @@
 <?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,73 +24,98 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
+* PHP version 5.3.3
+* 
 * @category  Model
-* @package   Open-AudIT
+* @package   AuditLog
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
+*/
+
+/**
+* Base Model AuditLog
+*
+* @access   public
+* @category Model
+* @package  AuditLog
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class M_audit_log extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
-        $this->log = new stdClass();
-        $this->log->status = 'reading data';
-        $this->log->type = 'system';
     }
 
-    public function create($system_id, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version = '')
+    /**
+     *
+     * @param  int    $system_id  The ID of the device linked to this audit_log entry
+     * @param  string $username   The username The username making this change
+     * @param  string $type       The type of change
+     * @param  string $ip_address The IP Address for this change
+     * @param  string $debug      Should we log using debug?
+     * @param  string $wmi_fails  Any failed WMI rtequests
+     * @param  string $timestamp  The timestamp of this item (if blank use config -> timestamp).
+     * @param  string $version    The version of Open-AudIT audit script (if blank, use config -> display_version).
+     * @return array The array of requested items
+     */
+    public function create(int $system_id = 0, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
+        if (empty($system_id)) {
             return;
         }
-        if ($type == '') {
+        if (empty($type)) {
             $type = 'audit';
         }
-        if ($timestamp == '') {
+        if (empty($timestamp)) {
             $timestamp = $this->config->config['timestamp'];
         }
         if (empty($version)) {
             $version = $this->config->config['display_version'];
         }
-        $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`, `version`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $data = array($system_id, "$username", "$type", "$ip_address", "$debug", "$wmi_fails", "$timestamp", "$version");
+        $sql = 'INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`, `version`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        $data = array($system_id, $username, $type, $ip_address, $debug, $wmi_fails, $timestamp, $version);
         $this->run_sql($sql, $data);
     }
 
-    public function read($system_id)
+    /**
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
+    public function read(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
-        }
-        $sql = "SELECT * FROM audit_log WHERE audit_log.system_id = ?";
-        $data = array("$system_id");
+        $sql = 'SELECT * FROM audit_log WHERE audit_log.system_id = ?';
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         return ($result);
     }
 
-    public function update($column, $value, $system_id, $timestamp)
+    /**
+     *
+     * @param  string $column    The column to update
+     * @param  string $value     The value to update with
+     * @param  string $id        The system.id linked
+     * @param  string $timestamp The timestamp
+     * @return null
+     */
+    public function update($column, $value, int $id = 0, $timestamp)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
-        }
-        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
-        $data = array("$value", "$system_id", "$timestamp");
+        $sql = 'UPDATE audit_log SET ' . $column . ' = ? WHERE system_id = ? AND timestamp = ?';
+        $data = array($value, $id, $timestamp);
         $this->run_sql($sql, $data);
     }
 }
+// End of file m_audit_log.php
+// Location: ./models/m_audit_log.php

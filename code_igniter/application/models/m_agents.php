@@ -56,9 +56,6 @@ class M_agents extends MY_Model
     public function __construct()
     {
         parent::__construct();
-        $this->log = new stdClass();
-        $this->log->status = 'reading data';
-        $this->log->type = 'system';
     }
 
     /**
@@ -66,15 +63,8 @@ class M_agents extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $id = intval($id);
-        if (empty($id)) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
         $sql = 'SELECT * FROM `agents` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -87,24 +77,16 @@ class M_agents extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete(int $id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        $id = intval($id);
-        $CI = & get_instance();
-        if (empty($id)) {
-            $id = intval($CI->response->meta->id);
+        $sql = 'DELETE FROM `clouds` WHERE `id` = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
+        } else {
+            return false;
         }
-        $return = false;
-        if ($id !== 0) {
-            $sql = 'DELETE FROM `agents` WHERE `id` = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            $return = true;
-        }
-        return $return;
     }
 
     /**
