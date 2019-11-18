@@ -79,7 +79,7 @@ class M_agents extends MY_Model
      */
     public function delete(int $id = 0)
     {
-        $sql = 'DELETE FROM `clouds` WHERE `id` = ?';
+        $sql = 'DELETE FROM `agents` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
