@@ -134,11 +134,11 @@ class M_logon extends MY_Model
         // Auth against any configured LDAP servers
         if ($this->db->table_exists('ldap_servers')) {
             if (!empty($user['domain'])) {
-                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE domain LIKE ? AND `use_auth` = 'y'";
+                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE domain LIKE ?";
                 $data = array($user['domain']);
                 $query = $this->db->query($sql, $data);
             } else {
-                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE `use_auth` = 'y'";
+                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers";
                 $query = $this->db->query($sql);
             }
             $ldap_servers = $query->result();
@@ -157,6 +157,10 @@ class M_logon extends MY_Model
                         $log->severity = 3;
                         stdlog($log);
                         $CI->session->set_flashdata('error', 'Invalid LDAP server type supplied (' . $ldap->type . '), skipping.');
+                        continue;
+                    }
+                    // New for 3.3.0 - use_auth, by default set to 'y', but if a user changes this, skip.
+                    if ( ! empty($ldap->use_auth) and $ldap->use_auth == 'n') {
                         continue;
                     }
                     ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5);
