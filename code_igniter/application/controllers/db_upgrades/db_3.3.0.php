@@ -176,7 +176,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 
-$this->alter_table('discoveries', 'limit', "DROP limit", 'drop');
+$this->alter_table('discoveries', 'limit', "DROP `limit`", 'drop');
 $this->alter_table('discoveries', 'pid', "DROP pid", 'drop');
 $this->alter_table('discoveries', 'device_count', "DROP device_count", 'drop');
 $this->alter_table('discoveries', 'complete', "DROP complete", 'drop');
