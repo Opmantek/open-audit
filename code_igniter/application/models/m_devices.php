@@ -1,4 +1,5 @@
 <?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,23 +24,44 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
+* PHP version 5.3.3
+* 
 * @category  Model
-* @package   Open-AudIT
+* @package   Devices
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
+*/
+
+/**
+* Base Model Devices
+*
+* @access   public
+* @category Model
+* @package  Devices
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class M_devices extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * [build_properties description]
+     * @return [type] [description]
+     */
     private function build_properties()
     {
         $CI = & get_instance();
@@ -56,6 +78,10 @@ class M_devices extends MY_Model
         return($properties);
     }
 
+    /**
+     * [build_filter description]
+     * @return [type] [description]
+     */
     private function build_filter()
     {
         $CI = & get_instance();
@@ -63,57 +89,28 @@ class M_devices extends MY_Model
         $filter = '';
         foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
-                if ($item->name == 'id') {
+                if ($item->name === 'id') {
                     $item->name = 'system.id';
                 }
-                if (!empty($item->name) and $item->operator != 'in') {
+                if ( ! empty($item->name) && $item->operator !== 'in') {
                     $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
                 }
-                if (!empty($item->name) and $item->operator == 'in') {
+                if ( ! empty($item->name) && $item->operator === 'in') {
                     $filter .= ' AND ' . $item->name . ' in ' . $item->value;
                 }
             }
         }
-        // if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false and $CI->response->meta->action != 'sub_resource_read') {
-        //     $filter .= ' AND system.status = "production"';
-        //     $temp = new stdClass();
-        //     $temp->name = 'system.status';
-        //     $temp->operator = '=';
-        //     $temp->value = 'production';
-        //     $CI->response->meta->filter[] = $temp;
-        //     unset($temp);
-        // }
         return($filter);
     }
 
-    // private function build_join()
-    // {
-    //     $CI = & get_instance();
-    //     #$reserved = ' properties limit sub_resource action sort current offset format ';
-    //     $join = '';
-    //     $tables = '';
-    //     if (count($CI->response->meta->filter) > 0) {
-    //         foreach ($CI->response->meta->filter as $item) {
-    //             if (strpos($item->name, '.') !== false) {
-    //                 $table = substr($item->name, 0, strpos($item->name, '.'));
-    //                 if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
-    //                     if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
-    //                         $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
-    //                     } else {
-    //                         $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
-    //                     }
-    //                 }
-    //                 $tables .= " $table ";
-    //             }
-    //         }
-    //     }
-    //     $CI->response->meta->internal->join = $join;
-    //     return($join);
-    // }
-
+    /**
+     * [get_related_tables description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function get_related_tables($id = '')
     {
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
@@ -125,7 +122,7 @@ class M_devices extends MY_Model
         $return = array();
         $tables = array('audit_log', 'bios', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `$table` WHERE system_id = " . intval($id);
+            $sql = 'SELECT COUNT(*) AS `count` FROM `$table` WHERE system_id = ' . intval($id);
             $result = $this->run_sql($sql, array());
             if (intval($result[0]->count) > 0) {
                 $item = new stdClass();
@@ -139,7 +136,12 @@ class M_devices extends MY_Model
         return ($return);
     }
 
-    public function read($id = '')
+    /**
+     * [read description]
+     * @param  int $id The system.id of the device in question
+     * @return [type]     [description]
+     */
+    public function read(int $id = 0)
     {
         if (empty($id)) {
             $log = new stdClass();
@@ -149,28 +151,28 @@ class M_devices extends MY_Model
             stdlog($log);
             return false;
         }
-        $sql = "SELECT * FROM `system` WHERE system.id = ?";
+        $sql = 'SELECT * FROM `system` WHERE system.id = ?';
         $result = $this->run_sql($sql, array($id));
 
-        # Populate our collector name if it exists
-        if (!empty($result)) {
+        // Populate our collector name if it exists
+        if ( ! empty($result)) {
             $result[0]->collector_name = '';
-            if (!empty($result[0]->collector_uuid)) {
-                $sql = "SELECT `name` FROM `collectors` WHERE `uuid` = ?";
+            if ( ! empty($result[0]->collector_uuid)) {
+                $sql = 'SELECT `name` FROM `collectors` WHERE `uuid` = ?';
                 $data = array((string)$result[0]->collector_uuid);
                 $collector = $this->run_sql($sql, $data);
-                if (!empty($collector[0]->{'name'})) {
+                if ( ! empty($collector[0]->{'name'})) {
                     $result[0]->collector_name = $collector[0]->{'name'};
                 }
             }
 
             $result = $this->format_data($result, 'devices');
-            # format our uptime from unixtime to humane readable
-            if (!empty($result[0]->attributes->uptime)) {
+            // format our uptime from unixtime to humane readable
+            if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
-                $dtF = new \DateTime('@0');
-                $dtT = new \DateTime("@$seconds");
-                $result[0]->attributes->uptime_formatted = $dtF->diff($dtT)->format('%a days, %H:%i:%S');
+                $date_time_f = new \DateTime('@0');
+                $date_time_t = new \DateTime('@$seconds');
+                $result[0]->attributes->uptime_formatted = $date_time_f->diff($date_time_t)->format('%a days, %H:%i:%S');
             } else {
                 $result[0]->attributes->uptime_formatted = '';
             }
@@ -178,7 +180,12 @@ class M_devices extends MY_Model
         return($result);
     }
 
-    public function get_device_fields($device_id = '')
+    /**
+     * [get_device_fields description]
+     * @param  int $device_id The system.id of the device in question
+     * @return [type]            [description]
+     */
+    public function get_device_fields(int $device_id = 0)
     {
         $CI = & get_instance();
         $CI->load->model('m_orgs');
@@ -195,26 +202,26 @@ class M_devices extends MY_Model
         }
 
         // get the org_id of the device
-        $sql = "SELECT system.org_id FROM system WHERE `system`.`id` = ?";
+        $sql = 'SELECT system.org_id FROM system WHERE `system`.`id` = ?';
         $data = array (intval($device_id));
         $result = $this->run_sql($sql, $data);
         $device_org_id = intval($result[0]->org_id);
 
         // get the fields
-        $sql = "SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name`, field.value FROM fields LEFT JOIN groups ON fields.group_id = groups.id LEFT JOIN field ON (fields.id = field.fields_id AND field.system_id = $device_id) ORDER BY fields.name";
+        $sql = 'SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name`, field.value FROM fields LEFT JOIN groups ON fields.group_id = groups.id LEFT JOIN field ON (fields.id = field.fields_id AND field.system_id = $device_id) ORDER BY fields.name';
         $fields = $this->run_sql($sql, array());
         // this is our array of field.id's that are acceptable on this device
         $field_list = array();
-        if (!empty($fields)) {
+        if ( ! empty($fields)) {
             foreach ($fields as $field) {
                 // get this field.org_id children
                 $orgs = array($field->org_id);
                 $orgs = array_merge($orgs, $CI->m_orgs->get_children($field->org_id));
                 foreach ($orgs as $key => $value) {
-                    if ($device_org_id == $value) {
-                        $sql = "SELECT COUNT(*) AS `count` FROM (" . str_replace("@filter", "1=1", $field->group_sql) . ") a WHERE a.id = $device_id";
+                    if ($device_org_id === $value) {
+                        $sql = 'SELECT COUNT(*) AS `count` FROM (' . str_replace('@filter', '1=1', $field->group_sql) . ') a WHERE a.id = $device_id';
                         $result = $this->run_sql($sql, $data);
-                        if ($result[0]->count == 1) {
+                        if ($result[0]->count === 1) {
                             $field_list[] = $field;
                         }
                     }
@@ -230,7 +237,12 @@ class M_devices extends MY_Model
         return($result);
     }
 
-    public function get_device_applications($device_id = '')
+    /**
+     * [get_device_applications description]
+     * @param  int $device_id The system.id of the device in question
+     * @return [type]            [description]
+     */
+    public function get_device_applications(int $device_id = 0)
     {
         $CI = & get_instance();
         $CI->load->model('m_orgs');
@@ -246,20 +258,36 @@ class M_devices extends MY_Model
             return false;
         }
 
-        $sql = "SELECT applications.id AS `applications.id`, applications.name AS `applications.name`, applications.description AS `applications.description`, application.id AS `id` FROM applications LEFT JOIN application ON applications.id = application.applications_id LEFT JOIN system ON (application.system_id = system.id) WHERE system.id = ? ORDER BY applications.name";
+        $sql = 'SELECT applications.id AS `applications.id`, applications.name AS `applications.name`, applications.description AS `applications.description`, application.id AS `id` FROM applications LEFT JOIN application ON applications.id = application.applications_id LEFT JOIN system ON (application.system_id = system.id) WHERE system.id = ? ORDER BY applications.name';
         $application = $this->run_sql($sql, array(intval($device_id)));
         $result = $this->format_data($application, 'application');
         return($result);
     }
 
-    public function get_device_rack($id = 0)
+    /**
+     * [get_device_rack description]
+     * @param  int $id The system.id of the device in question
+     * @return [type]      [description]
+     */
+    public function get_device_rack(int $id = 0)
     {
-        $sql = "SELECT rack_devices.*, racks.name AS `racks.name`, racks.id AS `racks.id` FROM rack_devices LEFT JOIN `racks` ON (racks.id = rack_devices.rack_id) WHERE system_id = ?";
+        $sql = 'SELECT rack_devices.*, racks.name AS `racks.name`, racks.id AS `racks.id` FROM rack_devices LEFT JOIN `racks` ON (racks.id = rack_devices.rack_id) WHERE system_id = ?';
         $query = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($query, 'rack_devices');
         return($result);
     }
 
+    /**
+     * [read_sub_resource description]
+     * @param  string $id              [description]
+     * @param  string $sub_resource    [description]
+     * @param  string $sub_resource_id [description]
+     * @param  string $properties      [description]
+     * @param  string $sort            [description]
+     * @param  string $current         [description]
+     * @param  string $limit           [description]
+     * @return [type]                  [description]
+     */
     public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y', $limit = '')
     {
         $CI = & get_instance();
@@ -267,7 +295,7 @@ class M_devices extends MY_Model
         $log->file = 'system';
         $log->level = 7;
 
-        if ($id == '') {
+        if ($id === '') {
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
@@ -278,7 +306,7 @@ class M_devices extends MY_Model
             return false;
         }
 
-        if ($sub_resource == '') {
+        if ($sub_resource === '') {
             $sub_resource = $CI->response->meta->sub_resource;
         }
         if (empty($sub_resource)) {
@@ -287,7 +315,7 @@ class M_devices extends MY_Model
             return false;
         }
 
-        if ($sub_resource_id == '') {
+        if ($sub_resource_id === '') {
             $sub_resource_id = intval($CI->response->meta->sub_resource_id);
         } else {
             $sub_resource_id = intval($sub_resource_id);
@@ -301,37 +329,36 @@ class M_devices extends MY_Model
         // if ($properties == '') {
         //     $properties = @$CI->response->meta->properties;
         // }
-        if (empty($properties) or $properties == '*') {
+        if (empty($properties) OR $properties === '*') {
             $properties = '`' . $sub_resource . '`.*';
         }
 
-        if ($sort == '') {
+        if ($sort === '') {
             $sort = @$CI->response->meta->sort;
         }
         if (empty($sort)) {
             $sort = '';
         }
 
-        if (!empty($limit)) {
+        if ( ! empty($limit)) {
             $limit = ' LIMIT ' . intval($limit);
         }
 
         $filter = $this->build_filter();
 
-        if ($sub_resource == 'location') {
-            $sql = "SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?";
+        if ($sub_resource === 'location') {
+            $sql = 'SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?';
             $data = array($id);
-        } elseif ($sub_resource == 'purchase') {
-            $sql = "SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
+        } else if ($sub_resource === 'purchase') {
+            $sql = 'SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?';
             $data = array($id);
-        } elseif ($sub_resource == 'discovery_log') {
-            $sql = "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? " . $limit;
+        } else if ($sub_resource === 'discovery_log') {
+            $sql = 'SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? ' . $limit;
             $data = array($id);
-        } elseif ($sub_resource == 'edit_log') {
-            $sql = "SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? " . $limit;
+        } else if ($sub_resource === 'edit_log') {
+            $sql = 'SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? ' . $limit;
             $data = array($id);
-        } elseif ($sub_resource == 'network') {
-            # $sql = "SELECT ip.ip,  network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') LEFT JOIN ip ON (ip.system_id = network.system_id and ip.net_index = network.net_index and ip.current = 'y') WHERE system.id = ? ";
+        } else if ($sub_resource === 'network') {
             $sql = "SELECT network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') WHERE system.id = ? ";
             $data = array($id);
         } else {
@@ -344,48 +371,48 @@ class M_devices extends MY_Model
                 $first_seen = true;
             }
             if ($currency) {
-                if (!empty($CI->response->meta->internal->as_at)) {
-                    if ($this->db->field_exists('first_seen', $sub_resource) and $this->db->field_exists('last_seen', $sub_resource)) {
+                if ( ! empty($CI->response->meta->internal->as_at)) {
+                    if ($this->db->field_exists('first_seen', $sub_resource) && $this->db->field_exists('last_seen', $sub_resource)) {
                         $filter .= ' AND DATE(' . $sub_resource . '.first_seen) <= "' . $CI->response->meta->internal->as_at . '" AND DATE(' . $sub_resource . '.last_seen) >= "' . $CI->response->meta->internal->as_at . '"';
                     }
                 }
-                $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
-                if ($current == 'y') {
-                    $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
+                $currency = 'AND `' . $sub_resource . "`.`current` = '" . $current . "'" ;
+                if ($current === 'y') {
+                    $currency = 'AND `' . $sub_resource . "`.`current` = '" . $current . "'" ;
                 }
-                if ($current == 'n') {
-                    $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
+                if ($current === 'n') {
+                    $currency = 'AND `' . $sub_resource . "`.`current` = '" . $current . "'" ;
                 }
-                if ($current == '' or $current == 'all') {
-                    $currency = "";
+                if ($current === '' OR $current === 'all') {
+                    $currency = '';
                 }
-                if ($current == 'delta' and $first_seen) {
-                    $properties .= ", IF((`" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
-                    $currency = "AND current = 'y' or `" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)";
+                if ($current === 'delta' && $first_seen) {
+                    $properties .= ', IF((`' . $sub_resource . '`.first_seen = (SELECT first_seen FROM `' . $sub_resource . "` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
+                    $currency = "AND current = 'y' or `" . $sub_resource . '`.first_seen = (SELECT first_seen FROM `' . $sub_resource . '` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)';
                 }
-                if ($current == 'delta' and !$first_seen) {
-                    $currency = "";
+                if ($current === 'delta' && ! $first_seen) {
+                    $currency = '';
                 }
-                if ($current == 'full' and $first_seen) {
-                    $properties .= ", IF((`" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
-                    $currency = "";
+                if ($current === 'full' && $first_seen) {
+                    $properties .= ', IF((`' . $sub_resource . '`.first_seen = (SELECT first_seen FROM `' . $sub_resource . "` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
+                    $currency = '';
                 }
-                if ($current == 'full' and !$first_seen) {
-                    $currency = "";
+                if ($current === 'full' && ! $first_seen) {
+                    $currency = '';
                 }
             } else {
-                $currency = "";
+                $currency = '';
             }
-            $sql = "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $limit . " " . $sort;
+            $sql = "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = {$id} " . $sub_resource_id . " " . $currency . ' ' . $filter . ' ' . $limit . ' ' . $sort;
             $data = array($CI->user->id);
         }
 
         $result = $this->run_sql($sql, $data);
 
-        if ($sub_resource == 'credential' and !empty($result)) {
+        if ($sub_resource === 'credential' && ! empty($result)) {
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
-                if (!empty($result[$i]->credentials)) {
+                if ( ! empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                 }
             }
@@ -1689,5 +1716,6 @@ class M_devices extends MY_Model
         }
         return($device);
     }
-
 }
+// End of file m_devices.php
+// Location: ./models/m_devices.php

@@ -121,4 +121,3 @@ class M_attributes extends MY_Model
 }
 // End of file m_attributes.php
 // Location: ./models/m_attributes.php
-
