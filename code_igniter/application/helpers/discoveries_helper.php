@@ -608,7 +608,9 @@ if ( ! function_exists('ip_audit')) {
 			return false;
 		}
 		unset($item);
-		$ip_scan->details = @json_decode($ip_scan->details);
+		if (is_string($ip_scan->details)) {
+			$ip_scan->details = @json_decode($ip_scan->details);
+		}
 		if (empty($ip_scan->details)) {
 			return false;
 		}
@@ -670,7 +672,7 @@ if ( ! function_exists('ip_audit')) {
 		$parameters = new stdCLass();
 		$parameters->details = $device;
 		$parameters->discovery_id = $discovery->id;
-		$parameters->match = $discovery->other->match;
+		$parameters->match = @$discovery->other->match;
 		$device->id = $CI->m_device->match($parameters);
 
 		if ( ! empty($device->id) && ! empty($discovery->id)) {
@@ -915,6 +917,7 @@ if ( ! function_exists('ip_audit')) {
 			}
 		}
 
+		$log->command_status = 'notice';
 		if ( ! empty($device->id)) {
 			// UPDATE
 			$log->system_id = $device->id;
@@ -955,6 +958,7 @@ if ( ! function_exists('ip_audit')) {
 
 		// update any network interfaces retrieved by SNMP
 		if (isset($network_interfaces) && is_array($network_interfaces) && count($network_interfaces) > 0) {
+			$log->command_status = 'notice';
 			$log->message = 'Processing found network interfaces for ' . $device->ip;
 			discovery_log($log);
 			$parameters = new stdClass();
@@ -967,6 +971,7 @@ if ( ! function_exists('ip_audit')) {
 
 		// update any ip addresses retrieved by SNMP
 		if ( ! empty($ip) && is_array($ip->item) && count($ip->item) > 0) {
+			$log->command_status = 'notice';
 			$log->message = 'Processing found ip addresses for ' . $device->ip;
 			discovery_log($log);
 			$parameters = new stdClass();
@@ -980,6 +985,7 @@ if ( ! function_exists('ip_audit')) {
 		// create or update the entry in the ip table from non-SNMP data
 		// so our 'networks' endpoint and functions can find the device
 		if (empty($ip->item)) {
+			$log->command_status = 'notice';
 			$log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip;
 			discovery_log($log);
 			$item = new stdClass();
@@ -1016,6 +1022,7 @@ if ( ! function_exists('ip_audit')) {
 
 		// insert any modules from SNMP
 		if (isset($modules) && is_array($modules) && count($modules) > 0) {
+			$log->command_status = 'notice';
 			$log->message = 'Processing found modules for ' . $device->ip;
 			discovery_log($log);
 			$parameters = new stdClass();
@@ -1028,6 +1035,7 @@ if ( ! function_exists('ip_audit')) {
 
 		// insert any found virtual machines from SNMP
 		if (isset($guests) && is_array($guests) && count($guests) > 0) {
+			$log->command_status = 'notice';
 			$log->message = 'Processing found VMs for ' . $device->ip;
 			discovery_log($log);
 			$parameters = new stdClass();
@@ -1054,6 +1062,7 @@ if ( ! function_exists('ip_audit')) {
 			unset($temp);
 		}
 		if (count($nmap_result) > 0) {
+			$log->command_status = 'notice';
 			$log->message = 'Processing Nmap ports for ' . $device->ip;
 			discovery_log($log);
 			$parameters = new stdClass();

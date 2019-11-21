@@ -1597,24 +1597,30 @@ class M_devices_components extends MY_Model
         return ($resultset);
     }
 
+    /**
+     * [nmap_ip description]
+     * @param  [type] $parameters [description]
+     * @return [type]             [description]
+     */
     public function nmap_ip($parameters) {
-        if (empty($parameters) or empty($parameters->device) or empty($parameters->ip) or empty($parameters->device->id) or empty($parameters->ip->ip)) {
+        if (empty($parameters) OR empty($parameters->device) OR empty($parameters->device->id) OR empty($parameters->ip->ip)) {
             $log = new stdClass();
             $log->severity = 4;
-            $log->message = "Function nmap_ip called without parameters object.";
+            $log->message = 'Function nmap_ip called without parameters object.';
             $log->status = 'fail';
             stdlog($log);
             return false;
         }
-
-        if (!empty($parameters->log)) {
+        if ( ! empty($parameters->log)) {
             $log = $parameters->log;
+        } else {
+            $log = new stdClass();
         }
-        if (!empty($parameters->discovery_id)) {
+        if ( ! empty($parameters->discovery_id)) {
             $log->discovery_id = $parameters->discovery_id;
         }
         $log->severity = 6;
-        $log->ip = $parameters->ip;
+        $log->ip = $parameters->ip->ip;
         $log->file = 'm_devices_components';
         $log->function = 'nmap_ip';
         $log->command_status = 'notice';

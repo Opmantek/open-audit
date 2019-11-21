@@ -360,9 +360,7 @@ class Util extends CI_Controller
 
     public function queue()
     {
-        echo "<pre>\n";
         $pid = getmypid();
-
         $this->load->model('m_audit_log');
         $this->load->model('m_collection');
         $this->load->model('m_configuration');
@@ -390,71 +388,74 @@ class Util extends CI_Controller
 
         $this->m_configuration->load();
 
-        # queue count is the number of registered processes
-        # queue limit is set by the user
-        # check it config['queue_count'] > config['queue_limit']
+        // queue count is the number of registered processes
+        // queue limit is set by the user
+        // check it config['queue_count'] > config['queue_limit']
         if (intval($this->config->config['queue_count']) > intval($this->config->config['queue_limit'])) {
-            #echo "QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']);
+            // echo "QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']);
             exit;
         }
-        # Increase the queue count in the config table
-        $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
+        // Increase the queue count in the config table
+        $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
         $this->db->query($sql);
-        # POP an item off the queue
+        // POP an item off the queue
         $this->load->model('m_queue');
         while ( true ) {
             $item = $this->m_queue->pop();
-            $details = @json_decode($item->details);
+            if ( ! empty($item->details) && is_string($item->details)) {
+                $details = @json_decode($item->details);
+            }
 
-            # If we don't get an item, there's nothing left to do so exit.
+
+            // If we don't get an item, there's nothing left to do so exit.
             if ($item === false) {
-                # Remove the queue count
-                $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
+                // Remove the queue count
+                $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
                 break;
             }
             if ($details === false) {
-                # Remove the queue count
-                $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
+                // Remove the queue count
+                $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
                 break;
             }
 
-            # Spawn another process
-            if (php_uname('s') != 'Windows NT') {
+            // Spawn another process
+            if (php_uname('s') !== 'Windows NT') {
                 $instance = '';
-                if ($this->db->database != 'openaudit') {
+                if ($this->db->database !== 'openaudit') {
                     $instance = '/' . $this->db->database;
                 }
                 $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
-                if (php_uname('s') == 'Linux') {
+                if (php_uname('s') === 'Linux') {
                     $command = 'nohup ' . $command;
                 }
                 @exec($command);
             } else {
                 $filepath = $this->config->config['base_path'] . '\\other';
-                $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
-                pclose(popen($command, "r"));
+                $command = "%comspec% /c start /b cscript //nologo {$filepath}\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+                pclose(popen($command, 'r'));
             }
 
-            if ($item->type == 'subnet') {
+            if ($item->type === 'subnet') {
                 discover_subnet($details);
             }
 
-            if ($item->type == 'active directory') {
+            if ($item->type === 'active directory') {
                 discover_ad($details);
             }
 
             if ($item->type === 'ip_scan') {
                 $result = ip_scan($details);
                 $result = json_encode($result);
-                if (!empty($result)) {
+                if ( ! empty($result)) {
                     $queue_item = new stdClass();
                     $queue_item->ip = $details->ip;
                     $queue_item->discovery_id = $details->discovery_id;
                     $queue_item->details = $result;
                     $this->m_queue->create('ip_audit', $queue_item);
-                    $sql = "/* util::queue $pid */ " . "UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?";
+                    $sql = '/* util::queue */ ' . 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?';
                     $data = array($details->discovery_id);
                     $this->db->query($sql, $data);
                 }
