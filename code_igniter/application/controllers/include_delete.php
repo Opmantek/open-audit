@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,8 +24,19 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* PHP version 5.3.3
+* 
+* @category  Controller
+* @package   All
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   GIT: Open-AudIT_3.3.0
+* @link      http://www.open-audit.org
+*/
 $timer_start = microtime(true);
-if ($this->{'m_'.$this->response->meta->collection}->delete($this->response->meta->id)) {
+if ($this->{'m_'.$this->response->meta->collection}->delete(intval($this->response->meta->id))) {
     $this->response->data = array();
     $temp = new stdClass();
     $temp->type = $this->response->meta->collection;
@@ -57,7 +68,7 @@ $log->severity = 7;
 $log->status = 'success';
 $log->summary = 'finish';
 $log->type = 'access';
-if ($this->config->config['log_level'] == 7) {
+if ($this->config->config['log_level'] === 7) {
     $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
