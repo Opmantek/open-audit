@@ -428,9 +428,9 @@ class M_rules extends MY_Model
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if ((string)$dsub->{$input->attribute} !== (string)$input->value) {
                                         if ($input->value != '') {
-                                            $log->message .= " Hit on $dsub $input->attribute " . $dsub->{$input->attribute} . " ne " . $input->value;
+                                            $log->message .= " Hit on " . $input->table . " $input->attribute " . $dsub->{$input->attribute} . " ne " . $input->value;
                                         } else {
-                                            $log->message .= " Hit on $dsub $input->attribute is empty";
+                                            $log->message .= " Hit on " . $input->table . " $input->attribute is empty";
                                         }
                                         $hit++;
                                         break;
