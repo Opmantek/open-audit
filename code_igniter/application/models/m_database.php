@@ -1,4 +1,5 @@
 <?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,31 +24,50 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
+* PHP version 5.3.3
+* 
 * @category  Model
-* @package   Open-AudIT
+* @package   Database
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
+*/
+
+/**
+* Base Model Database
+*
+* @access   public
+* @category Model
+* @package  Database
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class M_database extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
-        $this->log = new stdClass();
-        $this->log->status = 'reading data';
-        $this->log->type = 'system';
     }
 
+    /**
+     * Read the details fo a table
+     * @param  string $id The name of the table
+     * @return array      The table details in an array
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = $CI->response->meta->id;
         } else {
@@ -59,19 +79,17 @@ class M_database extends MY_Model
         $return = array();
         $tables = $this->db->list_tables();
         foreach ($tables as $table) {
-            if ($id == $table) {
+            if ($id === $table) {
                 $item = new stdClass();
                 $item->type = 'database';
                 $item->id = $table;
                 $item->attributes = new stdClass();
                 $item->attributes->name = $table;
-                
-                $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
+                $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
                 $result = $this->run_sql($sql, array());
                 $item->attributes->count = intval($result[0]->count);
-
                 if ($this->db->field_exists('current', $table)) {
-                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "` WHERE current = 'y'";
+                    $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . "` WHERE current = 'y'";
                     $result = $this->run_sql($sql, array());
                     $item->attributes->current_row = true;
                     $item->attributes->current = intval($result[0]->count);
@@ -79,26 +97,22 @@ class M_database extends MY_Model
                 } else {
                     $item->attributes->current_row = false;
                 }
-
                 if ($this->db->field_exists('org_id', $table)) {
                     $item->attributes->org_id_row = true;
                 } else {
                     $item->attributes->org_id_row = false;
                 }
-
-                if ($table == 'system') {
+                if ($table === 'system') {
                     $item->attributes->status = array();
-                    $sql = "SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`";
+                    $sql = 'SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`';
                     $query = $this->db->query($sql);
                     $item->attributes->status = $query->result();
                 }
-
-                # TODO - add in if the column has an index or is a foreign key
-
+                // TODO - add in if the column has an index or is a foreign key
                 $item->attributes->columns = array();
                 $item->attributes->columns = $this->db->field_data($table);
                 foreach ($item->attributes->columns as &$column) {
-                    if ($column->type == 'enum') {
+                    if ($column->type === 'enum') {
                         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `values` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND COLUMN_NAME = '" . $column->name . "'";
                         $result = $this->run_sql($sql, array());
                         $column->values = $result[0]->values;
@@ -107,42 +121,36 @@ class M_database extends MY_Model
                 $return[] = $item;
             }
         }
-
-        // $fields = $this->db->field_data($id);
-
-        // $return = array();
-        // $item = new stdClass();
-        // $sql = "SELECT COUNT(*) AS `count` FROM `" . $id . "`";
-        // $data = array();
-        // $result = $this->run_sql($sql, $data);
-        // $item->type = 'database';
-        // $item->id = $id;
-        // $item->attributes = new stdClass();
-        // $item->attributes->count = intval($result[0]->count);
-        // $result = $this->format_data($result, 'summaries');
         return ($return);
     }
 
+    /**
+     * Delete the contents of a table
+     * @param  string $table   [description]
+     * @param  string $current [description]
+     * @param  string $status  [description]
+     * @return [type]          [description]
+     */
     public function delete($table = '', $current = '', $status = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
         $CI = & get_instance();
-        if ($table == '') {
+        if ($table === '') {
             $table = $CI->response->meta->id;
         }
-        if ($current == '') {
-            if (!empty($this->response->meta->current)) {
+        if ($current === '') {
+            if ( ! empty($this->response->meta->current)) {
                 $current = $this->response->meta->current;
             } else {
                 $current = 'n';
             }
         }
-        if ($status == '') {
-            if (!empty($CI->response->meta->filter)) {
+        if ($status === '') {
+            if ( ! empty($CI->response->meta->filter)) {
                 foreach ($CI->response->meta->filter as $filter) {
-                    if ($filter->name == 'status') {
+                    if ($filter->name === 'status') {
                         $status = $filter->value;
                     }
                 }
@@ -150,20 +158,20 @@ class M_database extends MY_Model
         }
         if ($this->db->table_exists($table)) {
             if ($this->db->field_exists('current', $table)) {
-                $sql = "DELETE FROM `" . $table . "` WHERE current = '" . $current . "'";
+                $sql = 'DELETE FROM `' . $table . "` WHERE current = '" . $current . "'";
                 $this->run_sql($sql, array());
                 return true;
-            } elseif ($table == 'system') {
-                if ($status != '') {
-                    $sql = "DELETE FROM system WHERE status = ?";
+            } elseif ($table === 'system') {
+                if ($status !== '') {
+                    $sql = 'DELETE FROM system WHERE status = ?';
                     $this->run_sql($sql, array($status));
                     return true;
                 } else {
                     return false;
                 }
             } else {
-                if ($current == 'all') {
-                    $sql = "DELETE FROM `" . $table . "`";
+                if ($current === 'all') {
+                    $sql = 'DELETE FROM `' . $table . '`';
                     $this->run_sql($sql, array());
                     return true;
                 } else {
@@ -175,21 +183,29 @@ class M_database extends MY_Model
         }
     }
 
+    /**
+     * [execute description]
+     * @param  string $table      [description]
+     * @param  string $action     [description]
+     * @param  string $format     [description]
+     * @param  array  $attributes [description]
+     * @return [type]             [description]
+     */
     public function execute($table = '', $action = '', $format = '', $attributes = array())
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        if ($table == '') {
+        if ($table === '') {
             $table = $CI->response->meta->id;
         }
-        if (!$this->db->table_exists($table)) {
+        if ( ! $this->db->table_exists($table)) {
             return;
         }
-        if ($action == '') {
+        if ($action === '') {
             $action = $CI->response->meta->sub_resource;
         }
-        if ($format == '') {
+        if ($format === '') {
             $format = $CI->response->meta->format;
         }
 
@@ -202,19 +218,19 @@ class M_database extends MY_Model
                 break;
 
             case 'row count':
-                $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
+                $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
                 $return = 'count';
                 break;
 
             case 'export table':
-                $sql = "SELECT COUNT(*) AS `count` FROM `$table`";
+                $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
                 $result = $this->run_sql($sql, array());
                 $count = intval($result[0]->count);
-                if ($format == 'csv') {
+                if ($format === 'csv') {
                     $this->load->dbutil();
-                    $sql = "SELECT * FROM `" . $table . "`";
+                    $sql = 'SELECT * FROM `' . $table . '`';
                     $return = 'array';
-                    $delimiter = ",";
+                    $delimiter = ',';
                     $newline = "\r\n";
                     $query = $this->db->query($sql);
                     if ($count < intval($this->config->config['database_show_row_limit'])) {
@@ -227,9 +243,9 @@ class M_database extends MY_Model
                         return;
                     }
                 }
-                if ($format == 'xml') {
+                if ($format === 'xml') {
                     $this->load->dbutil();
-                    $sql = "SELECT * FROM `" . $table . "`";
+                    $sql = 'SELECT * FROM `' . $table . '`';
                     $query = $this->db->query($sql);
                     $config = array ('root' => 'root', 'element' => 'item', 'newline' => "\n", 'tab' => "\t");
                     if ($count < intval($this->config->config['database_show_row_limit'])) {
@@ -242,27 +258,24 @@ class M_database extends MY_Model
                         return;
                     }
                 }
-                if ($format == 'sql') {
-                    if (php_uname('s') == 'Windows NT') {
+                if ($format === 'sql') {
+                    if (php_uname('s') === 'Windows NT') {
                         $mysqldump = 'c:\\xampplite\\mysql\\bin\\mysqldump.exe';
                         if (file_exists('c:\\xampp\\mysql\\bin\\mysqldump.exe')) {
                             $mysqldump = 'c:\\xampp\\mysql\\bin\\mysqldump.exe';
                         }
                     }
-                    if (php_uname('s') == 'Darwin') {
+                    if (php_uname('s') === 'Darwin') {
                         $mysqldump = '/usr/local/mysql/bin/mysqldump';
                     }
-                    if (php_uname('s') == 'Linux') {
+                    if (php_uname('s') === 'Linux') {
                         exec('which mysqldump', $temp);
                         $mysqldump = $temp[0];
                         unset($temp);
                     }
-                    #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' ' . $CI->db->database . ' ' . $table;
                     $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' -h' . $CI->db->hostname . ' ' . $CI->db->database . ' ' . $table;
                     
                     if ($count < intval($this->config->config['database_show_row_limit'])) {
-                        // echo "<pre>\n";
-                        // passthru($command);
                         exec($command, $return);
                         return implode("\n", $return);
                     } else {
@@ -276,7 +289,7 @@ class M_database extends MY_Model
                 break;
             
             case 'tables':
-                $sql = "SHOW TABLES";
+                $sql = 'SHOW TABLES';
                 $return = 'array';
                 break;
             
@@ -286,22 +299,21 @@ class M_database extends MY_Model
                 break;
             
             case 'distinct fields':
-                $sql = "SELECT DISTINCT(@field) AS `field` FROM `" . $table . "` ORDER BY `field`";
+                $sql = 'SELECT DISTINCT(@field) AS `field` FROM `' . $table . '` ORDER BY `field`';
                 $return = 'array';
                 break;
             
             case 'delete non-current':
-                $sql = "DELETE FROM `" . $table . "` WHERE current = 'n'";
+                $sql = 'DELETE FROM `' . $table . "` WHERE current = 'n'";
                 $return = 'delete_count';
                 break;
 
             case 'delete user sessions':
-                $sql = "DELETE FROM `oa_user_sessions` WHERE `last_activity` < UNIX_TIMESTAMP(NOW() - INTERVAL @day DAY)";
+                $sql = 'DELETE FROM `oa_user_sessions` WHERE `last_activity` < UNIX_TIMESTAMP(NOW() - INTERVAL @day DAY)';
                 $return = 'delete_count';
                 break;
             
             default:
-                # code...
                 break;
         }
 
@@ -310,18 +322,18 @@ class M_database extends MY_Model
                 $sql = str_replace('@'.$key, $value, $sql);
             }
         }
-        if ($return != 'text') {
+        if ($return !== 'text') {
             $result = $this->run_sql($sql, array());
             switch ($return) {
-                case "array":
+                case 'array':
                     return $result;
                     break;
 
-                case "count":
+                case 'count':
                     return intval($result[0]->count);
                     break;
 
-                case "delete_count":
+                case 'delete_count':
                     return intval($this->db->affected_rows());
                     break;
 
@@ -333,11 +345,12 @@ class M_database extends MY_Model
             $result = shell_exec($command);
             return $result;
         }
-        #print_r($result);
     }
 
-
-
+    /**
+     * [collection description]
+     * @return [type] [description]
+     */
     public function collection()
     {
         $CI = & get_instance();
@@ -351,14 +364,14 @@ class M_database extends MY_Model
             $item->id = $table;
             $item->attributes = new stdClass();
             
-            $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
+            $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
             $query = $this->db->query($sql);
             $result = $query->result();
             $item->attributes->name = $table;
             $item->attributes->count = intval($result[0]->count);
 
             if ($this->db->field_exists('current', $table)) {
-                $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "` WHERE current = 'y'";
+                $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . "` WHERE current = 'y'";
                 $query = $this->db->query($sql);
                 $result = $query->result();
                 $item->attributes->current_row = true;
@@ -390,3 +403,5 @@ class M_database extends MY_Model
         $CI->response->meta->total = count($CI->response->data);
     }
 }
+// End of file m_database.php
+// Location: ./models/m_database.php

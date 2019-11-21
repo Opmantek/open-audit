@@ -68,35 +68,43 @@ class M_queue extends MY_Model
         return $queue_item;
     }
 
+    /**
+     * [start description]
+     * @return [type] [description]
+     */
     public function start()
     {
-        if (php_uname('s') != 'Windows NT') {
+        if (php_uname('s') !== 'Windows NT') {
             $instance = '';
-            if ($this->db->database != 'openaudit') {
+            if ($this->db->database !== 'openaudit') {
                 $instance = '/' . $this->db->database;
             }
             $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
-            if (php_uname('s') == 'Linux') {
+            if (php_uname('s') === 'Linux') {
                 $command = 'nohup ' . $command;
             }
             @exec($command);
         } else {
             $filepath = $this->config->config['base_path'] . '\\other';
-            $command = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
-            pclose(popen($command, "r"));
+            $command = "%comspec% /c start /b cscript //nologo {$filepath}\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+            pclose(popen($command, 'r'));
         }
     }
 
-    # Return a queue object on success or FALSE on failure
+    /**
+     * [read description]
+     * @param  string $id [description]
+     * @return [type]     Return a queue object on success or FALSE on failure
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->action = 'read';
         $this->log->summary = intval($id);
-        $sql = "/* m_queue::read */ " . "SELECT * FROM `queue` WHERE `id` = ?";
+        $sql = '/* m_queue::read */ ' . 'SELECT * FROM `queue` WHERE `id` = ?';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             stdlog($this->log);
             return ($result[0]);
         } else {
@@ -163,36 +171,42 @@ class M_queue extends MY_Model
         }
     }
 
-    # Return a queue ID (integer) on success or FALSE on failure
+    /**
+     * Insert an item into the queue table
+     * @param  [type] $type    [description]
+     * @param  [type] $details [description]
+     * @return [type]          Return a queue ID (integer) on success or FALSE on failure
+     */
     public function create($type, $details)
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->action = 'insert';
         $this->log->summary = (string)$type;
-        if (empty($details) or empty($type)) {
+        if (empty($details) OR empty($type)) {
             $this->log->status = 'fail';
             $this->log->message = 'Empty type or details supplied.';
             stdlog($this->log);
             return false;
         }
-        if (!is_string($details)) {
-            $details = json_encode($details);
+        if (is_string($details)) {
+            $details = json_decode($details);
         }
-        $temp_details = json_decode($details);
         $name = '';
         $org_id = 1;
-        if (!empty($temp_details->name)) {
-            $name = $temp_details->name;
+        if ( ! empty($details->name)) {
+            $name = $details->name;
         }
-        if (!empty($temp_details->org_id)) {
-            $org_id = intval($temp_details->org_id);
+        if ( ! empty($details->org_id)) {
+            $org_id = intval($details->org_id);
         }
-        $sql = "/* m_queue::create */ " . "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
+        $details = json_encode($details);
+
+        $sql = '/* m_queue::create */ ' . "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
         $data = array($name, $type, $org_id, $details);
         $this->db->query($sql, $data);
         $result = intval($this->db->insert_id());
         $this->log->detail = $this->db->last_query();
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             stdlog($this->log);
             return $result;
         } else {
