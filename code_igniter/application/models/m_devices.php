@@ -122,9 +122,9 @@ class M_devices extends MY_Model
         $return = array();
         $tables = array('audit_log', 'bios', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
-            $sql = 'SELECT COUNT(*) AS `count` FROM `$table` WHERE system_id = ' . intval($id);
+            $sql = "SELECT COUNT(*) AS `count` FROM `{$table}` WHERE system_id = " . intval($id);
             $result = $this->run_sql($sql, array());
-            if (intval($result[0]->count) > 0) {
+            if ( ! empty($result[0]->count) && intval($result[0]->count) > 0) {
                 $item = new stdClass();
                 $item ->$table = new stdClass();
                 $item->$table->links = new stdClass();
@@ -208,7 +208,7 @@ class M_devices extends MY_Model
         $device_org_id = intval($result[0]->org_id);
 
         // get the fields
-        $sql = 'SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name`, field.value FROM fields LEFT JOIN groups ON fields.group_id = groups.id LEFT JOIN field ON (fields.id = field.fields_id AND field.system_id = $device_id) ORDER BY fields.name';
+        $sql = "SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name`, field.value FROM fields LEFT JOIN groups ON fields.group_id = groups.id LEFT JOIN field ON (fields.id = field.fields_id AND field.system_id = {$device_id}) ORDER BY fields.name";
         $fields = $this->run_sql($sql, array());
         // this is our array of field.id's that are acceptable on this device
         $field_list = array();
@@ -493,20 +493,20 @@ class M_devices extends MY_Model
         $log = new stdClass();
         $log->file = 'system';
         $log->level = 7;
-        $log->message = "sub_resource_create start.";
+        $log->message = 'sub_resource_create start.';
         stdlog($log);
 
-        if (!empty($id)) {
+        if ( ! empty($id)) {
             $device_ids[] = $id;
-        } elseif (!empty($CI->response->meta->received_data->ids)) {
+        } elseif ( ! empty($CI->response->meta->received_data->ids)) {
             $device_ids = explode(',', $CI->response->meta->received_data->ids);
-        } elseif (!empty($CI->response->meta->id)) {
+        } elseif ( ! empty($CI->response->meta->id)) {
             $device_ids = array($CI->response->meta->id);
         } else {
             $log->level = 5;
-            $log->message = "No ID, nor list of IDs supplied to sub_resource_create.";
+            $log->message = 'No ID, nor list of IDs supplied to sub_resource_create.';
             stdlog($log);
-            log_error('ERR-0021', "m_devices::sub_resource_create", "No ID, nor list of IDs supplied to sub_resource_create.");
+            log_error('ERR-0021', 'm_devices::sub_resource_create', 'No ID, nor list of IDs supplied to sub_resource_create.');
             return false;
         }
 
@@ -514,156 +514,178 @@ class M_devices extends MY_Model
             $sub_resource = $CI->response->meta->sub_resource;
         }
 
-        if ($sub_resource == 'credential' or (!empty($CI->response->meta->sub_resource) and $CI->response->meta->sub_resource == 'credential')) {
+        if ($sub_resource === 'credential' OR ( ! empty($CI->response->meta->sub_resource) && $CI->response->meta->sub_resource === 'credential')) {
             $this->load->library('encrypt');
 
             foreach ($device_ids as $id) {
-                if (!empty($data->credentials)) {
+                if ( ! empty($data->credentials)) {
                     $credentials = (string)simpleEncrypt(json_encode($data->credentials));
-                } elseif (!empty($CI->response->meta->received_data->attributes->credentials)) {
+                } else if ( ! empty($CI->response->meta->received_data->attributes->credentials)) {
                     $credentials = (string)simpleEncrypt(json_encode($CI->response->meta->received_data->attributes->credentials));
                 } else {
                     $log->level = 5;
-                    $log->message = "No credentials supplied to sub_resource_create.";
+                    $log->message = 'No credentials supplied to sub_resource_create.';
                     stdlog($log);
-                    log_error('ERR-0021', "m_devices::sub_resource_create", "No credentials supplied to sub_resource_create.");
+                    log_error('ERR-0021', 'm_devices::sub_resource_create', 'No credentials supplied to sub_resource_create.');
                     return false;
                 }
 
-                if (!empty($data->type)) {
+                if ( ! empty($data->type)) {
                     $type = $data->type;
-                } elseif (!empty($CI->response->meta->received_data->attributes->type)) {
+                } else if ( ! empty($CI->response->meta->received_data->attributes->type)) {
                     $type = $CI->response->meta->received_data->attributes->type;
                 } else {
                     $log->level = 5;
-                    $log->message = "No credential type supplied to sub_resource_create.";
+                    $log->message = 'No credential type supplied to sub_resource_create.';
                     stdlog($log);
-                    log_error('ERR-0021', "m_devices::sub_resource_create", "No credential type supplied to sub_resource_create.");
+                    log_error('ERR-0021', 'm_devices::sub_resource_create', 'No credential type supplied to sub_resource_create.');
                     return false;
                 }
 
-                if (!empty($data->name)) {
+                if ( ! empty($data->name)) {
                     $name = $data->name;
-                } elseif (!empty($CI->response->meta->received_data->attributes->name)) {
+                } else if ( ! empty($CI->response->meta->received_data->attributes->name)) {
                     $name = $CI->response->meta->received_data->attributes->name;
                 } else {
                     $name = '';
                 }
 
-                if (!empty($data->description)) {
+                if ( ! empty($data->description)) {
                     $description = $data->description;
-                } elseif (!empty($CI->response->meta->received_data->attributes->description)) {
+                } else if ( ! empty($CI->response->meta->received_data->attributes->description)) {
                     $description = $CI->response->meta->received_data->attributes->description;
                 } else {
                     $description = '';
                 }
 
-                if (!empty($CI->user->full_name)) {
+                if ( ! empty($CI->user->full_name)) {
                     $user = $CI->user->full_name;
                 } else {
                     $user = '';
                 }
 
-                # we only store a SINGLE credential set of each type per device - delete any existing
-                $sql = "DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?";
+                // we only store a SINGLE credential set of each type per device - delete any existing
+                $sql ='"DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?';
                 $data = array(intval($id), (string)$type);
                 $this->run_sql($sql, $data);
-                # insert the new credentials
+                // insert the new credentials
                 $sql = "INSERT INTO `credential` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, NOW())";
                 $data = array(intval($id), (string)$name, (string)$description, (string)$type, (string)$credentials, (string)$user);
                 $this->run_sql($sql, $data);
             }
             return true;
-        } else if ($sub_resource == 'attachment') {
+        } else if ($sub_resource === 'attachment') {
             if (empty($_FILES['attachment'])) {
                 $log->severity = 5;
-                $log->summary = "No file provided for sub_resource_create.";
+                $log->summary = 'No file provided for sub_resource_create.';
                 $log->status = 'error';
                 stdlog($log);
-                log_error('ERR-0024', "m_devices::sub_resource_create", "No image file provided for sub_resource_create.");
+                log_error('ERR-0024', 'm_devices::sub_resource_create', 'No image file provided for sub_resource_create.');
                 return false;
             }
             $target = BASEPATH."../application/attachments/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
-            if (!empty($CI->response->meta->cloud_id)) {
-                if (!file_exists(BASEPATH."../application/attachments/".$CI->response->meta->cloud_id)) {
-                    mkdir(BASEPATH."../application/attachments/".$CI->response->meta->cloud_id);
+            if ( ! empty($CI->response->meta->cloud_id)) {
+                if ( ! file_exists(BASEPATH . '../application/attachments/' . $CI->response->meta->cloud_id)) {
+                    mkdir(BASEPATH . '../application/attachments/' . $CI->response->meta->cloud_id);
                 }
-                if (!file_exists(BASEPATH."../application/attachments/".$CI->response->meta->cloud_id)) {
+                if ( ! file_exists(BASEPATH . '../application/attachments/' . $CI->response->meta->cloud_id)) {
                     $log->severity = 5;
                     $log->summary = 'No cloud attachments directory.';
                     $log->detail = 'The cloud attachments directory does not exist and cannot be created. Error: ' . error_get_last();
                     $log->status = 'error';
                     stdlog($log);
-                    log_error('ERR-0037', "m_devices::sub_resource_create", "The cloud attachments directory does not exist and cannot be created.");
+                    log_error('ERR-0037', 'm_devices::sub_resource_create', 'The cloud attachments directory does not exist and cannot be created.');
                     return false;
                 } else {
-                    $target = BASEPATH."../application/attachments/".$CI->response->meta->cloud_id."/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
+                    $target = BASEPATH . '../application/attachments/' . $CI->response->meta->cloud_id . '/' . $CI->response->meta->id . '_' . basename($_FILES['attachment']['name']);
                 }
             }
             if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
-                $sql = "INSERT INTO `attachment` VALUES (NULL, ?, ?, ?, ?, NOW())";
+                $sql = 'INSERT INTO `attachment` VALUES (NULL, ?, ?, ?, ?, NOW())';
                 $data = array(intval($CI->response->meta->id),
                         $CI->response->meta->received_data->attributes->name,
-                        "$target",
+                        "{$target}",
                         $CI->user->full_name);
                 $this->db->query($sql, $data);
                 return true;
             } else {
                 $log->severity = 5;
-                $log->summary = "Unable to move uploaded file.";
+                $log->summary = 'Unable to move uploaded file.';
                 $log->status = 'error';
                 $log->detail = error_get_last();
                 stdlog($log);
-                log_error('ERR-0038', "m_devices::sub_resource_create", "Cannot move the uploaded attachment to $target.");
+                log_error('ERR-0038', 'm_devices::sub_resource_create', 'Cannot move the uploaded attachment to $target.');
                 return false;
             }
-        } else if ($sub_resource == 'image') {
+        } else if ($sub_resource === 'image') {
             if (empty($_FILES['attachment']) and empty($CI->response->meta->received_data->attributes->filename)) {
                 $log->severity = 5;
-                $log->summary = "No image file provided for sub_resource_create.";
+                $log->summary = 'No image file provided for sub_resource_create.';
                 $log->status = 'error';
                 stdlog($log);
-                log_error('ERR-0024', "m_devices::sub_resource_create", "No image file provided for sub_resource_create.");
+                log_error('ERR-0024', 'm_devices::sub_resource_create', 'No image file provided for sub_resource_create.');
                 return false;
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
+            if ( ! file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
                 mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images');
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
+            if ( ! file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
                 $log->severity = 5;
                 $log->summary = 'No custom_images directory.';
                 $log->detail = 'The custom_images directory does not exist and cannot be created. Error: ' . error_get_last();
                 $log->status = 'error';
                 stdlog($log);
-                log_error('ERR-0037', "m_devices::sub_resource_create", "The custom_images directory does not exist and cannot be created.");
-                $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
+                log_error('ERR-0037', 'm_devices::sub_resource_create', 'The custom_images directory does not exist and cannot be created.');
+                $sql = 'DELETE FROM `image` WHERE `id` = ' . $dbid;
                 $this->db->query($sql, array());
                 return false;
             }
-            if (!empty($CI->response->meta->cloud_id)) {
-                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id)) {
+            if ( ! empty($CI->response->meta->cloud_id)) {
+                if ( ! file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id)) {
                     mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id);
                 }
-                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id)) {
+                if ( ! file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id)) {
                     $log->severity = 5;
                     $log->summary = 'No cloud custom_images directory.';
                     $log->detail = 'The cloud custom_images directory does not exist and cannot be created. Error: ' . error_get_last();
                     $log->status = 'error';
                     stdlog($log);
-                    log_error('ERR-0037', "m_devices::sub_resource_create", "The cloud custom_images directory does not exist and cannot be created.");
-                    $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
+                    log_error('ERR-0037', 'm_devices::sub_resource_create', 'The cloud custom_images directory does not exist and cannot be created.');
+                    $sql = 'DELETE FROM `image` WHERE `id` = ' . $dbid;
                     $this->db->query($sql, array());
                     return false;
                 }
             }
             $filename = @(string)basename($_FILES['attachment']['name']);
-            if (!empty($filename)) {
+
+            // Ensure we only accept JPG, PNG and SVG files
+            if(function_exists('mime_content_type')) {
+                $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
+            } else {
+                $mime_type = '';
+            }
+            $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
+            $extensions = array('jpg', 'jpeg', 'png', 'svg');
+            $temp = explode('.', $filename);
+            $extension = strtolower($temp[count($temp)-1]);
+            if ( ! in_array($mime_type, $filetypes) OR ! in_array($extension, $extensions)) {
+                unlink($_FILES['attachment']['tmp_name']);
+                $log->severity = 5;
+                $log->summary = 'Invalid file uploaded.';
+                $log->detail = 'Only jpg, png and svg files are accepted.';
+                $log->status = 'error';
+                stdlog($log);
+                log_error('ERR-0040', 'm_devices::sub_resource_create', 'Only jpg, png and svg files are accepted (' . $extension . ') (' . $mime_type . ')');
+                return false;
+            }
+
+            if ( ! empty($filename)) {
                 $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
-                if (!empty($CI->response->meta->cloud_id)) {
+                if ( ! empty($CI->response->meta->cloud_id)) {
                     $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->cloud_id . '/' . $filename;
                 }
                 if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
-                    $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+                    $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                     $data = array(intval($CI->response->meta->id),
                             $CI->response->meta->received_data->attributes->name,
                             $filename,
@@ -674,14 +696,14 @@ class M_devices extends MY_Model
                 } else {
                     $log->severity = 5;
                     $log->summary = 'Unable to move uploaded file';
-                    $log->detail = "Cannot move the uploaded image file to $target. Error: " . error_get_last();
+                    $log->detail = 'Cannot move the uploaded image file to $target. Error: ' . error_get_last();
                     $log->status = 'error';
                     stdlog($log);
-                    log_error('ERR-0038', "m_devices::sub_resource_create", "Cannot move the uploaded image file to $target.");
+                    log_error('ERR-0038', 'm_devices::sub_resource_create', 'Cannot move the uploaded image file to $target.');
                     return false;
                 }
-            } else if (!empty($CI->response->meta->received_data->attributes->filename)) {
-                $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+            } else if ( ! empty($CI->response->meta->received_data->attributes->filename)) {
+                $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                 $data = array(intval($CI->response->meta->id),
                         $CI->response->meta->received_data->attributes->name,
                         $CI->response->meta->received_data->attributes->filename,
@@ -692,13 +714,13 @@ class M_devices extends MY_Model
             } else {
                 $log->severity = 5;
                 $log->summary = 'No file uploaded, nor selected';
-                $log->detail = "No file was uploaded, nor selected from the existing files.";
+                $log->detail = 'No file was uploaded, nor selected from the existing files.';
                 $log->status = 'error';
                 stdlog($log);
-                log_error('ERR-0038', "m_devices::sub_resource_create", "No file uploaded, nor selected.");
+                log_error('ERR-0038', 'm_devices::sub_resource_create', 'No file uploaded, nor selected.');
                 return false;
             }
-        } else if ($sub_resource == 'application') {
+        } else if ($sub_resource === 'application') {
             $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
             $data = array(intval($CI->response->meta->id),
                             intval($CI->response->meta->received_data->attributes->{'applications_id'}),
@@ -706,9 +728,9 @@ class M_devices extends MY_Model
             $this->db->query($sql, $data);
             return true;
         } else {
-            $log->summary = "sub_resource not equal to attachment, credential or image - exiting.";
+            $log->summary = 'sub_resource not equal to attachment, credential or image - exiting.';
             stdlog($log);
-                log_error('ERR-0021', "m_devices::sub_resource_create", "sub_resource not equal to attachment, credential or image.");
+                log_error('ERR-0021', 'm_devices::sub_resource_create', 'sub_resource not equal to attachment, credential or image.');
             return false;
         }
     }

@@ -368,6 +368,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0039']->title = "Permissions do not allow deleting file.";
         $error_array['ERR-0039']->detail = 'Attempting to delete a file has been denied because of filesystem permissions.';
 
+        $error_array['ERR-0040'] = new stdClass();
+        $error_array['ERR-0040']->code = 'ERR-0040';
+        $error_array['ERR-0040']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0040']->severity = 6;
+        $error_array['ERR-0040']->title = "Invalid filetype for upload.";
+        $error_array['ERR-0040']->detail = 'Invalid filetype supplied.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
