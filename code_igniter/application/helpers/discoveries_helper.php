@@ -50,7 +50,6 @@ if ( ! defined('BASEPATH')) {
 	exit('No direct script access allowed');
 }
 
-
 if ( ! function_exists('all_ip_list')) {
     /**
      *
@@ -1345,7 +1344,7 @@ if ( ! function_exists('ip_audit')) {
 			}
 			unset($destination);
 			if ($audit_script !== '') {
-				$command = $CI->config->config['discovery_linux_script_directory'].$script_name.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+				$command = $CI->config->config['discovery_linux_script_directory'].$script_name.' submit_online=n create_file=y debugging=1 self_delete=y system_id='.$device->id.' last_seen_by=audit_ssh discovery_id='.$discovery->id;
 				$log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
 				$log->command_output = '';
 				$log->command_status = 'notice';
