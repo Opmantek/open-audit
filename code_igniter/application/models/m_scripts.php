@@ -37,7 +37,7 @@
 */
 
 /**
-* Base Model Agents
+* Base Model Script
 *
 * @access   public
 * @category Model
