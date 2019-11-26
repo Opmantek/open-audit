@@ -506,12 +506,12 @@ class M_users extends MY_Model
                     exit();
                 }
             }
-            if ($supplied_uuid == $uuid) {
+            if ($supplied_uuid === $uuid) {
                 $this->log->summary = 'Valid UUID submitted via headers';
                 stdlog($this->log);
             }
         }
-        if (!empty($user) and !empty($ip) and !empty($supplied_uuid)) {
+        if (! empty($user) and ! empty($ip) and ! empty($supplied_uuid)) {
             unset($_GET['user']);
             unset($_GET['uuid']);
             $CI->user = $user;
