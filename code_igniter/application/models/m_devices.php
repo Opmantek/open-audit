@@ -196,7 +196,7 @@ class M_devices extends MY_Model
             if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
                 $date_time_f = new \DateTime('@0');
-                $date_time_t = new \DateTime('@$seconds');
+                $date_time_t = new \DateTime("@$seconds");
                 $result[0]->attributes->uptime_formatted = $date_time_f->diff($date_time_t)->format('%a days, %H:%i:%S');
             } else {
                 $result[0]->attributes->uptime_formatted = '';
