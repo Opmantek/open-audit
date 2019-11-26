@@ -59,26 +59,6 @@ class M_devices extends MY_Model
     }
 
     /**
-     * [build_properties description]
-     * @return [type] [description]
-     */
-    private function build_properties()
-    {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'system.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    /**
      * [build_filter description]
      * @return [type] [description]
      */
@@ -779,45 +759,11 @@ class M_devices extends MY_Model
                     $CI->response->meta->internal->groupby . " " . 
                     $CI->response->meta->internal->sort . " " . 
                     $CI->response->meta->internal->limit;
-#echo $sql; exit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'system');
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
-
-    // public function collection()
-    // {
-    //     $CI = & get_instance();
-    //     $filter = $this->build_filter();
-    //     $join = $this->build_join();
-    //     $properties = $this->build_properties();
-
-    //     if ($CI->response->meta->sort == '') {
-    //         if (stripos($properties, 'system.id') !== false) {
-    //             $CI->response->meta->internal->sort = 'ORDER BY system.id';
-    //         }
-    //     }
-    //     $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
-    //     if (!empty($CI->response->meta->requestor)) {
-    //         $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby;
-    //     }
-    //     $result = $this->run_sql($sql, array());
-    //     if (!empty($result[0]->total)) {
-    //         $CI->response->meta->total = intval($result[0]->total);
-    //     } else {
-    //         $result = array();
-    //         return false;
-    //     }
-    //     unset($result);
-    //     $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
-    //     if (!empty($CI->response->meta->requestor)) {
-    //         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
-    //     }
-    //     $result = $this->run_sql($sql, array());
-    //     $result = $this->format_data($result, 'devices');
-    //     return $result;
-    // }
 
     public function collection_group_by()
     {
@@ -828,40 +774,44 @@ class M_devices extends MY_Model
         return $result;
     }
 
+    /**
+     * [collection_sub_resource description]
+     * @return [type] [description]
+     */
     public function collection_sub_resource()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        if (!empty($CI->response->meta->groupby)) {
-            if (!empty($CI->response->meta->internal->properties)) {
+        if ( ! empty($CI->response->meta->groupby)) {
+            if ( ! empty($CI->response->meta->internal->properties)) {
                 $CI->response->meta->internal->properties .= ', COUNT(*) AS `count`';
             } else {
                 $CI->response->meta->internal->properties = 'COUNT(*) AS `count`';
             }
-            # get the total count (with a GROUPBY)
-            $sql = "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+            // get the total count (with a GROUPBY)
+            $sql = "SELECT COUNT(*) AS `count` FROM `{$CI->response->meta->sub_resource}` LEFT JOIN system ON (system.id = `{$CI->response->meta->sub_resource}`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") {$filter} {$CI->response->meta->internal->groupby}";
             $result = $this->run_sql($sql, array());
             $CI->response->meta->total = intval(COUNT($result));
         } else {
-            # get the total count (without a LIMIT and GROUPBY)
-            $sql = "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter;
+            // get the total count (without a LIMIT and GROUPBY)
+            $sql = "SELECT COUNT(*) AS `count` FROM `{$CI->response->meta->sub_resource}` LEFT JOIN system ON (system.id = `{$CI->response->meta->sub_resource}`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") {$filter}";
             $result = $this->run_sql($sql, array());
             $CI->response->meta->total = 0;
-            if (!empty($result[0]->count)) {
+            if ( ! empty($result[0]->count)) {
                 $CI->response->meta->total = intval($result[0]->count);
             }
         }
-        if ($CI->response->meta->internal->properties == '*' or $CI->response->meta->internal->properties == $CI->response->meta->sub_resource.'.*') {
+        if ($CI->response->meta->internal->properties === '*' OR $CI->response->meta->internal->properties === $CI->response->meta->sub_resource.'.*') {
             $columns = $this->get_all_columns($CI->response->meta->sub_resource);
         } else {
             $columns = $CI->response->meta->internal->properties;
         }
-        $sql = "SELECT " . $columns . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        $sql = "SELECT {$columns} FROM `{$CI->response->meta->sub_resource}` LEFT JOIN system ON (system.id = `{$CI->response->meta->sub_resource}`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") {$filter} {$CI->response->meta->internal->groupby} {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, $CI->response->meta->sub_resource);
-        if ($CI->response->meta->sub_resource == 'credential' and count($result) > 0) {
+        if ($CI->response->meta->sub_resource === 'credential' && count($result) > 0) {
             foreach ($result as &$item) {
-                if (!empty($item->attributes->credentials)) {
+                if ( ! empty($item->attributes->credentials)) {
                     $item->attributes->credentials = json_decode(simpleDecrypt($item->attributes->credentials));
                 }
             }
@@ -872,7 +822,6 @@ class M_devices extends MY_Model
             $item->links->self = $CI->config->config['base_url'] . 'index.php/devices?sub_resource=' . $CI->response->meta->sub_resource;
         }
         unset($item);
-        #$result = $this->format_data($result, 'devices');
         return $result;
     }
 
@@ -882,7 +831,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $join = $this->build_join();
 
-        $sql = "SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+        $sql = "SELECT system.id FROM system {$join} WHERE system.org_id IN (" . $CI->user->org_list . ") {$filter} {$CI->response->meta->internal->groupby}";
         $result = $this->run_sql($sql, array());
         foreach ($result as $temp) {
             $temp_ids[] = $temp->id;
@@ -895,13 +844,13 @@ class M_devices extends MY_Model
         $report = $result[0];
         $CI->response->meta->sub_resource_name = $report->report_name;
                          
-        # not how reports should be used
+        // not how reports should be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id', '', $report->report_sql);
-        # not how reports should be used
+        // not how reports should be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.id', '', $report->report_sql);
-        # not how reports should be used
+        // not how reports should be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id)', '', $report->report_sql);
-        # THIS is how reports _should_ be used
+        // THIS is how reports _should_ be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id)', '', $report->report_sql);
         $report->report_sql = str_ireplace('oa_group_sys.group_id = @group', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
         $report->report_sql = str_ireplace('system.id = oa_group_sys.system_id', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
@@ -915,50 +864,59 @@ class M_devices extends MY_Model
         return($result);
     }
 
+    /**
+     * [query description]
+     * @return [type] [description]
+     */
     public function query()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
         $join = $this->build_join();
+$CI->response->meta->temp = new stdClass();
+$CI->response->meta->temp->join = $join;
+$CI->response->meta->temp->filter = $filter;
 
-        $sql = "SELECT * FROM queries WHERE id = " . intval($CI->response->meta->sub_resource_id);
+        $sql = 'SELECT * FROM queries WHERE id = ' . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $query = $result[0];
         $CI->response->meta->sub_resource_name = $query->menu_category . ' - ' . $query->name;
 
-        if (!empty($CI->response->meta->group)) {
-            $my_sql = "/* m_devices_components::read */" . "SELECT `sql` FROM `groups` WHERE `id` = " . intval($CI->response->meta->group);
+        if ( ! empty($CI->response->meta->group)) {
+            $my_sql = '/* m_devices_components::read */' . 'SELECT `sql` FROM `groups` WHERE `id` = ' . intval($CI->response->meta->group);
             $my_query = $this->db->query($my_sql);
             $result = $my_query->result();
             $group_sql = $result[0]->sql;
-            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
-            if (!empty($CI->response->meta->requestor)) {
-                $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y')";
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN ({$CI->user->org_list}))";
+            if ( ! empty($CI->response->meta->requestor)) {
+                $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y')";
             }
             $group_sql = str_replace('WHERE @filter', $device_sql, $group_sql);
-            $group_sql = " AND system.id IN (" . $group_sql . ")";
+            $group_sql = " AND system.id IN ({$group_sql})";
         } else {
-            $group_sql = "";
+            $group_sql = '';
         }
 
-        $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
-        if (!empty($CI->respone->meta->requestor)) {
-            $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y' " . $filter . " " . $CI->response->meta->internal->groupby . ")"; 
+        $device_sql = "WHERE system.id IN (SELECT system.id FROM system {$join} WHERE system.org_id IN ({$CI->user->org_list}) {$filter} {$CI->response->meta->internal->groupby})";
+        if ( ! empty($CI->respone->meta->requestor)) {
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system {$join} WHERE system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y' {$filter} {$CI->response->meta->internal->groupby})"; 
         }
+$CI->response->meta->temp->device_sql = $device_sql;
         $sql = $query->sql;
         $sql = str_replace('WHERE @filter', $device_sql . $group_sql, $sql);
+$CI->response->meta->temp->sql = $sql;
         $result = $this->run_sql($sql, array());
 
         for ($i=0; $i < count($result); $i++) {
             foreach ($CI->response->meta->filter as $item) {
                 if (isset($result[$i]->{$item->name})) {
-                    if ($item->operator == '=') {
-                        if ($result[$i]->{$item->name} != $item->value) {
+                    if ($item->operator === '=') {
+                        if ($result[$i]->{$item->name} !== $item->value) {
                             unset($result[$i]);
                         }
                     }
-                    if ($item->operator == '!=') {
-                        if ($result[$i]->{$item->name} == $item->value) {
+                    if ($item->operator === '!=') {
+                        if ($result[$i]->{$item->name} === $item->value) {
                             unset($result[$i]);
                         }
                     }
@@ -967,7 +925,7 @@ class M_devices extends MY_Model
         }
         $CI->response->meta->total = count($result);
 
-        if (!empty($CI->response->meta->limit) and !empty($result)) {
+        if ( ! empty($CI->response->meta->limit) && ! empty($result)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
         $result = $this->format_data($result, 'devices');
