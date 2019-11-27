@@ -1402,7 +1402,7 @@ if (! function_exists('build_join')) {
 if (! function_exists('filter')) {
     function filter($response_filter, $collection, $user)
     {
-        $reserved = ' properties limit resource action sort current offset format ';
+        $reserved = ' action current format graph limit offset properties report_name resource sort sub_resource ';
         $filter = '';
         foreach ($response_filter as $item) {
             if (empty($item->operator)) {
