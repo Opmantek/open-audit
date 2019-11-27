@@ -6304,6 +6304,9 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'ZP8': $description = 'AirPort Express 802.11n (1st Generation)'; break;
 			case 'ZTM': $description = 'Time Capsule 802.11n (1st Generation)'; break;
 			case 'ZTN': $description = 'Time Capsule 802.11n (1st Generation)'; break;
+
+
+
 			case 'DC79': $description = 'MacBook Pro (17-inch, Mid 2010)'; break;
 			case 'DC7C': $description = 'MacBook Pro (17-inch, Mid 2010)'; break;
 			case 'DCMJ': $description = 'iPod shuffle (4th generation)'; break;
@@ -8408,6 +8411,7 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'HX8F': $description = 'iMac Pro (2017)'; break;
 			case 'J1GG': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GH': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
+			case 'J1GJ': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GN': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GP': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
 			case 'J1GQ': $description = 'iMac (Retina 5K, 27-inch, 2017)'; break;
@@ -8417,10 +8421,12 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'JG5J': $description = 'MacBook Pro (15-inch, 2018)'; break;
 			case 'JGH7': $description = 'MacBook Pro (15-inch, 2018)'; break;
 			case 'JGH8': $description = 'MacBook Pro (15-inch, 2018)'; break;
+			case 'JHC9': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
 			case 'JHCD': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
 			case 'JHD4': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
 			case 'JV3Y': $description = 'iMac (Retina 5K, 27-inch, 2019)'; break;
 			case 'L415': $description = 'MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)'; break;
+			case 'LVDV': $description = 'MacBook Pro (15-inch, 2019)'; break;
 			case 'M0XV': $description = 'iMac Pro (2017)'; break;
 
 			default: $description = 'Unknown model, please send ' . $manufacturer_code . ' to code@opmantek.com for inclusion and/or add to your Rules.'; break;
