@@ -62,6 +62,7 @@ class M_discovery_scan_options extends MY_Model
     }
 
     /**
+     * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
@@ -76,6 +77,7 @@ class M_discovery_scan_options extends MY_Model
     }
 
     /**
+     * Delete All items from the DB
      *
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
@@ -93,7 +95,7 @@ class M_discovery_scan_options extends MY_Model
     }
 
     /**
-     * TODO - add the users allowed Orgs here
+     * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data

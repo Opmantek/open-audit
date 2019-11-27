@@ -58,6 +58,7 @@ class M_configuration extends MY_Model
         parent::__construct();
     }
     /**
+     * Create an individual entry in the DB
      *
      * @return null
      */
@@ -67,6 +68,7 @@ class M_configuration extends MY_Model
     }
 
     /**
+     * Read an individual item from the database, by ID
      *
      * @param  string $id The ID or name of the requested item
      * @return array The array of requested items
@@ -110,6 +112,7 @@ class M_configuration extends MY_Model
     }
 
     /**
+     * Update an individual item from the database, by ID
      *
      * @param  string $id        The ID or name of the requested item
      * @param  string $value     The value to be set in configuration.value
@@ -143,9 +146,8 @@ class M_configuration extends MY_Model
                 $id = '';
             }
         }
-        // We have nothing to ID the particular config item
         if (empty($id)) {
-            // TODO - throw a warning here
+            // We have nothing to ID the particular config item
             return false;
         }
         // We can use the responsed received data if not explicitly provided a value
@@ -168,6 +170,7 @@ class M_configuration extends MY_Model
     }
 
     /**
+     * Delete an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
@@ -272,6 +275,7 @@ class M_configuration extends MY_Model
 
     /**
      * Read the local subnet(s)
+     * 
      * @return array The array of subnet(s)
      */
     public function read_subnet()
@@ -351,6 +355,7 @@ class M_configuration extends MY_Model
 
     /**
      * Read the local Windows domain
+     * 
      * @return string The domain
      */
     public function read_domain()
@@ -365,6 +370,7 @@ class M_configuration extends MY_Model
     }
 
     /**
+     * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data

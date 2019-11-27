@@ -62,7 +62,8 @@ class M_edit_log extends MY_Model
     }
 
     /**
-     * [create description]
+     * Create an individual entry in the DB
+     * 
      * @param  [type] $system_id      [description]
      * @param  string $details        [description]
      * @param  string $db_table       [description]
@@ -100,7 +101,7 @@ class M_edit_log extends MY_Model
     }
 
     /**
-     * [read description]
+     * Read an individual item from the database, by system.ID
      * @param  [type] $system_id [description]
      * @return [type]            [description]
      */

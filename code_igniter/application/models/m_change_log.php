@@ -59,6 +59,7 @@ class M_change_log extends MY_Model
     }
 
     /**
+     * Create an individual entry in the DB
      *
      * @param  int    $system_id The system.id
      * @param  string $db_table  Which database table
@@ -76,7 +77,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Delete all alerts in the DB.
+     * Delete All items from the DB
      *
      * @return int
      */
@@ -90,7 +91,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Delete all alerts older than $days in the DB.
+     * Delete all items older than $days in the DB.
      *
      * @param  int $days How many days from NOW() shouyld we delete data for
      * @return int The number of rows deleted
@@ -105,7 +106,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Count all alerts in the DB.
+     * Count all items in the DB.
      *
      * @return int The count of rows in the change_log table
      */
@@ -119,7 +120,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * All alerts in the DB older than XX days.
+     * Count all items older than $days in the DB.
      *
      * @param  int $days How many days to count from NOW()
      * @return int The count of rows between NOW() and the supplied $days
@@ -134,7 +135,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Get the alert's for a given system.
+     * Read all items by system.id
      *
      * @param  int $id The system.id of the device
      * @return array
@@ -149,7 +150,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Get the details fo a given alert.
+     * Read an individual item from the database, by ID
      *
      * @param  int $id The system.id of the device
      * @return array
@@ -164,7 +165,7 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Update an alert with details of a Change record.
+     * Update an individual item from the database, by ID
      *
      * @param  array $details array(alert id, change type, change id, external change id, external change link, alert note, user id, alert acknowledge timestamp)
      * @return null

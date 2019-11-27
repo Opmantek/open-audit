@@ -59,6 +59,7 @@ class M_audit_log extends MY_Model
     }
 
     /**
+     * Create an individual entry in the DB
      *
      * @param  int    $system_id  The ID of the device linked to this audit_log entry
      * @param  string $username   The username The username making this change
@@ -90,6 +91,7 @@ class M_audit_log extends MY_Model
     }
 
     /**
+     * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
@@ -103,6 +105,7 @@ class M_audit_log extends MY_Model
     }
 
     /**
+     * Update an individual item from the database, by ID
      *
      * @param  string $column    The column to update
      * @param  string $value     The value to update with

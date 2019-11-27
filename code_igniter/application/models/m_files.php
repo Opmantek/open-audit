@@ -59,7 +59,8 @@ class M_files extends MY_Model
     }
 
     /**
-     * [create description]
+     * Create an individual entry in the DB
+     * 
      * @return [type] [description]
      */
     public function create()
@@ -83,6 +84,7 @@ class M_files extends MY_Model
     }
 
     /**
+     * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
@@ -97,6 +99,8 @@ class M_files extends MY_Model
     }
 
     /**
+     * Update an individual item from the database, by ID
+     * 
      * [update description]
      * @return [type] [description]
      */
@@ -120,6 +124,7 @@ class M_files extends MY_Model
     }
 
     /**
+     * Delete All items from the DB
      *
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
@@ -137,6 +142,7 @@ class M_files extends MY_Model
     }
 
     /**
+     * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data

@@ -133,7 +133,13 @@ class M_credentials extends MY_Model
         return;
     }
 
-    public function delete()
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool true
+     */
+    public function delete(int $id = null)
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
