@@ -25,12 +25,14 @@
 #
 # *****************************************************************************
 *
+* PHP version 5.3.3
+* 
 * @category  Controller
-* @package   Open-AudIT
+* @package   Custom
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -38,12 +40,12 @@
 * Base Object Custom
 *
 * @access   public
-* @category Object
-* @package  Open-AudIT
+* @category Controller
+* @package  Custom
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
-*/
+ */
 class Custom extends MY_Controller
 {
     /**
