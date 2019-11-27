@@ -295,16 +295,6 @@ if (! function_exists('output')) {
                 output_rss($CI->response);
                 break;
 
-            case 'pdf':
-            // TODO: need to insert the PDF function here
-                output_screen($CI->response);
-                break;
-
-            case 'doc':
-            // TODO: need to insert the doc / docx function here
-                output_screen($CI->response);
-                break;
-
             default:
                 output_screen($CI->response);
                 break;
