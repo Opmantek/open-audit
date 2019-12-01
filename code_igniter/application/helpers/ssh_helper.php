@@ -570,11 +570,9 @@ if ( !  function_exists('ssh_audit')) {
 
         foreach ($credentials as $credential) {
             $ssh = new Net_SSH2($ip, $ssh_port);
-            if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-                $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-            } else {
-                $ssh->setTimeout(10);
-            }
+            // This is only for login. If the target cannot respond within 10
+            // seconds, give up
+            $ssh->setTimeout(10);
             if ($credential->type === 'ssh_key') {
                 $key = new Crypt_RSA();
                 if ( ! empty($credential->credentials->password)) {
