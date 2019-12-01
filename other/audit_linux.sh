@@ -1913,6 +1913,14 @@ else
 			hard_drive_manufacturer="Samsung"
 		fi
 
+		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model_family" | grep -q "^Seagate" ; then
+			hard_drive_manufacturer="Seagate"
+		fi
+
+		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "^ST" ; then
+			hard_drive_manufacturer="Seagate"
+		fi
+
 		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "WDC " ; then
 			hard_drive_manufacturer="Western Digital"
 		fi
