@@ -32,6 +32,14 @@ DELETE FROM configuration WHERE `name` = 'device_auto_delete';
 
 INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y', 'system', '2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
 
+DELETE FROM configuration WHERE `name` = 'devices_default_display_columns';
+
+INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn, system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.');
+
+DELETE FROM configuration WHERE `name` = 'devices_default_retrieve_columns';
+
+INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns', 'system.id,system.uuid,system.name,system.ip,system.hostname,system.dns_hostname,system.domain,system.dns_domain,system.dbus_identifier,system.fqdn,system.dns_fqdn,system.description,system.type,system.icon,system.os_group,system.os_family,system.os_name,system.os_version,system.manufacturer,system.model,system.serial,system.uptime,system.form_factor,system.os_bit,system.memory_count,system.processor_count,system.os_installation_date,system.status,system.environment,system.class,system.function,system.owner,system.org_id,system.location_id,system.asset_number,system.asset_tag,system.vm_server_name,system.nmis_group,system.nmis_name,system.nmis_role,system.nmis_manage,system.nmis_notes,system.nmis_business_service,system.nmis_poller,system.nmis_customer,system.oae_manage,system.snmp_oid,system.sysDescr,system.sysObjectID,system.sysUpTime,system.sysContact,system.sysName,system.sysLocation,system.snmp_version,system.snmp_enterprise_id,system.snmp_enterprise_name,system.first_seen,system.last_seen,system.last_seen_by,system.last_user,system.omk_uuid,system.collector_uuid,system.cloud_id,system.instance_provider,system.instance_ident,system.instance_type,system.instance_state,system.instance_reservation_ident,system.identification', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, retrieve these columns.');
+
 DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit';
 
 DELETE FROM configuration WHERE `name` = 'match_ip_no_data';
@@ -120,6 +128,10 @@ ALTER TABLE `user` ADD `shell` varchar(255) NOT NULL DEFAULT '' AFTER `home`;
 
 DELETE FROM `users` WHERE `name` = 'nmis' AND `edited_by` = 'system';
 
+ALTER TABLE `users` DROP `devices_default_display_columns`;
+
+ALTER TABLE `users` ADD `devices_default_display_columns` text NOT NULL AFTER `dashboard_id`;
+
 UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'
 
 UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(dns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day'
@@ -140,6 +152,22 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y', 'system', '2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM configuration WHERE `name` = 'devices_default_display_columns'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn, system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM configuration WHERE `name` = 'devices_default_retrieve_columns'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns', 'system.id,system.uuid,system.name,system.ip,system.hostname,system.dns_hostname,system.domain,system.dns_domain,system.dbus_identifier,system.fqdn,system.dns_fqdn,system.description,system.type,system.icon,system.os_group,system.os_family,system.os_name,system.os_version,system.manufacturer,system.model,system.serial,system.uptime,system.form_factor,system.os_bit,system.memory_count,system.processor_count,system.os_installation_date,system.status,system.environment,system.class,system.function,system.owner,system.org_id,system.location_id,system.asset_number,system.asset_tag,system.vm_server_name,system.nmis_group,system.nmis_name,system.nmis_role,system.nmis_manage,system.nmis_notes,system.nmis_business_service,system.nmis_poller,system.nmis_customer,system.oae_manage,system.snmp_oid,system.sysDescr,system.sysObjectID,system.sysUpTime,system.sysContact,system.sysName,system.sysLocation,system.snmp_version,system.snmp_enterprise_id,system.snmp_enterprise_name,system.first_seen,system.last_seen,system.last_seen_by,system.last_user,system.omk_uuid,system.collector_uuid,system.cloud_id,system.instance_provider,system.instance_ident,system.instance_type,system.instance_state,system.instance_reservation_ident,system.identification', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, retrieve these columns.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -214,15 +242,17 @@ $this->alter_table('system', 'nmis_customer', "ADD `nmis_customer` varchar(200) 
 
 $this->alter_table('user', 'password_disabled', "ADD `password_disabled` varchar(20) NOT NULL DEFAULT '' AFTER `password_required`", 'add');
 
-$this->alter_table('user', 'keys', "ADD `keys` text NOT NULL AFTER `status`", 'add');
+$this->alter_table('user', 'keys', 'ADD `keys` text NOT NULL AFTER `status`', 'add');
 
-$this->alter_table('user', 'home', "ADD `home` text NOT NULL AFTER `keys`", 'add');
+$this->alter_table('user', 'home', 'ADD `home` text NOT NULL AFTER `keys`', 'add');
 
-$this->alter_table('user', 'shell', "ADD `shell` text NOT NULL AFTER `home`", 'add');
+$this->alter_table('user', 'shell', 'ADD `shell` text NOT NULL AFTER `home`', 'add');
 
 $sql = "DELETE FROM `users` WHERE `name` = 'nmis' AND `edited_by` = 'system'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$this->alter_table('users', 'devices_default_display_columns', 'ADD `devices_default_display_columns` text NOT NULL AFTER `dashboard_id`', 'add');
 
 $sql = "UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'";
 $this->db->query($sql);

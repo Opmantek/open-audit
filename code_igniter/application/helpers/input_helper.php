@@ -859,7 +859,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->limit = '';
         }
 
-        # get the group
+        // get the group
         $log->summary = 'set group';
         if (isset($_GET['group'])) {
             $CI->response->meta->group = intval($_GET['group']);
@@ -872,7 +872,7 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        # get the list of requested properties (usually) properties=id,name,status
+        // get the list of requested properties (usually) properties=id,name,status
         $log->summary = 'set properties';
         if (isset($_GET['properties'])) {
             $CI->response->meta->properties = $_GET['properties'];
@@ -885,7 +885,7 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        # Allow for format of properties=["id", "name", "status"]
+        // Allow for format of properties=["id", "name", "status"]
         if (json_decode($CI->response->meta->properties)) {
             $temp = json_decode($CI->response->meta->properties);
             unset($CI->response->meta->properties);
@@ -898,43 +898,43 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        if ($CI->response->meta->properties == '') {
-            # set some defaults
-            if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') {
-                # we're requesting a list of devices without properties - set the below as defaults
-                if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
+        if ($CI->response->meta->properties === 'default' && $CI->response->meta->collection === 'devices') {
+            $CI->response->meta->properties = $CI->config->config['devices_default_retrieve_columns'];
+        }
+
+        if ($CI->response->meta->properties === '') {
+            // set some defaults
+            if ($CI->response->meta->action === 'collection' && $CI->response->meta->collection === 'devices') {
+                // we're requesting a list of devices without properties - set the below as defaults
+                if ($CI->response->meta->sub_resource === '' OR strtolower($CI->response->meta->sub_resource) === 'system') {
                     $CI->response->meta->properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.description,system.manufacturer,system.os_family,system.status';
                     $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
                     stdlog($log);
                 } else {
-                    # we're requesting a subresource - return all the subresource's properties
+                    // we're requesting a subresource - return all the subresource's properties
                     $CI->response->meta->properties = $CI->response->meta->sub_resource . '.*';
                     $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because devices sub_resource default.';
                     stdlog($log);
                 }
             } else {
-                # we're requesting something that isn't a device (or a list of devices) - return everything
+                // we're requesting something that isn't a device (or a list of devices) - return everything
                 $CI->response->meta->properties = '*';
                 $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because non-devices default.';
                 stdlog($log);
             }
         }
 
-        # perform some simple data cleansing
-        $CI->response->meta->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->meta->properties);
-
-        // if ($CI->response->meta->properties == 'group.*') {
-        //     $CI->response->meta->properties = '';
-        // }
+        // perform some simple data cleansing
+        $CI->response->meta->properties = str_replace(array("'", '"', '(', ')'), '', $CI->response->meta->properties);
 
         $CI->response->meta->internal->properties = '';
         // create our internal properties list - this is what gets executed in SQL
-        if ($CI->response->meta->properties != '*' and $CI->response->meta->properties != $CI->response->meta->sub_resource . '.*') {
+        if ($CI->response->meta->properties !== '*' && $CI->response->meta->properties !== $CI->response->meta->sub_resource . '.*') {
             $temp = explode(',', $CI->response->meta->properties);
             foreach ($temp as $property) {
-                if ($property == 'count') {
+                if ($property === 'count') {
                     $CI->response->meta->internal->properties .= 'count(*) as `count`,';
-                } elseif ($property == 'system_id') {
+                } elseif ($property === 'system_id') {
                     $CI->response->meta->internal->properties .= 'system.id as `system_id`,';
                 } else {
                     $CI->response->meta->internal->properties .= $property . ' AS `' . trim($property) . '`,';
@@ -944,7 +944,7 @@ if (! function_exists('inputRead')) {
         } else {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
-        if ($CI->response->meta->properties == '*') {
+        if ($CI->response->meta->properties === '*') {
             $temp = $CI->response->meta->collection;
             if ($temp == 'devices') {
                 $temp = 'system';
@@ -968,10 +968,10 @@ if (! function_exists('inputRead')) {
                 $log->severity = 4;
                 stdlog($log);
                 $log->severity = 7;
-                # Redirect as we must have an auth token from when we requested the create form
+                // Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0034', $CI->response->meta->collection . ':' . $CI->response->meta->action);
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
-                if ($CI->response->meta->format != 'screen') {
+                if ($CI->response->meta->format !== 'screen') {
                     output();
                     exit();
                 } else {
@@ -979,17 +979,17 @@ if (! function_exists('inputRead')) {
                     exit();
                 }
             }
-            if (!in_array($CI->response->meta->received_data->access_token, $CI->user->access_token)) {
+            if ( ! in_array($CI->response->meta->received_data->access_token, $CI->user->access_token)) {
                 $log->summary = 'Access token invalid';
                 $log->detail = 'An invalid access token was supplied with a POST data request. POSTed access token: ' . @$CI->response->meta->received_data->access_token . ' Cookie access_tokens: ' . implode(', ', $CI->user->access_token);;
                 $log->status = 'fail';
                 $log->severity = 4;
                 stdlog($log);
                 $log->severity = 7;
-                # Redirect as we must have an auth token from when we requested the create form
+                // Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0035', $CI->response->meta->collection . ':' . $CI->response->meta->action);
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
-                if ($CI->response->meta->format != 'screen') {
+                if ($CI->response->meta->format !== 'screen') {
                     output();
                     exit();
                 } else {
@@ -1382,17 +1382,19 @@ if (! function_exists('build_join')) {
         $CI = & get_instance();
         $join = '';
         $tables = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos($item->name, '.') !== false) {
-                $table = substr($item->name, 0, strpos($item->name, '.'));
-                if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
-                    if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
-                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
-                    } else {
-                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
+        if ( ! empty($CI->response->meta->filter) && is_array($CI->response->meta->filter) && count($CI->response->meta->filter) > 0) {
+            foreach ($CI->response->meta->filter as $item) {
+                if (strpos($item->name, '.') !== false) {
+                    $table = substr($item->name, 0, strpos($item->name, '.'));
+                    if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
+                        if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
+                            $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
+                        } else {
+                            $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
+                        }
                     }
+                    $tables .= " $table ";
                 }
-                $tables .= " $table ";
             }
         }
         return($join);
