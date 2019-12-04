@@ -2984,19 +2984,19 @@ if [ -n "$(which route 2>/dev/null)" ]; then
 		echo "$i" | awk ' { print "\t\t<item>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</item>" } ' >> "$xml_file"
 	done
 fi
-if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
-	#route_mask=$(cidr2mask `ip r | grep "default via" | cut -d" " -f1 | cut -d"\"" -f2`)
-	route_next_hop=$(ip r | grep "default via" | cut -d" " -f3)
-	route_metric=$(ip r | grep "default via" | cut -d" " -f10)
-	{
-	echo "		<item>"
-	echo "			<destination>0.0.0.0</destination>"
-	echo "			<mask></mask>"
-	echo "			<metric>$(escape_xml "$route_metric")</metric>"
-	echo "			<next_hop>$(escape_xml "$route_next_hop")</next_hop>"
-	echo "		</item>"
-	} >> "$xml_file"
-fi
+# if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
+# 	#route_mask=$(cidr2mask `ip r | grep "default via" | cut -d" " -f1 | cut -d"\"" -f2`)
+# 	route_next_hop=$(ip r | grep "default via" | cut -d" " -f3)
+# 	route_metric=$(ip r | grep "default via" | cut -d" " -f10)
+# 	{
+# 	echo "		<item>"
+# 	echo "			<destination>0.0.0.0</destination>"
+# 	echo "			<mask></mask>"
+# 	echo "			<metric>$(escape_xml "$route_metric")</metric>"
+# 	echo "			<next_hop>$(escape_xml "$route_next_hop")</next_hop>"
+# 	echo "		</item>"
+# 	} >> "$xml_file"
+# fi
 echo "	</route>" >> "$xml_file"
 
 
