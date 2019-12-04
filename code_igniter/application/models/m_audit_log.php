@@ -73,6 +73,7 @@ class M_audit_log extends MY_Model
      */
     public function create(int $system_id = 0, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version = '')
     {
+        $CI = & get_instance();
         if (empty($system_id)) {
             return;
         }
@@ -84,6 +85,13 @@ class M_audit_log extends MY_Model
         }
         if (empty($version)) {
             $version = $this->config->config['display_version'];
+        }
+        if (empty($username)) {
+            if ( ! empty($CI->user->name)) {
+                $username = $CI->user->name;
+            } else {
+                $username = '';
+            }
         }
         $sql = 'INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`, `version`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         $data = array($system_id, $username, $type, $ip_address, $debug, $wmi_fails, $timestamp, $version);
