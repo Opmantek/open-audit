@@ -65,8 +65,6 @@ class M_database extends MY_Model
      */
     public function read($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         if ($id === '') {
             $CI = & get_instance();
             $id = $CI->response->meta->id;
@@ -133,9 +131,6 @@ class M_database extends MY_Model
      */
     public function delete($table = '', $current = '', $status = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
         $CI = & get_instance();
         if ($table === '') {
             $table = $CI->response->meta->id;
@@ -193,8 +188,6 @@ class M_database extends MY_Model
      */
     public function execute($table = '', $action = '', $format = '', $attributes = array())
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
         if ($table === '') {
             $table = $CI->response->meta->id;
@@ -354,8 +347,6 @@ class M_database extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $return = array();
         $tables = $this->db->list_tables();
         foreach ($tables as $table) {
