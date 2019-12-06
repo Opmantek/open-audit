@@ -36,7 +36,12 @@
 * @link      http://www.open-audit.org
 */
 $timer_start = microtime(true);
-if ($this->{'m_'.$this->response->meta->collection}->delete(intval($this->response->meta->id))) {
+if ($this->response->meta->collection !== 'database') {
+    $id = intval($this->response->meta->id);
+} else {
+    $id = $this->response->meta->id;
+}
+if ($this->{'m_'.$this->response->meta->collection}->delete($id)) {
     $this->response->data = array();
     $temp = new stdClass();
     $temp->type = $this->response->meta->collection;
