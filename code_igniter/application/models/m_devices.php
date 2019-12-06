@@ -73,7 +73,11 @@ class M_devices extends MY_Model
                     $item->name = 'system.id';
                 }
                 if ( ! empty($item->name) && $item->operator !== 'in') {
-                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    if (stripos($item->name, 'current') !== false and $item->value !== 'y' and $item->value != 'n') {
+                        // we ignore this value
+                    } else {
+                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    }
                 }
                 if ( ! empty($item->name) && $item->operator === 'in') {
                     $filter .= ' AND ' . $item->name . ' in ' . $item->value;
@@ -329,6 +333,7 @@ class M_devices extends MY_Model
             $sub_resource_id = '';
         } else {
             $sub_resource_id = ' AND `' . $sub_resource . '`.id = ' . intval($sub_resource_id);
+            $current = '';
         }
 
         // if ($properties == '') {
@@ -392,14 +397,14 @@ class M_devices extends MY_Model
                     $currency = '';
                 }
                 if ($current === 'delta' && $first_seen) {
-                    $properties .= ', IF((`' . $sub_resource . '`.first_seen = (SELECT first_seen FROM `' . $sub_resource . "` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
-                    $currency = "AND current = 'y' or `" . $sub_resource . '`.first_seen = (SELECT first_seen FROM `' . $sub_resource . '` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)';
+                    $properties .= ", IF((`{$sub_resource}`.first_seen = (SELECT first_seen FROM `{$sub_resource}` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
+                    $currency = "AND current = 'y' or `{$sub_resource}`.first_seen = (SELECT first_seen FROM `{$sub_resource}` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)";
                 }
                 if ($current === 'delta' && ! $first_seen) {
                     $currency = '';
                 }
                 if ($current === 'full' && $first_seen) {
-                    $properties .= ', IF((`' . $sub_resource . '`.first_seen = (SELECT first_seen FROM `' . $sub_resource . "` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
+                    $properties .= ", IF((`{$sub_resource}`.first_seen = (SELECT first_seen FROM `{$sub_resource}` WHERE system_id = {$id} ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
                     $currency = '';
                 }
                 if ($current === 'full' && ! $first_seen) {
@@ -408,7 +413,7 @@ class M_devices extends MY_Model
             } else {
                 $currency = '';
             }
-            $sql = "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = {$id} " . $sub_resource_id . " " . $currency . ' ' . $filter . ' ' . $limit . ' ' . $sort;
+            $sql = "SELECT " . $properties . ", system.name AS `system.name` FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = {$id} " . $sub_resource_id . " " . $currency . ' ' . $filter . ' ' . $limit . ' ' . $sort;
             $data = array($CI->user->id);
         }
 
@@ -806,7 +811,7 @@ class M_devices extends MY_Model
         } else {
             $columns = $CI->response->meta->internal->properties;
         }
-        $sql = "SELECT {$columns} FROM `{$CI->response->meta->sub_resource}` LEFT JOIN system ON (system.id = `{$CI->response->meta->sub_resource}`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") {$filter} {$CI->response->meta->internal->groupby} {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
+        $sql = "SELECT {$columns}, system.name AS `system.name` FROM `{$CI->response->meta->sub_resource}` LEFT JOIN system ON (system.id = `{$CI->response->meta->sub_resource}`.system_id) WHERE system.org_id IN ({$CI->user->org_list}) {$filter} {$CI->response->meta->internal->groupby} {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, $CI->response->meta->sub_resource);
         if ($CI->response->meta->sub_resource === 'credential' && count($result) > 0) {

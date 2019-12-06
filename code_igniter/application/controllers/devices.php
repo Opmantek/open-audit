@@ -436,8 +436,20 @@ class Devices extends MY_Controller
 
     private function sub_resource_read()
     {
-        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
-        $this->response->meta->total = count($this->response->data);
+        $current = $this->response->meta->current;
+        if (is_array($this->response->meta->filter)) {
+            foreach ($this->response->meta->filter as $temp_filter) {
+                if ($temp_filter->name === $this->response->meta->sub_resource . '.current') {
+                    $current = $temp_filter->value;
+                }
+            }
+        }
+
+        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current);
+        $this->response->meta->total = 0;
+        if (is_array($this->response->data)) {
+            $this->response->meta->total = count($this->response->data);
+        }
         $this->response->meta->filtered = $this->response->meta->total;
         output($this->response);
     }
