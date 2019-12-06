@@ -322,6 +322,9 @@ class MY_Model extends CI_Model
             return;
         }
         $return = '';
+        if ( ! $this->db->table_exists($table)) {
+            return '';
+        }
         $fields = $this->db->list_fields($table);
         foreach ($fields as $field)
         {
