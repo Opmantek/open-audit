@@ -140,8 +140,10 @@ if (! function_exists('output')) {
             if ($CI->response->meta->collection === 'devices' and $CI->response->meta->action === 'sub_resource_read') {
                 unset($CI->response->meta->data_order);
                 $CI->response->meta->data_order = array();
-                foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    $CI->response->meta->data_order[] = $key;
+                if (!empty($CI->response->data) and is_array($CI->response->data)) {
+                    foreach ($CI->response->data[0]->attributes as $key => $value) {
+                        $CI->response->meta->data_order[] = $key;
+                    }
                 }
             }
 
