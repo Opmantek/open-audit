@@ -9,10 +9,10 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:export-ydpi="41.25"
-   inkscape:export-xdpi="41.25"
-   inkscape:export-filename="/home/avian/src/geda/my_icons/application-x-pcb-22.png"
-   sodipodi:docname="application-x-pcb.svg"
+   inkscape:export-ydpi="90"
+   inkscape:export-xdpi="90"
+   inkscape:export-filename="/home/avian/src/geda/my_icons/application-x-gerber-48.png"
+   sodipodi:docname="application-x-gerber.svg"
    sodipodi:docbase="/home/avian/src/geda/my_icons"
    inkscape:version="0.44.1"
    sodipodi:version="0.32"
@@ -22,6 +22,61 @@
    viewBox="0 0 48 48">
   <defs
      id="defs3">
+    <linearGradient
+       id="linearGradient10440">
+      <stop
+         style="stop-color:#605400;stop-opacity:1;"
+         offset="0"
+         id="stop10442" />
+      <stop
+         style="stop-color:#887800;stop-opacity:1;"
+         offset="1"
+         id="stop10444" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient10432">
+      <stop
+         style="stop-color:#605400;stop-opacity:1;"
+         offset="0"
+         id="stop10434" />
+      <stop
+         style="stop-color:#887800;stop-opacity:1;"
+         offset="1"
+         id="stop10436" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient10424">
+      <stop
+         style="stop-color:#d8c100;stop-opacity:1;"
+         offset="0"
+         id="stop10426" />
+      <stop
+         style="stop-color:#ffe501;stop-opacity:1;"
+         offset="1"
+         id="stop10428" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient269"
+       id="radialGradient15656"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.968273,0.000000,0.000000,1.032767,3.353553,0.646447)"
+       cx="8.8244190"
+       cy="3.7561285"
+       fx="8.8244190"
+       fy="3.7561285"
+       r="37.751713" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient259"
+       id="radialGradient15658"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="scale(0.960493,1.041132)"
+       cx="33.966679"
+       cy="35.736916"
+       fx="33.966679"
+       fy="35.736916"
+       r="86.708450" />
     <linearGradient
        id="linearGradient2937">
       <stop
@@ -195,26 +250,68 @@
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient2929"
-       id="linearGradient2935"
-       x1="10.699747"
-       y1="7.3129063"
-       x2="38.00108"
-       y2="40.281761"
+       xlink:href="#linearGradient5048"
+       id="linearGradient10412"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.774389,0,0,1.969706,-1892.179,-872.8854)"
+       x1="302.85715"
+       y1="366.64789"
+       x2="302.85715"
+       y2="609.50507" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5060"
+       id="radialGradient10414"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.774389,0,0,1.969706,-1891.633,-872.8854)"
+       cx="605.71429"
+       cy="486.64789"
+       fx="605.71429"
+       fy="486.64789"
+       r="117.14286" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5060"
+       id="radialGradient10416"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.774389,0,0,1.969706,112.7623,-872.8854)"
+       cx="605.71429"
+       cy="486.64789"
+       fx="605.71429"
+       fy="486.64789"
+       r="117.14286" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5048"
+       id="linearGradient10422"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.774389,0,0,1.969706,-1892.179,-872.8854)"
+       x1="302.85715"
+       y1="366.64789"
+       x2="302.85715"
+       y2="609.50507" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10424"
+       id="linearGradient10430"
+       x1="43.421204"
+       y1="14.544756"
+       x2="6.256557"
+       y2="14.544756"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient2937"
-       id="linearGradient2943"
-       x1="40.751785"
-       y1="43.994072"
-       x2="7.5954852"
-       y2="4.2193146"
+       xlink:href="#linearGradient10440"
+       id="linearGradient10446"
+       x1="44.625"
+       y1="17.482256"
+       x2="4.6249981"
+       y2="11.919756"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-y="51"
-     inkscape:window-x="51"
+     inkscape:window-y="105"
+     inkscape:window-x="326"
      inkscape:window-height="831"
      inkscape:window-width="921"
      inkscape:document-units="px"
@@ -222,23 +319,23 @@
      showgrid="true"
      inkscape:current-layer="layer1"
      inkscape:cy="24.809699"
-     inkscape:cx="25.938708"
-     inkscape:zoom="22.627416"
+     inkscape:cx="21.894649"
+     inkscape:zoom="15.999999"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
-     borderopacity="0.25490196"
-     bordercolor="#666666"
+     borderopacity="1"
+     bordercolor="#666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:showpageshadow="false"
+     inkscape:showpageshadow="true"
      inkscape:grid-points="true"
      inkscape:object-paths="false"
      inkscape:guide-bbox="false"
      guidetolerance="50"
      gridtolerance="10000"
      showguides="false"
-     gridoriginx="0px"
-     gridoriginy="0px" />
+     gridoriginx="0.5px"
+     gridoriginy="0.5px" />
   <metadata
      id="metadata4">
     <rdf:RDF>
@@ -315,7 +412,7 @@
      inkscape:label="Base"
      id="layer1">
     <rect
-       style="color:black;fill:url(#linearGradient2935);fill-opacity:1.0;fill-rule:nonzero;stroke:url(#linearGradient2943);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible;opacity:1;stroke-dasharray:none"
+       style="color:black;fill:url(#radialGradient15658);fill-opacity:1;fill-rule:nonzero;stroke:url(#radialGradient15656);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible;opacity:1;stroke-dasharray:none"
        id="rect15391"
        width="34.875000"
        height="40.920494"
@@ -323,7 +420,7 @@
        y="3.6464462"
        ry="1.1490486" />
     <rect
-       style="color:#000000;fill:none;fill-opacity:1.0000000;fill-rule:nonzero;stroke:white;stroke-width:1.0000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible;opacity:0.79120879"
+       style="color:#000000;fill:none;fill-opacity:1.0000000;fill-rule:nonzero;stroke:white;stroke-width:1.0000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible;opacity:0.74175824"
        id="rect15660"
        width="32.775887"
        height="38.946384"
@@ -331,89 +428,149 @@
        y="4.5839462"
        ry="0.14904857"
        rx="0.14904857" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 10.5,7.5 L 15.5,7.5 L 20.5,12.5 L 20.5,22.5"
-       id="path2828"
-       sodipodi:nodetypes="ccc" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 24.5,22.5 L 24.5,10.5 L 21.5,7.5"
-       id="path2830" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 28.5,22.5 L 28.5,8.5 L 27.5,7.5"
-       id="path2832" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 32.5,22.5 L 32.5,7.5"
-       id="path2890" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 20.5,22.5 L 20.5,24.5"
-       id="path2894" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 24.5,22.5 L 24.5,24.5"
-       id="path2896" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 28.5,22.5 L 28.5,24.5"
-       id="path2898" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 32.5,22.5 L 32.5,24.5"
-       id="path2900" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 32.5,31.5 L 32.5,33.5"
-       id="path2902" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 28.5,31.5 L 28.5,33.5"
-       id="path2904" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 24.5,31.5 L 24.5,33.5"
-       id="path2906" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 20.5,31.5 L 20.5,33.5"
-       id="path2908" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 20.5,33.5 L 20.5,37.5 L 17.5,40.5 L 10.5,40.5"
-       id="path2910" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 24.5,33.5 L 24.5,40.5"
-       id="path2912" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 28.5,33.5 L 28.5,37.5 L 31.5,40.5 L 37.5,40.5"
-       id="path2914" />
-    <path
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 32.5,33.5 L 34.5,35.5 L 37.5,35.5"
-       id="path2916" />
-    <path
-       style="opacity:1;color:black;fill:#b7e267;fill-opacity:1;fill-rule:nonzero;stroke:#b7e267;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       d="M 10.5,10.5 L 14.5,10.5 L 17.5,13.5 L 17.5,35.5 L 15.5,37.5 L 10.5,37.5 L 10.5,10.5 z "
-       id="path2918"
-       sodipodi:nodetypes="ccccccc" />
+    <g
+       style="display:inline"
+       transform="matrix(2.105461e-2,0,0,2.086758e-2,42.85172,14.66252)"
+       id="g10404">
+      <rect
+         style="opacity:0.40206185;color:black;fill:url(#linearGradient10422);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+         id="rect10406"
+         width="1339.6335"
+         height="478.35718"
+         x="-1559.2523"
+         y="-150.69685" />
+      <path
+         style="opacity:0.40206185;color:black;fill:url(#radialGradient10414);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+         d="M -219.61876,-150.68038 C -219.61876,-150.68038 -219.61876,327.65041 -219.61876,327.65041 C -76.744594,328.55086 125.78146,220.48075 125.78138,88.454235 C 125.78138,-43.572302 -33.655436,-150.68036 -219.61876,-150.68038 z "
+         id="path10408"
+         sodipodi:nodetypes="cccc" />
+      <path
+         sodipodi:nodetypes="cccc"
+         id="path10410"
+         d="M -1559.2523,-150.68038 C -1559.2523,-150.68038 -1559.2523,327.65041 -1559.2523,327.65041 C -1702.1265,328.55086 -1904.6525,220.48075 -1904.6525,88.454235 C -1904.6525,-43.572302 -1745.2157,-150.68036 -1559.2523,-150.68038 z "
+         style="opacity:0.40206185;color:black;fill:url(#radialGradient10416);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible" />
+    </g>
+    <g
+       id="g9477"
+       style="opacity:0.38461538">
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path2828"
+         d="M 10.5,7.5 L 15.5,7.5 L 20.5,12.5 L 20.5,22.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2830"
+         d="M 24.5,22.5 L 24.5,10.5 L 21.5,7.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2832"
+         d="M 28.5,22.5 L 28.5,8.5 L 27.5,7.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2890"
+         d="M 32.5,22.5 L 32.5,7.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2894"
+         d="M 20.5,22.5 L 20.5,24.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2896"
+         d="M 24.5,22.5 L 24.5,24.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2898"
+         d="M 28.5,22.5 L 28.5,24.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2900"
+         d="M 32.5,22.5 L 32.5,24.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2902"
+         d="M 32.5,31.5 L 32.5,33.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2904"
+         d="M 28.5,31.5 L 28.5,33.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2906"
+         d="M 24.5,31.5 L 24.5,33.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2908"
+         d="M 20.5,31.5 L 20.5,33.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2910"
+         d="M 20.5,33.5 L 20.5,37.5 L 17.5,40.5 L 10.5,40.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2912"
+         d="M 24.5,33.5 L 24.5,40.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2914"
+         d="M 28.5,33.5 L 28.5,37.5 L 31.5,40.5 L 37.5,40.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         id="path2916"
+         d="M 32.5,33.5 L 34.5,35.5 L 37.5,35.5"
+         style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         sodipodi:nodetypes="ccccccc"
+         id="path2918"
+         d="M 10.5,10.5 L 14.5,10.5 L 17.5,13.5 L 17.5,35.5 L 15.5,37.5 L 10.5,37.5 L 10.5,10.5 z "
+         style="opacity:1;color:black;fill:black;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+      <path
+         sodipodi:nodetypes="cccccccc"
+         id="path9458"
+         d="M 37.5,32.5 L 36.5,32.5 L 36.5,29.5 L 36.5,20.5 L 35.5,19.5 L 35.5,7.5 L 37.5,7.5 L 37.5,32.5 z "
+         style="opacity:1;color:black;fill:black;fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible" />
+    </g>
     <rect
-       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#3e5512;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
-       id="rect2920"
-       width="18"
-       height="17"
-       x="17.5"
-       y="19.5"
-       ry="2.6516504" />
+       style="opacity:1;color:black;fill:url(#linearGradient10430);fill-opacity:1.0;fill-rule:nonzero;stroke:url(#linearGradient10446);stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
+       id="rect9499"
+       width="40"
+       height="5.8966913"
+       x="4.5"
+       y="11.596411" />
+    <rect
+       style="opacity:1;color:black;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#fff171;stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:block;overflow:visible"
+       id="rect10402"
+       width="37.999069"
+       height="3.9378538"
+       x="5.4885778"
+       y="12.582757" />
     <path
-       style="opacity:0.32417582;color:black;fill:white;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
-       d="M 7.5,4.5 L 7.5,27.5 C 23.5,27.5 27.5,17.5 40.5,17.5 L 40.5,4.5 L 7.5,4.5 z "
-       id="path2927"
-       sodipodi:nodetypes="ccccc" />
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 39.5,14.5 L 39.5,17.5"
+       id="path9501" />
+    <path
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 34.5,14.5 L 34.5,17.5"
+       id="path9503" />
+    <path
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 29.5,14.5 L 29.5,17.5"
+       id="path9505" />
+    <path
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 24.5,14.5 L 24.5,17.5"
+       id="path9507" />
+    <path
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 19.5,14.5 L 19.5,17.5"
+       id="path9509" />
+    <path
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 14.5,14.5 L 14.5,17.5"
+       id="path9511" />
+    <path
+       style="opacity:1;color:black;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#756700;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       d="M 9.5,14.5 L 9.5,17.5"
+       id="path9513" />
   </g>
   <g
      inkscape:groupmode="layer"

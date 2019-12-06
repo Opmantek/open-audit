@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,10 +15,9 @@
    viewBox="0 0 48 48"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    version="1.0"
-   sodipodi:docbase="/home/lapo/Icone/cvs/gnome-icon-theme/scalable/devices"
-   sodipodi:docname="drive-harddisk.svg"
+   sodipodi:docname="disk.svg"
    inkscape:export-filename="/home/jimmac/Desktop/drive-harddisk.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
@@ -585,35 +585,47 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="58.522013"
+     inkscape:cx="-129.97799"
      inkscape:cy="21.950378"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="48px"
      height="48px"
      inkscape:showpageshadow="false"
-     gridspacingx="0.5px"
-     gridspacingy="0.5px"
-     gridempspacing="2"
      showgrid="false"
-     inkscape:window-width="872"
-     inkscape:window-height="715"
-     inkscape:window-x="764"
-     inkscape:window-y="336"
+     inkscape:window-width="2560"
+     inkscape:window-height="1514"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
      showborder="true"
      inkscape:grid-points="true"
      inkscape:grid-bbox="true"
      borderlayer="true"
      showguides="false"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="horizontal"
        position="12"
-       id="guide2023" />
+       id="guide2023"
+       inkscape:locked="false" />
     <sodipodi:guide
        orientation="horizontal"
        position="27.5"
-       id="guide2025" />
+       id="guide2025"
+       inkscape:locked="false" />
+    <inkscape:grid
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0"
+       originy="0"
+       spacingx="0.5"
+       spacingy="0.5"
+       color="#3f3fff"
+       empcolor="#3f3fff"
+       opacity="0.15"
+       empopacity="0.38"
+       empspacing="2" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">

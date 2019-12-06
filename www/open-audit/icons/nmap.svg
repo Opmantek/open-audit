@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,13 +15,13 @@
    viewBox="0 0 48 48"
    id="svg1307"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
-   sodipodi:docbase="/home/bellaich/Desktop"
-   sodipodi:docname="network-ids-2.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="nmap.svg"
    inkscape:export-filename="/home/bellaich/Desktop/network-ids-2.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1">
   <defs
      id="defs1309">
     <linearGradient
@@ -900,21 +901,33 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="21.220031"
-     inkscape:cx="22.977155"
+     inkscape:cx="14.094039"
      inkscape:cy="24.610741"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
-     inkscape:window-width="1267"
-     inkscape:window-height="1220"
-     inkscape:window-x="561"
-     inkscape:window-y="176"
+     inkscape:window-width="2560"
+     inkscape:window-height="1514"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
      fill="#888a85"
      showguides="true"
      inkscape:guide-bbox="true"
-     gridspacingx="0.5px"
-     gridspacingy="0.5px" />
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0"
+       originy="0"
+       spacingx="0.5"
+       spacingy="0.5"
+       color="#3f3fff"
+       empcolor="#3f3fff"
+       opacity="0.15"
+       empopacity="0.38"
+       empspacing="5" />
+  </sodipodi:namedview>
   <metadata
      id="metadata1312">
     <rdf:RDF>
@@ -923,6 +936,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -982,7 +996,7 @@
        id="path3313"
        style="fill:url(#radialGradient3315);fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.99905276;stroke-miterlimit:4;stroke-opacity:1;opacity:0.36923077"
        xlink:href="#rect1315"
-       inkscape:original="M 9.40625 3.5 C 7.7904157 3.5 6.4999999 4.7754208 6.5 6.34375 L 6.5 33.6875 C 6.5 35.25583 7.790416 36.531251 9.40625 36.53125 L 38.59375 36.53125 C 40.209584 36.53125 41.499999 35.255831 41.5 33.6875 L 41.5 6.34375 C 41.5 4.7754207 40.209583 3.4999999 38.59375 3.5 L 9.40625 3.5 z "
+       inkscape:original="M 9.4160156 3.5019531 C 7.8001813 3.5019531 6.5 4.7637019 6.5 6.3320312 L 6.5 33.701172 C 6.5 35.269502 7.8001813 36.53125 9.4160156 36.53125 L 38.583984 36.53125 C 40.199818 36.53125 41.5 35.269502 41.5 33.701172 L 41.5 6.3320312 C 41.5 4.7637019 40.199818 3.5019531 38.583984 3.5019531 L 9.4160156 3.5019531 z "
        inkscape:radius="-1.0303071"
        sodipodi:type="inkscape:offset" />
     <path
