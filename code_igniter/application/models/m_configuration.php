@@ -388,41 +388,57 @@ class M_configuration extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = 'SELECT * FROM configuration';
+
+            $filter = '';
+            $filter_response = array();
+            if (!empty($CI->response->meta->filter)) {
+                foreach ($CI->response->meta->filter as $filter) {
+                    if ($filter->operator === 'in' OR $filter->operator === 'not in') {
+                        $filter_response[] = ' ' . $filter->name . ' ' . $filter->operator . ' ' . $filter->value;
+                    } else {
+                        $filter_response[] = ' ' . $filter->name . ' ' . $filter->operator . ' "' . str_replace('"', '\"', $filter->value) . '"';
+                    }
+                }
+                $filter = ' WHERE ' . implode(' AND ', $filter_response);
+            }
+
+            $sql = 'SELECT * FROM configuration' . $filter;
             $result = $this->run_sql($sql, array());
 
-            $item = new stdClass;
-            $item->id = 888888;
-            $item->name = 'web_internal_version';
-            $item->value = $this->config->config['web_internal_version'];
-            $item->editable = 'n';
-            $item->edited_by = '';
-            $item->edited_date = '';
-            $item->description = 'The internal numerical version of the Open-AudIT files.';
-            $result[] = $item;
+            if (empty($filter)) {
+                $item = new stdClass;
+                $item->id = 888888;
+                $item->name = 'web_internal_version';
+                $item->value = $this->config->config['web_internal_version'];
+                $item->editable = 'n';
+                $item->edited_by = '';
+                $item->edited_date = '';
+                $item->description = 'The internal numerical version of the Open-AudIT files.';
+                $result[] = $item;
 
-            $this->load->helper('network');
-            $item = new stdClass;
-            $item->id = 888889;
-            $item->name = 'server_ip';
-            $item->value = server_ip();
-            $item->editable = 'n';
-            $item->edited_by = '';
-            $item->edited_date = '';
-            $item->description = 'The IP addresses on this server.';
-            $result[] = $item;
-            unset($item);
+                $this->load->helper('network');
+                $item = new stdClass;
+                $item->id = 888889;
+                $item->name = 'server_ip';
+                $item->value = server_ip();
+                $item->editable = 'n';
+                $item->edited_by = '';
+                $item->edited_date = '';
+                $item->description = 'The IP addresses on this server.';
+                $result[] = $item;
+                unset($item);
 
-            $item = new stdClass;
-            $item->id = 888890;
-            $item->name = 'is_ssl';
-            $item->value = is_ssl();
-            $item->editable = 'n';
-            $item->edited_by = '';
-            $item->edited_date = '';
-            $item->description = 'Are we using SSL.';
-            $result[] = $item;
-            unset($item);
+                $item = new stdClass;
+                $item->id = 888890;
+                $item->name = 'is_ssl';
+                $item->value = is_ssl();
+                $item->editable = 'n';
+                $item->edited_by = '';
+                $item->edited_date = '';
+                $item->description = 'Are we using SSL.';
+                $result[] = $item;
+                unset($item);
+            }
 
             $CI->response->data = $this->format_data($result, 'configuration');
             $CI->response->meta->filtered = count($CI->response->data);
