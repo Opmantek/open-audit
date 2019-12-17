@@ -34,7 +34,11 @@ INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y',
 
 DELETE FROM configuration WHERE `name` = 'devices_default_display_columns';
 
-INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn, system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.');
+INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn,system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.');
+
+DELETE FROM configuration WHERE `name` = 'devices_default_group_columns';
+
+INSERT INTO `configuration` VALUES (NULL,'devices_default_group_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn,system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a group of devices, retrieve and display these columns.');
 
 DELETE FROM configuration WHERE `name` = 'devices_default_retrieve_columns';
 
@@ -161,7 +165,15 @@ $sql = "DELETE FROM configuration WHERE `name` = 'devices_default_display_column
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn, system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn,system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM configuration WHERE `name` = 'devices_default_group_columns'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_group_columns','system.id,system.icon,system.type,system.name,system.ip,system.dns_fqdn, system.identification,system.description,system.manufacturer,system.os_family,system.status', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, display these columns.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
