@@ -77,6 +77,9 @@ if ($this->response->meta->sub_resource !== 'group') {
     </div>
     <div class="panel-body">
         <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+            Please note this function has been deprecated and will be removed in a future release.<br />
+            You can achieve the same result by running the query directly, then filtering the result.<br />
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -99,6 +102,7 @@ if ($this->response->meta->sub_resource !== 'group') {
                 ?>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 </div>
