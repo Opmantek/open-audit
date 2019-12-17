@@ -3472,21 +3472,31 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
     set colItems = objWMIService.ExecQuery ("Select * from Win32_UserAccount Where Domain = '" & system_hostname & "'",,32)
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_UserAccount)" : audit_wmi_fails = audit_wmi_fails & "Win32_UserAccount " : end if
     if (not isnull(colItems)) then
-    for each objItem in colItems
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-    result.WriteText "          <caption>" & escape_xml(objItem.Caption) & "</caption>" & vbcrlf
-    result.WriteText "          <sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
-    result.WriteText "          <domain>" & escape_xml(objItem.Domain) & "</domain>" & vbcrlf
-    result.WriteText "          <disabled>" & escape_xml(objItem.Disabled) & "</disabled>" & vbcrlf
-    result.WriteText "          <full_name>" & escape_xml(objItem.FullName) & "</full_name>" & vbcrlf
-    result.WriteText "          <password_changeable>" & escape_xml(objItem.PasswordChangeable) & "</password_changeable>" & vbcrlf
-    result.WriteText "          <password_expires>" & escape_xml(objItem.PasswordExpires) & "</password_expires>" & vbcrlf
-    result.WriteText "          <password_required>" & escape_xml(objItem.PasswordRequired) & "</password_required>" & vbcrlf
-    result.WriteText "          <status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
-    result.WriteText "          <type>local</type>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    next
+        for each objItem in colItems
+            user_home = ""
+            set userItems = objWMIService.ExecQuery ("Select * from Win32_UserProfile Where SID = '" & objItem.SID & "'",,32)
+            if (not isnull(userItems)) then
+                for each userItem in userItems
+                    if (userItem.LocalPath > "") then
+                        user_home = userItem.LocalPath
+                    end if
+                next
+            end if
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+            result.WriteText "          <caption>" & escape_xml(objItem.Caption) & "</caption>" & vbcrlf
+            result.WriteText "          <sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
+            result.WriteText "          <domain>" & escape_xml(objItem.Domain) & "</domain>" & vbcrlf
+            result.WriteText "          <disabled>" & escape_xml(objItem.Disabled) & "</disabled>" & vbcrlf
+            result.WriteText "          <full_name>" & escape_xml(objItem.FullName) & "</full_name>" & vbcrlf
+            result.WriteText "          <password_changeable>" & escape_xml(objItem.PasswordChangeable) & "</password_changeable>" & vbcrlf
+            result.WriteText "          <password_expires>" & escape_xml(objItem.PasswordExpires) & "</password_expires>" & vbcrlf
+            result.WriteText "          <password_required>" & escape_xml(objItem.PasswordRequired) & "</password_required>" & vbcrlf
+            result.WriteText "          <status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
+            result.WriteText "          <home>" &  escape_xml(user_home) & "</home>" & vbcrlf
+            result.WriteText "          <type>local</type>" & vbcrlf
+            result.WriteText "      </item>" & vbcrlf
+        next
     end if
     ' The LocalSystem account
     result.WriteText "      <item>" & vbcrlf
@@ -3500,6 +3510,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
     result.WriteText "          <password_expires>False</password_expires>" & vbcrlf
     result.WriteText "          <password_required>False</password_required>" & vbcrlf
     result.WriteText "          <status>OK</status>" & vbcrlf
+    result.WriteText "          <home></home>" & vbcrlf
     result.WriteText "          <type>local</type>" & vbcrlf
     result.WriteText "      </item>" & vbcrlf
 
@@ -3515,6 +3526,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
     result.WriteText "          <password_expires>False</password_expires>" & vbcrlf
     result.WriteText "          <password_required>False</password_required>" & vbcrlf
     result.WriteText "          <status>OK</status>" & vbcrlf
+    result.WriteText "          <home></home>" & vbcrlf
     result.WriteText "          <type>local</type>" & vbcrlf
     result.WriteText "      </item>" & vbcrlf
 
@@ -3530,6 +3542,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
     result.WriteText "          <password_expires>False</password_expires>" & vbcrlf
     result.WriteText "          <password_required>False</password_required>" & vbcrlf
     result.WriteText "          <status>OK</status>" & vbcrlf
+    result.WriteText "          <home></home>" & vbcrlf
     result.WriteText "          <type>local</type>" & vbcrlf
     result.WriteText "      </item>" & vbcrlf
     result.WriteText "  </user>" & vbcrlf
