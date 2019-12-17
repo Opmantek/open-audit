@@ -194,6 +194,24 @@ class Groups extends MY_Controller
     }
 
     /**
+    * Return the result of running a query
+    *
+    * @access public
+    * @return NULL
+    */
+    public function execute()
+    {
+        if (empty($this->response->meta->properties) OR $this->response->meta->properties === '*') {
+            $this->response->meta->properties = $this->config->config['devices_default_group_columns'];
+        }
+        $this->response->data = $this->m_groups->execute($this->response->meta->id, $this->response->meta->properties);
+        $this->response->meta->include = 'v_devices_collection';
+        $this->response->meta->filtered = count($this->response->data);
+        $this->response->meta->total = count($this->response->data);
+        output();
+    }
+
+    /**
     * Supply a HTML form for the user to upload a collection of objects in CSV
     *
     * @access public

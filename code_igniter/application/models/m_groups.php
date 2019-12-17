@@ -96,6 +96,56 @@ class M_groups extends MY_Model
         }
     }
 
+    /**
+     * Run the SQL definition and return the provided properties OR the system.id list
+     * @param  integer $id         The ID of the group
+     * @param  string  $properties A string list of comma seperated properties
+     * @return array              An array of standard formatted devices, or an empty array
+     */
+    public function execute($id = 0, $properties = '')
+    {
+        $CI = & get_instance();
+        $sql = 'SELECT * FROM groups WHERE id = ? LIMIT 1';
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        if ( ! empty($result) && is_array($result)) {
+            $group = $result[0];
+            // below accounts for queries that end in a ; and/or a CR or spaces, etc
+            // when we add on LIMIT = 12345, it will break unless we strip those characters
+            $sql = trim($group->sql);
+            if (strpos($sql, ';') === strlen($sql)-1) {
+                $sql = substr($sql, 0, strlen($sql)-1);
+                $sql = trim($sql);
+            }
+            if ($properties === '') {
+                $sql = str_ireplace('SELECT DISTINCT(system.id) FROM system', 'SELECT DISTINCT(system.id) AS `system.id` FROM system', $sql);
+            } else {
+                $properties_array = explode(',', $properties);
+                $properties_new_array = array();
+                foreach ($properties_array as $property) {
+                    $properties_new_array[] = "{$property} AS `{$property}`";
+                }
+                $properties = implode(', ', $properties_new_array);
+                $sql = str_ireplace('SELECT DISTINCT(system.id) FROM system', "SELECT {$properties} FROM system", $sql);
+            }
+            $filter = "system.org_id IN ({$CI->user->org_list})";
+            if ( ! empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y'";
+            }
+            $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
+            $sql .= ' ' . $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
+                    $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'devices');
+        }
+        if (empty($result)) {
+            return array();
+        } else {
+            return $result;
+        }
+    }
+
     public function collection(int $user_id = null, int $response = null)
     {
         $CI = & get_instance();
