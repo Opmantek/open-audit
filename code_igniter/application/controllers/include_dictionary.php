@@ -45,7 +45,9 @@ $dictionary->marketing = '';
 $dictionary->notes = '';
 $dictionary->columns = new stdClass();
 $db_table = $table;
-if ($table == 'devices') { $db_table = 'system'; }
+if ($table === 'devices') {
+    $db_table = 'system';
+}
 $dictionary->attributes = new stdClass();
 $dictionary->attributes->fields = array();
 $dictionary->attributes->create = mandatory_fields($table);
@@ -69,7 +71,7 @@ $edited_by = 'The name of the user who last changed or added this item (read onl
 $edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
 $system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
-if ($table == 'attachments') {
+if ($table === 'attachments') {
     $dictionary->about = '<p>Files can be attached to individual devices.</p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->system_id = $system_id;
@@ -81,7 +83,7 @@ if ($table == 'attachments') {
     $dictionary->attributes->update = array();
 }
 
-if ($table == 'applications') {
+if ($table === 'applications') {
     $dictionary->sentence = 'You can tag devices with an Application of your choosing.';
     $dictionary->marketing = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -97,7 +99,7 @@ if ($table == 'applications') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'attributes') {
+if ($table === 'attributes') {
     $dictionary->sentence = 'Open-AudIT enables you to create and use your own values for certain stored fields. For example, if you have another status than those provided, just add it and use it. Simple.';
     $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -120,7 +122,7 @@ if ($table == 'attributes') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'buildings') {
+if ($table === 'buildings') {
     $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
     $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
@@ -139,7 +141,7 @@ if ($table == 'buildings') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'audit_log') {
+if ($table === 'audit_log') {
     $dictionary->about = '<p>A log of all the audit processing attempts.</p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->system_id = $system_id;
@@ -153,7 +155,7 @@ if ($table == 'audit_log') {
     $dictionary->attributes->update = array();
 }
 
-if ($table == 'availability') {
+if ($table === 'availability') {
     $dictionary->sentence = 'Open-AudIT can use industry standard toolsets to increase availability.';
     $dictionary->marketing = '<p>Open-AudIT uses a model that does not require tight coupling of the application, web and database components. Availability can be increased using industry standard toolsets such as a front end Apache proxy and MySQL replication.<br /><br />
     <br /><br />
@@ -162,7 +164,7 @@ if ($table == 'availability') {
     $dictionary->attributes->update = array();
 }
 
-if ($table == 'baselines') {
+if ($table === 'baselines') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Baselines, a light-weight compliance system that compares software, users, and netstat data against your required standard.';
     $dictionary->about = '<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br /><br />
         Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br />
@@ -179,9 +181,19 @@ You can create a baseline, run it against a group of devices and view the result
         <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br /><br />
         <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br /><br />
         <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br /><br /></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->organisation = $org_id;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->notes = 'Any additional notes you care to make.';
+    $dictionary->columns->documentation = 'Any additional documentation you need.';
+    $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'changes') {
+if ($table === 'changes') {
     $dictionary->sentence = 'Open-AudIT can tell you what changed, what was added or removed and when it occurred.';
     $dictionary->about = '<p>Open-AudIT has a powerful change detection engine. Any device attributes that are added, removed or changed will be detected and stored. These changes can be reported upon and the relevant data confirmed as to what was expected from your company change and release process.<br /><br />
         <br /><br />
@@ -193,7 +205,7 @@ if ($table == 'changes') {
     $dictionary->notes = '';
 }
 
-if ($table == 'clouds') {
+if ($table === 'clouds') {
     $dictionary->sentence = 'Open-AudIT can discover and audit your cloud-based virtual machines. You provide the credentials and Open-AudIT will query the Amazon or Microsoft APIs to determine what devices you have, their state, any associated networks and locations and then run discovery upon each cloud instance. You get all the regular Open-AudIT details, but now you also get cloud-specific details like size.';
     $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -212,15 +224,15 @@ if ($table == 'clouds') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'cmdb') {
-    $dictionary->sentence = 'Open-AudIT enables a CMDB - import to another or use Open-AudIT directly, the choice is yours. It\'s your data, afterall.';
+if ($table === 'cmdb') {
+    $dictionary->sentence = "Open-AudIT enables a CMDB - import to another or use Open-AudIT directly, the choice is yours. It's your data, afterall.";
     $dictionary->marketing = '<p>Open-AudIT can be used as your CMDB or as the data source for another application.<br /><br />
 As at v2.0, Open-AudIT supports a complete JSON restful API.<br /><br />
 Define a query and have your external program call the API and retrieve the data.<br /><br />
     ' . $link . '<br /><br /></p>';
 }
 
-if ($table == 'collectors') {
+if ($table === 'collectors') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Collectors. Have a single Open-AudIT server control many other servers that perform discovery and collect device information.';
     if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
         $dictionary->about = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
@@ -250,7 +262,7 @@ if ($table == 'collectors') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'connections') {
+if ($table === 'connections') {
     $dictionary->sentence = 'Track your connections to branch offices, the internet, where-ever else you need to. Simple, easy, intuitive.';
     $dictionary->marketing = '<p>Attributes such as the locations, the speed, provider, connected devices, type of connection and more are available.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -267,7 +279,7 @@ if ($table == 'connections') {
     $dictionary->attributes->update = array('name','org_id','description','provider','service_type','product_name','service_identifier','speed','location_id_a','location_id_b','system_id_a','system_id_b','line_number_a','line_number_b','ip_address_external_a','ip_address_external_b','ip_address_internal_a','ip_address_internal_b');
 }
 
-if ($table == 'credentials') {
+if ($table === 'credentials') {
     $dictionary->sentence = 'Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.';
     $dictionary->marketing = '<p>Credentials are used to access devices.<br /><br />The only supplied credential is that of SNMP public.<br /><br />Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br /></p>';
     $dictionary->about = '<p>Credentials are used to access devices.<br /><br />
@@ -289,10 +301,10 @@ if ($table == 'credentials') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'dashboards') {
-    $dictionary->sentence = 'Open-AudIT Professional and Enterprises\' interactive Dashboard provides a single point of access to audit status and results. The ability to customize and create Dashboards is an Enterprise feature.';
-    $dictionary->marketing = '<p>Simple, intuitive, dynamic - just some of the words used to describe Open-AudIT Enterprises\' interactive dashboard. The dashboard provides a single point of access to audit status, new software installs, device breakdowns, and fast access to missing devices.<br /><br />
-    ' . $link . '<br /><br /></p>';
+if ($table === 'dashboards') {
+    $dictionary->sentence = "Open-AudIT Professional and Enterprises' interactive Dashboard provides a single point of access to audit status and results. The ability to customize and create Dashboards is an Enterprise feature.";
+    $dictionary->marketing = "<p>Simple, intuitive, dynamic - just some of the words used to describe Open-AudIT Enterprises' interactive dashboard. The dashboard provides a single point of access to audit status, new software installs, device breakdowns, and fast access to missing devices.<br /><br />
+    " . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '                                <br /><br />
@@ -323,7 +335,7 @@ if ($table == 'dashboards') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'devices') {
+if ($table === 'devices') {
     $dictionary->sentence = 'Open-AudIT tracks every device on your network. Change a device - see it. Move a device - see it. Remove a device - see it.';
     $dictionary->marketing = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />
     Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />
@@ -344,7 +356,7 @@ if ($table == 'devices') {
     $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
 }
 
-if ($table == 'discoveries') {
+if ($table === 'discoveries') {
     $dictionary->sentence = 'Open-AudIT Enterprise discovers every device on your network.';
     $dictionary->marketing = '<p>Discoveries are at the very heart of what Open-AudIT does. How else would you know "What is on my network?"<br /><br />
     Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />
@@ -378,26 +390,26 @@ if ($table == 'discoveries') {
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 
-    $dictionary->columns->match_dbus = "Should we match a device based on its dbus id.";
-    $dictionary->columns->match_fqdn = "Should we match a device based on its fqdn.";
-    $dictionary->columns->match_dns_fqdn = "Should we match a device based on its DNS fqdn.";
-    $dictionary->columns->match_dns_hostname = "Should we match a device based on its DNS hostname.";
-    $dictionary->columns->match_hostname = "Should we match a device based only on its hostname.";
-    $dictionary->columns->match_hostname_dbus = "Should we match a device based on its hostname and dbus id.";
-    $dictionary->columns->match_hostname_serial = "Should we match a device based on its hostname and serial.";
-    $dictionary->columns->match_hostname_uuid = "Should we match a device based on its hostname and UUID.";
-    $dictionary->columns->match_ip = "Should we match a device based on its ip.";
-    $dictionary->columns->match_ip_no_data = "Should we match a device based on its ip if we have an existing device with no data.";
-    $dictionary->columns->match_mac = "Should we match a device based on its mac address.";
-    $dictionary->columns->match_mac_vmware = "Should we match a device based mac address even if its a known likely duplicate from VMware.";
-    $dictionary->columns->match_serial = "Should we match a device based on its serial number.";
-    $dictionary->columns->match_serial_type = "Should we match a device based on its serial and type.";
-    $dictionary->columns->match_sysname = "Should we match a device based only on its SNMP sysName.";
-    $dictionary->columns->match_sysname_serial = "Should we match a device based only on its SNMP sysName and serial.";
-    $dictionary->columns->match_uuid = "Should we match a device based on its UUID.";
+    $dictionary->columns->match_dbus = 'Should we match a device based on its dbus id.';
+    $dictionary->columns->match_fqdn = 'Should we match a device based on its fqdn.';
+    $dictionary->columns->match_dns_fqdn = 'Should we match a device based on its DNS fqdn.';
+    $dictionary->columns->match_dns_hostname = 'Should we match a device based on its DNS hostname.';
+    $dictionary->columns->match_hostname = 'Should we match a device based only on its hostname.';
+    $dictionary->columns->match_hostname_dbus = 'Should we match a device based on its hostname and dbus id.';
+    $dictionary->columns->match_hostname_serial = 'Should we match a device based on its hostname and serial.';
+    $dictionary->columns->match_hostname_uuid = 'Should we match a device based on its hostname and UUID.';
+    $dictionary->columns->match_ip = 'Should we match a device based on its ip.';
+    $dictionary->columns->match_ip_no_data = 'Should we match a device based on its ip if we have an existing device with no data.';
+    $dictionary->columns->match_mac = 'Should we match a device based on its mac address.';
+    $dictionary->columns->match_mac_vmware = 'Should we match a device based mac address even if its a known likely duplicate from VMware.';
+    $dictionary->columns->match_serial = 'Should we match a device based on its serial number.';
+    $dictionary->columns->match_serial_type = 'Should we match a device based on its serial and type.';
+    $dictionary->columns->match_sysname = 'Should we match a device based only on its SNMP sysName.';
+    $dictionary->columns->match_sysname_serial = 'Should we match a device based only on its SNMP sysName and serial.';
+    $dictionary->columns->match_uuid = 'Should we match a device based on its UUID.';
 }
 
-if ($table == 'discovery_scan_options') {
+if ($table === 'discovery_scan_options') {
     $dictionary->sentence = '';
     $dictionary->marketing = '';
     $dictionary->about = '<p>Scanning options allow you to easily apply a set of options to a discovery.<br /><br /></p>';
@@ -407,23 +419,23 @@ if ($table == 'discovery_scan_options') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = $description;
 
-    $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.";
-    $dictionary->columns->service_version = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
-    $dictionary->columns->filtered = "Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?";
-    $dictionary->columns->{'open|filtered'} = "Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?";
-    $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
-    $dictionary->columns->timeout = "The number of seconds to try and communicate with the target IP.";
-    $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";
-    $dictionary->columns->nmap_udp_ports = "The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.";
-    $dictionary->columns->tcp_ports = "Any specific TCP ports you wish tested (comma seperated, no spaces).";
-    $dictionary->columns->udp_ports = "Any specific UDP ports you wish tested (comma seperated, no spaces).";
-    $dictionary->columns->exclude_tcp_ports = "Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
-    $dictionary->columns->exclude_udp_ports = "Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
-    $dictionary->columns->exclude_ip = "Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.";
-    $dictionary->columns->ssh_ports = "If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.";
+    $dictionary->columns->ping = 'Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.';
+    $dictionary->columns->service_version = 'When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.';
+    $dictionary->columns->filtered = 'Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?';
+    $dictionary->columns->{'open|filtered'} = 'Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?';
+    $dictionary->columns->timing = 'The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.';
+    $dictionary->columns->timeout = 'The number of seconds to try and communicate with the target IP.';
+    $dictionary->columns->nmap_tcp_ports = 'The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.';
+    $dictionary->columns->nmap_udp_ports = 'The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.';
+    $dictionary->columns->tcp_ports = 'Any specific TCP ports you wish tested (comma seperated, no spaces).';
+    $dictionary->columns->udp_ports = 'Any specific UDP ports you wish tested (comma seperated, no spaces).';
+    $dictionary->columns->exclude_tcp_ports = 'Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.';
+    $dictionary->columns->exclude_udp_ports = 'Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.';
+    $dictionary->columns->exclude_ip = 'Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.';
+    $dictionary->columns->ssh_ports = 'If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.';
 }
 
-if ($table == 'export') {
+if ($table === 'export') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise include fast and easy exporting of detailed device-level information in multiple formats.';
     $dictionary->marketing = '<p>Quickly and easily select which device details you want to view and export. Select your format; screen or csv file, and the level of data you want.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -431,7 +443,7 @@ if ($table == 'export') {
     ' . $link . '<br /><br /></p>';
 }
 
-if ($table == 'fields') {
+if ($table === 'fields') {
     $dictionary->sentence = 'Open-AudIT is extensible with custom fields. If you have a particular attribute you need to record, easily add it to the database and use it to report or even group devices.';
     $dictionary->marketing = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />
     Once a Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />
@@ -453,7 +465,7 @@ if ($table == 'fields') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'files') {
+if ($table === 'files') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Files, providing change control monitoring of individual files and folders on both Linux and Windows servers.';
     $dictionary->about = '<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br /><br />
 This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br /><br />
@@ -476,7 +488,7 @@ Supported clients are Windows and Linux.<br /><br />
     $dictionary->attributes->update = array('name','org_id','description','path');
 }
 
-if ($table == 'floors') {
+if ($table === 'floors') {
     $dictionary->sentence = 'Define your floors and assign them to a building of your choosing.';
     $dictionary->marketing = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
@@ -493,12 +505,12 @@ if ($table == 'floors') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'groups') {
+if ($table === 'groups') {
     $dictionary->sentence = 'Easily group together devices for simple reporting. Open-AudIT provides more than a dozen groups out of the box and makes it simple to create more.';
-    $dictionary->marketing = '<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id\'s only. If requested using the web interface, they return the standard column attribute list.<br /><br />
-    ' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id\'s only. If requested using the web interface, they return the standard column attribute list.<br /><br />
-    ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = "<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id's only. If requested using the web interface, they return the standard column attribute list.<br /><br />
+    " . $link . '<br /><br /></p>';
+    $dictionary->about = "<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id's only. If requested using the web interface, they return the standard column attribute list.<br /><br />
+    " . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(system.id)</code>.<br /><br />
 The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />
 An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.os_family = \'Debian\'</code><br /><br /></p>';
@@ -513,7 +525,7 @@ An example for SQL to select all devices running the Debian OS - <code>SELECT DI
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'integrations') {
+if ($table === 'integrations') {
     $dictionary->sentence = 'Use Open-AudIT to integrate with external systems.';
     $dictionary->marketing = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -528,7 +540,7 @@ if ($table == 'integrations') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'ldap_servers') {
+if ($table === 'ldap_servers') {
     $dictionary->about = '<p>Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate a user and in addition, to create a user account using assigned roles and orgs based on LDAP group membership.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>If using Active Directory, you do not need to populate the <code>user_dn</code> or <code>user_membership_attribute</code> attributes. These are used by OpenLDAP only.<br /><br />
@@ -563,7 +575,7 @@ if ($table == 'ldap_servers') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'licenses') {
+if ($table === 'licenses') {
     $dictionary->sentence = 'Track your installed software, quickly and easily.';
     $dictionary->marketing = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />
 To create an entry to track your licenses provide a name, an organization, the number of licenses acquired and the name of the software. Those simple pieces of information are all Open-AudIT needs to track and report on your installed software licenses.<br /><br />
@@ -584,7 +596,7 @@ To create an entry to track your licenses you <em>must</em> to provide a name, a
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'locations') {
+if ($table === 'locations') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
     $dictionary->marketing = '<p>A location is a physical address that can have devices associated with it.<br /><br />
     You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />
@@ -600,7 +612,7 @@ if ($table == 'locations') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'maps') {
+if ($table === 'maps') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
     $dictionary->marketing = '<p>Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location. Automated conversion of street addresses to geocodes and long/lat along with assignment of devices to locations during discovery make mapping easy and intuitive.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -608,7 +620,7 @@ if ($table == 'maps') {
     ' . $link . '<br /><br /></p>';
 }
 
-if ($table == 'networks') {
+if ($table === 'networks') {
     $dictionary->sentence = 'Open-AudIT stores your networks and in addition, provides a secure mechanism for accepting input data.';
     $dictionary->marketing = '<p>A network is derived from discovery entries and device attribtes.<br /><br />
     Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />
@@ -627,7 +639,7 @@ if ($table == 'networks') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'orgs') {
+if ($table === 'orgs') {
     $dictionary->sentence = 'Open-AudIT provides multi-tenancy out of the box!';
     $dictionary->marketing = '<p>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br /><br />
@@ -648,7 +660,7 @@ if ($table == 'orgs') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'queries') {
+if ($table === 'queries') {
     $dictionary->sentence = 'Open-AudIT provides many built-in queries and makes it simple to create your own.';
     $dictionary->marketing = '<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -669,7 +681,7 @@ An example query SQL showing attributes on devices that have an <code>os_group</
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'racks') {
+if ($table === 'racks') {
     $dictionary->sentence = 'Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.';
     $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
@@ -710,7 +722,7 @@ if ($table == 'racks') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'rack_devices') {
+if ($table === 'rack_devices') {
     $dictionary->sentence = 'Place your devices into racks.';
     $dictionary->marketing = '<p>These are the devices that live within a rack.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $link . '<br /><br /></p>';
@@ -733,7 +745,7 @@ if ($table == 'rack_devices') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'reports') {
+if ($table === 'reports') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.';
     $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen "over time". All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>"over time\</i>.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -743,7 +755,7 @@ Simply Select which types of devices you want to be exported, which queries to r
     $dictionary->notes = '';
 }
 
-if ($table == 'roles') {
+if ($table === 'roles') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes User Roles, full role-based access control (RBAC) allowing fine-grained control over each user\'s experience.';
     $dictionary->about = '<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -763,7 +775,7 @@ if ($table == 'roles') {
 }
 
 
-if ($table == 'rooms') {
+if ($table === 'rooms') {
     $dictionary->sentence = 'Define your rooms and assign them to a floor of your choosing.';
     $dictionary->marketing = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
@@ -780,7 +792,7 @@ if ($table == 'rooms') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'rows') {
+if ($table === 'rows') {
     $dictionary->sentence = 'Define your rows and assign them to a room of your choosing.';
     $dictionary->marketing = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $link . '<br /><br /></p>';
@@ -797,7 +809,7 @@ if ($table == 'rows') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'rules') {
+if ($table === 'rules') {
     $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
     $dictionary->marketing = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -821,7 +833,7 @@ if ($table == 'rules') {
         $fields = $this->db->list_fields($table);
         $myfields = array();
         foreach ($fields as $field) {
-            if ($field != 'id' and $field != 'current' and $field != 'system_id' and $field != 'first_seen' and $field != 'last_seen') {
+            if ($field !== 'id' && $field !== 'current' && $field !== 'system_id' && $field !== 'first_seen' && $field !== 'last_seen') {
                 $myfields[] = $field;
             }
         }
@@ -832,7 +844,7 @@ if ($table == 'rules') {
     $dictionary->attributes->columns = $columns;
 }
 
-if ($table == 'servers') {
+if ($table === 'servers') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Servers and Collectors.';
     $dictionary->marketing = '<p> ' . $link . '<br /><br /></p>';
     $dictionary->about = '';
@@ -843,7 +855,7 @@ if ($table == 'servers') {
     $dictionary->columns->uuid = 'The local UUID to identify <i>this</i> server.';
 }
 
-if ($table == 'scalability') {
+if ($table === 'scalability') {
     $dictionary->sentence = 'Open-AudIT is incredibly resource efficient. Some customers audit over 30,000 devices on a single instance!';
     $dictionary->about = '<p><br /><br />
     ' . $link . '<br /><br /></p>';
@@ -853,7 +865,7 @@ if ($table == 'scalability') {
     $dictionary->notes = '';
 }
 
-if ($table == 'scripts') {
+if ($table === 'scripts') {
     $dictionary->sentence = 'Open-AudIT utilise powerful auditing scripts to avoid installing an agent while at the same time, gathering an incredible amount of configuration data from your devices.';
     $dictionary->marketing = '<p>The auditing of computers is enabled by utilising powerful audit scripts developed over many years. The scripts are constantly updated to take advantage of and reflect the lastest operaing system features specific to each OS.<br /><br />
     There are scripts to audit Windows, Linux, VMware ESX, OSX, AIX and Solaris.<br /><br />
@@ -877,12 +889,12 @@ if ($table == 'scripts') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'summaries') {
+if ($table === 'summaries') {
     $dictionary->sentence = 'Summaries provide drilldown reporting capabilities. Simple, intuitive, powerful.';
-    $dictionary->marketing = '<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
-    ' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
-    ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = "<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it's quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
+    " . $link . '<br /><br /></p>';
+    $dictionary->about = "<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it's quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
+    " . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br /><br />
     When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br /><br />
     If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br /><br /></p>';
@@ -898,14 +910,14 @@ if ($table == 'summaries') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'support') {
-    $dictionary->sentence = 'Amazing support from Opmantek - or the community if you like. It\'s the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.';
-    $dictionary->marketing = '<p>Open-AudIT is supported by Opmantek with an amazing level of support. If you prefer an active community of support givers, there\'s that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if\'s or but\'s. Great support. Period.<br /><br />
+if ($table === 'support') {
+    $dictionary->sentence = "Amazing support from Opmantek - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";
+    $dictionary->marketing = "<p>Open-AudIT is supported by Opmantek with an amazing level of support. If you prefer an active community of support givers, there\'s that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if's or but's. Great support. Period.<br /><br />
     <br /><br />
-    ' . $link . '<br /><br /></p>';
+    " . $link . '<br /><br /></p>';
 }
 
-if ($table == 'tasks') {
+if ($table === 'tasks') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Task Scheduling. Schedule device discovery, report generation, or run a baseline check on any schedule you need, as often as you need, or run them on-demand from one interface.';
     $dictionary->about = '<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br /><br />
 Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br /><br />
@@ -940,8 +952,8 @@ Create individual discovery schedules for each subnet or AD controller, add in r
 
 }
 
-if ($table == 'users') {
-    $dictionary->sentence = 'Open-AudIT Enterprise includes Users &amp; Roles, full role-based access control (RBAC) allowing fine-grained control over each user\'s experience.';
+if ($table === 'users') {
+    $dictionary->sentence = "Open-AudIT Enterprise includes Users &amp; Roles, full role-based access control (RBAC) allowing fine-grained control over each user's experience.";
     $dictionary->marketing = '<p>Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
@@ -969,7 +981,7 @@ if ($table == 'users') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table == 'warranties') {
+if ($table === 'warranties') {
     $dictionary->sentence = 'Record the details of your asset warranties with Open-AudIT and report on them as easily as ever.';
     $dictionary->about = '<p>Warranties are an essential item to track. Open-AudIT makes it easy to record and report on warranties. Easily create reports to tell you what devices have expiring warranties and run have them run automatically. Be able to forecast your replacement equipment purchases for your next purchase period simply and easily.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -978,7 +990,7 @@ if ($table == 'warranties') {
     $dictionary->notes = '';
 }
 
-if ($table == 'widgets') {
+if ($table === 'widgets') {
     $dictionary->sentence = 'Widgets are used on Dashboards and are completely open to user design.';
     $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />
     ' . $link . '<br /><br /></p>';
