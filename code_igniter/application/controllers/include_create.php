@@ -46,7 +46,7 @@ $entry->detail = 'include_create::create';
 $entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
-if (!empty($this->response->meta->id)) {
+if ( ! empty($this->response->meta->id)) {
     if ($this->response->meta->format === 'json') {
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         output($this->response);
@@ -67,7 +67,7 @@ $log->severity = 7;
 $log->status = 'success';
 $log->summary = 'finish';
 $log->type = 'access';
-if ($this->config->config['log_level'] == 7) {
+if ($this->config->config['log_level'] === 7) {
     $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
