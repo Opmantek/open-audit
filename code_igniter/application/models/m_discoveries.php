@@ -134,10 +134,10 @@ class M_discoveries extends MY_Model
      */
     public function delete(int $id = 0)
     {
+        $data = array($id);
         $sql = 'DELETE FROM `discovery_log` WHERE discovery_id = ?';
         $this->run_sql($sql, $data);
-        $sql = 'DELETE FROM `collectors` WHERE `id` = ?';
-        $data = array($id);
+        $sql = 'DELETE FROM `discoveries` WHERE `id` = ?';
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
