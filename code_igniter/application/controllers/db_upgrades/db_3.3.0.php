@@ -28,6 +28,37 @@
 **/
 
 /*
+DROP TABLE IF EXISTS `baselines`;
+
+CREATE TABLE `baselines` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `notes` text NOT NULL,
+  `documentation` text NOT NULL,
+  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  CONSTRAINT `baselines_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `baselines_policies`;
+
+CREATE TABLE `baselines_policies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `table` varchar(45) NOT NULL DEFAULT '',
+  `tests` mediumtext NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `baseline_id` (`baseline_id`),
+  CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DELETE FROM configuration WHERE `name` = 'device_auto_delete';
 
 INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y', 'system', '2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
@@ -152,6 +183,50 @@ UPDATE `configuration` SET `value` = '3.3.0' WHERE `name` = 'display_version';
 */
 
 $this->log_db('Upgrade database to 3.3.0 commenced');
+
+$sql = "DROP TABLE IF EXISTS `baselines`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `baselines` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `notes` text NOT NULL,
+  `documentation` text NOT NULL,
+  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  CONSTRAINT `baselines_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DROP TABLE IF EXISTS `baselines_policies`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `baselines_policies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `table` varchar(45) NOT NULL DEFAULT '',
+  `tests` mediumtext NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `baseline_id` (`baseline_id`),
+  CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# Migrate any existing baselines
+if (file('/usr/local/omk/var/oae/baselines/definitions')) {
+
+}
 
 $sql = "DELETE FROM configuration WHERE `name` = 'device_auto_delete'";
 $this->db->query($sql);

@@ -48,6 +48,11 @@
  */
 class M_users extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,43 +61,55 @@ class M_users extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT users.*, orgs.name AS `org_name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) WHERE users.id = ?";
+        $sql = 'SELECT users.*, orgs.name AS `org_name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) WHERE users.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        if (!empty($result[0]->roles)) {
+        if ( ! empty($result[0]->roles)) {
             $result[0]->roles = json_decode($result[0]->roles);
         }
-        if (!empty($result[0]->orgs)) {
+        if ( ! empty($result[0]->orgs)) {
             $result[0]->orgs = json_decode($result[0]->orgs);
         }
         $result = $this->format_data($result, 'users');
         return ($result);
     }
 
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        if ($id != 1) {
+        if ($id !== 1) {
             // attempt to delete the item
-            $sql = "DELETE FROM `users` WHERE id = ?";
+            $sql = 'DELETE FROM `users` WHERE id = ?';
             $data = array($id);
             $this->run_sql($sql, $data);
             return true;
@@ -102,26 +119,33 @@ class M_users extends MY_Model
         }
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection(int $user_id = null, int $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM users WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $sql = 'SELECT * FROM users WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'users');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, dashboards.id AS `dashboards.id`, dashboards.name AS `dashboards.name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) LEFT JOIN dashboards ON (users.dashboard_id = dashboards.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, dashboards.id AS `dashboards.id`, dashboards.name AS `dashboards.name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) LEFT JOIN dashboards ON (users.dashboard_id = dashboards.id) ' . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            if (!empty($result)) {
+            if ( ! empty($result)) {
                 for ($i=0; $i < count($result); $i++) {
                     $result[$i]->roles = json_decode($result[$i]->roles);
                     $result[$i]->orgs = json_decode($result[$i]->orgs);
@@ -133,6 +157,11 @@ class M_users extends MY_Model
         }
     }
 
+    /**
+     * [get_parent_orgs description]
+     * @param  integer $org_id [description]
+     * @return [type]          [description]
+     */
     public function get_parent_orgs($org_id = 0)
     {
         $this->log->function = strtolower(__METHOD__);
@@ -142,12 +171,12 @@ class M_users extends MY_Model
         $CI = & get_instance();
         $parents_array = array();
 
-        if (!$this->db->table_exists('orgs')) {
+        if ( ! $this->db->table_exists('orgs')) {
             return $parents_array;
         }
 
         if (empty($org_id)) {
-            if (!empty($CI->user->org_id)) {
+            if ( ! empty($CI->user->org_id)) {
                 $org_id = $CI->user->org_id;
             } else {
                 return $parents_array;
@@ -155,21 +184,25 @@ class M_users extends MY_Model
         }
 
         do {
-            $sql = "/* M_users::get_parent_orgs */ SELECT a.id AS id FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";
+            $sql = '/* M_users::get_parent_orgs */ SELECT a.id AS id FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id';
             $query = $this->db->query($sql, array($org_id));
             $result = $query->result();
-            if (!empty($result[0]->id)) {
+            if ( ! empty($result[0]->id)) {
                 $org_id = intval($result[0]->id);
                 $parents_array[] = $org_id;
             } else {
                 $org_id = 1;
             }
-
-        } while ($org_id != 1);
+        } while ($org_id !== 1);
 
         return $parents_array;
     }
 
+    /**
+     * [get_orgs description]
+     * @param  [type] $user_id [description]
+     * @return [type]          [description]
+     */
     public function get_orgs($user_id)
     {
         $this->log->function = strtolower(__METHOD__);
@@ -184,7 +217,7 @@ class M_users extends MY_Model
             if ($this->db->table_exists('oa_user')) {
                 return array(1);
             } else {
-                $sql = "/* m_users::get_orgs */ " .  "SELECT orgs FROM users WHERE id = ?";
+                $sql = '/* m_users::get_orgs */ ' .  'SELECT orgs FROM users WHERE id = ?';
                 $query = $this->db->query($sql, array($user_id));
                 $result = $query->result();
                 if (count($result) > 0) {
@@ -199,7 +232,7 @@ class M_users extends MY_Model
             return array();
         }
         
-        $sql = "SELECT * FROM orgs";
+        $sql = 'SELECT * FROM orgs';
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $this->orgs = $query->result();
@@ -213,15 +246,16 @@ class M_users extends MY_Model
         return($org_id_list);
     }
 
+    /**
+     * [get_org description]
+     * @param  [type] $org_id [description]
+     * @return [type]         [description]
+     */
     private function get_org($org_id)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'pre';
-        $this->log->summary = 'retrieving org';
-        #stdlog($this->log);
         $org_list = array();
         foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 1) {
+            if ($org->parent_id === $org_id && $org->id !== 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->get_org($org->id) as $org) {
                     $org_list[] = intval($org);
@@ -231,36 +265,43 @@ class M_users extends MY_Model
         return($org_list);
     }
 
+    /**
+     * [get_user_permission description]
+     * @param  string $user_id    [description]
+     * @param  string $endpoint   [description]
+     * @param  string $permission [description]
+     * @return [type]             [description]
+     */
     public function get_user_permission($user_id = '', $endpoint = '', $permission = '')
     {
         if ($this->config->config['internal_version'] < 20160904) {
-            if (!empty($this->user->admin) and $this->user->admin == 'y') {
+            if ( ! empty($this->user->admin) && $this->user->admin === 'y') {
                 return true;
             } else {
                 return false;
             }
         }
-        if ($endpoint == '') {
+        if ($endpoint === '') {
             return false;
         }
         if ($endpoint === 'discovery_log') {
             $endpoint = 'discoveries';
         }
-        if ($permission == '') {
+        if ($permission === '') {
             return false;
         }
         $CI = & get_instance();
-        if ($user_id == '') {
+        if ($user_id === '') {
             $user_id = @intval($CI->user->id);
             if (empty($user_id)) {
                 return false;
             } else {
-                if (!is_array($CI->user->roles)) {
+                if ( ! is_array($CI->user->roles)) {
                     $user_roles = json_decode($CI->user->roles);
                 } else {
                     $user_roles = $CI->user->roles;
                 }
-                if (!empty($CI->roles)) {
+                if ( ! empty($CI->roles)) {
                     $roles = $CI->roles;
                 } else {
                     $CI->load->model('m_roles');
@@ -270,13 +311,13 @@ class M_users extends MY_Model
         } else {
             $user_id = intval($user_id);
             if ($this->db->table_exists('users')) {
-                $sql = "SELECT roles FROM users WHERE id = ?";
+                $sql = 'SELECT roles FROM users WHERE id = ?';
             } else {
-                $sql = "SELECT roles FROM oa_user WHERE id = ?";
+                $sql = 'SELECT roles FROM oa_user WHERE id = ?';
             }
             $data = array($user_id);
             $result = $this->run_sql($sql, $data);
-            if (!empty($result[0]->roles)) {
+            if ( ! empty($result[0]->roles)) {
                 $user_roles = json_decode($result[0]->roles);
             } else {
                 if (intval($this->config->config['internal_version']) < 20160904) {
@@ -290,12 +331,12 @@ class M_users extends MY_Model
         if (empty($user_roles)) {
             return false;
         }
-        if (!empty($user_roles) and !empty($roles)) {
+        if ( ! empty($user_roles) && ! empty($roles)) {
             foreach ($user_roles as $user_role) {
                 foreach ($roles as $role) {
-                    if ($role->attributes->name == $user_role) {
+                    if ($role->attributes->name === $user_role) {
                         $permissions = json_decode($role->attributes->permissions);
-                        if (!empty($permissions->$endpoint)) {
+                        if ( ! empty($permissions->$endpoint)) {
                             if (stripos($permissions->$endpoint, $permission) !== false) {
                                 return true;
                             }
@@ -304,19 +345,24 @@ class M_users extends MY_Model
                 }
             }
         }
-        //log_error('ERR-0015', $endpoint . ':' . $permission);
         return false;
     }
 
+    /**
+     * [get_user_collection_org_permission description]
+     * @param  [type] $collection [description]
+     * @param  [type] $id         [description]
+     * @return [type]             [description]
+     */
     public function get_user_collection_org_permission($collection, $id)
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'retrieving collection orgs';
         stdlog($this->log);
-        if ($collection == '') {
+        if ($collection === '') {
             return false;
         }
-        if ($id == '') {
+        if ($id === '') {
             return false;
         } else {
             $id = intval($id);
@@ -328,36 +374,39 @@ class M_users extends MY_Model
         $table = $collection;
         $id_name = 'id';
 
-        if ($collection == 'devices') {
+        if ($collection === 'devices') {
             $table = 'system';
         }
-        if ($collection == 'orgs') {
+        if ($collection === 'orgs') {
             $org_id_name = 'id';
         }
-        if ($table == '') {
+        if ($table === '') {
             return false;
         }
 
-        if ($table == 'users' and $CI->response->meta->id == $CI->user->id) {
+        if ($table === 'users' && $CI->response->meta->id === $CI->user->id) {
             return true;
         }
-
-        $sql = "SELECT $org_id_name AS org_id FROM $table WHERE $id_name = ?";
+        if ($collection !== 'baselines_policies') {
+            $sql = "SELECT {$org_id_name} AS org_id FROM {$table} WHERE {$id_name} = ?";
+        } else {
+            $sql = 'SELECT orgs.id AS org_id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) LEFT JOIN orgs ON (baselines.org_id = orgs.id) WHERE baselines_policies.id = ?';
+        }
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        if (count($result) == 0) {
+        if (count($result) === 0) {
             log_error('ERR-0007', '');
             return false;
         } else {
             $permitted = false;
             $temp = explode(',', str_replace('"', '', $CI->user->org_list));
             foreach ($temp as $key => $value) {
-                if ($result[0]->org_id == $value) {
+                if ($result[0]->org_id === $value) {
                     $permitted = true;
                 }
             }
-            if (!$permitted) {
+            if ( ! $permitted) {
                 log_error('ERR-0008', '');
                 return false;
             }
@@ -365,8 +414,15 @@ class M_users extends MY_Model
         return true;
     }
 
-    public function has_role($role = '', $roles = array()) {
-        if ($role == '') {
+    /**
+     * [has_role description]
+     * @param  string  $role  [description]
+     * @param  array   $roles [description]
+     * @return boolean        [description]
+     */
+    public function has_role($role = '', $roles = array())
+    {
+        if ($role === '') {
             return false;
         }
         if (count($roles) === 0) {
@@ -376,31 +432,41 @@ class M_users extends MY_Model
             return false;
         }
         foreach ($roles as $thisrole) {
-            if ($role == $thisrole) {
+            if ($role === $thisrole) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * [has_org description]
+     * @param  string  $org  [description]
+     * @param  string  $orgs [description]
+     * @return boolean       [description]
+     */
     public function has_org($org = '', $orgs = '') {
-        if ($org == '') {
+        if ($org === '') {
             return false;
         }
-        if ($orgs == '') {
+        if ($orgs === '') {
             $orgs = $this->user->orgs;
         }
         if (empty($orgs)) {
             return false;
         }
         foreach ($orgs as $thisorg) {
-            if ($org == $thisorg) {
+            if ($org === $thisorg) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * [validate description]
+     * @return [type] [description]
+     */
     public function validate()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -430,17 +496,17 @@ class M_users extends MY_Model
             $db_prefix = '';
         }
 
-        if (!empty($_SERVER['HTTP_USER'])) {
+        if ( ! empty($_SERVER['HTTP_USER'])) {
             if (stripos($_SERVER['HTTP_USER'], '@') !== false) {
                 $temp = explode('@', $_SERVER['HTTP_USER']);
                 $_SERVER['HTTP_USER'] = $temp[0];
                 unset($temp);
             }
-            $sql = "SELECT * FROM `users` WHERE `name` = ?";
+            $sql = 'SELECT * FROM `users` WHERE `name` = ?';
             $data = array($_SERVER['HTTP_USER']);
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
-            if ($query->num_rows() == 1) {
+            if ($query->num_rows() === 1) {
                 $this->log->summary = 'Valid username submitted via headers (' . $_SERVER['HTTP_USER'] . ')';
                 stdlog($this->log);
                 $user = $query->row();
@@ -451,14 +517,14 @@ class M_users extends MY_Model
                 redirect('logon');
             }
         }
-        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' or $_SERVER['REMOTE_ADDR'] == '::1')) {
+        if ( ! empty($_SERVER['REMOTE_ADDR']) && ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' OR $_SERVER['REMOTE_ADDR'] === '::1')) {
             $ip = '127.0.0.1';
         }
-        if (!empty($_SERVER['HTTP_UUID'])) {
+        if ( ! empty($_SERVER['HTTP_UUID'])) {
             $supplied_uuid = $_SERVER['HTTP_UUID'];
             $files = array('/usr/local/opmojo/conf/opCommon.nmis', '/usr/local/omk/conf/opCommon.nmis');
             $operating_system = php_uname('s');
-            if ($operating_system == 'Windows NT') {
+            if ($operating_system === 'Windows NT') {
                 $files = array('c:\\omk\\conf\\opCommon.nmis', 'c:\\usr\\local\\opmojo\\conf\\opCommon.nmis');
             }
             unset($operating_system);

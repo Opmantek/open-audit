@@ -57,7 +57,6 @@ $entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
 if ($this->response->meta->format === 'json') {
-    #$this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
     output($this->response);
 } else {
@@ -71,7 +70,11 @@ $log->severity = 7;
 $log->status = 'success';
 $log->summary = 'finish';
 $log->type = 'access';
-if ($this->config->config['log_level'] == 7) {
+if ($this->config->config['log_level'] === 7) {
     $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
+
+// End of file include_update.php
+// Location: ./controllers/include_update.php
+

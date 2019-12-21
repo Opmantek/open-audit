@@ -78,6 +78,46 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+
+    public function base()
+    {
+        $sql = "DELETE FROM baselines";
+        $this->db->query($sql);
+
+        $sql = "DELETE FROM baselines_policies";
+        $this->db->query($sql);
+
+        $directory_path = '/usr/local/opmojo/var/oae/baselines/definitions/';
+        if (is_dir($directory_path)) {
+            $directory = dir($directory_path);
+            while (false !== ($entry = $directory->read())) {
+                $contents = '';
+                if (strpos($entry, '.json') !== false) {
+                    $contents = file_get_contents($directory_path . $entry);
+                    echo $entry."<br />\n";
+                    $definition = @json_decode($contents);
+                    if ($definition) {
+                        if (is_array($definition->policies)) {
+                            $sql = "INSERT INTO `baselines` VALUES (?, ?, ?, ?, ?, ?, ?, 'system', NOW())";
+                            $data = array($definition->id, $definition->name, $definition->org_id, $definition->description, $definition->notes, $definition->documentation, $definition->priority);
+                            $this->db->query($sql, $data);
+                            echo $this->db->last_query();
+                            echo "<br /><br />\n";
+                            foreach ($definition->policies as $policy) {
+                                if ( ! empty($policy->name)) {
+                                    $sql = 'INSERT INTO baselines_policies VALUES (NULL, ?, ?, ?, ?, ?)';
+                                    $data = array($definition->id, $policy->name, $policy->priority, $policy->table, json_encode($policy->tests));
+                                    $this->db->query($sql, $data);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $directory->close();
+        }
+    }
+
     public function test_rules_json()
     {
         $sql = "SELECT * FROM rules";

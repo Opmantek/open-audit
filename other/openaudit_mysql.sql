@@ -402,6 +402,67 @@ LOCK TABLES `audit_log` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `baselines`
+--
+
+DROP TABLE IF EXISTS `baselines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `baselines` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `notes` text NOT NULL,
+  `documentation` text NOT NULL,
+  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  CONSTRAINT `baselines_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `baselines`
+--
+
+LOCK TABLES `baselines` WRITE;
+/*!40000 ALTER TABLE `baselines` DISABLE KEYS */;
+/*!40000 ALTER TABLE `baselines` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `baselines_policies`
+--
+
+DROP TABLE IF EXISTS `baselines_policies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `baselines_policies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `table` varchar(45) NOT NULL DEFAULT '',
+  `tests` mediumtext NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `baseline_id` (`baseline_id`),
+  CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `baselines_policies`
+--
+
+LOCK TABLES `baselines_policies` WRITE;
+/*!40000 ALTER TABLE `baselines_policies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `baselines_policies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `bios`
 --
 
