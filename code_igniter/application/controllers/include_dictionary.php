@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   All
 * @author    Mark Unwin <marku@opmantek.com>
@@ -122,25 +122,6 @@ if ($table === 'attributes') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
-if ($table === 'buildings') {
-    $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
-    $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
-    $dictionary->notes = '<p>Buildings go inside your Locations and contain Floors.</p>';
-    $dictionary->columns->id = $id;
-    $dictionary->columns->name = $name;
-    $dictionary->columns->org_id = $org_id;
-    $dictionary->columns->organisation = $org_id;
-    $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
-    $dictionary->columns->location = 'The location of the building. Links to <code>locations.id</code>.';
-    $dictionary->columns->description = $description;
-    $dictionary->columns->options = 'Not implemented as yet.';
-    $dictionary->columns->notes = 'Not implemented as yet.';
-    $dictionary->columns->tags = 'Not implemented as yet.';
-    $dictionary->columns->edited_by = $edited_by;
-    $dictionary->columns->edited_date = $edited_date;
-}
-
 if ($table === 'audit_log') {
     $dictionary->about = '<p>A log of all the audit processing attempts.</p>';
     $dictionary->columns->id = $id;
@@ -162,6 +143,17 @@ if ($table === 'availability') {
     ' . $link . '<br /><br /></p>';
     $dictionary->attributes->create = array();
     $dictionary->attributes->update = array();
+}
+
+if ($table === 'baselines_policies') {
+    $dictionary->sentence = 'sentence';
+    $dictionary->about = '<p>The About</p>';
+    $dictionary->marketing = '<p>Some Marketing</p>';
+    $dictionary->notes = '<p>More Notes</p>';
+    $dictionary->columns->table = 'The table to compare in the database.';
+    $dictionary->columns->notes = 'Any additional notes you care to make.';
+    $dictionary->columns->documentation = 'Any additional documentation you need.';
+    $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
 }
 
 if ($table === 'baselines') {
@@ -189,6 +181,25 @@ You can create a baseline, run it against a group of devices and view the result
     $dictionary->columns->notes = 'Any additional notes you care to make.';
     $dictionary->columns->documentation = 'Any additional documentation you need.';
     $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+}
+
+if ($table === 'buildings') {
+    $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
+    $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p>Buildings go inside your Locations and contain Floors.</p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->organisation = $org_id;
+    $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
+    $dictionary->columns->location = 'The location of the building. Links to <code>locations.id</code>.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
@@ -949,7 +960,6 @@ Create individual discovery schedules for each subnet or AD controller, add in r
     $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
-
 }
 
 if ($table === 'users') {
