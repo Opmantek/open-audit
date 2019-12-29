@@ -116,7 +116,7 @@ if (! function_exists('output')) {
             }
 
             # TODO - do we need this is the models already do this for us?
-            $special = array('credentials' => 'credentials', 'discoveries' => 'other', 'queue' => 'details', 'tasks' => 'options');
+            $special = array('credentials' => 'credentials', 'baselines_policies' => 'tests', 'discoveries' => 'other', 'queue' => 'details', 'tasks' => 'options');
             foreach ($special as $table => $column) {
                 if ($CI->response->meta->collection == $table) {
                     $array = array();
