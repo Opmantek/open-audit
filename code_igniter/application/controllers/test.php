@@ -81,6 +81,11 @@ class Test extends CI_Controller
 
     public function base()
     {
+        $sql = 'SELECT NOW() as `timestamp`';
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $timestamp = $result[0]->timestamp;
+
         $sql = "DELETE FROM baselines";
         $this->db->query($sql);
 
@@ -98,15 +103,23 @@ class Test extends CI_Controller
                     $definition = @json_decode($contents);
                     if ($definition) {
                         if (is_array($definition->policies)) {
-                            $sql = "INSERT INTO `baselines` VALUES (?, ?, ?, ?, ?, ?, ?, 'system', NOW())";
-                            $data = array($definition->id, $definition->name, $definition->org_id, $definition->description, $definition->notes, $definition->documentation, $definition->priority);
+                            $sql = "INSERT INTO `baselines` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            $data = array($definition->id, $definition->name, $definition->org_id, $definition->description, $definition->notes, $definition->documentation, $definition->priority, $this->user->full_name, $timestamp);
                             $this->db->query($sql, $data);
                             echo $this->db->last_query();
                             echo "<br /><br />\n";
                             foreach ($definition->policies as $policy) {
-                                if ( ! empty($policy->name)) {
-                                    $sql = 'INSERT INTO baselines_policies VALUES (NULL, ?, ?, ?, ?, ?)';
-                                    $data = array($definition->id, $policy->name, $policy->priority, $policy->table, json_encode($policy->tests));
+                                if (! empty($policy->name)) {
+                                    $sql = 'INSERT INTO baselines_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                                    $notes = '';
+                                    if (!empty($policy->notes)) {
+                                        $notes = $policy->notes;
+                                    }
+                                    $documentation = '';
+                                    if (!empty($policy->documentation)) {
+                                        $documentation = $policy->documentation;
+                                    }
+                                    $data = array($definition->id, $policy->name, $policy->priority, $notes, $documentation, $policy->table, json_encode($policy->tests), $this->user->full_name, $timestamp);
                                     $this->db->query($sql, $data);
                                 }
                             }
@@ -148,14 +161,14 @@ class Test extends CI_Controller
         echo "<pre>\n";
         $ouis = array();
         $manufacturers = array();
-        for ($i=0; $i < count($file); $i++) { 
+        for ($i=0; $i < count($file); $i++) {
             if (strpos($file[$i], "   (hex)\t\t")) {
-                $oui = str_replace('-', ':',strtolower(trim(substr($file[$i], 0, 8))));
+                $oui = str_replace('-', ':', strtolower(trim(substr($file[$i], 0, 8))));
                 $manufacturer = trim(substr($file[$i], 17));
                 $ouis[$oui] = $manufacturer;
                 $value = $manufacturer;
                 $value = trim($value);
-                if ($value == 'TP-LINK TECHNOLOGIES CO.,LTD.') { $value = 'TP-Link'; }
+                if ($value === 'TP-LINK TECHNOLOGIES CO.,LTD.') { $value = 'TP-Link'; }
                 if (stripos($value, '3Com') === 0) { $value = '3Com Ltd'; }
                 if (stripos($value, 'Alcatel') === 0) { $value = 'Alcatel-Lucent'; }
                 if (stripos($value, 'Arista') !== false) { $value = 'Arista Networks'; }
