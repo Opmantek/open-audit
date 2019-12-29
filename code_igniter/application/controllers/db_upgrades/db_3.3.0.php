@@ -52,8 +52,12 @@ CREATE TABLE `baselines_policies` (
   `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(200) NOT NULL DEFAULT '',
   `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `notes` text NOT NULL,
+  `documentation` text NOT NULL,
   `table` varchar(45) NOT NULL DEFAULT '',
   `tests` mediumtext NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `baseline_id` (`baseline_id`),
   CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
@@ -214,8 +218,12 @@ $sql = "CREATE TABLE `baselines_policies` (
   `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(200) NOT NULL DEFAULT '',
   `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `notes` text NOT NULL,
+  `documentation` text NOT NULL,
   `table` varchar(45) NOT NULL DEFAULT '',
   `tests` mediumtext NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `baseline_id` (`baseline_id`),
   CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
@@ -225,7 +233,7 @@ $this->log_db($this->db->last_query());
 
 # Migrate any existing baselines
 if (file('/usr/local/omk/var/oae/baselines/definitions')) {
-
+#
 }
 
 $sql = "DELETE FROM configuration WHERE `name` = 'device_auto_delete'";
