@@ -66,9 +66,10 @@ class M_baselines_policies extends MY_Model
      */
     public function read(int $id = 0)
     {
-        $sql = 'SELECT * FROM `baselines_policies` WHERE `id` = ?';
+        $sql = 'SELECT baselines_policies.*, baselines.id AS `baselines.id`, baselines.name AS `baselines.name` FROM `baselines_policies` LEFT JOIN `baselines` ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+        $result[0]->tests = @json_decode($result[0]->tests);
         $result = $this->format_data($result, 'baselines_policies');
         return ($result);
     }

@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Model
 * @package   Collection
 * @author    Mark Unwin <marku@opmantek.com>
@@ -229,6 +229,104 @@ class M_collection extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data (' . $collection . ')';
         stdlog($this->log);
+
+        if ($collection === 'baselines_policies') {
+            $this->load->helper('software_version');
+
+            if (!empty($data->table) and $data->table === 'software') {
+                $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
+                $tests = array();
+                $entry = new stdClass();
+                $entry->column = 'name';
+                $entry->operator = '=';
+                $entry->value = $data->tests->name->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'version';
+                $entry->operator = $data->tests->version->operator;
+                $entry->value = $data->tests->version->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'version_padded';
+                $entry->operator = $data->tests->version->operator;
+                $entry->value = version_padded($data->tests->version->value);
+                $tests[] = $entry;
+
+                unset($data->tests);
+                $data->tests = json_encode($tests);
+            }
+
+            if (!empty($data->table) and $data->table === 'netstat') {
+                $data->name = $data->tests->program->value . ' on ' . $data->tests->port->value . ' using ' . $data->tests->protocol->value;
+                $tests = array();
+                $entry = new stdClass();
+                $entry->column = 'protocol';
+                $entry->operator = '=';
+                $entry->value = $data->tests->protocol->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'program';
+                $entry->operator = '=';
+                $entry->value = $data->tests->program->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'port';
+                $entry->operator = '=';
+                $entry->value = $data->tests->port->value;
+                $tests[] = $entry;
+
+                unset($data->tests);
+                $data->tests = json_encode($tests);
+            }
+
+            if (!empty($data->table) and $data->table === 'user') {
+                $data->name = $data->tests->name->value;
+                $tests = array();
+                $entry = new stdClass();
+                $entry->column = 'name';
+                $entry->operator = '=';
+                $entry->value = $data->tests->name->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'status';
+                $entry->operator = '=';
+                $entry->value = $data->tests->status->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'type';
+                $entry->operator = '=';
+                $entry->value = $data->tests->type->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'password_expires';
+                $entry->operator = '=';
+                $entry->value = $data->tests->password_expires->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'password_changeable';
+                $entry->operator = '=';
+                $entry->value = $data->tests->password_changeable->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'password_required';
+                $entry->operator = '=';
+                $entry->value = $data->tests->password_required->value;
+                $tests[] = $entry;
+
+                unset($data->tests);
+                $data->tests = json_encode($tests);
+            }
+        }
+
 
         if ($collection === 'clouds') {
             if (!empty($data->credentials) and is_string($data->credentials)) {
@@ -587,6 +685,78 @@ class M_collection extends MY_Model
             $db_table = $collection;
         }
 
+        if ($collection === 'baselines_policies') {
+            if (!empty($data->tests)) {
+                $sql = 'SELECT * FROM baselines_policies WHERE `id` = ?';
+                $query = $this->db->query($sql, array($data->id));
+                $result = $query->result();
+                $existing_policy = $result[0];
+                $existing_tests = json_decode($existing_policy->tests);
+
+                if ($existing_policy->table === 'netstat') {
+                    $attributes = array('protocol', 'program', 'port');
+                    foreach ($attributes as $attribute) {
+                        if (isset($data->tests->{$attribute})) {
+                            for ($i=0; $i < count($existing_tests); $i++) {
+                                if ($existing_tests[$i]->column === $attribute) {
+                                    $existing_tests[$i]->value = $data->tests->{$attribute};
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($existing_policy->table === 'software') {
+                    $this->load->helper('software_version');
+                    if (isset($data->tests->name)) {
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === 'name') {
+                                $existing_tests[$i]->value = $data->tests->name;
+                            }
+                        }
+                    }
+                    if (isset($data->tests->operator)) {
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === 'version') {
+                                $existing_tests[$i]->operator = $data->tests->operator;
+                            }
+                        }
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === 'version_padded') {
+                                $existing_tests[$i]->operator = $data->tests->operator;
+                            }
+                        }
+                    }
+                    if (isset($data->tests->version)) {
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === 'version') {
+                                $existing_tests[$i]->value = $data->tests->version;
+                            }
+                        }
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === 'version_padded') {
+                                $existing_tests[$i]->value = version_padded($data->tests->version);
+                            }
+                        }
+                    }
+                }
+
+                if ($existing_policy->table === 'user') {
+                    $attributes = array('name', 'status', 'type', 'password_expires', 'password_changeable', 'password_required');
+                    foreach ($attributes as $attribute) {
+                        if (isset($data->tests->{$attribute})) {
+                            for ($i=0; $i < count($existing_tests); $i++) {
+                                if ($existing_tests[$i]->column === $attribute) {
+                                    $existing_tests[$i]->value = $data->tests->{$attribute};
+                                }
+                            }
+                        }
+                    }
+                }
+                $data->tests = json_encode($existing_tests);
+            }
+        }
+
         if ($collection === 'credentials') {
             if (!empty($data->credentials)) {
                 $received_credentials = new stdClass();
@@ -639,7 +809,6 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
-
             $all_options = array('ping', 'service_version', 'filtered', 'timeout', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports', 'tcp_ports', 'udp_ports', 'exclude_tcp_ports', 'exclude_udp_ports', 'exclude_ip', 'ssh_ports');
 
             $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
@@ -858,9 +1027,8 @@ class M_collection extends MY_Model
 
                 unset($data->other);
                 $data->other = (string)json_encode($other);
-
             }
-            if(!empty($data->killed)){
+            if (!empty($data->killed)) {
                 unset($data->killed);
                 $log = new stdClass();
                 $log->discovery_id = $data->id;
