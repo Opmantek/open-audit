@@ -577,34 +577,34 @@ class Test extends CI_Controller
     public function db_compare()
     {
         $this->load->helper('diff');
-        #$tables = array('attachment','attributes','audit_log','bios','change_log','chart','cluster','configuration','connections','credential','credentials','discoveries','discovery_log','disk','dns','edit_log','field','fields','file','files','graph','groups','invoice','invoice_item','ip','ldap_groups','ldap_servers','licenses','locations','log','logs','maps','memory','module','monitor','motherboard','netstat','network','networks','nmap','notes','oa_change','oa_temp','oa_user_sessions','optical','orgs','pagefile','partition','print_queue','processor','queries','roles','route','san','scripts','scsi','server','server_item','service','share','software','software_key','sound','summaries','system','task','tasks','user','user_group','users','variable','video','vm','warranty','windows');
-
         $tables = $this->db->list_tables();
-
         $this->load->model('m_configuration');
         $this->m_configuration->load();
         $sql_file = file($this->config->config['base_path'] . '/other/openaudit_mysql.sql');
+        $output = '';
+        $body_output = '';
+        $total_inserts = 0;
+        $total_deletes = 0;
 
-        echo "<style>";
-        echo ".diff td {\n  vertical-align: top;\n  white-space: pre;\n  white-space: pre-wrap;\n  font-family: monospace;\n}\n";
-        echo ".diffDeleted span {\n  border: 1px solid rgb(255,192,192);\n  background: rgb(255,224,224);\n}\n";
-        echo ".diffInserted span {\n  border: 1px solid rgb(192,255,192);\n  background: rgb(224,255,224);\n}\n";
-        echo "</style>\n";
-
+        $output .= "<style>\n";
+        $output .= ".diff td {\n  vertical-align: top;\n  white-space: pre;\n  white-space: pre-wrap;\n  font-family: monospace;\n}\n";
+        $output .= ".diffDeleted span {\n  border: 1px solid rgb(255,192,192);\n  background: rgb(255,224,224);\n}\n";
+        $output .= ".diffInserted span {\n  border: 1px solid rgb(192,255,192);\n  background: rgb(224,255,224);\n}\n";
+        $output .= "</style>\n";
         foreach ($tables as $table) {
-            # From the DB
-            $query = $this->db->query("SHOW CREATE TABLE `$table`");
+            // From the DB
+            $query = $this->db->query("SHOW CREATE TABLE `{$table}`");
             $result = $query->result();
-            if (!empty($result[0]->{'Create Table'})) {
+            if ( ! empty($result[0]->{'Create Table'})) {
                 $db_schema = preg_replace('/AUTO_INCREMENT=\d+ /', '', $result[0]->{'Create Table'});
             } else {
                 $db_schema = '';
             }
 
-            # From the file
+            // From the file
             $file_schema = '';
             for ($i=0; $i < count($sql_file); $i++) { 
-                if (strpos($sql_file[$i], "CREATE TABLE `$table`") !== false) {
+                if (strpos($sql_file[$i], "CREATE TABLE `{$table}`") !== false) {
                     $file_schema = $sql_file[$i];
                     for ($j=$i+1; $j < count($sql_file); $j++) {
                         if (strpos($sql_file[$j], '/*!') === false) {
@@ -618,31 +618,40 @@ class Test extends CI_Controller
             $file_schema = preg_replace('/AUTO_INCREMENT=\d+ /', '', $file_schema);
             $file_schema = str_replace(";\n", '', $file_schema);
 
-            # Count the differences
+            // Count the differences
             $diff = Diff::compare($file_schema, $db_schema);
-            $count_del = 0; $count_ins = 0;
+            $count_del = 0;
+            $count_ins = 0;
             foreach ($diff as $line) {
-                if ($line[1] == 1) { $count_del += 1; }
-                if ($line[1] == 2) { $count_ins += 1; }
+                if ($line[1] === 1) {
+                    $count_del += 1;
+                }
+                if ($line[1] === 2) {
+                    $count_ins += 1;
+                }
             }
-            if ($count_ins != 0) {
-                $count_ins = "<span style=\"color:limegreen;\">" . $count_ins . "</span>";
+            if ($count_ins !== 0) {
+                $total_inserts = $total_inserts + $count_ins;
+                $count_ins = "<span style=\"color:limegreen;\">{$count_ins}</span>";
             }
-            if ($count_del != 0) {
-                $count_del = "<span style=\"color:red;\">" . $count_del . "</span>";
+            if ($count_del !== 0) {
+                $total_deletes = $total_deletes + $count_del;
+                $count_del = "<span style=\"color:red;\">{$count_del}</span>";
             }
-            # Output
-            echo "<h2>$table (file -> database)</h2>";
+            // Output
+            $body_output .= "<h2>{$table} (file -> database)</h2>\n";
             if (empty($file_schema)) {
-                echo "<span style=\"color:red;\"><strong>" . $table . " does not exist in the file.</strong></span><br />";
+                $body_output .= "<span style=\"color:red;\"><strong>{$table} does not exist in the file.</strong></span><br />\n";
             } else {
-                echo "<strong>Del: $count_del Ins: $count_ins</strong>\n";
+                $body_output .= "<strong>Del: {$count_del} Ins: {$count_ins}</strong>\n";
                 $table_output = Diff::toTable(Diff::compare($file_schema, $db_schema));
-                echo str_replace('<table class="diff">', '<table class="diff" style="width:100%">', $table_output);
+                $temp = str_replace('<table class="diff">', '<table class="diff" style="width:100%">', $table_output);
+                $body_output .= $temp;
             }
-            echo "=======================================\n";
+            $body_output .= "<br /><br />\n";
         }
-
+        $output .= "<h2>Inserts: {$total_inserts} Deletes: {$total_deletes}</h2>\n<br /><br />\n" . $body_output;
+        echo $output;
     }
 
     public function nettest()
