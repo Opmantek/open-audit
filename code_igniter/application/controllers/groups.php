@@ -204,6 +204,8 @@ class Groups extends MY_Controller
         if (empty($this->response->meta->properties) OR $this->response->meta->properties === '*') {
             $this->response->meta->properties = $this->config->config['devices_default_group_columns'];
         }
+        $group = $this->m_groups->read($this->response->meta->id);
+        $this->response->meta->sub_resource_name = @$group[0]->attributes->name;
         $this->response->data = $this->m_groups->execute($this->response->meta->id, $this->response->meta->properties);
         $this->response->meta->include = 'v_devices_collection';
         $this->response->meta->filtered = count($this->response->data);
