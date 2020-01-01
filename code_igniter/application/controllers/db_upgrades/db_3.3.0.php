@@ -232,7 +232,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # Migrate any existing baselines
-if (file('/usr/local/omk/var/oae/baselines/definitions')) {
+if (@file('/usr/local/omk/var/oae/baselines/definitions')) {
 #
 }
 
