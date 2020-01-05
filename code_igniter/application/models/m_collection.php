@@ -329,15 +329,18 @@ class M_collection extends MY_Model
 
 
         if ($collection === 'clouds') {
-            if (!empty($data->credentials) and is_string($data->credentials)) {
+            if ( ! empty($data->credentials) and is_string($data->credentials)) {
                 $data->credentials = (string)simpleEncrypt($data->credentials);
             } else {
                 $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
             }
+            if ( ! empty($data->options)) {
+                $data->options = json_encode($data->options);
+            }
         }
 
         if ($collection === 'credentials') {
-            if (!empty($data->credentials) and is_string($data->credentials)) {
+            if ( ! empty($data->credentials) and is_string($data->credentials)) {
                 $data->credentials = (string)simpleEncrypt($data->credentials);
             } else {
                 $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
