@@ -139,6 +139,12 @@ ALTER TABLE `discoveries` CHANGE `edited_date` `edited_date` datetime NOT NULL D
 
 ALTER TABLE `discovery_scan_options` ADD `open|filtered` enum('','y','n') NOT NULL DEFAULT 'y' AFTER `service_version`;
 
+UPDATE `discovery_scan_options` SET `description` = 'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use aggressive timing.' WHERE `name` = 'Ultrafast';
+
+UPDATE `discovery_scan_options` SET `description` = 'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is  considered open (and will trigger device detection). Device must respond to an Nmap ping. Use aggressive timing.' WHERE `name` = 'Superfast';
+
+UPDATE `discovery_scan_options` SET `description` = 'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use aggressive timing.' WHERE `name` = 'Fast';
+
 ALTER TABLE `ldap_servers` ADD `use_auth` enum('y','n') NOT NULL DEFAULT 'y' AFTER `user_membership_attribute`;
 
 ALTER TABLE `ldap_servers` ADD `use_discovery` enum('y','n') NOT NULL DEFAULT 'y' AFTER `use_auth`;
@@ -326,6 +332,18 @@ $this->alter_table('discoveries', 'edited_by', "`edited_by` varchar(200) NOT NUL
 $this->alter_table('discoveries', 'edited_date', "`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`");
 
 $this->alter_table('discovery_scan_options', 'open|filtered', "ADD `open|filtered` enum('','y','n') NOT NULL DEFAULT 'y' AFTER `service_version`", 'add');
+
+$sql = "UPDATE `discovery_scan_options` SET `description` = 'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use aggressive timing.' WHERE `name` = 'Ultrafast'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `discovery_scan_options` SET `description` = 'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is  considered open (and will trigger device detection). Device must respond to an Nmap ping. Use aggressive timing.' WHERE `name` = 'Superfast'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `discovery_scan_options` SET `description` = 'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use aggressive timing.' WHERE `name` = 'Fast'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $this->alter_table('ldap_servers', 'use_auth', "ADD `use_auth` enum('y','n') NOT NULL DEFAULT 'y' AFTER `user_membership_attribute`", 'add');
 $this->alter_table('ldap_servers', 'use_discovery', "ADD `use_discovery` enum('y','n') NOT NULL DEFAULT 'y' AFTER `use_auth`", 'add');
