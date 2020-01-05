@@ -238,6 +238,7 @@ class MY_Model extends CI_Model
         if ($this->db->_error_message()) {
             # need to log down here for the above so we can use $this->db to get the last insert id
             $db_error = $this->db->_error_message();
+            $CI->response->meta->debug = true;
             $sqllog->severity = 3;
             $sqllog->status = 'failure';
             $sqllog->detail .= ' - FAILURE - ' . $db_error;
