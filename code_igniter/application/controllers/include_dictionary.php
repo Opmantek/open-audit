@@ -231,6 +231,9 @@ if ($table === 'clouds') {
     $dictionary->columns->type = 'At the moment, only Amazon AWS is supported.';
     $dictionary->columns->key = 'Your API key.';
     $dictionary->columns->secret_key = 'The secret key used in conjunction with your API key.';
+    $dictionary->columns->ssh = 'Should we use SSH to discover these devices.';
+    $dictionary->columns->wmi = 'Should we use WMI to discover these devices.';
+    $dictionary->columns->snmp = 'Should we use SNMP to discover these devices.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }

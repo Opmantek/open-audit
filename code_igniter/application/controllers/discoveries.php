@@ -343,11 +343,15 @@ class Discoveries extends MY_Controller
         include 'include_reset.php';
     }
 
+    /**
+     * If we're running on Windows and the Apache user is not SYSTEM, set the flash
+     * @return null
+     */
     private function test_windows_apache_user()
     {
         if ((string) php_uname('s') === 'Windows NT') {
             $user = get_current_user();
-            if ($user == 'SYSTEM') {
+            if ($user === 'SYSTEM') {
                 $sql = '/* discoveries */ ' . "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
                 $data = array();
                 $data_result = $this->run_sql($sql, $data);
@@ -361,7 +365,7 @@ class Discoveries extends MY_Controller
 
     private function discovery_status()
     {
-        # Mark any discoveries where status != complete and last_log is greater than 20 minutes ago as Zombie
+        // Mark any discoveries where status != complete and last_log is greater than 20 minutes ago as Zombie
         $sql = '/* discoveries */ ' . " UPDATE discoveries SET status = 'failed' WHERE last_finished != '2000-01-01 00:00:00' AND last_finished < (NOW() - INTERVAL 20 MINUTE) AND status = 'running'";
         $this->db->query($sql);
 

@@ -158,7 +158,7 @@ if ( ! function_exists('update_non_responding')) {
 		foreach ($all_ip_list as $ip) {
 			if ( ! in_array($ip, $responding_ip_list)) {
 				// Update the discovery log to show this IP not responding
-				$log->message = 'IP $ip not responding, ignoring.';
+				$log->message = "IP {$ip} not responding, ignoring.";
 				$log->ip = $ip;
 				discovery_log($log);
 			}
@@ -1292,9 +1292,14 @@ if ( ! function_exists('ip_audit')) {
 		$log->severity = 7;
 		$log->command_time_to_execute = '';
 
+		if ($device->os_family !== 'DD-WRT' || $device->os_family !== 'LEDE') {
+			$log->message = "IP {$device->ip} is running {$device->os_family}, which will not run our audit_linux.sh script, skipping.";
+			discovery_log($log);
+		}
 
 		// Audit via SSH
-		if ($ip_scan->details->ssh_status === 'true' && $device->os_family !== 'DD-WRT' && ! empty($credentials_ssh) && ! empty($audit_script)) {
+		if ($ip_scan->details->ssh_status === 'true' && $device->os_family !== 'DD-WRT' && $device->os_family !== 'LEDE' && ! empty($credentials_ssh) && ! empty($audit_script)) {
+			$result = '';
 			$log->message = 'Starting SSH audit script for ' . $device->ip;
 			discovery_log($log);
 			// copy the audit script to the target ip
@@ -1339,8 +1344,8 @@ if ( ! function_exists('ip_audit')) {
 					$log->severity = 7;
 					$log->message = '';
 					$log->command_status = 'notice';
+					$audit_script = '';
 				}
-				$result = false;
 			}
 			unset($destination);
 			if ($audit_script !== '') {
@@ -1368,16 +1373,16 @@ if ( ! function_exists('ip_audit')) {
 				$parameters->ssh_port = $ip_scan->details->ssh_port;
 				$result = ssh_command($parameters);
 			} else {
-				$log->severity = 3;
-				$log->message = 'No audit script for ' . $device->ip;
-				$log->command_status = 'fail';
-				discovery_log($log);
-				$log->severity = 7;
-				$log->message = '';
-				$log->command_status = 'notice';
+				// $log->severity = 3;
+				// $log->message = 'No audit script for ' . $device->ip;
+				// $log->command_status = 'fail';
+				// discovery_log($log);
+				// $log->severity = 7;
+				// $log->message = '';
+				// $log->command_status = 'notice';
 			}
 			$audit_result = '';
-			if ( ! empty($result) && gettype($result) === 'array') {
+			if ($audit_script !== '' and ! empty($result) && gettype($result) === 'array') {
 				$audit_file = '';
 				foreach ($result as $line) {
 					if (strpos($line, 'File  ') !== false) {

@@ -88,6 +88,7 @@ if ( !  function_exists('scp')) {
         $log->function = 'scp';
         $log->command = '';
         $log->command_output = '';
+        $log->ip = $parameters->ip;
         if ( ! empty($message)) {
             $log->message = $message;
             $log->severity = 3;

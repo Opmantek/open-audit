@@ -40,6 +40,7 @@ $this->benchmark->mark('code_start');
 $this->load->helper('audit');
 $this->load->helper('log');
 $this->load->helper('error');
+$this->load->helper('snmp_oid');
 // our required models
 $this->load->model('m_audit_log');
 $this->load->model('m_devices');
@@ -353,7 +354,6 @@ if(!empty($json)){
 
 
     $log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
-    $log->status = 'complete';
     stdlog($log);
     if ($this->response->meta->format == 'screen') {
         #echo '</body></html>';
