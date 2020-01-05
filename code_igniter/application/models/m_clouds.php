@@ -69,10 +69,19 @@ class M_clouds extends MY_Model
         $sql = 'SELECT * FROM `clouds` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+        if ( ! empty($result[0]->options)) {
+            $result[0]->options = json_decode($result[0]->options);
+        } else {
+            $result[0]->options = new stdClass();
+            $result[0]->options->ssh = 'y';
+            $result[0]->options->wmi = 'y';
+            $result[0]->options->snmp = 'n';
+        }
         $result = $this->format_data($result, 'clouds');
         if ( ! empty($result[0]->attributes->credentials)) {
             $result[0]->attributes->credentials = json_decode(simpleDecrypt($result[0]->attributes->credentials));
         }
+
         return ($result);
     }
 
@@ -105,6 +114,18 @@ class M_clouds extends MY_Model
             $sql .= '`credentials` = ?, ';
             $data[] = (string)simpleEncrypt(json_encode($new_credentials));
         }
+
+        if ( ! empty($CI->response->meta->received_data->attributes->options)) {
+            $get_sql = 'SELECT * FROM clouds WHERE id = ' . intval($CI->response->meta->id);
+            $get_result = $this->run_sql($get_sql);
+            $existing_options = @json_decode($get_result[0]->options);
+            foreach ($CI->response->meta->received_data->attributes->options as $key => $value) {
+                $existing_options->{$key} = $value;
+            }
+            unset($CI->response->meta->received_data->attributes->options);
+            $sql .= '`options` = ?, ';
+            $data[] = json_encode($existing_options);
+        }
         
         if ( ! empty($CI->response->meta->received_data->attributes->name)) {
             $sql .= '`name` = ?, ';
@@ -121,9 +142,6 @@ class M_clouds extends MY_Model
             $data[] = $CI->response->meta->received_data->attributes->org_id;
         }
 
-        if ($sql === 'UPDATE `credentials` SET ') {
-            // TODO - THROW AN ERROR, no credentials or name or description supplied for updating
-        }
         $sql .= ' `edited_by` = ?, `edited_date` = NOW() WHERE id = ?';
         $data[] = (string)$CI->user->full_name;
         $data[] = intval($CI->response->meta->id);
