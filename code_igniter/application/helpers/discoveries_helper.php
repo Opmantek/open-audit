@@ -64,6 +64,7 @@ if ( ! function_exists('all_ip_list')) {
 		$ip_addresses = array();
 		// hosts_in_subnet=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
 		if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
+			$discovery->attributes->other->nmap->exclude_ip = str_replace(' ', ',', $discovery->attributes->other->nmap->exclude_ip);
 			$command = 'nmap -n -sL --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
 		} else {
 			$command = 'nmap -n -sL ' . $discovery->attributes->other->subnet;

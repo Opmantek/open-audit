@@ -409,6 +409,10 @@ class M_collection extends MY_Model
                 }
             }
 
+            if ( ! empty($data->other->nmap)) {
+                $data->other->nmap = str_replace(' ', ',', $data->other->nmap);
+            }
+
             if ($data->type == 'subnet') {
                 if (!empty($data->other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
