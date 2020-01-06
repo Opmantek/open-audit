@@ -1028,6 +1028,44 @@ if ( !  function_exists('ssh_audit')) {
         $device->use_sudo = false;
         $command = '';
 
+
+
+        if (empty($device->which_sudo) and ! empty($CI->config->config['discovery_sudo_path'])) {
+            $sudo_paths = explode(',', $CI->config->config['discovery_sudo_path']);
+            foreach ($sudo_paths as $sudo_path) {
+                if (strpos($device->shell, 'bash') === false && $device->bash !== '') {
+                    $command = $device->bash . " -c 'ls {$sudo_path} 2>/dev/null'";
+                } else {
+                    $command = "ls {$sudo_path} 2>/dev/null";
+                }
+                $item_start = microtime(true);
+                $temp1 = $ssh->exec($command);
+                $temp1 = trim($temp1);
+                $log->command = $command;
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = "SSH command - ls {$sudo_path} 2>/dev/null";
+                $log->command_output = $temp1;
+                if (!empty($temp1)) {
+                    $log->command_status = 'success';
+                    if (strpos($temp1, "\n") !== false) {
+                        $array1 = explode("\n", $temp1);
+                        foreach ($array1 as &$string) {
+                            $string = trim($string);
+                            $device->which_sudo = $string;
+                        }
+                    } else {
+                        $device->which_sudo = $temp1;
+                    }
+                    $log->command_status = 'success';
+                    discovery_log($log);
+                    break;
+                } else {
+                    $log->command_status = 'notice';
+                    discovery_log($log);
+                }
+            }
+        }
+
         if ($username !== 'root') {
             if (($CI->config->config['discovery_linux_use_sudo'] === 'y' && strtolower($device->os_group) === 'linux') OR
                 ($CI->config->config['discovery_sunos_use_sudo'] === 'y' && strtolower($device->os_group) === 'sunos') OR
@@ -1055,18 +1093,18 @@ if ( !  function_exists('ssh_audit')) {
                     if ($sudo_temp_hostname[0] === $ssh_hostname[0]) {
                         $device->use_sudo = true;
                     }
+                    $log->command = trim($command) . '; # hostname test using sudo';
+                    $log->command_time_to_execute = (microtime(true) - $item_start);
+                    $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
+                    $log->message = 'SSH command - sudo hostname';
+                    if ($device->use_sudo) {
+                        $log->command_status = 'success';
+                    } else {
+                        $log->command_status = 'notice';
+                    }
+                    discovery_log($log);
+                    unset($sudo_temp_hostname, $ssh_hostname, $hostname);
                 }
-                $log->command = trim($command) . '; # hostname test using sudo';
-                $log->command_time_to_execute = (microtime(true) - $item_start);
-                $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
-                $log->message = 'SSH command - sudo hostname';
-                if ($device->use_sudo) {
-                    $log->command_status = 'success';
-                } else {
-                    $log->command_status = 'notice';
-                }
-                discovery_log($log);
-                unset($sudo_temp_hostname, $ssh_hostname, $hostname);
             }
         }
 

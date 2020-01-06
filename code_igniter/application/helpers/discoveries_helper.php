@@ -1356,7 +1356,7 @@ if ( ! function_exists('ip_audit')) {
 				if ($credentials_ssh->credentials->username === 'root') {
 					$log->message = 'Running audit using root user.';
 				} else if ( ! empty($device->which_sudo) && $device->use_sudo) {
-					$command = 'sudo ' . $command;
+					$command = "{$device->which_sudo} " . $command;
 					$log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
 				} else if ( ! empty($device->which_sudo) && ! $device->use_sudo) {
 					$log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' without sudo, as sudo attempt failed.';
@@ -1446,7 +1446,7 @@ if ( ! function_exists('ip_audit')) {
 					$command = 'rm ' . $audit_file;
 					if ( ! empty($device->which_sudo) && ! empty($device->use_sudo) && $credentials_ssh->credentials->username !== 'root') {
 						// add sudo, we need this if we have run the audit using sudo
-						$command = 'sudo ' . $command;
+						$command = "{$device->which_sudo} " . $command;
 						// Allow 10 seconds to run the command
 						$CI->config->config['discovery_ssh_timeout'] = 10;
 					}
