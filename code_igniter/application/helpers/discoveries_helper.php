@@ -1292,7 +1292,7 @@ if ( ! function_exists('ip_audit')) {
 		$log->severity = 7;
 		$log->command_time_to_execute = '';
 
-		if ($device->os_family !== 'DD-WRT' || $device->os_family !== 'LEDE') {
+		if ($device->os_family === 'DD-WRT' OR $device->os_family === 'LEDE') {
 			$log->message = "IP {$device->ip} is running {$device->os_family}, which will not run our audit_linux.sh script, skipping.";
 			discovery_log($log);
 		}
