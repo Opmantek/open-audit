@@ -663,6 +663,17 @@ class M_devices_components extends MY_Model
             }
         }
 
+        // SERVER ITEM
+        // Make sure we have a port, as we now use this to match.
+        // Blank will not match as the database column is an int with a default of 0
+        if ((string)$table === 'server_item') {
+            for ($i=0; $i<count($input); $i++) {
+                if (empty($input[$i]->port)) {
+                    $input[$i]->port = 0;
+                }
+            }
+        }
+
         // SERVICE
         if ((string)$table === 'service') {
             foreach ($input as $item => $attributes) {
