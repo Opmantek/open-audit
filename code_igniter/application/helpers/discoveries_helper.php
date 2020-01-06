@@ -232,7 +232,6 @@ if ( ! function_exists('discover_subnet')) {
 		$sql = '/* discoveries_helper::discover_subnet */ ' . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
 		$data = array($discovery_id);
 		$CI->db->query($sql, $data);
-		echo $CI->db->last_query() . "\n";
 
 		$all_ip_list = all_ip_list($discovery);
 		$count = @count($all_ip_list);
