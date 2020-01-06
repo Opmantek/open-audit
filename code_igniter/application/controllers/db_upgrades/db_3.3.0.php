@@ -81,7 +81,11 @@ INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns', 'sy
 
 DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit';
 
-DELETE FROM configuration WHERE `name` = 'match_ip_no_data';
+DELETE FROM `configuration` WHERE `name` = 'discovery_sudo_path';
+
+INSERT INTO `configuration` VALUES (NULL,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma seperated for multiple paths.');
+
+DELETE FROM `configuration` WHERE `name` = 'match_ip_no_data';
 
 INSERT INTO `configuration` VALUES (NULL,'match_ip_no_data','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip if we have an existing device with no data.');
 
@@ -281,6 +285,14 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_sudo_path'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma seperated for multiple paths.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
