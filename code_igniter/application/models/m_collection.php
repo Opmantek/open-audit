@@ -409,8 +409,8 @@ class M_collection extends MY_Model
                 }
             }
 
-            if ( ! empty($data->other->nmap)) {
-                $data->other->nmap = str_replace(' ', ',', $data->other->nmap);
+            if ( ! empty($data->other->nmap->exclude_ip)) {
+                $data->other->nmap->exclude_ip = str_replace(' ', ',', $data->other->nmap->exclude_ip);
             }
 
             if ($data->type == 'subnet') {
@@ -829,7 +829,7 @@ class M_collection extends MY_Model
                         $received_other->$key = $value;
                 }
 
-                if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
+                if ( ! empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
                     $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Subnet supplied.');
                     $data->other->subnet = '';
@@ -966,6 +966,7 @@ class M_collection extends MY_Model
                 }
 
                 if (!empty($received_other->nmap->exclude_ip)) {
+                    $received_other->nmap->exclude_ip = str_replace(' ', ',', $received_other->nmap->exclude_ip);
                     if (!preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
                         // Invalid Exclude IP
                         log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_ip');
