@@ -234,16 +234,16 @@ class M_roles extends MY_Model
         return true;
     }
 
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
-            $sql = "SELECT * FROM roles";
+        if ( ! empty($user_id)) {
+            $sql = 'SELECT * FROM roles';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'roles');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
             $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM roles " . 

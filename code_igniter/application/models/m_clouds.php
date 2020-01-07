@@ -64,7 +64,7 @@ class M_clouds extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read(int $id = 0)
+    public function read($id = 0)
     {
         $sql = 'SELECT * FROM `clouds` WHERE `id` = ?';
         $data = array($id);
@@ -155,7 +155,7 @@ class M_clouds extends MY_Model
      * @param  int $id The ID of the cloud
      * @return array The array of cloud_logs associated with this cloud
      */
-    public function read_sub_resource(int $id = 0)
+    public function read_sub_resource($id = 0)
     {
         $sql = 'SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY `id` LIMIT ' . $this->config->config['database_show_row_limit'];
         $result = $this->run_sql($sql, array($id));
@@ -169,7 +169,7 @@ class M_clouds extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete(int $id = 0)
+    public function delete($id = 0)
     {
         $sql = 'DELETE FROM `clouds` WHERE `id` = ?';
         $data = array($id);
@@ -188,7 +188,7 @@ class M_clouds extends MY_Model
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
      * @return bool True = success, False = fail
      */
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if ( ! empty($user_id)) {

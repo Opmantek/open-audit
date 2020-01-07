@@ -64,7 +64,7 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read(int $id = 0)
+    public function read($id = 0)
     {
         $sql = 'SELECT buildings.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.id = ?';
         $data = array($id);
@@ -79,7 +79,7 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete(int $id = 0)
+    public function delete($id = 0)
     {
         $sql = 'DELETE FROM `buildings` WHERE `id` = ?';
         $data = array($id);
@@ -97,7 +97,7 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items parent
      */
-    public function parent(int $id = 0)
+    public function parent($id = 0)
     {
         $sql = 'SELECT locations.* FROM locations, buildings WHERE locations.id = buildings.location_id AND buildings.id = ?';
         $data = array(intval($id));
@@ -111,7 +111,7 @@ class M_buildings extends MY_Model
      * @param  int $id The ID of the requested items parent
      * @return array The array of requested items children
      */
-    public function children(int $id = 0)
+    public function children($id = 0)
     {
         $sql = 'SELECT floors.*, orgs.name AS `orgs.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rooms.id) as `rooms_count` FROM `floors` LEFT JOIN orgs ON (floors.org_id = orgs.id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rooms ON (rooms.floor_id = floors.id)  WHERE floors.building_id = ?';
         $data = array(intval($id));
@@ -127,7 +127,7 @@ class M_buildings extends MY_Model
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
      * @return bool True = success, False = fail
      */
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if ( ! empty($user_id)) {

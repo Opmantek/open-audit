@@ -64,7 +64,7 @@ class M_applications extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read(int $id = 0)
+    public function read($id = 0)
     {
         $sql = 'SELECT * FROM `applications` WHERE id = ?';
         $data = array($id);
@@ -79,7 +79,7 @@ class M_applications extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete(int $id = 0)
+    public function delete($id = 0)
     {
         $sql = 'DELETE FROM `applications` WHERE `id` = ?';
         $data = array($id);
@@ -97,7 +97,7 @@ class M_applications extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of devices assigned to this application
      */
-    public function read_sub_resource(int $id = 0)
+    public function read_sub_resource($id = 0)
     {
         $CI = & get_instance();
         $org_ids = implode(',', $CI->user->orgs);
@@ -114,7 +114,7 @@ class M_applications extends MY_Model
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
      * @return bool True = success, False = fail
      */
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if ( ! empty($user_id)) {

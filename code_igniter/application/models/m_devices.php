@@ -150,7 +150,7 @@ class M_devices extends MY_Model
      * @param  int $id The system.id of the device in question
      * @return [type]     [description]
      */
-    public function read(int $id = 0)
+    public function read($id = 0)
     {
         if (empty($id)) {
             $log = new stdClass();
@@ -194,7 +194,7 @@ class M_devices extends MY_Model
      * @param  int $device_id The system.id of the device in question
      * @return [type]            [description]
      */
-    public function get_device_fields(int $device_id = 0)
+    public function get_device_fields($device_id = 0)
     {
         $CI = & get_instance();
         $CI->load->model('m_orgs');
@@ -251,7 +251,7 @@ class M_devices extends MY_Model
      * @param  int $device_id The system.id of the device in question
      * @return [type]            [description]
      */
-    public function get_device_applications(int $device_id = 0)
+    public function get_device_applications($device_id = 0)
     {
         $CI = & get_instance();
         $CI->load->model('m_orgs');
@@ -278,7 +278,7 @@ class M_devices extends MY_Model
      * @param  int $id The system.id of the device in question
      * @return [type]      [description]
      */
-    public function get_device_rack(int $id = 0)
+    public function get_device_rack($id = 0)
     {
         $sql = 'SELECT rack_devices.*, racks.name AS `racks.name`, racks.id AS `racks.id` FROM rack_devices LEFT JOIN `racks` ON (racks.id = rack_devices.rack_id) WHERE system_id = ?';
         $query = $this->run_sql($sql, array(intval($id)));
@@ -745,7 +745,7 @@ class M_devices extends MY_Model
         }
     }
 
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if (!empty($user_id)) {
@@ -878,9 +878,9 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $filter = $this->build_filter();
         $join = $this->build_join();
-$CI->response->meta->temp = new stdClass();
-$CI->response->meta->temp->join = $join;
-$CI->response->meta->temp->filter = $filter;
+        // $CI->response->meta->temp = new stdClass();
+        // $CI->response->meta->temp->join = $join;
+        // $CI->response->meta->temp->filter = $filter;
 
         $sql = 'SELECT * FROM queries WHERE id = ' . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
@@ -906,10 +906,10 @@ $CI->response->meta->temp->filter = $filter;
         if ( ! empty($CI->respone->meta->requestor)) {
             $device_sql = "WHERE system.id IN (SELECT system.id FROM system {$join} WHERE system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y' {$filter} {$CI->response->meta->internal->groupby})"; 
         }
-$CI->response->meta->temp->device_sql = $device_sql;
+        // $CI->response->meta->temp->device_sql = $device_sql;
         $sql = $query->sql;
         $sql = str_replace('WHERE @filter', $device_sql . $group_sql, $sql);
-$CI->response->meta->temp->sql = $sql;
+        // $CI->response->meta->temp->sql = $sql;
         $result = $this->run_sql($sql, array());
 
         for ($i=0; $i < count($result); $i++) {

@@ -71,7 +71,7 @@ class M_audit_log extends MY_Model
      * @param  string $version    The version of Open-AudIT audit script (if blank, use config -> display_version).
      * @return array The array of requested items
      */
-    public function create(int $system_id = 0, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version = '')
+    public function create($system_id = 0, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version = '')
     {
         $CI = & get_instance();
         if (empty($system_id)) {
@@ -104,7 +104,7 @@ class M_audit_log extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read(int $id = 0)
+    public function read($id = 0)
     {
         $sql = 'SELECT * FROM audit_log WHERE audit_log.system_id = ?';
         $data = array($id);
@@ -121,7 +121,7 @@ class M_audit_log extends MY_Model
      * @param  string $timestamp The timestamp
      * @return null
      */
-    public function update($column, $value, int $id = 0, $timestamp)
+    public function update($column, $value, $id = 0, $timestamp)
     {
         $sql = 'UPDATE audit_log SET ' . $column . ' = ? WHERE system_id = ? AND timestamp = ?';
         $data = array($value, $id, $timestamp);

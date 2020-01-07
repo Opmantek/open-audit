@@ -69,7 +69,7 @@ class M_change_log extends MY_Model
      * @param  string $timestamp When did this happen
      * @return array The array of requested items parent
      */
-    public function create(int $system_id = 0, $db_table, $db_row, $db_action, $details, $timestamp)
+    public function create($system_id = 0, $db_table, $db_row, $db_action, $details, $timestamp)
     {
         $sql = 'INSERT INTO change_log (`system_id`, `db_table`, `db_row`, `db_action`, `details`, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )';
         $data = array($system_id, $db_table, $db_row, $db_action, $details, $timestamp);
@@ -96,7 +96,7 @@ class M_change_log extends MY_Model
      * @param  int $days How many days from NOW() shouyld we delete data for
      * @return int The number of rows deleted
      */
-    public function deleteDays(int $days = 365)
+    public function deleteDays($days = 365)
     {
         $sql = 'DELETE FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL ' . $days . ' day)';
         $sql = $this->clean_sql($sql);
@@ -125,7 +125,7 @@ class M_change_log extends MY_Model
      * @param  int $days How many days to count from NOW()
      * @return int The count of rows between NOW() and the supplied $days
      */
-    public function countDays(int $days = 7)
+    public function countDays($days = 7)
     {
         $sql = 'SELECT COUNT(*) AS count FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL ' . $days . ' day)';
         $sql = $this->clean_sql($sql);
@@ -140,7 +140,7 @@ class M_change_log extends MY_Model
      * @param  int $id The system.id of the device
      * @return array
      */
-    public function readDevice(int $id = 0)
+    public function readDevice($id = 0)
     {
         $sql = 'SELECT change_log.*, users.full_name FROM change_log LEFT JOIN users ON change_log.user_id = users.id WHERE change_log.system_id = ? ORDER BY timestamp';
         $sql = $this->clean_sql($sql);
@@ -155,7 +155,7 @@ class M_change_log extends MY_Model
      * @param  int $id The system.id of the device
      * @return array
      */
-    public function readChange(int $id = 0)
+    public function readChange($id = 0)
     {
         $sql = 'SELECT change_log.*, system.name, system.ip, system.description FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.id = ?';
         $sql = $this->clean_sql($sql);

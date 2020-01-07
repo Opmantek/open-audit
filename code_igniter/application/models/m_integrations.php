@@ -96,7 +96,7 @@ class M_integrations extends MY_Model
         return true;
     }
 
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if (!empty($user_id)) {

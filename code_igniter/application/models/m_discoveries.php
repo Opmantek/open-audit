@@ -67,7 +67,7 @@ class M_discoveries extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read(int $id = 0)
+    public function read($id = 0)
     {
         $this->log->function = strtolower(__METHOD__);
         $CI = & get_instance();
@@ -132,7 +132,7 @@ class M_discoveries extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete(int $id = 0)
+    public function delete($id = 0)
     {
         $data = array($id);
         $sql = 'DELETE FROM `discovery_log` WHERE discovery_id = ?';
@@ -153,7 +153,7 @@ class M_discoveries extends MY_Model
      * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
      * @return bool True = success, False = fail
      */
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if ((string) php_uname('s') === 'Windows NT') {
@@ -210,7 +210,7 @@ class M_discoveries extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of logs assigned to this discovery
      */
-    public function read_sub_resource(int $id = 0)
+    public function read_sub_resource($id = 0)
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
@@ -229,7 +229,7 @@ class M_discoveries extends MY_Model
      * @param  int $id The ID of the discovery to start
      * @return bool True on success, false on failure
      */
-    public function queue(int $id = 0)
+    public function queue($id = 0)
     {
         $item = $this->m_discoveries->read($id);
         $discovery = $item[0];
@@ -264,7 +264,7 @@ class M_discoveries extends MY_Model
      * @param  [type] $ip_address   The IP of the device in question (for logging)
      * @return [type]               [description]
      */
-    public function get_device_discovery_credentials(int $system_id = 0, int $discovery_id = 0, $ip_address = '')
+    public function get_device_discovery_credentials($system_id = 0, $discovery_id = 0, $ip_address = '')
     {
         $CI =& get_instance();
         $CI->load->model('m_credentials');

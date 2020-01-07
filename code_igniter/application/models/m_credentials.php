@@ -106,22 +106,22 @@ class M_credentials extends MY_Model
             $data[] = (string)simpleEncrypt(json_encode($new_credentials));
         }
         
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
+        if ( ! empty($CI->response->meta->received_data->attributes->name)) {
             $sql .= "`name` = ?, ";
             $data[] = $CI->response->meta->received_data->attributes->name;
         }
 
-        if (!empty($CI->response->meta->received_data->attributes->description)) {
+        if ( ! empty($CI->response->meta->received_data->attributes->description)) {
             $sql .= "`description` = ?, ";
             $data[] = $CI->response->meta->received_data->attributes->description;
         }
 
-        if (!empty($CI->response->meta->received_data->attributes->org_id)) {
+        if ( ! empty($CI->response->meta->received_data->attributes->org_id)) {
             $sql .= "`org_id` = ?, ";
             $data[] = $CI->response->meta->received_data->attributes->org_id;
         }
 
-        if ($sql == 'UPDATE `credentials` SET ') {
+        if ($sql === 'UPDATE `credentials` SET ') {
             # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
         } else {
             $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
@@ -129,7 +129,6 @@ class M_credentials extends MY_Model
             $data[] = intval($CI->response->meta->id);
             $this->run_sql($sql, $data);
         }
-        #echo $sql; exit();
         return;
     }
 
@@ -139,27 +138,27 @@ class M_credentials extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool true
      */
-    public function delete(int $id = null)
+    public function delete($id = 0)
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
         $CI = & get_instance();
-        $sql = "DELETE FROM `credentials` WHERE id = ?";
+        $sql = 'DELETE FROM `credentials` WHERE id = ?';
         $data = array(intval($CI->response->meta->id));
         $this->run_sql($sql, $data);
         return true;
     }
 
-    public function get_discovery_credentials(int $discovery_id = null)
+    public function get_discovery_credentials($discovery_id = null)
     {
-        # Get the credentials of all orgs with discoveries.org_id and
-        #     that Orgs descendants and ascendants (no siblings or other parts of the tree).
+        // Get the credentials of all orgs with discoveries.org_id and
+        //     that Orgs descendants and ascendants (no siblings or other parts of the tree).
         if (empty($discovery_id)) {
             return array();
         }
         $CI = & get_instance();
-        $sql = "SELECT org_id FROM discoveries WHERE discovery_id = " . $discovery_id;
+        $sql = "SELECT org_id FROM discoveries WHERE discovery_id = {$discovery_id}";
         $query = $this->db->query();
         $result = $query->result;
         if (empty($result)) {
@@ -172,12 +171,12 @@ class M_credentials extends MY_Model
         $org_list = array_merge($org_list, $CI->m_orgs->get_ascendants($org_id));
         $org_list = array_unique($org_list);
 
-        $sql = "SELECT * FROM credentials WHERE org_id IN (" . implode(',', $org_list) . ")";
+        $sql = 'SELECT * FROM credentials WHERE org_id IN (' . implode(',', $org_list) . ')';
         $result = $this->run_sql($sql, array());
         for ($i=0; $i < count($result); $i++) {
-            if (!empty($result[$i]->credentials)) {
+            if ( ! empty($result[$i]->credentials)) {
                 $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
-                if (!empty($result[$i]->credentials)) {
+                if ( ! empty($result[$i]->credentials)) {
                     foreach ($result[$i]->credentials as $key => $value) {
                         $result[$i]->{'credentials.'.$key} = $value;
                     }
@@ -187,17 +186,17 @@ class M_credentials extends MY_Model
         return $result;
     }
 
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = $CI->m_orgs->get_user_all($user_id);
-            $sql = "SELECT * FROM credentials WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $sql = 'SELECT * FROM credentials WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             for ($i=0; $i < count($result); $i++) {
-                if (!empty($result[$i]->credentials)) {
+                if ( ! empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
-                    if (!empty($result[$i]->credentials)) {
+                    if ( ! empty($result[$i]->credentials)) {
                         foreach ($result[$i]->credentials as $key => $value) {
                             $result[$i]->{'credentials.'.$key} = $value;
                         }
@@ -207,19 +206,19 @@ class M_credentials extends MY_Model
             $result = $this->format_data($result, 'credentials');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM credentials LEFT JOIN orgs ON (credentials.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM credentials LEFT JOIN orgs ON (credentials.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             for ($i=0; $i < count($result); $i++) {
-                if (!empty($result[$i]->credentials)) {
+                if ( ! empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
-                    if (!empty($result[$i]->credentials)) {
+                    if ( ! empty($result[$i]->credentials)) {
                         foreach ($result[$i]->credentials as $key => $value) {
                             $result[$i]->{'credentials.'.$key} = $value;
                         }

@@ -73,7 +73,7 @@ class M_logs extends MY_Model
         return ($result);
     }
 
-    public function collection(int $user_id = null, int $response = null)
+    public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
         if (!empty($user_id)) {
