@@ -243,6 +243,7 @@ class M_widgets extends MY_Model
                                 " CAST((COUNT(*) / (SELECT COUNT(" . $this->sql_esc($widget->primary) . ") FROM " . $this->sql_esc($primary_table) . " WHERE " . $this->sql_esc('system.org_id') . " IN (" . $org_list . ")) * 100) AS unsigned) AS 'percent'" . 
                                 " FROM " .  $this->sql_esc('system') . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
+            $filter = "system.org_id in (" . $org_list . ")";
             if (!empty($CI->response->meta->requestor)) {
                 $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
             }
