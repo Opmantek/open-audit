@@ -346,16 +346,19 @@ class Logon extends CI_Controller
         $server_ip = server_ip();
         $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 
-        # If the default_network_address has not been altered by the user, update it.
+        // If the default_network_address has not been altered by the user, update it.
         if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
-            $sql = "/* logon::check_defaults */ " . "SELECT * FROM configuration WHERE name = 'default_network_address'";
+            $sql = '/* logon::check_defaults */ ' . "SELECT * FROM configuration WHERE name = 'default_network_address'";
             $query = $this->db->query($sql);
             $result = $query->result();
             $config_item = $result[0];
-            if ($config_item->edited_by == 'system') {
-                # Build a new default network address
-                $myip = explode(',', $server_ip)[0];
-                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+            if ($config_item->edited_by === 'system') {
+                // Build a new default network address
+                // $myip = explode(',', $server_ip)[0];
+                // fix for above for old PHP
+                $temp = explode(',', $server_ip);
+                $myip = $temp[0];
+                if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
                     $my_network_address = 'https://'.$myip.'/open-audit/';
                 } else {
                     $my_network_address = 'http://'.$myip.'/open-audit/';
