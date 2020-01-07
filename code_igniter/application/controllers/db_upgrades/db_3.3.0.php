@@ -247,11 +247,6 @@ $sql = "CREATE TABLE `baselines_policies` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-# Migrate any existing baselines
-if (@file('/usr/local/omk/var/oae/baselines/definitions')) {
-#
-}
-
 $sql = "DELETE FROM configuration WHERE `name` = 'device_auto_delete'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -419,8 +414,6 @@ $sql = "UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&p
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
-
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20191010' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
@@ -429,6 +422,58 @@ $this->log_db($this->db->last_query());
 $sql = "UPDATE `configuration` SET `value` = '3.3.0' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+// Migrate any existing baselines
+$sql = 'DELETE FROM baselines';
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = 'DELETE FROM baselines_policies';
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$directory_path = 'c:\\omk\\var\\oae\\baselines\\definitions\\';
+if (php_uname('s') !== 'Windows NT') {
+	$directory_path = '/usr/local/omk/var/oae/baselines/definitions/';
+	if (is_dir('/usr/local/opmojo/var/oae/baselines/definitions/')) {
+		$directory_path = '/usr/local/opmojo/var/oae/baselines/definitions/';
+	}
+}
+if (is_dir($directory_path)) {
+	$directory = dir($directory_path);
+	while (false !== ($entry = $directory->read())) {
+		$contents = '';
+		if (strpos($entry, '.json') !== false) {
+			$contents = file_get_contents($directory_path . $entry);
+			$definition = @json_decode($contents);
+			if ($definition) {
+				if (is_array($definition->policies)) {
+					$sql = 'INSERT INTO `baselines` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+					$data = array($definition->id, $definition->name, $definition->org_id, $definition->description, $definition->notes, $definition->documentation, $definition->priority, 'system', '2000-01-01 00:00:00');
+					$this->db->query($sql, $data);
+					$this->log_db($this->db->last_query());
+					foreach ($definition->policies as $policy) {
+						if ( ! empty($policy->name)) {
+							$sql = 'INSERT INTO baselines_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+							$notes = '';
+							if ( ! empty($policy->notes)) {
+								$notes = $policy->notes;
+							}
+							$documentation = '';
+							if ( ! empty($policy->documentation)) {
+								$documentation = $policy->documentation;
+							}
+							$data = array($definition->id, $policy->name, $policy->priority, $notes, $documentation, $policy->table, json_encode($policy->tests), 'system', '2000-01-01 00:00:00');
+							$this->db->query($sql, $data);
+						}
+					}
+				}
+			}
+		}
+	}
+	$directory->close();
+}
+
 
 $this->log_db("Upgrade database to 3.3.0 completed");
 $this->config->config['internal_version'] = '20191010';
