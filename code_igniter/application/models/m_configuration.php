@@ -175,7 +175,7 @@ class M_configuration extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete(int $id = 0)
+    public function delete($id = 0)
     {
         // NOT IMPLEMENTED
         if ($id) {
