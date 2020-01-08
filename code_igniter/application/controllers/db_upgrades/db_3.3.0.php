@@ -63,6 +63,16 @@ CREATE TABLE `baselines_policies` (
   CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `bios` DROP `name`;
+
+ALTER TABLE `bios` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `current`;
+
+ALTER TABLE `bios` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `bios` CHANGE `description` `model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`;
+
+UPDATE `bios` SET `name` = `model`;
+
 DELETE FROM configuration WHERE `name` = 'device_auto_delete';
 
 INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y', 'system', '2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
@@ -155,11 +165,65 @@ UPDATE `discovery_scan_options` SET `open|filtered` = 'y' WHERE `name` = 'Slow';
 
 UPDATE `discovery_scan_options` SET `open|filtered` = 'y' WHERE `name` = 'UltraSlow';
 
+ALTER TABLE `disk` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `disk` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
+
+UPDATE `disk` SET `manufacturer` = '' WHERE `manufacturer` = '(Standard disk drives)';
+
+UPDATE `disk` SET `manufacturer` = 'VMware' WHERE `model` LIKE '%vmware%' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'Intel' WHERE `model` LIKE '%intel%' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'VirtualBox' WHERE `model` = 'VBOX HARDDISK' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'Western Digital' WHERE `model` LIKE '%wdc%' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'Western Digital' WHERE `model_family` LIKE '%Western Digital%' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'Seagate' WHERE `model_family` LIKE '%Seagate%' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'Hewlett Packard' WHERE `model_family` LIKE 'HP %' AND `manufacturer` = '';
+
+UPDATE `disk` SET `manufacturer` = 'Apple Inc.' WHERE `manufacturer` LIKE 'Apple%';
+
+UPDATE `disk` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
+
+ALTER TABLE `ip` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `ip` SET `name` = REPLACE(REPLACE(`ip`, '.0', '.'), '.0', '.') WHERE `version` = 4;
+
+UPDATE `ip` SET `name` = `ip` WHERE `version` != 4;
+
 ALTER TABLE `ldap_servers` ADD `use_auth` enum('y','n') NOT NULL DEFAULT 'y' AFTER `user_membership_attribute`;
 
 ALTER TABLE `ldap_servers` ADD `use_discovery` enum('y','n') NOT NULL DEFAULT 'y' AFTER `use_auth`;
 
 ALTER TABLE `ldap_servers` ADD `use_people` enum('y','n') NOT NULL DEFAULT 'y' AFTER `use_discovery`;
+
+ALTER TABLE `memory` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `memory` SET `name` = `tag`;
+
+ALTER TABLE `module` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `module` SET `name` = `description`;
+
+ALTER TABLE `monitor` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `monitor` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
+
+UPDATE `monitor` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
+
+ALTER TABLE `motherboard` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `motherboard` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
+
+UPDATE `motherboard` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
+
+ALTER TABLE `netstat` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `netstat` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`));
 
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS';
 
@@ -244,6 +308,16 @@ $sql = "CREATE TABLE `baselines_policies` (
   KEY `baseline_id` (`baseline_id`),
   CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('bios', 'first_seen', "`first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `current`");
+
+$this->alter_table('bios', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('bios', 'description', "`model` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
+
+$sql = "UPDATE `bios` SET `name` = `model`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -370,9 +444,101 @@ $sql = "UPDATE `discovery_scan_options` SET `open|filtered` = 'y' WHERE `name` =
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$this->alter_table('disk', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('disk', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = '' WHERE `manufacturer` = '(Standard disk drives)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'VMware' WHERE `model` LIKE '%vmware%' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'Intel' WHERE `model` LIKE '%intel%' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'VirtualBox' WHERE `model` = 'VBOX HARDDISK' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'Western Digital' WHERE `model` LIKE '%wdc%' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'Western Digital' WHERE `model_family` LIKE '%Western Digital%' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'Seagate' WHERE `model_family` LIKE '%Seagate%' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'Hewlett Packard' WHERE `model_family` LIKE 'HP %' AND `manufacturer` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `manufacturer` = 'Apple Inc.' WHERE `manufacturer` LIKE 'Apple%'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `disk` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('ip', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `ip` SET `name` = REPLACE(REPLACE(`ip`, '.0', '.'), '.0', '.') WHERE `version` = 4";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `ip` SET `name` = `ip` WHERE `version` != 4";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $this->alter_table('ldap_servers', 'use_auth', "ADD `use_auth` enum('y','n') NOT NULL DEFAULT 'y' AFTER `user_membership_attribute`", 'add');
 $this->alter_table('ldap_servers', 'use_discovery', "ADD `use_discovery` enum('y','n') NOT NULL DEFAULT 'y' AFTER `use_auth`", 'add');
 $this->alter_table('ldap_servers', 'use_people', "ADD `use_people` enum('y','n') NOT NULL DEFAULT 'y' AFTER `use_discovery`", 'add');
+
+$this->alter_table('memory', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `memory` SET `name` = `tag`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('module', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `module` SET `name` = `description`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('monitor', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('monitor', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+
+$sql = "UPDATE `monitor` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('motherboard', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('motherboard', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+
+$sql = "UPDATE `motherboard` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('netstat', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `netstat` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS'";
 $this->db->query($sql);
