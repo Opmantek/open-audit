@@ -49,7 +49,7 @@
 <?php
 $series = '';
 $labels = '';
-if (count($this->response->data) > 0) {
+if (is_array($this->response->data) and count($this->response->data) > 0) {
     foreach ($this->response->data as $partition) {
         if ($series != '') {
             $series .= ",{x: " . str_replace('-', '', $partition->attributes->timestamp) . ", y: " . $partition->attributes->used_percent . "}";
