@@ -1640,7 +1640,7 @@ foreach ($list as $item) {
                         <tr>
                         <?php
                         foreach ($data[$item][0] as $key => $value) {
-                            if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
+                            if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id' and $key != 'system.name') {
                                 # some special cases for cisco modules
                                 if ($item == 'module') {
                                     if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
@@ -1668,7 +1668,7 @@ foreach ($list as $item) {
                         foreach ($data[$item] as $row) {
                             echo "                        <tr>\n";
                             foreach ($row as $key => $value) {
-                                if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
+                                if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id' and $key != 'system.name') {
                                     # some special cases for cisco modules
                                     if ($item == 'module') {
                                         if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
@@ -1813,7 +1813,7 @@ if ($data['system']->type == 'computer') {
                         $count = 0;
                         echo '<div class="col-md-6">';
                         foreach ($item_row as $key => $value) {
-                            if ($key != 'id' and $key != 'server_id' and $key != 'parent_id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded' and $key != 'system.id') {
+                            if ($key != 'id' and $key != 'server_id' and $key != 'parent_id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded' and $key != 'system.id' and $key != 'system.name') {
                                 $count++;
                                 $show_key = htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET);
                                 if ($count == $row_attribute_count) {
@@ -1841,7 +1841,7 @@ if ($data['system']->type == 'computer') {
                                             echo "<th>Graph</th>\n";
                                         }
                                         foreach ($data[$sub_item][0] as $sub_key => $sub_value) {
-                                            if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
+                                            if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded' and $sub_key != 'system.name' and $sub_key != 'system.id') {
                                                 ?>
                                                 <th><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $sub_key)), REPLACE_FLAGS, CHARSET); ?></th>
                                             <?php
@@ -1860,7 +1860,7 @@ if ($data['system']->type == 'computer') {
                                                     if ($sub_item == 'partition' and $sub_key == 'id') {
                                                         echo '<td><a href="' . base_url() . 'index.php/devices/' . htmlspecialchars($data['system']->id, REPLACE_FLAGS, CHARSET) . '/partition_graph/' . htmlspecialchars($sub_value, REPLACE_FLAGS, CHARSET) . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
                                                     }
-                                                    if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
+                                                    if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded' and $sub_key != 'system.name' and $sub_key != 'system.id') {
                                                         if (is_int($sub_value)) {
                                                             echo "<td>" . number_format($sub_value) . "</td>\n";
                                                         } else {

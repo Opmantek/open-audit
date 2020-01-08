@@ -210,7 +210,7 @@ class M_devices_components extends MY_Model
     {
         $match_columns = array();
         if ($table === 'bios') {
-                $match_columns = array('description', 'manufacturer', 'serial', 'smversion', 'version');
+                $match_columns = array('manufacturer', 'model', 'serial', 'smversion', 'version');
         }
         if ($table === 'disk') {
                 $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
@@ -326,7 +326,6 @@ class M_devices_components extends MY_Model
     // $parameters->details
     // $parameters->input
     // $parameters->log
-
 
     /**
      * [process_component description]
@@ -474,6 +473,73 @@ class M_devices_components extends MY_Model
             }
         }
 
+        // BIOS
+        if ((string)$table === 'bios') {
+            // As at 3.3.0, make sure we have a name
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                if (empty($input[$i]->name) && ! empty($input[$i]->description)) {
+                    $input[$i]->name = $input[$i]->description;
+                }
+                // `description` changed to `model`
+                if (empty($input[$i]->model) && ! empty($input[$i]->description)) {
+                    $input[$i]->model = $input[$i]->description;
+                }
+                // new DERIVED column `name`
+                if (empty($input[$i]->name) && ! empty($input[$i]->model)) {
+                    $input[$i]->name = $input[$i]->model;
+                }
+                // Remove `description`
+                if ( ! empty($input[$i]->description)) {
+                    unset($input[$i]->description);
+                }
+            }
+        }
+
+        // DISK
+        if ((string)$table === 'disk') {
+            for ($i=0; $i<count($input); $i++) {
+                if ($input[$i]->manufacturer === '(Standard disk drives)') {
+                    $input[$i]->manufacturer = '';
+                }
+                if (empty($input[$i]->model)) {
+                    $input[$i]->model = '';
+                }
+                if (empty($input[$i]->model_family)) {
+                    $input[$i]->model_family = '';
+                }
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'vmware') !== 'false') {
+                    $input[$i]->manufacturer = 'VMware';
+                }
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'intel') !== 'false') {
+                    $input[$i]->manufacturer = 'Intel';
+                }
+                if (empty($input[$i]->manufacturer) && $input[$i]->model === 'VBOX HARDDISK') {
+                    $input[$i]->manufacturer = 'VirtualBox';
+                }
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'wdc') !== 'false') {
+                    $input[$i]->manufacturer = 'Western Digital';
+                }
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'Western Digital') !== 'false') {
+                    $input[$i]->manufacturer = 'Western Digital';
+                }
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'Seagate') !== 'false') {
+                    $input[$i]->manufacturer = 'Seagate';
+                }
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'HP ') === 0) {
+                    $input[$i]->manufacturer = 'Hewlett Packard';
+                }
+                if (stripos($input[$i]->manufacturer, 'Apple') === 0) {
+                    $input[$i]->manufacturer = 'Apple Inc.';
+                }
+
+                // new DERIVED column `name`
+                if (empty($input[$i]->name) && ! empty($input[$i]->model)) {
+                    $input[$i]->name = trim($input[$i]->manufacturer . ' ' . $input[$i]->model);
+                }
+            }
+        }
+
         // IP ADDRESS
         if ((string)$table === 'ip') {
             $this->load->model('m_networks');
@@ -496,6 +562,10 @@ class M_devices_components extends MY_Model
                 // Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
                 if ($input[$i]->version === 4 && (empty($input[$i]->netmask) OR $input[$i]->netmask === '0.0.0.0')) {
                     $input[$i]->netmask = '255.255.255.0';
+                }
+                // new DERIVED column `name`
+                if ( ! empty($input[$i]->ip)) {
+                    $input[$i]->name = $input[$i]->ip;
                 }
                 // calculate the network this address is on
                 if ($input[$i]->version === 4 && ! empty($input[$i]->ip)) {
@@ -577,11 +647,41 @@ class M_devices_components extends MY_Model
                 if (empty($input[$i]->speed) OR ! is_int($input[$i]->speed)) {
                     unset($input[$i]->speed);
                 }
+                // new DERIVED column `name`
+                if (empty($input[$i]->name) && ! empty($input[$i]->tag)) {
+                    $input[$i]->name = $input[$i]->tag;
+                }
+            }
+        }
+
+        // MONITOR
+        if ((string)$table === 'monitor') {
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                if (empty($input[$i]->name)) {
+                    $input[$i]->name = @$input[$i]->manufacturer . ' ' . @$input[$i]->model;
+                }
+            }
+        }
+
+        // MOTHERBOARD
+        if ((string)$table === 'motherboard') {
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                if (empty($input[$i]->name)) {
+                    $input[$i]->name = @$input[$i]->manufacturer . ' ' . @$input[$i]->model;
+                }
             }
         }
 
         // NETSTAT
         if ((string)$table === 'netstat') {
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                if (empty($input[$i]->name)) {
+                    $input[$i]->name = @$input[$i]->program . ' on ' . @$input[$i]->ip . ' ' . @$input[$i]->protocol . ' port ' . @$input[$i]->port;
+                }
+            }
             foreach ($input as $item => $attributes) {
                 $attributes->protocol = strtolower($attributes->protocol);
                 $attributes->port = intval($attributes->port);
