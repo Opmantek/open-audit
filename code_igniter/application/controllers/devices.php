@@ -258,6 +258,7 @@ class Devices extends MY_Controller
     {
         $timer_start = microtime(true);
         $this->load->helper('snmp_model');
+        $this->load->helper('mac');
         if (empty($_POST['input_type']) OR $_POST['input_type'] === 'manual_input') {
             $device = new stdClass();
             foreach ($this->response->meta->received_data->attributes as $key => $value) {

@@ -626,11 +626,18 @@ class M_devices_components extends MY_Model
             }
 
             // some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
+            // populate the manufacturer (if not already) using the MAC prefix
             for ($i=0; $i<count($input); $i++) {
                 if (isset($input[$i]->mac)) {
                     $input[$i]->mac = strtolower($input[$i]->mac);
                 } else {
                     $input[$i]->mac = '';
+                }
+                if (empty($input[$i]->manufacturer)) {
+                    $input[$i]->manufacturer = get_manufacturer_from_mac($input[$i]->mac);
+                }
+                if (empty($input[$i]->manufacturer) && ! empty($details->manufacturer) and ! empty($details->form_factor) and $details->form_factor === 'Virtual') {
+                    $input[$i]->manufacturer = $details->manufacturer;
                 }
             }
         }

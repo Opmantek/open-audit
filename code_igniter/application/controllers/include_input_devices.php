@@ -40,6 +40,7 @@ $this->benchmark->mark('code_start');
 $this->load->helper('audit');
 $this->load->helper('log');
 $this->load->helper('error');
+$this->load->helper('mac');
 $this->load->helper('snmp_oid');
 // our required models
 $this->load->model('m_audit_log');

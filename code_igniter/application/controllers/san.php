@@ -94,6 +94,7 @@ class San extends CI_Controller
             $this->load->model('m_device');
             $this->load->model('m_audit_log');
             $this->load->helper('url');
+            $this->load->helper('mac');
 
             $input = explode(PHP_EOL, $_POST['input']);
             // echo "FILE: " . $input[0] . "\n";
