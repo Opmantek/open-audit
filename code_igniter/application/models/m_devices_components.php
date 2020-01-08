@@ -477,13 +477,13 @@ class M_devices_components extends MY_Model
         if ((string)$table === 'bios') {
             // As at 3.3.0, make sure we have a name
             for ($i=0; $i<count($input); $i++) {
-                // new DERIVED column `name`
-                if (empty($input[$i]->name) && ! empty($input[$i]->description)) {
-                    $input[$i]->name = $input[$i]->description;
-                }
                 // `description` changed to `model`
                 if (empty($input[$i]->model) && ! empty($input[$i]->description)) {
                     $input[$i]->model = $input[$i]->description;
+                }
+                // new DERIVED column `name`
+                if (empty($input[$i]->name) && ! empty($input[$i]->description)) {
+                    $input[$i]->name = $input[$i]->description;
                 }
                 // new DERIVED column `name`
                 if (empty($input[$i]->name) && ! empty($input[$i]->model)) {
@@ -659,7 +659,7 @@ class M_devices_components extends MY_Model
             for ($i=0; $i<count($input); $i++) {
                 // new DERIVED column `name`
                 if (empty($input[$i]->name)) {
-                    $input[$i]->name = @$input[$i]->manufacturer . ' ' . @$input[$i]->model;
+                    $input[$i]->name = trim(@$input[$i]->manufacturer . ' ' . @$input[$i]->model);
                 }
             }
         }
@@ -669,7 +669,7 @@ class M_devices_components extends MY_Model
             for ($i=0; $i<count($input); $i++) {
                 // new DERIVED column `name`
                 if (empty($input[$i]->name)) {
-                    $input[$i]->name = @$input[$i]->manufacturer . ' ' . @$input[$i]->model;
+                    $input[$i]->name = trim(@$input[$i]->manufacturer . ' ' . @$input[$i]->model);
                 }
             }
         }
@@ -679,7 +679,7 @@ class M_devices_components extends MY_Model
             for ($i=0; $i<count($input); $i++) {
                 // new DERIVED column `name`
                 if (empty($input[$i]->name)) {
-                    $input[$i]->name = @$input[$i]->program . ' on ' . @$input[$i]->ip . ' ' . @$input[$i]->protocol . ' port ' . @$input[$i]->port;
+                    $input[$i]->name = trim(@$input[$i]->program . ' on ' . @$input[$i]->ip . ' ' . @$input[$i]->protocol . ' port ' . @$input[$i]->port);
                 }
             }
             foreach ($input as $item => $attributes) {
