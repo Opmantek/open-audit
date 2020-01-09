@@ -255,7 +255,8 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'initial_size', 'max_size');
         }
         if ($table === 'partition') {
-                $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
+                // $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
+                $match_columns = array('serial', 'hard_drive_index', 'mount_point', 'size');
         }
         if ($table === 'policy') {
                 $match_columns = array('type', 'name', 'value', 'guid');
@@ -499,7 +500,7 @@ class M_devices_components extends MY_Model
         // DISK
         if ((string)$table === 'disk') {
             for ($i=0; $i<count($input); $i++) {
-                if ($input[$i]->manufacturer === '(Standard disk drives)') {
+                if (empty($input[$i]->manufacturer) or $input[$i]->manufacturer === '(Standard disk drives)') {
                     $input[$i]->manufacturer = '';
                 }
                 if (empty($input[$i]->model)) {
@@ -740,12 +741,47 @@ class M_devices_components extends MY_Model
                     $input[$i]->manufacturer = $details->manufacturer;
                 }
             }
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                if (empty($input[$i]->name)) {
+                    $input[$i]->name = trim(@$input[$i]->manufacturer . ' ' . @$input[$i]->model);
+                }
+            }
+        }
+
+        // NMAP
+        if ((string)$table === 'nmap') {
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                if (empty($input[$i]->name)) {
+                    $input[$i]->name = trim(@$input[$i]->program . ' on ' . @$input[$i]->ip . ' ' . @$input[$i]->protocol . ' port ' . @$input[$i]->port);
+                }
+            }
         }
 
         // PARTITION
-        // AIX needs to also match on partition.name
-        if ((string)$table === 'partition' && strtolower($details->os_family) === 'ibm aix') {
-            $match_columns[] = 'name';
+        if ((string)$table === 'partition') {
+            // AIX needs to also match on partition.description
+            if (strtolower($details->os_family) === 'ibm aix') {
+                $match_columns[] = 'description';
+            }
+            for ($i=0; $i<count($input); $i++) {
+                // new DERIVED column `name`
+                $input[$i]->name = $input[$i]->mount_type;
+                if ( ! empty($input[$i]->mount_point)) {
+                    $input[$i]->name .= ' at ' . $input[$i]->mount_point;
+                }
+                if ( ! empty($input[$i]->format)) {
+                    if (stripos($input[$i]->format, 'member') !== false) {
+                        $input[$i]->name .= ' which is a ' . $input[$i]->format;
+                    } else {
+                        $input[$i]->name .= ' formatted ' . $input[$i]->format;
+                    }
+                }
+                if ( ! empty($input[$i]->hard_drive_index)) {
+                    $input[$i]->name .= ' on device ' . $input[$i]->hard_drive_index;
+                }
+            }
         }
 
         // PROCESSOR
@@ -758,6 +794,21 @@ class M_devices_components extends MY_Model
             if ( ! empty($input[0]->manufacturer)) {
                 $input[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input[0]->manufacturer);
                 $input[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input[0]->manufacturer);
+            }
+            $input[0]->name = trim(@$input[0]->description);
+        }
+
+        // ROUTE
+        if ((string)$table === 'route') {
+            for ($i=0; $i<count($input); $i++) {
+                $input[$i]->name = trim(@$input[$i]->destination . '/' . @$input[$i]->mark . ' via ' . @$input[$i]->next_hop);
+            }
+        }
+
+        // SCSI
+        if ((string)$table === 'scsi') {
+            for ($i=0; $i<count($input); $i++) {
+                $input[$i]->name = @$input[$i]->model;
             }
         }
 
@@ -803,6 +854,13 @@ class M_devices_components extends MY_Model
             }
         }
 
+        // SOUND
+        if ((string)$table === 'sound') {
+            for ($i=0; $i<count($input); $i++) {
+                $input[$i]->name = trim(@$input[$i]->manufacturer . ' ' . @$input[$i]->model);
+            }
+        }
+
         // USER
         if ((string)$table === 'user') {
             for ($i=0; $i<count($input); $i++) {
@@ -816,6 +874,13 @@ class M_devices_components extends MY_Model
                 if (empty($input[$i]->keys)) {
                     $input[$i]->keys = '';
                 }
+            }
+        }
+
+        // VIDEO
+        if ((string)$table === 'video') {
+            for ($i=0; $i<count($input); $i++) {
+                $input[$i]->name = trim(@$input[$i]->manufacturer . ' ' . @$input[$i]->model);
             }
         }
 

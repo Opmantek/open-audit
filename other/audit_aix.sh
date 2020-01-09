@@ -355,8 +355,8 @@ for disk in $(lspv | cut -d" " -f1); do
 			cat >>"$xml_file" <<EndOfFile
 		<item>
 			<serial></serial>
-			<name>$(escape_xml "$partition")</name>
-			<description>$(escape_xml "$partition_mount_point")</description>
+			<name></name>
+			<description>$(escape_xml "$partition")</description>
 			<device></device>
 			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
 			<partition_disk_index></partition_disk_index>

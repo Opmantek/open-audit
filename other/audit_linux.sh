@@ -2166,7 +2166,7 @@ for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4 2>/dev/null); do
 	fi
 	partition_size=$((partition_free_space + partition_used_space))
 	partition_format=""
-	partition_caption=""
+	partition_caption=$(echo "$mount" | cut -d" " -f1)
 	partition_device_id=""
 	partition_device_id=""
 	partition_disk_index=""

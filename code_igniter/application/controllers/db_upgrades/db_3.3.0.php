@@ -225,15 +225,59 @@ ALTER TABLE `netstat` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_se
 
 UPDATE `netstat` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`));
 
+ALTER TABLE `network` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
 ALTER TABLE `network` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
+
+UPDATE `network` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
+
+ALTER TABLE `nmap` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`));
+
+ALTER TABLE `optical` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 ALTER TABLE `optical` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
 
-ALTER TABLE `print_queue` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
+UPDATE `optical` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`model`));
+
+ALTER TABLE `partition` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `partition` SET `description` = `name`;
+
+ALTER TABLE `policy` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `current`;
+
+ALTER TABLE `policy` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `print_queue` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `print_queue` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '' AFTER `manufacturer`;
+
+ALTER TABLE `processor` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `processor` SET `name` = `description`;
 
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS';
 
+ALTER TABLE `route` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `route` SET `name` = CONCAT(`destination`, '/', `mask`, ' via ', `next_hop`);
+
+ALTER TABLE `scsi` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `scsi` SET `name` = `model`;
+
+ALTER TABLE `server` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `server_item` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `share` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `sound` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
 ALTER TABLE `sound` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
+
+UPDATE `sound` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
 
 UPDATE `summaries` SET `extra_columns` = 'server.name,server.full_name,server.version,server.edition,server.status' WHERE `name` = 'Server Types' and `edited_by` = 'system';
 
@@ -261,15 +305,27 @@ ALTER TABLE `users` DROP `devices_default_display_columns`;
 
 ALTER TABLE `users` ADD `devices_default_display_columns` text NOT NULL AFTER `dashboard_id`;
 
+ALTER TABLE `variable` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+ALTER TABLE `video` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
 ALTER TABLE `video` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
 
-UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'
+UPDATE `video` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
 
-UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(dns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day'
+ALTER TABLE `vm` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
-UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(server,server_item,service,software,software_key)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Software Additions by Day'
+UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day';
+
+UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(dns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day';
+
+UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(server,server_item,service,software,software_key)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Software Additions by Day';
 
 UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.os_group,system.name,system.domain,system.ip,system.os_family,system.location_id' WHERE `name` = 'Devices by Location';
+
+ALTER TABLE `windows` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
+
+UPDATE `windows` SET `name` = `domain_role`;
 
 UPDATE `configuration` SET `value` = '20191010' WHERE `name` = 'internal_version';
 
@@ -550,17 +606,67 @@ $sql = "UPDATE `netstat` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on 
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$this->alter_table('network', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
 $this->alter_table('network', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+
+$sql = "UPDATE `network` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('nmap', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('network', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $this->alter_table('optical', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
 
-$this->alter_table('print_queue', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+$sql = "UPDATE `optical` SET `name` = `model`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('partition', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('policy', 'first_seen', "`first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `current`");
+
+$this->alter_table('policy', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('print_queue', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('processor', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `processor` SET `name` = `description`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$this->alter_table('route', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('scsi', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `scsi` SET `name` = `model`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('server', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('server_item', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('share', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('sound', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
 $this->alter_table('sound', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+
+$sql = "UPDATE `sound` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE `summaries` SET `extra_columns` = 'server.name,server.full_name,server.version,server.edition,server.status' WHERE `name` = 'Server Types' and `edited_by` = 'system'";
 $this->db->query($sql);
@@ -582,7 +688,17 @@ $this->log_db($this->db->last_query());
 
 $this->alter_table('users', 'devices_default_display_columns', 'ADD `devices_default_display_columns` text NOT NULL AFTER `dashboard_id`', 'add');
 
+$this->alter_table('variable', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('video', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
 $this->alter_table('video', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
+
+$sql = "UPDATE `video` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('vm', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
 
 $sql = "UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'";
 $this->db->query($sql);
@@ -597,6 +713,12 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.os_group,system.name,system.domain,system.ip,system.os_family,system.location_id' WHERE `name` = 'Devices by Location'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('windows', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$sql = "UPDATE `windows` SET `name` = `domain_role`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
