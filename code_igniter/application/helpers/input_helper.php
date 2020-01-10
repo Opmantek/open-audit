@@ -1088,6 +1088,7 @@ if (! function_exists('inputRead')) {
         #        a variable value when using GET.
         #        PHP Bug Report - https://bugs.php.net/bug.php?id=45272
         #        PHP Docs - https://php.net/manual/en/language.variables.external.php
+
         $filter = array();
         $log->summary = 'set filter';
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
@@ -1107,45 +1108,49 @@ if (! function_exists('inputRead')) {
                     stdlog($log);
                 }
 
-                if (strtolower(substr($query->value, 0, 8)) == 'not like') {
+                if (strtolower(substr($query->value, 0, 8)) === 'not like') {
                     $query->value = '%' . substr($query->value, 8) . '%';
                     $query->operator = 'not like';
                 }
 
-                if (strtolower(substr($query->value, 0, 5)) == '!like') {
+                if (strtolower(substr($query->value, 0, 5)) === '!like') {
                     $query->value = '%' . substr($query->value, 5) . '%';
                     $query->operator = 'not like';
                 }
 
                 $operator = substr($query->value, 0, 4);
-                if (strtolower($operator) == 'like') {
+                if (strtolower($operator) === 'like') {
                     $query->value = '%' . substr($query->value, 4) . '%';
                     $query->operator = $operator;
                 }
 
-                if (substr($query->value, 0, 3) == 'in(' and strpos($query->value, ')') === strlen($query->value)-1) {
-                    # note strlen of -four characters because in( + ).
+                if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value)-1) {
+
                     // Removed the below. It is up to the user to quote enclode strings if required
                     // If we do this for them, they end up double quoted upon link generation in output_helper
+
                     // $temp_value = substr($query->value, 3, strlen($query->value)-4);
                     // $temp_value = str_replace("'", "\'", $temp_value);
                     // $temp_value = str_replace(",", "','", $temp_value);
                     // $query->value = "('" . $temp_value . "')";
+
                     $query->value = substr($query->value, 2);
                     $query->operator = 'in';
                 }
 
-                # NOTE - TODO
-                # Should we have a "not in" filter?
+                if (substr($query->value, 0, 6) === 'notin(' && strpos($query->value, ')') === strlen($query->value)-1) {
+                    $query->value = substr($query->value, 5);
+                    $query->operator = 'not in';
+                }
 
                 $operator = substr($query->value, 0, 2);
-                if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
+                if ($operator === '!=' OR $operator === '>=' OR $operator === '<=') {
                     $query->value = substr($query->value, 2);
                     $query->operator = $operator;
                 }
 
                 $operator = substr($query->value, 0, 1);
-                if ($operator == '=' or $operator == '>' or $operator == '<') {
+                if ($operator === '=' OR $operator === '>' OR $operator === '<') {
                     $query->value = substr($query->value, 1);
                     $query->operator = $operator;
                 }
@@ -1420,10 +1425,12 @@ if (! function_exists('filter')) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
                 // We MUST have a name like 'connections.name', not just 'name'
                 if (strpos($item->name, '.') !== false) {
-                    if ($item->operator != 'in') {
-                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . str_replace('"', '\"', $item->value) . '"';
-                    } else {
+                    if ($item->operator === 'in') {
                         $filter .= ' AND ' . $item->name . ' in ' . str_replace('"', '\"', $item->value);
+                    } else if ($item->operator === 'not in') {
+                        $filter .= ' AND ' . $item->name . ' not in ' . str_replace('"', '\"', $item->value);
+                    } else {
+                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . str_replace('"', '\"', $item->value) . '"';
                     }
                 }
             }
