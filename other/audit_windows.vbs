@@ -4569,7 +4569,6 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
     end if
     end if
 
-
     server = server & "     <item>" & vbcrlf
     server = server & "         <type>database</type>" & vbcrlf
     server = server & "         <name>" & escape_xml(db_type) & "</name>" & vbcrlf
@@ -4578,8 +4577,6 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
     server = server & "         <port>" & escape_xml(db_port) & "</port>" & vbcrlf
     server = server & "         <status>" & escape_xml(en_sql_server_state) & "</status>" & vbcrlf
     server = server & "     </item>" & vbcrlf
-
-
 
     if ( (en_sql_server_state = "Running") and (((i = 1) or (i = 2)) or db_type = "SQL Server Express") and error_returned = 0) then
     for each instance in sql_instances
@@ -4652,202 +4649,310 @@ if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195)
 
     result_site = ""
     if audit_location = "local" then iis_connect = "localhost" else iis_connect = strcomputer end if
-    on error resume next
-    set objWMIService_IIS = GetObject( "IIS://" & iis_connect & "/W3SVC" )
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (W3SVC)" : audit_wmi_fails = audit_wmi_fails & "W3SVC " : end if
-    if objWMIService_IIS.count = 0 then
-    ' do nothing
-    else
-    for each objitem in objWMIService_IIS
-    if objitem.class = "IIsWebServer" then
-    server_item = server_item & "   <item>" & vbcrlf
-    server_item = server_item & "       <type>website</type>" & vbcrlf
-    server_item = server_item & "       <name>" & escape_xml(objitem.name) & "</name>" & vbcrlf
-    server_item = server_item & "       <parent_name>IIS</parent_name>" & vbcrlf
-    server_item = server_item & "       <id_internal>" & escape_xml(objitem.name) & "</id_internal>" & vbcrlf
-    server_item = server_item & "       <description>" & escape_xml(objItem.servercomment) & "</description>" & vbcrlf
-    Select Case objItem.serverstate
-    Case 1:       server_item = server_item & "         <status>Starting</status>" & vbcrlf
-    Case 2:       server_item = server_item & "         <status>Running</status>" & vbcrlf
-    Case 3:       server_item = server_item & "         <status>Stopping</status>" & vbcrlf
-    Case 4:       server_item = server_item & "         <status>Stopped</status>" & vbcrlf
-    Case 5:       server_item = server_item & "         <status>Pausing</status>" & vbcrlf
-    Case 6:       server_item = server_item & "         <status>Paused</status>" & vbcrlf
-    Case 7:       server_item = server_item & "         <status>Continuing</status>" & vbcrlf
-    Case Default: server_item = server_item & "         <status>Unknown</status>" & vbcrlf
-    End Select
-    Select Case objItem.LogType
-    Case 0:       server_item = server_item & "         <log_status>disabled</log_status>" & vbcrlf
-    Case 1:       server_item = server_item & "         <log_status>enabled</log_status>" & vbcrlf
-    Case Default: server_item = server_item & "         <log_status>undefined</log_status>" & vbcrlf
-    End Select
-    server_item = server_item & "       <log_path>" & escape_xml(objItem.logfiledirectory) & "</log_path>" & vbcrlf
-    Select Case objItem.LogFilePeriod
-    Case 0: if objItem.LogFileTruncateSize = -1 then
-    server_item = server_item & "       <log_rotation>Unlimited file size</log_rotation>" & vbcrlf
-    Else
-    server_item = server_item & "       <log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</log_rotation>" & vbcrlf
-    end if
-    Case 1:       server_item = server_item & "         <log_rotation>daily</log_rotation>" & vbcrlf
-    Case 2:       server_item = server_item & "         <log_rotation>weekly</log_rotation>" & vbcrlf
-    Case 3:       server_item = server_item & "         <log_rotation>monthly</log_rotation>" & vbcrlf
-    Case 4:       server_item = server_item & "         <log_rotation>hourly</log_rotation>" & vbcrlf
-    Case Default: server_item = server_item & "         <log_rotation>undefined</log_rotation>" & vbcrlf
-    End Select
-    server_item = server_item & "   </item>" & vbcrlf
-    end if
-    next
+        on error resume next
+            set objWMIService_IIS = GetObject( "IIS://" & iis_connect & "/W3SVC" )
+            error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (W3SVC)" : audit_wmi_fails = audit_wmi_fails & "W3SVC " : end if
+            if objWMIService_IIS.count = 0 then
+                ' do nothing
+            else
+            for each objitem in objWMIService_IIS
+            if objitem.class = "IIsWebServer" then
+                server_item = server_item & "   <item>" & vbcrlf
+                server_item = server_item & "       <type>website</type>" & vbcrlf
+                server_item = server_item & "       <name>" & escape_xml(objitem.name) & "</name>" & vbcrlf
+                server_item = server_item & "       <parent_name>IIS</parent_name>" & vbcrlf
+                server_item = server_item & "       <id_internal>" & escape_xml(objitem.name) & "</id_internal>" & vbcrlf
+                server_item = server_item & "       <description>" & escape_xml(objItem.servercomment) & "</description>" & vbcrlf
+                Select Case objItem.serverstate
+                    Case 1:       server_item = server_item & "         <status>Starting</status>" & vbcrlf
+                    Case 2:       server_item = server_item & "         <status>Running</status>" & vbcrlf
+                    Case 3:       server_item = server_item & "         <status>Stopping</status>" & vbcrlf
+                    Case 4:       server_item = server_item & "         <status>Stopped</status>" & vbcrlf
+                    Case 5:       server_item = server_item & "         <status>Pausing</status>" & vbcrlf
+                    Case 6:       server_item = server_item & "         <status>Paused</status>" & vbcrlf
+                    Case 7:       server_item = server_item & "         <status>Continuing</status>" & vbcrlf
+                    Case Default: server_item = server_item & "         <status>Unknown</status>" & vbcrlf
+                End Select
+                Select Case objItem.LogType
+                    Case 0:       server_item = server_item & "         <log_status>disabled</log_status>" & vbcrlf
+                    Case 1:       server_item = server_item & "         <log_status>enabled</log_status>" & vbcrlf
+                    Case Default: server_item = server_item & "         <log_status>undefined</log_status>" & vbcrlf
+                End Select
+                server_item = server_item & "       <log_path>" & escape_xml(objItem.logfiledirectory) & "</log_path>" & vbcrlf
+                Select Case objItem.LogFilePeriod
+                    Case 0: if objItem.LogFileTruncateSize = -1 then
+                        server_item = server_item & "       <log_rotation>Unlimited file size</log_rotation>" & vbcrlf
+                    Else
+                        server_item = server_item & "       <log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</log_rotation>" & vbcrlf
+                    end if
+                    Case 1:       server_item = server_item & "         <log_rotation>daily</log_rotation>" & vbcrlf
+                    Case 2:       server_item = server_item & "         <log_rotation>weekly</log_rotation>" & vbcrlf
+                    Case 3:       server_item = server_item & "         <log_rotation>monthly</log_rotation>" & vbcrlf
+                    Case 4:       server_item = server_item & "         <log_rotation>hourly</log_rotation>" & vbcrlf
+                    Case Default: server_item = server_item & "         <log_rotation>undefined</log_rotation>" & vbcrlf
+                End Select
+                server_item = server_item & "   </item>" & vbcrlf
+            end if
+        next
     end if
     on error goto 0
 end if
 
-
-if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000)) then
-    ' IIS 6 or greater
-    if debugging > "1" then wscript.echo "IIS 6 Installed" end if
-
+if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000) and (cint(windows_build_number) < 6000)) then
     iis_wmi = True
-
+    iis_version = ""
     on error resume next
-    if struser > "" then
-    set objWMIService_IIS = wmiLocator.ConnectServer(strcomputer, "root/MicrosoftIISv2", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
-    objWMIService_IIS.Security_.authenticationLevel = 6
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (objWMIService_IIS.Security_.authenticationLevel)" : audit_wmi_fails = audit_wmi_fails & "objWMIService_IIS.Security_.authenticationLevel " : end if
-    else
-    Set objWMIService_IIS = GetObject("winmgmts:{AuthenticationLevel=pktPrivacy}!\\" & strcomputer & "\root\MicrosoftIISv2")
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
-    end if
+        if struser > "" then
+            set objWMIService_IIS = wmiLocator.ConnectServer(strcomputer, "root/MicrosoftIISv2", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
+            error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
+            objWMIService_IIS.Security_.authenticationLevel = 6
+            error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (objWMIService_IIS.Security_.authenticationLevel)" : audit_wmi_fails = audit_wmi_fails & "objWMIService_IIS.Security_.authenticationLevel " : end if
+        else
+            Set objWMIService_IIS = GetObject("winmgmts:{AuthenticationLevel=pktPrivacy}!\\" & strcomputer & "\root\MicrosoftIISv2")
+            error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
+        end if
     on error goto 0
 
     if isnull(objWMIService_IIS) then iis_wmi = False
     if isempty(objWMIService_IIS) then iis_wmi = False
 
     if iis_wmi = True then
-    iis_version = ""
-    on error resume next
-    Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebInfo",,32)
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (IISWebInfo)" : audit_wmi_fails = audit_wmi_fails & "IISWebInfo " : end if
-    For Each objItem in colItems
-    iis_version = objItem.MajorIIsVersionNumber & "." & objItem.MinorIIsVersionNumber
-    Next
-    server = server & "     <item>" & vbcrlf
-    server = server & "         <type>web</type>" & vbcrlf
-    server = server & "         <name>IIS</name>" & vbcrlf
-    server = server & "         <version>" & escape_xml(iis_version) & "</version>" & vbcrlf
-    server = server & "         <status>running</status>" & vbcrlf
-    server = server & "     </item>" & vbcrlf
-    if iis_version > "." then iis_wmi = True else iis_wmi = False
-    on error goto 0
+        on error resume next
+            Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebInfo",,32)
+            error_returned = Err.Number
+            if (error_returned <> 0 and debugging > "0") then
+                wscript.echo check_wbem_error(error_returned) & " (IISWebInfo)"
+                audit_wmi_fails = audit_wmi_fails & "IISWebInfo "
+            end if
+            for each objItem in colItems
+                iis_version = objItem.MajorIIsVersionNumber & "." & objItem.MinorIIsVersionNumber
+            next
+            server = server & "     <item>" & vbcrlf
+            server = server & "         <type>web</type>" & vbcrlf
+            server = server & "         <name>IIS</name>" & vbcrlf
+            server = server & "         <version>" & escape_xml(iis_version) & "</version>" & vbcrlf
+            server = server & "         <status>running</status>" & vbcrlf
+            server = server & "     </item>" & vbcrlf
+            if iis_version > "." then
+                iis_wmi = True
+                if debugging > "1" then wscript.echo "IIS " & iis_version & " Installed" end if
+            else
+                iis_wmi = False
+            end if
+        on error goto 0
     end if
 
     if iis_wmi = True then
-    Set colItems = objWMIService_IIS.ExecQuery("Select * from IIsWebServerSetting",,32)
-    For Each objItem in colItems
-    result_site = result_site & "   <item>" & vbcrlf
-    ArgSiteIndex = objItem.Name
-    ' Stripping out "w3svc/"
-    site_id = Mid(ArgSiteIndex, 7)
+        Set colItems = objWMIService_IIS.ExecQuery("Select * from IIsWebServerSetting",,32)
+        For Each objItem in colItems
+            result_site = result_site & "   <item>" & vbcrlf
+            ArgSiteIndex = objItem.Name
+            ' Stripping out "w3svc/"
+            site_id = Mid(ArgSiteIndex, 7)
 
-    log_status = ""
-    Select Case objItem.LogType
-    Case 0:       log_status = "disabled"
-    Case 1:       log_status = "enabled"
-    Case Default: log_status = "undefined"
-    End Select
+            log_status = ""
+            Select Case objItem.LogType
+            Case 0:       log_status = "disabled"
+            Case 1:       log_status = "enabled"
+            Case Default: log_status = "undefined"
+            End Select
 
-    log_path = objItem.LogFileDirectory
+            log_path = objItem.LogFileDirectory
 
-    server_item = server_item & "       <item>" & vbcrlf
-    server_item = server_item & "           <type>website</type>" & vbcrlf
-    server_item = server_item & "           <name>" & escape_xml(site_id) & "</name>" & vbcrlf
-    server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
-    server_item = server_item & "           <id_internal>" & escape_xml(objItem.Name) & "</id_internal>" & vbcrlf
-    server_item = server_item & "           <description>" & escape_xml(objItem.ServerComment) & "</description>" & vbcrlf
+            server_item = server_item & "       <item>" & vbcrlf
+            server_item = server_item & "           <type>website</type>" & vbcrlf
+            server_item = server_item & "           <name>" & escape_xml(site_id) & "</name>" & vbcrlf
+            server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
+            server_item = server_item & "           <id_internal>" & escape_xml(objItem.Name) & "</id_internal>" & vbcrlf
+            server_item = server_item & "           <description>" & escape_xml(objItem.ServerComment) & "</description>" & vbcrlf
 
+            ' Status
+            strQuery = "SELECT * FROM IIsWebServer WHERE Name = '" & ArgSiteIndex & "'"
+            Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32)
+            For Each objItem1 in colItems1
+                Select Case objItem1.ServerState
+                    Case 1:       server_item = server_item & "         <status>Starting</status>" & vbcrlf
+                    Case 2:       server_item = server_item & "         <status>Running</status>" & vbcrlf
+                    Case 3:       server_item = server_item & "         <status>Stopping</status>" & vbcrlf
+                    Case 4:       server_item = server_item & "         <status>Stopped</status>" & vbcrlf
+                    Case 5:       server_item = server_item & "         <status>Pausing</status>" & vbcrlf
+                    Case 6:       server_item = server_item & "         <status>Paused</status>" & vbcrlf
+                    Case 7:       server_item = server_item & "         <status>Continuing</status>" & vbcrlf
+                    Case Default: server_item = server_item & "         <status>Unknown</status>" & vbcrlf
+                End Select
+            Next
 
-    ' Status
-    strQuery = "SELECT * FROM IIsWebServer WHERE Name = '" & ArgSiteIndex & "'"
-    Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32)
-    For Each objItem1 in colItems1
-    Select Case objItem1.ServerState
-    Case 1:       server_item = server_item & "         <status>Starting</status>" & vbcrlf
-    Case 2:       server_item = server_item & "         <status>Running</status>" & vbcrlf
-    Case 3:       server_item = server_item & "         <status>Stopping</status>" & vbcrlf
-    Case 4:       server_item = server_item & "         <status>Stopped</status>" & vbcrlf
-    Case 5:       server_item = server_item & "         <status>Pausing</status>" & vbcrlf
-    Case 6:       server_item = server_item & "         <status>Paused</status>" & vbcrlf
-    Case 7:       server_item = server_item & "         <status>Continuing</status>" & vbcrlf
-    Case Default: server_item = server_item & "         <status>Unknown</status>" & vbcrlf
-    End Select
-    Next
+            ' Logging
+            log_format = ""
+            strQuery = "SELECT * FROM IIsLogModuleSetting WHERE LogModuleId = '" & objItem.LogPluginClsid & "'"
+            Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32)
+            For Each objItem1 in colItems1
+                LogFormat = Split(objItem1.Name, "/")
+                log_format = LogFormat(1)
+            Next
 
-    ' Logging
-    log_format = ""
-    strQuery = "SELECT * FROM IIsLogModuleSetting WHERE LogModuleId = '" & objItem.LogPluginClsid & "'"
-    Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32)
-    For Each objItem1 in colItems1
-    LogFormat = Split(objItem1.Name, "/")
-    log_format = LogFormat(1)
-    Next
+            log_rotation = ""
+            Select Case objItem.LogFilePeriod
+                Case 0: if objItem.LogFileTruncateSize = -1 then
+                        log_rotation = "Unlimited file size"
+                    else
+                        log_rotation = objItem.LogFileTruncateSize/1048576 & " MB"
+                    end if
+                Case 1:       log_rotation = "daily"
+                Case 2:       log_rotation = "weekly"
+                Case 3:       log_rotation = "monthly"
+                Case 4:       log_rotation = "hourly"
+                Case Default: log_rotation = "undefined"
+            End Select
 
-    log_rotation = ""
-    Select Case objItem.LogFilePeriod
-    Case 0: if objItem.LogFileTruncateSize = -1 then
-    log_rotation = "Unlimited file size"
-    Else
-    log_rotation = objItem.LogFileTruncateSize/1048576 & " MB"
+            server_item = server_item & "           <log_status>" & escape_xml(log_status) & "</log_status>" & vbcrlf
+            server_item = server_item & "           <log_format>" & escape_xml(log_format) & "</log_format>" & vbcrlf
+            server_item = server_item & "           <log_path>" & escape_xml(log_path) & "</log_path>" & vbcrlf
+            server_item = server_item & "           <log_rotation>" & escape_xml(log_rotation) & "</log_rotation>" & vbcrlf
+
+            ' Host Headers
+            result_host_headers = ""
+            site_ip = ""
+            site_port = ""
+            site_hostname = ""
+            if IsArray(objItem.ServerBindings) then
+                For i = 0 to Ubound(objItem.ServerBindings)
+                    site_ip = objItem.ServerBindings(i).IP
+                    site_port = objItem.ServerBindings(i).Port
+                    site_hostname = objItem.ServerBindings(i).Hostname
+                Next
+            end if
+
+            ' the web site directory'
+            Set colItems2 = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebVirtualDirSetting WHERE Name = '" & ArgSiteIndex & "/ROOT'",,32)
+            For Each objItem2 in colItems2
+                iis_path = objItem2.Path
+            next
+
+            site_size = ""
+            on error resume next
+            if audit_location = "local" then
+                if objFSO.FolderExists(iis_path) then
+                    Set objFolder = objFSO.GetFolder(iis_path)
+                    site_size = int(objFolder.size / 1024 / 1024) ' NOTE - only works when run locally. Returns in MB.
+                else
+                    site_size = ""
+                end if
+            end if
+            on error goto 0
+            server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
+            server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
+            server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
+            server_item = server_item & "           <path>" & escape_xml(iis_path) & "</path>" & vbcrlf
+            server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
+            server_item = server_item & "           <instance>" & escape_xml(objItem.AppPoolId) & "</instance>" & vbcrlf
+            server_item = server_item & "       </item>" & vbcrlf
+        next
     end if
-    Case 1:       log_rotation = "daily"
-    Case 2:       log_rotation = "weekly"
-    Case 3:       log_rotation = "monthly"
-    Case 4:       log_rotation = "hourly"
-    Case Default: log_rotation = "undefined"
-    End Select
+end if
 
-    server_item = server_item & "           <log_status>" & escape_xml(log_status) & "</log_status>" & vbcrlf
-    server_item = server_item & "           <log_format>" & escape_xml(log_format) & "</log_format>" & vbcrlf
-    server_item = server_item & "           <log_path>" & escape_xml(log_path) & "</log_path>" & vbcrlf
-    server_item = server_item & "           <log_rotation>" & escape_xml(log_rotation) & "</log_rotation>" & vbcrlf
+if audit_location = "local" then
+    iis_version = ""
+    w3wpPath = objShell.ExpandEnvironmentStrings("%windir%") & "\System32\inetsrv\w3wp.exe"
+    appcmd =   objShell.ExpandEnvironmentStrings("%windir%") & "\system32\inetsrv\appcmd.exe"
+    if (objFSO.FileExists(w3wpPath)) then  
+        iis_version = objFSO.GetFileVersion(w3wpPath)
+        if iis_version > "" then
+            if debugging > "1" then wscript.echo "IIS " & iis_version & " Installed" end if
+            server = server & "     <item>" & vbcrlf
+            server = server & "         <type>web</type>" & vbcrlf
+            server = server & "         <name>IIS</name>" & vbcrlf
+            server = server & "         <version>" & escape_xml(iis_version) & "</version>" & vbcrlf
+            server = server & "         <status>running</status>" & vbcrlf
+            server = server & "     </item>" & vbcrlf
+            strResults = ""
+            if (objFSO.FileExists(appcmd)) then
+                On Error Resume Next
+                    set objExecObject = objShell.Exec(appcmd & " list sites")
+                On Error GoTo 0
+                if (IsObject(objExecObject)) then
+                    do While Not objExecObject.StdOut.AtEndOfStream
+                        strResults = objExecObject.StdOut.ReadAll()
+                    Loop
+                    MyArray = Split(strResults, vbcrlf)
+                end if
+            end if
+            Set oIIS = GetObject("winmgmts:root\WebAdministration")
+            error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (WebAdministration)" : audit_wmi_fails = audit_wmi_fails & "WebAdministration " : end if
 
-    ' Host Headers
-    result_host_headers = ""
-    site_ip = ""
-    site_port = ""
-    site_hostname = ""
-    if IsArray(objItem.ServerBindings) then
-    For i = 0 to Ubound(objItem.ServerBindings)
-    site_ip = objItem.ServerBindings(i).IP
-    site_port = objItem.ServerBindings(i).Port
-    site_hostname = objItem.ServerBindings(i).Hostname
-    Next
-    end if
+            set colItems = oIIS.ExecQuery("SELECT * FROM Site")
+            for each objItem in colItems
+                internal_id = ""
+                site_status = ""
+                site_ip = ""
+                site_port = ""
+                site_hostname = ""
+                if isArray(MyArray) then
+                    for each line in MyArray
+                        if line > "" then
+                            split_space = split(line)
+                            if (isarray(split_space)) then
+                                if (split_space(0) = "SITE") then
+                                    split_quotes = split(line, """")
+                                    if (split_quotes(1) = objItem.Name) then
 
-    ' the web site directory'
-    Set colItems2 = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebVirtualDirSetting WHERE Name = '" & ArgSiteIndex & "/ROOT'",,32)
-    For Each objItem2 in colItems2
-    iis_path = objItem2.Path
-    next
+                                        temp = split(split_quotes(2), "(")
+                                        temp2 = split(temp(1), ")")
+                                        details = split(temp2(0), ",")
 
-    site_size = ""
-    on error resume next
-    if audit_location = "local" then
-    if objFSO.FolderExists(iis_path) then
-    Set objFolder = objFSO.GetFolder(iis_path)
-    site_size = int(objFolder.size / 1024 / 1024) ' NOTE - only works when run locally. Returns in MB.
-    else
-    site_size = ""
-    end if
-    end if
-    on error goto 0
-    server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
-    server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
-    server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
-    server_item = server_item & "           <path>" & escape_xml(iis_path) & "</path>" & vbcrlf
-    server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
-    server_item = server_item & "           <instance>" & escape_xml(objItem.AppPoolId) & "</instance>" & vbcrlf
-    server_item = server_item & "       </item>" & vbcrlf
-    Next
+                                        temp3 = split(details(0), ":")
+                                        internal_id = temp3(1)
+
+                                        temp3 = split(details(2), ":")
+                                        site_status = temp2(1)
+
+                                        temp3 = split(details(1), ":")
+                                        site_ip = temp3(1)
+                                        site_ip = replace(site_ip, "http/", "")
+                                        site_ip = replace(site_ip, "https/", "")
+
+                                        site_port = temp3(2)
+                                        site_hostname = temp3(3)
+                                    end if
+                                end if
+                            end if
+                        end if
+                    next
+                end if
+                set colItems2 = oIIS.ExecQuery("SELECT * FROM VirtualDirectory WHERE SiteName = '" & objItem.Name & "'")
+                for each objItem2 in colItems2
+                    site_path = objItem2.PhysicalPath
+                next
+                set colItems2 = oIIS.ExecQuery("SELECT * FROM Application WHERE SiteName = '" & objItem.Name & "'")
+                for each objItem2 in colItems2
+                    site_instance = objItem2.ApplicationPool
+                next
+                if objFSO.FolderExists(site_path) then
+                    Set objFolder = objFSO.GetFolder(site_path)
+                    site_size = int(objFolder.size / 1024 / 1024) ' NOTE - Returns in MB.
+                else
+                    site_size = ""
+                end if
+                server_item = server_item & "       <item>" & vbcrlf
+                server_item = server_item & "           <type>website</type>" & vbcrlf
+                server_item = server_item & "           <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+                server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
+                server_item = server_item & "           <id_internal>" & escape_xml(objItem.Id) & "</id_internal>" & vbcrlf
+                server_item = server_item & "           <description></description>" & vbcrlf
+                server_item = server_item & "           <status>" & escape_xml(site_status) & "</status>" & vbcrlf
+                server_item = server_item & "           <log_status></log_status>" & vbcrlf
+                server_item = server_item & "           <log_format></log_format>" & vbcrlf
+                server_item = server_item & "           <log_path></log_path>" & vbcrlf
+                server_item = server_item & "           <log_rotation></log_rotation>" & vbcrlf
+                server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
+                server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
+                server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
+                server_item = server_item & "           <path>" & escape_xml(site_path) & "</path>" & vbcrlf
+                server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
+                server_item = server_item & "           <instance>" & escape_xml(site_instance) & "</instance>" & vbcrlf
+                server_item = server_item & "       </item>" & vbcrlf
+            next
+        end if
     end if
 end if
 
@@ -6834,11 +6939,13 @@ if (cint(windows_build_number) > 2195) then
         case else RouteType = "unknown"
     end select
     ip_hit = "0"
-    for i = 1 to ubound(ip_address_array)
-    if (objItem.NextHop = ip_address_array(i))  then
-    ip_hit = "1"
+    if isarray(ip_address_array) then
+        for i = 1 to ubound(ip_address_array)
+            if (objItem.NextHop = ip_address_array(i))  then
+                ip_hit = "1"
+            end if
+        next
     end if
-    next
     if ( (ip_hit = "1") or (objItem.NextHop = "127.0.0.1") ) then
     ' do nothing
     else
