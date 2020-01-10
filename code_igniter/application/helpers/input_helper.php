@@ -1125,10 +1125,13 @@ if (! function_exists('inputRead')) {
 
                 if (substr($query->value, 0, 3) == 'in(' and strpos($query->value, ')') === strlen($query->value)-1) {
                     # note strlen of -four characters because in( + ).
-                    $temp_value = substr($query->value, 3, strlen($query->value)-4);
-                    $temp_value = str_replace("'", "\'", $temp_value);
-                    $temp_value = str_replace(",", "','", $temp_value);
-                    $query->value = "('" . $temp_value . "')";
+                    // Removed the below. It is up to the user to quote enclode strings if required
+                    // If we do this for them, they end up double quoted upon link generation in output_helper
+                    // $temp_value = substr($query->value, 3, strlen($query->value)-4);
+                    // $temp_value = str_replace("'", "\'", $temp_value);
+                    // $temp_value = str_replace(",", "','", $temp_value);
+                    // $query->value = "('" . $temp_value . "')";
+                    $query->value = substr($query->value, 2);
                     $query->operator = 'in';
                 }
 
