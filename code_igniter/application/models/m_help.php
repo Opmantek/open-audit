@@ -452,40 +452,40 @@ class M_help extends MY_Model
                 unset($output);
                 unset($command_string);
             }
-            # scripts perms - should be drwxrwxr-x
+            // scripts perms - should be drwxrwx---
             $command_string = 'ls -l /usr/local/open-audit/other | grep scripts | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if (!empty($output[1])) {
+            if ( ! empty($output[1])) {
                 $data->permissions->scripts = $output[1];
             } else {
                 $data->permissions->scripts = 'Error - missing directory';
             }
             unset($output);
             unset($command_string);
-            # Attachments - should be drwxrwxrwx
+            // Attachments - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/code_igniter/application | grep attachments | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if (!empty($output[1])) {
+            if ( ! empty($output[1])) {
                 $data->permissions->attachments = $output[1];
             } else {
                 $data->permissions->attachments = 'Error - missing directory';
             }
             unset($output);
             unset($command_string);
-            # Uploads - should be -rwxrwxrwx
+            // Uploads - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/code_igniter/application | grep uploads | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if (!empty($output[1])) {
+            if ( ! empty($output[1])) {
                 $data->permissions->uploads = $output[1];
             } else {
                 $data->permissions->uploads = 'Error - missing directory';
             }
             unset($output);
             unset($command_string);
-            # custom images - should be -rwxrwxrwx
+            // custom images - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/www/open-audit | grep custom_images | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if (!empty($output[1])) {
+            if ( ! empty($output[1])) {
                 $data->permissions->custom_images = $output[1];
             } else {
                 $data->permissions->custom_images = 'Error - missing directory';
