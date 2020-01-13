@@ -405,6 +405,30 @@ class M_help extends MY_Model
             }
             $data->os->timezone = trim($data->os->timezone);
 
+            // # Access Log - should be -rw-rw-rw-
+            // $command_string = 'ls -l /usr/local/open-audit/other/log_access.log | cut -d" " -f1';
+            // exec($command_string, $output, $return_var);
+            // if (!empty($output[0])) {
+            //     $data->permissions->access_log = $output[0];
+            // } else {
+            //     $data->permissions->access_log = 'Error - missing file';
+            // }
+            // unset($output);
+            // unset($command_string);
+            // # System Log - should be -rw-rw-rw-
+            // $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
+            // exec($command_string, $output, $return_var);
+            // if (!empty($output[0])) {
+            //     $data->permissions->system_log = $output[0];
+            // } else {
+            //     $data->permissions->system_log = 'Error - missing file';
+            // }
+            // unset($output);
+            // unset($command_string);
+        }
+
+
+        if (php_uname('s') !== 'Windows NT') {
             # Permissions
             # cron perms - should be -rw-r--r--
             $command_string = 'ls -l /etc/cron.d/open-audit | cut -d" " -f1';
@@ -428,8 +452,8 @@ class M_help extends MY_Model
                 unset($output);
                 unset($command_string);
             }
-            # scripts perms - should be -rwxrwxr-x
-            $command_string = 'ls -l /usr/local/open-audit/other/scripts | cut -d" " -f1';
+            # scripts perms - should be drwxrwxr-x
+            $command_string = 'ls -l /usr/local/open-audit/other | grep scripts | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (!empty($output[1])) {
                 $data->permissions->scripts = $output[1];
@@ -438,8 +462,8 @@ class M_help extends MY_Model
             }
             unset($output);
             unset($command_string);
-            # Attachments - should be -rwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/code_igniter/application/attachments | cut -d" " -f1';
+            # Attachments - should be drwxrwxrwx
+            $command_string = 'ls -l /usr/local/open-audit/code_igniter/application | grep attachments | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (!empty($output[1])) {
                 $data->permissions->attachments = $output[1];
@@ -449,7 +473,7 @@ class M_help extends MY_Model
             unset($output);
             unset($command_string);
             # Uploads - should be -rwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/code_igniter/application/uploads | cut -d" " -f1';
+            $command_string = 'ls -l /usr/local/open-audit/code_igniter/application | grep uploads | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (!empty($output[1])) {
                 $data->permissions->uploads = $output[1];
@@ -459,7 +483,7 @@ class M_help extends MY_Model
             unset($output);
             unset($command_string);
             # custom images - should be -rwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/www/open-audit/custom_images | cut -d" " -f1';
+            $command_string = 'ls -l /usr/local/open-audit/www/open-audit | grep custom_images | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (!empty($output[1])) {
                 $data->permissions->custom_images = $output[1];
@@ -468,27 +492,9 @@ class M_help extends MY_Model
             }
             unset($output);
             unset($command_string);
-            // # Access Log - should be -rw-rw-rw-
-            // $command_string = 'ls -l /usr/local/open-audit/other/log_access.log | cut -d" " -f1';
-            // exec($command_string, $output, $return_var);
-            // if (!empty($output[0])) {
-            //     $data->permissions->access_log = $output[0];
-            // } else {
-            //     $data->permissions->access_log = 'Error - missing file';
-            // }
-            // unset($output);
-            // unset($command_string);
-            // # System Log - should be -rw-rw-rw-
-            // $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
-            // exec($command_string, $output, $return_var);
-            // if (!empty($output[0])) {
-            //     $data->permissions->system_log = $output[0];
-            // } else {
-            //     $data->permissions->system_log = 'Error - missing file';
-            // }
-            // unset($output);
-            // unset($command_string);
         }
+
+
         $CI->response->data = array();
         $CI->response->data[0] = $data;
     }
