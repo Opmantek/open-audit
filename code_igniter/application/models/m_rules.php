@@ -1,5 +1,8 @@
 <?php
-/**
+if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+#
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,17 +27,16 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-*
-* PHP version 5.3.3
-* 
-* @category  Model
-* @package   Rules
+
+/*
+* @category  Helper
+* @package   Open-AudIT
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.0
+* @version   3.3.0
 * @link      http://www.open-audit.org
-*/
+ */
 
 /**
 * Base Model Rules
@@ -48,6 +50,9 @@
  */
 class M_rules extends MY_Model
 {
+    /**
+     * [__construct description]
+     */
     public function __construct()
     {
         parent::__construct();
@@ -56,6 +61,11 @@ class M_rules extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * [read description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -66,13 +76,13 @@ class M_rules extends MY_Model
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         }
-        $sql = "SELECT * FROM `rules` WHERE id = ?";
+        $sql = 'SELECT * FROM `rules` WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        if (!empty($result[0]->inputs)) {
+        if ( ! empty($result[0]->inputs)) {
             $result[0]->inputs = json_decode($result[0]->inputs);
         }
-        if (!empty($result[0]->outputs)) {
+        if ( ! empty($result[0]->outputs)) {
             $result[0]->outputs = json_decode($result[0]->outputs);
         }
         $result = $this->format_data($result, 'rules');
@@ -81,6 +91,11 @@ class M_rules extends MY_Model
         return ($result);
     }
 
+    /**
+     * [delete description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -92,9 +107,9 @@ class M_rules extends MY_Model
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         }
-        if ($id != 0) {
+        if ($id !== 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `rules` WHERE id = ?";
+            $sql = 'DELETE FROM `rules` WHERE id = ?';
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             $this->log->summary = 'finish';
@@ -106,11 +121,11 @@ class M_rules extends MY_Model
         return false;
     }
 
-    /*
-    $parameters MUST contain either a device ID or a device object
-                SHOULD contain an action, default is to update
-                SHOULD contain a discovery ID for logging
-    */
+    /**
+     * [execute description]
+     * @param  [type] $parameters MUST contain either a device ID or a device object, SHOULD contain an action, default is to update, SHOULD contain a discovery ID for logging
+     * @return [type]             [description]
+     */
     public function execute($parameters = null)
     {
         $log = new stdClass();
@@ -123,45 +138,45 @@ class M_rules extends MY_Model
         $log->function = 'execute';
         $id = '';
 
-        # Device
-        if (empty($parameters->id) and empty($parameters->device)) {
+        // Device
+        if (empty($parameters->id) && empty($parameters->device)) {
             return false;
         }
         $device_sub = array();
-        if (!empty($parameters->device)) {
+        if ( ! empty($parameters->device)) {
             $device = $parameters->device;
             $device->where = 'supplied';
             $log->command_output = json_encode($device);
             $log->command = 'Device Input ';
         }
-        if (!empty($parameters->id)) {
-            # Get our device
+        if ( ! empty($parameters->id)) {
+            // Get our device
             $id = intval($parameters->id);
-            $log->command_output = "Device ID supplied: " . $parameters->id;
+            $log->command_output = "Device ID supplied: {$parameters->id}";
             $log->command = 'Device ID Input ';
-            $sql = "SELECT * FROM `system` WHERE id = ?";
+            $sql = 'SELECT * FROM `system` WHERE id = ?';
             $data = array($id);
             $result = $this->run_sql($sql, $data);
-            if (!empty($result[0])) {
+            if ( ! empty($result[0])) {
                 $device = $result[0];
                 $device->where = 'database';
-                # NOTE - Some of these are in the database and default to 0. Empty these.
-                if ($device->snmp_enterprise_id == 0) {
+                // NOTE - Some of these are in the database and default to 0. Empty these.
+                if ($device->snmp_enterprise_id === 0) {
                     $device->snmp_enterprise_id = '';
                 }
-                if ($device->os_bit == 0) {
+                if ($device->os_bit === 0) {
                     $device->os_bit = '';
                 }
-                if ($device->memory_count == 0) {
+                if ($device->memory_count === 0) {
                     $device->memory_count = '';
                 }
-                if ($device->processor_count == 0) {
+                if ($device->processor_count === 0) {
                     $device->processor_count = '';
                 }
-                if ($device->storage_count == 0) {
+                if ($device->storage_count === 0) {
                     $device->storage_count = '';
                 }
-                if ($device->switch_port == 0) {
+                if ($device->switch_port === 0) {
                     $device->switch_port = '';
                 }
             } else {
@@ -173,9 +188,9 @@ class M_rules extends MY_Model
             }
         }
 
-        # Discovery ID for logging
+        // Discovery ID for logging
         if (empty($parameters->discovery_id)) {
-            if (!empty($device->discovery_id)) {
+            if ( ! empty($device->discovery_id)) {
                 $discovery_id = $device->discovery_id;
             } else {
                 $discovery_id = false;
@@ -183,9 +198,9 @@ class M_rules extends MY_Model
         } else {
             $discovery_id = $parameters->discovery_id;
         }
-        # Action - default of update
+        // Action - default of update
         $action = 'update';
-        if (!empty($parameters->action) and $parameters->action == 'return') {
+        if ( ! empty($parameters->action) && $parameters->action === 'return') {
             $action = 'return';
             $log->command .= '(return).';
         } else {
@@ -193,28 +208,29 @@ class M_rules extends MY_Model
         }
 
         $log->ip = '';
-        if (!empty($device->ip)) {
+        if ( ! empty($device->ip)) {
             $log->ip = ip_address_from_db($device->ip);
         }
         $log->system_id = '';
-        if (!empty($device->id)) {
+        if ( ! empty($device->id)) {
             $log->system_id = $device->id;
             $id = $device->id;
         }
 
         discovery_log($log);
 
-        # NOTE - don't set the id or last_seen_by here as we test if empty after rules
-        #        have been run and only update if not empty (after adding id and last_seen_by).
+        // NOTE - don't set the id or last_seen_by here as we test if empty after rules
+        //        have been run and only update if not empty (after adding id and last_seen_by).
         $newdevice = new stdClass();
 
-        # Details based on SNMP OID
-        if (!empty($device->snmp_oid)) {
+        // Details based on SNMP OID
+        if ( ! empty($device->snmp_oid)) {
             $log_start = microtime(true);
             $newdevice = get_details_from_oid($device->snmp_oid);
-            if (!empty($newdevice->model)) {
-                $log->message = "Hit on \$device->snmp_oid " . $device->snmp_oid . " eq " . $device->snmp_oid;
-                $log->command = 'Rules Match - SNMP OID for  ' . $newdevice->model;
+            if ( ! empty($newdevice->type) OR ! empty($newdevice->model)) {
+                $temp = $newdevice->model ? $newdevice->model : $newdevice->type;
+                $log->message = "Hit on \$device->snmp_oid {$device->snmp_oid} eq {$device->snmp_oid}";
+                $log->command = 'Rules Match - SNMP OID for  ' . $temp;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
                 discovery_log($log);
@@ -224,12 +240,12 @@ class M_rules extends MY_Model
             }
         }
 
-        # Manufacturer based on MAC Address
-        if (!empty($device->mac_address) and empty($device->manufacturer)) {
+        // Manufacturer based on MAC Address
+        if ( ! empty($device->mac_address) && empty($device->manufacturer)) {
             $log_start = microtime(true);
             $newdevice->manufacturer = get_manufacturer_from_mac($device->mac_address);
-            if (!empty($newdevice->manufacturer)) {
-                $log->message = "Hit on \$device->mac_address " . $device->mac_address . " st " . substr(strtolower($device->mac_address ), 0, 8);
+            if ( ! empty($newdevice->manufacturer)) {
+                $log->message = "Hit on \$device->mac_address {$device->mac_address} st " . substr(strtolower($device->mac_address ), 0, 8);
                 $log->command = 'Rules Match - Mac Address for ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
@@ -238,11 +254,11 @@ class M_rules extends MY_Model
             }
         }
 
-        # Manufacturer based on SNMP Enterprise ID
-        if (!empty($device->snmp_enterprise_id) and empty($newdevice->manufacturer)) {
+        // Manufacturer based on SNMP Enterprise ID
+        if ( ! empty($device->snmp_enterprise_id) && empty($newdevice->manufacturer)) {
             $log_start = microtime(true);
             $newdevice->manufacturer = get_manufacturer_from_oid($device->snmp_enterprise_id);
-            if (!empty($newdevice->manufacturer)) {
+            if ( ! empty($newdevice->manufacturer)) {
                 $log->message = "Hit on \$device->snmp_enterprise_id " . $device->snmp_enterprise_id . " eq " . $device->snmp_enterprise_id;
                 $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
@@ -252,11 +268,11 @@ class M_rules extends MY_Model
             }
         }
 
-        # Mac Description based on Manufacturer Code (derived from Serial)
-        if (!empty($device->manufacturer_code)) {
+        // Mac Description based on Manufacturer Code (derived from Serial)
+        if ( ! empty($device->manufacturer_code)) {
             $log_start = microtime(true);
             $newdevice->description = get_description_from_manufacturer_code($device->manufacturer_code);
-            if (!empty($newdevice->description)) {
+            if ( ! empty($newdevice->description)) {
                 $log->message .= " Hit on \$device->manufacturer_code " . $device->manufacturer_code . " eq " . $device->manufacturer_code;
                 $log->command = 'Rules Match - Mac Model into description';
                 $log->command_output = json_encode($newdevice->description);
@@ -266,7 +282,7 @@ class M_rules extends MY_Model
             }
         }
 
-        # TODO - Orgs
+        // TODO - Orgs
         $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
         $rules = $this->run_sql($sql);
 
@@ -275,7 +291,7 @@ class M_rules extends MY_Model
             $rule->inputs = json_decode($rule->inputs);
             $rule->outputs = json_decode($rule->outputs);
             foreach ($rule->inputs as $input) {
-                if (!$this->db->table_exists($input->table)) {
+                if ( ! $this->db->table_exists($input->table)) {
                     $l = new stdClass();
                     $l->command_status = 'error';
                     $l->discovery_id = $log->discovery_id;
@@ -293,15 +309,15 @@ class M_rules extends MY_Model
         }
 
         foreach ($other_tables as $table) {
-            $sql = "SELECT * FROM `" . $table . "` WHERE system_id = ? AND current = 'y'";
+            $sql = "SELECT * FROM `{$table}` WHERE system_id = ? AND current = 'y'";
             $data = array($id);
             $result = $this->run_sql($sql, $data);
             $device_sub[$table] = $result;
         }
         unset($other_tables);
 
-        # Special case the MAC as we might have it in the device entry, but not network table yet
-        if (!empty($device->mac_address) and empty($device_sub['network'])) {
+        // Special case the MAC as we might have it in the device entry, but not network table yet
+        if ( ! empty($device->mac_address) && empty($device_sub['network'])) {
             $item = new stdClass();
             $item->mac = $device->mac_address;
             $device_sub['network'] = array($item);
@@ -311,7 +327,7 @@ class M_rules extends MY_Model
             if (is_array($rule->inputs)) {
                 $input_count = count($rule->inputs);
             } else {
-                # Log an error, but continue
+                // Log an error, but continue
                 $l = new stdClass();
                 $l->command_status = 'error';
                 $l->discovery_id = $log->discovery_id;
@@ -324,14 +340,14 @@ class M_rules extends MY_Model
             }
             $hit = 0;
             foreach ($rule->inputs as $input) {
-                if ($input->table == 'system') {
+                if ($input->table === 'system') {
                     switch ($input->operator) {
                         case 'eq':
-                            if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} === (string)$input->value) {
+                            if (isset($device->{$input->attribute}) && (string)$device->{$input->attribute} === (string)$input->value) {
                                 if ((string)$input->value !== '') {
-                                    $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " eq " . $input->value;
+                                    $log->message .= " Hit on {$input->attribute} " . $device->{$input->attribute} . ' eq ' . $input->value;
                                 } else {
-                                    $log->message .= " Hit on $input->attribute is empty";
+                                    $log->message .= " Hit on {$input->attribute} is empty";
                                 }
                                 $hit++;
                             }
