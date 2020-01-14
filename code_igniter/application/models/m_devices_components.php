@@ -1856,6 +1856,12 @@ class M_devices_components extends MY_Model
 
         $this->load->helper('log');
 
+        $ip->name = $ip->ip;
+        $ip->first_seen = $device->first_seen;
+        $ip->last_seen = $device->last_seen;
+        $ip->system_id = $device->id;
+        $ip->current = 'y';
+
         // We're talking to the DB, so ensure IP is of the correct format
         $ip->ip = ip_address_to_db($ip->ip);
         if (empty($ip->mac)) {
@@ -1904,16 +1910,28 @@ class M_devices_components extends MY_Model
             // UPDATE
             $log->message = 'Updating ip with ID ' . $row->id;
             discovery_log($log);
-            $sql = 'UPDATE `ip` SET `last_seen` = ?, `mac` = ?, `net_index` = ?, `netmask` = ?, `cidr` = ?, `version` = ?, `network` = ? WHERE id = ?';
+            $sql = 'UPDATE `ip` SET `last_seen` = ?, `name` = ?, `mac` = ?, `net_index` = ?, `netmask` = ?, `cidr` = ?, `version` = ?, `network` = ? WHERE id = ?';
             $sql = $this->clean_sql($sql);
-            $data = array($device->last_seen, $ip->mac, $ip->net_index, $ip->netmask, $ip->cidr, $ip->version, $ip->network, $row->id);
+            $data = array($device->last_seen, $ip->name, $ip->mac, $ip->net_index, $ip->netmask, $ip->cidr, $ip->version, $ip->network, $row->id);
             $query = $this->db->query($sql, $data);
         } else {
             // INSERT
             $log->message = 'Inserting ip ' . ip_address_from_db($ip->ip);
             discovery_log($log);
-            $sql = "INSERT INTO `ip` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '')";
-            $data = array($device->id, $device->first_seen, $device->last_seen, $ip->mac, $ip->net_index, $ip->ip, $ip->netmask, $ip->cidr, $ip->version, $ip->network);
+            $set_fields = '';
+            $set_values = '';
+            $data = array();
+            $fields = $this->db->list_fields('ip');
+            foreach ($fields as $field) {
+                if (isset($ip->{$field})) {
+                    $set_fields .= "`{$field}`, ";
+                    $set_values .= ' ?, ';
+                    $data[] = $ip->{$field};
+                }
+            }
+            $set_fields = substr($set_fields, 0, -2);
+            $set_values = substr($set_values, 0, -2);
+            $sql = "INSERT INTO `ip` ( {$set_fields} ) VALUES ( {$set_values} ) ";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
         }
