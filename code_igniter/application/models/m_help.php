@@ -452,7 +452,7 @@ class M_help extends MY_Model
                 unset($output);
                 unset($command_string);
             }
-            // scripts perms - should be drwxrwx---
+            // scripts perms - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/other | grep scripts | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if ( ! empty($output[1])) {
