@@ -1461,28 +1461,6 @@ if ( ! function_exists('ip_audit')) {
 			}
 		}
 
-		// Delete the local audit result file
-		if ( ! empty($destination)) {
-			$log->severity = 7;
-			$log->message = 'Delete audit result from filesystem.';
-			$log->command_status = 'success';
-			$log->command = "unlink('" . $destination . "')";
-			$log->command_output = '';
-			try {
-				unlink($destination);
-			} catch (Exception $error) {
-				$log->severity = 4;
-				$log->command_status = 'fail';
-				$log->command_output = json_encode($error);
-			}
-			discovery_log($log);
-			$log->severity = 7;
-			$log->message = '';
-			$log->command_status = 'notice';
-			$log->command = '';
-			$log->command_output = '';
-		}
-
 		// Delete the local audit script if it's not a default script
 		if ( ! empty($audit_script) && strpos($audit_script, 'scripts') !== false) {
 			$log->severity = 7;
@@ -1526,6 +1504,39 @@ if ( ! function_exists('ip_audit')) {
 				$ip_audited_count = 1;
 			}
 		}
+
+		// Delete the local audit result file
+		if (! empty($audit_result)) {
+			if ($audit) {
+				if ( ! empty($destination)) {
+					$log->severity = 7;
+					$log->message = 'Delete audit result from filesystem.';
+					$log->command_status = 'success';
+					$log->command = "unlink('" . $destination . "')";
+					$log->command_output = '';
+					try {
+						unlink($destination);
+					} catch (Exception $error) {
+						$log->severity = 4;
+						$log->command_status = 'fail';
+						$log->command_output = json_encode($error);
+					}
+					discovery_log($log);
+				}
+			} else {
+				$log->severity = 5;
+				$log->message = "Audit result left on filesystem at {$destination}, please check.";
+				$log->command_status = 'fail';
+				$log->command = '';
+				$log->command_output = '';
+				discovery_log($log);
+			}
+		}
+		$log->severity = 7;
+		$log->message = '';
+		$log->command_status = 'notice';
+		$log->command = '';
+		$log->command_output = '';
 
 		if ($audit) {
 			$log->message = 'Formatting system section of audit result';
