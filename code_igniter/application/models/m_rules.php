@@ -186,6 +186,13 @@ class M_rules extends MY_Model
                 discovery_log($log);
                 return false;
             }
+            // Get the first MAC Address because there is no mac stored in 'system'
+            $sql = "SELECT `mac` FROM `network` WHERE system_id = ? and current = 'y' and `mac` != '' order by `mac` limit 1";
+            $data = array($id);
+            $result = $this->run_sql($sql, $data);
+            if ( ! empty($result[0])) {
+                $device->mac_address = $result[0]->mac;
+            }
         }
 
         // Discovery ID for logging
