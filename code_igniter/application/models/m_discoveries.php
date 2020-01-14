@@ -212,12 +212,6 @@ class M_discoveries extends MY_Model
      */
     public function read_sub_resource($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        // if ($id == '') { $CI = & get_instance(); $id = intval($CI->response->meta->id);
-        // } else {
-        //     $id = intval($id);
-        // }
         $sql = 'SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id`';
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
