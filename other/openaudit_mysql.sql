@@ -2607,6 +2607,7 @@ CREATE TABLE `processor` (
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `architecture` varchar(100) NOT NULL DEFAULT '',
   `socket` varchar(100) NOT NULL DEFAULT '',
+  `hyperthreading` enum('y','n','') NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `processor_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE

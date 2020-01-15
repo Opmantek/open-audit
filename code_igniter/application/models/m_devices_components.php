@@ -796,6 +796,12 @@ class M_devices_components extends MY_Model
                 $input[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input[0]->manufacturer);
             }
             $input[0]->name = trim(@$input[0]->description);
+            $input[0]->hyperthreading = 'n';
+            if ( ! empty($input[0]->core_count) && ! empty($input[0]->logical_count)) {
+                if (intval($input[0]->logical_count) === intval(2 * $input[0]->core_count)) {
+                    $input[0]->hyperthreading = 'y';
+                }
+            }
         }
 
         // ROUTE

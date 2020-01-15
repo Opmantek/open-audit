@@ -255,6 +255,12 @@ ALTER TABLE `print_queue` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '
 
 ALTER TABLE `processor` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
+ALTER TABLE `processor` ADD `hyperthreading` enum('y','n','') NOT NULL DEFAULT '' AFTER `socket`;
+
+UPDATE `processor` SET `hyperthreading` = 'y' WHERE `logical_count` = (2 * `core_count`);
+
+UPDATE `processor` SET `hyperthreading` = 'n' WHERE `logical_count` = `core_count`;
+
 UPDATE `processor` SET `name` = `description`;
 
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'' WHERE `name` = 'Integration Default for NMIS';
@@ -637,6 +643,16 @@ $this->alter_table('policy', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFA
 $this->alter_table('print_queue', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
 
 $this->alter_table('processor', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('processor', 'hyperthreading', "ADD `hyperthreading` enum('y','n','') NOT NULL DEFAULT '' AFTER `socket`", 'add');
+
+$sql = "UPDATE `processor` SET `hyperthreading` = 'y' WHERE `logical_count` = (2 * `core_count`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `processor` SET `hyperthreading` = 'n' WHERE `logical_count` = `core_count`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE `processor` SET `name` = `description`";
 $this->db->query($sql);
