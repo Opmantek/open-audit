@@ -669,6 +669,37 @@ UNLOCK TABLES;
 -- Table structure for table `cluster`
 --
 
+DROP TABLE IF EXISTS `cluster`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cluster` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `clusters_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `role` enum('head','node','storage','network','other','') NOT NULL DEFAULT '',
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `cluster_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cluster_clusters_id` FOREIGN KEY (`clusters_id`) REFERENCES `clusters` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cluster`
+--
+
+LOCK TABLES `cluster` WRITE;
+/*!40000 ALTER TABLE `cluster` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cluster` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clusters`
+--
+
 DROP TABLE IF EXISTS `clusters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -677,9 +708,14 @@ CREATE TABLE `clusters` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
-  `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',
-  `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',
-  `status` varchar(100) NOT NULL DEFAULT '',
+  `type` enum('high availability','load balancing','performance','storage','other','') NOT NULL DEFAULT '',
+  `purpose` enum('application','compute','database','storage','virtualisation','web','other','') NOT NULL DEFAULT '',
+  `status` enum('active','passive','other','') NOT NULL DEFAULT '',
+  `configuration` enum('active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other','') NOT NULL DEFAULT '',
+  `environment` varchar(100) NOT NULL DEFAULT 'production',
+  `scaling` enum('auto','fixed','other','') NOT NULL DEFAULT 'fixed',
+  `retrieved_name` varchar(200) NOT NULL DEFAULT '',
+  `retrieved_ident` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)

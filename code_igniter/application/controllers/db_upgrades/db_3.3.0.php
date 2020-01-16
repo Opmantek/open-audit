@@ -73,6 +73,38 @@ ALTER TABLE `bios` CHANGE `description` `model` varchar(200) NOT NULL NOT NULL D
 
 UPDATE `bios` SET `name` = `model`;
 
+ALTER TABLE `clusters` CHANGE `type` `type` enum('high availability','load balancing','performance','storage','other','') NOT NULL DEFAULT '';
+
+ALTER TABLE `clusters` CHANGE `purpose` `purpose` enum('application','compute','database','storage','virtualisation','web','other','') NOT NULL DEFAULT '';
+
+ALTER TABLE `clusters` CHANGE `status` `status` enum('active','passive','other','') NOT NULL DEFAULT '';
+
+ALTER TABLE `clusters` ADD `configuration` enum('active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other','') NOT NULL DEFAULT '' AFTER `status`;
+
+ALTER TABLE `clusters` ADD `environment` varchar(100) NOT NULL DEFAULT 'production' AFTER `configuration`;
+
+ALTER TABLE `clusters` ADD `scaling` enum('auto','fixed','other','') NOT NULL DEFAULT 'fixed' AFTER `environment`;
+
+ALTER TABLE `clusters` ADD `retrieved_name` varchar(200) NOT NULL DEFAULT '' AFTER `scaling`;
+
+ALTER TABLE `clusters` ADD `retrieved_ident` varchar(200) NOT NULL DEFAULT '' AFTER `retrieved_name`;
+
+DROP TABLE IF EXISTS `cluster`;
+
+CREATE TABLE `cluster` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `clusters_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `role` varchar(200) NOT NULL DEFAULT '',
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `cluster_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cluster_clusters_id` FOREIGN KEY (`clusters_id`) REFERENCES `clusters` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
 DELETE FROM configuration WHERE `name` = 'device_auto_delete';
 
 INSERT INTO `configuration` VALUES (NULL,'device_auto_delete', 'n', 'bool', 'y', 'system', '2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
@@ -390,6 +422,42 @@ $this->alter_table('bios', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' 
 $this->alter_table('bios', 'description', "`model` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
 
 $sql = "UPDATE `bios` SET `name` = `model`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->alter_table('clusters', 'type', "`type` enum('high availability','load balancing','performance','storage','other','') NOT NULL DEFAULT ''");
+
+$this->alter_table('clusters', 'purpose', "`purpose` enum('application','compute','database','storage','virtualisation','web','other','') NOT NULL DEFAULT ''");
+
+$this->alter_table('clusters', 'status', "`status` enum('active','passive','other','') NOT NULL DEFAULT ''");
+
+$this->alter_table('clusters', 'configuration', "ADD `configuration` enum('active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other','') NOT NULL DEFAULT '' AFTER `status`", 'add');
+
+$this->alter_table('clusters', 'environment', "ADD `environment` varchar(100) NOT NULL DEFAULT 'production' AFTER `configuration`", 'add');
+
+$this->alter_table('clusters', 'scaling', "ADD `scaling` enum('auto','fixed','other','') NOT NULL DEFAULT 'fixed' AFTER `environment`", 'add');
+
+$this->alter_table('clusters', 'retrieved_name', "ADD `retrieved_name` varchar(200) NOT NULL DEFAULT '' AFTER `scaling`", 'add');
+
+$this->alter_table('clusters', 'retrieved_ident', "ADD `retrieved_ident` varchar(200) NOT NULL DEFAULT '' AFTER `retrieved_name`", 'add');
+
+$sql = "DROP TABLE IF EXISTS `cluster`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `cluster` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `clusters_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `role` enum('head','node','storage','network','other','') NOT NULL DEFAULT '',
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `cluster_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cluster_clusters_id` FOREIGN KEY (`clusters_id`) REFERENCES `clusters` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
