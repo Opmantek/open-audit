@@ -737,6 +737,14 @@ class M_devices extends MY_Model
                             $CI->user->full_name);
             $this->db->query($sql, $data);
             return true;
+        } else if ($sub_resource === 'cluster') {
+            $sql = "INSERT INTO cluster VALUES (NULL, ?, ?, ?, 'y', ?, NOW())";
+            $data = array(intval($CI->response->meta->id),
+                            intval($CI->response->meta->received_data->attributes->{'clusters_id'}),
+                            $CI->response->meta->received_data->attributes->{'role'},
+                            $CI->user->full_name);
+            $this->db->query($sql, $data);
+            return true;
         } else {
             $log->summary = 'sub_resource not equal to attachment, credential or image - exiting.';
             stdlog($log);
