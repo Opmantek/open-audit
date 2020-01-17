@@ -71,7 +71,7 @@ if ($this->response->meta->format == 'screen') {
 }
 
 # configuration
-# Leave this here and not in the controller because we load the response->data above (in this file) and not tin the controller
+# Leave this here and not in the controller because we load the response->data above (in this file) and not in the controller
 if ($this->response->meta->collection == 'configuration') {
     if (!empty($this->response->data) and $this->response->data[0]->attributes->name == 'discovery_default_scan_option') {
         $this->load->model('m_discovery_scan_options');

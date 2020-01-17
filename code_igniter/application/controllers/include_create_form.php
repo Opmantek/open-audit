@@ -68,6 +68,17 @@ if ($this->response->meta->collection == 'buildings') {
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
 }
 
+// clusters
+if ($collection === 'clusters') {
+    $this->load->model('m_attributes');
+    $attributes = $this->m_attributes->collection($this->user->id);
+    foreach ($attributes as $attribute) {
+        if ($attribute->attributes->resource === 'devices' && $attribute->attributes->type === 'environment') {
+            $this->response->included[] = $attribute;
+        }
+    }
+}
+
 # connections
 if ($collection == 'connections') {
     $this->load->model('m_locations');

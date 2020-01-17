@@ -238,6 +238,29 @@ if ($table === 'clouds') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
+if ($table === 'clusters') {
+    $dictionary->sentence = 'Open-AudIT enables you to create and record your clusters';
+    $dictionary->marketing = '<p>Clusters are stored in Open-AudIT to associate devices with.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = "<p>Cluster notes on <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Computer_cluster#Attributes_of_clusters\">wikipedia</a>.<br /><br />
+    A cluster can be setup in one of several ways (type) for high availability, load balancing, etc.<br /><br />
+    A cluster is usually dedicated to one particular task (purpose) - we have options for 'application','compute','database','storage','virtualisation','web' and'other' (or you can leave it blank).<br /><br />
+    And a cluster is usually configured as active/active, active/passive or another variation, see <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/High-availability_cluster#Node_configurations\">Wikipedia</a>.<br /><br />
+    The environment for your cluster is as per the attributes for device environments. Production, Training, et al.<br /><br />
+    </p>";
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->type = "Can be one of several: 'high availability','load balancing','performance','storage','other' or blank.";
+    $dictionary->columns->purpose = "Can be one of: 'application','compute','database','storage','virtualisation','web','other' or blank.";
+    $dictionary->columns->status = 'Can be active, passive or blank.';
+    $dictionary->columns->configuration = "The configuration of your cluster can be: 'active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other' or blank.";
+    $dictionary->columns->environment = 'As per the attributes for device environments. Production, Training, et al.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+}
+
 if ($table === 'cmdb') {
     $dictionary->sentence = "Open-AudIT enables a CMDB - import to another or use Open-AudIT directly, the choice is yours. It's your data, afterall.";
     $dictionary->marketing = '<p>Open-AudIT can be used as your CMDB or as the data source for another application.<br /><br />
