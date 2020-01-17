@@ -27,6 +27,8 @@
 *
 **/
 
+/* NOTE - No Role update for clusters in raw SQL below */
+
 /*
 DROP TABLE IF EXISTS `baselines`;
 
@@ -77,7 +79,7 @@ ALTER TABLE `clusters` CHANGE `type` `type` enum('high availability','load balan
 
 ALTER TABLE `clusters` CHANGE `purpose` `purpose` enum('application','compute','database','storage','virtualisation','web','other','') NOT NULL DEFAULT '';
 
-ALTER TABLE `clusters` CHANGE `status` `status` enum('active','passive','other','') NOT NULL DEFAULT '';
+ALTER TABLE `clusters` CHANGE `status` `status` enum('active','inactive','other','') NOT NULL DEFAULT '';
 
 ALTER TABLE `clusters` ADD `configuration` enum('active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other','') NOT NULL DEFAULT '' AFTER `status`;
 
@@ -429,7 +431,7 @@ $this->alter_table('clusters', 'type', "`type` enum('high availability','load ba
 
 $this->alter_table('clusters', 'purpose', "`purpose` enum('application','compute','database','storage','virtualisation','web','other','') NOT NULL DEFAULT ''");
 
-$this->alter_table('clusters', 'status', "`status` enum('active','passive','other','') NOT NULL DEFAULT ''");
+$this->alter_table('clusters', 'status', "`status` enum('active','inactive','other','') NOT NULL DEFAULT ''");
 
 $this->alter_table('clusters', 'configuration', "ADD `configuration` enum('active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other','') NOT NULL DEFAULT '' AFTER `status`", 'add');
 
@@ -866,6 +868,10 @@ if (is_dir($directory_path)) {
 	$directory->close();
 }
 
+$this->m_roles->update_permissions('admin', 'clusters', 'r');
+$this->m_roles->update_permissions('org_admin', 'clusters', 'crud');
+$this->m_roles->update_permissions('reporter', 'clusters', 'r');
+$this->m_roles->update_permissions('user', 'clusters', 'r');
 
 $this->log_db("Upgrade database to 3.3.0 completed");
 $this->config->config['internal_version'] = '20191010';
