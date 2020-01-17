@@ -134,7 +134,7 @@ class M_floors extends MY_Model
         $CI = & get_instance();
         if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = 'SELECT * FROM floors WHERE org_id IN (' . implode(',', $org_list) . ')';
+            $sql = 'SELECT floors.*, buildings.id AS `buildings.id`, buildings.name AS `buildings.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM floors LEFT JOIN buildings ON (floors.building_id = buildings.id) LEFT JOIN orgs ON (floors.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'floors');
             return $result;
@@ -142,7 +142,7 @@ class M_floors extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, count(rooms.id) as `rooms_count` FROM `floors` LEFT JOIN orgs ON (floors.org_id = orgs.id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN rooms ON (rooms.floor_id = floors.id) ' . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, count(rooms.id) as `rooms_count` FROM `floors` LEFT JOIN orgs ON (floors.org_id = orgs.id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN rooms ON (rooms.floor_id = floors.id) " .
                     $CI->response->meta->internal->filter . ' ' . 
                     'GROUP BY floors.id ' . 
                     $CI->response->meta->internal->sort . ' ' . 

@@ -110,23 +110,30 @@ class M_rows extends MY_Model
         return ($result)    ;
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM rows WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $sql = 'SELECT rows.*, rooms.id AS `rooms.id`, rooms.name AS `rooms.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM rows LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN orgs ON (rows.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'rows');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.is AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) ' . 
-                    $CI->response->meta->internal->filter . " " . 
-                    "GROUP BY rows.id " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.is AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) " .
+                    $CI->response->meta->internal->filter . ' ' .
+                    'GROUP BY rows.id ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'rows');
