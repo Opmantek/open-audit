@@ -601,6 +601,31 @@ class Test extends CI_Controller
                 $db_schema = '';
             }
 
+            // NOTE - the below exceptions and conversions are because MariaDB no longer encloses default interger values with single quotes.
+            // Rather than alter the schema file (and 'break' old MySQL / MariaDB), just substitute the old way back in. See https://jira.mariadb.org/browse/MDEV-15377
+            $db_schema = str_replace("NOT NULL DEFAULT 0.000,", "NOT NULL DEFAULT '0.000',", $db_schema);
+            $db_schema = str_replace('NOT NULL DEFAULT 0,', "NOT NULL DEFAULT '0',", $db_schema);
+            $db_schema = str_replace('NOT NULL DEFAULT 1,', "NOT NULL DEFAULT '1',", $db_schema);
+
+            $db_schema = str_replace('unsigned DEFAULT 0,', "unsigned DEFAULT '0',", $db_schema);
+            $db_schema = str_replace('unsigned DEFAULT 1,', "unsigned DEFAULT '1',", $db_schema);
+
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 3,', "unsigned NOT NULL DEFAULT '3',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 4,', "unsigned NOT NULL DEFAULT '4',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 5,', "unsigned NOT NULL DEFAULT '5',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 24,', "unsigned NOT NULL DEFAULT '24',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 42,', "unsigned NOT NULL DEFAULT '42',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 100,', "unsigned NOT NULL DEFAULT '100',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 600,', "unsigned NOT NULL DEFAULT '600',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 1050,', "unsigned NOT NULL DEFAULT '1050',", $db_schema);
+            $db_schema = str_replace('unsigned NOT NULL DEFAULT 2000,', "unsigned NOT NULL DEFAULT '2000',", $db_schema);
+
+            $db_schema = str_replace("decimal(12,6) NOT NULL DEFAULT 0.000000", "decimal(12,6) NOT NULL DEFAULT '0.000000'", $db_schema);
+            $db_schema = str_replace("float(10,6) NOT NULL DEFAULT 0.000000,", "float(10,6) NOT NULL DEFAULT '0.000000',", $db_schema);
+            $db_schema = str_replace('timestamp NOT NULL DEFAULT current_timestamp()', "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP", $db_schema);
+            $db_schema = str_replace('text DEFAULT NULL,', "text,", $db_schema);
+
+
             // From the file
             $file_schema = '';
             for ($i=0; $i < count($sql_file); $i++) { 
