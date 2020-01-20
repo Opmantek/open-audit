@@ -189,7 +189,7 @@ if ( ! function_exists('queue_responding')) {
 	 * @param  array $responding_ip_list The array of all responding IP addresses in the discovery
 	 * @return void
 	 */
-	function queue_responding(int $discovery_id = 0, $responding_ip_list)
+	function queue_responding($discovery_id = 0, $responding_ip_list)
 	{
 		$CI = get_instance();
 		$log = new stdClass();
