@@ -69,6 +69,11 @@ if ( ! function_exists('all_ip_list')) {
 		} else {
 			$command = 'nmap -n -sL ' . $discovery->attributes->other->subnet;
 		}
+
+		if (php_uname('s') === 'Darwin') {
+			$command = '/usr/local/bin/' . $command;
+		}
+
 		exec($command, $output, $return_var);
 		if ($return_var === 0) {
 			foreach ($output as $line) {
@@ -102,6 +107,9 @@ if ( ! function_exists('ip_list')) {
 			} else {
 				$command = 'nmap -n -oG - -sP ' . $discovery->attributes->other->subnet;
 			}
+			if (php_uname('s') === 'Darwin') {
+				$command = '/usr/local/bin/' . $command;
+			}
 			exec($command, $output, $return_var);
 			if ($return_var === 0) {
 				foreach ($output as $line) {
@@ -118,6 +126,9 @@ if ( ! function_exists('ip_list')) {
 				$command = 'nmap -n -sL --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
 			} else {
 				$command = 'nmap -n -sL ' . $discovery->attributes->other->subnet;
+			}
+			if (php_uname('s') === 'Darwin') {
+				$command = '/usr/local/bin/' . $command;
 			}
 			exec($command, $output, $return_var);
 			if ($return_var === 0) {
@@ -234,6 +245,7 @@ if ( ! function_exists('discover_subnet')) {
 		$CI->db->query($sql, $data);
 
 		$all_ip_list = all_ip_list($discovery);
+
 		$count = @count($all_ip_list);
 		$log->command_status = 'notice';
 		$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
@@ -381,6 +393,9 @@ if ( ! function_exists('ip_scan')) {
 		if ( ! empty($discovery->other->nmap->nmap_tcp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sS {$service_version} {$exclude_ip} {$exclude_tcp_ports} {$nmap_tcp_ports} {$timeout} {$ip}";
+			if (php_uname('s') === 'Darwin') {
+				$command = '/usr/local/bin/' . $command;
+			}
 			exec($command, $output, $return_var);
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Top TCP Ports)';
@@ -394,6 +409,9 @@ if ( ! function_exists('ip_scan')) {
 		if ( ! empty($discovery->other->nmap->nmap_udp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sU {$service_version} {$exclude_ip} {$exclude_udp_ports} {$nmap_udp_ports} {$timeout} {$ip}";
+			if (php_uname('s') === 'Darwin') {
+				$command = '/usr/local/bin/' . $command;
+			}
 			exec($command, $output, $return_var);
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Top UDP Ports)';
@@ -412,6 +430,9 @@ if ( ! function_exists('ip_scan')) {
 		if ( ! empty($discovery->other->nmap->tcp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sS {$service_version} {$exclude_ip} {$exclude_tcp_ports} {$tcp_ports} {$timeout} {$ip}";
+			if (php_uname('s') === 'Darwin') {
+				$command = '/usr/local/bin/' . $command;
+			}
 			exec($command, $output, $return_var);
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Custom TCP Ports)';
@@ -430,6 +451,9 @@ if ( ! function_exists('ip_scan')) {
 		if ( ! empty($discovery->other->nmap->udp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sU {$service_version} {$exclude_ip} {$exclude_udp_ports} {$udp_ports} {$timeout} {$ip}";
+			if (php_uname('s') === 'Darwin') {
+				$command = '/usr/local/bin/' . $command;
+			}
 			exec($command, $output, $return_var);
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Custom UDP Ports)';
@@ -535,9 +559,6 @@ if ( ! function_exists('check_nmap_output')) {
 								}
 							}
 							discovery_log($log);
-							// echo "$command\n";
-							// echo "$line\n";
-							// echo $log->message . "\n\n";
 						}
 					}
 				}
@@ -547,9 +568,6 @@ if ( ! function_exists('check_nmap_output')) {
 				$log->message = "Host {$ip} is up, received arp-response";
 				$log->command_output = $line;
 				discovery_log($log);
-				// echo "$command\n";
-				// echo "$line\n";
-				// echo $log->message . "\n\n";
 			}
 			if (stripos($line, 'MAC Address') !== false) {
 				$keywords = preg_split('/[\s,]+/', $line);
@@ -558,27 +576,18 @@ if ( ! function_exists('check_nmap_output')) {
 				$log->message = "Host {$ip} is up, received mac addess " . $device['mac_address'];
 				$log->command_output = $line;
 				discovery_log($log);
-				// echo "$command\n";
-				// echo "$line\n";
-				// echo $log->message . "\n\n";
 			}
 			if (stripos($line, 'Nmap done: 1 IP address (1 host up)') !== false) {
 				$device['host_is_up'] = 'true';
 				$log->message = "Host {$ip} is up, received Nmap ping response";
 				$log->command_output = $line;
 				discovery_log($log);
-				// echo "$command\n";
-				// echo "$line\n";
-				// echo $log->message . "\n\n";
 			}
 			if (stripos($line, 'due to host timeout') !== false && $discovery->other->nmap->ping === 'y') {
 				$device['host_is_up'] = 'true';
 				$log->message = "Host {$ip} timed out. Exceeded timeout seconds.";
 				$log->command_output = $line;
 				discovery_log($log);
-				// echo "$command\n";
-				// echo "$line\n";
-				// echo $log->message . "\n\n";
 			}
 		}
 		return $device;
