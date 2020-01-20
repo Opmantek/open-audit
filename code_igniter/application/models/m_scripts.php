@@ -299,7 +299,11 @@ class M_scripts extends MY_Model
 
     public function build($operating_system) {
         // Get and make the audit script
-        $timestamp = date('y_m_d_H_i_s') . '_' . explode(' ', explode('.', microtime())[1])[0];
+        $t1 = explode('.', microtime());
+        $temp = explode(' ', $t1[1]);
+        $timestamp = date('y_m_d_H_i_s') . '_' . $temp[0];
+        # replaced below with above because PHP 5.3.3.
+        # $timestamp = date('y_m_d_H_i_s') . '_' . explode(' ', explode('.', microtime())[1])[0];
         $CI = & get_instance();
         $audit_script = false;
         switch (strtolower($operating_system)) {
