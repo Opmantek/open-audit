@@ -317,6 +317,8 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.14179.1.1.4.3': $device->model = '4402 WLAN Controller'; $device->type = 'wap'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
 			case '1.3.6.1.4.1.1429.2.1.6.1.0.2.0.1': $device->model = 'WebSTAR DPC2100 Series'; $device->type = 'cable modem'; break;
 			case '1.3.6.1.4.1.1429.2.2.6.2': $device->model = 'D98xx Program Receiver'; $device->type = 'satellite receiver'; break;
+			case '1.3.6.1.4.1.14988.1': $device->model = 'Mikrotic Router'; $device->type = 'router';
+			case '1.3.6.1.4.1.14988.2': $device->model = 'Mikrotic Switch'; $device->type = 'switch';
 			case '1.3.6.1.4.1.1588.2.1.1.1': $device->model = 'Brocade 3200 (IBM 3534-F08)'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.1588.2.1.1.10': $device->model = 'Brocade 12000 (IBM 2109-M12)'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.1588.2.1.1.12': $device->model = 'Brocade 3900 (IBM 2109-F32)'; $device->type = 'switch'; break;
@@ -356,6 +358,10 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.1713.1.1': $device->model = 'D50'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.1723.2.1.3': $device->model = 'Serial to Ethernet Adapter'; $device->type = 'serial to ethernet'; break;
 			case '1.3.6.1.4.1.17453': $device->model = 'BiPAC 7300A'; $device->type = 'router'; break;
+			case '1.3.6.1.4.1.17713.6': $device->model = 'PTP Wireless Ethernet Bridge'; $device->type = 'wireless link'; break;
+			case '1.3.6.1.4.1.17713.7': $device->model = 'PTP Wireless Ethernet Bridge'; $device->type = 'wireless link'; break;
+			case '1.3.6.1.4.1.17713.8': $device->model = 'PTP Wireless Ethernet Bridge'; $device->type = 'wireless link'; break;
+			case '1.3.6.1.4.1.17713.11': $device->model = 'PTP Wireless Ethernet Bridge'; $device->type = 'wireless link'; break;
 			case '1.3.6.1.4.1.18334.1.1.1.1.1.17.1.1': $device->model = 'izhub 40P'; $device->type = 'network printer'; break;
 			case '1.3.6.1.4.1.18334.1.1.1.1.1.23.1.1': $device->model = 'Magicolor 1690MF'; $device->type = 'network printer'; break;
 			case '1.3.6.1.4.1.18334.1.1.1.1.1.28.1.1': $device->model = 'izhub 3300P'; $device->type = 'network printer'; break;
@@ -3517,6 +3523,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.4526.4.6': $device->model = 'WG302v2 wap'; $device->type = 'wap'; break;
 			case '1.3.6.1.4.1.4526.4.7': $device->model = 'WAG302v2 wap'; $device->type = 'wap'; break;
 			case '1.3.6.1.4.1.4526.6.1': $device->model = 'WLS538 WLAN Switch'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.46242': $device->model = 'Netonix Switch'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.47196.4.1.1.1.2': $device->model = 'Aruba HPE-2930M'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.4874.1.1.1.6.1': $device->model = 'E320'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.4900': $device->model = 'Billion Modem Router'; $device->type = 'router'; break;
