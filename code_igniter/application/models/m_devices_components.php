@@ -82,13 +82,6 @@ class M_devices_components extends MY_Model
             unset($filter);
             $filter = '';
         }
-        // if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
-        //     $current = 'full';
-        // }
-
-        // if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
-        //     $current = 'delta';
-        // }
 
         if ($current === 'delta' OR $current === 'full') {
             $sql = "SELECT first_seen FROM `{$table}` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
@@ -135,9 +128,6 @@ class M_devices_components extends MY_Model
         }
 
         $sql = '';
-        // if ($filter !== '' and strtolower(substr(trim($filter), 0, 3)) !== 'and') {
-        //     $filter = 'AND ' . $filter;
-        // }
 
         if ($found_id) {
             if ($found_current) {
