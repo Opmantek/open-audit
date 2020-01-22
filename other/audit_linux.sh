@@ -2217,6 +2217,21 @@ for log in ls /etc/logrotate.d/* ; do
 	if [ -e "$log" ]; then
 		log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
 		log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
+		# below contributred by danf0x, thanks Dan.
+		log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
+		if [ "$log_max_file_size_pre" != "" ]; then
+			num="${log_max_file_size_pre::-1}"
+			unt="${log_max_file_size_pre: -1}"
+			case $unt in
+				[kK] )
+					log_max_file_size="${num}000"
+					;;
+				[mM] )
+					log_max_file_size="${num}000000"
+					;;
+			*) ;;
+			esac
+		fi
 		{
 		echo "		<item>"
 		echo "			<name>$(escape_xml "$log")</name>"
