@@ -4874,84 +4874,112 @@ if audit_location = "local" then
                     do While Not objExecObject.StdOut.AtEndOfStream
                         strResults = objExecObject.StdOut.ReadAll()
                     Loop
-                    MyArray = Split(strResults, vbcrlf)
+                    Sites = Split(strResults, vbcrlf)
                 end if
+
+                On Error Resume Next
+                    set objExecObject = objShell.Exec(appcmd & " list vdir")
+                On Error GoTo 0
+                if (IsObject(objExecObject)) then
+                    do While Not objExecObject.StdOut.AtEndOfStream
+                        strResults = objExecObject.StdOut.ReadAll()
+                    Loop
+                    Vdir = Split(strResults, vbcrlf)
+                end if
+
+                On Error Resume Next
+                    set objExecObject = objShell.Exec(appcmd & " list apppool")
+                On Error GoTo 0
+                if (IsObject(objExecObject)) then
+                    do While Not objExecObject.StdOut.AtEndOfStream
+                        strResults = objExecObject.StdOut.ReadAll()
+                    Loop
+                    AppPool = Split(strResults, vbcrlf)
+                end if
+
             end if
-            Set oIIS = GetObject("winmgmts:root\WebAdministration")
-            error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (WebAdministration)" : audit_wmi_fails = audit_wmi_fails & "WebAdministration " : end if
+            if isArray(Sites) then
+                for each line in Sites
+                    if line > "" then
+                        split_space = split(line)
+                        if (isarray(split_space)) then
+                            if (split_space(0) = "SITE") then
 
-            set colItems = oIIS.ExecQuery("SELECT * FROM Site")
-            for each objItem in colItems
-                internal_id = ""
-                site_status = ""
-                site_ip = ""
-                site_port = ""
-                site_hostname = ""
-                if isArray(MyArray) then
-                    for each line in MyArray
-                        if line > "" then
-                            split_space = split(line)
-                            if (isarray(split_space)) then
-                                if (split_space(0) = "SITE") then
-                                    split_quotes = split(line, """")
-                                    if (split_quotes(1) = objItem.Name) then
+                                site_name = ""
+                                internal_id = ""
+                                site_status = ""
+                                site_ip = ""
+                                site_port = ""
+                                site_hostname = ""
+                                site_path = ""
+                                site_size = ""
 
-                                        temp = split(split_quotes(2), "(")
-                                        temp2 = split(temp(1), ")")
-                                        details = split(temp2(0), ",")
+                                split_quotes = split(line, """")
 
-                                        temp3 = split(details(0), ":")
-                                        internal_id = temp3(1)
+                                site_name = split_quotes(1)
 
-                                        temp3 = split(details(2), ":")
-                                        site_status = temp2(1)
+                                temp = split(split_quotes(2), "(")
+                                temp2 = split(temp(1), ")")
+                                details = split(temp2(0), ",")
 
-                                        temp3 = split(details(1), ":")
-                                        site_ip = temp3(1)
-                                        site_ip = replace(site_ip, "http/", "")
-                                        site_ip = replace(site_ip, "https/", "")
+                                temp3 = split(details(0), ":")
+                                internal_id = temp3(1)
 
-                                        site_port = temp3(2)
-                                        site_hostname = temp3(3)
-                                    end if
+                                temp3 = split(details(2), ":")
+                                site_status = temp3(1)
+
+                                temp3 = split(details(1), ":")
+                                site_ip = temp3(1)
+                                site_ip = replace(site_ip, "http/", "")
+                                site_ip = replace(site_ip, "https/", "")
+
+                                site_port = temp3(2)
+                                site_hostname = temp3(3)
+
+                                if isArray(Vdir) then
+                                    for each output in Vdir
+                                        if (output > "") then
+                                            vtemp = split(output, """")
+                                            vdir_name = vtemp(1)
+                                            if (vdir_name = (site_name  & "/")) then
+                                                vt = split(vtemp(2), ")")
+                                                vtemp2 = split(vt(0), ":")
+                                                vtemp2(0) = ""
+                                                site_path = join(vtemp2, ":")
+                                                site_path = mid(site_path, 2)
+                                            end if
+                                        end if
+                                    next
                                 end if
+
+                                if objFSO.FolderExists(site_path) then
+                                    Set objFolder = objFSO.GetFolder(site_path)
+                                    site_size = int(objFolder.size / 1024 / 1024) ' NOTE - Returns in MB.
+                                end if
+
+                                server_item = server_item & "       <item>" & vbcrlf
+                                server_item = server_item & "           <type>website</type>" & vbcrlf
+                                server_item = server_item & "           <name>" & escape_xml(site_name) & "</name>" & vbcrlf
+                                server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
+                                server_item = server_item & "           <id_internal>" & escape_xml(internal_id) & "</id_internal>" & vbcrlf
+                                server_item = server_item & "           <description></description>" & vbcrlf
+                                server_item = server_item & "           <status>" & escape_xml(site_status) & "</status>" & vbcrlf
+                                server_item = server_item & "           <log_status></log_status>" & vbcrlf
+                                server_item = server_item & "           <log_format></log_format>" & vbcrlf
+                                server_item = server_item & "           <log_path></log_path>" & vbcrlf
+                                server_item = server_item & "           <log_rotation></log_rotation>" & vbcrlf
+                                server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
+                                server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
+                                server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
+                                server_item = server_item & "           <path>" & escape_xml(site_path) & "</path>" & vbcrlf
+                                server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
+                                server_item = server_item & "           <instance></instance>" & vbcrlf
+                                server_item = server_item & "       </item>" & vbcrlf
                             end if
                         end if
-                    next
-                end if
-                set colItems2 = oIIS.ExecQuery("SELECT * FROM VirtualDirectory WHERE SiteName = '" & objItem.Name & "'")
-                for each objItem2 in colItems2
-                    site_path = objItem2.PhysicalPath
+                    end if
                 next
-                set colItems2 = oIIS.ExecQuery("SELECT * FROM Application WHERE SiteName = '" & objItem.Name & "'")
-                for each objItem2 in colItems2
-                    site_instance = objItem2.ApplicationPool
-                next
-                if objFSO.FolderExists(site_path) then
-                    Set objFolder = objFSO.GetFolder(site_path)
-                    site_size = int(objFolder.size / 1024 / 1024) ' NOTE - Returns in MB.
-                else
-                    site_size = ""
-                end if
-                server_item = server_item & "       <item>" & vbcrlf
-                server_item = server_item & "           <type>website</type>" & vbcrlf
-                server_item = server_item & "           <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-                server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
-                server_item = server_item & "           <id_internal>" & escape_xml(objItem.Id) & "</id_internal>" & vbcrlf
-                server_item = server_item & "           <description></description>" & vbcrlf
-                server_item = server_item & "           <status>" & escape_xml(site_status) & "</status>" & vbcrlf
-                server_item = server_item & "           <log_status></log_status>" & vbcrlf
-                server_item = server_item & "           <log_format></log_format>" & vbcrlf
-                server_item = server_item & "           <log_path></log_path>" & vbcrlf
-                server_item = server_item & "           <log_rotation></log_rotation>" & vbcrlf
-                server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
-                server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
-                server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
-                server_item = server_item & "           <path>" & escape_xml(site_path) & "</path>" & vbcrlf
-                server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
-                server_item = server_item & "           <instance>" & escape_xml(site_instance) & "</instance>" & vbcrlf
-                server_item = server_item & "       </item>" & vbcrlf
-            next
+            end if
         end if
     end if
 end if
