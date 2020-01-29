@@ -71,7 +71,9 @@ if (! function_exists('output')) {
         create_links();
         // if we have errors set, make sure we remove the data object / array
         if (!empty($CI->response->errors) and count($CI->response->errors) > 0) {
-            unset($CI->response->data);
+            if ($CI->response->meta->collection !== 'discoveries') {
+                unset($CI->response->data);
+            }
         } else {
             unset($CI->response->errors);
         }
