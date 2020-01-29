@@ -710,7 +710,7 @@ $sql = "UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', 
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->alter_table('network', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+$this->alter_table('optical', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $this->alter_table('optical', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT ''");
 
@@ -816,7 +816,7 @@ $sql = "UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&p
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->alter_table('windows', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+$this->alter_table('windows', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $sql = "UPDATE `windows` SET `name` = `domain_role`";
 $this->db->query($sql);
