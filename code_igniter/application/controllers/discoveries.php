@@ -91,11 +91,11 @@ class Discoveries extends MY_Controller
     */
     public function create()
     {
-        # special case the single device discovery
-        # We could have used include_create but then we'd need logic
-        # in there to handle this specific case.
+        // special case the single device discovery
+        // We could have used include_create but then we'd need logic
+        // in there to handle this specific case.
 
-        if (!empty($this->response->meta->received_data->attributes->other->single)) {
+        if ( ! empty($this->response->meta->received_data->attributes->other->single)) {
             $this->load->model('m_collection');
             $attributes = $this->response->meta->received_data->attributes;
             $subnet = $attributes->other->subnet;
@@ -103,13 +103,13 @@ class Discoveries extends MY_Controller
             $this->response->meta->received_data->attributes->org_id = $this->user->org_id;
 
             if (filter_var($subnet, FILTER_VALIDATE_IP) === false) {
-                # User supplied something that is not an IP
-                # Check to see if we can resolve it
-                $ip = gethostbyname($subnet);
-                if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
-                    # We cannot resolve the name, throw an error
+                // User supplied something that is not an IP
+                // Check to see if we can resolve it
+                $ip_address = gethostbyname($subnet);
+                if (filter_var($ip_address, FILTER_VALIDATE_IP) === false) {
+                    // We cannot resolve the name, throw an error
                     log_error('ERR-0032', $subnet);
-                    if ($this->response->meta->format == 'json') {
+                    if ($this->response->meta->format === 'json') {
                         output($this->response);
                     } else {
                         $this->session->set_flashdata('error', 'A hostname or FQDN was supplied that cannot be resolved (' . htmlentities($subnet) . ').');
@@ -117,24 +117,24 @@ class Discoveries extends MY_Controller
                     }
                     return;
                 } else {
-                    $attributes->other->subnet = $ip;
-                    $this->response->meta->received_data->attributes->subnet = $ip;
+                    $attributes->other->subnet = $ip_address;
+                    $this->response->meta->received_data->attributes->subnet = $ip_address;
                 }
             }
 
-            # create our discovery
+            // create our discovery
             $this->response->meta->id = @$this->m_collection->create();
             if (empty($this->response->meta->id)) {
-                # Houston, we have a problem
+                // Houston, we have a problem
                 output($this->response);
             }
 
-            # create our credential sets
+            // create our credential sets
             $data = new stdClass();
             $data->org_id = $this->user->org_id;
             $data->description = 'Discovery ' . $subnet;
             $name = ' credentials for device discovery for ' . $subnet;
-            if (!empty($attributes->credentials->windows_username) and !empty($attributes->credentials->windows_password)) {
+            if ( ! empty($attributes->credentials->windows_username) && ! empty($attributes->credentials->windows_password)) {
                 $data->type = 'windows';
                 $data->name = 'Windows' . $name;
                 $data->credentials = new stdClass();
@@ -142,7 +142,7 @@ class Discoveries extends MY_Controller
                 $data->credentials->password = $attributes->credentials->windows_password;
                 $this->m_collection->create($data, 'credentials');
             }
-            if (!empty($attributes->credentials->ssh_username) and !empty($attributes->credentials->ssh_password)) {
+            if ( ! empty($attributes->credentials->ssh_username) && ! empty($attributes->credentials->ssh_password)) {
                 $data->type = 'ssh';
                 $data->name = 'SSH' . $name;
                 $data->credentials = new stdClass();
@@ -150,7 +150,7 @@ class Discoveries extends MY_Controller
                 $data->credentials->password = $attributes->credentials->ssh_password;
                 $this->m_collection->create($data, 'credentials');
             }
-            if (!empty($attributes->credentials->snmp_v2_community)) {
+            if ( ! empty($attributes->credentials->snmp_v2_community)) {
                 $data->type = 'snmp';
                 $data->name = 'SNMP' . $name;
                 $data->credentials = new stdClass();
@@ -158,7 +158,7 @@ class Discoveries extends MY_Controller
                 $data->credentials->version = 2;
                 $this->m_collection->create($data, 'credentials');
             }
-            if (!empty($attributes->credentials->snmp_v1_community)) {
+            if ( ! empty($attributes->credentials->snmp_v1_community)) {
                 $data->type = 'snmp';
                 $data->name = 'SNMP' . $name;
                 $data->credentials = new stdClass();
@@ -187,7 +187,10 @@ class Discoveries extends MY_Controller
     */
     public function read()
     {
+        $this->discovery_status();
         $this->test_windows_apache_user();
+        $this->test_old_linux();
+        $this->test_nmap();
         $this->load->model('m_collectors');
         $this->load->model('m_locations');
         $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
@@ -242,7 +245,9 @@ class Discoveries extends MY_Controller
     {
         $this->discovery_status();
         $this->test_windows_apache_user();
-        if ($this->response->meta->format == 'screen') {
+        $this->test_old_linux();
+        $this->test_nmap();
+        if ($this->response->meta->format === 'screen') {
             $this->load->model('m_collectors');
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
         }
@@ -257,20 +262,15 @@ class Discoveries extends MY_Controller
     */
     public function create_form()
     {
-        $this->load->model('m_help');
-        $this->m_help->support();
-        $os = $this->response->data[0]->os->version;
-        if ((stripos($os, 'redhat') !== false or stripos($os, 'centos') !== false) and stripos($os, 'release 6') !== false) {
-            # we have a RH/Centos 6 machine. Insert an attribute for showing the Samba warning
-            $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed.
-            Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br />
-            We very much recommend upgrading to Centos/RedHat 7 as support for Centos/RedHat 6 will be ending very soon.';
-        }
+        $this->discovery_status();
+        $this->test_windows_apache_user();
+        $this->test_old_linux();
+        $this->test_nmap();
         unset($this->response->data);
         $this->response->data = array();
         $temp = @$this->input->get('single');
-        if (!empty($temp)) {
-            # this is the form for a single device discovery
+        if ( ! empty($temp)) {
+            // this is the form for a single device discovery
             $this->response->meta->action = 'create_single';
         }
         include 'include_create_form.php';
@@ -352,21 +352,80 @@ class Discoveries extends MY_Controller
         if ((string) php_uname('s') === 'Windows NT') {
             $user = get_current_user();
             if ($user === 'SYSTEM') {
-                $sql = '/* discoveries */ ' . "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
-                $data = array();
-                $data_result = $this->run_sql($sql, $data);
-                if ($data_result[0]->count > 0){
-                    $this->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
-                    $this->session->set_flashdata('warning', $this->response->meta->warning);
-                }
+                log_error('ERR-0041');
+                $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Windows is running the Apache service as "Local System". This <b>must</b> be changed to a real user (with network access). See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.');
             }
         }
     }
 
+    /**
+     * Check if we're running old Centos or Redhat and advise about Samba libraries
+     * @return [type] [description]
+     */
+    private function test_old_linux()
+    {
+        if (php_uname('s') === 'Linux') {
+            $this->load->model('m_help');
+            $this->m_help->support();
+            $server_os = $this->response->data[0]->os->version;
+            if ((stripos($server_os, 'redhat') !== false OR stripos($server_os, 'centos') !== false) && stripos($server_os, 'release 6') !== false) {
+                // Do not set an error because this would disable the Execute buttons.
+                $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
+
+                $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.');
+            }
+        }
+    }
+
+    /**
+     * Is Nmap installed?
+     * @return [type] [description]
+     */
+    private function test_nmap()
+    {
+        if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
+            return;
+        }
+        if ($this->config->config['discovery_override_nmap'] === 'y') {
+            return;
+        }
+        $nmap_installed = 'n';
+        if (php_uname('s') === 'Windows NT') {
+            // check the obvious Windows install locations
+            $test_path = 'c:\Program Files\Nmap\Nmap.exe';
+            if ($nmap_installed === 'n' && file_exists($test_path)) {
+                $nmap_installed = 'y';
+            }
+            $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+            if ($nmap_installed === 'n' && file_exists($test_path)) {
+                $nmap_installed = 'y';
+            }
+            unset($test_path);
+        } else {
+            $command_string = 'which nmap 2>/dev/null';
+            exec($command_string, $output);
+            if (isset($output[0]) && strpos($output[0], 'nmap')) {
+                $nmap_installed = 'y';
+            }
+            if ($nmap_installed === 'n') {
+                if (file_exists('/usr/local/bin/nmap')) {
+                    $nmap_installed = 'y';
+                }
+            }
+        }
+        if ($nmap_installed === 'n') {
+            log_error('ERR-0043');
+        }
+    }
+
+    /**
+     * Check and set the discovery status
+     * @return [type] [description]
+     */
     private function discovery_status()
     {
         // Mark any discoveries where status != complete and last_log is greater than 20 minutes ago as Zombie
-        $sql = '/* discoveries */ ' . " UPDATE discoveries SET status = 'failed' WHERE last_finished != '2000-01-01 00:00:00' AND last_finished < (NOW() - INTERVAL 20 MINUTE) AND status = 'running'";
+        $sql = '/* discoveries */ ' . " UPDATE discoveries SET status = 'failed' WHERE last_finished != '2000-01-01 00:00:00' AND last_finished < (NOW() - INTERVAL 30 MINUTE) AND status = 'running'";
         $this->db->query($sql);
 
         $sql = '/* discoveries */ ' . "SELECT COUNT(*) AS `count` FROM `discoveries` WHERE status = 'running'";

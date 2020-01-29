@@ -156,18 +156,6 @@ class M_discoveries extends MY_Model
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if ((string) php_uname('s') === 'Windows NT') {
-            $user = get_current_user();
-            if ($user === 'SYSTEM') {
-                $sql = "SELECT COUNT(*) as `count` FROM `discovery_log` WHERE `file` = 'wmi_helper' AND `function` = 'copy_to_windows' AND `message` = 'Net Use' and `command_status` = 'fail'";
-                $data = array();
-                $data_result = $this->run_sql($sql, $data);
-                if ($data_result[0]->count > 0){
-                    $CI->response->meta->warning = 'WARNING - Windows is running the Apache service as "Local System". This should be changed to a real user (with network access) for optimal discovery results. See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
-                    $CI->session->set_flashdata('warning', $CI->response->meta->warning);
-                }
-            }
-        }
         if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
             $sql = 'SELECT * FROM discoveries WHERE org_id IN (' . implode(',', $org_list) . ')';

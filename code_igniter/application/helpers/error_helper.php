@@ -375,6 +375,36 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0040']->title = "Invalid filetype for upload.";
         $error_array['ERR-0040']->detail = 'Invalid filetype supplied.';
 
+        $error_array['ERR-0041'] = new stdClass();
+        $error_array['ERR-0041']->code = 'ERR-0041';
+        $error_array['ERR-0041']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0041']->severity = 5;
+        $error_array['ERR-0041']->severity_text = 'danger';
+        $error_array['ERR-0041']->title = 'Windows Apache service user.';
+        $error_array['ERR-0041']->detail = '<strong>ERROR</strong> - Windows is running the Apache service as "Local System". As at v3.3.0 this <b>must</b> be changed to a normal user account (with network access). See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
+
+        $error_array['ERR-0042'] = new stdClass();
+        $error_array['ERR-0042']->code = 'ERR-0042';
+        $error_array['ERR-0042']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0042']->severity = 5;
+        $error_array['ERR-0042']->severity_text = 'warning';
+        $error_array['ERR-0042']->title = 'Old Redhat / Centos and Samba.';
+        $error_array['ERR-0042']->detail = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br />We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
+
+        $error_array['ERR-0043'] = new stdClass();
+        $error_array['ERR-0043']->code = 'ERR-0043';
+        $error_array['ERR-0043']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0043']->severity = 5;
+        $error_array['ERR-0043']->severity_text = 'danger';
+        $error_array['ERR-0043']->title = 'Nmap not found.';
+        if (php_uname('s') === "Windows NT") {
+            $error_array['ERR-0043']->detail = "<strong>ERROR</strong> - Nmap <strong>must</strong> be installed. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
+        } else {
+            $error_array['ERR-0043']->detail = "<strong>ERROR</strong> - Nmap <strong>must</strong> be installed. Please install it using your package manager. See <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
+        }
+        
+
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
