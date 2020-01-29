@@ -30,6 +30,8 @@
 /* NOTE - No Role update for clusters in raw SQL below */
 
 /*
+DROP TABLE IF EXISTS `baselines_policies`;
+
 DROP TABLE IF EXISTS `baselines`;
 
 CREATE TABLE `baselines` (
@@ -46,8 +48,6 @@ CREATE TABLE `baselines` (
   KEY `org_id` (`org_id`),
   CONSTRAINT `baselines_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `baselines_policies`;
 
 CREATE TABLE `baselines_policies` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -379,6 +379,10 @@ UPDATE `configuration` SET `value` = '3.3.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.3.0 commenced');
 
+$sql = "DROP TABLE IF EXISTS `baselines_policies`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "DROP TABLE IF EXISTS `baselines`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -397,10 +401,6 @@ $sql = "CREATE TABLE `baselines` (
   KEY `org_id` (`org_id`),
   CONSTRAINT `baselines_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-$sql = "DROP TABLE IF EXISTS `baselines_policies`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
