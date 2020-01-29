@@ -124,6 +124,10 @@ DELETE FROM configuration WHERE `name` = 'devices_default_retrieve_columns';
 
 INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns','system.id,system.uuid,system.name,system.ip,system.hostname,system.dns_hostname,system.domain,system.dns_domain,system.dbus_identifier,system.fqdn,system.dns_fqdn,system.description,system.type,system.icon,system.os_group,system.os_family,system.os_name,system.os_version,system.manufacturer,system.model,system.serial,system.form_factor,system.status,system.environment,system.class,system.function,system.org_id,system.location_id,system.snmp_oid,system.sysDescr,system.sysObjectID,system.sysUpTime,system.sysContact,system.sysName,system.sysLocation,system.first_seen,system.last_seen,system.last_seen_by,system.identification', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, provide these columns.');
 
+DELETE FROM `configuration` WHERE `name` = 'discovery_override_nmap';
+
+INSERT INTO `configuration` VALUES (NULL,'discovery_override_nmap','n','bool','y','system','2000-01-01 00:00:00','Override the detction of Nmap to enable discoveries.');
+
 DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit';
 
 DELETE FROM `configuration` WHERE `name` = 'discovery_sudo_path';
@@ -494,6 +498,14 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns','system.id,system.uuid,system.name,system.ip,system.hostname,system.dns_hostname,system.domain,system.dns_domain,system.dbus_identifier,system.fqdn,system.dns_fqdn,system.description,system.type,system.icon,system.os_group,system.os_family,system.os_name,system.os_version,system.manufacturer,system.model,system.serial,system.form_factor,system.status,system.environment,system.class,system.function,system.org_id,system.location_id,system.snmp_oid,system.sysDescr,system.sysObjectID,system.sysUpTime,system.sysContact,system.sysName,system.sysLocation,system.first_seen,system.last_seen,system.last_seen_by,system.identification', 'text', 'y', 'system', '2000-01-01 00:00:00','When requesting a list of devices, provide these columns.');";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_override_nmap'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_override_nmap','n','bool','y','system','2000-01-01 00:00:00','Override the detction of Nmap to enable discoveries.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

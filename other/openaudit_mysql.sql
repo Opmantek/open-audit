@@ -887,6 +887,7 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_limit','20','number','y','sy
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_directory','/tmp/','text','y','system','2000-01-01 00:00:00','The directory the script is copied into on the target device.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_override_nmap','n','bool','y','system','2000-01-01 00:00:00','Override the detction of Nmap to enable discoveries.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma seperated for multiple paths.');
