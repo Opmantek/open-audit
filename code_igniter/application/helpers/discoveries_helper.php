@@ -1151,8 +1151,8 @@ if ( ! function_exists('ip_audit')) {
 			discovery_log($log);
 			$destination = 'audit_windows.vbs';
 			$output = false;
-			if (php_uname('s') === 'Windows NT' && exec('whoami') === 'nt authority\system' && ! empty($CI->config->config['discovery_use_vintage_service']) && $CI->config->config['discovery_use_vintage_service'] === 'y') {
-				// Windows Server running on the LocalSystem account.
+			if (php_uname('s') === 'Windows NT' && ! empty($CI->config->config['discovery_use_vintage_service']) && $CI->config->config['discovery_use_vintage_service'] === 'y') {
+				// Windows Server (likely) running on the LocalSystem account.
 				// We cannot copy the audit script to the target and then run it,
 				// We _must_ run the script locally and use $device->ip as the script target
 				// We will loose the ability to retrieve certain items like files, netstat, tasks, etc
