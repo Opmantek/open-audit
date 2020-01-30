@@ -360,7 +360,7 @@ UPDATE `video` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `mode
 
 ALTER TABLE `vm` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
-UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'bios\',\'disk\',\'memory\',\'module\',\'monitor\',\'motherboard\',\'network\',optical\',\'partition\',processor\',\'san\',\'scsi\',\'sound\',\'video\')&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day';
+UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'bios\',\'disk\',\'memory\',\'module\',\'monitor\',\'motherboard\',\'network\',\'optical\',\'partition\',\'processor\',\'san\',\'scsi\',\'sound\',\'video\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day';
 
 UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'dns\',\'file\',\'ip\',\'log\',\'pagefile\',\'print_queue\',\'route\',\'share\',\'task\',\'user\',\'user_group\',\'variable\',\'vm\',\'windows\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day';
 
@@ -802,7 +802,7 @@ $this->log_db($this->db->last_query());
 
 $this->alter_table('vm', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
 
-$sql = "UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'bios\',\'disk\',\'memory\',\'module\',\'monitor\',\'motherboard\',\'network\',optical\',\'partition\',processor\',\'san\',\'scsi\',\'sound\',\'video\')&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'";
+$sql = "UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'bios\',\'disk\',\'memory\',\'module\',\'monitor\',\'motherboard\',\'network\',\'optical\',\'partition\',\'processor\',\'san\',\'scsi\',\'sound\',\'video\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day';";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
