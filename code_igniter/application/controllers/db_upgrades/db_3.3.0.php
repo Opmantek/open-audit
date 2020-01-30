@@ -360,13 +360,15 @@ UPDATE `video` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `mode
 
 ALTER TABLE `vm` CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
-UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day';
+UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'bios\',\'disk\',\'memory\',\'module\',\'monitor\',\'motherboard\',\'network\',optical\',\'partition\',processor\',\'san\',\'scsi\',\'sound\',\'video\')&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day';
 
-UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(dns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day';
+UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'dns\',\'file\',\'ip\',\'log\',\'pagefile\',\'print_queue\',\'route\',\'share\',\'task\',\'user\',\'user_group\',\'variable\',\'vm\',\'windows\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day';
 
-UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(server,server_item,service,software,software_key)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Software Additions by Day';
+UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'server\',\'server_item\',\'service\',\'software\',\'software_key\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Software Additions by Day';
 
 UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.os_group,system.name,system.domain,system.ip,system.os_family,system.location_id' WHERE `name` = 'Devices by Location';
+
+UPDATE `widgets` SET `link`= 'devices?audit_log.timestamp=like@date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.os_family,system.status&groupby=audit_log.system_id' WHERE `name` = 'Cloud Devices Audited per Day';
 
 ALTER TABLE `windows` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
@@ -800,19 +802,23 @@ $this->log_db($this->db->last_query());
 
 $this->alter_table('vm', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
 
-$sql = "UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(bios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video)&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'";
+$sql = "UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'bios\',\'disk\',\'memory\',\'module\',\'monitor\',\'motherboard\',\'network\',optical\',\'partition\',processor\',\'san\',\'scsi\',\'sound\',\'video\')&change_log.timestamp=like@date&change_log.db_action=create&system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Hardware Additions by Day'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(dns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day'";
+$sql = "UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'dns\',\'file\',\'ip\',\'log\',\'pagefile\',\'print_queue\',\'route\',\'share\',\'task\',\'user\',\'user_group\',\'variable\',\'vm\',\'windows\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Settings Additions by Day'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `widgets` SET `link` = 'devices?sub_resource=change_log&change_log.db_table=in(server,server_item,service,software,software_key)&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Software Additions by Day'";
+$sql = "UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'server\',\'server_item\',\'service\',\'software\',\'software_key\')&change_log.timestamp=like@date&change_log.db_action=create&properties=system.id,system.icon,system.ip,system.name,system.os_family,change_log.details,change_log.timestamp' WHERE `name` = 'Software Additions by Day'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.os_group,system.name,system.domain,system.ip,system.os_family,system.location_id' WHERE `name` = 'Devices by Location'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `widgets` SET `link`= 'devices?audit_log.timestamp=like@date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.os_family,system.status&groupby=audit_log.system_id' WHERE `name` = 'Cloud Devices Audited per Day'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
