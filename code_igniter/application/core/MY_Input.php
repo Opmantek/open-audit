@@ -45,6 +45,23 @@ class MY_Input extends CI_Input {
         parent::__construct();
     }
 
+    function _clean_input_keys($str)
+    {
+        // Allow for a | in a variable name, think discoveries options open|filtered.
+        if ( ! preg_match("/^[\|a-z0-9:_\/-]+$/i", $str))
+        {
+            exit('Disallowed Key Characters in ' . $str);
+        }
+
+        // Clean UTF-8 if supported
+        if (UTF8_ENABLED === TRUE)
+        {
+            $str = $this->uni->clean_string($str);
+        }
+
+        return $str;
+    }
+
     public function post($index = null, $xss_clean = true) {
         if (!$xss_clean) {
             // if asked for raw post data (eg. post('key', false) ) return the raw data.
