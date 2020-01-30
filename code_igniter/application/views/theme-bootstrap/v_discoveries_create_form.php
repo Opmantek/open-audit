@@ -33,58 +33,7 @@
 * @version   3.3.0
 * @link      http://www.open-audit.org
  */
-
-# check if we have nmap installed
-$nmap_installed = 'n';
-if (php_uname('s') == "Windows NT") {
-    # check the obvious Windows install locations
-    $test_path = 'c:\Program Files\Nmap\Nmap.exe';
-    if ($nmap_installed == 'n' and file_exists($test_path)) {
-        $nmap_installed = 'y';
-    }
-    $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
-    if ($nmap_installed == 'n' and file_exists($test_path)) {
-        $nmap_installed = 'y';
-    }
-    unset($test_path);
-} else {
-    $command_string = "which nmap 2>/dev/null";
-    exec($command_string, $output, $return_var);
-    if (isset($output[0]) and strpos($output[0], 'nmap')) {
-        $nmap_installed = 'y';
-    } else {
-        $output[0] = '';
-    }
-    if ($nmap_installed == 'n') {
-        if (file_exists('/usr/local/bin/nmap')) {
-            $nmap_installed = 'y';
-        }
-    }
-}
-
-$nmap_warning = '';
-if ($nmap_installed == 'n') {
-    if (php_uname('s') == "Windows NT") {
-        $nmap_warning = "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
-    } else {
-        $nmap_warning = "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
-    }
-}
-if ($nmap_warning != '') {
-    echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $nmap_warning . '</div>';
-}
 ?>
-
-<?php if (isset($this->response->{'meta'}->{'warning'}) and $this->response->{'meta'}->{'warning'} == 'y') { ?>
-<div class="container-fluid">
-    <div class="alert alert-danger alert-dismissable" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed.
-        Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2">this wiki page</a> for more information.<br />
-        We very much recommend upgrading to Centos / RedHat 7.<br />
-    </div>
-</div>
-<?php } ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">

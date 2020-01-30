@@ -664,7 +664,7 @@ if (! function_exists('output')) {
                 $CI->response->included = array_merge($CI->response->included, $attributes);
             }
         }
-        if (!empty($CI->response->errors)) {
+        if (!empty($CI->response->errors) and $CI->response->meta->collection !== 'discoveries') {
             unset($CI->response->data);
             $CI->response->include = 'v_error';
             $include = 'v_error';
