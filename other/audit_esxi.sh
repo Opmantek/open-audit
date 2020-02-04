@@ -304,12 +304,7 @@ start_time=$(timer)
 system_timestamp=`date +'%F %T'`
 system_hostname=""
 system_hostname=`hostname -s 2>/dev/null`
-if [ "$system_hostname" = "" ]; then
-	system_hostname=`hostname 2>/dev/null`
-	system_domain=""
-else
-	system_domain=`hostname -d 2>/dev/null`
-fi
+system_domain=`hostname -d 2>/dev/null`
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 xml_file_full_path=`pwd`"/$xml_file"
 
@@ -357,21 +352,21 @@ system_form_factor=$(trim `echo "$smbiosDump" | sed -n '/^  Chassis Info:/,/^  [
 system_pc_os_bit=`uname -m | grep x86_64 | cut -d_ -f2`
 
 system_pc_memory=0
-for temp in $(cim-diagnostic.sh 2>/dev/null | grep "OMC_PhysicalMemory" -A21 | grep Capacity |  sed 's/^ *//g' | sed 's/ *$//g' | cut -d" " -f3); do
-	temp=`expr $temp / 1024 / 1024`
-	system_pc_memory=`expr $system_pc_memory + $temp`
-done
-
-#system_pc_memory=$(trim `echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Max. Size' | cut -d":" -f2 | cut -d" " -f2`)
-#system_memory_size=$(trim `echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Max. Size' | cut -d":" -f2 | cut -d" " -f3`)
-#if [ "$system_memory_size" = "GB" ]; then
-#	system_pc_memory=`expr $system_pc_memory \* 1024`
-#fi
+memory_slots=$(echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Slots' | cut -d":" -f2)
+if [ "$memory_slots" != "0" ]; then
+	for memory_handle in $(echo "$smbiosDump" | grep "^  Memory Device: #"); do
+		bank=$(echo $memory_handle | cut -d"#" -f2)
+		bank="  Memory Device: #$bank"
+		memory_capacity=$(trim `echo "$smbiosDump" | sed -n "/^$bank/,/^  [A-Za-z]/p" | grep '    Size:' | cut -d: -f2 | cut -d" " -f2`)
+		system_pc_memory=`expr $system_pc_memory + $memory_capacity`
+	done
+fi
+system_pc_memory=`expr $system_pc_memory \* 1024 \* 1024`
 
 system_pc_threads=$(trim `echo "$hostsummaryHardware" | grep numCpuThreads | cut -d= -f2 | sed 's/,//g'`)
 system_pc_cores=$(trim `echo "$hostsummaryHardware" | grep numCpuCores | cut -d= -f2 | sed 's/,//g'`)
 system_pc_processors=$(trim `echo "$hostsummaryHardware" | grep numCpuPkgs | cut -d= -f2 | sed 's/,//g'`)
-system_pc_date_os_installation=`esxcli software profile get | grep '^   Creation Time:' | sed 's/Creation Time://g' | sed 's/^ *//g' | sed 's/T/ /g'`
+system_pc_date_os_installation=`esxcli software profile get | grep '^   Creation Time:' | sed 's/Creation Time://g' | sed 's/^ *//g' | sed 's/T/ /g' | cut -d" " -f1`
 
 net_description=$(esxcli network ip interface list | grep "$net_mac_address" -B1 | grep "Name: " | cut -d: -f2 | sed 's/ //')
 for address in $(esxcli network ip interface ipv4 get | grep "$net_description" | sed 's/ \+/ /g'); do

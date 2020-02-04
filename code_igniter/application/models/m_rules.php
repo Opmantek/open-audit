@@ -262,11 +262,11 @@ class M_rules extends MY_Model
         }
 
         // Manufacturer based on SNMP Enterprise ID
-        if ( ! empty($device->snmp_enterprise_id) && empty($newdevice->manufacturer)) {
+        if ( ! empty($device->snmp_enterprise_id) && empty($device->manufacturer)) {
             $log_start = microtime(true);
             $newdevice->manufacturer = get_manufacturer_from_oid($device->snmp_enterprise_id);
             if ( ! empty($newdevice->manufacturer)) {
-                $log->message = "Hit on \$device->snmp_enterprise_id " . $device->snmp_enterprise_id . " eq " . $device->snmp_enterprise_id;
+                $log->message = 'Hit on $device->snmp_enterprise_id ' . $device->snmp_enterprise_id . ' eq ' . $device->snmp_enterprise_id;
                 $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
