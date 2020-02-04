@@ -938,14 +938,79 @@ if ( !  function_exists('ssh_audit')) {
             $device->type = 'computer';
         }
         unset($device->redhat_os_name);
-        if (stripos($device->os_group, 'VMkernel') !== false && empty($device->os_name) && ! empty($device->vmware_os_version)) {
+
+        if (stripos($device->os_group, 'VMkernel') !== false && ! empty($device->vmware_os_version)) {
             $device->os_group = 'VMware';
             $device->os_family = 'VMware ESXi';
             $device->os_name = 'Vmware ESXi ' . $device->vmware_os_version;
             $device->class = 'hypervisor';
             $device->type = 'computer';
+            unset($device->form_factor);
+
+            $item_start = microtime(true);
+            $command = "esxcli hardware platform get | grep 'Product Name' | cut -d: -f2 2>/dev/null";
+            $result = trim($ssh->exec($command));
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'SSH command - VMware model';
+            $log->command = $command;
+            if ( ! empty($result)) {
+                $device->model = trim($result);
+                $log->command_status = 'success';
+                $log->command_output = $device->model;
+            } else {
+                $log->command_status = 'warning';
+                $log->command_output = '';
+                unset($device->model);
+            }
+            discovery_log($log);
+            unset($result, $command);
+
+            $log->command_time_to_execute = 0;
+            $log->message = 'OS Name';
+            $log->command = '';
+            $log->command_status = 'success';
+            $log->command_output = $device->os_name;
+            discovery_log($log);
+
+
+            $item_start = microtime(true);
+            $command = "esxcli hardware platform get | grep 'Vendor Name' | cut -d: -f2 2>/dev/null";
+            $result = trim($ssh->exec($command));
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'SSH command - VMware manufacturer';
+            $log->command = $command;
+            if ( ! empty($result)) {
+                $device->manufacturer = trim($result);
+                $log->command_status = 'success';
+                $log->command_output = $device->manufacturer;
+            } else {
+                $log->command_status = 'warning';
+                $log->command_output = '';
+                unset($device->manufacturer);
+            }
+            discovery_log($log);
+            unset($result, $command);
+
+            $item_start = microtime(true);
+            $command = "smbiosDump | sed -n '/^  Chassis Info:/,/^  [A-Za-z]/p' | grep '    Type' | cut -d\":\" -f2 | cut -d\" \" -f3 | sed 's/\"//g' | sed 's/(//g' | sed 's/)//g'";
+            $result = $ssh->exec($command);
+            $log->command = $command;
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'SSH command - VMware form factor';
+            if ( ! empty($result)) {
+                $device->form_factor = trim($result);
+                $log->command_status = 'success';
+                $log->command_output = $device->form_factor;
+            } else {
+                $log->command_status = 'warning';
+                $log->command_output = '';
+                unset($device->manufacturer);
+            }
+            discovery_log($log);
+            unset($result, $command);
         }
         unset($device->vmware_os_version);
+
         if (strtolower($device->os_group) === 'darwin') {
             $device->type = 'computer';
             $device->os_family = 'Apple OSX';
