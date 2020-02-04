@@ -1686,7 +1686,7 @@ class M_device extends MY_Model
                     }
                     // calculate the weight
                     $weight = intval($this->m_devices->weight($details->last_seen_by));
-                    if ($weight <= $previous_weight && $value !== $previous_value) {
+                    if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
                         $update = new stdClass();
                         $update->key = $key;
                         $update->value = $value;
