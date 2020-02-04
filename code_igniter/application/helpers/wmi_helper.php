@@ -81,6 +81,7 @@ if (! function_exists('windows_credentials')) {
             discovery_log($log);
             return false;
         }
+        $log->ip = $ip;
 
         foreach ($credentials as $credential) {
             if ($credential->type == 'windows') {
@@ -281,44 +282,44 @@ if (! function_exists('copy_to_windows')) {
             return false;
         }
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No valid IP supplied to wmi_helper::copy_to_windows ' . $ip;
             discovery_log($log);
             return false;
         }
 
-        if (!is_object($credentials)) {
+        if ( ! is_object($credentials)) {
             $log->message = 'No credentials passed to wmi_helper::copy_to_windows';
             discovery_log($log);
             return false;
         }
 
-        if ($share == '') {
+        if ($share === '') {
             $log->message = 'No share passed to wmi_helper::copy_to_windows';
             discovery_log($log);
             return false;
         }
 
-        if ($source == '') {
+        if ($source === '') {
             $log->message = 'No source passed to wmi_helper::copy_to_windows';
             discovery_log($log);
             return false;
         }
 
-        if ($destination == '') {
+        if ($destination === '') {
             $log->message = 'No destination passed to wmi_helper::copy_to_windows';
             discovery_log($log);
             return false;
         }
 
-        if (php_uname('s') == 'Darwin') {
+        if (php_uname('s') === 'Darwin') {
             $ts = date('Y_m_d_H_i_s');
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
             $domain = $temp[1];
             unset($temp);
             $password = $credentials->credentials->password;
-            if (!is_dir('/private/tmp')) {
+            if ( ! is_dir('/private/tmp')) {
                 mkdir('/private/tmp') or die ('OSX attempt to create /private/tmp failed in wmi_helper::copy_to_windows failed');
             }
             $log->command = "mkdir('/private/tmp')";
@@ -580,6 +581,8 @@ if (! function_exists('delete_windows_result')) {
             return false;
         }
 
+        $log->ip = $parameters->ip;
+
         if (!is_object($parameters->credentials)) {
             $log->message = 'No credentials passed to wmi_helper::delete_windows_result';
             discovery_log($log);
@@ -725,29 +728,17 @@ if (! function_exists('delete_windows_result')) {
 }
 
 
-if (! function_exists('copy_from_windows')) {
+if ( ! function_exists('copy_from_windows')) {
     /**
-     * The copy a file from a Windos target
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @param     ip            The target device's ip address
-     *
-     * @param     credentials   The credential set
-     *
-     * @param     source        The source on the target
-     *
-     * @param     destination   The local destination
-     *
-     * @param     log           Our standard loging object so we can add to the correct discovery log
-     *
-     * @return    false || true Depending on success
+     * [copy_from_windows description]
+     * @param  string $ip          The target device's ip address
+     * @param  [type] $credentials The credential set
+     * @param  string $source      The source on the target
+     * @param  [type] $destination The local destination
+     * @param  object $log         Our standard loging object so we can add to the correct discovery log
+     * @return bool                false || true Depending on success
      */
-   function copy_from_windows($ip = '', $credentials, $source = '', $destination, $log)
+    function copy_from_windows($ip = '', $credentials, $source = '', $destination, $log)
     {
         $log->file = 'wmi_helper';
         $log->function = 'copy_from_windows';
@@ -759,25 +750,25 @@ if (! function_exists('copy_from_windows')) {
             return false;
         }
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No valid IP supplied to wmi_helper::copy_from_windows ' . $ip;
             discovery_log($log);
             return false;
         }
 
-        if (!is_object($credentials)) {
+        if ( ! is_object($credentials)) {
             $log->message = 'No credentials passed to wmi_helper::copy_from_windows';
             discovery_log($log);
             return false;
         }
 
-        if ($source == '') {
+        if ($source === '') {
             $log->message = 'No source passed to wmi_helper::copy_from_windows';
             discovery_log($log);
             return false;
         }
 
-        if ($destination == '') {
+        if ($destination === '') {
             $log->message = 'No destination passed to wmi_helper::copy_from_windows';
             discovery_log($log);
             return false;
@@ -1192,13 +1183,21 @@ if (! function_exists('wmi_command')) {
 
 
 
-if (! function_exists('wmi_audit')) {
+if ( ! function_exists('wmi_audit')) {
+    /**
+     * [wmi_audit description]
+     * @param  string $ip           [description]
+     * @param  [type] $credentials  [description]
+     * @param  [type] $log          [description]
+     * @param  [type] $discovery_id [description]
+     * @return [type]               [description]
+     */
     function wmi_audit($ip = '', $credentials, $log = null, $discovery_id = null)
     {
         if (is_null($log)) {
             $log = new stdClass();
         }
-        if (!is_null($discovery_id)) {
+        if ( ! is_null($discovery_id)) {
             $log->discovery_id = $discovery_id;
         }
         $log->file = 'wmi_helper';
@@ -1206,8 +1205,8 @@ if (! function_exists('wmi_audit')) {
         $log->severity = 7;
         $log->command_status = 'notice';
         $log->message = 'WMI audit starting';
+        $log->ip = @$ip;
         discovery_log($log);
-
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::wmi_audit.';
@@ -1215,12 +1214,13 @@ if (! function_exists('wmi_audit')) {
             return false;
         }
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No valid IP supplied to wmi_helper::wmi_audit.';
             discovery_log($log);
             return false;
         }
-        if (!is_object($credentials)) {
+
+        if ( ! is_object($credentials)) {
             $log->message = 'No credentials supplied to wmi_helper::wmi_audit.';
             discovery_log($log);
             return false;
@@ -1228,113 +1228,116 @@ if (! function_exists('wmi_audit')) {
 
         $details = new stdClass();
 
-        # UUID
+        // UUID
         $command = 'csproduct get uuid';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->uuid = $wmi_result['output'][1];
             }
             $details->type = 'computer';
         }
 
-        # Serial
+        // Serial
         $command = 'csproduct get IdentifyingNumber';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->serial = $wmi_result['output'][1];
             }
         }
 
-        # Manufacturer
+        // Manufacturer
         $command = 'csproduct get vendor';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->manufacturer = $wmi_result['output'][1];
             }
         }
 
-        # Description
+        // Description
         $command = 'os get description';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->description = $wmi_result['output'][1];
             }
         }
 
-        # Hostname / name
+        // Hostname / name
         $command = 'computersystem get name';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->hostname = strtolower($wmi_result['output'][1]);
                 $details->name = $details->hostname;
             }
         }
 
-        # Domain / fqdn
+        // Domain / fqdn
         $command = 'computersystem get domain';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->domain = strtolower($wmi_result['output'][1]);
                 $details->fqdn = $details->hostname . '.' . $details->domain;
             }
         }
 
-        # OS Name
+        // OS Name
         $command = 'os get name';
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
-        if ($wmi_result['status'] == 0) {
-            if (!empty($wmi_result['output'][1])) {
+        if ($wmi_result['status'] === 0) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $details->os_group = 'Windows';
-                if (stripos($details->os_name, " 95") !== false) {
-                    $details->os_family = "Windows 95";
+                if (stripos($details->os_name, ' 95') !== false) {
+                    $details->os_family = 'Windows 95';
                 }
-                if (stripos($details->os_name, " 98") !== false) {
-                    $details->os_family = "Windows 98";
+                if (stripos($details->os_name, ' 98') !== false) {
+                    $details->os_family = 'Windows 98';
                 }
-                if (stripos($details->os_name, " NT") !== false) {
-                    $details->os_family = "Windows NT";
+                if (stripos($details->os_name, ' NT') !== false) {
+                    $details->os_family = 'Windows NT';
                 }
-                if (stripos($details->os_name, " 2000") !== false) {
-                    $details->os_family = "Windows 2000";
+                if (stripos($details->os_name, ' 2000') !== false) {
+                    $details->os_family = 'Windows 2000';
                 }
-                if (stripos($details->os_name, " XP") !== false) {
-                    $details->os_family = "Windows XP";
+                if (stripos($details->os_name, ' XP') !== false) {
+                    $details->os_family = 'Windows XP';
                 }
-                if (stripos($details->os_name, "2003") !== false) {
-                    $details->os_family = "Windows 2003";
+                if (stripos($details->os_name, '2003') !== false) {
+                    $details->os_family = 'Windows 2003';
                 }
-                if (stripos($details->os_name, "Vista") !== false) {
-                    $details->os_family = "Windows Vista";
+                if (stripos($details->os_name, 'Vista') !== false) {
+                    $details->os_family = 'Windows Vista';
                 }
-                if (stripos($details->os_name, "2008") !== false) {
-                    $details->os_family = "Windows 2008";
+                if (stripos($details->os_name, '2008') !== false) {
+                    $details->os_family = 'Windows 2008';
                 }
-                if (stripos($details->os_name, "Windows 7") !== false) {
-                    $details->os_family = "Windows 7";
+                if (stripos($details->os_name, 'Windows 7') !== false) {
+                    $details->os_family = 'Windows 7';
                 }
-                if (stripos($details->os_name, "Windows 8") !== false) {
-                    $details->os_family = "Windows 8";
+                if (stripos($details->os_name, 'Windows 8') !== false) {
+                    $details->os_family = 'Windows 8';
                 }
-                if (stripos($details->os_name, "2012") !== false) {
-                    $details->os_family = "Windows 2012";
+                if (stripos($details->os_name, '2012') !== false) {
+                    $details->os_family = 'Windows 2012';
                 }
-                if (stripos($details->os_name, "Windows 10") !== false) {
-                    $details->os_family = "Windows 10";
+                if (stripos($details->os_name, 'Windows 10') !== false) {
+                    $details->os_family = 'Windows 10';
                 }
-                if (stripos($details->os_name, "2016") !== false) {
-                    $details->os_family = "Windows 2016";
+                if (stripos($details->os_name, '2016') !== false) {
+                    $details->os_family = 'Windows 2016';
+                }
+                if (stripos($details->os_name, '2019') !== false) {
+                    $details->os_family = 'Windows 2019';
                 }
                 $details->os_name = $wmi_result['output'][1];
                 $details->os_name = str_replace('®', '', $details->os_name);
                 $details->os_name = trim(substr($details->os_name, 0, stripos($details->os_name, '|')));
             }
-            if (!empty($wmi_result['output'][1])) {
+            if ( ! empty($wmi_result['output'][1])) {
                 $temp = explode('|', $wmi_result['output'][1]);
                 $details->install_dir = trim($temp[1]);
                 unset($temp);
