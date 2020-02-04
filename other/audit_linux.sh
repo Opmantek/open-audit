@@ -518,8 +518,8 @@ fi
 system_domain=$(hostname -d | grep -v \(none\))
 system_fqdn=$(hostname -f | grep -v \(none\))
 
-dns_hostname=$(hostname -s 2>/dev/null | head -n1 | cut -d. -f1)
-dns_domain=$(hostname --domain 2>/dev/null | head -n1 | cut -d. -f2- | cut -d" " -f1)
+dns_hostname=$(hostname --short 2>/dev/null | head -n1 | cut -d. -f1)
+dns_domain=$(hostname --domain 2>/dev/null)
 dns_fqdn=$(hostname --fqdn 2>/dev/null | head -n1)
 
 # Get System Family (Distro Name) and the OS Name

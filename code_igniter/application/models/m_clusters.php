@@ -94,16 +94,37 @@ class M_clusters extends MY_Model
     /**
      * Read the associated items from the DB by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int $cluster_id The ID of the cluster
      * @return array The array of devices assigned to this application
      */
-    public function read_sub_resource($id = 0)
+    public function read_sub_resource($cluster_id = 0)
     {
         $CI = & get_instance();
         $org_ids = implode(',', $CI->user->orgs);
-        $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.memory_count AS `system.memory_count`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.icon AS `system.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR \', \') AS `servers` FROM `system` LEFT JOIN `orgs` ON (`system`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`system`.`id` = `cluster`.`system_id`) LEFT JOIN `processor` ON (`system`.`id` = `processor`.`system_id` AND `processor`.`current` = "y") LEFT JOIN `server` ON `server`.`system_id` = `system`.`id` WHERE `orgs`.`id` IN (' . $org_ids . ') AND `cluster`.`clusters_id` = ? GROUP BY `system`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
-        $result = $this->run_sql($sql, array($id));
-        $result = $this->format_data($result, 'devices');
+        $sql = 'SELECT * FROM clusters WHERE id = ?';
+        $result = $this->run_sql($sql, array($cluster_id));
+        $cluster = $result[0];
+        unset($result);
+
+        // TODO - implement SQL per purpose.
+        if ($cluster->purpose === 'virtualisation') {
+            // Our direct cluster members
+            $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.memory_count AS `system.memory_count`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.icon AS `system.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, "host" AS `type`, SUM(memory.size) AS `memory.size` FROM `system` LEFT JOIN `orgs` ON (`system`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`system`.`id` = `cluster`.`system_id`) LEFT JOIN `processor` ON (`system`.`id` = `processor`.`system_id` AND `processor`.`current` = "y") LEFT JOIN `memory` ON (`system`.`id` = `memory`.`system_id` AND `memory`.`current` = "y") WHERE `orgs`.`id` IN (' . $org_ids . ') AND `cluster`.`clusters_id` = ? GROUP BY `system`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
+            $result = $this->run_sql($sql, array($cluster_id));
+            $result = $this->format_data($result, 'devices');
+            // The VMs on the direct cluster members
+            $next_sql = 'SELECT system.name AS `host.name`, vm.icon AS `vm.icon`, vm.name AS `vm.name`, vm.id AS `vm.id`, vm.guest_system_id AS `vm.guest_system_id`, vm.cpu_count AS `vm.cpu_count`, vm.memory_count AS `vm.memory_count`, vm.status AS `vm.status`, "guest" as `type`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR ", ") AS `guest.servers`, guest.os_family AS `guest.os_family`, guest.ip AS `guest.ip` FROM `system` LEFT JOIN `cluster` ON (`system`.`id` = `cluster`.`system_id`) LEFT JOIN `vm` ON (`system`.`id` = `vm`.`system_id` AND `vm`.`current` = "y") LEFT JOIN `server` ON vm.guest_system_id = `server`.`system_id` LEFT JOIN `system` `guest` ON vm.guest_system_id = guest.id WHERE system.org_id IN (' . $org_ids . ') AND `cluster`.`clusters_id` = ? GROUP BY vm.guest_system_id, vm.icon, vm.name, system.name, vm.id, vm.cpu_count, vm.memory_count, vm.status, guest.os_family, guest.ip ORDER BY vm.name;';
+            $next_result = $this->run_sql($next_sql, array($cluster_id));
+            $next_result = $this->format_data($next_result, 'devices');
+            $result = array_merge($result, $next_result);
+        } else {
+            //if ($cluster->purpose === 'database') {
+                // Our direct cluster members
+                $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.memory_count AS `system.memory_count`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.icon AS `system.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR ", ") AS `servers` FROM `system` LEFT JOIN `orgs` ON (`system`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`system`.`id` = `cluster`.`system_id`) LEFT JOIN `processor` ON (`system`.`id` = `processor`.`system_id` AND `processor`.`current` = "y") LEFT JOIN `server` ON `system`.`id` = `server`.`system_id` WHERE `orgs`.`id` IN (' . $org_ids . ') AND `cluster`.`clusters_id` = ? GROUP BY `system`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
+                $result = $this->run_sql($sql, array($cluster_id));
+                $result = $this->format_data($result, 'devices');
+            //}
+        }
         return ($result);
     }
 
