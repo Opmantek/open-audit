@@ -872,7 +872,7 @@ if ( !  function_exists('ssh_audit')) {
 
         // Set some items that may have multiple results
         if ( ! empty($device->hostname)) {
-            if (stripos('.', $device->hostname) !== false) {
+            if (stripos($device->hostname, '.') !== false) {
                 $device->fqdn = $device->hostname;
                 $temp = explode('.', $device->hostname);
                 $device->hostname = $temp[0];
