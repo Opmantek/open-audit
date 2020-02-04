@@ -1487,7 +1487,7 @@ class M_device extends MY_Model
         discovery_log($log);
 
         $weight = intval($this->m_devices->weight($details->last_seen_by));
-        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen');
+        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials', 'discovery_log');
         foreach ($columns as $column) {
             if ( ! empty($details->{$column}) && ! in_array($column, $disallowed_fields)) {
                 $edit_sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, 'Data was changed', ?, ?, 'system', ?, ?, ?, '')";
@@ -1670,7 +1670,7 @@ class M_device extends MY_Model
         $query = $this->db->query($sql, $data);
         $edit_log = $query->result();
         $fields = $this->db->list_fields('system');
-        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'discovery_id');
+        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
         $update_device = array();
         foreach ($details as $key => $value) {
             if (($key !== '') && ($value !== '')) {
