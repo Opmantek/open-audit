@@ -1439,7 +1439,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '00:05:66': $manufacturer = 'Secui.com Corporation'; break;
             case '00:05:67': $manufacturer = 'Etymonic Design, Inc.'; break;
             case '00:05:68': $manufacturer = 'Piltofish Networks Ab'; break;
-            case '00:05:69': $manufacturer = 'Vmware, Inc.'; break;
+            case '00:05:69': $manufacturer = 'VMware, Inc.'; break;
             case '00:05:6a': $manufacturer = 'Heuft Systemtechnik Gmbh'; break;
             case '00:05:6b': $manufacturer = 'C.p. Technology Co., Ltd.'; break;
             case '00:05:6c': $manufacturer = 'Hung Chang Co., Ltd.'; break;
@@ -3139,7 +3139,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '00:0c:26': $manufacturer = 'Weintek Labs. Inc.'; break;
             case '00:0c:27': $manufacturer = 'Sammy Corporation'; break;
             case '00:0c:28': $manufacturer = 'Rifatron'; break;
-            case '00:0c:29': $manufacturer = 'Vmware, Inc.'; break;
+            case '00:0c:29': $manufacturer = 'VMware, Inc.'; break;
             case '00:0c:2a': $manufacturer = 'Octtel Communication Co., Ltd.'; break;
             case '00:0c:2b': $manufacturer = 'Elias Technology, Inc.'; break;
             case '00:0c:2c': $manufacturer = 'Enwiser Inc.'; break;
@@ -7214,7 +7214,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '00:1c:11': $manufacturer = 'Arris Group, Inc.'; break;
             case '00:1c:12': $manufacturer = 'Arris Group, Inc.'; break;
             case '00:1c:13': $manufacturer = 'Optsys Technology Co., Ltd.'; break;
-            case '00:1c:14': $manufacturer = 'Vmware, Inc.'; break;
+            case '00:1c:14': $manufacturer = 'VMware, Inc.'; break;
             case '00:1c:15': $manufacturer = 'Iphotonix Llc'; break;
             case '00:1c:16': $manufacturer = 'Thyssenkrupp Elevator'; break;
             case '00:1c:17': $manufacturer = 'Nortel Networks'; break;
@@ -10688,7 +10688,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '00:50:53': $manufacturer = 'Cisco Systems'; break;
             case '00:50:54': $manufacturer = 'Cisco Systems'; break;
             case '00:50:55': $manufacturer = 'Doms A/s'; break;
-            case '00:50:56': $manufacturer = 'Vmware, Inc.'; break;
+            case '00:50:56': $manufacturer = 'VMware, Inc.'; break;
             case '00:50:57': $manufacturer = 'Broadband Access Systems'; break;
             case '00:50:58': $manufacturer = 'Sangoma Technologies'; break;
             case '00:50:59': $manufacturer = 'Ibahn'; break;
