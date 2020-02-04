@@ -119,8 +119,8 @@ class M_devices extends MY_Model
      */
     public function get_related_tables($id = '')
     {
+        $CI = & get_instance();
         if ($id === '') {
-            $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
@@ -137,7 +137,7 @@ class M_devices extends MY_Model
                 $item = new stdClass();
                 $item ->$table = new stdClass();
                 $item->$table->links = new stdClass();
-                $item->$table->links->self = $this->config->config['base_url'] . 'index.php/devices/' . $id . '/' . $table;
+                $item->$table->links->self = $CI->config->config['base_url'] . 'index.php/devices/' . $id . '/' . $table;
                 $return[] = $item;
                 unset($item);
             }
