@@ -655,7 +655,11 @@ if ( ! function_exists('ip_audit')) {
 		$device->discovery_id = $discovery->id;
 		$device->id = 			'';
 		$device->ip = 			$ip_scan->ip;
-		$device->last_seen = 	$ip_scan->details->timestamp;
+
+		$sql = 'SELECT NOW() AS `timestamp`';
+		$query = $CI->db->query($sql);
+		$result = $query->result();
+		$device->last_seen = $result[0]->timestamp;
 		$device->last_seen_by = 'nmap';
 		$device->mac_address = 	@$ip_scan->details->mac_address;
 		$device->name = 		'';
@@ -1453,11 +1457,13 @@ if ( ! function_exists('ip_audit')) {
 					}
 					// Delete the remote file
 					$command = 'rm ' . $audit_file;
+					$temp = 0;
 					if ( ! empty($device->which_sudo) && ! empty($device->use_sudo) && $credentials_ssh->credentials->username !== 'root') {
 						// add sudo, we need this if we have run the audit using sudo
 						$command = "{$device->which_sudo} " . $command;
 						// Allow 10 seconds to run the command
-						$CI->config->config['discovery_ssh_timeout'] = 10;
+						$temp = intval($CI->config->config['discovery_ssh_timeout']);
+						$CI->config->config['discovery_ssh_timeout'] = 5;
 					}
 					$parameters = new stdClass();
 					$parameters->discovery_id = $discovery->id;
@@ -1466,6 +1472,9 @@ if ( ! function_exists('ip_audit')) {
 					$parameters->command = $command;
 					$parameters->ssh_port = $ip_scan->details->ssh_port;
 					ssh_command($parameters);
+					if ($temp > 0) {
+						$CI->config->config['discovery_ssh_timeout'] = $temp;
+					}
 				}
 			}
 		}
