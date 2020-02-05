@@ -436,11 +436,15 @@ echo "</system>" >> "$xml_file"
 
 if [ "$submit_online" = "y" ]; then
 	echo "As HP-UX has no cURL or wget, we cannot auto-submit this to the server."
-	echo "Please ensure you use submit_online=n and create_file-y to generate an XML file"
+	echo "Please ensure you use submit_online=n and create_file=y to generate an XML file"
 fi
 
 if [ "$create_file" != "y" ]; then
 	rm -f "$xml_file"
+fi
+
+if [ "$debugging" -gt 0 ]; then
+	echo "Audit Completed"
 fi
 
 # put globbing back to how it was

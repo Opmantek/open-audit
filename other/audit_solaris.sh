@@ -1057,3 +1057,7 @@ fi
 if [ "$create_file" != "y" ]; then
         `rm -f $PWD/$xml_file`
 fi
+
+if [ "$debugging" -gt "0" ]; then
+    echo "Audit Completed"
+fi

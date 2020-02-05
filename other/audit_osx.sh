@@ -657,5 +657,9 @@ if [ "$create_file" != "y" ]; then
     `rm -f $xml_file`
 fi
 
+if [ "$debugging" -gt 0 ]; then
+    echo "Audit Completed"
+fi
+
 IFS=$O
 
