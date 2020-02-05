@@ -393,9 +393,7 @@ if ( !  function_exists('ssh_command')) {
             $log->severity = 7;
             return false;
         }
-        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-        }
+
         $key = new Crypt_RSA();
         if ($credentials->type === 'ssh_key') {
             if ( ! empty($credentials->credentials->password)) {
@@ -438,37 +436,35 @@ if ( !  function_exists('ssh_command')) {
             return false;
         }
 
-        // NOTE - When not using sudo, commands return almost instantly
-        // //   - When using sudo, we have to parse the output and this typically occurs until we hit the timeout
-        // Normal command timeout
-        $timeout = 10;
-        // Timeout specifically for the audit script
-        if (strpos($command, 'audit_') !== false && strpos($command, 'submit_online') !== false && ! empty($CI->config->config['discovery_ssh_timeout']) && intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $timeout = intval($CI->config->config['discovery_ssh_timeout']);
-        }
-
         $log->command = $command;
         $log->command_status = '';
         $log->message = 'Executing SSH command';
         $item_start = microtime(true);
         if (strpos($command, 'sudo') === false) {
+            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
             // Not using sudo, so no password prompt
-            $ssh->setTimeout($timeout);
             $result = $ssh->exec($command);
             $result = explode("\n", $result);
             // remove the last line as it's always blank
             unset($result[count($result)-1]);
         } else {
             // Using sudo - need to input in response to password prompt
+            $ssh->setTimeout(1);
             $ssh->write($command . "\n");
-            $ssh->setTimeout($timeout);
             $output = $ssh->read('assword');
             if (stripos($output, 'assword') !== false) {
                 $ssh->write($password."\n");
-                $ssh->setTimeout($timeout);
                 $output = $ssh->read('[prompt]');
             }
-            // Required (as opposed to using root as above) because multiple lines will be returned when asking for the password for sudo
+            while ( true ) {
+                $output .= $ssh->read('[prompt]');
+                if (stripos($output, 'Audit Completed') !== false) {
+                    break;
+                }
+                if ((microtime(true) - $item_start) > intval($CI->config->config['discovery_ssh_timeout'])) {
+                    break;
+                }
+            }
             $result = explode("\n", $output);
         }
         $ssh->disconnect();
@@ -477,14 +473,9 @@ if ( !  function_exists('ssh_command')) {
             $result[$i] = trim($result[$i]);
         }
         $log->command_time_to_execute = (microtime(true) - $item_start);
-        if (stripos($command, 'audit_') !== false && stripos($command, 'submit_online') !== false) {
+        $log->command_output = @json_encode($result);
+        if (stripos($command, 'audit_') !== false && stripos($command, 'submit_online') !== false and intval($CI->config->config['log_level']) < 7) {
             $log->command_output = 'Audit console output removed.';
-        } else {
-            if ( ! empty($result)) {
-                $log->command_output = json_encode($result);
-            } else {
-                $log->command_output = '';
-            }
         }
         $log->command_status = 'success';
         discovery_log($log);
@@ -776,14 +767,6 @@ if ( !  function_exists('ssh_audit')) {
         $commands = array(
             'hostname' => 'hostname 2>/dev/null',
 
-            /**
-            Removed the below and will parse hostname for name and domain and fqdn
-            'hostname' => 'hostname -s 2>/dev/null',
-            'domain' => 'hostname -d 2>/dev/null',
-            NOTE - removed below because on Solaris this sets the hostname
-            'fqdn' => 'hostname -f 2>/dev/null | grep -F . 2>/dev/null',
-            **/
-
             'solaris_domain' => 'domainname 2>/dev/null',
 
             'osx_serial' => 'system_profiler SPHardwareDataType 2>/dev/null | grep "Serial Number (system):" | cut -d: -f2 | sed "s/^ *//g"',
@@ -1072,7 +1055,7 @@ if ( !  function_exists('ssh_audit')) {
         unset($device->hpux_domain);
         unset($device->hpux_os_name);
 
-        // Type based on os_groupo = Linux (set to computer)
+        // Type based on os_group = Linux (set to computer)
         if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type)) {
             $device->type = 'computer';
         }
@@ -1144,11 +1127,10 @@ if ( !  function_exists('ssh_audit')) {
                         $command .= "\n";
                     }
                     $ssh->write($command);
-                    $ssh->setTimeout(10);
+                    $ssh->setTimeout(5);
                     $output = $ssh->read('assword');
                     if (stripos($output, 'assword') !== false) {
                         $ssh->write($password."\n");
-                        $ssh->setTimeout(10);
                         $output = $ssh->read('[prompt]');
                     }
                     $lines = explode("\n", $output);
