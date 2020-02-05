@@ -75,13 +75,13 @@ $this->load->helper('wmi');
 // some variables
 $credentials = array();
 
-if (php_uname('s') != 'Windows NT') {
+if (php_uname('s') !== 'Windows NT') {
     $filepath = $this->config->config['base_path'] . '/other';
 } else {
     $filepath = $this->config->config['base_path'] . '\\other';
 }
 
-# So we can output back to the discovery script, and continue processing
+// So we can output back to the discovery script, and continue processing
 ignore_user_abort(true);
 set_time_limit(0);
 ob_start();
@@ -120,8 +120,8 @@ try {
 }
 unset($xml_input);
 
-# So we can output back to the discovery script, and continue processing
-echo "";
+// So we can output back to the discovery script, and continue processing
+echo '';
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
@@ -131,7 +131,7 @@ flush();
 foreach ($xml->children() as $input) {
     $individual_ip_start = microtime(true);
     $input = (object) $input;
-    if (!empty($input->discovery_id)) {
+    if ( ! empty($input->discovery_id)) {
         $syslog->discovery_id = intval($input->discovery_id);
         $GLOBALS['discovery_id'] = intval($input->discovery_id);
         $log->discovery_id = intval($input->discovery_id);
@@ -1373,11 +1373,13 @@ foreach ($xml->children() as $input) {
                 }
                 // Delete the remote file
                 $command = 'rm ' . $audit_file;
+                $temp = 0;
                 if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
                     // add sudo, we need this if we have run the audit using sudo
                     $command = 'sudo ' . $command;
                     // Allow 10 seconds to run the command
-                    $this->config->config['discovery_ssh_timeout'] = 10;
+                    $temp = intval($this->config->config['discovery_ssh_timeout']);
+                    $this->config->config['discovery_ssh_timeout'] = 5;
                 }
                 $parameters = new stdClass();
                 $parameters->log = $log;
@@ -1386,6 +1388,9 @@ foreach ($xml->children() as $input) {
                 $parameters->command = $command;
                 $parameters->ssh_port = $input->ssh_port;
                 ssh_command($parameters);
+                if ($temp > 0) {
+                    $this->config->config['discovery_ssh_timeout'] = $temp;
+                }
             }
         }
     }
