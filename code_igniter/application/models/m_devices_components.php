@@ -1112,36 +1112,35 @@ class M_devices_components extends MY_Model
             }
         }
 
+        // Global
         if ( ! empty($this->config->config['delete_noncurrent']) && strtolower($this->config->config['delete_noncurrent']) === 'y') {
+            $id_array = array();
             for ($i=0; $i < count($db_result); $i++) {
-                $sql = "DELETE FROM `{$table}` WHERE `id` = ?";
-                $sql = $this->clean_sql($sql);
-                $data = array($db_result[$i]->id);
-                $query = $this->db->query($sql, $data);
-                unset($db_result[$i]);
-            }
-            return;
-        }
-
-        // TODO - validate this is working correctly.
-        //        I had to add the !empty test to the below, otherwise was seeing the below when manually running audit_linux.sh
-        //
-        //    <p>Severity: Notice</p>
-        //    <p>Message:  Trying to get property 'id' of non-object</p>
-        //    <p>Filename: models/m_devices_components.php</p>
-        //    <p>Line Number: 889</p>
-        // Line 889 (was) $data = array($db_result[$i]->id);
-
-        if ( ! empty($this->config->config['delete_noncurrent_' . $table]) && strtolower($this->config->config['delete_noncurrent_' . $table]) === 'y') {
-            for ($i=0; $i < count($db_result); $i++) {
-                $sql = "DELETE FROM `{$table}` WHERE `id` = ?";
-                $sql = $this->clean_sql($sql);
                 if ( ! empty($db_result[$i]->id)) {
-                    $data = array($db_result[$i]->id);
-                    $query = $this->db->query($sql, $data);
+                    $id_array[] = intval($db_result[$i]->id);
                     unset($db_result[$i]);
                 }
             }
+            $in_ids = implode(',', $id_array);
+            $sql = "DELETE FROM `{$table}` WHERE `id` IN ({$in_ids})";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            return;
+        }
+
+        // Individual table
+        if ( ! empty($this->config->config['delete_noncurrent_' . $table]) && strtolower($this->config->config['delete_noncurrent_' . $table]) === 'y') {
+            $id_array = array();
+            for ($i=0; $i < count($db_result); $i++) {
+                if ( ! empty($db_result[$i]->id)) {
+                    $id_array[] = intval($db_result[$i]->id);
+                    unset($db_result[$i]);
+                }
+            }
+            $in_ids = implode(',', $id_array);
+            $sql = "DELETE FROM `{$table}` WHERE `id` IN ({$in_ids})";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
             return;
         }
 
