@@ -128,6 +128,10 @@ DELETE FROM `configuration` WHERE `name` = 'discovery_override_nmap';
 
 INSERT INTO `configuration` VALUES (NULL,'discovery_override_nmap','n','bool','y','system','2000-01-01 00:00:00','Override the detction of Nmap to enable discoveries.');
 
+DELETE FROM `configuration` WHERE `name` = 'discovery_route_retrieve_limit';
+
+INSERT INTO `configuration` VALUES (NULL,'discovery_route_retrieve_limit','500','number','y','system','2000-01-01 00:00:00','When discovering a device using SNMP, do not retrieve the route table if it contains more than this number of entries.');
+
 DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit';
 
 DELETE FROM `configuration` WHERE `name` = 'discovery_sudo_path';
@@ -511,6 +515,14 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_override_nmap','n','
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_route_retrieve_limit'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_route_retrieve_limit','500','number','y','system','2000-01-01 00:00:00','When discovering a device using SNMP, do not retrieve the route table if it contains more than this number of entries.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -749,6 +761,10 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('route', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$sql = "UPDATE `route` SET `name` = CONCAT(`destination`, '/', `mask`, ' via ', `next_hop`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $this->alter_table('scsi', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
