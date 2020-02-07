@@ -796,6 +796,9 @@ if ( ! function_exists('ip_audit')) {
 			if ( ! empty($temp_array['guests'])) {
 				$guests = $temp_array['guests'];
 			}
+			if ( ! empty($temp_array['routes'])) {
+				$routes = $temp_array['routes'];
+			}
 		}
 
 		if ( ! empty($device->type) && $device->type !== 'computer' && $device->type !== 'unknown' && $device->type !== 'unclassified'
@@ -1054,6 +1057,19 @@ if ( ! function_exists('ip_audit')) {
 			$parameters->table = 'vm';
 			$parameters->details = $device;
 			$parameters->input = $guests;
+			$parameters->discovery_id = $discovery->id;
+			$CI->m_devices_components->process_component($parameters);
+		}
+
+		// insert any found routes from SNMP
+		if (isset($routes) && is_array($routes) && count($routes) > 0) {
+			$log->command_status = 'notice';
+			$log->message = 'Processing found routes for ' . $device->ip;
+			discovery_log($log);
+			$parameters = new stdClass();
+			$parameters->table = 'route';
+			$parameters->details = $device;
+			$parameters->input = $routes;
 			$parameters->discovery_id = $discovery->id;
 			$CI->m_devices_components->process_component($parameters);
 		}

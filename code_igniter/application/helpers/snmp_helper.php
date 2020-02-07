@@ -1430,6 +1430,134 @@ if ( ! function_exists('snmp_audit')) {
             }
         } // end of network interfaces
 
+        // COMPLETE SNMP walk for testing performance.
+        // $item_start = microtime(true);
+        // $table = my_snmp_real_walk($ip, $credentials, '1');
+        // $log->command_time_to_execute = (microtime(true) - $item_start);
+        // $log->message = 'Large SNMP retrieval for '.$ip;
+        // $log->command = 'snmpwalk 1';
+        // $log->command_output = 'Count is ' . @count($table) . ', time is ' . $log->command_time_to_execute;
+        // if (count($table) ===1) {
+        //     $log->command_output .= ' ' . json_encode($table);
+        // }
+        // $log->command_status = 'notice';
+        // discovery_log($log);
+        // unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+        $retrieve_routes = 0;
+        $config_value = 20;
+        if ( ! empty($CI->config->config['discovery_route_retrieve_limit'])) {
+            $config_value = intval($CI->config->config['discovery_route_retrieve_limit']);
+        }
+
+        $item_start = microtime(true);
+        $route_count = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.4.24.6.0');
+        $route_count = intval($route_count);
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'Route count retrieval for '.$ip;
+        $log->command = 'snmpwalk 1.3.6.1.2.1.4.24.6.0';
+        $log->command_output = 'Count is ' . $route_count;
+        $log->command_status = 'notice';
+        if ( ! empty($route_count) && $route_count < $config_value) {
+            $retrieve_routes = 1;
+            $log->command_output .= ", which is less than config of {$config_value} - retrieving route table.";
+        } else {
+            if ( ! empty($route_count)) {
+                $log->command_output .= ", which is more than config of {$config_value} - not retrieving route table.";
+                $retrieve_routes = 2;
+            } else {
+                $log->command_output = 'Could not retrieve route count from 1.3.6.1.2.1.4.24.6.0.';
+            }
+        }
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+        if ($retrieve_routes === 0) {
+            $item_start = microtime(true);
+            $route_count = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.4.24.3.0');
+            $route_count = intval($route_count);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Route count retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.24.3.0';
+            $log->command_output = 'Count is ' . $route_count;
+            $log->command_status = 'notice';
+            if ( ! empty($route_count) && $route_count < $config_value) {
+                $retrieve_routes = 1;
+                $log->command_output .= ", which is less than config of {$config_value} - retrieving route table.";
+            } else {
+                if ( ! empty($route_count)) {
+                    $log->command_output .= ", which is more than config of {$config_value} - not retrieving route table.";
+                    $retrieve_routes = 2;
+                } else {
+                    $log->command_output = 'Could not retrieve route count from 1.3.6.1.2.1.4.24.3.0.';
+                }
+            }
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        }
+
+        if ($retrieve_routes === 1) {
+            // Route table
+            $routes = array();
+            $item_start = microtime(true);
+            $table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.21.1.1');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Route retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.21.1.1';
+            $log->command_output = 'Count is ' . @count($table);
+            $log->command_status = 'notice';
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+            $my_ips = array();
+            if (is_array($table)) {
+                foreach ($table as $key => $value) {
+                    $my_ips[] = $value;
+                }
+                $log->command_output .= ' ' . json_encode($my_ips);
+            }
+            $table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.21');
+            foreach ($my_ips as $ip) {
+                $route = new stdClass();
+                $route->destination = $ip;
+                foreach ($table as $key => $value) {
+                    if ($key === '.1.3.6.1.2.1.4.21.1.3.' . $ip) {
+                        $route->metric = $value;
+                    }
+                    if ($key === '.1.3.6.1.2.1.4.21.1.7.' . $ip) {
+                        $route->next_hop = $value;
+                    }
+                    if ($key === '.1.3.6.1.2.1.4.21.1.8.' . $ip) {
+                        if (intval($value) === 1) { $value = 'other'; }
+                        if (intval($value) === 2) { $value = 'invalid'; }
+                        if (intval($value) === 3) { $value = 'direct'; }
+                        if (intval($value) === 4) { $value = 'indirect'; }
+                        $route->type = $value;
+                    }
+                    if ($key === '.1.3.6.1.2.1.4.21.1.9.' . $ip) {
+                        if (intval($value) === 1) { $value = 'other'; }
+                        if (intval($value) === 2) { $value = 'local'; }
+                        if (intval($value) === 3) { $value = 'netmgmt'; }
+                        if (intval($value) === 4) { $value = 'icmp'; }
+                        if (intval($value) === 5) { $value = 'egp'; }
+                        if (intval($value) === 6) { $value = 'ggp'; }
+                        if (intval($value) === 7) { $value = 'hello'; }
+                        if (intval($value) === 8) { $value = 'rip'; }
+                        if (intval($value) === 9) { $value = 'is-is'; }
+                        if (intval($value) === 10) { $value = 'es-is'; }
+                        if (intval($value) === 11) { $value = 'ciscoIgrp'; }
+                        if (intval($value) === 12) { $value = 'bbnSpfIgp'; }
+                        if (intval($value) === 13) { $value = 'ospf'; }
+                        if (intval($value) === 14) { $value = 'bgp'; }
+                        $route->protocol = $value;
+                    }
+                    if ($key === '.1.3.6.1.2.1.4.21.1.11.' . $ip) {
+                        $route->mask = $value;
+                    }
+                }
+                $routes[] = $route;
+            }
+        }
+
         // Special for ExaBlaze
         if ( ! isset($modules_list) OR ! is_array($modules_list) OR count($modules_list) === 0) {
             if (intval($details->snmp_enterprise_id) === 43296) {
@@ -1466,7 +1594,7 @@ if ( ! function_exists('snmp_audit')) {
             }
         }
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->command_status);
-        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips);
+        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes);
         return($return_array);
     }
 }
