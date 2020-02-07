@@ -312,7 +312,7 @@ if (!function_exists('audit_format_system')) {
             return false;
         }
 
-        $input = $parameters->input;
+        $input = @$parameters->input;
 
         if (empty($input->id)) {
             $input->id = '';
