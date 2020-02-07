@@ -797,7 +797,10 @@ class M_devices_components extends MY_Model
         // ROUTE
         if ((string)$table === 'route') {
             for ($i=0; $i<count($input); $i++) {
-                $input[$i]->name = trim(@$input[$i]->destination . '/' . @$input[$i]->mark . ' via ' . @$input[$i]->next_hop);
+                $temp = @dqtobin($input[$i]->mask);
+                $temp = @bintocdr($temp);
+                #$input[$i]->name = trim(@$input[$i]->destination . '/' . @$input[$i]->mask . ' via ' . @$input[$i]->next_hop);
+                $input[$i]->name = trim(@$input[$i]->destination . '/' . $temp . ' via ' . @$input[$i]->next_hop);
             }
         }
 
