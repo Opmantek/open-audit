@@ -248,6 +248,8 @@ ALTER TABLE `memory` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_see
 
 UPDATE `memory` SET `name` = `tag`;
 
+ALTER TABLE `memory` ADD `manufacturer` varchar(100) NOT NULL DEFAULT '' AFTER `name`;
+
 ALTER TABLE `module` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `module` SET `name` = `description`;
@@ -681,6 +683,8 @@ $this->alter_table('memory', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '
 $sql = "UPDATE `memory` SET `name` = `tag`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$this->alter_table('memory', 'manufacturer', "ADD `manufacturer` varchar(100) NOT NULL DEFAULT '' AFTER `name`", 'add');
 
 $this->alter_table('module', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
