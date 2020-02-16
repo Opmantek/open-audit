@@ -195,16 +195,50 @@ escape_xml ()
 #   xml_version=$(escape_xml "$var")
 #
 {
-	# escape characters
 	result="$1"
+	# Remove line feed / carriage return
 	result=$(echo "$result" | tr -d -c '\n\r -~')
+	# Trim leading/trailing spaces
+	result=$(trim "$result")
+	# Enclose in tags if required
 	if echo "$result" | grep -Eq -e '[&<>"]' -e "'"; then
 		result="<![CDATA[$result]]>"
 	fi
-
-	# Trim leading/trailing spaces
-	result=$(trim "$result")
 	echo "$result"
+}
+
+# Get the last character in a string
+#
+# usage :
+#
+#   lc=$(last_char "$str")
+#
+last_char ()
+{
+   lc=""
+   str="${1}"
+   slen=${#1}
+   if [ "${slen}" > "1" ]; then
+      lcp=$((slen-1))
+      lc="${str:$lcp}"
+   fi
+   echo "${lc}"
+}
+
+# Get the all but the last character in a string
+#
+# usage :
+#
+#   ablc=$(all_but_last_char "$str")
+#
+all_but_last_char ()
+{
+   ablc=""
+   str="${1}"
+   slen=${#1}
+   lcp=$((slen-1))
+   ablc="${str:0:$lcp}"
+   echo "${ablc}"
 }
 
 cidr2mask ()
@@ -1131,6 +1165,8 @@ if [ "$memory_slots" != "0" ]; then
 					awk '/Serial Number:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 					cut -d" " -f1)
 
+			memory_manufacturer=$(echo "$bank_info" | grep ".Manufacturer:" | cut -d: -f2)
+
 			if  [ "$memory_serial" = "Not" ] || [ "$memory_serial" = "Not " ] || [ "$memory_serial" = "Not Specified" ]; then
 				memory_serial=""
 			fi
@@ -1147,6 +1183,7 @@ if [ "$memory_slots" != "0" ]; then
 				echo "			<speed>$(escape_xml "$memory_speed")</speed>"
 				echo "			<tag>$(escape_xml "$memory_tag")</tag>"
 				echo "			<serial>$(escape_xml "$memory_serial")</serial>"
+				echo "			<manufacturer>$(escape_xml "$memory_manufacturer")</manufacturer>"
 				echo "		</item>"
 				} >> "$xml_file"
 			fi
@@ -2209,39 +2246,41 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	echo "Log Info"
+        echo "Log Info"
 fi
 
-echo "	<log>" >> "$xml_file"
+echo "  <log>" >> "$xml_file"
 for log in ls /etc/logrotate.d/* ; do
-	if [ -e "$log" ]; then
-		log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
-		log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
-		# below contributred by danf0x, thanks Dan.
-		log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
-		if [ "$log_max_file_size_pre" != "" ]; then
-			num="${log_max_file_size_pre::-1}"
-			unt="${log_max_file_size_pre: -1}"
-			case $unt in
-				[kK] )
-					log_max_file_size="${num}000"
-					;;
-				[mM] )
-					log_max_file_size="${num}000000"
-					;;
-			*) ;;
-			esac
-		fi
-		{
-		echo "		<item>"
-		echo "			<name>$(escape_xml "$log")</name>"
-		echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
-		echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
-		echo "		</item>"
-		} >> "$xml_file"
-	fi
+        if [ -e "$log" ]; then
+                log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
+                log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
+                log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
+                if [ "$log_max_file_size_pre" != "" ]; then
+                    nlen="${#log_max_file_size_pre}"
+                    if [ "${nlen}" > "1" ]; then
+                       num=$(all_but_last_char "${log_max_file_size_pre}")
+                       unt=$(last_char "${log_max_file_size_pre}")
+                       case $unt in
+                          [kK] )
+                             log_max_file_size="${num}000"
+                             ;;
+                          [mM] )
+                             log_max_file_size="${num}000000"
+                             ;;
+                          *) ;;
+                       esac
+                    fi
+                fi
+                {
+                echo "          <item>"
+                echo "                  <name>$(escape_xml "$log")</name>"
+                echo "                  <file_name>$(escape_xml "$log_file_name")</file_name>"
+                echo "                  <max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+                echo "          </item>"
+                } >> "$xml_file"
+        fi
 done
-echo "	</log>" >> "$xml_file"
+echo "  </log>" >> "$xml_file"
 
 
 ##################################
