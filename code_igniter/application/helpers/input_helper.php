@@ -422,7 +422,17 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to POST.';
             stdlog($log);
         }
-        $CI->response->meta->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
+
+        $valid_sub_resources = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+        if ($CI->response->meta->sub_resource !== '' and ! in_array($CI->response->meta->sub_resource, $valid_sub_resources)) {
+            $log->summary = 'invalid sub_resource';
+            $log->detail = 'Removed invalid sub_resource of ' . $CI->response->meta->sub_resource . '.';
+            stdlog($log);
+            log_error('ERR-0009', 'input_helper', $log->detail);
+            $CI->session->set_flashdata('error',$log->detail);
+            $CI->response->meta->sub_resource = '';
+        }
+
 
         # get the sub_resource id
         #$CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
