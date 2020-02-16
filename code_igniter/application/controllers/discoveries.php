@@ -386,7 +386,7 @@ class Discoveries extends MY_Controller
         if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
             return;
         }
-        if ($this->config->config['discovery_override_nmap'] === 'y') {
+        if ( ! empty($this->config->config['discovery_override_nmap']) && $this->config->config['discovery_override_nmap'] === 'y') {
             return;
         }
         $nmap_installed = 'n';
