@@ -374,7 +374,7 @@ UPDATE `widgets` SET `link` = 'devices?change_log.db_table=in(\'server\',\'serve
 
 UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.os_group,system.name,system.domain,system.ip,system.os_family,system.location_id' WHERE `name` = 'Devices by Location';
 
-UPDATE `widgets` SET `link`= 'devices?audit_log.timestamp=like@date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.os_family,system.status&groupby=audit_log.system_id' WHERE `name` = 'Cloud Devices Audited per Day';
+UPDATE `widgets` SET `link`= 'devices?audit_log.timestamp=like@date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.os_family,system.status&groupby=audit_log.system_id&system.cloud_id=!=' WHERE `name` = 'Cloud Devices Audited per Day';
 
 ALTER TABLE `windows` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
@@ -838,7 +838,7 @@ $sql = "UPDATE `widgets` SET `link` = 'devices?system.location_id=@description&p
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `widgets` SET `link`= 'devices?audit_log.timestamp=like@date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.os_family,system.status&groupby=audit_log.system_id' WHERE `name` = 'Cloud Devices Audited per Day'";
+$sql = "UPDATE `widgets` SET `link`= 'devices?audit_log.timestamp=like@date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.os_family,system.status&groupby=audit_log.system_id&system.cloud_id=!=' WHERE `name` = 'Cloud Devices Audited per Day'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
