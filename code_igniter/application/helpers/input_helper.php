@@ -794,7 +794,7 @@ if (! function_exists('inputRead')) {
                 if ($temp === 'devices') {
                     $temp = 'system';
                 }
-                if (! $CI->db->field_exists($temp, $CI->response->meta->groupby)) {
+                if (! $CI->db->field_exists($CI->response->meta->groupby, $temp)) {
                     $CI->response->meta->groupby = '';
                     $log->detail = 'Invalid groupby supplied, removed.';
                 } else {
