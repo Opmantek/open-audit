@@ -148,6 +148,9 @@ if (! function_exists('inputRead')) {
 
         # /collection/{id}/{sub_resource}
 
+        # Our template to include
+        $CI->response->include = '';
+
         # initialise our properties
         $CI->response->meta = new stdClass();
         $CI->response->meta->access_token = @$CI->access_token;
@@ -377,6 +380,24 @@ if (! function_exists('inputRead')) {
             $log->summary = 'set include';
             $log->detail = 'Set include to ' . $CI->response->meta->include . ', according to POST.';
             stdlog($log);
+        }
+        if ( ! empty($CI->response->meta->include)) {
+            if ($CI->response->meta->collection === 'devices') {
+                if (($CI->response->meta->format === 'screen' && $CI->response->meta->include === '') OR $CI->response->meta->include === '*' OR $CI->response->meta->include === 'all') {
+                    $CI->response->meta->include = 'application,attachment,audit_log,bios,change_log,cluster,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+                } else {
+                    $valid = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                    $temp = explode(',', $CI->response->meta->include);
+                    for ($i=0; $i < count($temp); $i++) {
+                        if ( ! in_array($temp[$i], $valid)) {
+                            unset($temp[$i]);
+                        }
+                    }
+                    $CI->response->meta->include = implode(',', $temp);
+                }
+            } else {
+                $CI->response->meta->include = '';
+            }
         }
 
         # get the sub_resource

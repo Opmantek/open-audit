@@ -668,10 +668,9 @@ if (! function_exists('output')) {
             $CI->response->include = 'v_error';
             $include = 'v_error';
         } else {
-            if (empty($CI->response->meta->include)) {
-                $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
+            if (empty($CI->response->include)) {
+                $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             }
-            $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             $CI->response->heading = $CI->response->meta->heading;
         }
 
