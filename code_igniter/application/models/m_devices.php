@@ -160,13 +160,19 @@ class M_devices extends MY_Model
             stdlog($log);
             return false;
         }
-        $sql = 'SELECT * FROM `system` WHERE system.id = ?';
+        $CI = & get_instance();
+        if ($CI->response->meta->collection === 'devices' and ! empty($CI->response->meta->properties)) {
+            $properties = $CI->response->meta->properties;
+        } else {
+            $properties = '*';
+        }
+        $sql = "SELECT {$properties} FROM `system` WHERE system.id = ?";
         $result = $this->run_sql($sql, array($id));
 
         // Populate our collector name if it exists
         if ( ! empty($result)) {
-            $result[0]->collector_name = '';
             if ( ! empty($result[0]->collector_uuid)) {
+                $result[0]->collector_name = '';
                 $sql = 'SELECT `name` FROM `collectors` WHERE `uuid` = ?';
                 $data = array((string)$result[0]->collector_uuid);
                 $collector = $this->run_sql($sql, $data);
@@ -176,14 +182,13 @@ class M_devices extends MY_Model
             }
 
             $result = $this->format_data($result, 'devices');
+
             // format our uptime from unixtime to humane readable
             if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
                 $date_time_f = new \DateTime('@0');
                 $date_time_t = new \DateTime("@$seconds");
                 $result[0]->attributes->uptime_formatted = $date_time_f->diff($date_time_t)->format('%a days, %H:%i:%S');
-            } else {
-                $result[0]->attributes->uptime_formatted = '';
             }
         }
         return($result);

@@ -924,6 +924,30 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->properties = $CI->config->config['devices_default_retrieve_columns'];
         }
 
+        if ($CI->response->meta->properties !== '') {
+            // Validate the properties are database columns
+            $properties = explode('.', $CI->response->meta->properties);
+            for ($i=0; $i < count($properties); $i++) {
+                if (strpos($properties[$i], '.') !== false) {
+                    $temp = explode('.', $properties[$i]);
+                    if ( ! $CI->db->field_exists($temp[1], $temp[0])) {
+                        $log->detail = 'Invalid property supplied, removed.';
+                        unset($properties[$i]);
+                    }
+                } else {
+                    $temp = $CI->response->meta->collection;
+                    if ($temp === 'devices') {
+                        $temp = 'system';
+                    }
+                    #if (! $CI->db->field_exists($temp, $properties[$i])) {
+                    if (! $CI->db->field_exists($properties[$i], $temp)) {
+                        $log->detail = 'Invalid property supplied, removed.';
+                        unset($properties[$i]);
+                    }
+                }
+            }
+        }
+
         if ($CI->response->meta->properties === '') {
             // set some defaults
             if ($CI->response->meta->action === 'collection' && $CI->response->meta->collection === 'devices') {
