@@ -215,12 +215,14 @@ class M_credentials extends MY_Model
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            for ($i=0; $i < count($result); $i++) {
-                if ( ! empty($result[$i]->credentials)) {
-                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+            if ( ! empty($result) and is_array($result)) {
+                for ($i=0; $i < count($result); $i++) {
                     if ( ! empty($result[$i]->credentials)) {
-                        foreach ($result[$i]->credentials as $key => $value) {
-                            $result[$i]->{'credentials.'.$key} = $value;
+                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                        if ( ! empty($result[$i]->credentials)) {
+                            foreach ($result[$i]->credentials as $key => $value) {
+                                $result[$i]->{'credentials.'.$key} = $value;
+                            }
                         }
                     }
                 }

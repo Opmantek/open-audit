@@ -118,8 +118,10 @@ class M_baselines_policies extends MY_Model
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            for ($i=0; $i < count($result); $i++) {
-                $result[$i]->tests = json_decode($result[$i]->tests);
+            if ( ! empty($result) and is_array($result)) {
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->tests = json_decode($result[$i]->tests);
+                }
             }
             $CI->response->data = $this->format_data($result, 'baselines_policies');
             $CI->response->meta->filtered = count($CI->response->data);

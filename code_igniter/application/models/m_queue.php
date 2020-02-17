@@ -164,7 +164,7 @@ class M_queue extends MY_Model
         }
         $query = $this->db->query($sql);
         $result = $query->result();
-        if (!empty($result)) {
+        if ( ! empty($result) and is_array($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->details)) {
                     $result[$i]->details = json_decode($result[$i]->details);
