@@ -943,8 +943,18 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        if ($CI->response->meta->properties === 'default' && $CI->response->meta->collection === 'devices') {
-            $CI->response->meta->properties = $CI->config->config['devices_default_retrieve_columns'];
+        if ($CI->response->meta->collection === 'devices') {
+            if ($CI->response->meta->properties === 'default') {
+                $CI->response->meta->properties = $CI->config->config['devices_default_retrieve_columns'];
+            }
+        }
+
+        if ($CI->response->meta->properties === 'all' or $CI->response->meta->properties === '*') {
+            $table = $CI->response->meta->collection;
+            if ($table === 'devices') {
+                $table = 'system';
+            }
+            $CI->response->meta->properties = $table . '.' . implode(','.$table.'.', $CI->db->list_fields($table));
         }
 
         if ($CI->response->meta->properties !== '') {
@@ -1152,9 +1162,9 @@ if (! function_exists('inputRead')) {
 
 
         # get the filter
-        # NOTE - Had to mangle our own parsing routine because PHP replaces .'s with underscores
-        #        in incoming variable names. The unfortunate result is that we can not use & in
-        #        a variable value when using GET.
+        # NOTE - Had to create our own parsing routine because PHP replaces .'s with underscores
+        #        in incoming variable names. The unfortunate result is that we can not use a . in
+        #        a variable value when using GET (so no system.manufacturer=Dell, for example)
         #        PHP Bug Report - https://bugs.php.net/bug.php?id=45272
         #        PHP Docs - https://php.net/manual/en/language.variables.external.php
 
@@ -1163,7 +1173,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         $CI->response->meta->query_string = str_replace('&amp;', '&', $CI->response->meta->query_string);
         if ($CI->response->meta->query_string != '') {
-            $reserved_words = ' action as_at current debug format graph group groupby ids include limit offset properties query report_name search sort sub_resource sub_resource_id ';
+            $reserved_words = ' action as_at current debug format graph groupby ids include limit offset properties query report_name search sort sub_resource sub_resource_id ';
             foreach (explode('&', $CI->response->meta->query_string) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
@@ -1195,7 +1205,7 @@ if (! function_exists('inputRead')) {
 
                 if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value)-1) {
 
-                    // Removed the below. It is up to the user to quote enclode strings if required
+                    // Removed the below. It is up to the user to quote enclose strings if required
                     // If we do this for them, they end up double quoted upon link generation in output_helper
 
                     // $temp_value = substr($query->value, 3, strlen($query->value)-4);
