@@ -161,7 +161,6 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->debug = false;
         $CI->response->meta->filtered = '';
         $CI->response->meta->format = '';
-        $CI->response->meta->group = 0;
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
         $CI->response->meta->id = null;
@@ -265,7 +264,7 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set debug to ' . $CI->response->meta->debug . ', according to POST.';
             stdlog($log);
         }
-        if (strtolower($CI->response->meta->debug) == 'true') {
+        if (strtolower($CI->response->meta->debug) === 'true') {
             $CI->response->meta->debug = true;
             $CI->output->enable_profiler(true);
         } else {
@@ -886,19 +885,6 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . intval($CI->response->meta->limit);
         } else {
             $CI->response->meta->internal->limit = '';
-        }
-
-        // get the group
-        $log->summary = 'set group';
-        if (isset($_GET['group'])) {
-            $CI->response->meta->group = intval($_GET['group']);
-            $log->detail = 'Set group to ' . $CI->response->meta->group . ', according to GET.';
-            stdlog($log);
-        }
-        if (isset($_POST['group'])) {
-            $CI->response->meta->group = intval($_POST['group']);
-            $log->detail = 'Set group to ' . $CI->response->meta->group . ', according to POST.';
-            stdlog($log);
         }
 
         // get the list of requested properties (usually) properties=id,name,status

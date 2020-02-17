@@ -143,7 +143,7 @@ class Devices extends MY_Controller
                 $this->response->data = $this->m_devices_components->graph($this->response->meta->id, $this->response->meta->sub_resource_id, 'partition', 30);
                 $this->response->meta->action = 'read_partition_graph';
             } else {
-                $this->response->data = $this->m_devices_components->read($this->response->meta->id, $this->response->meta->current, $this->response->meta->sub_resource, $this->response->meta->filter, $this->response->meta->properties, $this->response->meta->group);
+                $this->response->data = $this->m_devices_components->read($this->response->meta->id, $this->response->meta->current, $this->response->meta->sub_resource, $this->response->meta->filter, $this->response->meta->properties);
                 $this->response->meta->format = 'json';
             }
         } else {

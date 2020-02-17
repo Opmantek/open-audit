@@ -65,10 +65,9 @@ class M_devices_components extends MY_Model
      * @param  string  $table      [description]
      * @param  string  $filter     [description]
      * @param  string  $properties [description]
-     * @param  integer $group      [description]
      * @return [type]              [description]
      */
-    public function read($id = 0, $current = 'y', $table = '', $filter = '', $properties = '*', $group = 0)
+    public function read($id = 0, $current = 'y', $table = '', $filter = '', $properties = '*')
     {
         if ($table === '') {
             // we require a DB table to read from
@@ -111,58 +110,42 @@ class M_devices_components extends MY_Model
             }
         }
 
-        if ( ! empty($group)) {
-            $CI = & get_instance();
-            $sql = '/* m_devices_components::read */' . 'SELECT `sql` FROM `groups` WHERE `id` = ' . intval($group);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $group_sql = $result[0]->sql;
-            $device_sql = 'WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (' . $CI->user->org_list . '))';
-            if ( ! empty($CI->response->meta->requestor)) {
-                $device_sql = 'WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (' . $CI->user->org_list . ") AND system.oae_manage = 'y')";
-            }
-            $group_sql = str_replace('WHERE @filter', $device_sql, $group_sql);
-            $group_sql = ' AND system.id IN (' . $group_sql . ')';
-        } else {
-            $group_sql = '';
-        }
-
         $sql = '';
 
         if ($found_id) {
             if ($found_current) {
                 if ($current === 'y') {
-                    $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? AND current = 'y' {$filter}" . $group_sql;
+                    $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? AND current = 'y' {$filter}";
                     $data = array($id);
                 }
                 if ($current === 'n') {
-                    $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? AND current = 'n' {$filter}" . $group_sql;
+                    $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? AND current = 'n' {$filter}";
                     $data = array($id);
                 }
                 if ($current === '' OR $current === 'all') {
-                    $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? {$filter}" . $group_sql;
+                    $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? {$filter}";
                     $data = array($id);
                 }
                 if ($current === 'delta') {
                     if ($first_seen !== '') {
-                        $sql = "SELECT {$properties}, IF(({$table}.first_seen = ?), 'y', 'n') as original_install FROM `{$table}` WHERE `{$table}`.system_id = ? AND (current = 'y' OR first_seen = ?)" . $group_sql;
+                        $sql = "SELECT {$properties}, IF(({$table}.first_seen = ?), 'y', 'n') as original_install FROM `{$table}` WHERE `{$table}`.system_id = ? AND (current = 'y' OR first_seen = ?)";
                         $data = array("{$first_seen}", $id, "{$first_seen}");
                     }
                 }
                 if ($current === 'full') {
                     if ($first_seen !== '') {
-                        $sql = "SELECT {$properties}, IF(({$table}.first_seen = ?), 'y', 'n') as original_install FROM `{$table}` WHERE `{$table}`.system_id = ?" . $group_sql;
+                        $sql = "SELECT {$properties}, IF(({$table}.first_seen = ?), 'y', 'n') as original_install FROM `{$table}` WHERE `{$table}`.system_id = ?";
                         $data = array("{$first_seen}", $id);
                     }
                 }
             } else {
-                $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? {$filter}" . $group_sql;
+                $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? {$filter}";
                 $data = array($id);
             }
         }
 
         if ($table === 'system') {
-            $sql = "SELECT {$properties} FROM system WHERE id = ? {$filter}" . $group_sql;
+            $sql = "SELECT {$properties} FROM system WHERE id = ? {$filter}";
             $data = array($id);
         }
 
