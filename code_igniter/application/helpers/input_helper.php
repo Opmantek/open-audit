@@ -443,10 +443,16 @@ if (! function_exists('inputRead')) {
         if (!empty($_GET['ids'])) {
             $CI->response->meta->ids = urldecode($_GET['ids']);
             unset($_GET['ids']);
-            # Remove a trailing comman if we have one
-            if (substr($CI->response->meta->ids, -1) == ',') {
+            # Remove a trailing comma if we have one
+            if (substr($CI->response->meta->ids, -1) === ',') {
                 $CI->response->meta->ids = substr($CI->response->meta->ids, 0, -1);
             }
+            $temp = explode(',', $CI->response->meta->ids);
+            for ($i=0; $i < count($temp); $i++) {
+                $temp[$i] = intval($temp[$i]);
+            }
+            $CI->response->meta->ids = implode(',', $temp);
+            unset($temp);
         }
 
         # put any POST data into the object
@@ -664,7 +670,7 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because PATCH, ids and no id.';
             stdlog($log);
         }
-        if ($REQUEST_METHOD == 'POST' and (!is_null($CI->response->meta->id) or $CI->response->meta->ids != '') and $CI->response->meta->sub_resource != '') {
+        if ($REQUEST_METHOD === 'POST' and ( ! is_null($CI->response->meta->id) or ! empty($CI->response->meta->ids)) and $CI->response->meta->sub_resource !== '') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create';
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, id, sub_resource.';
