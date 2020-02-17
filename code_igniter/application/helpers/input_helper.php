@@ -730,24 +730,47 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sort = $CI->input->get('sort');
         if ($CI->input->post('sort')) {
             $CI->response->meta->sort = $CI->input->post('sort');
+        }
+        $CI->response->meta->sort = str_replace('+', '', $CI->response->meta->sort);
+        if ( ! empty($CI->response->meta->sort)) {
+            $properties = explode(',', $CI->response->meta->sort);
+            for ($i=0; $i < count($properties); $i++) {
+                $field = $properties[$i];
+                if (substr($field, 0, 1) === '-') {
+                    $field = substr($field, 1);
+                }
+                $temp = array();
+                if (strpos($field, '.') !== false) {
+                    $temp = explode('.', $field);
+                } else {
+                    $temp[0] = $CI->response->meta->collection;
+                    if ($temp[0] === 'devices') {
+                        $temp[0] = 'system';
+                    }
+                    $temp[1] = $field;
+                }
+                if ( ! $CI->db->field_exists($temp[1], $temp[0])) {
+                    $log->severity = 5;
+                    $log->detail = "Invalid sort attribute supplied ({$properties[$i]}), removed.";
+                    stdlog($log);
+                    $log->severity = 7;
+                    unset($properties[$i]);
+                } else {
+                    if (substr($properties[$i], 0, 1) == '-') {
+                        $properties[$i] = $temp[0] . '.' . $temp[1] . ' DESC';
+                    } else {
+                        $properties[$i] = $temp[0] . '.' . $temp[1];
+                    }
+                }
+            }
+            $CI->response->meta->sort = implode(',', $properties);
+        }
+
+        if ($CI->response->meta->sort != '') {
+            $CI->response->meta->internal->sort = 'ORDER BY ' . implode(',', $properties);
             $log->summary = 'set sort';
             $log->detail = 'Set sort to ' . $CI->response->meta->sort . ', according to POST.';
             stdlog($log);
-        }
-        $CI->response->meta->sort = str_replace('+', '', $CI->response->meta->sort);
-        if ($CI->response->meta->sort != '') {
-            $temp = explode(',', $CI->response->meta->sort);
-            unset($item);
-            foreach ($temp as &$item) {
-                if (substr($item, 0, 1) == '-') {
-                    $item = substr($item, 1) . ' DESC';
-                }
-            }
-            unset($item);
-            $CI->response->meta->sort = implode(',', $temp);
-        }
-        if ($CI->response->meta->sort != '') {
-            $CI->response->meta->internal->sort = 'ORDER BY ' . implode(',', $temp);
         } else {
             $CI->response->meta->internal->sort = '';
         }
