@@ -669,7 +669,6 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, collection is database and action = update.';
             stdlog($log);
         }
-        #if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
         if (($REQUEST_METHOD == 'PUT' or $REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
             // update an item
             $CI->response->meta->action = 'update';
@@ -678,7 +677,6 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST/PATCH/PUT, id and no action.';
             stdlog($log);
         }
-
         if ($REQUEST_METHOD == 'PATCH' and !empty($CI->response->meta->ids)) {
             // update several items
             $CI->response->meta->action = 'update';
@@ -763,7 +761,7 @@ if (! function_exists('inputRead')) {
         $current_words = ' y n all delta full ';
         if (stripos($current_words, ' '.$CI->response->meta->current.' ') === false) {
             $CI->response->meta->current = 'y';
-            $log->detail = 'Set current to ' . $CI->response->meta->current . ', because not in reserved words or blank.';
+            $log->detail = 'Set current to "y", because not in reserved words or blank.';
             stdlog($log);
         }
         unset($current_words);
@@ -773,11 +771,32 @@ if (! function_exists('inputRead')) {
         if ($CI->input->get('groupby')) {
             $CI->response->meta->groupby = $_GET['groupby'];
             $log->detail = 'Set groupby to ' . $CI->response->meta->groupby . ', according to GET.';
-            stdlog($log);
         }
         if ($CI->input->post('groupby')) {
             $CI->response->meta->groupby = $_POST['groupby'];
             $log->detail = 'Set groupby to ' . $CI->response->meta->groupby . ', according to POST.';
+        }
+        if ( ! empty($CI->response->meta->groupby)) {
+            if (strpos($CI->response->meta->groupby, '.') !== false) {
+                $temp = explode('.', $CI->response->meta->groupby);
+                if ( ! $CI->db->field_exists($temp[1], $temp[0])) {
+                    $CI->response->meta->groupby = '';
+                    $log->detail = 'Invalid groupby supplied, removed.';
+                }
+            } else {
+                $temp = $CI->response->meta->collection;
+                if ($temp === 'devices') {
+                    $temp = 'system';
+                }
+                if (! $CI->db->field_exists($temp, $CI->response->meta->groupby)) {
+                    $CI->response->meta->groupby = '';
+                    $log->detail = 'Invalid groupby supplied, removed.';
+                } else {
+                    $CI->response->meta->groupby = $temp . '.' . $CI->response->meta->groupby;
+                }
+            }
+        }
+        if ( ! empty($CI->response->meta->groupby)) {
             stdlog($log);
         }
         if ($CI->response->meta->groupby) {

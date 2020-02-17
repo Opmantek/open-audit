@@ -781,7 +781,7 @@ class M_devices extends MY_Model
     public function collection_group_by()
     {
         $CI = & get_instance();
-        $sql = "SELECT id, COUNT(*) AS `count`, `" . $CI->response->meta->groupby . "` FROM system " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        $sql = "SELECT id, COUNT(*) AS `count`, " . $CI->response->meta->groupby . " FROM system " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
         return $result;
