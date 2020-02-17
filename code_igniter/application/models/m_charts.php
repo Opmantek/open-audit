@@ -136,8 +136,6 @@ class M_charts extends MY_Model
 
     public function read_charts()
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
         $filter = $this->build_filter();
         $CI->response->meta->internal->filter = $filter;
@@ -149,8 +147,6 @@ class M_charts extends MY_Model
 
     public function read_chart()
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
         $filter = $this->build_filter();
         $CI->response->meta->internal->filter = $filter;
