@@ -151,7 +151,7 @@ function &DB($params = '', $active_record_override = NULL)
 
 	if (isset($params['stricton']) && $params['stricton'] == TRUE)
 	{
-		$DB->query('SET SESSION sql_mode="STRICT_ALL_TABLES"');
+		#$DB->query('SET SESSION sql_mode="STRICT_ALL_TABLES"');
 	}
 	$DB->query('SET SESSION sql_mode=""');
 	return $DB;
