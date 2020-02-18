@@ -151,9 +151,6 @@ if (! function_exists('inputRead')) {
         # Our template to include
         $CI->response->include = '';
 
-        # Logs - unset in output_helper if debug !== true
-        $CI->response->logs = array();
-
         # initialise our properties
         $CI->response->meta = new stdClass();
         $CI->response->meta->access_token = @$CI->access_token;
@@ -201,11 +198,13 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->version = 1;
         $CI->response->meta->filter = array();
         $CI->response->meta->internal = new stdClass();
-        $CI->response->meta->received_data = array();
-        $CI->response->meta->sql = array();
-        $CI->response->links = array();
-        $CI->response->included = array();
         $CI->response->meta->query_parameters = array();
+        $CI->response->meta->received_data = array();
+        $CI->response->links = array();
+        # Logs - unset in output_helper if debug !== true
+        $CI->response->logs = array();
+        $CI->response->included = array();
+        $CI->response->meta->sql = array();
 
         $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
