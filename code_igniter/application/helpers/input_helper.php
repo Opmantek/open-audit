@@ -313,7 +313,7 @@ if ( ! function_exists('inputRead')) {
         }
 
         // if we have an item name (ie, not it's ID)
-        if (is_null($CI->response->meta->id) && $CI->uri->segment(2) !== '' && stripos($actions, ' ' . $CI->uri->segment(2) . ' ') === false) {
+        if (is_null($CI->response->meta->id) && ! empty($CI->uri->segment(2)) && stripos($actions, ' ' . $CI->uri->segment(2) . ' ') === false) {
             $log->summary = 'Search ID';
             $log->detail = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
