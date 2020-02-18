@@ -238,6 +238,7 @@ if (! function_exists('output')) {
                 $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
             }
         } else {
+            unset($CI->response->logs);
             unset($CI->response->meta->internal);
             unset($CI->response->meta->sql);
             unset($CI->response->meta->time_start);
@@ -672,6 +673,10 @@ if (! function_exists('output')) {
                 $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             }
             $CI->response->heading = $CI->response->meta->heading;
+        }
+
+        if (empty($CI->response->meta->debug)) {
+            unset($CI->response->logs);
         }
 
         $CI->load->view('v_template', $CI->response);

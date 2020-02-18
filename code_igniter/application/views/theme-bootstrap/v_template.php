@@ -160,6 +160,10 @@ unset($this->response->meta->sql);
             <pre><?php print_r(json_format(json_encode($this->user))); ?></pre>
             <h3>Meta</h3>
             <pre><?php print_r(json_format(json_encode($this->response->meta))); ?></pre>
+            <?php if (!empty($this->response->logs)) { ?>
+            <h3>Logs</h3>
+            <pre><?php print_r($this->response->logs); ?></pre>
+        <?php } ?>
             <h3><?php echo __('SQL Queries'); ?></h3>
             <pre><?php
                 $CI =& get_instance();
