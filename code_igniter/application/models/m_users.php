@@ -368,6 +368,11 @@ class M_users extends MY_Model
             $id = intval($id);
         }
 
+        if ($collection === 'help') {
+            # Always allow a user to view help
+            return true;
+        }
+
         $CI = & get_instance();
 
         $org_id_name = 'org_id';

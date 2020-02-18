@@ -66,7 +66,7 @@ if (! function_exists('set_collection')) {
     {
         $CI = & get_instance();
         $collection = @$CI->uri->segment(1);
-        $collections = array('agents','applications','attributes','baselines','baselines_policies','buildings','charts','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','integrations','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+        $collections = array('agents','applications','attributes','baselines','baselines_policies','buildings','charts','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','help','integrations','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
             # a valid collection
         } else {
@@ -118,7 +118,6 @@ if (! function_exists('inputRead')) {
         $log->function = 'input_helper::' . strtolower(__METHOD__);
         $log->status = 'parsing input';
         $log->summary = '';
-        // stdlog($log);
 
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -146,10 +145,14 @@ if (! function_exists('inputRead')) {
             $_SERVER['HTTP_ACCEPT'] = '';
         }
 
-        # /collection/{id}/{sub_resource}
+        # Standard URL scheme
+        # /collection/{id}/{sub_resource}?action={XYZ}
 
         # Our template to include
         $CI->response->include = '';
+
+        # Logs - unset in output_helper if debug !== true
+        $CI->response->logs = array();
 
         # initialise our properties
         $CI->response->meta = new stdClass();
@@ -328,6 +331,11 @@ if (! function_exists('inputRead')) {
                     $sql = "/* input_helper::inputRead */ " . "SELECT id FROM system WHERE name LIKE ? ORDER BY id DESC LIMIT 1";
                     $table = 'system';
                     break;
+                case 'help':
+                    $sql = '';
+                    $CI->response->meta->id = 1;
+                    $CI->response->meta->sub_resource = '';
+                    break;
                 case 'logs':
                     $sql = '';
                     $CI->response->meta->id = 1;
@@ -423,14 +431,16 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        $valid_sub_resources = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
-        if ($CI->response->meta->sub_resource !== '' and ! in_array($CI->response->meta->sub_resource, $valid_sub_resources)) {
-            $log->summary = 'invalid sub_resource';
-            $log->detail = 'Removed invalid sub_resource of ' . $CI->response->meta->sub_resource . '.';
-            stdlog($log);
-            log_error('ERR-0009', 'input_helper', $log->detail);
-            $CI->session->set_flashdata('error',$log->detail);
-            $CI->response->meta->sub_resource = '';
+        if ($CI->response->meta->collection === 'devices') {
+            $valid_sub_resources = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+            if ($CI->response->meta->sub_resource !== '' and ! in_array($CI->response->meta->sub_resource, $valid_sub_resources)) {
+                $log->summary = 'invalid sub_resource';
+                $log->detail = 'Removed invalid sub_resource of ' . $CI->response->meta->sub_resource . '.';
+                stdlog($log);
+                log_error('ERR-0009', 'input_helper', $log->detail);
+                $CI->session->set_flashdata('error',$log->detail);
+                $CI->response->meta->sub_resource = '';
+            }
         }
 
 
@@ -1371,6 +1381,10 @@ if (! function_exists('inputRead')) {
                 # Always allow a user to READ their own object
                 $check_permission = false;
             }
+            if ($CI->response->meta->collection == 'help' ) {
+                # Always allow a user to view help
+                $check_permission = false;
+            }
             if ($check_permission) {
                 $permission_collection = $CI->response->meta->collection;
                 if ($CI->response->meta->collection === 'baselines_policies') {
@@ -1514,12 +1528,25 @@ if (! function_exists('filter')) {
                 }
             }
         }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
-        } else {
-            $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+
+
+        if ($collection !== 'configuration' and $collection !== 'logs' ) {
+            if ($filter != '') {
+                $filter = substr($filter, 5);
+                $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+            } else {
+                $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+            }
         }
+
+        if ($collection == 'configuration' or $collection == 'logs' ) {
+            if ($filter != '') {
+                $filter = ' WHERE ' . substr($filter, 4);
+            } else {
+                $filter = '';
+            }
+        }
+
         // if ($filter != '') {
         //     if ($collection == 'configuration' or $collection == 'logs' ) {
         //         $filter = ' WHERE ' . substr($filter, 4);
