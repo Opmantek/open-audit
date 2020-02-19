@@ -184,6 +184,7 @@ class M_devices extends MY_Model
             $result = $this->format_data($result, 'devices');
 
             // format our uptime from unixtime to humane readable
+            $result[0]->attributes->uptime_formatted = '';
             if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
                 $date_time_f = new \DateTime('@0');
