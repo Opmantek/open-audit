@@ -219,7 +219,7 @@ if (! function_exists('output')) {
 
             $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
             $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
-            sort($CI->response->meta->data_order);
+            #sort($CI->response->meta->data_order);
         }
 
         $timer_end = microtime(true);
