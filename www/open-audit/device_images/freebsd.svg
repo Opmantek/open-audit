@@ -1,0 +1,3946 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:ns2="http://ns.adobe.com/Extensibility/1.0/"
+   xmlns:ns1="http://ns.adobe.com/Flows/1.0/"
+   xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   viewBox="0 0 100 100"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.91 r13725"
+   version="1.0"
+   sodipodi:docname="tango-bsd.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+   inkscape:export-xdpi="150"
+   inkscape:export-ydpi="150">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="62.217366"
+     inkscape:cy="55.360664"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="706"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid14036"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 58.512863 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="280 : 58.512863 : 1"
+       inkscape:persp3d-origin="140 : 39.008575 : 1"
+       id="perspective680" />
+    <linearGradient
+       id="linearGradient54283">
+      <stop
+         style="stop-color:#212527;stop-opacity:1;"
+         offset="0"
+         id="stop54285" />
+      <stop
+         id="stop54299"
+         offset="1"
+         style="stop-color:#434b4e;stop-opacity:1;" />
+    </linearGradient>
+    <clipPath
+       id="XMLID_72_">
+      <use
+         height="48"
+         width="48"
+         y="0"
+         x="0"
+         xlink:href="#XMLID_31_"
+         id="use5914" />
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13914">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop13916" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop13918" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13753">
+      <stop
+         style="stop-color:#d3d7cf;stop-opacity:1;"
+         offset="0"
+         id="stop13755" />
+      <stop
+         style="stop-color:#d3d7cf;stop-opacity:0;"
+         offset="1"
+         id="stop13757" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13743">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop13745" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop13747" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13703">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop13705" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop13707" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient13693">
+      <stop
+         style="stop-color:#a98b03;stop-opacity:1;"
+         offset="0"
+         id="stop13695" />
+      <stop
+         style="stop-color:#e1b904;stop-opacity:1;"
+         offset="1"
+         id="stop13697" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13667">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop13669" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop13671" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13651">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop13653" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop13655" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13641">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop13643" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop13645" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13631">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop13633" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop13635" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13621">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop13623" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop13625" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13601">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop13603" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop13605" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient13591">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop13593" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop13595" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient20401"
+       inkscape:collect="always">
+      <stop
+         id="stop20403"
+         offset="0"
+         style="stop-color:#eeeeec;stop-opacity:1;" />
+      <stop
+         id="stop20405"
+         offset="1"
+         style="stop-color:#eeeeec;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6673">
+      <stop
+         style="stop-color:#260000;stop-opacity:1;"
+         offset="0"
+         id="stop6675" />
+      <stop
+         style="stop-color:#260000;stop-opacity:0;"
+         offset="1"
+         id="stop6677" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6665">
+      <stop
+         style="stop-color:#670202;stop-opacity:1;"
+         offset="0"
+         id="stop6667" />
+      <stop
+         style="stop-color:#670202;stop-opacity:0;"
+         offset="1"
+         id="stop6669" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6657">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop6659" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop6661" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6647">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop6649" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop6651" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6637">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop6639" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop6641" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6498">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop6500" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop6502" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6488">
+      <stop
+         id="stop6490"
+         offset="0"
+         style="stop-color:#a40000;stop-opacity:1;" />
+      <stop
+         id="stop6492"
+         offset="1"
+         style="stop-color:#6c0202;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6470">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop6472" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop6474" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6460">
+      <stop
+         style="stop-color:#2e3436;stop-opacity:1;"
+         offset="0"
+         id="stop6462" />
+      <stop
+         style="stop-color:#2e3436;stop-opacity:0;"
+         offset="1"
+         id="stop6464" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6450">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop6452" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop6454" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6440">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop6442" />
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:0;"
+         offset="1"
+         id="stop6444" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6372"
+       inkscape:collect="always">
+      <stop
+         id="stop6374"
+         offset="0"
+         style="stop-color:#670202;stop-opacity:1;" />
+      <stop
+         id="stop6376"
+         offset="1"
+         style="stop-color:#670202;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6356"
+       inkscape:collect="always">
+      <stop
+         id="stop6358"
+         offset="0"
+         style="stop-color:#eeeeec;stop-opacity:1;" />
+      <stop
+         id="stop6360"
+         offset="1"
+         style="stop-color:#eeeeec;stop-opacity:0;" />
+    </linearGradient>
+    <filter
+       inkscape:collect="always"
+       id="filter6629"
+       x="-0.19488205"
+       width="1.3897641"
+       y="-0.24764031"
+       height="1.4952806">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.16723466"
+         id="feGaussianBlur6631" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13631"
+       id="linearGradient13637"
+       x1="4.3195748"
+       y1="17.16729"
+       x2="10.727621"
+       y2="30.263309"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       inkscape:collect="always"
+       id="filter13723"
+       x="-0.32614198"
+       width="1.652284"
+       y="-0.40595472"
+       height="1.8119094">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.16713819"
+         id="feGaussianBlur13725" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter13727"
+       x="-0.32614198"
+       width="1.652284"
+       y="-0.40595472"
+       height="1.8119094">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.16713819"
+         id="feGaussianBlur13729" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter14032"
+       x="-0.050578602"
+       width="1.1011572"
+       y="-0.55514479"
+       height="2.1102896">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.69545575"
+         id="feGaussianBlur14034" />
+    </filter>
+    <linearGradient
+       id="linearGradient2908">
+      <stop
+         style="stop-color:black;stop-opacity:1;"
+         offset="0"
+         id="stop2910" />
+      <stop
+         id="stop2916"
+         offset="0.45945945"
+         style="stop-color:#a0a0a0;stop-opacity:1;" />
+      <stop
+         style="stop-color:black;stop-opacity:1;"
+         offset="1"
+         id="stop2912" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2841">
+      <stop
+         style="stop-color:#b15700;stop-opacity:1;"
+         offset="0"
+         id="stop2843" />
+      <stop
+         style="stop-color:#ffaf61;stop-opacity:1;"
+         offset="1"
+         id="stop2845" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2822">
+      <stop
+         style="stop-color:#fed9a2;stop-opacity:1;"
+         offset="0"
+         id="stop2824" />
+      <stop
+         style="stop-color:#fcaf3e;stop-opacity:1;"
+         offset="1"
+         id="stop2826" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2927">
+      <stop
+         style="stop-color:white;stop-opacity:1"
+         offset="0"
+         id="stop2929" />
+      <stop
+         style="stop-color:#c4c4bd;stop-opacity:1;"
+         offset="1"
+         id="stop2931" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4969">
+      <stop
+         style="stop-color:white;stop-opacity:1;"
+         offset="0"
+         id="stop4971" />
+      <stop
+         style="stop-color:white;stop-opacity:0;"
+         offset="1"
+         id="stop4973" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3991">
+      <stop
+         id="stop3993"
+         offset="0"
+         style="stop-color:#fee6a2;stop-opacity:1;" />
+      <stop
+         id="stop3995"
+         offset="1"
+         style="stop-color:#f7da27;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13743"
+       id="linearGradient20745"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-3.465077,-2)"
+       x1="31.405964"
+       y1="45.76017"
+       x2="22.976322"
+       y2="40.861156" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13743"
+       id="linearGradient20747"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.2866794,0)"
+       x1="31.405964"
+       y1="45.76017"
+       x2="22.976322"
+       y2="40.861156" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6440"
+       id="linearGradient20749"
+       gradientUnits="userSpaceOnUse"
+       x1="9.9893427"
+       y1="2.950834"
+       x2="18.846466"
+       y2="8.0777721" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13703"
+       id="linearGradient20751"
+       gradientUnits="userSpaceOnUse"
+       x1="44.353977"
+       y1="47.651829"
+       x2="16.969149"
+       y2="30.760756" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13703"
+       id="linearGradient20753"
+       gradientUnits="userSpaceOnUse"
+       x1="35.064682"
+       y1="40.647694"
+       x2="24.186052"
+       y2="35.637733" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13693"
+       id="linearGradient20755"
+       gradientUnits="userSpaceOnUse"
+       x1="28.662155"
+       y1="37.046661"
+       x2="3.034647"
+       y2="18.446606" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13641"
+       id="linearGradient20757"
+       gradientUnits="userSpaceOnUse"
+       x1="17.544342"
+       y1="24.962442"
+       x2="13.523672"
+       y2="31.361179" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13621"
+       id="linearGradient20759"
+       gradientUnits="userSpaceOnUse"
+       x1="39.378262"
+       y1="47.937317"
+       x2="15.377971"
+       y2="26.774292" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6460"
+       id="radialGradient20761"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.2761784,0.1312499,-0.657129,-6.3894461,75.840844,116.7926)"
+       cx="28.286657"
+       cy="17.647202"
+       fx="28.286657"
+       fy="17.647202"
+       r="4.6430206" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6356"
+       id="linearGradient20763"
+       gradientUnits="userSpaceOnUse"
+       x1="11.264138"
+       y1="1.2082775"
+       x2="22.715317"
+       y2="23.522724" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6372"
+       id="linearGradient20765"
+       gradientUnits="userSpaceOnUse"
+       x1="9.5112438"
+       y1="6.0912614"
+       x2="43.586823"
+       y2="32.030064" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6665"
+       id="linearGradient20767"
+       gradientUnits="userSpaceOnUse"
+       x1="13.302604"
+       y1="16.900549"
+       x2="18.969286"
+       y2="18.132605" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6673"
+       id="radialGradient20769"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.0948833,0.2376313,-0.0272551,0.2402727,-18.239784,12.091842)"
+       cx="17.189152"
+       cy="21.29253"
+       fx="17.189152"
+       fy="21.29253"
+       r="6.072453" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6488"
+       id="linearGradient20771"
+       gradientUnits="userSpaceOnUse"
+       x1="28.711626"
+       y1="9.0131626"
+       x2="31.959444"
+       y2="15.252925" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6450"
+       id="linearGradient20773"
+       gradientUnits="userSpaceOnUse"
+       x1="24.459049"
+       y1="5.0984077"
+       x2="34.371471"
+       y2="11.417657" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6470"
+       id="radialGradient20775"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.6136142,-1.286665,1.1493243,1.4413744,-30.71888,35.58677)"
+       cx="29.135147"
+       cy="12.218625"
+       fx="29.135147"
+       fy="12.218625"
+       r="3.2664993" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6498"
+       id="radialGradient20777"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.156736,-0.7002812,1.8524704,-12.550591,-5.3699519,151.31536)"
+       cx="4.7171421"
+       cy="10.968215"
+       fx="4.7171421"
+       fy="10.968215"
+       r="0.5166682" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6637"
+       id="linearGradient20779"
+       gradientUnits="userSpaceOnUse"
+       x1="17.805918"
+       y1="19.70248"
+       x2="16.960995"
+       y2="17.894142" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6647"
+       id="linearGradient20781"
+       gradientUnits="userSpaceOnUse"
+       x1="20.552954"
+       y1="13.350694"
+       x2="22.738117"
+       y2="13.350694" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6657"
+       id="radialGradient20783"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4838839,0.1479917,-0.1422878,0.4652344,9.8297612,7.2801255)"
+       cx="14.446836"
+       cy="16.681093"
+       fx="14.446836"
+       fy="16.681093"
+       r="2.3250065" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient20785"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.1949295,0.5830582,-0.5830582,0.1949295,24.175799,16.868606)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient20787"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.1555708,-0.5947707,0.5947707,0.1555708,3.5914695,31.368643)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient20789"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.2212353,-0.5735934,0.5735934,0.2212353,2.2312928,28.686789)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient20791"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.3288113,-0.5194588,0.5194588,0.3288113,1.5519873,24.509126)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13591"
+       id="linearGradient20793"
+       gradientUnits="userSpaceOnUse"
+       x1="18.284817"
+       y1="26.96661"
+       x2="22.752008"
+       y2="33.876022" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13601"
+       id="radialGradient20795"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4269759,-1.5696839,1.6481169,0.4483109,-35.974916,60.391113)"
+       cx="27.258755"
+       cy="31.305328"
+       fx="27.258755"
+       fy="31.305328"
+       r="4.2251611" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13631"
+       id="linearGradient20797"
+       gradientUnits="userSpaceOnUse"
+       x1="4.3195748"
+       y1="17.16729"
+       x2="10.727621"
+       y2="30.263309" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13651"
+       id="linearGradient20799"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.4371808,-0.3974371)"
+       x1="21.60327"
+       y1="34.032124"
+       x2="25.13533"
+       y2="32.005196" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13667"
+       id="linearGradient20801"
+       gradientUnits="userSpaceOnUse"
+       x1="16.501625"
+       y1="25.178837"
+       x2="21.194674"
+       y2="29.272438" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6498"
+       id="radialGradient20803"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.156736,-0.7002812,1.8524704,-12.550591,-5.3699519,151.31536)"
+       cx="4.7171421"
+       cy="10.968215"
+       fx="4.7171421"
+       fy="10.968215"
+       r="0.5166682" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6498"
+       id="radialGradient20805"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.156736,-0.7002812,1.8524704,-12.550591,-5.3699519,151.31536)"
+       cx="4.7171421"
+       cy="10.968215"
+       fx="4.7171421"
+       fy="10.968215"
+       r="0.5166682" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13753"
+       id="linearGradient20807"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-3.7133206,-2)"
+       x1="21.026932"
+       y1="45.463146"
+       x2="13.757006"
+       y2="44.795391" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13914"
+       id="linearGradient20809"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-3.6009084,-1.9437939)"
+       x1="21.077282"
+       y1="46.927532"
+       x2="16.538074"
+       y2="41.92519" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13753"
+       id="linearGradient20811"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.2866794,0)"
+       x1="21.026932"
+       y1="45.463146"
+       x2="13.757006"
+       y2="44.795391" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13914"
+       id="linearGradient20813"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.3990916,0.05620609)"
+       x1="21.077282"
+       y1="46.927532"
+       x2="16.538074"
+       y2="41.92519" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13914"
+       id="linearGradient20903"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132.39909,24.056206)"
+       x1="21.077282"
+       y1="46.927532"
+       x2="16.538074"
+       y2="41.92519" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13753"
+       id="linearGradient20906"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132.28668,24)"
+       x1="21.026932"
+       y1="45.463146"
+       x2="13.757006"
+       y2="44.795391" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13914"
+       id="linearGradient20916"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(128.39909,22.056206)"
+       x1="21.077282"
+       y1="46.927532"
+       x2="16.538074"
+       y2="41.92519" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13753"
+       id="linearGradient20919"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(128.28668,22)"
+       x1="21.026932"
+       y1="45.463146"
+       x2="13.757006"
+       y2="44.795391" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13667"
+       id="linearGradient20927"
+       gradientUnits="userSpaceOnUse"
+       x1="16.501625"
+       y1="25.178837"
+       x2="21.194674"
+       y2="29.272438"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13651"
+       id="linearGradient20930"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(131.56282,23.602563)"
+       x1="21.60327"
+       y1="34.032124"
+       x2="25.13533"
+       y2="32.005196" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13631"
+       id="linearGradient20933"
+       gradientUnits="userSpaceOnUse"
+       x1="4.3195748"
+       y1="17.16729"
+       x2="10.727621"
+       y2="30.263309"
+       gradientTransform="translate(132,24)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13601"
+       id="radialGradient20936"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4269759,-1.5696839,1.6481169,0.4483109,96.025084,84.391113)"
+       cx="27.258755"
+       cy="31.305328"
+       fx="27.258755"
+       fy="31.305328"
+       r="4.2251611" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13591"
+       id="linearGradient20939"
+       gradientUnits="userSpaceOnUse"
+       x1="18.284817"
+       y1="26.96661"
+       x2="22.752008"
+       y2="33.876022"
+       gradientTransform="translate(132,24)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6657"
+       id="radialGradient20951"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4838839,0.1479917,-0.1422878,0.4652344,141.82976,31.280125)"
+       cx="14.446836"
+       cy="16.681093"
+       fx="14.446836"
+       fy="16.681093"
+       r="2.3250065" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6647"
+       id="linearGradient20954"
+       gradientUnits="userSpaceOnUse"
+       x1="20.552954"
+       y1="13.350694"
+       x2="22.738117"
+       y2="13.350694"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6637"
+       id="linearGradient20957"
+       gradientUnits="userSpaceOnUse"
+       x1="17.805918"
+       y1="19.70248"
+       x2="16.960995"
+       y2="17.894142"
+       gradientTransform="translate(132,24)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6470"
+       id="radialGradient20961"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.6136142,-1.286665,1.1493243,1.4413744,101.28112,59.58677)"
+       cx="29.135147"
+       cy="12.218625"
+       fx="29.135147"
+       fy="12.218625"
+       r="3.2664993" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6450"
+       id="linearGradient20964"
+       gradientUnits="userSpaceOnUse"
+       x1="24.459049"
+       y1="5.0984077"
+       x2="34.371471"
+       y2="11.417657"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6488"
+       id="linearGradient20967"
+       gradientUnits="userSpaceOnUse"
+       x1="28.711626"
+       y1="9.0131626"
+       x2="31.959444"
+       y2="15.252925"
+       gradientTransform="translate(132,24)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6673"
+       id="radialGradient20971"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.0948833,0.2376313,-0.0272551,0.2402727,113.76022,36.091842)"
+       cx="17.189152"
+       cy="21.29253"
+       fx="17.189152"
+       fy="21.29253"
+       r="6.072453" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6665"
+       id="linearGradient20974"
+       gradientUnits="userSpaceOnUse"
+       x1="13.302604"
+       y1="16.900549"
+       x2="18.969286"
+       y2="18.132605"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6372"
+       id="linearGradient20984"
+       gradientUnits="userSpaceOnUse"
+       x1="9.5112438"
+       y1="6.0912614"
+       x2="43.586823"
+       y2="32.030064"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6356"
+       id="linearGradient20987"
+       gradientUnits="userSpaceOnUse"
+       x1="11.264138"
+       y1="1.2082775"
+       x2="22.715317"
+       y2="23.522724"
+       gradientTransform="translate(132,24)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6460"
+       id="radialGradient20990"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.2761784,0.1312499,-0.657129,-6.3894461,207.84084,140.7926)"
+       cx="28.286657"
+       cy="17.647202"
+       fx="28.286657"
+       fy="17.647202"
+       r="4.6430206" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13621"
+       id="linearGradient20994"
+       gradientUnits="userSpaceOnUse"
+       x1="39.378262"
+       y1="47.937317"
+       x2="15.377971"
+       y2="26.774292"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13641"
+       id="linearGradient20997"
+       gradientUnits="userSpaceOnUse"
+       x1="17.544342"
+       y1="24.962442"
+       x2="13.523672"
+       y2="31.361179"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13693"
+       id="linearGradient21000"
+       gradientUnits="userSpaceOnUse"
+       x1="28.662155"
+       y1="37.046661"
+       x2="3.034647"
+       y2="18.446606"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13703"
+       id="linearGradient21003"
+       gradientUnits="userSpaceOnUse"
+       x1="35.064682"
+       y1="40.647694"
+       x2="24.186052"
+       y2="35.637733"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13703"
+       id="linearGradient21006"
+       gradientUnits="userSpaceOnUse"
+       x1="44.353977"
+       y1="47.651829"
+       x2="16.969149"
+       y2="30.760756"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6440"
+       id="linearGradient21011"
+       gradientUnits="userSpaceOnUse"
+       x1="9.9893427"
+       y1="2.950834"
+       x2="18.846466"
+       y2="8.0777721"
+       gradientTransform="translate(132,24)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13743"
+       id="linearGradient21019"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132.28668,24)"
+       x1="31.405964"
+       y1="45.76017"
+       x2="22.976322"
+       y2="40.861156" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13743"
+       id="linearGradient21025"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(128.53492,22)"
+       x1="31.405964"
+       y1="45.76017"
+       x2="22.976322"
+       y2="40.861156" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13743"
+       id="linearGradient21104"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(128.53492,22)"
+       x1="31.405964"
+       y1="45.76017"
+       x2="22.976322"
+       y2="40.861156" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13743"
+       id="linearGradient21106"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132.28668,24)"
+       x1="31.405964"
+       y1="45.76017"
+       x2="22.976322"
+       y2="40.861156" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6440"
+       id="linearGradient21108"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="9.9893427"
+       y1="2.950834"
+       x2="18.846466"
+       y2="8.0777721" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13703"
+       id="linearGradient21110"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="44.353977"
+       y1="47.651829"
+       x2="16.969149"
+       y2="30.760756" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13703"
+       id="linearGradient21112"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="35.064682"
+       y1="40.647694"
+       x2="24.186052"
+       y2="35.637733" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13693"
+       id="linearGradient21114"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="28.662155"
+       y1="37.046661"
+       x2="3.034647"
+       y2="18.446606" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13641"
+       id="linearGradient21116"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="17.544342"
+       y1="24.962442"
+       x2="13.523672"
+       y2="31.361179" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13621"
+       id="linearGradient21118"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="39.378262"
+       y1="47.937317"
+       x2="15.377971"
+       y2="26.774292" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6460"
+       id="radialGradient21120"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.2761784,0.1312499,-0.657129,-6.3894461,207.84084,140.7926)"
+       cx="28.286657"
+       cy="17.647202"
+       fx="28.286657"
+       fy="17.647202"
+       r="4.6430206" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6356"
+       id="linearGradient21122"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="11.264138"
+       y1="1.2082775"
+       x2="22.715317"
+       y2="23.522724" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6372"
+       id="linearGradient21124"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="9.5112438"
+       y1="6.0912614"
+       x2="43.586823"
+       y2="32.030064" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6665"
+       id="linearGradient21126"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="13.302604"
+       y1="16.900549"
+       x2="18.969286"
+       y2="18.132605" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6673"
+       id="radialGradient21128"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.0948833,0.2376313,-0.0272551,0.2402727,113.76022,36.091842)"
+       cx="17.189152"
+       cy="21.29253"
+       fx="17.189152"
+       fy="21.29253"
+       r="6.072453" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6488"
+       id="linearGradient21130"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="28.711626"
+       y1="9.0131626"
+       x2="31.959444"
+       y2="15.252925" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6450"
+       id="linearGradient21132"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="24.459049"
+       y1="5.0984077"
+       x2="34.371471"
+       y2="11.417657" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6470"
+       id="radialGradient21134"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.6136142,-1.286665,1.1493243,1.4413744,101.28112,59.58677)"
+       cx="29.135147"
+       cy="12.218625"
+       fx="29.135147"
+       fy="12.218625"
+       r="3.2664993" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6498"
+       id="radialGradient21136"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.156736,-0.7002812,1.8524704,-12.550591,-5.3699519,151.31536)"
+       cx="4.7171421"
+       cy="10.968215"
+       fx="4.7171421"
+       fy="10.968215"
+       r="0.5166682" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6637"
+       id="linearGradient21138"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="17.805918"
+       y1="19.70248"
+       x2="16.960995"
+       y2="17.894142" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6647"
+       id="linearGradient21140"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="20.552954"
+       y1="13.350694"
+       x2="22.738117"
+       y2="13.350694" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6657"
+       id="radialGradient21142"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4838839,0.1479917,-0.1422878,0.4652344,141.82976,31.280125)"
+       cx="14.446836"
+       cy="16.681093"
+       fx="14.446836"
+       fy="16.681093"
+       r="2.3250065" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient21144"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.1949295,0.5830582,-0.5830582,0.1949295,24.175799,16.868606)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient21146"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.1555708,-0.5947707,0.5947707,0.1555708,3.5914695,31.368643)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient21148"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.2212353,-0.5735934,0.5735934,0.2212353,2.2312928,28.686789)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20401"
+       id="linearGradient21150"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.3288113,-0.5194588,0.5194588,0.3288113,1.5519873,24.509126)"
+       x1="4.8437247"
+       y1="16.636473"
+       x2="7.7245321"
+       y2="18.357853" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13591"
+       id="linearGradient21152"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="18.284817"
+       y1="26.96661"
+       x2="22.752008"
+       y2="33.876022" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13601"
+       id="radialGradient21154"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4269759,-1.5696839,1.6481169,0.4483109,96.025084,84.391113)"
+       cx="27.258755"
+       cy="31.305328"
+       fx="27.258755"
+       fy="31.305328"
+       r="4.2251611" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13631"
+       id="linearGradient21156"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="4.3195748"
+       y1="17.16729"
+       x2="10.727621"
+       y2="30.263309" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13651"
+       id="linearGradient21158"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(131.56282,23.602563)"
+       x1="21.60327"
+       y1="34.032124"
+       x2="25.13533"
+       y2="32.005196" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13667"
+       id="linearGradient21160"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132,24)"
+       x1="16.501625"
+       y1="25.178837"
+       x2="21.194674"
+       y2="29.272438" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6498"
+       id="radialGradient21162"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.156736,-0.7002812,1.8524704,-12.550591,-5.3699519,151.31536)"
+       cx="4.7171421"
+       cy="10.968215"
+       fx="4.7171421"
+       fy="10.968215"
+       r="0.5166682" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6498"
+       id="radialGradient21164"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.156736,-0.7002812,1.8524704,-12.550591,-5.3699519,151.31536)"
+       cx="4.7171421"
+       cy="10.968215"
+       fx="4.7171421"
+       fy="10.968215"
+       r="0.5166682" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13753"
+       id="linearGradient21166"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(128.28668,22)"
+       x1="21.026932"
+       y1="45.463146"
+       x2="13.757006"
+       y2="44.795391" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13914"
+       id="linearGradient21168"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(128.39909,22.056206)"
+       x1="21.077282"
+       y1="46.927532"
+       x2="16.538074"
+       y2="41.92519" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13753"
+       id="linearGradient21170"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132.28668,24)"
+       x1="21.026932"
+       y1="45.463146"
+       x2="13.757006"
+       y2="44.795391" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13914"
+       id="linearGradient21172"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(132.39909,24.056206)"
+       x1="21.077282"
+       y1="46.927532"
+       x2="16.538074"
+       y2="41.92519" />
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Tango *BSD</dc:title>
+        <dc:date>August 2009</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>F.Bellaiche &lt;frederic.bellaiche@gmail.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-nc-sa/3.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:prohibits
+           rdf:resource="http://creativecommons.org/ns#CommercialUse" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-80.021156,-1.9337793)">
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch6047"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,80.956854,398.96828)">
+      <foreignObject
+         id="foreignObject6049"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g6051"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="XMLID_75_">
+          <tspan
+             id="tspan6054"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch6155"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,80.956854,398.96828)">
+      <foreignObject
+         id="foreignObject6157"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g6159"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="XMLID_77_">
+          <tspan
+             id="tspan6162"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch5204"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,40.554334,375.03689)">
+      <foreignObject
+         id="foreignObject5206"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g5208"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text5210">
+          <tspan
+             id="tspan5212"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch5214"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,40.554334,375.03689)">
+      <foreignObject
+         id="foreignObject5216"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g5218"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text5220">
+          <tspan
+             id="tspan5222"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch3448"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6258.3505,3376.3812)">
+      <foreignObject
+         id="foreignObject3450"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g3452"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text3454">
+          <tspan
+             id="tspan3456"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch3458"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6258.3505,3376.3812)">
+      <foreignObject
+         id="foreignObject3460"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g3462"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text3464">
+          <tspan
+             id="tspan3466"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <flowRoot
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       xml:space="preserve"
+       id="flowRoot12974"
+       transform="matrix(0.4360047,0,0,0.4360047,482.2357,162.95143)"><flowRegion
+         id="flowRegion12976"><rect
+           id="rect12978"
+           width="40.055775"
+           height="16.02231"
+           x="86.787514"
+           y="412.80496" /></flowRegion><flowPara
+         id="flowPara12980" /></flowRoot>    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(449.24386,274.57597)"
+       id="g7909" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(476.08118,281.08187)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g2637" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="matrix(-1,0,0,1,571.80488,214.71751)"
+       id="g2449" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="g8527"
+       transform="matrix(-1,0,0,1,434.71651,313.82512)" />
+    <g
+       transform="matrix(0.592117,0,0,0.592117,399.07597,126.73464)"
+       inkscape:label="Livello 1"
+       id="g7118"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(454.23243,76.23966)"
+       id="g17833"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(401.15398,127.59194)"
+       id="g18947"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(368.80788,78.027763)"
+       id="g19635"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(414.6818,152.18554)"
+       id="g4494"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.5982621,0.0737357,-0.0737357,0.5982621,482.63775,180.18577)"
+       id="g3168"
+       inkscape:r_cx="true"
+       inkscape:r_cy="true"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(394.32451,140.51866)"
+       id="g8881"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(399.28702,134.20186)"
+       id="g13510"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.678898,0,0,0.678898,450.30183,120.96644)"
+       inkscape:label="vectors"
+       id="g33086"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(295.92815,178.68774)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g15676"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g6239"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(356.02316,178.19384)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g6266"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(578.03826,156.19385)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(517.94325,155.68775)"
+       style="display:inline"
+       inkscape:label="base"
+       id="layer2"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g31572"
+       transform="matrix(0.676231,0,0,0.676231,638.22783,216.9303)"
+       style="opacity:0.8;stroke-linecap:square"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.8;stroke-linecap:square"
+       id="g31574"
+       transform="matrix(0.676231,0,0,0.676231,631.46552,216.9303)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g31576"
+       transform="matrix(0.676231,0,0,0.676231,628.7606,216.9303)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g31578"
+       transform="matrix(0.676231,0,0,0.676231,640.93276,216.9303)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g31580"
+       transform="matrix(0.676231,0,0,0.676231,642.96145,216.9303)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g31582"
+       transform="matrix(0.676231,0,0,0.676231,626.73191,216.9303)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch13367"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,162.7963,347.12778)">
+      <foreignObject
+         id="foreignObject13369"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g13371"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text13373">
+          <tspan
+             id="tspan13375"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch13377"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,162.7963,347.12778)">
+      <foreignObject
+         id="foreignObject13379"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g13381"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text13383">
+          <tspan
+             id="tspan13385"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch13387"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,122.39378,323.19639)">
+      <foreignObject
+         id="foreignObject13389"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g13391"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text13393">
+          <tspan
+             id="tspan13395"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch13397"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,122.39378,323.19639)">
+      <foreignObject
+         id="foreignObject13399"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g13401"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text13403">
+          <tspan
+             id="tspan13405"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch13407"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6176.5111,3324.5407)">
+      <foreignObject
+         id="foreignObject13409"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g13411"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text13413">
+          <tspan
+             id="tspan13415"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch13417"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6176.5111,3324.5407)">
+      <foreignObject
+         id="foreignObject13419"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g13421"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text13423">
+          <tspan
+             id="tspan13425"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <flowRoot
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       xml:space="preserve"
+       id="flowRoot13427"
+       transform="matrix(0.4360047,0,0,0.4360047,564.07515,111.11093)"><flowRegion
+         id="flowRegion13429"><rect
+           id="rect13431"
+           width="40.055775"
+           height="16.02231"
+           x="86.787514"
+           y="412.80496" /></flowRegion><flowPara
+         id="flowPara13433" /></flowRoot>    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(531.08331,222.73548)"
+       id="g13435" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(557.92063,229.24137)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g13456" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="matrix(-1,0,0,1,653.64433,162.87701)"
+       id="g13458" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="g13460"
+       transform="matrix(-1,0,0,1,516.55596,261.98462)" />
+    <g
+       transform="matrix(0.592117,0,0,0.592117,480.91541,74.894141)"
+       inkscape:label="Livello 1"
+       id="g13462"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(536.07188,24.399154)"
+       id="g13464"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(482.99342,75.751445)"
+       id="g13466"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(450.64733,26.187264)"
+       id="g13468"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(496.52125,100.34504)"
+       id="g13470"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.5982621,0.0737357,-0.0737357,0.5982621,564.47719,128.34528)"
+       id="g13472"
+       inkscape:r_cx="true"
+       inkscape:r_cy="true"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(476.16395,88.678165)"
+       id="g13474"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(481.12646,82.361361)"
+       id="g13476"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.678898,0,0,0.678898,532.14127,69.125939)"
+       inkscape:label="vectors"
+       id="g13478"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(377.7676,126.84725)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g13480"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g13482"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(437.86261,126.35334)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g13484"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(659.87771,104.35335)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(599.7827,103.84726)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g13486"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g13488"
+       transform="matrix(0.676231,0,0,0.676231,720.06728,165.0898)"
+       style="opacity:0.8;stroke-linecap:square"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.8;stroke-linecap:square"
+       id="g13490"
+       transform="matrix(0.676231,0,0,0.676231,713.30497,165.0898)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g13492"
+       transform="matrix(0.676231,0,0,0.676231,710.60005,165.0898)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g13494"
+       transform="matrix(0.676231,0,0,0.676231,722.77221,165.0898)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g13496"
+       transform="matrix(0.676231,0,0,0.676231,724.8009,165.0898)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g13498"
+       transform="matrix(0.676231,0,0,0.676231,708.57136,165.0898)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch22215"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,127.31088,439.62432)">
+      <foreignObject
+         id="foreignObject22217"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g22219"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text22221">
+          <tspan
+             id="tspan22223"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch22225"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,127.31088,439.62432)">
+      <foreignObject
+         id="foreignObject22227"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g22229"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text22231">
+          <tspan
+             id="tspan22233"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch22235"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,86.908364,415.69293)">
+      <foreignObject
+         id="foreignObject22237"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g22239"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text22241">
+          <tspan
+             id="tspan22243"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch22245"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,86.908364,415.69293)">
+      <foreignObject
+         id="foreignObject22247"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g22249"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text22251">
+          <tspan
+             id="tspan22253"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch22255"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6211.9965,3417.0372)">
+      <foreignObject
+         id="foreignObject22257"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g22259"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text22261">
+          <tspan
+             id="tspan22263"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch22265"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6211.9965,3417.0372)">
+      <foreignObject
+         id="foreignObject22267"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g22269"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text22271">
+          <tspan
+             id="tspan22273"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <flowRoot
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       xml:space="preserve"
+       id="flowRoot22275"
+       transform="matrix(0.4360047,0,0,0.4360047,528.58973,203.60747)"><flowRegion
+         id="flowRegion22277"><rect
+           id="rect22279"
+           width="40.055775"
+           height="16.02231"
+           x="86.787514"
+           y="412.80496" /></flowRegion><flowPara
+         id="flowPara22281" /></flowRoot>    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(495.59789,315.23201)"
+       id="g22325" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(522.43522,321.73791)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g22327" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="matrix(-1,0,0,1,618.15891,255.37355)"
+       id="g22329" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="g22331"
+       transform="matrix(-1,0,0,1,481.07054,354.48116)" />
+    <g
+       transform="matrix(0.592117,0,0,0.592117,445.43,167.39068)"
+       inkscape:label="Livello 1"
+       id="g22333"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(500.58646,116.8957)"
+       id="g22335"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(447.50801,168.24798)"
+       id="g22337"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(415.16191,118.6838)"
+       id="g22339"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(461.03583,192.84158)"
+       id="g22341"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.5982621,0.0737357,-0.0737357,0.5982621,528.99178,220.84181)"
+       id="g22343"
+       inkscape:r_cx="true"
+       inkscape:r_cy="true"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(440.67854,181.1747)"
+       id="g22395"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(445.64105,174.8579)"
+       id="g22397"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.678898,0,0,0.678898,496.65586,161.62248)"
+       inkscape:label="vectors"
+       id="g22399"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(342.28218,219.34378)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g22481"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g22483"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(402.37719,218.84988)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g22485"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(624.39229,196.84989)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(564.29728,196.34379)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g22487"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g22489"
+       transform="matrix(0.676231,0,0,0.676231,684.58186,257.58633)"
+       style="opacity:0.8;stroke-linecap:square"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.8;stroke-linecap:square"
+       id="g22491"
+       transform="matrix(0.676231,0,0,0.676231,677.81955,257.58633)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g22493"
+       transform="matrix(0.676231,0,0,0.676231,675.11463,257.58633)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g22495"
+       transform="matrix(0.676231,0,0,0.676231,687.28679,257.58633)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g22497"
+       transform="matrix(0.676231,0,0,0.676231,689.31548,257.58633)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g22499"
+       transform="matrix(0.676231,0,0,0.676231,673.08594,257.58633)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch10051"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,177.9552,318.89293)">
+      <foreignObject
+         id="foreignObject10053"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g10055"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text10057">
+          <tspan
+             id="tspan10059"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch10061"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,177.9552,318.89293)">
+      <foreignObject
+         id="foreignObject10063"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g10065"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text10067">
+          <tspan
+             id="tspan10069"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch10071"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,137.55268,294.96154)">
+      <foreignObject
+         id="foreignObject10073"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g10075"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text10077">
+          <tspan
+             id="tspan10079"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch10081"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(0.871751,0,0,0.871751,137.55268,294.96154)">
+      <foreignObject
+         id="foreignObject10083"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g10085"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text10087">
+          <tspan
+             id="tspan10089"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch10091"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6161.3522,3296.3058)">
+      <foreignObject
+         id="foreignObject10093"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M297.032,383.13" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_75_" />
+      </foreignObject>
+      <g
+         id="g10095"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(297.0322,383.1299)"
+           id="text10097">
+          <tspan
+             id="tspan10099"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <switch
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="switch10101"
+       i:objectType="pointText"
+       i:objectNS="http://ns.adobe.com/Flows/1.0/"
+       i:knockout="Off"
+       transform="matrix(9.6635691,0,0,9.6635691,-6161.3522,3296.3058)">
+      <foreignObject
+         id="foreignObject10103"
+         overflow="visible"
+         height="1"
+         width="1"
+         y="0"
+         x="0"
+         requiredExtensions="http://ns.adobe.com/Flows/1.0/">
+        <ns1:flowDef>
+          <ns1:region
+             textMatrix="1 0 0 1 0 0">
+            <ns1:path
+               d="M291.912,390.329" />
+          </ns1:region>
+          <ns1:flow
+             font-size="6"
+             font-family="'Bryant-Regular'">
+            <ns1:p>
+              <ns1:span
+                 fill="#FFFFFF"
+                 clip-path="url(#XMLID_72_)" />
+            </ns1:p>
+          </ns1:flow>
+        </ns1:flowDef>
+        <ns2:targetRef
+           xlink:href="#XMLID_77_" />
+      </foreignObject>
+      <g
+         id="g10105"
+         clip-path="url(#XMLID_72_)">
+        <text
+           transform="translate(291.9121,390.3291)"
+           id="text10107">
+          <tspan
+             id="tspan10109"
+             font-size="6"
+             y="0"
+             x="0"
+             style="font-size:6px;font-family:Bryant-Regular;fill:#ffffff" />
+        </text>
+      </g>
+    </switch>
+    <flowRoot
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       xml:space="preserve"
+       id="flowRoot10111"
+       transform="matrix(0.4360047,0,0,0.4360047,579.23405,82.876076)"><flowRegion
+         id="flowRegion10113"><rect
+           id="rect10115"
+           width="40.055775"
+           height="16.02231"
+           x="86.787514"
+           y="412.80496" /></flowRegion><flowPara
+         id="flowPara10117" /></flowRoot>    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(546.2422,194.50063)"
+       id="g10119" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="translate(573.07953,201.00653)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g10121" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       transform="matrix(-1,0,0,1,668.80322,134.64216)"
+       id="g10123" />
+    <g
+       inkscape:export-ydpi="149.96703"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       id="g10158"
+       transform="matrix(-1,0,0,1,531.71485,233.74977)" />
+    <g
+       transform="matrix(0.592117,0,0,0.592117,496.07431,46.659287)"
+       inkscape:label="Livello 1"
+       id="g10160"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(551.23078,-3.8356965)"
+       id="g10162"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(498.15232,47.516597)"
+       id="g10164"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(465.80623,-2.0475865)"
+       id="g10166"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(511.68015,72.110192)"
+       id="g10168"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.5982621,0.0737357,-0.0737357,0.5982621,579.63609,100.11042)"
+       id="g10170"
+       inkscape:r_cx="true"
+       inkscape:r_cy="true"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(491.32285,60.443317)"
+       id="g10172"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(496.28536,54.126507)"
+       id="g10174"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="matrix(0.678898,0,0,0.678898,547.30017,40.891087)"
+       inkscape:label="vectors"
+       id="g10295"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(392.9265,98.612395)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g10297"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g10299"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(453.0215,98.118492)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g10301"
+       inkscape:label="base"
+       style="display:inline"
+       transform="translate(675.0366,76.118501)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       transform="translate(614.94159,75.612405)"
+       style="display:inline"
+       inkscape:label="base"
+       id="g10303"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       id="g10305"
+       transform="matrix(0.676231,0,0,0.676231,735.22617,136.85495)"
+       style="opacity:0.8;stroke-linecap:square"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.8;stroke-linecap:square"
+       id="g10307"
+       transform="matrix(0.676231,0,0,0.676231,728.46387,136.85495)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g10309"
+       transform="matrix(0.676231,0,0,0.676231,725.75895,136.85495)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.7;stroke-linecap:square"
+       id="g10311"
+       transform="matrix(0.676231,0,0,0.676231,737.9311,136.85495)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g10313"
+       transform="matrix(0.676231,0,0,0.676231,739.95979,136.85495)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <g
+       style="display:inline;opacity:0.5;stroke-linecap:square"
+       id="g10315"
+       transform="matrix(0.676231,0,0,0.676231,723.73026,136.85495)"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:100%;font-family:AquaBase;-inkscape-font-specification:'AquaBase Medium';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-103.4192"
+       y="-104.88056"
+       id="text20282"
+       sodipodi:linespacing="100%"
+       inkscape:export-filename="/home/bellaich/Desktop/tango-bsd.png"
+       inkscape:export-xdpi="149.96703"
+       inkscape:export-ydpi="149.96703"><tspan
+         sodipodi:role="line"
+         id="tspan20284"
+         x="-103.4192"
+         y="-104.88056" /></text>
+    <g
+       id="g21028"
+       transform="matrix(2.1383681,0,0,2.1383681,-202.08438,-52.318381)">
+      <path
+         style="fill:#4e9a06;fill-opacity:1;fill-rule:evenodd;stroke:#376e04;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 155.1204,58.871194 c 0.61827,1.592506 1.29274,4.421546 1.06792,6.014052 -4.78789,2.440797 -9.77622,4.29322 -14.7822,1.405152 -0.0375,-0.52459 -0.35597,-1.04918 -0.11242,-1.57377 0.37362,-1.239116 1.97114,-1.94549 4.15926,-2.192038 0.80562,-0.224825 2.34192,-0.337237 3.14754,-0.562061 0.13114,-0.805621 0.26229,-1.611241 0.39344,-2.416862 2.09836,0.112412 4.0281,-0.786885 6.12646,-0.674473 z"
+         id="path13808"
+         sodipodi:nodetypes="cccccccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path13810"
+         d="m 155.1204,58.871194 c 0.61827,1.592506 1.29274,4.421546 1.06792,6.014052 -3.93112,2.004027 -7.99736,3.611414 -12.09755,2.523971 12.23701,-2.226488 10.19081,-3.928113 9.72269,-8.493276 0.43026,-0.04721 0.86486,-0.06843 1.30694,-0.04475 z"
+         style="fill:url(#linearGradient21104);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <ellipse
+         style="fill:#eeeeec;fill-opacity:0.75;fill-rule:evenodd;stroke:#d3d7cf;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path13812"
+         transform="translate(162.59581,42.515222)"
+         cx="-8.8243561"
+         cy="20.262295"
+         rx="0.84309125"
+         ry="1.3770492" />
+      <path
+         style="opacity:0.74131272;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 149.82456,63.393787 c -0.75727,-1.155736 -2.12788,-1.367501 -3.20374,-1.29274"
+         id="path13814"
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cccccccc"
+         id="path13731"
+         d="m 158.87216,60.871194 c 0.61827,1.592506 1.29274,4.421546 1.06792,6.014052 -4.78789,2.440797 -9.77622,4.29322 -14.78221,1.405152 -0.0375,-0.52459 -0.35597,-1.04918 -0.11241,-1.57377 0.37361,-1.239116 1.97114,-1.94549 4.15925,-2.192038 0.80562,-0.224825 2.34192,-0.337237 3.14754,-0.562061 0.13115,-0.805621 0.2623,-1.611241 0.39345,-2.416862 2.09836,0.112412 4.0281,-0.786885 6.12646,-0.674473 z"
+         style="fill:#4e9a06;fill-opacity:1;fill-rule:evenodd;stroke:#376e04;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:url(#linearGradient21106);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 158.87216,60.871194 c 0.61827,1.592506 1.29274,4.421546 1.06792,6.014052 -3.93112,2.004027 -7.99736,3.611414 -12.09756,2.523971 12.23701,-2.226488 10.19081,-3.928113 9.72269,-8.493276 0.43027,-0.04721 0.86487,-0.06843 1.30695,-0.04475 z"
+         id="path13741"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0" />
+      <ellipse
+         transform="translate(166.66745,44.360656)"
+         id="path13735"
+         style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#afb6a8;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         cx="-8.8243561"
+         cy="20.262295"
+         rx="0.84309125"
+         ry="1.3770492" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13737"
+         d="m 153.13914,65.592506 c -0.75728,-1.155736 -2.12788,-1.367501 -3.20375,-1.29274"
+         style="opacity:0.74131272;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <ellipse
+         style="display:inline;overflow:visible;visibility:visible;opacity:0.15;fill:#555753;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;filter:url(#filter14032);enable-background:accumulate"
+         id="path20278"
+         transform="matrix(0.9255652,-0.01064692,0,1.8070388,130.503,6.063382)"
+         cx="23.5"
+         cy="34.5"
+         rx="16.5"
+         ry="1.5" />
+      <path
+         style="opacity:0.74131272;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 154.36486,65.196239 c -0.75728,-1.155736 -2.12788,-1.367501 -3.20375,-1.29274"
+         id="path13739"
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path5491"
+         d="m 151.56254,25.376222 c -5.14404,2.26909 -6.35346,5.452286 -6.17185,6.449578 0.0571,1.608578 0.90917,1.905614 0.48939,4.070604 1.55503,-1.761124 2.3152,-3.919685 3.87023,-5.680809 -1.51116,-2.107792 0.2458,-2.803896 1.81223,-4.839373 z"
+         style="fill:#a60000;fill-opacity:1;fill-rule:evenodd;stroke:#850000;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.48648652;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21108);stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 149.13818,27.482638 c -5.34277,4.017814 -2.33936,6.604854 -1.64108,6.966246 3.87513,4.067399 1.51391,0.836573 2.84937,-2.365335 -1.59066,-1.948817 -2.01959,-3.559026 -1.20829,-4.600911 z"
+         id="path6438"
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cssssc"
+         id="path36518"
+         d="m 145.27352,51.487163 c -0.47476,1.385369 0.43222,1.681155 1.56841,2.07052 1.13619,0.389365 2.49185,1.339038 2.9666,-0.04633 0.41907,-1.222845 1.87281,-4.161942 0.97481,-3.654722 -1.01542,0.573548 -3.3325,-0.04866 -3.4658,-0.09433 -1.13619,-0.389366 -1.56926,0.339498 -2.04402,1.724867 z"
+         style="fill:#cc0000;fill-opacity:1;stroke:#670202;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cccccsccccccccccccccccc"
+         id="path6265"
+         d="m 153.4616,29.414618 c 7.61794,-0.0429 9.03077,3.566856 9.1808,11.585291 -0.0927,3.258984 -2.25215,3.139753 -3.4577,5.68335 -0.74946,3.268854 1.91668,5.663581 0.51666,8.743615 0.39744,1.152568 0.87437,3.179497 1.2718,4.332064 0.32251,1.356964 1.35927,2.66942 5.17573,3.919483 3.53789,1.158817 9.97503,1.491505 10.80124,3.671566 0.61539,1.912278 -2.54463,2.499702 -4.65001,2.861546 0.053,0.31795 0.26496,0.834618 0.31795,1.152568 -2.91454,-0.940601 -5.6701,-0.05299 -8.50516,-0.07949 2.25215,-1.285046 3.55044,-1.655987 6.75644,-3.855139 0.2782,0.556412 0.55641,1.112823 0.83461,1.669235 1.13932,-0.384189 2.75557,-0.331197 3.41796,-1.152567 0.69669,-1.38123 -9.36823,-2.858257 -13.71158,-4.808989 -1.29829,-0.516668 -1.80171,-0.914105 -2.86154,-1.708979 -0.66474,1.07191 -3.80255,1.356935 -6.04105,1.192311 -2.81382,-1.099088 -5.67217,-0.841724 -4.31677,-5.285913 0.92735,-2.782059 1.56121,-5.325657 2.48856,-8.107716 0.23846,-1.059832 0.39744,-1.64274 -1.23205,-2.344879 -1.47052,-0.649147 -2.74232,-1.775219 -4.21284,-2.424366 -1.27179,-0.781626 -1.70897,-1.682483 -1.70897,-3.060265 -0.27281,-0.206981 0.47395,-2.275919 1.94744,-3.060266 1.10735,-8.48866 6.26162,-8.850428 7.98848,-8.922462 z"
+         style="fill:#cc0000;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.47104265;fill:url(#linearGradient21110);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 160.49624,59.838425 c 0.3225,1.356964 1.08926,2.753823 5.49368,3.959227 4.00012,1.094755 10.05452,2.40561 10.48329,3.552335 0.37692,1.514841 -2.1472,2.062521 -4.17309,2.861546 0.053,0.31795 0.26496,0.834618 0.31795,1.152568 -2.8748,-1.13932 -3.68292,-0.609404 -6.51797,-0.6359 2.84688,-0.814888 5.93629,0.545635 5.72309,-1.112824 1.05984,0.331198 4.38506,0.06624 4.25258,-2.066672 0.68599,-2.059873 -11.23657,-2.669162 -16.85133,-6.676943 -1.71901,0.786885 -1.87906,1.300729 -6.47822,1.351286 6.32744,-2.443697 1.20814,-6.295784 7.75002,-2.384623 z"
+         id="path13701"
+         sodipodi:nodetypes="csccccccccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cscscc"
+         id="path13898"
+         d="m 160.37136,56.258667 c 0.54569,1.981112 0.47014,6.545198 1.32565,7.571465 0.53545,0.642319 -2.49136,-1.223281 -3.02898,-1.766058 -1.43574,0.220981 -0.513,0.445882 -1.35194,0.607051 -0.94359,0.181274 -2.44122,0.03827 -4.56987,-0.448077 6.26159,0.395053 5.82338,-6.420179 7.62514,-5.964381 z"
+         style="fill:url(#linearGradient21112);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccsccscssssscssssscsc"
+         id="rect13564"
+         d="m 143.34972,47.205873 c 5.74978,3.64406 15.05376,9.881953 20.80355,13.526013 -0.0274,0.702197 -0.23206,1.084587 -0.43873,1.411236 -0.21661,0.342358 -0.64499,0.773843 -1.22456,0.876814 -5.77089,-3.620436 -14.68933,-10.107384 -20.46023,-13.727819 -0.79922,1.230813 -3.89498,1.770701 -5.86195,0.673222 -0.73373,-0.409388 -1.20523,-1.087745 -1.56021,-1.800697 1.07947,0.08438 1.89207,-0.03507 2.81634,-0.184644 0.11606,-0.01878 -0.71429,0.934014 -0.5985,0.94594 1.39524,0.143698 2.80093,-0.282885 3.62064,-1.332271 0.0755,-0.09659 -1.31735,-1.078773 -2.49784,-1.948013 -0.25807,-0.190029 -0.46813,0.990261 -0.63717,0.717977 -0.49367,-0.795214 -1.17466,-2.106192 -1.13054,-2.175935 0.03,-0.04736 1.40874,0.01544 2.41818,0.140784 0.30931,0.03841 -0.614,0.67811 -0.33927,0.825326 1.33486,0.715305 2.78694,1.568531 2.8241,1.490536 0.63012,-1.322639 0.58057,-2.807198 -0.23573,-4.075862 -0.10547,-0.163918 -0.57897,1.195148 -0.63584,1.004966 -0.40181,-1.343525 -0.47278,-1.692127 -1.04296,-2.618227 0.79628,0.01545 1.58535,0.189501 2.29538,0.638738 1.84398,1.166689 2.51711,4.62356 1.88534,5.611916 z"
+         style="fill:#edd400;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21114);stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.35135133;fill:url(#linearGradient21116);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 149.13823,51.334048 c 1.64326,1.041454 2.53178,1.407511 4.17521,2.449069 l -0.38533,2.346209 c -1.5916,-0.998509 -3.8191,-2.67266 -5.4107,-3.671168 1.08098,-0.141648 1.84372,-0.01566 1.62082,-1.12411 z"
+         id="path13639"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.60617783;fill:url(#linearGradient21118);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 163.25619,61.875522 c -0.21025,0.53372 -0.1989,0.404714 -0.65379,0.750972 -5.7709,-3.620436 -14.40831,-9.854457 -20.17921,-13.474892 5.89055,3.00107 16.03642,10.050793 20.833,12.72392 z"
+         id="path13611"
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccccc"
+         id="path13560"
+         d="m 158.97892,47.494145 c 0.18222,2.078481 1.70836,4.829239 1.54367,6.441589 -0.27649,2.418352 -2.95314,3.580251 -5.33938,3.577662 -2.35908,0.940577 -5.3831,-1.2632 -5.5907,-3.499344 1.36513,0.259011 2.30844,-1.75055 1.3393,-2.791018 1.71123,-1.303153 3.13954,-0.21425 4.52931,1.110719 0.60005,0.53017 1.59406,-0.444778 1.91111,-1.046039"
+         style="fill:#cc0000;fill-opacity:1;fill-rule:evenodd;stroke:#8c0202;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.25096525;fill:url(#radialGradient21120);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 154.41545,29.851799 c 5.6705,0.195567 7.56025,3.089931 7.71028,11.108366 -0.0927,3.258984 -2.17266,2.941035 -3.37822,5.484632 -0.74945,3.268854 2.15515,6.061018 0.75514,9.141052 0.39743,1.152568 1.07308,3.020522 1.47051,4.173089 -0.4334,1.467544 -0.80269,0.690038 -2.46411,1.192312 -1.78886,1.07191 -2.45408,1.263809 -4.41155,0.874361 2.03491,-4.278585 2.05574,-6.172345 1.35129,-8.823103 0.92735,-2.782059 -1.92095,-2.742316 0.95385,-5.68335 4.02803,-3.754351 0.0554,-2.185943 -0.41093,-4.442761 2.73736,-2.309794 5.93664,-10.621247 -1.57626,-13.024598 z"
+         id="path6458"
+         sodipodi:nodetypes="ccccccccccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.62162158;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21122);stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 154.0975,30.368467 c 4.43845,-0.162126 7.44102,1.539927 7.51156,10.39298 -0.0927,3.258984 -2.01368,2.702572 -3.21924,5.246169 -1.38536,2.672698 1.63848,6.378968 0.23846,9.459002 0.39744,1.152568 1.23206,4.252577 1.62949,5.405144 0.32251,1.356964 2.07466,1.556596 5.89112,2.806659 3.53789,1.158817 9.97503,1.491505 10.80124,3.671566 0.61539,1.912278 -2.54463,2.499702 -4.65001,2.861546 0.053,0.31795 0.26496,0.834618 0.31795,1.152568 -2.91454,-0.940601 -5.6701,-0.05299 -8.50515,-0.07949 2.25214,-1.285046 3.55043,-1.655987 6.75642,-3.855139 0.27821,0.556412 0.55642,1.112823 0.83462,1.669235 1.13932,-0.384189 2.75557,-0.331197 3.41796,-1.152567 0.69669,-1.38123 -9.36823,-2.858257 -13.71158,-4.808989 -0.86407,-0.349375 -1.27245,-0.644231 -1.96118,-1.044321 -0.28794,-0.167267 -0.5572,-0.407284 -0.90036,-0.664658 -2.01368,0.397437 -4.18634,-0.357693 -6.20002,0.03974 -2.81383,-1.099088 -4.66095,-2.515925 -3.65642,-4.769245 0.59758,-1.455296 1.18398,-2.798665 1.74136,-4.154841 0.49293,-1.199362 0.96317,-2.408741 1.39839,-3.714413 0,-0.940601 0.0397,-1.682484 -1.58975,-2.384623 -1.47052,-0.649147 -1.39103,-1.099576 -2.86155,-1.748723 -1.27179,-0.781626 -2.98077,-1.483764 -3.02052,-2.861546 0.005,-0.723649 0.31498,-1.719507 1.86796,-3.41796 1.10735,-8.488659 6.977,-8.01581 7.86925,-8.0481 z"
+         id="path6354"
+         sodipodi:nodetypes="cccccsccccccccscccscccccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccccc"
+         id="path6263"
+         d="m 150.8796,31.533956 c -0.59217,-0.834618 -1.14458,-1.192311 -1.81623,-0.755131 -3.81533,2.988015 -2.78193,6.810647 -4.05366,7.890964 -1.74528,1.540294 -1.70209,2.762639 -1.42044,3.547803 0.61482,2.171647 2.38221,2.753547 4.03037,3.534164 1.08666,0.618267 1.81561,1.077559 2.90226,1.695826 0.63701,0.224824 1.59196,0.608624 3.97768,0.03857"
+         style="opacity:0.72586826;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:url(#linearGradient21124);stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path6293"
+         d="m 152.90519,32.892193 c 2.11272,-0.152393 2.32327,6.21478 0.79487,8.425665 -0.90085,0.09273 -1.41791,-0.01125 -2.59016,0.275382 -0.64914,-0.529916 -1.29829,-1.003626 -1.94744,-1.533542 0.6624,-2.556845 0.89443,-6.796564 3.74273,-7.167505 z"
+         style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cccccc"
+         id="path6295"
+         d="m 149.54685,37.283872 c 0.16559,-0.337821 0.37094,-0.874362 1.09295,-0.655771 1.05983,0.264958 1.36453,1.841458 1.2718,2.821803 -0.15898,1.258551 -0.53513,1.67284 -0.99559,2.309957 -0.39329,-0.307792 -1.44942,-1.131083 -1.84271,-1.438875 -0.39812,-0.448704 0.0736,-2.27845 0.47355,-3.037114 z"
+         style="fill:#151819;fill-opacity:0.96078431;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path6297"
+         d="m 152.03083,31.739625 c 0.3312,-0.556412 0.82137,-1.07308 1.82821,-1.07308 1.02009,0.119231 1.56325,1.07308 2.02693,2.305135"
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#670202;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path6299"
+         d="m 150.51375,37.642977 c -0.17222,0.251711 -0.50342,0.662395 -0.51667,1.351286"
+         style="opacity:0.50579146;fill:#eeeeec;fill-opacity:0.75;fill-rule:evenodd;stroke:#eeeeec;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 149.68595,32.375524 c 1.33231,-0.119468 -1.45239,4.545545 -2.02693,6.955149 -0.66872,-0.05536 -0.56094,-0.354678 -1.64513,-0.596156 0.6624,-2.556845 0.82376,-5.988051 3.67206,-6.358993 z"
+         id="path6301"
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#151819;fill-opacity:0.96078431;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 146.32761,36.886435 c 0.61165,-1.345075 2.52385,-1.455442 2.37921,0.236223 -0.55242,1.258551 -0.63872,1.867563 -0.93057,2.476578 -1.38769,-0.320826 -2.48185,-0.287337 -1.44864,-2.712801 z"
+         id="path6303"
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.50579146;fill:#eeeeec;fill-opacity:0.75;fill-rule:evenodd;stroke:#eeeeec;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 147.49323,36.740512 c -0.17223,0.251711 -0.50342,0.662395 -0.51667,1.351286"
+         id="path6305"
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         d="m 149.32826,43.2653 c -0.58291,-0.675644 -1.04659,-0.357694 -2.06668,-0.238463 -0.92735,0.07949 -1.5765,-0.357693 -1.70898,-1.251926 0.13248,-0.894234 0.70214,-1.251927 1.70898,-1.251927 1.02009,0.119231 1.92095,0.834618 2.94104,2.106416"
+         style="opacity:0.69884171;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:url(#linearGradient21126);stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path6307"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:url(#radialGradient21128);stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 144.6385,44.179405 c 0.63349,-0.245944 2.46996,0.08575 3.9885,0.860863 1.18075,0.602691 2.2654,1.479043 2.68844,1.444272 2.88804,-0.516668 2.99403,-2.503853 4.96796,-1.430773"
+         id="path6312"
+         sodipodi:nodetypes="cscc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#cc0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 160.8738,39.072339 c -1.72281,0.05229 -3.97296,-5.122217 -0.70161,-5.976096 0.28233,-0.07369 0.13362,-0.255353 0.16473,-0.26077 4.75514,-0.82817 4.59217,-2.327601 3.27759,-6.100076 6.85619,4.011322 2.11786,10.089459 -2.74071,12.336942 z"
+         id="path6494"
+         sodipodi:nodetypes="csscc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path6291"
+         d="m 159.74111,32.931936 c 5.36217,-0.808071 5.24068,-2.272837 3.8734,-6.196539 6.85619,4.011322 2.21722,10.308049 -2.64135,12.555532"
+         style="fill:#cc0000;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21130);stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.6756757;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21132);stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 159.90008,33.885785 c 4.68653,-0.808071 5.7971,-1.636938 5.10546,-5.322178 3.96961,5.43871 -2.45927,9.469177 -4.42981,10.290142"
+         id="path6448"
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.30888032;fill:url(#radialGradient21134);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 160.61547,38.992851 c -0.004,0.205465 -0.86423,-0.18615 -1.66403,-1.695265 7.79856,-2.722019 7.92052,-6.466366 4.66307,-10.562189 6.10106,4.011322 1.85953,10.009971 -2.99904,12.257454 z"
+         id="path6468"
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cscc"
+         id="path6510"
+         d="M 4.79434,12.020829 C 4.6124815,11.949337 4.9354854,11.248392 4.5181394,10.672854 4.3022475,10.37513 4.084786,10.043538 4.3859349,9.9332227 5.3765491,9.785043 5.263542,11.402661 4.79434,12.020829 Z"
+         style="opacity:0.4;fill:url(#radialGradient21136);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter6629)"
+         transform="matrix(1.6597969,1.9560522,-2.6040228,2.2715822,175.75169,7.841276)"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cccc"
+         id="path6635"
+         d="m 147.87761,42.708888 c 0.56304,-0.304702 0.64915,-0.609403 0.73526,-1.271798 0.52992,0.317949 2.01368,1.51026 1.15257,1.947441 -0.85449,-0.05299 -1.07308,-0.50342 -1.88783,-0.675643 z"
+         style="fill:url(#linearGradient21138);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:url(#linearGradient21140);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 152.94493,33.090911 c 1.67554,-0.152393 2.52199,5.976318 0.9936,8.187203 -0.40299,0.113392 -1.59382,0.500177 -1.35397,0.255552 1.69573,-1.729476 2.31996,-6.844445 0.36037,-8.442755 z"
+         id="path6645"
+         sodipodi:nodetypes="ccsc"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path6655"
+         style="opacity:0.50965247;fill:url(#radialGradient21142);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 149.32826,43.2653 c -0.58291,-0.675644 -1.04659,-0.357694 -2.06668,-0.238463 -0.92735,0.07949 -1.5765,-0.357693 -1.70898,-1.251926 0.13248,-0.894234 0.70214,-1.251927 1.70898,-1.251927 1.02009,0.119231 1.92095,0.834618 2.94104,2.106416"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0" />
+      <g
+         transform="translate(133.19231,24.516668)"
+         id="g13675">
+        <ellipse
+           inkscape:export-ydpi="299.96634"
+           inkscape:export-xdpi="299.96634"
+           inkscape:export-filename="/home/bellaich/Desktop/tux-collection.png"
+           style="fill:#cc0000;fill-opacity:1;stroke:#7f0202;stroke-width:2.37768364;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="path36520"
+           transform="matrix(-0.127716,0.2520781,0.3151375,0.1570575,1.5029142,-9.0933216)"
+           cx="85.535156"
+           cy="76.485847"
+           rx="4.3466144"
+           ry="4.2689962" />
+        <path
+           style="opacity:0.64864867;fill:url(#linearGradient21144);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 15.789504,23.954847 c 0.01788,0.250595 0.02183,0.657883 -0.05686,0.876386 -0.495157,-0.356188 -1.218393,-0.880659 -2.050181,-0.886387 0.144694,-0.316291 0.285389,-0.393257 0.591061,-0.613157 0.556968,0.03664 1.113191,0.277473 1.515979,0.623158 z"
+           id="path36534"
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0" />
+        <ellipse
+           transform="matrix(-0.1840312,0.2144463,0.2687124,0.2275354,11.013097,-5.2606073)"
+           id="path13506"
+           style="fill:#cc0000;fill-opacity:1;stroke:#670202;stroke-width:2.37768388;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           inkscape:export-filename="/home/bellaich/Desktop/tux-collection.png"
+           inkscape:export-xdpi="299.96634"
+           inkscape:export-ydpi="299.96634"
+           cx="85.535156"
+           cy="76.485847"
+           rx="4.3466144"
+           ry="4.2689962" />
+        <path
+           sodipodi:nodetypes="ccccc"
+           id="path13508"
+           d="m 14.741237,30.288968 c 0.122043,-0.2196 0.216754,-0.377761 0.402102,-0.517693 0.478715,0.500836 0.762071,0.886929 1.307611,1.221473 -0.152442,0.160285 -0.229067,0.47231 -0.538405,0.53579 -0.504422,-0.251659 -1.023056,-0.729906 -1.171308,-1.23957 z"
+           style="opacity:0.84942082;fill:url(#linearGradient21146);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:#cc0000;fill-opacity:1;stroke:#7f0202;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           d="m 12.980722,30.198307 c 0.344325,0.575656 1.265345,0.859478 1.817975,0.453873 0.546595,-0.401175 1.44911,-1.720066 0.87996,-2.323825 -0.569149,-0.603759 -1.416172,-0.699068 -1.930387,-0.257152 -0.506172,0.435004 -1.254282,1.20198 -0.767548,2.127104 z"
+           id="path36522"
+           sodipodi:nodetypes="csssc"
+           inkscape:connector-curvature="0" />
+        <path
+           style="opacity:0.64864867;fill:url(#linearGradient21148);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 13.431823,28.863247 c 0.145881,-0.204542 0.257717,-0.351095 0.457578,-0.469377 0.419581,0.551322 0.657891,0.966734 1.16251,1.360299 -0.169442,0.142194 -0.280547,0.443669 -0.59505,0.472087 -0.473047,-0.306594 -0.934827,-0.839943 -1.025038,-1.363009 z"
+           id="path36524"
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0" />
+        <ellipse
+           transform="matrix(-0.2520781,-0.127716,-0.1570575,0.3151375,46.49528,14.196719)"
+           id="path36526"
+           style="fill:#cc0000;fill-opacity:1;stroke:#7f0202;stroke-width:2.37768364;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           inkscape:export-filename="/home/bellaich/Desktop/tux-collection.png"
+           inkscape:export-xdpi="299.96634"
+           inkscape:export-ydpi="299.96634"
+           cx="85.535156"
+           cy="76.485847"
+           rx="4.3466144"
+           ry="4.2689962" />
+        <path
+           sodipodi:nodetypes="ccccc"
+           id="path36530"
+           d="m 12.43501,26.37842 c 0.182955,-0.172179 0.443118,-0.104563 0.662203,-0.181613 0.304052,0.622541 0.509503,1.134498 0.673151,1.788596 -0.336588,0.08766 -0.465727,0.11395 -0.829297,0.01593 -0.323477,-0.454883 -0.519549,-1.0923 -0.506057,-1.622916 z"
+           style="opacity:0.64864867;fill:url(#linearGradient21150);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           inkscape:connector-curvature="0" />
+      </g>
+      <path
+         style="opacity:0.42857145;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21152);stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 158.06482,48.328763 c 0.18221,2.078481 1.19568,3.915134 1.03099,5.527484 -0.34052,2.822222 -1.843,3.497144 -4.12211,2.902215 -1.87032,0.491558 -4.10001,-1.287443 -4.27319,-1.991277 0.72158,-0.230381 2.0748,-2.066502 1.10566,-3.10697 0.44793,-0.180535 0.5779,-0.241839 1.10532,-0.144168 0.38434,0.05456 2.15674,1.816421 2.7086,1.93053 1.2141,0.251039 1.83252,-0.564009 2.14957,-1.16527"
+         id="path13589"
+         sodipodi:nodetypes="ccccccsc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.23166025;fill:url(#radialGradient21154);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 158.58149,47.772351 c 0.22196,2.674637 1.7481,4.527752 1.58341,6.140102 -0.44489,3.891208 -6.14698,4.464452 -8.51834,2.54202 3.36822,0.750705 2.88689,0.608209 3.53617,-0.01454 1.17626,-1.549141 -0.42197,-1.720923 2.782,-1.616197"
+         id="path13599"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:url(#linearGradient21156);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 141.71974,47.796037 c -0.82488,1.200434 -2.53214,2.258557 -4.95052,1.607653 1.33904,-0.08113 3.13817,-0.535813 3.95788,-1.585199 l 0.69367,-1.08984 c 0.63012,-1.322639 0.52436,-1.99221 0.35443,-3.036049 0.65505,0.244639 0.77833,2.890035 -0.0555,4.103435 z"
+         id="path13629"
+         sodipodi:nodetypes="cccccz"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path13649"
+         d="m 150.28211,55.864055 c 0.86656,1.224263 2.162,1.844055 3.33847,1.907698 1.34099,-0.12286 3.09947,-1.188644 3.1,-2.941034"
+         style="opacity:0.45173747;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:url(#linearGradient21158);stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.45173747;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:url(#linearGradient21160);stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 150.9433,51.241055 c 0.33867,-0.622081 0.92403,-0.752737 2.04808,-0.566355 1.25837,0.27587 3.16155,1.633908 2.8558,3.524967"
+         id="path13663"
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0" />
+      <path
+         transform="matrix(1.6597969,1.9560522,-2.6040228,2.2715822,175.43374,16.823354)"
+         style="opacity:0.3;fill:url(#radialGradient21162);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter13727)"
+         d="M 5.099395,10.795865 C 4.9175365,10.724373 4.9354854,11.248392 4.5181394,10.672854 4.3022475,10.37513 4.084786,10.043538 4.3859349,9.9332227 5.3765491,9.785043 5.568597,10.177697 5.099395,10.795865 Z"
+         id="path13711"
+         sodipodi:nodetypes="cscc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cscc"
+         id="path13719"
+         d="M 5.099395,10.795865 C 4.9175365,10.724373 4.9354854,11.248392 4.5181394,10.672854 4.3022475,10.37513 4.084786,10.043538 4.3859349,9.9332227 5.3765491,9.785043 5.568597,10.177697 5.099395,10.795865 Z"
+         style="opacity:0.35;fill:url(#radialGradient21164);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter13723)"
+         transform="matrix(2.1616155,1.9560522,-3.3913162,2.2715822,178.55537,26.799024)"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path13830"
+         d="m 152.51623,63.340656 c 0.15598,-1.222175 0.47155,-1.235247 1.60717,-1.173272 1.12696,0.04001 1.84523,0.20528 1.53258,1.61286"
+         style="fill:#4e9a06;fill-opacity:1;fill-rule:evenodd;stroke:#356904;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13832"
+         d="m 155.61302,64.401682 c -0.86594,-1.076727 -2.25063,-1.154381 -3.31415,-0.975488"
+         style="opacity:0.74131272;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cccsc"
+         id="path13934"
+         d="m 148.40083,67.579163 c -2.47697,0.313317 -4.95769,0.02966 -7.24296,-1.288765 -0.0937,-0.299766 -0.24356,-0.655737 -0.16861,-1.405152 -0.0283,-1.570609 2.88211,-2.321468 4.06616,-2.336027 3.08558,-0.03794 3.70336,2.670061 3.34541,5.029944 z"
+         style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#888a85;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21166);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 147.89497,66.90469 c -2.47697,0.08849 -3.83356,0.254484 -6.11883,-1.063941"
+         id="path13936"
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:url(#linearGradient21168);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 148.06359,67.298132 c -2.47697,0.313317 -4.1708,-0.02655 -6.45607,-1.344971 6.55157,0.962243 6.18845,-0.593892 4.89479,-2.706994 1.34723,0.767524 1.84495,2.18182 1.56128,4.051965 z"
+         id="path13938"
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 147.88013,68.169538 c 0,-0.562061 0,-1.057273 0,-1.619334 0.0395,-0.247107 -0.1865,-0.475754 -0.53779,-0.475754 -0.35156,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,1.125119 0,1.659077 0.46839,0 0.612,10e-7 1.06052,-0.03974 z"
+         id="path13940"
+         sodipodi:nodetypes="cczccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cczccc"
+         id="path13942"
+         d="m 146.36987,68.209282 c 0,-0.562061 0,-1.057273 0,-1.619334 0.0395,-0.247107 -0.1865,-0.475754 -0.53779,-0.475754 -0.35157,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,1.02576 0,1.559718 0.46839,0 0.59213,0.05962 1.06052,0.05962 z"
+         style="fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cczccc"
+         id="path13946"
+         d="m 143.9455,67.831716 c 0,-0.562061 0,-0.997657 0,-1.559718 0.0395,-0.247107 -0.18649,-0.475754 -0.53778,-0.475754 -0.35157,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,0.767426 0,1.301384 0.46838,0.119231 0.55238,0.178847 1.06051,0.258334 z"
+         style="opacity:0.20463323;fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.20463323;fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 142.59421,67.354792 c 0,-0.562061 -0.0397,-0.997657 -0.0397,-1.559718 0.0395,-0.247107 -0.18649,-0.475754 -0.53778,-0.475754 -0.35157,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,0.608451 0,1.142409 0.46838,0.07949 0.63187,0.417309 1.10025,0.417309 z"
+         id="path13948"
+         sodipodi:nodetypes="cczccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#4e9a06;fill-opacity:1;fill-rule:evenodd;stroke:#356904;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         d="m 148.66293,62.036624 c 0.0284,-1.208375 0.28784,-1.001935 1.44179,-0.889709 0.95149,0.246528 1.73837,0.853085 1.69752,1.744934"
+         id="path13869"
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13816"
+         d="m 151.12977,62.918033 c -0.75728,-1.155736 -2.12788,-1.367501 -3.20375,-1.29274"
+         style="opacity:0.74131272;fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#2e3436;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:#888a85;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 152.40083,69.579163 c -2.47697,0.313317 -4.95769,0.02966 -7.24296,-1.288765 -0.0937,-0.299766 -0.24356,-0.655737 -0.16861,-1.405152 -0.0283,-1.570609 2.88211,-2.321468 4.06616,-2.336027 3.08558,-0.03794 3.70336,2.670061 3.34541,5.029944 z"
+         id="path13733"
+         sodipodi:nodetypes="cccsc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13751"
+         d="m 151.89497,68.90469 c -2.47697,0.08849 -3.83356,0.254484 -6.11883,-1.063941"
+         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient21170);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cccc"
+         id="path13912"
+         d="m 152.06359,69.298132 c -2.47697,0.313317 -4.1708,-0.02655 -6.45607,-1.344971 6.55157,0.962243 6.18845,-0.593892 4.89479,-2.706994 1.34723,0.767524 1.84495,2.18182 1.56128,4.051965 z"
+         style="fill:url(#linearGradient21172);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cczccc"
+         id="path13902"
+         d="m 151.88013,70.169538 c 0,-0.562061 0,-1.057273 0,-1.619334 0.0395,-0.247107 -0.1865,-0.475754 -0.53779,-0.475754 -0.35156,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,1.125119 0,1.659077 0.46839,0 0.612,10e-7 1.06052,-0.03974 z"
+         style="opacity:0.20463323;fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.20463323;fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 150.01217,70.169538 c 0,-0.562061 0,-1.057273 0,-1.619334 0.0395,-0.247107 -0.18649,-0.475754 -0.53778,-0.475754 -0.35157,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,1.02576 0,1.559718 0.46838,0 0.59213,0.05962 1.06051,0.05962 z"
+         id="path13904"
+         sodipodi:nodetypes="cczccc"
+         inkscape:connector-curvature="0" />
+      <path
+         style="opacity:0.20463323;fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 148.2237,69.911204 c 0,-0.562061 0,-0.997657 0,-1.559718 0.0395,-0.247107 -0.18649,-0.475754 -0.53778,-0.475754 -0.35157,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,0.767426 0,1.301384 0.46839,0.119231 0.55239,0.178847 1.06051,0.258334 z"
+         id="path13908"
+         sodipodi:nodetypes="cczccc"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="cczccc"
+         id="path13910"
+         d="m 146.51472,69.43428 c 0,-0.562061 -0.0397,-0.997657 -0.0397,-1.559718 0.0395,-0.247107 -0.18649,-0.475754 -0.53778,-0.475754 -0.35157,0 -0.53864,0.234468 -0.52273,0.475754 -0.0187,0.477752 -0.009,0.608451 0,1.142409 0.46838,0.07949 0.63187,0.417309 1.10025,0.417309 z"
+         style="opacity:0.20463323;fill:#2e3436;fill-opacity:0.75;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
