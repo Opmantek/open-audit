@@ -1865,8 +1865,8 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.2281.1.20.1.3': $device->model = 'FibeAir IP-20G/GX'; $device->type = 'wireless link'; break;
 			case '1.3.6.1.4.1.2281.1.20.1.3.1': $device->model = 'FibeAir IP-20G'; $device->type = 'wireless link'; break;
 			case '1.3.6.1.4.1.2281.1.20.1.3.2': $device->model = 'FibeAir IP-20GX'; $device->type = 'wireless link'; break;
-			case '1.3.6.1.4.1.2281.1.20.2.2': $device->model = 'FibeAir IP-20C'; $device->type = 'wireless link'; break;
-			case '1.3.6.1.4.1.2281.1.20.2.2.2': $device->model = 'FibeAir IP-20S'; $device->type = 'wireless link'; break;
+			case '1.3.6.1.4.1.2281.1.20.2.2': $device->model = 'PTP820c'; $device->type = 'wireless link'; break;
+			case '1.3.6.1.4.1.2281.1.20.2.2.2': $device->model = 'PTP820s'; $device->type = 'wireless link'; break;
 			case '1.3.6.1.4.1.2281.1.20.2.2.3': $device->model = 'FibeAir IP-20E'; $device->type = 'wireless link'; break;
 			case '1.3.6.1.4.1.2334.1.1': $device->model = 'PacketShaper'; $device->type = 'wan accelerator'; break;
 			case '1.3.6.1.4.1.2334.1.1.1': $device->model = 'PacketShaper - 2000'; $device->type = 'wan accelerator'; break;
