@@ -71,6 +71,8 @@ ALTER TABLE `bios` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2
 
 ALTER TABLE `bios` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
+ALTER TABLE `bios` CHANGE `manufacturer` `manufacturer` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `name`;
+
 ALTER TABLE `bios` CHANGE `description` `model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`;
 
 UPDATE `bios` SET `name` = `model`;
@@ -433,6 +435,8 @@ $this->log_db($this->db->last_query());
 $this->alter_table('bios', 'first_seen', "`first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `current`");
 
 $this->alter_table('bios', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('bios', 'manufacturer', "`manufacturer` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `name`");
 
 $this->alter_table('bios', 'description', "`model` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
 

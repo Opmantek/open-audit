@@ -480,7 +480,7 @@ CREATE TABLE `bios` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `manufacturer` varchar(200) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
   `serial` varchar(100) NOT NULL DEFAULT '',
   `smversion` varchar(100) NOT NULL DEFAULT '',
