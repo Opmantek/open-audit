@@ -612,40 +612,23 @@ if ( ! function_exists('snmp_audit')) {
         if (empty($details->mac_address)) {
             $item_start = microtime(true);
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-            $details->mac_address = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.1');
+            $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.2.2.1.6');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $details->mac_address = format_mac($details->mac_address);
+            $first_key = array_key_first($temp);
+
+            $interface_number = str_replace('.1.3.6.1.2.1.2.2.1.6.', '', $first_key);
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'MAC Address retrieval (oid #1) for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.1';
-            $log->command_output = (string)$details->mac_address;
+            $log->message = 'Interface number for ' . $ip . '  retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
+            $log->command_output = (string)$interface_number;
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
-        }
-        if (empty($details->mac_address)) {
-            $item_start = microtime(true);
-            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-            $details->mac_address = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.2');
-            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $details->mac_address = format_mac($details->mac_address);
+
+            $details->mac_address = @format_mac($temp[$first_key]);
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'MAC Address retrieval (oid #2) for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.2';
-            $log->command_output = (string)$details->mac_address;
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
-        }
-        if (empty($details->mac_address)) {
-            $item_start = microtime(true);
-            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-            $details->mac_address = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.3');
-            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $details->mac_address = format_mac($details->mac_address);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'MAC Address retrieval (oid #3) for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.3';
+            $log->message = 'MAC Address retrieval for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6.' . $first_key;
             $log->command_output = (string)$details->mac_address;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -1386,6 +1369,7 @@ if ( ! function_exists('snmp_audit')) {
                         if ($each_value === $interface->net_index) {
                             $new_ip = new stdclass();
                             $new_ip->net_index = $interface->net_index;
+                            $new_ip->interface = @$interface->connection;
                             $new_ip->ip = str_replace('.1.3.6.1.2.1.4.20.1.2.', '', $each_key);
                             $new_ip->mac = $interface->mac;
                             $new_ip->netmask = @$subnets['.1.3.6.1.2.1.4.20.1.3.'.$new_ip->ip];
@@ -1429,6 +1413,37 @@ if ( ! function_exists('snmp_audit')) {
                 }
             }
         } // end of network interfaces
+
+        $test = false;
+        if (is_array($return_ips->item)) {
+            foreach ($return_ips->item as $return_ip) {
+                if ($return_ip->mac === $details->mac_address) {
+                    $test = true;
+                }
+            }
+        }
+        if (!$test and ! empty($interface_number)) {
+            // We have a MAC address, but nothing in the return_ips->item array, add it
+            $new_ip = new stdClass();
+            // Standrd location for subnet
+            $temp = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.4.20.1.3.' . $details->ip);
+            if (empty($temp)) {
+                // We 'might' have a subnet here, try it
+                $temp = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.2.4.20.1.3.0');
+            }
+            $new_ip->net_index = $interface_number;
+            $new_ip->ip = $details->ip;
+            $new_ip->netmask = @$temp;
+            $new_ip->version = '4';
+            $new_ip->mac = $details->mac_address;
+            foreach ($interfaces_filtered as $interface) {
+                if ($interface->net_index === $interface_number) {
+                    $new_ip->interface = @$interface->connection;
+                }
+            }
+            $return_ips->item[] = $new_ip;
+            $new_ip = null;
+        }
 
         // COMPLETE SNMP walk for testing performance.
         // $item_start = microtime(true);
