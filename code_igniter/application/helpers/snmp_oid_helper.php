@@ -2326,7 +2326,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 2278: $manufacturer = 'Grass Mbh'; break;
 			case 2279: $manufacturer = 'Epicon Inc.'; break;
 			case 2280: $manufacturer = 'Sad Trasporto Locale S.p.a'; break;
-			case 2281: $manufacturer = 'Giganet Ltd'; break;
+			case 2281: $manufacturer = 'Cambium'; break;
 			case 2282: $manufacturer = 'Incaa Informatica Italia Srl'; break;
 			case 2283: $manufacturer = 'Vermont Firmware Corporation'; break;
 			case 2284: $manufacturer = 'Automated Concepts'; break;
