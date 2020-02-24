@@ -2623,7 +2623,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '00:0a:22': $manufacturer = 'Amperion Inc'; break;
             case '00:0a:23': $manufacturer = 'Parama Networks Inc'; break;
             case '00:0a:24': $manufacturer = 'Octave Communications'; break;
-            case '00:0a:25': $manufacturer = 'Ceragon Networks'; break;
+            case '00:0a:25': $manufacturer = 'Cambium'; break;
             case '00:0a:26': $manufacturer = 'Ceia S.p.a.'; break;
             case '00:0a:27': $manufacturer = 'Apple, Inc.'; break;
             case '00:0a:28': $manufacturer = 'Motorola'; break;
