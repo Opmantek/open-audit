@@ -278,6 +278,10 @@ ALTER TABLE `network` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
 
 UPDATE `network` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
 
+ALTER TABLE `network` CHANGE `dhcp_lease_obtained` `dhcp_lease_obtained` varchar(20) NOT NULL DEFAULT '';
+
+ALTER TABLE `network` CHANGE `dhcp_lease_expires` `dhcp_lease_expires` varchar(20) NOT NULL DEFAULT '';
+
 ALTER TABLE `nmap` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`));
@@ -725,6 +729,10 @@ $this->alter_table('network', 'model', "`model` varchar(200) NOT NULL NOT NULL D
 $sql = "UPDATE `network` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$this->alter_table('network', "`dhcp_lease_obtained` varchar(20) NOT NULL DEFAULT ''");
+
+$this->alter_table('network', "`dhcp_lease_expires` varchar(20) NOT NULL DEFAULT ''");
 
 $this->alter_table('nmap', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
