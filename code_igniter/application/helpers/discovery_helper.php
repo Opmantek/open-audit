@@ -1354,7 +1354,8 @@ if (!function_exists('process_scan')) {
 
             $log->discovery_id = $discovery->id;
             $parameters = new stdClass();
-            $parameters->log = $log;
+            $parameters->discovery_id = $discovery->id;
+            $parameters->ip = $device->ip;
             $parameters->input = $audit->system;
             $audit->system = audit_format_system($parameters);
 
