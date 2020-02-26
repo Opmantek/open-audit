@@ -425,7 +425,7 @@ class Discoveries extends MY_Controller
     private function discovery_status()
     {
         // Mark any discoveries where status != complete and last_log is greater than 20 minutes ago as Zombie
-        $sql = '/* discoveries */ ' . " UPDATE discoveries SET status = 'failed' WHERE last_finished != '2000-01-01 00:00:00' AND last_finished < (NOW() - INTERVAL 30 MINUTE) AND status = 'running'";
+        $sql = '/* discoveries */ ' . " UPDATE discoveries SET status = 'failed' WHERE last_finished != '2000-01-01 00:00:00' AND last_finished < (NOW() - INTERVAL 60 MINUTE) AND last_finished > last_run AND status = 'running'";
         $this->db->query($sql);
 
         $sql = '/* discoveries */ ' . "SELECT COUNT(*) AS `count` FROM `discoveries` WHERE status = 'running'";
