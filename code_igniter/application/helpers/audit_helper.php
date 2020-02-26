@@ -359,7 +359,11 @@ if ( ! function_exists('audit_format_system')) {
                 $log->ip = @$input->ip;
                 $log->command_status = 'fail';
                 $log->severity = 4;
-                discovery_log($log);
+                if ( ! empty($log->discovery_id)) {
+                    discovery_log($log);
+                } else {
+                    stdlog($log);
+                }
                 $input->id = '';
             }
         }
@@ -420,7 +424,11 @@ if ( ! function_exists('audit_format_system')) {
                 unset($temp);
                 $log->message = 'FQDN supplied in hostname, converting.';
                 $log->command_output = 'Hostname: ' . $input->hostname . ' Domain: ' .  $input->domain;
-                discovery_log($log);
+                if ( ! empty($log->discovery_id)) {
+                    discovery_log($log);
+                } else {
+                    stdlog($log);
+                }
             }
         }
 
@@ -430,7 +438,11 @@ if ( ! function_exists('audit_format_system')) {
                 $input->ip = $input->hostname;
                 $log->message = 'IP supplied in hostname, setting device IP.';
                 $log->command_output = 'IP: ' . $input->ip;
-                discovery_log($log);
+                if ( ! empty($log->discovery_id)) {
+                    discovery_log($log);
+                } else {
+                    stdlog($log);
+                }
             }
             $input->hostname = '';
         }
@@ -440,7 +452,11 @@ if ( ! function_exists('audit_format_system')) {
         if (empty($input->fqdn) && ! empty($input->hostname) && ! empty($input->domain)) {
             $input->fqdn = $input->hostname . '.' . $input->domain;
             $log->message = 'No FQDN, but hostname and domain supplied, setting FQDN.';
-            discovery_log($log);
+            if ( ! empty($log->discovery_id)) {
+                discovery_log($log);
+            } else {
+                stdlog($log);
+            }
         }
 
         if (isset($input->os_name)) {
@@ -476,7 +492,11 @@ if ( ! function_exists('audit_format_system')) {
             $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-'. substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
             $log->message = 'Windows VMware style serial detected, creating vm_uuid.';
             $log->command_output .= ' -> ' . $input->vm_uuid;
-            discovery_log($log);
+            if ( ! empty($log->discovery_id)) {
+                discovery_log($log);
+            } else {
+                stdlog($log);
+            }
             $log->command_output = '';
         }
 

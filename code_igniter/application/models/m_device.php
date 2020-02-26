@@ -1451,7 +1451,8 @@ class M_device extends MY_Model
         discovery_log($log);
 
         $parameters = new stdClass();
-        $parameters->log = $log;
+        $parameters->discovery_id = @$details->discovery_id;
+        $parameters->ip = @$details->ip;
         $parameters->input = $details;
         $details = audit_format_system($parameters);
 
@@ -1502,6 +1503,7 @@ class M_device extends MY_Model
                 }
             }
         }
+
         $keys = mb_substr($keys, 0, mb_strlen($keys)-2);
         $values = mb_substr($values, 0, mb_strlen($values)-2);
         $sql = 'INSERT INTO system (' . $keys . ') VALUES (' . $values . ')';
@@ -1537,7 +1539,7 @@ class M_device extends MY_Model
             if ( ! empty($details->mac_address) && ! empty($details->ip) && ! empty($details->subnet)) {
                 $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES (NULL, ?, 'y', ?, ?, ?, '', ?, ?, '4', '', '')";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->id", "$details->timestamp", "$details->timestamp", "$details->mac_address", "$details->ip", "$details->subnet");
+                $data = array("{$details->id}", "{$details->timestamp}", "{$details->timestamp}", "{$details->mac_address}", "{$details->ip}", "{$details->subnet}");
                 $query = $this->db->query($sql, $data);
             }
         }
@@ -1545,7 +1547,7 @@ class M_device extends MY_Model
         // check if we have a matching entry in the vm table and update it if required
         $sql = "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.current = 'y' and vm.system_id = system.id;";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->uuid", "$details->vm_uuid");
+        $data = array("{$details->uuid}", "{$details->vm_uuid}");
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
             $row = $query->row();
@@ -1567,7 +1569,7 @@ class M_device extends MY_Model
             if (empty($details->name)) {
                 $name = $details->dns_hostname;
             }
-            $data = array($details->id, "$details->icon", "$name", "$temp_vm_id");
+            $data = array($details->id, "{$details->icon}", "{$name}", "{$temp_vm_id}");
             $query = $this->db->query($sql, $data);
             $sql = 'UPDATE system SET vm_system_id = ?, vm_server_name = ? WHERE id = ?';
             $sql = $this->clean_sql($sql);
@@ -1626,27 +1628,54 @@ class M_device extends MY_Model
         $this->load->model('m_devices');
 
         $log_details = new stdClass();
-        $log_details->message = 'System update start for '.@ip_address_from_db(@$details->ip).' ('.@$details->hostname.') (System ID '.@$details->id.')';
-        $log_details->severity = 7;
-        $log_details->file = 'm_device';
-        $log_details->function = 'm_device::update';
-        $log_details->status = 'success';
-        $log_details->summary = 'start function';
+        $log->message = 'System update start for '.@ip_address_from_db(@$details->ip).' ('.@$details->hostname.') (System ID '.@$details->id.')';
+        $log->severity = 7;
+        $log->file = 'm_device';
+        $log->function = 'm_device::update';
+        $log->status = 'notice';
+        $log->command_status = 'notice';
+        $log->summary = 'start function';
+        $log->ip = @ip_address_from_db($details->ip);
 
         if ( ! empty($details->discovery_id)) {
-            $log_details->discovery_id = $details->discovery_id;
+            $log->discovery_id = $details->discovery_id;
             $GLOBALS['discovery_id'] = $details->discovery_id;
         } else if ( ! empty($GLOBALS['discovery_id'])) {
-            $log_details->discovery_id = $GLOBALS['discovery_id'];
+            $log->discovery_id = $GLOBALS['discovery_id'];
         } else {
-            $log_details->discovery_id = '';
+            $log->discovery_id = '';
         }
-        stdlog($log_details);
+
+        if ( ! empty($log->discovery_id)) {
+            discovery_log($log);
+        } else {
+            stdlog($log);
+        }
 
         $parameters = new stdClass();
-        $parameters->log = $log_details;
         $parameters->input = $details;
+        if ( ! empty($details->discovery_id)) {
+            $parameters->discovery_id = intval($details->discovery_id);
+        } else {
+            $parameters->log = $log;
+        }
+        $parameters->ip = @$details->ip;
+
         $details = audit_format_system($parameters);
+
+        if (empty($details->id)) {
+            // Something went wrong - we SHOULD have an ID in an update routine
+            // Possibly removed via audit_format_system (if the supplied ID belonged to a device with status == deleted)
+            $log->message = 'Something went wrong. The update device function was not supplied with a device ID.';
+            $log->severity = 4;
+            $log->status = 'fail';
+            if ( ! empty($log->discovery_id)) {
+                discovery_log($log);
+            } else {
+                stdlog($log);
+            }
+            return;
+        }
 
         if (empty($details->name)) {
             if ( ! empty($details->hostname)) {
@@ -1697,6 +1726,7 @@ class M_device extends MY_Model
         $fields = $this->db->list_fields('system');
         $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
         $update_device = array();
+
         foreach ($details as $key => $value) {
             if (($key !== '') && ($value !== '')) {
                 // need to iterate through available columns and only insert where $key == valid column name
@@ -1739,9 +1769,9 @@ class M_device extends MY_Model
         $sql = '';
         $data = array();
         if (count($update_device) > 0) {
-            $sql = "/* m_device::update */ " . "UPDATE `system` SET ";
+            $sql = '/* m_device::update */ ' . 'UPDATE `system` SET ';
             foreach ($update_device as $field) {
-                $sql .= "`" . $field->key . "` = ?, ";
+                $sql .= '`' . $field->key . '` = ?, ';
                 $data[] = (string)$field->value;
             }
             $sql = substr($sql, 0, strlen($sql)-2);
@@ -1758,7 +1788,7 @@ class M_device extends MY_Model
             // we need to check if we have an entry in `network` if we do not, but we have details (ex- an nmap device that previously existed but did not have a MAC, but now does)
             // we need to insert it. ideally this would have already been done when the device was initially discovered, but we cannot count on that.
             // need to check if an entry in `network` exists and if it does not AND we have details, insert something search for any entries in `ip`
-            $sql = "/* m_device::update */ " . "SELECT * FROM ip WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
+            $sql = '/* m_device::update */ ' . "SELECT * FROM ip WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
             $sql = $this->clean_sql($sql);
             $data = array("$details->id", "$details->mac_address", "$details->ip");
             $query = $this->db->query($sql, $data);
@@ -1776,12 +1806,6 @@ class M_device extends MY_Model
                 $data = array("$details->timestamp", "$details->id", "$details->mac_address", "$details->ip");
                 $query = $this->db->query($sql, $data);
             }
-        }
-
-        if (isset($details->ip) && $details->ip !== '') {
-            $temp_ip = $details->ip.' ';
-        } else {
-            $temp_ip = '';
         }
 
         // check if we have a matching entry in the vm table and update it if required
@@ -1825,17 +1849,20 @@ class M_device extends MY_Model
             $row = $query->row();
             $details->org_id = $row->org_id;
         }
-
         // add a count to our chart table
         $sql = "/* m_device::update */ " . "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
-        $log_details->message = 'System update end for '.ip_address_from_db($temp_ip).'('.$details->hostname.') (System ID '.$details->id.')';
-        $log_details->summary = 'finish function';
-        stdlog($log_details);
-        unset($log_details);
-        unset($temp_ip);
+        $log->message = 'System update end for '.@ip_address_from_db($details->ip).' ('.$details->hostname.') (System ID '.$details->id.')';
+        $log->summary = 'finish function';
+        if ( ! empty($log->discovery_id)) {
+            discovery_log($log);
+        } else {
+            stdlog($log);
+        }
+        unset($log);
+        return;
     }
 
     /**
