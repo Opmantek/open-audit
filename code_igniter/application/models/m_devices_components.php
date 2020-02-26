@@ -1108,9 +1108,11 @@ class M_devices_components extends MY_Model
                 }
             }
             $in_ids = implode(',', $id_array);
-            $sql = "DELETE FROM `{$table}` WHERE `id` IN ({$in_ids})";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
+            if ( ! empty($in_ids)) {
+                $sql = "DELETE FROM `{$table}` WHERE `id` IN ({$in_ids})";
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql);
+            }
             return;
         }
 
@@ -1124,9 +1126,11 @@ class M_devices_components extends MY_Model
                 }
             }
             $in_ids = implode(',', $id_array);
-            $sql = "DELETE FROM `{$table}` WHERE `id` IN ({$in_ids})";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
+            if ( ! empty($in_ids)) {
+                $sql = "DELETE FROM `{$table}` WHERE `id` IN ({$in_ids})";
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql);
+            }
             return;
         }
 
