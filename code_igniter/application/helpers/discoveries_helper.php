@@ -1585,6 +1585,23 @@ if ( ! function_exists('ip_audit')) {
 		}
 
 		if ($audit) {
+			// Run our rules to update the device attributes
+			$parameters = new stdClass();
+			$parameters->discovery_id = intval($discovery->id);
+			$parameters->ip = $device->ip;
+			$parameters->action = 'return';
+			$parameters->device = $audit->system;
+			$CI->m_rules->execute($parameters);
+		} else {
+			$parameters = new stdClass();
+			$parameters->id = intval($device->id);
+			$parameters->discovery_id = intval($discovery->id);
+			$parameters->ip = $device->ip;
+			$parameters->action = 'update';
+			$CI->m_rules->execute($parameters);
+		}
+
+		if ($audit) {
 			$log->message = 'Matching device from audit result';
 			discovery_log($log);
 			$parameters = new stdCLass();
@@ -1695,16 +1712,6 @@ if ( ! function_exists('ip_audit')) {
 				}
 			}
 			unset($dns_entries);
-		}
-
-		if ( ! $audit) {
-			// Run our rules to update the device if any match
-			$parameters = new stdClass();
-			$parameters->id = intval($device->id);
-			$parameters->discovery_id = intval($discovery->id);
-			$parameters->ip = $device->ip;
-			$parameters->action = 'update';
-			$CI->m_rules->execute($parameters);
 		}
 
 		// If we are configured as a collector, forward the information to the server
