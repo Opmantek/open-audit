@@ -855,6 +855,7 @@ if ( !  function_exists('ssh_audit')) {
 
         // Set some items that may have multiple results
         if ( ! empty($device->hostname)) {
+            $device->hostname = strtolower($device->hostname);
             if (stripos($device->hostname, '.') !== false) {
                 $device->fqdn = $device->hostname;
                 $temp = explode('.', $device->hostname);
@@ -878,37 +879,37 @@ if ( !  function_exists('ssh_audit')) {
         }
 
         if ( ! empty($device->ubiquiti_os)) {
-            $device->os_family = 'Ubiquiti';
+            #$device->os_family = 'Ubiquiti';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
         }
         unset($device->ubiquiti_os);
         if ( ! empty($device->ubiquiti_serial)) {
-            $device->os_family = 'Ubiquiti';
+            #$device->os_family = 'Ubiquiti';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
             $device->serial = $device->ubiquiti_serial;
         }
         unset($device->ubiquiti_serial);
         if ( ! empty($device->ubiquiti_os_version)) {
-            $device->os_family = 'Ubiquiti';
+            #$device->os_family = 'Ubiquiti';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
             $device->description = $device->ubiquiti_os_version;
-            $device->os_version = $device->ubiquiti_os_version;
+            #$device->os_version = $device->ubiquiti_os_version;
         }
         unset($device->ubiquiti_os_version);
         if ( ! empty($device->ubiquiti_model)) {
-            $device->os_family = 'Ubiquiti';
+            #$device->os_family = 'Ubiquiti';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
             $device->model = $device->ubiquiti_model;
         }
         unset($device->ubiquiti_model);
 
         if ( ! empty($device->ubuntu_os_codename)) {
-            $device->os_name = $device->os_name . ' (' . $device->ubuntu_os_codename . ')';
+            // $device->os_name = $device->os_name . ' (' . $device->ubuntu_os_codename . ')'; // removed to match audit script
         }
         unset($device->ubuntu_os_codename);
 
         if ( ! empty($device->redhat_os_name)) {
-            $device->os_name = $device->redhat_os_name;
+            // $device->os_name = $device->redhat_os_name; # removed to match audit script
             if (stripos($device->redhat_os_name, 'centos') !== false) {
                 $device->os_family = 'CentOS';
             }
