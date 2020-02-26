@@ -117,6 +117,7 @@ class M_device extends MY_Model
                 $match->{$item} = $this->config->config[$item];
             }
         }
+        $invalid_strings = array('To be filled by O.E.M.');
 
         // TODO: fix this by making sure (snmp in particular) calls with the proper variable name
         if ( ! isset($details->mac_address) && (isset($details->mac))) {
@@ -349,7 +350,7 @@ class M_device extends MY_Model
         if (strtolower($match->match_hostname_dbus) === 'y' && empty($details->id) && ! empty($details->dbus_identifier) && ! empty($details->hostname)) {
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->hostname", "$details->dbus_identifier");
+            $data = array("{$details->hostname}", "{$details->dbus_identifier}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -408,7 +409,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($match->match_hostname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->hostname)) {
+        if (strtolower($match->match_hostname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->hostname) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->hostname}", "{$details->serial}");
@@ -458,6 +459,12 @@ class M_device extends MY_Model
             } else if (empty($details->hostname)) {
                 $message = new stdClass();
                 $message->message = 'Not running match_hostname_serial, hostname not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (in_array($details->serial, $invalid_strings)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_hostname_serial, invalid serial.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -639,7 +646,7 @@ class M_device extends MY_Model
         if (strtolower($match->match_fqdn) === 'y' && empty($details->id) && ! empty($details->fqdn)) {
             $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->fqdn");
+            $data = array("{$details->fqdn}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -692,10 +699,10 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type)) {
+        if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->serial", "$details->type");
+            $data = array("{$details->serial}", "{$details->type}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -745,6 +752,12 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
+            } else if (in_array($details->serial, $invalid_strings)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_serial_type, invalid serial.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
             } else {
                 $message = new stdClass();
                 $message->message = 'Not running match_serial_type.';
@@ -754,10 +767,10 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial)) {
+        if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->serial");
+            $data = array("{$details->serial}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -801,6 +814,12 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
+            } else if (in_array($details->serial, $invalid_strings)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_serial, invalid serial.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
             } else {
                 $message = new stdClass();
                 $message->message = 'Not running match_serial.';
@@ -810,10 +829,10 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($match->match_sysname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->sysName)) {
+        if (strtolower($match->match_sysname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->sysName) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT system.id FROM system WHERE system.sysName = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->sysName", "$details->serial");
+            $data = array("{$details->sysName}", "{$details->serial}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -863,6 +882,12 @@ class M_device extends MY_Model
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
+            } else if (in_array($details->serial, $invalid_strings)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_sysname_serial, invalid serial.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
             } else {
                 $message = new stdClass();
                 $message->message = 'Not running match_sysname_serial.';
@@ -875,7 +900,7 @@ class M_device extends MY_Model
         if (strtolower($match->match_sysname) === 'y' && empty($details->id) && ! empty($details->sysName)) {
             $sql = "SELECT system.id FROM system WHERE (system.sysName = ?) AND system.status != 'deleted'";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->sysName");
+            $data = array("{$details->sysName}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -931,7 +956,7 @@ class M_device extends MY_Model
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
                 $sql = $this->clean_sql($sql);
             }
-            $data = array("$details->mac_address");
+            $data = array("{$details->mac_address}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -992,7 +1017,7 @@ class M_device extends MY_Model
                 $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND system.status != 'deleted' LIMIT 1";
                 $sql = $this->clean_sql($sql);
             }
-            $data = array("$details->mac_address");
+            $data = array("{$details->mac_address}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
@@ -1057,7 +1082,7 @@ class M_device extends MY_Model
                         $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
                         $sql = $this->clean_sql($sql);
                     }
-                    $data = array("$mac");
+                    $data = array("{$mac}");
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
                     if ( ! empty($row->id)) {
@@ -1066,7 +1091,7 @@ class M_device extends MY_Model
                         $message = new stdClass();
                         $message->message = 'HIT on Mac Address (addresses).';
                         $message->command_status = 'success';
-                        $message->command_output = 'MAC: ' . $mac . ', SystemID : ' . $details->id;
+                        $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
                         $log_message[] = $message;
                         foreach ($log_message as $message) {
                             $log->message = $message->message;
@@ -1082,7 +1107,7 @@ class M_device extends MY_Model
             $message = new stdClass();
             $message->message = 'MISS on Mac Address (addresses).';
             $message->command_status = 'notice';
-            $message->command_output = 'MAC: ' . $mac . ', SystemID : ' . $details->id;
+            $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
             $log_message[] = $message;
         } else {
             if (strtolower($match->match_mac) !== 'y') {
