@@ -285,56 +285,84 @@ if (!function_exists('audit_convert')) {
 
 
 
-if (!function_exists('audit_format_system')) {
+if ( ! function_exists('audit_format_system')) {
+    /**
+     * [audit_format_system description]
+     * @param  [type] $parameters [description]
+     * @return [type]             [description]
+     */
     function audit_format_system($parameters)
     {
         $CI =& get_instance();
 
-        if (empty($parameters->log)) {
-            $log = new stdClass();
-            if (!empty($parameters->discovery_log)) {
-                $log->discovery_log = $parameters->discovery_log;
-            }
-            if (!empty($parameters->ip)) {
-                $log->ip = $parameters->ip;
-            }
-        } else {
+        if ( ! empty($parameters->log)) {
             $log = $parameters->log;
+        } else {
+            $log = new stdClass();
         }
+
+        if ( ! empty($parameters->discovery_id)) {
+            $log->discovery_id = $parameters->discovery_id;
+        } else if ( ! empty($parameters->input->discovery_id)) {
+            $log->discovery_id = $parameters->input->discovery_id;
+        }
+
+        if ( ! empty($parameters->ip)) {
+            $log->ip = ip_address_from_db($parameters->ip);
+        } else if ( ! empty($parameters->input->ip)) {
+            $log->ip = ip_address_from_db($parameters->input->ip);
+        }
+
+        $log->message = 'Formatting system details';
         $log->file = 'audit_helper';
         $log->function = 'audit_format_system';
+        $log->command_ouput = '';
+        $log->command_status = 'notice';
 
-        if (empty($parameters) or empty($parameters->input)) {
+        if (empty($parameters)) {
             $log->severity = 4;
-            $log->message = "Function audit_format_system called without parameters object.";
+            $log->message = 'Function audit_format_system called without parameters object.';
             $log->status = 'fail';
-            stdlog($log);
+            if ( ! empty($log->discovery_id)) {
+                discovery_log($log);
+            } else {
+                stdlog($log);
+            }
             return false;
         }
 
-        $input = @$parameters->input;
+        if (empty($parameters->input)) {
+            $log->severity = 4;
+            $log->message = 'Function audit_format_system called without parameters->input.';
+            $log->status = 'fail';
+            if ( ! empty($log->discovery_id)) {
+                discovery_log($log);
+            } else {
+                stdlog($log);
+            }
+            return false;
+        } else {
+            $input = @$parameters->input;
+        }
+
 
         if (empty($input->id)) {
             $input->id = '';
         } else {
-            $sql = "SELECT `status` FROM system WHERE id = ?";
+            $sql = 'SELECT `status` FROM system WHERE id = ?';
             $data = array(intval($input->id));
             $query = $CI->db->query($sql, $data);
             $result = $query->result();
             $log->system_id = intval($input->id);
-            if (!empty($result[0]->status) and $result[0]->status !== 'production') {
-                $log->message = "Removing supplied system ID (" . intval($input->id) . ") as the device is not in production status.";
+            if (empty($result[0]->status) OR $result[0]->status === 'deleted') {
+                $log->message = 'Removing supplied system ID (' . intval($input->id) . ') as the device is in a deleted status.';
+                $log->ip = @$input->ip;
+                $log->command_status = 'fail';
+                $log->severity = 4;
                 discovery_log($log);
                 $input->id = '';
             }
         }
-
-        if (!empty($input->ip)) {
-            $log->ip = ip_address_from_db($input->ip);
-        }
-        $log->command_status = 'notice';
-        $log->message = 'Formatting system details';
-        discovery_log($log);
 
         $input->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
@@ -362,7 +390,7 @@ if (!function_exists('audit_format_system')) {
             $input->timestamp = $CI->config->config['timestamp'];
         }
 
-        if (!empty($input->type)) {
+        if ( ! empty($input->type)) {
             $input->type = strtolower($input->type);
         }
 
@@ -374,33 +402,33 @@ if (!function_exists('audit_format_system')) {
             $input->vm_uuid = '';
         }
 
-        # This is set by m_device::insert or update.
+        // This is set by m_device::insert or update.
         unset($input->icon);
 
-        if (!filter_var($input->hostname, FILTER_VALIDATE_IP)) {
+        if ( ! filter_var($input->hostname, FILTER_VALIDATE_IP)) {
             if (strpos($input->hostname, '.') !== false) {
-                # we have a fqdn in the hostname field
+                // we have a fqdn in the hostname field
                 if (empty($input->fqdn)) {
                     $input->fqdn = $input->hostname;
                 }
-                $temp = explode(".", $input->hostname);
+                $temp = explode('.', $input->hostname);
                 $input->hostname = $temp[0];
                 unset($temp[0]);
                 if (empty($input->domain)) {
                     $input->domain = implode('.', $temp);
                 }
                 unset($temp);
-                $log->message = "FQDN supplied in hostname, converting.";
+                $log->message = 'FQDN supplied in hostname, converting.';
                 $log->command_output = 'Hostname: ' . $input->hostname . ' Domain: ' .  $input->domain;
                 discovery_log($log);
             }
         }
 
         if (filter_var($input->hostname, FILTER_VALIDATE_IP)) {
-            # we have an ip address in the hostname field
+            // we have an ip address in the hostname field
             if (empty($input->ip)) {
                 $input->ip = $input->hostname;
-                $log->message = "IP supplied in hostname, setting device IP.";
+                $log->message = 'IP supplied in hostname, setting device IP.';
                 $log->command_output = 'IP: ' . $input->ip;
                 discovery_log($log);
             }
@@ -409,50 +437,50 @@ if (!function_exists('audit_format_system')) {
 
         $log->command_output = '';
 
-        if (empty($input->fqdn) and !empty($input->hostname) and !empty($input->domain)) {
-            $input->fqdn = $input->hostname . "." . $input->domain;
-            $log->message = "No FQDN, but hostname and domain supplied, setting FQDN.";
+        if (empty($input->fqdn) && ! empty($input->hostname) && ! empty($input->domain)) {
+            $input->fqdn = $input->hostname . '.' . $input->domain;
+            $log->message = 'No FQDN, but hostname and domain supplied, setting FQDN.';
             discovery_log($log);
         }
 
         if (isset($input->os_name)) {
-            $input->os_name = str_ireplace("(r)", "", $input->os_name);
-            $input->os_name = str_ireplace("(tm)", "", $input->os_name);
+            $input->os_name = str_ireplace('(r)', '', $input->os_name);
+            $input->os_name = str_ireplace('(tm)', '', $input->os_name);
         }
 
-        if (empty($input->ip) or $input->ip == '0.0.0.0' or $input->ip == '000.000.000.000') {
+        if (empty($input->ip) OR $input->ip === '0.0.0.0' OR $input->ip === '000.000.000.000') {
             unset($input->ip);
         }
 
-        if (!empty($input->ip) and filter_var($input->ip, FILTER_VALIDATE_IP)) {
+        if ( ! empty($input->ip) && filter_var($input->ip, FILTER_VALIDATE_IP)) {
             $input->ip = ip_address_to_db($input->ip);
         }
 
-        if (!empty($input->mac_address)) {
+        if ( ! empty($input->mac_address)) {
             $input->mac_address = strtolower($input->mac_address);
-            if ($input->mac_address == '00:00:00:00:00:00') {
+            if ($input->mac_address === '00:00:00:00:00:00') {
                 unset($input->mac_address);
             }
         }
 
-        # because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
-        if (!empty($input->uuid) and !empty($input->serial) and stripos($input->serial, 'vmware-') !== false and !empty($input->os_name) and stripos($input->os_name, 'windows') !== false) {
-            # serial is taken from Win32_ComputerSystemProduct.IdentifyingNumber
-            # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
-            # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+        // because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
+        if ( ! empty($input->uuid) && ! empty($input->serial) && stripos($input->serial, 'vmware-') !== false && ! empty($input->os_name) && stripos($input->os_name, 'windows') !== false) {
+            // serial is taken from Win32_ComputerSystemProduct.IdentifyingNumber
+            // Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
+            // audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
             $log->command_output = $input->serial;
             $input->vm_uuid = str_ireplace('VMware-', '', $input->serial);
             $input->vm_uuid = str_ireplace('-', ' ', $input->vm_uuid);
             $input->vm_uuid = strtolower($input->vm_uuid);
             $input->vm_uuid = str_ireplace(' ', '', $input->vm_uuid);
             $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-'. substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
-            $log->message = "Windows VMware style serial detected, creating vm_uuid.";
+            $log->message = 'Windows VMware style serial detected, creating vm_uuid.';
             $log->command_output .= ' -> ' . $input->vm_uuid;
             discovery_log($log);
             $log->command_output = '';
         }
 
-        if (!empty($input->uuid) and empty($input->vm_uuid)) {
+        if ( ! empty($input->uuid) && empty($input->vm_uuid)) {
             $input->vm_uuid = $input->uuid;
         }
 
