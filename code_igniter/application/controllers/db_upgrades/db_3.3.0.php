@@ -320,6 +320,14 @@ ALTER TABLE `route` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen
 
 UPDATE `route` SET `name` = CONCAT(`destination`, '/', `mask`, ' via ', `next_hop`);
 
+DELETE FROM `rules` WHERE `name` = 'Form Factor based on Manufacturer (like innotek GmbH)';
+
+DELETE FROM `rules` WHERE `name` = 'Manufacturer change HP to Hewlett Packard';
+
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like innotek GmbH)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"value\":\"innotek GmbH\",\"operator\":\"li\"}]','[{\"value\":\"Virtual\",\"table\":\"system\",\"attribute\":\"form_factor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+
+INSERT INTO `rules` VALUES (NULL,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"system\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+
 ALTER TABLE `scsi` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `scsi` SET `name` = `model`;
@@ -779,6 +787,22 @@ $this->log_db($this->db->last_query());
 $this->alter_table('route', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $sql = "UPDATE `route` SET `name` = CONCAT(`destination`, '/', `mask`, ' via ', `next_hop`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `rules` WHERE `name` = 'Form Factor based on Manufacturer (like innotek GmbH)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `rules` WHERE `name` = 'Manufacturer change HP to Hewlett Packard'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like innotek GmbH)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"value\":\"innotek GmbH\",\"operator\":\"li\"}]','[{\"value\":\"Virtual\",\"table\":\"system\",\"attribute\":\"form_factor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `rules` VALUES (NULL,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"system\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
