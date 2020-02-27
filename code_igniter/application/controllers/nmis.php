@@ -209,6 +209,8 @@ class Nmis extends MY_Controller
                 $device->ip = '';
                 $device->hostname = '';
                 $device->fqdn = '';
+                $device->org_id = intval($this->response->meta->received_data->attributes->org_id);
+                $device->location_id = intval($this->response->meta->received_data->attributes->location_id);
                 if (filter_var($node['host'], FILTER_VALIDATE_IP) !== false) {
                     $device->ip = $node['host'];
                 } else {
@@ -329,8 +331,7 @@ class Nmis extends MY_Controller
             output($this->response);
         } else {
             $this->session->set_flashdata('success', $flash_message . count($nodes_array) . ' devices imported (' . intval($inserted) . ' inserted and ' . intval($updated) . ' updated).');
-            #redirect('devices?action=update&ids='.$ids);
-            redirect('devices?system.id=in('.htmlentities($ids).')&properties=system.id,name,nmis_name,ip,nmis_business_service,nmis_group,nmis_role,nmis_notes');
+            redirect('devices?system.id=in('.htmlentities($ids).')&properties=system.id,system.icon,system.type,system.name,nmis_name,system.ip,system.nmis_business_service,system.nmis_group,system.nmis_role,system.nmis_notes');
         }
     }
 
