@@ -1257,7 +1257,7 @@ if ( ! function_exists('inputRead')) {
         if ($CI->response->meta->sub_resource !== '') {
             $CI->response->links->self .= '/' . $CI->response->meta->sub_resource;
         }
-        if ($CI->response->meta->sub_resource_id !== '') {
+        if ( ! empty($CI->response->meta->sub_resource_id)) {
             $CI->response->links->self .= '/' . $CI->response->meta->sub_resource_id;
         }
         $CI->response->links->first = null;
