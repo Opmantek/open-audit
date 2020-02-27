@@ -1379,6 +1379,7 @@ if ( ! function_exists('inputRead')) {
             $CI->response->meta->collection !== 'errors' &&
             $CI->response->meta->collection !== 'ldap_servers' &&
             $CI->response->meta->collection !== 'logs' &&
+            $CI->response->meta->collection !== 'nmis' &&
             $CI->response->meta->collection !== 'queue' &&
             $CI->response->meta->collection !== 'report' &&
             $CI->response->meta->collection !== 'roles') {
