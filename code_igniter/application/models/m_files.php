@@ -91,7 +91,7 @@ class M_files extends MY_Model
      */
     public function read($id = 0)
     {
-        $sql = 'SELECT files.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM `files` LEFT JOIN `orgs` ON (files.org_id = orgs.id) WHERE id = ?';
+        $sql = 'SELECT files.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM `files` LEFT JOIN `orgs` ON (files.org_id = orgs.id) WHERE files.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'files');
@@ -131,7 +131,7 @@ class M_files extends MY_Model
      */
     public function delete($id = 0)
     {
-        $sql = 'DELETE FROM `attributes` WHERE `id` = ?';
+        $sql = 'DELETE FROM `files` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
