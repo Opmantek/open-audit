@@ -561,9 +561,13 @@ dns_fqdn=$(hostname --fqdn 2>/dev/null | head -n1)
 #system_description=""
 system_type="computer"
 system_os_group="Linux"
-system_os_family=$(lsb_release -is 2>/dev/null | tr -d '"')
-system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"' | head -n1)
-system_os_version=$(lsb_release -rs 2>/dev/null | tr -d '"')
+# Changed the below to match the commands run in ssh_helper in-app
+# system_os_family=$(lsb_release -is 2>/dev/null | tr -d '"')
+# system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"' | head -n1)
+# system_os_version=$(lsb_release -rs 2>/dev/null | tr -d '"')
+system_os_family=$(cat /etc/os-release 2>/dev/null | grep -i ^NAME | cut -d= -f2 | cut -d\" -f2)
+system_os_name=$(cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2)
+system_os_version=$(cat /etc/os-release 2>/dev/null | grep -i ^VERSION_ID | cut -d= -f2 | cut -d\" -f2)
 system_manufacturer=""
 system_model=""
 
@@ -660,7 +664,7 @@ if [ "$system_os_family" == "\"amzn\"" ]; then
 fi
 
 if [ "$system_os_family" == "debian" ]; then
-	system_os_family="Debian"
+	system_os_family="Debian GNU/Linux"
 fi
 
 if [ "$system_os_family" == "ubuntu" ]; then
