@@ -516,9 +516,9 @@ class M_logon extends MY_Model
                                 $log->severity = 5;
                                 stdlog($log);
                                 if ($this->db->table_exists('users')) {
-                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, '', NOW())";
+                                    $user_sql = '/* m_logon::logon */ ' . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                                 } else {
-                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                                    $user_sql = '/* m_logon::logon */ ' . 'INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
                                 }
                                 $user_query = $this->db->query($user_sql, (array)$user);
                                 $user->id = $this->db->insert_id();
