@@ -347,6 +347,9 @@ class M_logon extends MY_Model
                                 $user->active = 'y';
                                 $user->ldap = '';
                                 $user->type = 'user';
+                                $user->dashboard_id = 1;
+                                $user->devices_default_display_columns = '';
+                                $user->access_token = '';
                                 $user->edited_by = 'system';
                                 if ($ldap->type == 'active directory') {
                                     $user->ldap = @(string)$entries[0]['distinguishedname'][0];
