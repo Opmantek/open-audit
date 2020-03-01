@@ -217,7 +217,7 @@ $item = $this->response->data[0];
             </thead>
             <tbody>
         <?php
-        foreach ($this->response->included as $org) {
+        foreach ($this->orgs as $org) {
             if ($org->type == 'orgs') {
                 if ($org->id == 1) {
                     $org->attributes->parent_name = '';
