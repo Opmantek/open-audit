@@ -360,7 +360,8 @@ class M_orgs extends MY_Model
             $org_list = $CI->m_orgs->get_user_descendants($user_id);
             $org_list = array_merge($CI->user->orgs, $org_list);
             $org_list = array_unique($org_list);
-            $sql = "SELECT * FROM orgs WHERE id IN (" . implode(',', $org_list) . ")";
+            $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id)  WHERE orgs.id IN (" . implode(',', $org_list) . ")  GROUP BY orgs.id";
+
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'orgs');
             return $result;
