@@ -172,7 +172,6 @@
         <tr>
             <td><?php echo __('ID'); ?></td>
             <td><?php echo __('Name'); ?></td>
-            <td><?php echo __('Parent'); ?></td>
             <td style="text-align:center;"><?php echo __('Grant Permission'); ?></td>
         </tr>
     </thead>
@@ -190,9 +189,6 @@ foreach ($this->response->included as $org) {
             </td>
             <td>
         <?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?>
-            </td>
-            <td>
-        <?php echo htmlspecialchars( $org->attributes->parent_name, REPLACE_FLAGS, CHARSET); ?>
             </td>
             <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>"></td>
         </tr>

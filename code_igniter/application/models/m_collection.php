@@ -623,6 +623,8 @@ class M_collection extends MY_Model
                 $data->password = $salt.hash("sha256", $salt.(string)$data->password);
                 unset($salt);
             }
+            $data->access_token = '';
+            $data->devices_default_display_columns = '';
         }
 
         $id = $this->insert_collection($collection, $data);

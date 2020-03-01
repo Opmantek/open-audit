@@ -80,6 +80,13 @@ if ($this->response->meta->collection == 'configuration') {
     }
 }
 
+if ($this->response->meta->collection === 'users') {
+    $this->load->model('m_roles');
+    $this->response->included = array_merge($this->response->included, $this->m_roles->collection(1,0));
+    $this->load->model('m_dashboards');
+    $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection(1,0));
+}
+
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
