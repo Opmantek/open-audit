@@ -1188,6 +1188,31 @@ if ( ! function_exists('inputRead')) {
         }
 
         $CI->response->meta->internal->filter = filter($CI->response->meta->filter, $CI->response->meta->collection, $CI->user);
+
+        $filter = '';
+        if ( ! empty($CI->response->meta->collection)) {
+            foreach ($CI->response->meta->query_parameters as $parameter) {
+                if ($parameter->name === 'search') {
+                    if ($CI->db->table_exists($CI->response->meta->collection)) {
+                        $fields = $CI->db->list_fields($CI->response->meta->collection);
+                        $excluded_fields = array('id', 'org_id', 'edited_by', 'edited_date');
+                        $filter = ' AND     (';
+                        foreach ($fields as $field) {
+                            if ( ! in_array($field, $excluded_fields)) {
+                                $filter .= $CI->response->meta->collection . '.' . $field . ' LIKE "%' . str_replace('"', '\"', $parameter->value) . '%" OR ';
+                            }
+                        }
+                        if ($filter !== ' AND     (') {
+                            $filter = substr($filter, 0, strlen($filter)-3) . ')';
+                        } else {
+                            $filter = '';
+                        }
+                    }
+                }
+            }
+        }
+        $CI->response->meta->internal->filter .= $filter;
+
         if ($CI->response->meta->collection === 'devices') {
             $CI->response->meta->internal->join = build_join();
         }
@@ -1232,7 +1257,7 @@ if ( ! function_exists('inputRead')) {
         if ($CI->response->meta->sub_resource !== '') {
             $CI->response->links->self .= '/' . $CI->response->meta->sub_resource;
         }
-        if ($CI->response->meta->sub_resource_id !== '') {
+        if ( ! empty($CI->response->meta->sub_resource_id)) {
             $CI->response->links->self .= '/' . $CI->response->meta->sub_resource_id;
         }
         $CI->response->links->first = null;
@@ -1354,6 +1379,7 @@ if ( ! function_exists('inputRead')) {
             $CI->response->meta->collection !== 'errors' &&
             $CI->response->meta->collection !== 'ldap_servers' &&
             $CI->response->meta->collection !== 'logs' &&
+            $CI->response->meta->collection !== 'nmis' &&
             $CI->response->meta->collection !== 'queue' &&
             $CI->response->meta->collection !== 'report' &&
             $CI->response->meta->collection !== 'roles') {

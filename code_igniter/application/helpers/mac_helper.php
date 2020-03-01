@@ -3945,7 +3945,8 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '00:0f:4c': $manufacturer = 'Elextech Inc'; break;
             case '00:0f:4d': $manufacturer = 'Talkswitch'; break;
             case '00:0f:4e': $manufacturer = 'Cellink'; break;
-            case '00:0f:4f': $manufacturer = 'Pcs Systemtechnik Gmbh'; break;
+            #case '00:0f:4f': $manufacturer = 'Pcs Systemtechnik Gmbh'; break;
+            case '00:0f:4f': $manufacturer = 'innotek GmbH'; break;
             case '00:0f:50': $manufacturer = 'Streamscale Limited'; break;
             case '00:0f:51': $manufacturer = 'Azul Systems, Inc.'; break;
             case '00:0f:52': $manufacturer = 'York Refrigeration, Marine & Controls'; break;
@@ -13195,7 +13196,8 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '08:00:24': $manufacturer = '10net Communications/dca'; break;
             case '08:00:25': $manufacturer = 'Control Data'; break;
             case '08:00:26': $manufacturer = 'Norsk Data A.s.'; break;
-            case '08:00:27': $manufacturer = 'Pcs Systemtechnik Gmbh'; break;
+            #case '08:00:27': $manufacturer = 'Pcs Systemtechnik Gmbh'; break;
+            case '08:00:27': $manufacturer = 'innotek GmbH'; break;
             case '08:00:28': $manufacturer = 'Texas Instruments'; break;
             case '08:00:29': $manufacturer = 'Megatek Corporation'; break;
             case '08:00:2a': $manufacturer = 'Mosaic Technologies Inc.'; break;

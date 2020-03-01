@@ -586,8 +586,8 @@ if ( ! function_exists('snmp_audit')) {
             $item_start = microtime(true);
             $interface_number = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.4.20.1.2.'.$ip);
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Interface number for ' . $ip . '  retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.4.20.1.3.'.$details->ip;
+            $log->message = 'Interface number retrieval attempt for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.4.20.1.2.'.$details->ip;
             $log->command_output = (string)$interface_number;
             $log->command_status = 'notice';
             discovery_log($log);
@@ -614,11 +614,15 @@ if ( ! function_exists('snmp_audit')) {
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.2.2.1.6');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $first_key = array_key_first($temp);
+
+            foreach ($temp as $key => $value) {
+                $first_key = $key;
+                break;
+            }
 
             $interface_number = str_replace('.1.3.6.1.2.1.2.2.1.6.', '', $first_key);
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Interface number for ' . $ip . '  retrieval for '.$ip;
+            $log->message = 'Interface number retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
             $log->command_output = (string)$interface_number;
             $log->command_status = 'notice';
@@ -628,7 +632,7 @@ if ( ! function_exists('snmp_audit')) {
             $details->mac_address = @format_mac($temp[$first_key]);
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'MAC Address retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6.' . $first_key;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6.' . $interface_number;
             $log->command_output = (string)$details->mac_address;
             $log->command_status = 'notice';
             discovery_log($log);

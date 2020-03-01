@@ -480,7 +480,7 @@ CREATE TABLE `bios` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `manufacturer` varchar(200) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
   `serial` varchar(100) NOT NULL DEFAULT '',
   `smversion` varchar(100) NOT NULL DEFAULT '',
@@ -2200,8 +2200,8 @@ CREATE TABLE `network` (
   `net_index` varchar(10) NOT NULL DEFAULT '',
   `dhcp_enabled` varchar(100) NOT NULL DEFAULT '',
   `dhcp_server` varchar(30) NOT NULL DEFAULT '',
-  `dhcp_lease_obtained` varchar(14) NOT NULL DEFAULT '',
-  `dhcp_lease_expires` varchar(14) NOT NULL DEFAULT '',
+  `dhcp_lease_obtained` varchar(20) NOT NULL DEFAULT '',
+  `dhcp_lease_expires` varchar(20) NOT NULL DEFAULT '',
   `dns_host_name` varchar(100) NOT NULL DEFAULT '',
   `dns_server` varchar(100) NOT NULL DEFAULT '',
   `dns_domain` varchar(100) NOT NULL DEFAULT '',
@@ -3078,6 +3078,8 @@ INSERT INTO `rules` VALUES (NULL,'Class based on Form Factor and OS (Virtual Win
 INSERT INTO `rules` VALUES (NULL,'Class based on Form Factor and OS (Physical Windows Server)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"system\",\"attribute\":\"form_factor\",\"operator\":\"ne\",\"value\":\"Virtual\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"Windows\"},{\"table\":\"system\",\"attribute\":\"os_name\",\"operator\":\"li\",\"value\":\"Server\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"system\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"system\",\"attribute\":\"class\",\"value\":\"server\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Type based on Manufacturer and Hostname (playstation)',1,'Set the type based on the manufacturer and hostname.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"sony\"},{\"table\":\"system\",\"attribute\":\"hostname\",\"operator\":\"li\",\"value\":\"playstation\"}]','[{\"table\":\"system\",\"attribute\":\"type\",\"value\":\"game console\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Type based on Manufacturer and DNS Hostname (playstation)',1,'Set the type based on the manufacturer and dns_hostname.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"sony\"},{\"table\":\"system\",\"attribute\":\"dns_hostname\",\"operator\":\"li\",\"value\":\"playstation\"}]','[{\"table\":\"system\",\"attribute\":\"type\",\"value\":\"game console\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like innotek GmbH)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"value\":\"innotek GmbH\",\"operator\":\"li\"}]','[{\"value\":\"Virtual\",\"table\":\"system\",\"attribute\":\"form_factor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"system\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 

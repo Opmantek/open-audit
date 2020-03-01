@@ -616,7 +616,7 @@ class M_rules extends MY_Model
         }
         unset($rules);
 
-        $log->message = 'Completed rules::match function.';
+        $log->message = 'Completed rules::execute function.';
         $log->command = '';
         $log->command_output = '';
         $log->command_status = 'notice';

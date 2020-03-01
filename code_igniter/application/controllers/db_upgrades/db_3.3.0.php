@@ -71,6 +71,8 @@ ALTER TABLE `bios` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2
 
 ALTER TABLE `bios` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
+ALTER TABLE `bios` CHANGE `manufacturer` `manufacturer` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `name`;
+
 ALTER TABLE `bios` CHANGE `description` `model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`;
 
 UPDATE `bios` SET `name` = `model`;
@@ -276,6 +278,10 @@ ALTER TABLE `network` CHANGE `model` `model` varchar(200) NOT NULL DEFAULT '';
 
 UPDATE `network` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
 
+ALTER TABLE `network` CHANGE `dhcp_lease_obtained` `dhcp_lease_obtained` varchar(20) NOT NULL DEFAULT '';
+
+ALTER TABLE `network` CHANGE `dhcp_lease_expires` `dhcp_lease_expires` varchar(20) NOT NULL DEFAULT '';
+
 ALTER TABLE `nmap` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`));
@@ -313,6 +319,14 @@ UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.name AS `s
 ALTER TABLE `route` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `route` SET `name` = CONCAT(`destination`, '/', `mask`, ' via ', `next_hop`);
+
+DELETE FROM `rules` WHERE `name` = 'Form Factor based on Manufacturer (like innotek GmbH)';
+
+DELETE FROM `rules` WHERE `name` = 'Manufacturer change HP to Hewlett Packard';
+
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like innotek GmbH)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"value\":\"innotek GmbH\",\"operator\":\"li\"}]','[{\"value\":\"Virtual\",\"table\":\"system\",\"attribute\":\"form_factor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+
+INSERT INTO `rules` VALUES (NULL,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"system\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 
 ALTER TABLE `scsi` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
@@ -433,6 +447,8 @@ $this->log_db($this->db->last_query());
 $this->alter_table('bios', 'first_seen', "`first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `current`");
 
 $this->alter_table('bios', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
+
+$this->alter_table('bios', 'manufacturer', "`manufacturer` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `name`");
 
 $this->alter_table('bios', 'description', "`model` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
 
@@ -722,6 +738,10 @@ $sql = "UPDATE `network` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, 
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$this->alter_table('network', "`dhcp_lease_obtained` varchar(20) NOT NULL DEFAULT ''");
+
+$this->alter_table('network', "`dhcp_lease_expires` varchar(20) NOT NULL DEFAULT ''");
+
 $this->alter_table('nmap', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $sql = "UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`))";
@@ -767,6 +787,22 @@ $this->log_db($this->db->last_query());
 $this->alter_table('route', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $sql = "UPDATE `route` SET `name` = CONCAT(`destination`, '/', `mask`, ' via ', `next_hop`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `rules` WHERE `name` = 'Form Factor based on Manufacturer (like innotek GmbH)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `rules` WHERE `name` = 'Manufacturer change HP to Hewlett Packard'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like innotek GmbH)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"value\":\"innotek GmbH\",\"operator\":\"li\"}]','[{\"value\":\"Virtual\",\"table\":\"system\",\"attribute\":\"form_factor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `rules` VALUES (NULL,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"system\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
