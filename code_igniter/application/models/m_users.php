@@ -222,8 +222,6 @@ class M_users extends MY_Model
                 $result = $query->result();
                 if (count($result) > 0) {
                     $user_orgs = json_decode($result[0]->orgs);
-                } else {
-                    return array();
                 }
             }
         }
@@ -255,7 +253,7 @@ class M_users extends MY_Model
     {
         $org_list = array();
         foreach ($this->orgs as $org) {
-            if ($org->parent_id === $org_id && $org->id !== 1) {
+            if (intval($org->parent_id) === intval($org_id) && intval($org->id) !== 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->get_org($org->id) as $org) {
                     $org_list[] = intval($org);
