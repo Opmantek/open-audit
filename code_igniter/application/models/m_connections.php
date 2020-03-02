@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Model
 * @package   Connections
 * @author    Mark Unwin <marku@opmantek.com>
@@ -66,7 +66,7 @@ class M_connections extends MY_Model
      */
     public function read($id = 0)
     {
-        $sql = 'SELECT * FROM `connections` WHERE `id` = ?';
+        $sql = 'SELECT connections.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, loc_a.name AS `location_name_a`, loc_b.name AS `location_name_b`, sys_a.hostname as `system_hostname_a`, sys_b.hostname AS `system_hostname_b` FROM connections LEFT JOIN orgs ON (connections.org_id = orgs.id) LEFT JOIN locations loc_a ON (connections.location_id_a = loc_a.id) LEFT JOIN locations loc_b ON (connections.location_id_b = loc_b.id) LEFT JOIN system sys_a ON (connections.system_id_a = sys_a.id) LEFT JOIN system sys_b ON (connections.system_id_b = sys_b.id)  WHERE connections.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'connections');
@@ -111,54 +111,12 @@ class M_connections extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM connections LEFT JOIN orgs ON (connections.org_id = orgs.id) ' . 
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, loc_a.name AS `location_name_a`, loc_b.name AS `location_name_b`, sys_a.hostname as `system_hostname_a`, sys_b.hostname AS `system_hostname_b` FROM connections LEFT JOIN orgs ON (connections.org_id = orgs.id) LEFT JOIN locations loc_a ON (connections.location_id_a = loc_a.id) LEFT JOIN locations loc_b ON (connections.location_id_b = loc_b.id) LEFT JOIN system sys_a ON (connections.system_id_a = sys_a.id) LEFT JOIN system sys_b ON (connections.system_id_b = sys_b.id) ' .
                     $CI->response->meta->internal->filter . ' ' . 
                     $CI->response->meta->internal->groupby . ' ' . 
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            // Add in locations.name for location_name_a and _b
-            if (is_array($result)) {
-                $CI->load->model('m_locations');
-                $locations = $CI->m_locations->collection($CI->user->id);
-                for ($i=0; $i < count($result); $i++) {
-                    $result[$i]->location_id_a = intval($result[$i]->location_id_a);
-                    $result[$i]->location_id_b = intval($result[$i]->location_id_b);
-                    $result[$i]->location_name_a = '';
-                    $result[$i]->location_name_b = '';
-                    foreach ($locations as $location) {
-                        if (intval($location->id) === intval($result[$i]->location_id_a)) {
-                            $result[$i]->location_name_a = $location->attributes->name;
-                        }
-                        if (intval($location->id) === intval($result[$i]->location_id_b)) {
-                            $result[$i]->location_name_b = $location->attributes->name;
-                        }
-                    }
-                }
-            }
-            // Add in device names for system_id_a and _b
-            if (is_array($result)) {
-                for ($i=0; $i < count($result); $i++) {
-                    $result[$i]->system_id_a = intval($result[$i]->system_id_a);
-                    $result[$i]->system_id_b = intval($result[$i]->system_id_b);
-                    if ( ! empty($result[$i]->system_id_a)) {
-                        $sql = 'SELECT `name` FROM system WHERE id = ' . $result[$i]->system_id_a;
-                        $query = $this->db->query($sql);
-                        $result = $query->result();
-                        if ( ! empty($result[0]->name)) {
-                            $result[$i]->system_name_a = $result[0]->name;
-                        }
-                    }
-                    if ( ! empty($result[$i]->system_id_b)) {
-                        $sql = 'SELECT `name` FROM system WHERE id = ' . $result[$i]->system_id_b;
-                        $query = $this->db->query($sql);
-                        $result = $query->result();
-                        if ( ! empty($result[0]->name)) {
-                            $result[$i]->system_name_b = $result[0]->name;
-                        }
-                    }
-                }
-            }
             $CI->response->data = $this->format_data($result, 'connections');
             $CI->response->meta->filtered = count($CI->response->data);
         }
