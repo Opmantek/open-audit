@@ -443,7 +443,7 @@ if ( ! function_exists('inputRead')) {
         }
 
         if ($CI->response->meta->collection === 'devices') {
-            $valid_sub_resources = array('audit_log', 'bios', 'change_log', 'cluster', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+            $valid_sub_resources = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
             if ($CI->response->meta->sub_resource !== '' && ! in_array($CI->response->meta->sub_resource, $valid_sub_resources)) {
                 $log->summary = 'invalid sub_resource';
                 $log->detail = 'Removed invalid sub_resource of ' . $CI->response->meta->sub_resource . '.';
