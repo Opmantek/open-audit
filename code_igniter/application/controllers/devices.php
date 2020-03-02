@@ -134,6 +134,10 @@ class Devices extends MY_Controller
         $this->load->model('m_orgs');
         $this->load->model('m_locations');
         $this->load->model('m_devices_components');
+        // if we're displaying a web page, get ALL the data
+        if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
+            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+        }
         if ($this->response->meta->sub_resource !== '') {
             if ($this->response->meta->sub_resource === 'partition_graph') {
                 $this->response->data = $this->m_devices_components->graph($this->response->meta->id, $this->response->meta->sub_resource_id, 'partition', 30);
