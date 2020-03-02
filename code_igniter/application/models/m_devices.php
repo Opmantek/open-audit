@@ -233,10 +233,10 @@ class M_devices extends MY_Model
                 $orgs = array($field->org_id);
                 $orgs = array_merge($orgs, $CI->m_orgs->get_children($field->org_id));
                 foreach ($orgs as $key => $value) {
-                    if ($device_org_id === $value) {
-                        $sql = 'SELECT COUNT(*) AS `count` FROM (' . str_replace('@filter', '1=1', $field->group_sql) . ') a WHERE a.id = $device_id';
+                    if (intval($device_org_id) === intval($value)) {
+                        $sql = 'SELECT COUNT(*) AS `count` FROM (' . str_replace('@filter', '1=1', $field->group_sql) . ") a WHERE a.id = {$device_id}";
                         $result = $this->run_sql($sql, $data);
-                        if ($result[0]->count === 1) {
+                        if ( ! empty($result) && intval($result[0]->count) === 1) {
                             $field_list[] = $field;
                         }
                     }
