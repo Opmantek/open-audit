@@ -81,6 +81,11 @@ class M_applications extends MY_Model
      */
     public function delete($id = 0)
     {
+        // remove any linked devices
+        $sql = 'DELETE FROM `application` WHERE `applications_id` = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        // and remove the entry itself
         $sql = 'DELETE FROM `applications` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
