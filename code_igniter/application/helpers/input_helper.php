@@ -257,24 +257,17 @@ if ( ! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        // get our collection - usually devices, groups, reports, etc
-        $CI->response->meta->collection = set_collection();
-        $log->summary = 'set collection';
-        $log->detail = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
-        stdlog($log);
-
-        $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
-        unset($temp);
-
         // get debug
         if ($CI->input->get('debug')) {
             $CI->response->meta->debug = $CI->input->get('debug');
+            $CI->config->config['log_level'] = 7;
             $log->summary = 'set debug';
             $log->detail = 'Set debug to ' . $CI->response->meta->debug . ', according to URI.';
             stdlog($log);
         }
         if ($CI->input->post('debug')) {
             $CI->response->meta->debug = $CI->input->post('debug');
+            $CI->config->config['log_level'] = 7;
             $log->summary = 'set debug';
             $log->detail = 'Set debug to ' . $CI->response->meta->debug . ', according to POST.';
             stdlog($log);
@@ -286,6 +279,15 @@ if ( ! function_exists('inputRead')) {
             $CI->response->meta->debug = false;
             $CI->output->enable_profiler(false);
         }
+
+        // get our collection - usually devices, groups, reports, etc
+        $CI->response->meta->collection = set_collection();
+        $log->summary = 'set collection';
+        $log->detail = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
+        stdlog($log);
+
+        $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
+        unset($temp);
 
         // get the id of the collection item in question
         // if we have an integer
