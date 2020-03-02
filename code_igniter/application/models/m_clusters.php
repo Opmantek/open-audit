@@ -66,7 +66,7 @@ class M_clusters extends MY_Model
      */
     public function read($id = 0)
     {
-        $sql = 'SELECT * FROM `clusters` WHERE `id` = ?';
+        $sql = 'SELECT clusters.*, orgs.name AS `orgs.name` FROM `clusters` LEFT JOIN `orgs` ON clusters.org_id = orgs.id WHERE clusters.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'clusters');
