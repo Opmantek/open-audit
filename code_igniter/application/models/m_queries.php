@@ -48,6 +48,11 @@
  */
 class M_queries extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,74 +61,24 @@ class M_queries extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($data = null)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $data_array = array();
-        $sql = "INSERT INTO `queries` (";
-        $sql_data = "";
-        if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
-                $data = $CI->response->meta->received_data->attributes;
-            } else {
-                log_error('ERR-0010', 'm_queries::create');
-                return false;
-            }
-        }
-        // TODO - fix the second test below to use a regex to account for multiple spaces
-        if (stripos($data->sql, 'where @filter') === false or stripos($data->sql, 'where @filter or') !== false) {
-            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
-            // Ensure the user creating this query has the admin role
-            $allowed = false;
-            foreach ($CI->user->roles as $key => $value) {
-                if ($value == 'admin') {
-                    $allowed = true;
-                }
-            }
-            if (!$allowed) {
-                unset($allowed);
-                log_error('ERR-0022', 'm_queries::create');
-                return false;
-            }
-            unset($allowed);
-        }
-        foreach ($this->db->field_data('queries') as $field) {
-            if (!empty($data->{$field->name}) and $field->name != 'id') {
-                $sql .= "`" . $field->name . "`, ";
-                $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$field->name};
-            }
-        }
-        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->sql)) {
-            log_error('ERR-0021', 'm_queries::create');
-            return false;
-        }
-        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
-        $sql_data .= '?, NOW()';                 // the user.name and timestamp
-        $data_array[] = $CI->user->full_name;    // the user.name
-        $sql .= ") VALUES (" . $sql_data . ")";
-        $id = intval($this->run_sql($sql, $data_array));
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return ($id);
-    }
-
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM queries WHERE id = ?";
+        $sql = 'SELECT * FROM queries WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'queries');
@@ -132,6 +87,10 @@ class M_queries extends MY_Model
         return ($result);
     }
 
+    /**
+     * [update description]
+     * @return [type] [description]
+     */
     public function update()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -143,18 +102,18 @@ class M_queries extends MY_Model
         $data_items = array();
         $fields = ' name org_id description sql ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if ($key == 'sql') {
+            if ($key === 'sql') {
                 // TODO - fix the second test below to use a regex to account for multiple spaces
-                if (stripos($value, 'where @filter') === false or stripos($value, 'where @filter or') !== false) {
+                if (stripos($value, 'where @filter') === false OR stripos($value, 'where @filter or') !== false) {
                     // We don't have the HIGHLY RECOMMENDED @filter in our SQL
                     // Ensure the user creating this query has the admin role
                     $allowed = false;
-                    foreach ($CI->user->roles as $item => $string) {
-                        if ($string == 'admin') {
+                    foreach ($CI->user->roles as $string) {
+                        if ($string === 'admin') {
                             $allowed = true;
                         }
                     }
-                    if (!$allowed) {
+                    if ( ! $allowed) {
                         unset($allowed);
                         log_error('ERR-0022', 'm_queries::create');
                         return false;
@@ -163,36 +122,42 @@ class M_queries extends MY_Model
                 }
             }
             if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = ?";
+                if ($sql === '') {
+                    $sql = "SET `{$key}` = ?";
                 } else {
-                    $sql .= ", `" . $key . "` = ?";
+                    $sql .= ", `{$key}` = ?";
                 }
                 $data_items[] = $value;
             }
         }
-        $sql = "UPDATE `queries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `queries` {$sql} WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql, $data_items);
         $this->log->summary = 'finish';
         stdlog($this->log);
         return;
     }
 
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         $this->log->summary = 'start';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        if ($id != 1) {
+        if (intval($id) !== 1) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `queries` WHERE id = ?";
+            $sql = 'DELETE FROM `queries` WHERE id = ?';
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             $this->log->summary = 'finish';
@@ -206,38 +171,30 @@ class M_queries extends MY_Model
         }
     }
 
-    // public function collection()
-    // {
-    //     $this->log->function = strtolower(__METHOD__);
-    //     $this->log->summary = 'start';
-    //     stdlog($this->log);
-    //     $CI = & get_instance();
-    //     $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
-    //     $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.id";
-    //     $result = $this->run_sql($sql, array());
-    //     $result = $this->format_data($result, 'queries');
-    //     $this->log->summary = 'finish';
-    //     stdlog($this->log);
-    //     return ($result);
-    // }
-
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
-            $org_list = $CI->m_orgs->get_user_all($user_id);
-            $sql = "SELECT * FROM queries WHERE org_id IN (" . implode(',', $org_list) . ")";
+        if ( ! empty($user_id)) {
+            $org_list = implode(',', $CI->m_orgs->get_user_all($user_id));
+            $sql = "SELECT * FROM queries WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'queries');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'queries');
@@ -245,40 +202,45 @@ class M_queries extends MY_Model
         }
     }
 
+    /**
+     * Run the SQL definition and return the provided properties OR the system.id list
+     * @param  integer $id The ID of the group
+     * @return array       An array of standard formatted devices, or an empty array
+     */
     public function execute($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
-        if ($id == '') {
+        if ($id === '') {
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        # TODO - add a count for the total returned in response->meta->filtered
-        $sql = "SELECT * FROM queries WHERE id = ?";
+        // TODO - add a count for the total returned in response->meta->filtered
+        $sql = 'SELECT * FROM queries WHERE id = ?';
         $data = array($id);
         $queries = $this->run_sql($sql, $data);
-        if (!empty($queries)) {
+        if ( ! empty($queries)) {
             $query = $queries[0];
-            # below accounts for queries that end in a ; and/or a CR or spaces, etc
-            # when we add on LIMIT = 12345, it will break unless we strip those characters
+            // below accounts for queries that end in a ; and/or a CR or spaces, etc
+            // when we add on LIMIT = 12345, it will break unless we strip those characters
             $sql = trim($query->sql);
-            if (strpos($sql, ';') == strlen($sql)-1) {
+            if (strpos($sql, ';') === strlen($sql)-1) {
                 $sql = substr($sql, 0, strlen($sql)-1);
                 $sql = trim($sql);
             }
             unset($queries);
-            $filter = "system.org_id IN (" . $CI->user->org_list . ")";
-            if (!empty($CI->response->meta->requestor)) {
-                $filter = "system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y'";
+            $filter = "system.org_id IN ({$CI->user->org_list})";
+            if ( ! empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y'";
             }
-            $user_filter = $this->build_filter();
-            if (!empty($user_filter)) {
+            $user_filter = $this->_build_filter();
+            if ( ! empty($user_filter)) {
                 $filter .= $user_filter;
             }
-            $sql = str_ireplace('WHERE @filter', "WHERE $filter", $sql);
+            $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
             $sql .= ' ' . $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'queries');
@@ -288,7 +250,7 @@ class M_queries extends MY_Model
         if (empty($result)) {
             return array();
         }
-        if (!empty($CI->response->meta->format) == 'json') {
+        if ( ! empty($CI->response->meta->format) === 'json') {
             if (isset($result[0]->attributes->{'system.credentials'}))  {
                 $this->load->library('encrypt');
                 $this->load->model('m_credentials');
@@ -297,10 +259,10 @@ class M_queries extends MY_Model
                 foreach ($result as $device) {
                     $device_ids[] = $device->attributes->{'system.id'};
                     $credentials_array = json_decode($device->{'attributes'}->{'system.credentials'});
-                    if (!empty($credentials_array)) {
+                    if ( ! empty($credentials_array)) {
                         foreach ($credentials_array as $credential_id) {
                             foreach ($credentials as $credential) {
-                                if ($credential->id == $credential_id) {
+                                if (intval($credential->id) === intval($credential_id)) {
                                     $type = $credential->attributes->type;
                                     foreach ($credential->attributes->credentials as $key => $value) {
                                         $device->attributes->{'credentials.'.$type.'.'.$key} = $value;
@@ -310,12 +272,12 @@ class M_queries extends MY_Model
                         }
                     }
                 }
-                $ids = implode(',', $device_ids);
-                $sql = "SELECT * FROM `credential` WHERE `system_id` IN ($ids)";
+                $my_ids = implode(',', $device_ids);
+                $sql = "SELECT * FROM `credential` WHERE `system_id` IN ({$my_ids})";
                 $credentials = $this->run_sql($sql, array());
                 foreach ($credentials as $credential) {
                     foreach ($result as $device) {
-                        if ($device->{'attributes'}->{'system.id'} == $credential->system_id) {
+                        if (intval($device->{'attributes'}->{'system.id'}) === intval($credential->system_id)) {
                             $decoded = json_decode(simpleDecrypt($credential->credentials));
                             $type = $credential->type;
                             foreach ($decoded as $key => $value) {
@@ -337,18 +299,23 @@ class M_queries extends MY_Model
         return $result;
     }
 
+    /**
+     * [sub_resource description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function sub_resource($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
+        $sql = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?';
         $data = array((string)$id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'devices');
@@ -357,40 +324,30 @@ class M_queries extends MY_Model
         return $result;
     }
 
-
-
-
-
-
-
-    private function build_filter()
+    /**
+     * [_build_filter description]
+     * @return [type] [description]
+     */
+    private function _build_filter()
     {
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $filter = '';
         foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
-                if ($item->name == 'id') {
+                if ($item->name === 'id') {
                     $item->name = 'system.id';
                 }
-                if (!empty($item->name) and $item->operator != 'in') {
+                if ( ! empty($item->name) && $item->operator !== 'in') {
                     $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
                 }
-                if (!empty($item->name) and $item->operator == 'in') {
+                if ( ! empty($item->name) && $item->operator === 'in') {
                     $filter .= ' AND ' . $item->name . ' in ' . $item->value;
                 }
             }
         }
-        // if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false) {
-        //     $filter .= ' AND system.status = "production"';
-        //     $temp = new stdClass();
-        //     $temp->name = 'system.status';
-        //     $temp->operator = '=';
-        //     $temp->value = 'production';
-        //     $CI->response->meta->filter[] = $temp;
-        //     unset($temp);
-        // }
         return($filter);
     }
-
 }
+// End of file m_queries.php
+// Location: ./models/m_queries.php
