@@ -101,7 +101,7 @@ class Racks extends MY_Controller
     {
 
         $this->load->model('m_rack_devices');
-        $this->response->included = array_merge($this->response->included, $this->m_rack_devices->collection($this->response->meta->id));
+        $this->response->included = array_merge($this->response->included, $this->m_racks->children($this->response->meta->id));
         include 'include_read.php';
     }
 
