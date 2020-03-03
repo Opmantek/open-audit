@@ -25,12 +25,14 @@
 #
 # *****************************************************************************
 *
+* PHP version 5.3.3
+* 
 * @category  Controller
-* @package   Open-AudIT
+* @package   Queries
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -92,11 +94,16 @@ class Queries extends MY_Controller
     {
         if (empty($this->response->meta->received_data->attributes->sql)) {
             log_error('ERR-0010', 'queries::create');
-            echo json_encode($this->response);
-            exit();
+            if ($this->response->meta->format === 'screen') {
+                $this->session->set_flashdata('warning', 'No SQL provided for query, not created.');
+                redirect('/queries');
+            } else {
+                echo json_encode($this->response);
+                exit();
+            }
         }
-        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or
-            stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
+        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false
+            OR stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
             $allowed = false;
@@ -121,13 +128,13 @@ class Queries extends MY_Controller
     */
     public function read()
     {
-        if ($this->response->meta->format == 'screen') {
+        if ($this->response->meta->format === 'screen') {
             $this->load->model('m_attributes');
             $attributes = $this->m_attributes->collection($this->user->id);
             $query_attributes = array();
             if (is_array($attributes)) {
                 foreach ($attributes as $attribute) {
-                    if ($attribute->attributes->resource == 'queries') {
+                    if ($attribute->attributes->resource === 'queries') {
                         $query_attributes[] = $attribute;
                     }
                 }
@@ -145,8 +152,8 @@ class Queries extends MY_Controller
     */
     public function update()
     {
-        if (!empty($this->response->meta->received_data->attributes->sql) and
-            (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or
+        if ( ! empty($this->response->meta->received_data->attributes->sql) &&
+            (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false OR
             stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false)) {
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
