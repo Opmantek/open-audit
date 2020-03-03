@@ -28,7 +28,7 @@
 * PHP version 5.3.3
 * 
 * @category  Model
-* @package   Agents
+* @package   Configuration
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,11 +37,11 @@
 */
 
 /**
-* Base Model Agents
+* Base Model Configuration
 *
 * @access   public
 * @category Model
-* @package  Agents
+* @package  Configuration
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org

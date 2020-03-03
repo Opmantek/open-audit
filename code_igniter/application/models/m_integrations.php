@@ -48,6 +48,11 @@
  */
 class M_integrations extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,6 +61,12 @@ class M_integrations extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -63,13 +74,13 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
-        $sql = "SELECT * FROM `integrations` WHERE `id` = ?";
+        $sql = 'SELECT * FROM `integrations` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'integrations');
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                if (!empty($result[$i]->{'attributes'}->{'options'})) {
+                if ( ! empty($result[$i]->{'attributes'}->{'options'})) {
                     $result[$i]->{'attributes'}->{'options'} = json_decode($result[$i]->{'attributes'}->{'options'});
                 }
             }
@@ -82,6 +93,12 @@ class M_integrations extends MY_Model
         }
     }
 
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -90,29 +107,36 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
-        $sql = "DELETE FROM `integrations` WHERE `id` = ?";
+        $sql = 'DELETE FROM `integrations` WHERE `id` = ?';
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
-            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM integrations WHERE org_id IN (" . implode(',', $org_list) . ")";
+        if ( ! empty($user_id)) {
+            $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
+            $sql = "SELECT * FROM integrations WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'integrations');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM integrations LEFT JOIN orgs ON (integrations.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM integrations LEFT JOIN orgs ON (integrations.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'integrations');
@@ -120,3 +144,6 @@ class M_integrations extends MY_Model
         }
     }
 }
+// End of file m_integrations.php
+// Location: ./models/m_integrations.php
+

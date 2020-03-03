@@ -48,6 +48,11 @@
  */
 class M_groups extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,37 +61,49 @@ class M_groups extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM groups WHERE id = ?";
+        $sql = 'SELECT * FROM groups WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'groups');
         return ($result);
     }
 
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        if ($id != 1) {
+        if ($id !== 1) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `groups` WHERE id = ?";
+            $sql = 'DELETE FROM `groups` WHERE id = ?';
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
@@ -146,23 +163,30 @@ class M_groups extends MY_Model
         }
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
-            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM groups WHERE org_id IN (" . implode(',', $org_list) . ")";
+        if ( ! empty($user_id)) {
+            $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
+            $sql = "SELECT * FROM groups WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'groups');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM groups LEFT JOIN orgs ON (groups.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM groups LEFT JOIN orgs ON (groups.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'groups');
@@ -170,3 +194,5 @@ class M_groups extends MY_Model
         }
     }
 }
+// End of file m_groups.php
+// Location: ./models/m_groups.php

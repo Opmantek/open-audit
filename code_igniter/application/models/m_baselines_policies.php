@@ -37,7 +37,7 @@
 */
 
 /**
-* Base Model Baselines
+* Base Model BaselinesPolicies
 *
 * @access   public
 * @category Model

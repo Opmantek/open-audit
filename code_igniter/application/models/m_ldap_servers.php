@@ -48,6 +48,11 @@
  */
 class M_ldap_servers extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,6 +61,10 @@ class M_ldap_servers extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * [create description]
+     * @return [type] [description]
+     */
     public function create()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -65,11 +74,11 @@ class M_ldap_servers extends MY_Model
         if (empty($CI->response->meta->received_data->attributes->org_id)) {
             $CI->response->meta->received_data->attributes->org_id = 1;
         }
-        # check to see if we already have an ldap server with the same name
-        $sql = "SELECT COUNT(id) AS count FROM `ldap_servers` WHERE `name` = ?";
+        // check to see if we already have an ldap server with the same name
+        $sql = 'SELECT COUNT(id) AS count FROM `ldap_servers` WHERE `name` = ?';
         $data = array((string)$CI->response->meta->received_data->attributes->name);
         $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
+        if (intval($result[0]->count) !== 0) {
             log_error('ERR-0010', 'm_ldap_servers::create_network');
             return false;
         }
@@ -97,22 +106,29 @@ class M_ldap_servers extends MY_Model
         return ($id);
     }
 
+
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        if ($id == '') {
+        if ($id === '') {
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT ldap_servers.*, orgs.name AS `org_name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (" . $CI->user->org_list . ")";
+        $sql = 'SELECT ldap_servers.*, orgs.name AS `org_name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (' . $CI->user->org_list . ')';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             foreach ($result as $row) {
-                if (!empty($row->dn_password)) {
+                if ( ! empty($row->dn_password)) {
                     $row->dn_password = (string)simpleDecrypt($row->dn_password);
                 }
             }
@@ -121,6 +137,10 @@ class M_ldap_servers extends MY_Model
         return $result;
     }
 
+    /**
+     * [update description]
+     * @return [type] [description]
+     */
     public function update()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -131,53 +151,66 @@ class M_ldap_servers extends MY_Model
         $fields = ' name description org_id lang host domain refresh use_roles ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                if ($sql === '') {
+                    $sql = "SET `{$key}` = '{$value}'";
                 } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                    $sql .= ", `{$key}` = '{$value}'";
                 }
             }
         }
-        $sql = "UPDATE `ldap_servers` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `ldap_servers` {$sql}, `edited_by` = '{$CI->user->full_name}', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql, array());
         return;
     }
 
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
         $CI = & get_instance();
-        $sql = "DELETE FROM `ldap_servers` WHERE id = ?";
+        $sql = 'DELETE FROM `ldap_servers` WHERE id = ?';
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
-            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM ldap_servers WHERE org_id IN (" . implode(',', $org_list) . ")";
+        if ( ! empty($user_id)) {
+            $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
+            $sql = "SELECT * FROM ldap_servers WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'ldap_servers');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'ldap_servers');
@@ -185,9 +218,16 @@ class M_ldap_servers extends MY_Model
         }
     }
 
+    /**
+     * [sub_resource description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function sub_resource($id = '')
     {
         $id = intval($id);
         return array();
     }
 }
+// End of file m_ldap_servers.php
+// Location: ./models/m_ldap_servers.php

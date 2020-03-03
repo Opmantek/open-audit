@@ -133,8 +133,8 @@ class M_floors extends MY_Model
     {
         $CI = & get_instance();
         if ( ! empty($user_id)) {
-            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = 'SELECT floors.*, buildings.id AS `buildings.id`, buildings.name AS `buildings.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM floors LEFT JOIN buildings ON (floors.building_id = buildings.id) LEFT JOIN orgs ON (floors.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
+            $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
+            $sql = "SELECT floors.*, buildings.id AS `buildings.id`, buildings.name AS `buildings.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM floors LEFT JOIN buildings ON (floors.building_id = buildings.id) LEFT JOIN orgs ON (floors.org_id = orgs.id) WHERE orgs.id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'floors');
             return $result;

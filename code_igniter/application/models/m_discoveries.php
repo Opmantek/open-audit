@@ -180,7 +180,7 @@ class M_discoveries extends MY_Model
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            if ( ! empty($result) and is_array($result)) {
+            if ( ! empty($result) && is_array($result)) {
                 for ($i=0; $i < count($result); $i++) {
                     if ( ! empty($result[$i]->other)) {
                         $result[$i]->other = json_decode($result[$i]->other);

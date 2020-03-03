@@ -473,7 +473,7 @@ class M_devices_components extends MY_Model
         // DISK
         if ((string)$table === 'disk') {
             for ($i=0; $i<count($input); $i++) {
-                if (empty($input[$i]->manufacturer) or $input[$i]->manufacturer === '(Standard disk drives)') {
+                if (empty($input[$i]->manufacturer) OR $input[$i]->manufacturer === '(Standard disk drives)') {
                     $input[$i]->manufacturer = '';
                 }
                 if (empty($input[$i]->model)) {
@@ -710,7 +710,7 @@ class M_devices_components extends MY_Model
                 if (empty($input[$i]->manufacturer)) {
                     $input[$i]->manufacturer = get_manufacturer_from_mac($input[$i]->mac);
                 }
-                if (empty($input[$i]->manufacturer) && ! empty($details->manufacturer) and ! empty($details->form_factor) and $details->form_factor === 'Virtual') {
+                if (empty($input[$i]->manufacturer) && ! empty($details->manufacturer) && ! empty($details->form_factor) && $details->form_factor === 'Virtual') {
                     $input[$i]->manufacturer = $details->manufacturer;
                 }
             }
@@ -782,7 +782,6 @@ class M_devices_components extends MY_Model
             for ($i=0; $i<count($input); $i++) {
                 $temp = @dqtobin($input[$i]->mask);
                 $temp = @bintocdr($temp);
-                #$input[$i]->name = trim(@$input[$i]->destination . '/' . @$input[$i]->mask . ' via ' . @$input[$i]->next_hop);
                 $input[$i]->name = trim(@$input[$i]->destination . '/' . $temp . ' via ' . @$input[$i]->next_hop);
             }
         }
@@ -1775,11 +1774,11 @@ class M_devices_components extends MY_Model
                 if ($partition_used_space < 1) {
                     $partition_used_space = 1;
                 }
-                $i = ceil($total_use / $total_days);
-                if ($i < 1) {
-                    $i = 1;
+                $my_calc = ceil($total_use / $total_days);
+                if ($my_calc < 1) {
+                    $my_calc = 1;
                 }
-                $days_until_full = round((($total - $partition_used_space) / $i), 2, 0);
+                $days_until_full = round((($total - $partition_used_space) / $my_calc), 2, 0);
                 if (intval($days_until_full) <= intval($days)) {
                     $returned_row['id'] = $system->id;
                     $returned_row['name'] = $system->name;
@@ -1966,18 +1965,18 @@ class M_devices_components extends MY_Model
             if ($dns_entry->name !== '') {
                 $ip = gethostbyname($dns_entry->name);
                 if ($ip !== $dns_entry->ip && $ip !== $dns_entry->name) {
-                    foreach ($dns_entries as $dns) {
-                        if ($dns->ip === $ip) {
+                    foreach ($dns_entries as $dns_loop) {
+                        if ($dns_loop->ip === $ip) {
                             $ip = '';
                         }
-                        unset($dns);
+                        unset($dns_loop);
                     }
                     if ($ip !== '') {
-                        $new = new stdClass();
-                        $new->ip = $ip;
-                        $new->name = $dns_entry->name;
-                        $new->fqdn = $dns_entry->fqdn;
-                        $dns_entries[] = $new;
+                        $my_new = new stdClass();
+                        $my_new->ip = $ip;
+                        $my_new->name = $dns_entry->name;
+                        $my_new->fqdn = $dns_entry->fqdn;
+                        $dns_entries[] = $my_new;
                     }
                 }
             }

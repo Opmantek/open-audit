@@ -48,6 +48,11 @@
  */
 class M_help extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,13 +61,16 @@ class M_help extends MY_Model
         $this->log->type = 'system';
     }
 
-
+    /**
+     * [groups description]
+     * @return [type] [description]
+     */
     public function groups()
     {
         $CI = & get_instance();
         $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
-            if (strpos($sql_file[$i], "INSERT INTO `groups` VALUES") !== false) {
+            if (strpos($sql_file[$i], 'INSERT INTO `groups` VALUES') !== false) {
                 $line = $sql_file[$i];
                 $attributes = explode("'", $line);
                 $item = new stdClass();
@@ -74,12 +82,16 @@ class M_help extends MY_Model
         }
     }
 
+    /**
+     * [queries description]
+     * @return [type] [description]
+     */
     public function queries()
     {
         $CI = & get_instance();
         $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
-            if (strpos($sql_file[$i], "INSERT INTO `queries` VALUES") !== false) {
+            if (strpos($sql_file[$i], 'INSERT INTO `queries` VALUES') !== false) {
                 $line = $sql_file[$i];
                 $attributes = explode("'", $line);
                 $item = new stdClass();
@@ -91,12 +103,16 @@ class M_help extends MY_Model
         }
     }
 
+    /**
+     * [roles description]
+     * @return [type] [description]
+     */
     public function roles()
     {
         $CI = & get_instance();
         $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
-            if (strpos($sql_file[$i], "INSERT INTO `roles` VALUES") !== false) {
+            if (strpos($sql_file[$i], 'INSERT INTO `roles` VALUES') !== false) {
                 $line = $sql_file[$i];
                 $attributes = explode("'", $line);
                 $item = new stdClass();
@@ -108,23 +124,17 @@ class M_help extends MY_Model
             }
         }
     }
+
+    /**
+     * [summaries description]
+     * @return [type] [description]
+     */
     public function summaries()
     {
         $CI = & get_instance();
         $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
-            if (strpos($sql_file[$i], "INSERT INTO `summaries` VALUES") !== false) {
-                // $line = $sql_file[$i];
-                // $line = str_replace("\'", "'", $line);
-                // $line = str_replace("INSERT INTO `summaries` VALUES (NULL,'", "", $line);
-                // $line = str_replace("','system','2000-01-01 00:00:00');", "", $line);
-                // $line_explode = explode(",", $line);
-                // $item = new stdClass();
-                // $item->name = str_replace("'", '', $line_explode[0]);
-                // $item->table = str_replace("'", '', $line_explode[4]);
-                // $item->column = str_replace("'", '', $line_explode[5]);
-                // $item->extra = str_replace("'", '', $line_explode[6]);
-                // $CI->response->data[] = $item;
+            if (strpos($sql_file[$i], 'INSERT INTO `summaries` VALUES') !== false) {
                 $line = $sql_file[$i];
                 $attributes = explode("'", $line);
                 $item = new stdClass();
@@ -137,44 +147,52 @@ class M_help extends MY_Model
         }
     }
 
+    /**
+     * [defaults description]
+     * @param  [type] $collection [description]
+     * @return [type]             [description]
+     */
     public function defaults($collection)
     {
         $CI = & get_instance();
         $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         $result = array();
-        $sql = "DROP TABLE IF EXISTS `temp`";
+        $sql = 'DROP TABLE IF EXISTS `temp`';
         $query = $this->db->query($sql);
 
-        if (!$this->db->table_exists($collection)) {
+        if ( ! $this->db->table_exists($collection)) {
             return false;
         }
 
         $sql = 'SHOW CREATE TABLE ' . $collection;
         $query = @$this->db->query($sql);
         $result = $query->result();
-        $sql = str_replace("CREATE TABLE `$collection`", "CREATE TABLE `temp`", $result[0]->{'Create Table'});
+        $sql = str_replace("CREATE TABLE `{$collection}`", 'CREATE TABLE `temp`', $result[0]->{'Create Table'});
         $query = $this->db->query($sql);
 
-        $items = array();
         for ($i=0; $i < count($sql_file); $i++) {
             $sql = '';
-            if (stripos($sql_file[$i], "INSERT INTO `$collection` VALUES") !== false) {
-                $sql = str_ireplace("INSERT INTO `$collection` VALUES", "INSERT INTO `temp` VALUES", $sql_file[$i]);
+            if (stripos($sql_file[$i], "INSERT INTO `{$collection}` VALUES") !== false) {
+                $sql = str_ireplace("INSERT INTO `{$collection}` VALUES", 'INSERT INTO `temp` VALUES', $sql_file[$i]);
                 $this->db->query($sql);
             }
         }
 
-        $sql = "SELECT * FROM `temp`";
+        $sql = 'SELECT * FROM `temp`';
         $query = $this->db->query($sql);
         $result = $query->result();
         $result = $this->format_data($result, $collection);
-        $sql = "DROP TABLE IF EXISTS `temp`";
+        $sql = 'DROP TABLE IF EXISTS `temp`';
         $this->db->query($sql);
 
         return ($result);
     }
 
-    public function support($id = '')
+    /**
+     * [support description]
+     * @return [type] [description]
+     */
+    public function support()
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
@@ -196,27 +214,27 @@ class M_help extends MY_Model
 
         $data->database->name = $this->db->platform();
 
-        $sql = "SELECT COUNT(*) AS `count` FROM system";
+        $sql = 'SELECT COUNT(*) AS `count` FROM system';
         $query = $this->db->query($sql);
         $result = $query->result();
         $data->database->devices = $result[0]->count;
 
-        $sql = "SELECT COUNT(*) AS `count` FROM change_log";
+        $sql = 'SELECT COUNT(*) AS `count` FROM change_log';
         $query = $this->db->query($sql);
         $result = $query->result();
         $data->database->change_log = $result[0]->count;
 
-        $sql = "SELECT COUNT(*) AS `count` FROM logs";
+        $sql = 'SELECT COUNT(*) AS `count` FROM logs';
         $query = $this->db->query($sql);
         $result = $query->result();
         $data->database->logs = $result[0]->count;
 
-        $sql = "SELECT `severity`, COUNT(*) as `count`, MIN(timestamp) AS `first`, MAX(timestamp) AS `last` FROM `logs` GROUP BY `severity`";
+        $sql = 'SELECT `severity`, COUNT(*) as `count`, MIN(timestamp) AS `first`, MAX(timestamp) AS `last` FROM `logs` GROUP BY `severity`';
         $query = $this->db->query($sql);
         $result = $query->result();
         $data->logs = $result;
 
-        $sql = "SELECT COUNT(*) AS `count`, `type`, `manufacturer`, `model`, `snmp_oid` FROM system GROUP BY type, manufacturer, model, snmp_oid ORDER BY type, manufacturer, model";
+        $sql = 'SELECT COUNT(*) AS `count`, `type`, `manufacturer`, `model`, `snmp_oid` FROM system GROUP BY type, manufacturer, model, snmp_oid ORDER BY type, manufacturer, model';
         $query = $this->db->query($sql);
         $data->devices = $query->result();
 
@@ -225,14 +243,14 @@ class M_help extends MY_Model
         $result = $query->result();
         $data->database->timezone = $result[0]->timezone;
         $data->database->version = $this->db->version();
-        $sql = "SELECT NOW() AS `timestamp`";
+        $sql = 'SELECT NOW() AS `timestamp`';
         $query = $this->db->query($sql);
         $result = $query->result();
         $data->database->timestamp = $result[0]->timestamp;
 
         $data->webserver->document_root = @$_SERVER['DOCUMENT_ROOT'];
         $data->webserver->forwarded_proto = @$_SERVER['HTTP_X_FORWARDED_PROTO'];
-        $data->webserver->name = getenv("SERVER_SOFTWARE");
+        $data->webserver->name = getenv('SERVER_SOFTWARE');
         $data->webserver->port = @$_SERVER['SERVER_PORT'];
         $data->webserver->script_filename = @$_SERVER['SCRIPT_FILENAME'];
         $data->webserver->script_name = @$_SERVER['SCRIPT_NAME'];
@@ -245,14 +263,14 @@ class M_help extends MY_Model
         $data->php->error_reporting = ini_get('error_reporting');
         $extensions = get_loaded_extensions();
         $data->php->extensions = implode($extensions, ', ');
-        if (php_uname('s') == 'Windows NT') {
+        if (php_uname('s') === 'Windows NT') {
             $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mysqli', 'session', 'simplexml', 'snmp', 'xml');
         } else {
             $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mysqli', 'posix', 'session', 'simplexml', 'snmp', 'xml');
         }
         foreach ($extensions as $extension) {
             $data->php->{'ext_'.$extension} = phpversion($extension);
-            if (empty($data->php->{'ext_'.$extension}) and extension_loaded($extension)) {
+            if (empty($data->php->{'ext_'.$extension}) && extension_loaded($extension)) {
                 $data->php->{'ext_'.$extension} = 'unknown version';
             }
         }
@@ -268,9 +286,9 @@ class M_help extends MY_Model
         $data->php->ini = php_ini_loaded_file();
 
 
-        if (php_uname('s') == 'Windows NT') {
+        if (php_uname('s') === 'Windows NT') {
             $data->os->name = 'Windows';
-            exec("echo. |WMIC OS Get Caption", $output);
+            exec('echo. |WMIC OS Get Caption', $output);
             if (isset($output[1])) {
                 $data->os->version = $output[1];
             }
@@ -282,7 +300,7 @@ class M_help extends MY_Model
                 $data->prereq->nmap = 'n';
             }
             $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
-            if ($data->prereq->nmap == 'n' and file_exists($test_path)) {
+            if ($data->prereq->nmap === 'n' && file_exists($test_path)) {
                 $data->prereq->nmap = 'c:\Program Files (x86)\Nmap\Nmap.exe';
             }
             $command_string = 'tzutil /g';
@@ -290,7 +308,7 @@ class M_help extends MY_Model
             $data->os->timezone = @$output[0];
         }
 
-        if (php_uname('s') == 'Darwin') {
+        if (php_uname('s') === 'Darwin') {
             $data->os->name = 'OSX';
             $command_string = 'sw_vers | grep "ProductVersion:" | cut -f2';
             @exec($command_string, $return['output'], $return['status']);
@@ -308,7 +326,7 @@ class M_help extends MY_Model
             $data->os->timezone = @$output[0];
         }
 
-        if (php_uname('s') == 'Linux') {
+        if (php_uname('s') === 'Linux') {
             $data->os->name = 'linux';
             if (file_exists('/etc/os-release')) {
                 $command_string = 'grep PRETTY_NAME= /etc/os-release';
@@ -322,13 +340,14 @@ class M_help extends MY_Model
                     $data->os->version = str_replace('"', '', $data->os->version);
                 }
             } elseif (file_exists('/etc/issue.net')) {
-                $i = file('/etc/issue.net');
-                $data->os->version = trim($i[0]);
+                $file_contents = file('/etc/issue.net');
+                $data->os->version = trim($file_contents[0]);
+                unset($file_contents);
             } elseif (file_exists('/etc/redhat-release')) {
-                # RedHat 6 doesn't have /etc/os-release
+                // RedHat 6 doesn't have /etc/os-release
                 $data->os->version = 'RedHat';
             }
-            if ((stripos($data->os->version, 'red') !== false) and (stripos($data->os->version, 'hat') !== false)) {
+            if ((stripos($data->os->version, 'red') !== false) && (stripos($data->os->version, 'hat') !== false)) {
                 $data->os->name = 'Linux (Redhat)';
             }
             if (stripos($data->os->version, 'centos') !== false) {
@@ -347,18 +366,18 @@ class M_help extends MY_Model
             if (stripos($data->os->version, 'mint') !== false) {
                 $data->os->name = 'Linux (Debian)';
             }
-            # php process owner
+            // php process owner
             if (extension_loaded('posix')) {
-                $i = posix_getpwuid(posix_geteuid());
-                $data->php->process_owner = $i['name'];
-                unset($i);
+                $posix_getpwuid = posix_getpwuid(posix_geteuid());
+                $data->php->process_owner = $posix_getpwuid['name'];
+                unset($posix_getpwuid);
             } else {
                 $data->php->process_owner = 'No PHP posix extension loaded - cannot determine process owner.';
             }
 
             $prereqs = array('nmap', 'screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
             foreach ($prereqs as $prereq) {
-                $command_string = "which " . $prereq . " 2>/dev/null";
+                $command_string = 'which ' . $prereq . ' 2>/dev/null';
                 exec($command_string, $output, $return_var);
                 if (isset($output[0])) {
                     $data->prereq->$prereq = @$output[0];
@@ -367,8 +386,8 @@ class M_help extends MY_Model
                 unset($command_string);
             }
 
-            # Samba Client
-            $command_string = "which smbclient 2>/dev/null";
+            // Samba Client
+            $command_string = 'which smbclient 2>/dev/null';
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
                 $data->prereq->sambaclient = $output[0];
@@ -376,27 +395,27 @@ class M_help extends MY_Model
             unset($output);
             unset($command_string);
 
-            # winexe version
-            $command_string = "/usr/local/open-audit/other/winexe-static --version 2>&1";
+            // winexe version
+            $command_string = '/usr/local/open-audit/other/winexe-static --version 2>&1';
             exec($command_string, $output, $return_var);
-            if (isset($output[0]) and strpos($output[0], 'winexe') === 0) {
+            if (isset($output[0]) && strpos($output[0], 'winexe') === 0) {
                 $data->prereq->winexe = $output[0];
             }
             unset($output);
             unset($command_string);
 
-            # OS Timezone
-            if ($data->os->name == 'Linux (Redhat)') {
+            // OS Timezone
+            if ($data->os->name === 'Linux (Redhat)') {
                 $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
                 exec($command_string, $output, $return_var);
                 $data->os->timezone = @$output[0];
-                if ($data->os->timezone == '') {
+                if ($data->os->timezone === '') {
                     $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
                     exec($command_string, $output, $return_var);
                     $data->os->timezone = @$output[0];
                 }
             }
-            if ($data->os->name == 'Linux (Debian)') {
+            if ($data->os->name === 'Linux (Debian)') {
                 $command_string = 'cat /etc/timezone';
                 exec($command_string, $output, $return_var);
                 $data->os->timezone = @$output[0];
@@ -404,33 +423,12 @@ class M_help extends MY_Model
                 unset($command_string);
             }
             $data->os->timezone = trim($data->os->timezone);
-
-            // # Access Log - should be -rw-rw-rw-
-            // $command_string = 'ls -l /usr/local/open-audit/other/log_access.log | cut -d" " -f1';
-            // exec($command_string, $output, $return_var);
-            // if (!empty($output[0])) {
-            //     $data->permissions->access_log = $output[0];
-            // } else {
-            //     $data->permissions->access_log = 'Error - missing file';
-            // }
-            // unset($output);
-            // unset($command_string);
-            // # System Log - should be -rw-rw-rw-
-            // $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
-            // exec($command_string, $output, $return_var);
-            // if (!empty($output[0])) {
-            //     $data->permissions->system_log = $output[0];
-            // } else {
-            //     $data->permissions->system_log = 'Error - missing file';
-            // }
-            // unset($output);
-            // unset($command_string);
         }
 
 
         if (php_uname('s') !== 'Windows NT') {
-            # Permissions
-            # cron perms - should be -rw-r--r--
+            // Permissions
+            // cron perms - should be -rw-r--r--
             $command_string = 'ls -l /etc/cron.d/open-audit | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
@@ -442,8 +440,8 @@ class M_help extends MY_Model
             }
             unset($output);
             unset($command_string);
-            # nmap perms - should be -rwsr-xr-x
-            if ($data->prereq->nmap != '' and $data->prereq->nmap != 'n') {
+            // nmap perms - should be -rwsr-xr-x
+            if ($data->prereq->nmap !== '' && $data->prereq->nmap !== 'n') {
                 $command_string = 'ls -l '.$data->prereq->nmap.' | cut -d" " -f1';
                 exec($command_string, $output, $return_var);
                 if (isset($output[0])) {
@@ -499,3 +497,5 @@ class M_help extends MY_Model
         $CI->response->data[0] = $data;
     }
 }
+// End of file m_help.php
+// Location: ./models/m_help.php

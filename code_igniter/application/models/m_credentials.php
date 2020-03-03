@@ -1,4 +1,5 @@
 <?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,18 +24,35 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
+* PHP version 5.3.3
+* 
 * @category  Model
-* @package   Open-AudIT
+* @package   Credentials
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
+*/
+
+/**
+* Base Model Credentials
+*
+* @access   public
+* @category Model
+* @package  Credentials
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class M_credentials extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -44,6 +62,12 @@ class M_credentials extends MY_Model
         $this->load->library('encrypt');
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  string $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -59,19 +83,23 @@ class M_credentials extends MY_Model
             return null;
         }
 
-        $sql = "SELECT * FROM credentials WHERE id = ?";
+        $sql = 'SELECT * FROM credentials WHERE id = ?';
         $result = $this->run_sql($sql, array($id));
-        if (!empty($result[0]->credentials)) {
+        if ( ! empty($result[0]->credentials)) {
             $result[0]->credentials = json_decode(simpleDecrypt($result[0]->credentials));
         }
         $result = $this->format_data($result, 'credentials');
-        if (!empty($result[0])) {
+        if ( ! empty($result[0])) {
             return($result);
         } else {
             return null;
         }
     }
 
+    /**
+     * [update description]
+     * @return [type] [description]
+     */
     public function update()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -85,46 +113,46 @@ class M_credentials extends MY_Model
         $sql = 'UPDATE `credentials` SET ';
         $data = array();
 
-        if (!empty($CI->response->meta->received_data->attributes->credentials)) {
+        if ( ! empty($CI->response->meta->received_data->attributes->credentials)) {
             $received_credentials = new stdClass();
             foreach ($CI->response->meta->received_data->attributes->credentials as $key => $value) {
                     $received_credentials->$key = $value;
             }
-            $select = "SELECT * FROM credentials WHERE id = ?";
+            $select = 'SELECT * FROM credentials WHERE id = ?';
             $existing_credentials = $this->run_sql($select, array($CI->response->meta->id));
             $existing_credentials = json_decode(simpleDecrypt($existing_credentials[0]->credentials));
 
             $new_credentials = new stdClass();
             foreach ($existing_credentials as $existing_key => $existing_value) {
-                if (!empty($received_credentials->$existing_key)) {
+                if ( ! empty($received_credentials->$existing_key)) {
                     $new_credentials->$existing_key = $received_credentials->$existing_key;
                 } else {
                     $new_credentials->$existing_key = $existing_credentials->$existing_key;
                 }
             }
-            $sql .= "`credentials` = ?, ";
+            $sql .= '`credentials` = ?, ';
             $data[] = (string)simpleEncrypt(json_encode($new_credentials));
         }
         
         if ( ! empty($CI->response->meta->received_data->attributes->name)) {
-            $sql .= "`name` = ?, ";
+            $sql .= '`name` = ?, ';
             $data[] = $CI->response->meta->received_data->attributes->name;
         }
 
         if ( ! empty($CI->response->meta->received_data->attributes->description)) {
-            $sql .= "`description` = ?, ";
+            $sql .= '`description` = ?, ';
             $data[] = $CI->response->meta->received_data->attributes->description;
         }
 
         if ( ! empty($CI->response->meta->received_data->attributes->org_id)) {
-            $sql .= "`org_id` = ?, ";
+            $sql .= '`org_id` = ?, ';
             $data[] = $CI->response->meta->received_data->attributes->org_id;
         }
 
         if ($sql === 'UPDATE `credentials` SET ') {
-            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
+            // TODO - THROW AN ERROR, no credentials or name or description supplied for updating
         } else {
-            $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
+            $sql .= ' `edited_by` = ?, `edited_date` = NOW() WHERE id = ?';
             $data[] = (string)$CI->user->full_name;
             $data[] = intval($CI->response->meta->id);
             $this->run_sql($sql, $data);
@@ -143,13 +171,26 @@ class M_credentials extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
+        if (empty($id)) {
+            $id = @intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        if (empty($id)) {
+            return false;
+        }
         $CI = & get_instance();
         $sql = 'DELETE FROM `credentials` WHERE id = ?';
-        $data = array(intval($CI->response->meta->id));
+        $data = array($id);
         $this->run_sql($sql, $data);
         return true;
     }
 
+    /**
+     * [get_discovery_credentials description]
+     * @param  [type] $discovery_id [description]
+     * @return [type]               [description]
+     */
     public function get_discovery_credentials($discovery_id = null)
     {
         // Get the credentials of all orgs with discoveries.org_id and
@@ -186,6 +227,13 @@ class M_credentials extends MY_Model
         return $result;
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
@@ -215,7 +263,7 @@ class M_credentials extends MY_Model
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            if ( ! empty($result) and is_array($result)) {
+            if ( ! empty($result) && is_array($result)) {
                 for ($i=0; $i < count($result); $i++) {
                     if ( ! empty($result[$i]->credentials)) {
                         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
@@ -232,3 +280,5 @@ class M_credentials extends MY_Model
         }
     }
 }
+// End of file m_credentials.php
+// Location: ./models/m_credentials.php

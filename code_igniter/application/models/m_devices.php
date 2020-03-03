@@ -59,10 +59,10 @@ class M_devices extends MY_Model
     }
 
     /**
-     * [build_filter description]
+     * [_build_filter description]
      * @return [type] [description]
      */
-    private function build_filter()
+    private function _build_filter()
     {
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format graph report_name ';
@@ -73,7 +73,7 @@ class M_devices extends MY_Model
                     $item->name = 'system.id';
                 }
                 if ( ! empty($item->name) && $item->operator !== 'in') {
-                    if (stripos($item->name, 'current') !== false and $item->value !== 'y' and $item->value != 'n') {
+                    if (stripos($item->name, 'current') !== false && $item->value !== 'y' && $item->value !== 'n') {
                         // we ignore this value
                     } else {
                         $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
@@ -87,24 +87,27 @@ class M_devices extends MY_Model
         return($filter);
     }
 
-    private function build_join()
+    /**
+     * [_build_join description]
+     * @return [type] [description]
+     */
+    private function _build_join()
     {
         $CI = & get_instance();
-        #$reserved = ' properties limit sub_resource action sort current offset format ';
         $join = '';
         $tables = '';
         if (count($CI->response->meta->filter) > 0) {
             foreach ($CI->response->meta->filter as $item) {
                 if (strpos($item->name, '.') !== false) {
                     $table = substr($item->name, 0, strpos($item->name, '.'));
-                    if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
-                        if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
+                    if ($table !== 'system' && stripos($tables, ' ' . $table . ' ') === false) {
+                        if ($table === 'change_log' OR $table === 'edit_log' OR $table === 'audit_log') {
                             $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
                         } else {
                             $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
                         }
                     }
-                    $tables .= " $table ";
+                    $tables .= " {$table} ";
                 }
             }
         }
@@ -161,7 +164,7 @@ class M_devices extends MY_Model
             return false;
         }
         $CI = & get_instance();
-        if ($CI->response->meta->collection === 'devices' and ! empty($CI->response->meta->properties)) {
+        if ($CI->response->meta->collection === 'devices' && ! empty($CI->response->meta->properties)) {
             $properties = $CI->response->meta->properties;
         } else {
             $properties = '*';
@@ -188,7 +191,7 @@ class M_devices extends MY_Model
             if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
                 $date_time_f = new \DateTime('@0');
-                $date_time_t = new \DateTime("@$seconds");
+                $date_time_t = new \DateTime("@{$seconds}");
                 $result[0]->attributes->uptime_formatted = $date_time_f->diff($date_time_t)->format('%a days, %H:%i:%S');
             }
         }
@@ -232,7 +235,7 @@ class M_devices extends MY_Model
                 // get this field.org_id children
                 $orgs = array($field->org_id);
                 $orgs = array_merge($orgs, $CI->m_orgs->get_children($field->org_id));
-                foreach ($orgs as $key => $value) {
+                foreach ($orgs as $value) {
                     if (intval($device_org_id) === intval($value)) {
                         $sql = 'SELECT COUNT(*) AS `count` FROM (' . str_replace('@filter', '1=1', $field->group_sql) . ") a WHERE a.id = {$device_id}";
                         $result = $this->run_sql($sql, $data);
@@ -360,7 +363,7 @@ class M_devices extends MY_Model
             $limit = ' LIMIT ' . intval($limit);
         }
 
-        $filter = $this->build_filter();
+        $filter = $this->_build_filter();
 
         if ($sub_resource === 'location') {
             $sql = 'SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?';
@@ -419,7 +422,7 @@ class M_devices extends MY_Model
             } else {
                 $currency = '';
             }
-            $sql = "SELECT " . $properties . ", system.name AS `system.name` FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = {$id} " . $sub_resource_id . " " . $currency . ' ' . $filter . ' ' . $limit . ' ' . $sort;
+            $sql = "SELECT {$properties}, system.name AS `system.name` FROM `{$sub_resource}` LEFT JOIN system ON (system.id = `{$sub_resource}`.system_id) WHERE system.id = {$id} {$sub_resource_id} {$currency} {$filter} {$limit} {$sort}";
             $data = array($CI->user->id);
         }
 
@@ -435,18 +438,25 @@ class M_devices extends MY_Model
         }
 
         $result = $this->format_data($result, 'devices/' . $id . '/' . $sub_resource);
-        if (count($result) == 0) {
+        if (count($result) === 0) {
             return false;
         } else {
             return ($result);
         }
     }
 
+    /**
+     * [sub_resource_delete description]
+     * @param  integer $id              [description]
+     * @param  integer $sub_resource    [description]
+     * @param  integer $sub_resource_id [description]
+     * @return [type]                   [description]
+     */
     public function sub_resource_delete($id = 0, $sub_resource = 0, $sub_resource_id = 0)
     {
         $CI = & get_instance();
         if (empty($id)) {
-            if (!empty($CI->response->meta->id)) {
+            if ( ! empty($CI->response->meta->id)) {
                 $id = intval($CI->response->meta->id);
             }
         }
@@ -455,7 +465,7 @@ class M_devices extends MY_Model
         }
 
         if (empty($sub_resource)) {
-            if (!empty($CI->response->meta->sub_resource)) {
+            if ( ! empty($CI->response->meta->sub_resource)) {
                 $sub_resource = intval($CI->response->meta->sub_resource);
             }
         }
@@ -464,25 +474,26 @@ class M_devices extends MY_Model
         }
 
         if (empty($sub_resource_id)) {
-            if (!empty($CI->response->meta->sub_resource_id)) {
+            if ( ! empty($CI->response->meta->sub_resource_id)) {
                 $sub_resource_id = intval($CI->response->meta->sub_resource_id);
             }
         }
         if (empty($sub_resource_id)) {
             return false;
         }
-        if ($sub_resource == 'attachment') {
-            $sql = "SELECT * FROM attachment WHERE id = " . intval($sub_resource_id);
+        if ($sub_resource === 'attachment') {
+            $sql = 'SELECT * FROM attachment WHERE id = ' . intval($sub_resource_id);
             $attachment = $this->run_sql($sql, array());
             if (unlink($attachment[0]->filename)) {
                 // good
             } else {
                 // TODO - log an error here
-                echo "Could not delete " . $attachment[0]->filename . ".";
+                echo 'Could not delete ' . $attachment[0]->filename . '.';
                 return false;
             }
         }
-        if ($sub_resource == 'image') {
+        if ($sub_resource === 'image') {
+
             // $sql = "SELECT * FROM image WHERE id = " . intval($sub_resource_id);
             // $image = $this->run_sql($sql, array());
             // if (unlink($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $image[0]->filename)) {
@@ -492,8 +503,9 @@ class M_devices extends MY_Model
             //     echo "Could not delete " . $image[0]->filename . ".";
             //     return false;
             // }
+
         }
-        $sql = "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
+        $sql = 'DELETE FROM `' . (string)$sub_resource . '` WHERE `system_id` = ? AND id = ?';
         $data = array(intval($id), intval($sub_resource_id));
         $this->run_sql($sql, $data);
         if ($this->db->affected_rows() > 0) {
@@ -503,6 +515,13 @@ class M_devices extends MY_Model
         }
     }
 
+    /**
+     * [sub_resource_create description]
+     * @param  integer $id           [description]
+     * @param  string  $sub_resource [description]
+     * @param  string  $data         [description]
+     * @return [type]                [description]
+     */
     public function sub_resource_create($id = 0, $sub_resource = '', $data = '')
     {
         $CI = & get_instance();
@@ -599,7 +618,7 @@ class M_devices extends MY_Model
                 log_error('ERR-0024', 'm_devices::sub_resource_create', 'No image file provided for sub_resource_create.');
                 return false;
             }
-            $target = BASEPATH."../application/attachments/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
+            $target = BASEPATH . '../application/attachments/' . $CI->response->meta->id . '_' . basename($_FILES['attachment']['name']);
             if ( ! empty($CI->response->meta->cloud_id)) {
                 if ( ! file_exists(BASEPATH . '../application/attachments/' . $CI->response->meta->cloud_id)) {
                     mkdir(BASEPATH . '../application/attachments/' . $CI->response->meta->cloud_id);
@@ -634,7 +653,7 @@ class M_devices extends MY_Model
                 return false;
             }
         } else if ($sub_resource === 'image') {
-            if (empty($_FILES['attachment']) and empty($CI->response->meta->received_data->attributes->filename)) {
+            if (empty($_FILES['attachment']) && empty($CI->response->meta->received_data->attributes->filename)) {
                 $log->severity = 5;
                 $log->summary = 'No image file provided for sub_resource_create.';
                 $log->status = 'error';
@@ -761,24 +780,30 @@ class M_devices extends MY_Model
         }
     }
 
+    /**
+     * [collection description]
+     * @param  [type] $user_id  [description]
+     * @param  [type] $response [description]
+     * @return [type]           [description]
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
-            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM system WHERE org_id IN (" . implode(',', $org_list) . ")";
+        if ( ! empty($user_id)) {
+            $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
+            $sql = "SELECT * FROM system WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'system');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->join . " " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->join . ' ' . 
+                    $CI->response->meta->internal->filter . ' ' . 
+                    $CI->response->meta->internal->groupby . ' ' . 
+                    $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'system');
@@ -786,10 +811,14 @@ class M_devices extends MY_Model
         }
     }
 
+    /**
+     * [collection_group_by description]
+     * @return [type] [description]
+     */
     public function collection_group_by()
     {
         $CI = & get_instance();
-        $sql = "SELECT id, COUNT(*) AS `count`, " . $CI->response->meta->groupby . " FROM system " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        $sql = "SELECT id, COUNT(*) AS `count`, {$CI->response->meta->groupby} FROM system {$CI->response->meta->internal->groupby} {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
         return $result;
@@ -802,7 +831,7 @@ class M_devices extends MY_Model
     public function collection_sub_resource()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
+        $filter = $this->_build_filter();
         if ( ! empty($CI->response->meta->groupby)) {
             if ( ! empty($CI->response->meta->internal->properties)) {
                 $CI->response->meta->internal->properties .= ', COUNT(*) AS `count`';
@@ -846,11 +875,15 @@ class M_devices extends MY_Model
         return $result;
     }
 
+    /**
+     * [report description]
+     * @return [type] [description]
+     */
     public function report()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $join = $this->build_join();
+        $filter = $this->_build_filter();
+        $join = $this->_build_join();
 
         $sql = "SELECT system.id FROM system {$join} WHERE system.org_id IN (" . $CI->user->org_list . ") {$filter} {$CI->response->meta->internal->groupby}";
         $result = $this->run_sql($sql, array());
@@ -860,7 +893,7 @@ class M_devices extends MY_Model
         $system_id_list = implode(',', $temp_ids);
         unset($temp, $temp_ids);
 
-        $sql = "SELECT * FROM oa_report WHERE report_id = " . intval($CI->response->meta->sub_resource_id);
+        $sql = 'SELECT * FROM oa_report WHERE report_id = ' . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $report = $result[0];
         $CI->response->meta->sub_resource_name = $report->report_name;
@@ -878,7 +911,7 @@ class M_devices extends MY_Model
 
         $result = $this->run_sql($report->report_sql, array());
         $CI->response->meta->total = count($result);
-        if (!empty($CI->response->meta->limit)) {
+        if ( ! empty($CI->response->meta->limit)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
         $result = $this->format_data($result, 'devices');
@@ -892,8 +925,8 @@ class M_devices extends MY_Model
     public function query()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $join = $this->build_join();
+        $filter = $this->_build_filter();
+        $join = $this->_build_join();
 
         $sql = 'SELECT * FROM queries WHERE id = ' . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
@@ -935,45 +968,48 @@ class M_devices extends MY_Model
         return($result);
     }
 
+    /**
+     * [group description]
+     * @return [type] [description]
+     */
     public function group()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $join = $this->build_join();
+        $filter = $this->_build_filter();
 
-        $sql = "SELECT * FROM groups WHERE id = " . intval($CI->response->meta->sub_resource_id);
+        $sql = 'SELECT * FROM groups WHERE id = ' . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $group = $result[0];
         $CI->response->meta->sub_resource_name = $group->name;
 
         $filter = '';
-        if (!empty($CI->response->meta->filter)) {
+        if ( ! empty($CI->response->meta->filter)) {
             foreach ($CI->response->meta->filter as $filter_entry) {
                 $filter .= ' AND ' . $filter_entry->name . ' ' . $filter_entry->operator . ' ' . '"' . $filter_entry->value . '"';
             }
         }
 
-        $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))" . $filter;
-        if (!empty($CI->response->meta->requestor)) {
-            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.oae_manage = 'y')" . $filter;
+        $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN ({$CI->user->org_list}) {$filter}";
+        if ( ! empty($CI->response->meta->requestor)) {
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y') {$filter}";
         }
 
         $sql = $group->sql;
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
-        $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.manufacturer AS `system.manufacturer`, system.os_family AS `system.os_family`, system.status AS `system.status`", $sql);
+        $sql = str_ireplace('SELECT DISTINCT(system.id)', 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.manufacturer AS `system.manufacturer`, system.os_family AS `system.os_family`, system.status AS `system.status`', $sql);
         $result = $this->run_sql($sql, array());
 
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 foreach ($CI->response->meta->filter as $item) {
                     if (isset($result[$i]->{$item->name})) {
-                        if ($item->operator == '=') {
-                            if ($result[$i]->{$item->name} != $item->value) {
+                        if ($item->operator === '=') {
+                            if ($result[$i]->{$item->name} !== $item->value) {
                                 unset($result[$i]);
                             }
                         }
-                        if ($item->operator == '!=') {
-                            if ($result[$i]->{$item->name} == $item->value) {
+                        if ($item->operator === '!=') {
+                            if ($result[$i]->{$item->name} === $item->value) {
                                 unset($result[$i]);
                             }
                         }
@@ -985,19 +1021,22 @@ class M_devices extends MY_Model
             $CI->response->meta->total = 0;
         }
 
-        if (!empty($CI->response->meta->limit) and !empty($result)) {
+        if ( ! empty($CI->response->meta->limit) && ! empty($result)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
         $result = $this->format_data($result, 'devices');
         return($result);
     }
 
+    /**
+     * [update description]
+     * @param  [type] $device [description]
+     * @return [type]         [description]
+     */
     public function update($device = null)
     {
         $CI = & get_instance();
-        $temp_debug = $this->db->db_debug;
         $this->db->db_debug = false;
-        $custom = 'n';
 
         $log_details = new stdClass();
         $log_details->severity = 7;
@@ -1005,30 +1044,30 @@ class M_devices extends MY_Model
         $log_details->message = 'System update start';
         stdlog($log_details);
 
-        # account for a single id or multiple id's
+        // account for a single id or multiple id's
         $ids = array();
 
-        if (! is_null($device)) {
+        if ( ! is_null($device)) {
             if (empty($device->id)) {
                 // TODO - throw an error
                 return;
             } else {
                 $ids[] = $device->id;
             }
-            if (! empty($device->last_seen_by)) {
+            if ( ! empty($device->last_seen_by)) {
                 $source = $device->last_seen_by;
             } else {
                 $source = 'user';
             }
             $received_data = $device;
         } else {
-            if (! empty($CI->response->meta->id)) {
+            if ( ! empty($CI->response->meta->id)) {
                 $ids[] = $CI->response->meta->id;
-            } elseif (!empty($CI->response->meta->ids)) {
+            } elseif ( ! empty($CI->response->meta->ids)) {
                 $ids = explode(',', $CI->response->meta->ids);
             }
-            # set our last seen by
-            if (! empty($CI->response->received_data->attributes->last_seen_by)) {
+            // set our last seen by
+            if ( ! empty($CI->response->received_data->attributes->last_seen_by)) {
                 $source = $CI->response->received_data->attributes->last_seen_by;
             } else {
                 $source = 'user';
@@ -1036,8 +1075,8 @@ class M_devices extends MY_Model
             $received_data = $CI->response->meta->received_data->attributes;
         }
 
-        if (!empty($CI->response->meta->received_data->attributes->status) and $CI->response->meta->received_data->attributes->status === 'deleted' and !empty($CI->config->config['device_auto_delete']) and $CI->config->config['device_auto_delete'] === 'y') {
-            $sql = "DELETE FROM `system` WHERE id IN ( " . implode(',', $ids) . " )";
+        if ( ! empty($CI->response->meta->received_data->attributes->status) && $CI->response->meta->received_data->attributes->status === 'deleted' && ! empty($CI->config->config['device_auto_delete']) && $CI->config->config['device_auto_delete'] === 'y') {
+            $sql = 'DELETE FROM `system` WHERE id IN ( ' . implode(',', $ids) . ')';
             $data = array();
             $this->run_sql($sql, $data);
             return;
@@ -1046,8 +1085,8 @@ class M_devices extends MY_Model
         $CI->load->model('m_edit_log');
         $CI->load->model('m_orgs');
         $system_fields = implode(' ', $this->db->list_fields('system'));
-        $system_fields .= " ";
-        $sql = "SELECT id, name, group_id, org_id FROM fields";
+        $system_fields .= ' ';
+        $sql = 'SELECT id, name, group_id, org_id FROM fields';
         $fields = $this->run_sql($sql, array());
 
         // loop through our supplied data and test if it's a custom field or a system field,
@@ -1056,41 +1095,40 @@ class M_devices extends MY_Model
             $previous_value = '';
 
             // check our custom fields
-            if (!empty($fields)) {
+            if ( ! empty($fields)) {
                 foreach ($fields as $field) {
-                    if ($key == $field->name) {
-                        # we have a custom field
-
-                        # check if this device is in the org and group associated with the field
+                    if ((string)$key === (string)$field->name) {
+                        // we have a custom field
+                        // check if this device is in the org and group associated with the field
                         $field_orgs = $CI->m_orgs->get_children($field->org_id);
                         $field_orgs[] = $field->org_id;
                         $field_orgs = implode(',', $field_orgs);
-                        $sql = "SELECT `sql` FROM `groups` WHERE id = ?";
+                        $sql = 'SELECT `sql` FROM `groups` WHERE id = ?';
                         $data = array($field->group_id);
                         $result = $this->run_sql($sql, $data);
                         $test_sql = $result[0]->sql;
-                        if (!empty($CI->response->meta->requestor)) {
+                        if ( ! empty($CI->response->meta->requestor)) {
                             $test_sql = str_replace('@filter', 'system.org_id IN (' . $field_orgs . ') AND system.oae_manage = "y"', $test_sql);
                         } else {
                             $test_sql = str_replace('@filter', 'system.org_id IN (' . $field_orgs . ')', $test_sql);
                         }
                         $test_sql .= ' AND system.id = ?';
-                        # get the original value (if it exists)
+                        // get the original value (if it exists)
                         foreach ($ids as $id) {
                             $result = $this->run_sql($test_sql, array(intval($id)));
-                            # Only proceed if our system.id is in the fields assigned group
-                            if (!empty($result)) {
-                                $sql = "SELECT id, value, fields_id FROM field WHERE system_id = ? AND fields_id = ?";
+                            // Only proceed if our system.id is in the fields assigned group
+                            if ( ! empty($result)) {
+                                $sql = 'SELECT id, value, fields_id FROM field WHERE system_id = ? AND fields_id = ?';
                                 $result = $this->run_sql($sql, array(intval($id), $field->id));
                                 if (isset($result[0]->value)) {
-                                    # If our column exists, it must have a value (even blank) - update it
+                                    // If our column exists, it must have a value (even blank) - update it
                                     $previous_value = $result[0]->value;
-                                    $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
+                                    $sql = 'UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?';
                                     $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
                                     $CI->m_edit_log->create(intval($id), 'Field data was updated', 'field', $field->name, '', $value, $previous_value);
                                 } else {
-                                    # The row doesn't exist - insert a new one
-                                    $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
+                                    // The row doesn't exist - insert a new one
+                                    $sql = 'INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)';
                                     $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
                                     $previous_value = '';
                                     $CI->m_edit_log->create(intval($id), 'Field data was created', 'field', $field->name, '', $value, '');
@@ -1102,34 +1140,34 @@ class M_devices extends MY_Model
             }
 
             // now check the regular system table fields
-            if ((string)$value == '' and ($key == 'system.id' or $key == 'id' or $key == 'system.oae_manage' or $key == 'oae_manage' or $key == 'system.status' or $key == 'status' or $key == 'system.nmis_manage' or $key == 'nmis_manage' or $key == 'system.environment' or $key == 'environment' or $key == 'system.location_id' or $key == 'location_id' or $key == 'system.org_id' or $key == 'org_id' or $key == 'system.type' or $key == 'type')) {
-                # We cannot set these fields to blank, they MUST contain a value
+            if ((string)$value === '' && ($key === 'system.id' OR $key === 'id' OR $key === 'system.oae_manage' OR $key === 'oae_manage' OR $key === 'system.status' OR $key === 'status' OR $key === 'system.nmis_manage' OR $key === 'nmis_manage' OR $key === 'system.environment' OR $key === 'environment' OR $key === 'system.location_id' OR $key === 'location_id' OR $key === 'system.org_id' OR $key === 'org_id' OR $key === 'system.type' OR $key === 'type')) {
+                // We cannot set these fields to blank, they MUST contain a value
 
             } else {
                 if (stripos($system_fields, ' '.$key.' ') !== false) {
                     // we have a field from the system table
                     foreach ($ids as $id) {
                         // get the current value
-                        $sql = "SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?";
+                        $sql = 'SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?';
                         $data = array(intval($id));
                         $result = $this->run_sql($sql, $data);
                         $previous_value = @$result[0]->{$key};
 
-                        # get the current entry in the edit_log
+                        // get the current entry in the edit_log
                         $sql = "SELECT * FROM `edit_log` WHERE `system_id` = ? AND `db_table` = 'system' AND `db_column` = ? ORDER BY `timestamp` DESC LIMIT 1";
-                        $data = array(intval($id), "$key");
+                        $data = array(intval($id), "{$key}");
                         $result = $this->run_sql($sql, $data);
-                        if (!empty($result[0]->weight)) {
+                        if ( ! empty($result[0]->weight)) {
                             $previous_weight = intval($result[0]->weight);
                         } else {
                             $previous_weight = 10000;
                         }
                         // calculate the weight
                         $weight = intval($this->weight($source));
-                        if ($weight <= $previous_weight and $value != $previous_value) {
-                            if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
+                        if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
+                            if ($key !== 'id' && $key !== 'last_seen' && $key !== 'last_seen_by' && $key !== 'first_seen') {
                                 // update the system table
-                                $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
+                                $sql = "UPDATE `system` SET `{$key}` = ? WHERE id = ?";
                                 $data = array((string)$value, intval($id));
                                 $this->run_sql($sql, $data);
                                 // insert an entry into the edit table
@@ -1137,14 +1175,14 @@ class M_devices extends MY_Model
                                 $data = array(@intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);
                                 $this->run_sql($sql, $data);
                                 // Special case the 'type' - set the icon to match
-                                if ($key == 'type') {
+                                if ($key === 'type') {
                                     $sql = "UPDATE `system` SET `icon` = '" . str_replace(' ', '_', $value) . "' WHERE id = ?";
                                     $data = array(intval($id));
                                     $this->run_sql($sql, $data);
                                 }
                             }
                         } else {
-                            # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
+                            // We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
                         }
                     }
                 }
@@ -1161,6 +1199,7 @@ class M_devices extends MY_Model
     */
     public function weight($set_by = 'user')
     {
+
         // We assign a weight to the submitted data and compare it to what we already have for each column
         // Valid weights and the sources are:
         // 1000 - user or import (import should set as user as well)
@@ -1230,9 +1269,9 @@ class M_devices extends MY_Model
         unset($item);
         foreach ($result as &$item) {
             foreach ($item as $key => $value) {
-                if ($key == 'id' or $key == 'free' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'used' or
-                strrpos($key, '_id') === strlen($key)-3 or strrpos($key, '_count') === strlen($key)-6 or
-                strrpos($key, '_percent') === strlen($key)-8 or strrpos($key, '_size') === strlen($key)-5 ) {
+                if ($key === 'id' OR $key === 'free' OR $key === 'size' OR $key === 'speed' OR $key === 'total' OR $key === 'used' OR
+                strrpos($key, '_id') === strlen($key)-3 OR strrpos($key, '_count') === strlen($key)-6 OR
+                strrpos($key, '_percent') === strlen($key)-8 OR strrpos($key, '_size') === strlen($key)-5 ) {
                     $item->$key = (int) intval($value);
                 }
             }
@@ -1251,35 +1290,37 @@ class M_devices extends MY_Model
     */
     public function create(&$details)
     {
-        # nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
-        # the foreach iterators below don't work.
-        # if we cast it to an "object", it stays as a SimpleXMLObject and doesn't work
-        # because our XML is quite simple, we can cast it to an array and back to a 'normal'
-        # object and the foreach below works.
+
+        // nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
+        // the foreach iterators below don't work.
+        // if we cast it to an "object", it stays as a SimpleXMLObject and doesn't work
+        // because our XML is quite simple, we can cast it to an array and back to a 'normal'
+        // object and the foreach below works.
+
         $details = (object) $details;
         $details = (array) $details;
         $details = (object) $details;
-        # this is an insert - we do NOT want a system.id
+        // this is an insert - we do NOT want a system.id
         unset($details->id);
 
         // get a name we can use
-        if (!empty($details->name)) {
+        if ( ! empty($details->name)) {
             $name = $details->name;
-        } elseif (!empty($details->hostname)) {
+        } elseif ( ! empty($details->hostname)) {
             $name = $details->hostname;
             $details->name = $details->hostname;
-        } elseif (!empty($details->sysName)) {
+        } elseif ( ! empty($details->sysName)) {
             $name = $details->sysName;
             $details->name = $details->sysName;
-        } elseif (!empty($details->dns_hostname)) {
+        } elseif ( ! empty($details->dns_hostname)) {
             $name = $details->dns_hostname;
             $details->name = $details->dns_hostname;
-        } elseif (!empty($details->ip)) {
+        } elseif ( ! empty($details->ip)) {
             $name = $details->ip;
             $details->name = $details->ip;
         }
 
-        if (!isset($details->ip)) {
+        if ( ! isset($details->ip)) {
             $details->ip = '';
         }
 
@@ -1290,10 +1331,10 @@ class M_devices extends MY_Model
         $log_details->file = 'system';
         stdlog($log_details);
 
-        # remove some characters from the OS string
-        if (!empty($details->os_name)) {
-            $details->os_name = str_ireplace("(r)", "", $details->os_name);
-            $details->os_name = str_ireplace("(tm)", "", $details->os_name);
+        // remove some characters from the OS string
+        if ( ! empty($details->os_name)) {
+            $details->os_name = str_ireplace('(r)', '', $details->os_name);
+            $details->os_name = str_ireplace('(tm)', '', $details->os_name);
         }
 
 
@@ -1309,65 +1350,63 @@ class M_devices extends MY_Model
             $details->environment = 'production';
         }
 
-        # we now set a default location - 0 the location_id
-        if (!isset($details->location_id)) {
-            $details->location_id = '0';
+        // we now set a default location - 1 the location_id
+        if ( ! isset($details->location_id)) {
+            $details->location_id = 1;
         }
 
-        # Set the form factor to virtual if required
-        if (! empty($details->manufacturer)) {
-            if ((strripos($details->manufacturer, "vmware") !== false) or
-                (strripos($details->manufacturer, "parallels") !== false) or
-                (strripos($details->manufacturer, "virtual") !== false)) {
-                if (!isset($details->class) or $details->class != 'hypervisor') {
+        // Set the form factor to virtual if required
+        if ( ! empty($details->manufacturer)) {
+            if ((strripos($details->manufacturer, 'vmware') !== false) OR (strripos($details->manufacturer, 'parallels') !== false) OR (strripos($details->manufacturer, 'virtual') !== false)) {
+                if ( ! isset($details->class) OR $details->class !== 'hypervisor') {
                     $details->form_factor = 'Virtual';
                 }
             }
         }
-        if (! empty($details->model)) {
-            if (strripos($details->model, "bhyve") !== false) {
-                if (!isset($details->class) or $details->class != 'hypervisor') {
+        if ( ! empty($details->model)) {
+            if (strripos($details->model, 'bhyve') !== false) {
+                if ( ! isset($details->class) OR $details->class !== 'hypervisor') {
                     $details->form_factor = 'Virtual';
                 }
             }
         }
 
-        # Pad the IP address
-        if (! empty($details->ip)) {
+        // Pad the IP address
+        if ( ! empty($details->ip)) {
             $details->ip = ip_address_to_db($details->ip);
         }
 
-        if (! empty($details->hostname) and  ! empty($details->domain) and empty($details->fqdn)) {
-            $details->fqdn = $details->hostname.".".$details->domain;
+        if ( ! empty($details->hostname) && ! empty($details->domain) && empty($details->fqdn)) {
+            $details->fqdn = $details->hostname . '.' . $details->domain;
         }
 
-        $sql = "SHOW COLUMNS FROM system";
+        $sql = 'SHOW COLUMNS FROM system';
         $columns = $this->run_sql($sql, array());
 
-        $sql = "INSERT INTO system ( ";
+        $sql = 'INSERT INTO system ( ';
         foreach ($details as $key => $value) {
             if ($key > '') {
-                # need to iterate through available columns and only insert where $key == valid column name
+                // need to iterate through available columns and only insert where $key == valid column name
                 foreach ($columns as $column) {
-                    if ($key == $column->Field) {
-                        $sql .= $key.", ";
+                    if ((string)$key === (string)$column->Field) {
+                        $sql .= $key.', ';
                     }
                 }
             }
         }
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-        $sql .= " ) VALUES ( ";
+        $sql .= ' ) VALUES ( ';
         foreach ($details as $key => $value) {
             if ($key > '') {
                 foreach ($columns as $column) {
-                    if ($key == $column->Field) {
+                    if ((string)$key === (string)$column->Field) {
                         $sql .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
                     }
                 }
             }
         }
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-        $sql .= ")";
+        $sql .= ')';
 
         $query = $this->db->query($sql);
         $details->id = $this->db->insert_id();
@@ -1379,20 +1418,20 @@ class M_devices extends MY_Model
         foreach ($details as $key => $value) {
             if ($key > '') {
                 foreach ($columns as $column) {
-                    if ($key == $column->Field) {
+                    if ((string)$key === (string)$column->Field) {
                         $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
-                        $data = array("$details->id", "$details->last_seen_by", "$weight", "$key", "$details->last_seen", "$value", "");
+                        $data = array(intval($details->id), "{$details->last_seen_by}", "{$weight}", "{$key}", "{$details->last_seen}", "{$value}", '');
                         $query = $this->db->query($sql, $data);
                     }
                 }
             }
         }
 
-        # update the device icon
+        // update the device icon
         $this->reset_icons($details->id);
 
-        # insert a subnet so we have a default
-        if (!isset($details->subnet) or $details->subnet == '') {
+        // insert a subnet so we have a default
+        if ( ! isset($details->subnet) OR $details->subnet === '') {
             $details->subnet = '0.0.0.0';
         }
 
@@ -1413,259 +1452,262 @@ class M_devices extends MY_Model
     */
     public function reset_icons($id = '')
     {
-        if ($id != '') {
-            $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer FROM system WHERE id = ".$id;
+        if ($id !== '') {
+            $sql = 'SELECT id, type, os_name, os_family, os_group, manufacturer FROM system WHERE id = ' . intval($id);
         } else {
-            $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer FROM system";
+            $sql = 'SELECT id, type, os_name, os_family, os_group, manufacturer FROM system';
         }
         $query = $this->db->query($sql);
         $result = $query->result();
         $count = $query->num_rows();
         // we set computer icons by OS, everything else by type
         foreach ($result as $details) {
-            if ($details->type == 'computer') {
+            if ($details->type === 'computer') {
                 // determine icon for computer
                 // most generic to most specific
                 $details->icon = 'computer';
 
                 // manufacturer based
-                if (strripos($details->manufacturer, "apple") !== false) {
+                if (strripos($details->manufacturer, 'apple') !== false) {
                     $details->icon = 'apple';
                 }
-                if (strripos($details->manufacturer, "vmware") !== false) {
+                if (strripos($details->manufacturer, 'vmware') !== false) {
                     $details->icon = 'vmware';
                 }
-                if (strripos($details->manufacturer, "xen") !== false) {
+                if (strripos($details->manufacturer, 'xen') !== false) {
                     $details->icon = 'xen';
                 }
-                if (strripos($details->manufacturer, "google") !== false) {
+                if (strripos($details->manufacturer, 'google') !== false) {
                     $details->icon = 'google_kvm';
                 }
 
                 // os_group based
-                if (strripos($details->os_group, "linux") !== false) {
+                if (strripos($details->os_group, 'linux') !== false) {
                     $details->icon = 'linux';
                 }
-                if (strripos($details->os_group, "apple") !== false) {
+                if (strripos($details->os_group, 'apple') !== false) {
                     $details->icon = 'apple';
                 }
-                if (strripos($details->os_group, "windows") !== false) {
+                if (strripos($details->os_group, 'windows') !== false) {
                     $details->icon = 'windows';
                 }
 
                 // os name based
-                if ((strripos($details->os_name, "osx") !== false) or
-                    (strpos(strtolower($details->os_name), "ios") !== false)) {
+                if ((strripos($details->os_name, 'osx') !== false) OR (strpos(strtolower($details->os_name), 'ios') !== false)) {
                     $details->icon = 'apple';
                 }
-                if (strripos($details->os_name, "aix") !== false) {
+                if (strripos($details->os_name, 'aix') !== false) {
                     $details->icon = 'aix';
                 }
-                if (strripos($details->os_name, "amazon") !== false) {
+                if (strripos($details->os_name, 'amazon') !== false) {
                     $details->icon = 'amazon';
                 }
-                if (strripos($details->os_name, "arch") !== false) {
+                if (strripos($details->os_name, 'arch') !== false) {
                     $details->icon = 'arch';
                 }
-                if (strripos($details->os_name, "bsd") !== false) {
+                if (strripos($details->os_name, 'bsd') !== false) {
                     $details->icon = 'bsd';
                 }
-                if (strripos($details->os_name, "centos") !== false) {
+                if (strripos($details->os_name, 'centos') !== false) {
                     $details->icon = 'centos';
                 }
-                if (strripos($details->os_name, "debian") !== false) {
+                if (strripos($details->os_name, 'debian') !== false) {
                     $details->icon = 'debian';
                 }
-                if (strripos($details->os_name, "fedora") !== false) {
+                if (strripos($details->os_name, 'fedora') !== false) {
                     $details->icon = 'fedora';
                 }
-                if (strripos($details->os_name, "hp-ux") !== false) {
+                if (strripos($details->os_name, 'hp-ux') !== false) {
                     $details->icon = 'hp-ux';
                 }
-                if ((strripos($details->os_name, "mandriva") !== false) or
-                    (strripos($details->os_name, "mandrake") !== false)) {
+                if ((strripos($details->os_name, 'mandriva') !== false) OR (strripos($details->os_name, 'mandrake') !== false)) {
                     $details->icon = 'mandriva';
                 }
-                if (strripos($details->os_name, "mint") !== false) {
+                if (strripos($details->os_name, 'mint') !== false) {
                     $details->icon = 'mint';
                 }
-                if (strripos($details->os_name, "novell") !== false) {
+                if (strripos($details->os_name, 'novell') !== false) {
                     $details->icon = 'novell';
                 }
-                if (strripos($details->os_name, "oracle") !== false) {
+                if (strripos($details->os_name, 'oracle') !== false) {
                     $details->icon = 'oracle';
                 }
-                if (strripos($details->os_name, "slackware") !== false) {
+                if (strripos($details->os_name, 'slackware') !== false) {
                     $details->icon = 'slackware';
                 }
-                if (strripos($details->os_name, "solaris") !== false) {
+                if (strripos($details->os_name, 'solaris') !== false) {
                     $details->icon = 'solaris';
                 }
-                if (strripos($details->os_name, "solus") !== false) {
+                if (strripos($details->os_name, 'solus') !== false) {
                     $details->icon = 'solus';
                 }
-                if (strripos($details->os_name, "suse") !== false) {
+                if (strripos($details->os_name, 'suse') !== false) {
                     $details->icon = 'suse';
                 }
-                if ((strripos($details->os_name, "red hat") !== false) or
-                    (strripos($details->os_name, "redhat") !== false)) {
+                if ((strripos($details->os_name, 'red hat') !== false) OR (strripos($details->os_name, 'redhat') !== false)) {
                     $details->icon = 'redhat';
                 }
-                if (strripos($details->os_name, "ubuntu") !== false) {
+                if (strripos($details->os_name, 'ubuntu') !== false) {
                     $details->icon = 'ubuntu';
                 }
-                if (strripos($details->os_name, "vmware") !== false) {
+                if (strripos($details->os_name, 'vmware') !== false) {
                     $details->icon = 'vmware';
                 }
-                if (strripos($details->os_name, "windows") !== false) {
+                if (strripos($details->os_name, 'windows') !== false) {
                     $details->icon = 'windows';
                 }
-                if (strripos($details->os_name, "microsoft") !== false) {
+                if (strripos($details->os_name, 'microsoft') !== false) {
                     $details->icon = 'windows';
                 }
             } else {
                 // device is not type=computer
                 // base the icon on the type
-                if (strpos($details->type, "|") === false) {
+                if (strpos($details->type, '|') === false) {
                     // if the type does not contain a |, use it.
                     // Nmap will often return a pipe separated list when it guesses
-                    $details->icon = str_replace(" ", "_", $details->type);
+                    $details->icon = str_replace(' ', '_', $details->type);
                 } else {
                     // we have a pipe (likely an nmap list) so just just unknown
                     $details->icon = 'unknown';
                 }
             }
 
-            $sql = "UPDATE system SET icon = ? WHERE id = ?";
-            $data = array("$details->icon", "$details->id");
+            $sql = 'UPDATE system SET icon = ? WHERE id = ?';
+            $data = array("{$details->icon}", intval($details->id));
             $query = $this->db->query($sql, $data);
         }
 
         return ($count);
     }
 
+    /**
+     * [update_devices_icons description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function update_devices_icons($id = '')
     {
-        if ($id != '') {
-            $sql = "SELECT system.id, type, os_name, os_family, os_group, manufacturer FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.id WHERE oa_group_sys.group_id = ".intval($id);
+        if ($id !== '') {
+            $sql = 'SELECT system.id, type, os_name, os_family, os_group, manufacturer FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.id WHERE oa_group_sys.group_id = ' . intval($id);
         } else {
-            $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer FROM system";
+            $sql = 'SELECT id, type, os_name, os_family, os_group, manufacturer FROM system';
         }
         $query = $this->db->query($sql);
         $result = $query->result();
         $count = $query->num_rows();
         // we set computer icons by OS, everything else by type
         foreach ($result as $details) {
-            if ($details->type == 'computer') {
+            if ($details->type === 'computer') {
                 // determine icon for computer
                 // most generic to most specific
 
                 // manufacturer based
-                if (strripos($details->manufacturer, "apple") !== false) {
+                if (strripos($details->manufacturer, 'apple') !== false) {
                     $details->icon = 'apple';
                 }
-                if (strripos($details->manufacturer, "vmware") !== false) {
+                if (strripos($details->manufacturer, 'vmware') !== false) {
                     $details->icon = 'vmware';
                 }
-                if (strripos($details->manufacturer, "xen") !== false) {
+                if (strripos($details->manufacturer, 'xen') !== false) {
                     $details->icon = 'xen';
                 }
-                if (strripos($details->manufacturer, "google") !== false) {
+                if (strripos($details->manufacturer, 'google') !== false) {
                     $details->icon = 'google_kvm';
                 }
 
                 // os_group based
-                if (strripos($details->os_group, "linux") !== false) {
+                if (strripos($details->os_group, 'linux') !== false) {
                     $details->icon = 'linux';
                 }
-                if (strripos($details->os_group, "apple") !== false) {
+                if (strripos($details->os_group, 'apple') !== false) {
                     $details->icon = 'apple';
                 }
-                if (strripos($details->os_group, "windows") !== false) {
+                if (strripos($details->os_group, 'windows') !== false) {
                     $details->icon = 'windows';
                 }
 
                 // os name based
-                if ((strripos($details->os_name, "osx") !== false) or
-                    (strpos(strtolower($details->os_name), "ios") !== false)) {
+                if ((strripos($details->os_name, 'osx') !== false) OR (strpos(strtolower($details->os_name), 'ios') !== false)) {
                     $details->icon = 'apple';
                 }
-                if (strripos($details->os_name, "aix") !== false) {
+                if (strripos($details->os_name, 'aix') !== false) {
                     $details->icon = 'aix';
                 }
-                if (strripos($details->os_name, "amazon") !== false) {
+                if (strripos($details->os_name, 'amazon') !== false) {
                     $details->icon = 'amazon';
                 }
-                if (strripos($details->os_name, "bsd") !== false) {
+                if (strripos($details->os_name, 'bsd') !== false) {
                     $details->icon = 'bsd';
                 }
-                if (strripos($details->os_name, "centos") !== false) {
+                if (strripos($details->os_name, 'centos') !== false) {
                     $details->icon = 'centos';
                 }
-                if (strripos($details->os_name, "debian") !== false) {
+                if (strripos($details->os_name, 'debian') !== false) {
                     $details->icon = 'debian';
                 }
-                if (strripos($details->os_name, "fedora") !== false) {
+                if (strripos($details->os_name, 'fedora') !== false) {
                     $details->icon = 'fedora';
                 }
-                if (strripos($details->os_name, "hp-ux") !== false) {
+                if (strripos($details->os_name, 'hp-ux') !== false) {
                     $details->icon = 'hp-ux';
                 }
-                if ((strripos($details->os_name, "mandriva") !== false) or
-                    (strripos($details->os_name, "mandrake") !== false)) {
+                if ((strripos($details->os_name, 'mandriva') !== false) OR (strripos($details->os_name, 'mandrake') !== false)) {
                     $details->icon = 'mandriva';
                 }
-                if (strripos($details->os_name, "mint") !== false) {
+                if (strripos($details->os_name, 'mint') !== false) {
                     $details->icon = 'mint';
                 }
-                if (strripos($details->os_name, "novell") !== false) {
+                if (strripos($details->os_name, 'novell') !== false) {
                     $details->icon = 'novell';
                 }
-                if (strripos($details->os_name, "oracle") !== false) {
+                if (strripos($details->os_name, 'oracle') !== false) {
                     $details->icon = 'oracle';
                 }
-                if (strripos($details->os_name, "slackware") !== false) {
+                if (strripos($details->os_name, 'slackware') !== false) {
                     $details->icon = 'slackware';
                 }
-                if (strripos($details->os_name, "suse") !== false) {
+                if (strripos($details->os_name, 'suse') !== false) {
                     $details->icon = 'suse';
                 }
-                if ((strripos($details->os_name, "red hat") !== false) or
-                    (strripos($details->os_name, "redhat") !== false)) {
+                if ((strripos($details->os_name, 'red hat') !== false) OR (strripos($details->os_name, 'redhat') !== false)) {
                     $details->icon = 'redhat';
                 }
-                if (strripos($details->os_name, "ubuntu") !== false) {
+                if (strripos($details->os_name, 'ubuntu') !== false) {
                     $details->icon = 'ubuntu';
                 }
-                if (strripos($details->os_name, "vmware") !== false) {
+                if (strripos($details->os_name, 'vmware') !== false) {
                     $details->icon = 'vmware';
                 }
-                if (strripos($details->os_name, "windows") !== false) {
+                if (strripos($details->os_name, 'windows') !== false) {
                     $details->icon = 'windows';
                 }
-                if (strripos($details->os_name, "microsoft") !== false) {
+                if (strripos($details->os_name, 'microsoft') !== false) {
                     $details->icon = 'windows';
                 }
             } else {
                 // device is not type=computer
                 // base the icon on the type
-                if (strpos($details->type, "|") === false) {
+                if (strpos($details->type, '|') === false) {
                     // if the type does not contain a |, use it.
                     // Nmap will often return a pipe separated list when it guesses
-                    $details->icon = str_replace(" ", "_", $details->type);
+                    $details->icon = str_replace(' ', '_', $details->type);
                 } else {
                     // we have a pipe (likely an nmap list) so just just unknown
                     $details->icon = 'unknown';
                 }
             }
-            $sql = "/* m_devices::update_icons */" . " UPDATE system SET icon = ? WHERE id = ?";
-            $data = array("$details->icon", "$details->id");
+            $sql = '/* m_devices::update_icons */ ' . 'UPDATE system SET icon = ? WHERE id = ?';
+            $data = array("{$details->icon}", intval($details->id));
             $query = $this->db->query($sql, $data);
         }
         return ($count);
     }
 
-
+    /**
+     * [model_guess description]
+     * @param  [type] $device [description]
+     * @return [type]         [description]
+     */
     public function model_guess($device)
     {
         if (stripos($device->manufacturer, 'Ubiquiti') !== false) {
