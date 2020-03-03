@@ -104,7 +104,9 @@ class Licenses extends MY_Controller
     {
         $temp = $this->m_licenses->execute();
         $this->response->included = array_merge($this->response->included, $temp);
-        $this->response->data[0]->attributes->used_count = intval(count($temp));
+        if ( ! empty($temp) && ! empty($this->response->data[0]->attributes)) {
+            $this->response->data[0]->attributes->used_count = intval(count($temp));
+        }
         include 'include_read.php';
     }
 
