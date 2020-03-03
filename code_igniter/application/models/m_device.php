@@ -1620,22 +1620,44 @@ class M_device extends MY_Model
      */
     public function update($details)
     {
-        if (empty($details->id)) {
-            // this is an update - we need a system.id
-            return;
-        }
-
         $this->load->model('m_devices');
 
-        $log_details = new stdClass();
-        $log->message = 'System update start for '.@ip_address_from_db(@$details->ip).' ('.@$details->hostname.') (System ID '.@$details->id.')';
+        $log = new stdClass();
         $log->severity = 7;
         $log->file = 'm_device';
         $log->function = 'm_device::update';
         $log->status = 'notice';
         $log->command_status = 'notice';
         $log->summary = 'start function';
-        $log->ip = @ip_address_from_db($details->ip);
+
+        if (empty($details)) {
+            $log->severity = 4;
+            $log->message = 'm_device::update called, but no $details object supplied.';
+            stdlog($log);
+        }
+
+        if (empty($details->id)) {
+            // this is an update - we need a system.id
+            $log->severity = 4;
+            $log->message = 'm_device::update called, but no $details->id supplied.';
+            stdlog($log);
+            return;
+        }
+
+        $ip = 'unknown';
+        if ( ! empty($details->ip)) {
+            $ip = @ip_address_from_db($details->ip);
+            $log->ip = @ip_address_from_db($details->ip);
+        }
+        $hostname = 'unknown';
+        if ( ! empty($details->hostname)) {
+            $ip = $details->hostname;
+        }
+        $id = 'unknown';
+        if ( ! empty($details->id)) {
+            $id = intval($details->id);
+        }
+        $log->message = "System update start for {$ip} ({$hostname}) (System ID {$id})";
 
         if ( ! empty($details->discovery_id)) {
             $log->discovery_id = $details->discovery_id;
