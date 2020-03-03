@@ -672,27 +672,29 @@ class M_devices extends MY_Model
                     return false;
                 }
             }
-            $filename = @(string)basename($_FILES['attachment']['name']);
 
-            // Ensure we only accept JPG, PNG and SVG files
-            if(function_exists('mime_content_type')) {
-                $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
-            } else {
-                $mime_type = '';
-            }
-            $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
-            $extensions = array('jpg', 'jpeg', 'png', 'svg');
-            $temp = explode('.', $filename);
-            $extension = strtolower($temp[count($temp)-1]);
-            if ( ! in_array($mime_type, $filetypes) OR ! in_array($extension, $extensions)) {
-                unlink($_FILES['attachment']['tmp_name']);
-                $log->severity = 5;
-                $log->summary = 'Invalid file uploaded.';
-                $log->detail = 'Only jpg, png and svg files are accepted.';
-                $log->status = 'error';
-                stdlog($log);
-                log_error('ERR-0040', 'm_devices::sub_resource_create', 'Only jpg, png and svg files are accepted (' . $extension . ') (' . $mime_type . ')');
-                return false;
+            if ( ! empty($_FILES['attachment']['name'])) {
+                $filename = (string)basename($_FILES['attachment']['name']);
+                // Ensure we only accept JPG, PNG and SVG files
+                if(function_exists('mime_content_type')) {
+                    $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
+                } else {
+                    $mime_type = '';
+                }
+                $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
+                $extensions = array('jpg', 'jpeg', 'png', 'svg');
+                $temp = explode('.', $filename);
+                $extension = strtolower($temp[count($temp)-1]);
+                if ( ! in_array($mime_type, $filetypes) OR ! in_array($extension, $extensions)) {
+                    unlink($_FILES['attachment']['tmp_name']);
+                    $log->severity = 5;
+                    $log->summary = 'Invalid file uploaded.';
+                    $log->detail = 'Only jpg, png and svg files are accepted.';
+                    $log->status = 'error';
+                    stdlog($log);
+                    log_error('ERR-0040', 'm_devices::sub_resource_create', 'Only jpg, png and svg files are accepted (' . $extension . ') (' . $mime_type . ')');
+                    return false;
+                }
             }
 
             if ( ! empty($filename)) {
