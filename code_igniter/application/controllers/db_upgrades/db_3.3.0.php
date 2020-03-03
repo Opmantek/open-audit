@@ -234,6 +234,10 @@ UPDATE `disk` SET `manufacturer` = 'Apple Inc.' WHERE `manufacturer` LIKE 'Apple
 
 UPDATE `disk` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`));
 
+UPDATE `groups` SET `sql` = "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE '%debian%'" WHERE `name` = 'Debian Computers';
+
+UPDATE `groups` SET `sql` = "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type LIKE '%printer%'" WHERE `name` = 'Printers';
+
 ALTER TABLE `ip` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `ip` SET `name` = REPLACE(REPLACE(`ip`, '.0', '.'), '.0', '.') WHERE `version` = 4;
@@ -677,6 +681,14 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE `disk` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`manufacturer`, ' ', `model`))";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `groups` SET `sql` = \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE '%debian%'\" WHERE `name` = 'Debian Computers'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `groups` SET `sql` = \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type LIKE '%printer%'\" WHERE `name` = 'Printers'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
