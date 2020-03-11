@@ -25,12 +25,14 @@
 #
 # *****************************************************************************
 *
+* PHP version 5.3.3
+* 
 * @category  Controller
-* @package   Open-AudIT
+* @package   Tasks
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -38,8 +40,8 @@
 * Base Object Tasks
 *
 * @access   public
-* @category Object
-* @package  Open-AudIT
+* @category Controller
+* @package  Tasks
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
@@ -59,6 +61,12 @@ class Tasks extends MY_Controller
         $this->output->url = $this->config->config['oa_web_index'];
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }
@@ -93,22 +101,6 @@ class Tasks extends MY_Controller
     */
     public function read()
     {
-        if ($this->response->meta->format == 'screen') {
-            $this->load->model('m_collectors');
-            $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
-            $this->load->model('m_clouds');
-            $this->response->included = array_merge($this->response->included, $this->m_clouds->collection($this->user->id));
-            $this->load->model('m_discoveries');
-            $this->response->included = array_merge($this->response->included, $this->m_discoveries->collection($this->user->id));
-            $this->load->model('m_groups');
-            $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
-            $this->load->model('m_integrations');
-            $this->response->included = array_merge($this->response->included, $this->m_integrations->collection($this->user->id));
-            $this->load->model('m_queries');
-            $this->response->included = array_merge($this->response->included, $this->m_queries->collection($this->user->id));
-            $this->load->model('m_summaries');
-            $this->response->included = array_merge($this->response->included, $this->m_summaries->collection($this->user->id));
-        }
         include 'include_read.php';
     }
 
