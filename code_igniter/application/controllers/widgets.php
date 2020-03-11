@@ -55,6 +55,10 @@ class Widgets extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_widgets');
+        // This endpoint allows all users.orgs children and the users.org_id parents to be permitted
+        $this->load->model('m_orgs');
+        $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
+        unset($this->user->org_parents);
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
     }

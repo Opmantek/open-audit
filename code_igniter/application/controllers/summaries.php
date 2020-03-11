@@ -54,11 +54,9 @@ class Summaries extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        // $temp = @$this->uri->segment(1);
-        // if (empty($temp)) {
-        //     redirect('summaries');
-        // }
         $this->load->model('m_summaries');
+        // This endpoint allows all users.orgs children and the users.org_id parents to be permitted
+        $this->load->model('m_orgs');
         $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
         unset($this->user->org_parents);
         inputRead();
