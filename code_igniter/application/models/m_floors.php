@@ -82,6 +82,7 @@ class M_floors extends MY_Model
      */
     public function delete($id = 0)
     {
+        $id = intval($id);
         $sql = 'DELETE FROM `floors` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
@@ -100,8 +101,9 @@ class M_floors extends MY_Model
      */
     public function parent($id = 0)
     {
+        $id = intval($id);
         $sql = 'SELECT buildings.*, floors.id AS `floors.id`, floors.name AS `floors.name` FROM buildings LEFT JOIN floors ON (buildings.id = floors.building_id) WHERE floors.id = ?';
-        $data = array(intval($id));
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'buildings');
         return ($result);
@@ -115,8 +117,9 @@ class M_floors extends MY_Model
      */
     public function children($id = 0)
     {
-        $sql = 'SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rows ON (rows.room_id = rooms.id) WHERE rooms.floor_id = ? GROUP BY rooms.id';
-        $data = array(intval($id));
+        $id = intval($id);
+        $sql = 'SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(`rows`.`id`) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN `rows` ON (`rows`.`room_id` = `rooms`.`id`) WHERE rooms.floor_id = ? GROUP BY rooms.id';
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rooms');
         return ($result)    ;
