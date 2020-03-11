@@ -67,16 +67,9 @@ class M_dashboards extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         $sql = 'SELECT * FROM dashboards WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
