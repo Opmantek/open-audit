@@ -66,6 +66,7 @@ class M_buildings extends MY_Model
      */
     public function read($id = 0)
     {
+        $id = intval($id);
         $sql = 'SELECT buildings.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -81,6 +82,7 @@ class M_buildings extends MY_Model
      */
     public function delete($id = 0)
     {
+        $id = intval($id);
         $sql = 'DELETE FROM `buildings` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
@@ -99,8 +101,9 @@ class M_buildings extends MY_Model
      */
     public function parent($id = 0)
     {
+        $id = intval($id);
         $sql = 'SELECT locations.* FROM locations, buildings WHERE locations.id = buildings.location_id AND buildings.id = ?';
-        $data = array(intval($id));
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'locations');
         return ($result);
@@ -113,8 +116,9 @@ class M_buildings extends MY_Model
      */
     public function children($id = 0)
     {
+        $id = intval($id);
         $sql = 'SELECT floors.*, orgs.name AS `orgs.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rooms.id) as `rooms_count` FROM `floors` LEFT JOIN orgs ON (floors.org_id = orgs.id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rooms ON (rooms.floor_id = floors.id)  WHERE floors.building_id = ? GROUP BY floors.id';
-        $data = array(intval($id));
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'floors');
         return ($result);

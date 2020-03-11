@@ -48,6 +48,11 @@
  */
 class M_orgs extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,59 +61,54 @@ class M_orgs extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function read($id = '')
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
+    public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT orgs.*, COUNT(DISTINCT system.id) as `device_count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE orgs.id = ?";
+        $id = intval($id);
+        $sql = 'SELECT orgs.*, COUNT(DISTINCT system.id) as `device_count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE orgs.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'orgs');
         return ($result);
     }
 
-    public function delete($id = '')
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if ($id != 1) {
-            $sql = "DELETE FROM `orgs` WHERE id = ?";
-            $data = array($id);
-            $this->run_sql($sql, $data);
-            return true;
-        } else {
+        $id = intval($id);
+        if ($id === 1) {
+            // never allowed to delete the default org
             log_error('ERR-0013', 'm_orgs::delete');
             return false;
         }
+        $sql = 'DELETE FROM `orgs` WHERE id = ?';
+        $data = array($id);
+        $this->run_sql($sql, $data);
+        return true;
     }
 
-    public function read_sub_resource($id = '')
+    /**
+     * [read_sub_resource description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function read_sub_resource($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        if (count($result) == 0) {
+        if (count($result) === 0) {
             return false;
         } else {
             $result = $this->format_data($result, 'devices');
@@ -116,27 +116,35 @@ class M_orgs extends MY_Model
         }
     }
 
+    /**
+     * [get_orgs description]
+     * @return [type] [description]
+     */
     public function get_orgs()
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $CI = & get_instance();
-        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM orgs o1 LEFT JOIN orgs o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM orgs o1 LEFT JOIN orgs o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN ({$CI->user->org_list}) GROUP BY o1.id";
         $result = $this->run_sql($sql);
         return($result);
     }
 
-    public function get_children($org_id)
+    /**
+     * [get_children description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function get_children($id = 0)
     {
+        $id = intval($id);
         $org_list = array();
         if (empty($this->orgs)) {
-            $sql = "SELECT * FROM orgs";
+            $sql = 'SELECT * FROM orgs';
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $this->orgs = $query->result();
         }
         foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 1) {
+            if (intval($org->parent_id) === $id && intval($org->id) !== 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->get_children($org->id) as $org) {
                     $org_list[] = intval($org);
@@ -146,20 +154,28 @@ class M_orgs extends MY_Model
         return($org_list);
     }
 
+    /**
+     * [is_desc description]
+     * @param  integer $parent_id [description]
+     * @param  integer $desc_id   [description]
+     * @return boolean            [description]
+     */
     public function is_desc($parent_id = 0, $desc_id = 0)
     {
-        if (empty($parent_id) or empty($desc_id)) {
+        $parent_id = intval($parent_id);
+        $desc_id = intval($desc_id);
+        if (empty($parent_id) OR empty($desc_id)) {
             return false;
         }
         $CI = & get_instance();
         if (empty($CI->orgs)) {
-            $sql = "/* m_orgs::is_desc */ " . "SELECT * FROM orgs";
+            $sql = '/* m_orgs::is_desc */ ' . 'SELECT * FROM orgs';
             $CI->orgs = $this->run_sql($sql, array());
         }
         $children = $this->get_children($parent_id);
         foreach ($CI->orgs as $org) {
             foreach ($children as $child) {
-                if ($desc_id == $org->id and $org->id == $child) {
+                if (intval($org->id) === $desc_id && intval($org->id) === intval($child)) {
                     return true;
                 }
             }
@@ -167,13 +183,17 @@ class M_orgs extends MY_Model
         return false;
     }
 
-    public function get_parent($org_id)
+    /**
+     * [get_parent description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function get_parent($id = 0)
     {
-        if (empty($org_id)) {
-            return false;
-        }
-        $sql = "/* m_orgs::get_parent */ " . "SELECT parent_id FROM orgs WHERE org_id = " . intval($org_id);
-        $orgs = $this->run_sql($sql, array());
+        $id = intval($id);
+        $sql = '/* m_orgs::get_parent */ ' . 'SELECT parent_id FROM orgs WHERE org_id = ?';
+        $data = array($id);
+        $orgs = $this->run_sql($sql, $data);
         if (empty($orgs[0]->parent_id)) {
             return false;
         } else {
@@ -181,19 +201,20 @@ class M_orgs extends MY_Model
         }
     }
 
-    public function get_siblings($org_id)
+    /**
+     * [get_siblings description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function get_siblings($id = 0)
     {
-        if (empty($org_id)) {
-            return array();
-        } else {
-            $org_id = intval($org_id);
-        }
-        $sql = "/* m_orgs::get_siblings */ " . "SELECT a.id FROM orgs a LEFT JOIN orgs b ON (a.parent_id = b.parent_id) WHERE b.id = " . $org_id . " AND a.id != " . $org_id . " and a.parent_id != 1";
+        $id = intval($id);
+        $sql = '/* m_orgs::get_siblings */ ' . "SELECT a.id FROM orgs a LEFT JOIN orgs b ON (a.parent_id = b.parent_id) WHERE b.id = {$id} AND a.id != {$id} and a.parent_id != 1";
         $orgs = $this->run_sql($sql, array());
-        if (!empty($orgs) and is_array($orgs)) {
+        if ( ! empty($orgs) && is_array($orgs)) {
             $return_orgs = array();
-            foreach ($orgs as $org) {
-                $return_orgs[] = $org->id;
+            foreach ($orgs as $each_org) {
+                $return_orgs[] = $each_org->id;
             }
             return $return_orgs;
         } else {
@@ -202,22 +223,23 @@ class M_orgs extends MY_Model
 
     }
 
-    public function get_descendants($org_id)
+    /**
+     * [get_descendants description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function get_descendants($id = 0)
     {
-        if (empty($org_id)) {
-            return array();
-        } else {
-            $org_id = intval($org_id);
-        }
+        $id = intval($id);
         $org_list = array();
         if (empty($this->orgs)) {
-            $sql = "/* m_orgs::get_descendants */ " . "SELECT * FROM orgs";
+            $sql = '/* m_orgs::get_descendants */ ' . 'SELECT * FROM orgs';
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $this->orgs = $query->result();
         }
         foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 1) {
+            if (intval($org->parent_id) === $id && intval($org->id) !== 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->get_descendants($org->id) as $org) {
                     $org_list[] = intval($org);
@@ -227,16 +249,17 @@ class M_orgs extends MY_Model
         return($org_list);
     }
 
-    public function get_ascendants($org_id)
+    /**
+     * [get_ascendants description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function get_ascendants($id = 0)
     {
-        if (empty($org_id)) {
-            return array();
-        } else {
-            $org_id = intval($org_id);
-        }
-        $orgs = $this->get_ascendant($org_id);
+        $id = intval($id);
+        $orgs = $this->get_ascendant($id);
         for ($i=0; $i < count($orgs); $i++) { 
-            if ($orgs[$i] == $org_id) {
+            if (intval($orgs[$i]) === $id) {
                 unset($orgs[$i]);
             }
         }
@@ -244,17 +267,22 @@ class M_orgs extends MY_Model
         return $orgs;
     }
 
-    public function get_ascendant($org_id)
+    /**
+     * [get_ascendant description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function get_ascendant($id = 0)
     {
         $org_list = array();
         if (empty($this->orgs)) {
-            $sql = "/* m_orgs::get_ascendant */ " . "SELECT * FROM orgs";
+            $sql = '/* m_orgs::get_ascendant */ ' . 'SELECT * FROM orgs';
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $this->orgs = $query->result();
         }
         foreach ($this->orgs as $org) {
-            if ($org->id == $org_id and $org->parent_id != $org_id) {
+            if (intval($org->id) === $id && intval($org->parent_id) !== $id) {
                 $org_list[] = intval($org->parent_id);
                 foreach ($this->get_ascendant($org->parent_id) as $org) {
                     $org_list[] = intval($org);
@@ -264,18 +292,20 @@ class M_orgs extends MY_Model
         return($org_list);
     }
 
-    public function get_user_descendants($user_id)
+    /**
+     * [get_user_descendants description]
+     * @param  integer $user_id [description]
+     * @return [type]           [description]
+     */
+    public function get_user_descendants($user_id = 0)
     {
-        if (empty($user_id)) {
-            return array();
-        } else {
-            $user_id = intval($user_id);
-        }
-        if (!empty($this->user) and $this->user->id == $user_id) {
+        $user_id = intval($user_id);
+        if ( ! empty($this->user) && intval($this->user->id) === $user_id) {
             $org_list = $this->user->orgs_list;
         } else {
-            $sql = "/* m_orgs::get_user_descendants */ " . "SELECT orgs FROM users WHERE id = " . intval($user_id);
-            $query = $this->db->query($sql);
+            $sql = '/* m_orgs::get_user_descendants */ ' . 'SELECT orgs FROM users WHERE id = ?';
+            $data = array($user_id);
+            $query = $this->db->query($sql, $data);
             $result = $query->result();
             if (empty($result[0])) {
                 return array();
@@ -288,7 +318,7 @@ class M_orgs extends MY_Model
             $orgs = array_merge($orgs, $this->get_descendants($org_id));
         }
         for ($i=0; $i < count($orgs); $i++) { 
-            if ($orgs[$i] == $org_id) {
+            if (intval($orgs[$i]) === intval($org_id)) {
                 unset($orgs[$i]);
             }
         }
@@ -297,18 +327,20 @@ class M_orgs extends MY_Model
         return $orgs;
     }
 
-    public function get_user_ascendants($user_id)
+    /**
+     * [get_user_ascendants description]
+     * @param  integer $user_id [description]
+     * @return [type]           [description]
+     */
+    public function get_user_ascendants($user_id = 0)
     {
-        if (empty($user_id)) {
-            return array();
-        } else {
-            $user_id = intval($user_id);
-        }
-        if (!empty($this->user) and $this->user->id == $user_id) {
+        $user_id = intval($user_id);
+        if ( ! empty($this->user) && intval($this->user->id) === $user_id) {
             $org_list = $this->user->orgs_list;
         } else {
-            $sql = "/* m_orgs::get_user_ascendants */ " . "SELECT orgs FROM users WHERE id = " . intval($user_id);
-            $query = $this->db->query($sql);
+            $sql = '/* m_orgs::get_user_ascendants */ ' . 'SELECT orgs FROM users WHERE id = ?';
+            $data = array($user_id);
+            $query = $this->db->query($sql, $data);
             $result = $query->result();
             if (empty($result[0])) {
                 return array();
@@ -321,7 +353,7 @@ class M_orgs extends MY_Model
             $orgs = array_merge($orgs, $this->get_ascendant($org_id));
         }
         for ($i=0; $i < count($orgs); $i++) { 
-            if ($orgs[$i] == $org_id) {
+            if (intval($orgs[$i]) === intval($org_id)) {
                 unset($orgs[$i]);
             }
         }
@@ -330,14 +362,20 @@ class M_orgs extends MY_Model
         return $orgs;
     }
 
-    public function get_user_all($user_id)
+    /**
+     * [get_user_all description]
+     * @param  integer $user_id [description]
+     * @return [type]           [description]
+     */
+    public function get_user_all($user_id = 0)
     {
         $user_id = intval($user_id);
         if (empty($user_id)) {
             return array();
         }
-        $sql = "/* m_orgs::get_user_all */ " . "SELECT orgs FROM users WHERE id = " . intval($user_id);
-        $query = $this->db->query($sql);
+        $sql = '/* m_orgs::get_user_all */ ' . 'SELECT orgs FROM users WHERE id = ?';
+        $data = array($user_id);
+        $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (empty($result[0])) {
             return array();
@@ -352,26 +390,32 @@ class M_orgs extends MY_Model
         return ($org_list);
     }
 
-
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = $CI->m_orgs->get_user_descendants($user_id);
             $org_list = array_merge($CI->user->orgs, $org_list);
             $org_list = array_unique($org_list);
-            $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id)  WHERE orgs.id IN (" . implode(',', $org_list) . ")  GROUP BY orgs.id";
+            $sql = 'SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id)  WHERE orgs.id IN (' . implode(',', $org_list) . ') GROUP BY orgs.id';
 
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'orgs');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) " . $CI->response->meta->internal->filter . " GROUP BY orgs.id " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
-            if (!empty($CI->response->meta->requestor)) {
-                $sql = "SELECT " . $CI->response->meta->internal->properties . ", o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id AND system.oae_manage = 'y') " . $CI->response->meta->internal->filter . " GROUP BY orgs.id " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+            $sql = "SELECT {$CI->response->meta->internal->properties}, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) {$CI->response->meta->internal->filter} GROUP BY orgs.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
+            if ( ! empty($CI->response->meta->requestor)) {
+                $sql = "SELECT {$CI->response->meta->internal->properties}, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id AND system.oae_manage = 'y') {$CI->response->meta->internal->filter} GROUP BY orgs.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
             }
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'orgs');
@@ -379,3 +423,5 @@ class M_orgs extends MY_Model
         }
     }
 }
+// End of file m_orgs.php
+// Location: ./models/m_orgs.php

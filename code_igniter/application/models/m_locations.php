@@ -48,6 +48,11 @@
  */
 class M_locations extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,69 +61,71 @@ class M_locations extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT locations.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM `locations` LEFT JOIN `orgs` ON (orgs.id = locations.org_id) LEFT JOIN clouds ON (locations.cloud_id = clouds.id) WHERE locations.id = ?";
+        $id = intval($id);
+        $sql = 'SELECT `locations`.*, `orgs`.`id` AS `orgs.id`, `orgs`.`name` AS `orgs.name`, `clouds`.`id` AS `clouds.id`, `clouds`.`name` AS `clouds.name` FROM `locations` LEFT JOIN `orgs` ON (`orgs`.`id` = `locations`.`org_id`) LEFT JOIN `clouds` ON (`locations`.`cloud_id` = `clouds`.`id`) WHERE `locations`.`id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'locations');
         return ($result);
     }
 
-    public function delete($id = '')
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
         $id = intval($id);
-        # never allowed to delete the default location
-        if ($id != 1) {
-            #$CI = & get_instance(); # don't think we need this
-            $sql = "DELETE FROM `locations` WHERE id = ?";
-            $data = array($id);
-            $test = $this->run_sql($sql, $data);
-            if (!empty($test)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        if ($id === 1) {
+            // never allowed to delete the default location
             log_error('ERR-0013', 'm_locations::delete');
+            return false;
+        }
+        $sql = 'DELETE FROM `locations` WHERE id = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
+        } else {
             return false;
         }
     }
 
-    public function children($id = '')
+    /**
+     * Read the associated items children from the DB by ID
+     * 
+     * @param  int|integer $id [description]
+     * @return [type]          [description]
+     */
+    public function children($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'reading children data';
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT buildings.*, orgs.name AS `orgs.name`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.location_id = ? GROUP BY buildings.id";
+        $sql = 'SELECT buildings.*, orgs.name AS `orgs.name`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.location_id = ? GROUP BY buildings.id';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'buildings');
-        return ($result)    ;
+        return ($result);
     }
 
-    public function sub_resource($id = '')
+    /**
+     * [sub_resource description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function sub_resource($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $id = intval($id);
-        if ($id === 0) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
-        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
+        $sql = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?';
         $data = array((string)$id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'devices');
@@ -164,3 +171,5 @@ class M_locations extends MY_Model
         }
     }
 }
+// End of file m_locations.php
+// Location: ./models/m_locations.php

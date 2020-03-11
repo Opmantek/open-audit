@@ -48,6 +48,11 @@
  */
 class M_rooms extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,12 +61,16 @@ class M_rooms extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function read($id = '')
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
+    public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rows ON (rows.room_id = rooms.id) WHERE rooms.id = ?";
+        $sql = 'SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rows ON (rows.room_id = rooms.id) WHERE rooms.id = ?';
 
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -69,42 +78,51 @@ class M_rooms extends MY_Model
         return ($result);
     }
 
-    public function delete($id = '')
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "DELETE FROM `rooms` WHERE `id` = ?";
+        $sql = 'DELETE FROM `rooms` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
-        if (!empty($test)) {
+        if ( ! empty($test)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public function parent($id = '')
+    /**
+     * Read the associated items parents from the DB by ID
+     * 
+     * @param  int|integer $id [description]
+     * @return [type]          [description]
+     */
+    public function parent($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'reading parent data';
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT floors.* FROM floors, rooms WHERE floors.id = rooms.floor_id AND rooms.id = ?";
+        $sql = 'SELECT floors.* FROM floors, rooms WHERE floors.id = rooms.floor_id AND rooms.id = ?';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'floors');
         return ($result);
     }
 
-    public function children($id = '')
+    /**
+     * Read the associated items children from the DB by ID
+     * 
+     * @param  int|integer $id [description]
+     * @return [type]          [description]
+     */
+    public function children($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'reading children data';
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT rows.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = rows.id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) WHERE rows.room_id = ? GROUP BY rows.id";
+        $sql = 'SELECT `rows`.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = `rows`.`id`) LEFT JOIN rooms ON (rooms.id = `rows`.`room_id`) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) WHERE `rows`.`room_id` = ? GROUP BY `rows`.`id`';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rows');
@@ -142,3 +160,5 @@ class M_rooms extends MY_Model
         }
     }
 }
+// End of file m_rooms.php
+// Location: ./models/m_rooms.php

@@ -48,6 +48,11 @@
  */
 class M_rack_devices extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,61 +61,78 @@ class M_rack_devices extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT rack_devices.*, orgs.name AS `orgs.name`, racks.name as `racks.name`, racks.id as `racks.id`, 0 as `system_count`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, image.filename as `image.filename`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.id as `system.id`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = \"front\") LEFT JOIN system ON (system.id = rack_devices.system_id) WHERE rack_devices.id = ?";
+        $sql = 'SELECT rack_devices.*, orgs.name AS `orgs.name`, racks.name as `racks.name`, racks.id as `racks.id`, 0 as `system_count`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, image.filename as `image.filename`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.id as `system.id`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = "front") LEFT JOIN system ON (system.id = rack_devices.system_id) WHERE rack_devices.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rack_devices');
         return ($result);
     }
 
-    public function delete($id = '')
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "DELETE FROM `rack_devices` WHERE `id` = ?";
+        $sql = 'DELETE FROM `rack_devices` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
-        if (!empty($test)) {
+        if ( ! empty($test)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public function parent($id = '')
+    /**
+     * Read the associated items parents from the DB by ID
+     * 
+     * @param  int|integer $id [description]
+     * @return [type]          [description]
+     */
+    public function parent($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'reading parent data';
-        stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT racks.* FROM racks, rack_devices WHERE racks.id = rack_devices.rack_id AND rack_devices.id = ?";
-        $data = array(intval($id));
+        $sql = 'SELECT racks.* FROM racks, rack_devices WHERE racks.id = rack_devices.rack_id AND rack_devices.id = ?';
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rack_devices');
         return ($result);
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM rack_devices WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $sql = 'SELECT * FROM rack_devices WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'rack_devices');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, racks.id AS `racks.id`, racks.name as `racks.name`, 0 as `system_count`, rows.id AS `rows.id`, rows.name as `rows.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, image.filename as `image.filename`, system.id as `system.id`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = "front") LEFT JOIN system ON (system.id = rack_devices.system_id) ' . 
+            $sql = "SELECT {$CI->response->meta->internal->properties} , orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, racks.id AS `racks.id`, racks.name as `racks.name`, 0 as `system_count`, `rows`.`id` AS `rows.id`, `rows`.`name` as `rows.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, image.filename as `image.filename`, system.id as `system.id`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN `rows` ON (`rows`.`id` = racks.row_id) LEFT JOIN rooms ON (rooms.id = `rows`.`room_id`) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = 'front') LEFT JOIN system ON (system.id = rack_devices.system_id) " . 
                 $CI->response->meta->internal->filter . ' ' . 
                 $CI->response->meta->internal->groupby . ' ' . 
                 $CI->response->meta->internal->sort . ' ' . 
@@ -121,3 +143,6 @@ class M_rack_devices extends MY_Model
         }
     }
 }
+// End of file m_rack_devices.php
+// Location: ./models/m_rack_devices.php
+
