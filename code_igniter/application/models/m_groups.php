@@ -67,16 +67,9 @@ class M_groups extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         $sql = 'SELECT * FROM groups WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -90,27 +83,18 @@ class M_groups extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if ($id !== 1) {
-            $CI = & get_instance();
-            $sql = 'DELETE FROM `groups` WHERE id = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            return true;
-        } else {
+        $id = intval($id);
+        if ($id === 1) {
+            // never allowed to delete the default group
             log_error('ERR-0013', 'm_groups::delete');
             return false;
         }
+        $sql = 'DELETE FROM `groups` WHERE id = ?';
+        $data = array($id);
+        $this->run_sql($sql, $data);
+        return true;
     }
 
     /**
