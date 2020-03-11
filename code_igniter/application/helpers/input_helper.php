@@ -160,9 +160,6 @@ if ( ! function_exists('inputRead')) {
         // Standard URL scheme
         // /collection/{id}/{sub_resource}?action={XYZ}
 
-        //Our template to include
-        $CI->response->include = '';
-
         // initialise our properties
         $CI->response->meta = new stdClass();
         $CI->response->meta->access_token = @$CI->access_token;

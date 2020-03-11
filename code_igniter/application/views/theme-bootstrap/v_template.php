@@ -130,11 +130,7 @@ if (!empty($temp)) {
     echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . htmlentities($this->response->meta->flash->message) . "</div>\n";
 }
 
-if (!empty($this->response->meta->action) and $this->response->meta->action == 'import_form') {
-    include('v_collection_import_form.php');
-} else {
-    include($include.'.php');
-}
+include($this->response->include.'.php');
 
 unset($this->user->password);
 unset($this->response->data);

@@ -669,6 +669,9 @@ if (! function_exists('output')) {
             $CI->response->include = 'v_error';
             $include = 'v_error';
         } else {
+            if ($CI->response->meta->action === 'import_form') {
+                $CI->response->include = 'v_collection_import_form';
+            }
             if (empty($CI->response->include)) {
                 $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             }

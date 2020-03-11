@@ -43,8 +43,6 @@ if ($this->response->meta->collection === 'devices') {
 }
 $this->response->data = $this->m_database->read($db_table);
 
-$this->response->include = 'v_collection_import_form';
-
 $timer_end = microtime(true);
 $entry = new stdClass();
 $entry->time = ($timer_end - $timer_start);
