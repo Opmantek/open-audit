@@ -117,11 +117,13 @@ class MY_Controller extends CI_Controller
         $GLOBALS['timer_log'][] = $entry;
         $timer_start = microtime(true);
         set_time_limit(600);
+        // For any Orgs I have permission on, get their descendants
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
-        if (!empty($this->user->org_id)) {
+        // For my users.org_id, get it's ascendants and store in user->org_parents
+        if ( ! empty($this->user->org_id)) {
             $this->user->org_parents = implode(',', $this->m_users->get_parent_orgs($this->user->org_id));
         }
-        if (!empty($this->user->roles) and $this->user->roles != 'null') {
+        if ( ! empty($this->user->roles) && $this->user->roles !== 'null') {
             $this->user->roles = json_decode($this->user->roles);
         } else {
             if ($this->config->config['internal_version'] < 20160904) {
@@ -130,14 +132,14 @@ class MY_Controller extends CI_Controller
                 $log = new stdClass();
                 $log->severity = 4;
                 $log->file = 'system';
-                $log->summary = "Could not determine roles for user.";
+                $log->summary = 'Could not determine roles for user.';
                 stdlog($log);
                 $this->session->unset_userdata('user_id');
                 $this->session->set_flashdata('error', 'Could not determine roles for user.');
                 redirect('logon');
             }
         }
-        if (!empty($this->user->orgs)) {
+        if ( ! empty($this->user->orgs)) {
             $this->user->orgs = json_decode($this->user->orgs);
         } else {
             if ($this->config->config['internal_version'] < 20160904) {
@@ -146,10 +148,11 @@ class MY_Controller extends CI_Controller
                 $log = new stdClass();
                 $log->severity = 4;
                 $log->file = 'system';
-                $log->summary = "Could not determine orgs for user.";
+                $log->summary = 'Could not determine orgs for user.';
                 stdlog($log);
             }
         }
+
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
