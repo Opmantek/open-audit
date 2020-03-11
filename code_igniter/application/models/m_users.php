@@ -67,15 +67,12 @@ class M_users extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id === '') {
+        $id = intval($id);
+        if (empty($id)) {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
         }
         $sql = 'SELECT users.*, orgs.name AS `org_name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) WHERE users.id = ?';
         $data = array($id);
@@ -96,25 +93,20 @@ class M_users extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
+        $id = intval($id);
+        if ($id === 1) {
+            // never allowed to delete the default user
+            log_error('ERR-0013', 'm_users::delete');
+            return false;
         }
-        if ($id !== 1) {
-            // attempt to delete the item
-            $sql = 'DELETE FROM `users` WHERE id = ?';
-            $data = array($id);
-            $this->run_sql($sql, $data);
+        $sql = 'DELETE FROM `users` WHERE id = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            log_error('ERR-0013', 'm_users::delete');
             return false;
         }
     }
@@ -139,7 +131,7 @@ class M_users extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, dashboards.id AS `dashboards.id`, dashboards.name AS `dashboards.name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) LEFT JOIN dashboards ON (users.dashboard_id = dashboards.id) ' . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, dashboards.id AS `dashboards.id`, dashboards.name AS `dashboards.name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) LEFT JOIN dashboards ON (users.dashboard_id = dashboards.id) " .
                     $CI->response->meta->internal->filter . ' ' . 
                     $CI->response->meta->internal->groupby . ' ' . 
                     $CI->response->meta->internal->sort . ' ' . 
@@ -164,10 +156,6 @@ class M_users extends MY_Model
      */
     public function get_parent_orgs($org_id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'pre';
-        $this->log->summary = 'retrieving parent orgs';
-        stdlog($this->log);
         $CI = & get_instance();
         $parents_array = array();
 
@@ -205,10 +193,6 @@ class M_users extends MY_Model
      */
     public function get_orgs($user_id)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'pre';
-        $this->log->summary = 'retrieving orgs';
-        stdlog($this->log);
         $CI = & get_instance();
 
         if (empty($user_id)) {
@@ -354,73 +338,63 @@ class M_users extends MY_Model
      */
     public function get_user_collection_org_permission($collection, $id)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'retrieving collection orgs';
-        stdlog($this->log);
-        if ($collection === '') {
+        $CI = & get_instance();
+        $id = intval($id);
+        if (empty($collection) OR empty($id)) {
             return false;
-        }
-        if ($id === '') {
-            return false;
-        } else {
-            $id = intval($id);
         }
 
         if ($collection === 'help') {
-            # Always allow a user to view help
+            // Always allow a user to view help
+            return true;
+        }
+        if ($collection === 'users' && $CI->response->meta->id === $CI->user->id) {
+            // Always allow a user to view their own user item
             return true;
         }
 
-        $CI = & get_instance();
-
-        $org_id_name = 'org_id';
-        $table = $collection;
         $id_name = 'id';
 
+        $table = $collection;
         if ($collection === 'devices') {
             $table = 'system';
         }
+
+        $org_id_name = 'org_id';
         if ($collection === 'orgs') {
             $org_id_name = 'id';
         }
-        if ($table === '') {
-            return false;
-        }
 
-        if ($table === 'users' && $CI->response->meta->id === $CI->user->id) {
-            return true;
-        }
         if ($collection !== 'baselines_policies') {
             $sql = "SELECT {$org_id_name} AS org_id FROM {$table} WHERE {$id_name} = ?";
         } else {
             $sql = 'SELECT orgs.id AS org_id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) LEFT JOIN orgs ON (baselines.org_id = orgs.id) WHERE baselines_policies.id = ?';
         }
-        $data = array(intval($id));
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (count($result) === 0) {
             log_error('ERR-0007', '');
             return false;
-        } else {
-            $permitted = false;
-            $temp = explode(',', str_replace('"', '', $CI->user->org_list));
-            foreach ($temp as $key => $value) {
-                if ($result[0]->org_id === $value) {
-                    $permitted = true;
-                }
+        }
+        $permitted = false;
+        $temp = explode(',', str_replace('"', '', $CI->user->org_list));
+        foreach ($temp as $value) {
+            if (intval($result[0]->org_id) === intval($value)) {
+                $permitted = true;
             }
-            if ( ! $permitted) {
-                log_error('ERR-0008', '');
-                return false;
-            }
+        }
+        if ( ! $permitted) {
+            log_error('ERR-0008', '');
+            return false;
         }
         return true;
     }
 
     /**
      * [has_role description]
-     * @param  string  $role  [description]
-     * @param  array   $roles [description]
+     * @param  string $role  [description]
+     * @param  array  $roles [description]
      * @return boolean        [description]
      */
     public function has_role($role = '', $roles = array())
@@ -444,22 +418,23 @@ class M_users extends MY_Model
 
     /**
      * [has_org description]
-     * @param  string  $org  [description]
-     * @param  string  $orgs [description]
+     * @param  integer $org  [description]
+     * @param  array   $orgs [description]
      * @return boolean       [description]
      */
-    public function has_org($org = '', $orgs = '') {
-        if ($org === '') {
+    public function has_org($org = 0, $orgs = array())
+    {
+        if (empty($org)) {
             return false;
         }
-        if ($orgs === '') {
+        if (empty($orgs)) {
             $orgs = $this->user->orgs;
         }
         if (empty($orgs)) {
             return false;
         }
-        foreach ($orgs as $thisorg) {
-            if ($org === $thisorg) {
+        foreach ($orgs as $this_org) {
+            if (intval($org) === intval($this_org)) {
                 return true;
             }
         }
@@ -472,11 +447,6 @@ class M_users extends MY_Model
      */
     public function validate()
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'validating user';
-        $this->log->status = 'pre';
-        stdlog($this->log);
-
         $CI = & get_instance();
         $this->config = $CI->config;
         $CI->user = new stdClass();
@@ -533,13 +503,13 @@ class M_users extends MY_Model
             unset($operating_system);
             $uuid = '';
             foreach ($files as $file) {
-                if ($uuid == '') {
+                if (empty($uuid)) {
                     $contents = @file($file);
-                    if (!empty($contents)) {
+                    if ( ! empty($contents)) {
                         foreach ($contents as $line) {
-                            if ($uuid == '') {
+                            if (empty($uuid)) {
                                 if (stripos($line, 'uuid') !== false) {
-                                    $line = trim(str_replace('\'uuid\' =>', '', $line));
+                                    $line = trim(str_replace("'uuid' =>", '', $line));
                                     $line = trim(str_replace('"uuid" =>', '', $line));
                                     $line = trim(str_replace("'", '', $line));
                                     $line = trim(str_replace('"', '', $line));
@@ -551,8 +521,8 @@ class M_users extends MY_Model
                     }
                 }
             }
-            if ($uuid == '') {
-                # Cannot read from filesystem and parse opCommon.nmis config file - abort
+            if (empty($uuid)) {
+                // Cannot read from filesystem and parse opCommon.nmis config file - abort
                 $CI->response = new stdClass();
                 $CI->response->meta = new stdClass();
                 $CI->response->errors = array();
@@ -562,7 +532,7 @@ class M_users extends MY_Model
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
                     echo json_encode($CI->response);
                     exit();
-                } else if (!empty($_GET['format']) and $_GET['format'] == 'json') {
+                } else if ( ! empty($_GET['format']) && $_GET['format'] === 'json') {
                     echo json_encode($CI->response);
                     exit();
                 } else {
@@ -571,15 +541,15 @@ class M_users extends MY_Model
                     exit();
                 }
             }
-            if ($supplied_uuid != $uuid) {
-                # Bad UUID supplied
+            if ($supplied_uuid !== $uuid) {
+                // Bad UUID supplied
                 $CI->response = new stdClass();
                 $CI->response->meta = new stdClass();
                 $CI->response->errors = array();
                 log_error('ERR-0015', 'm_users:validate Bad UUID');
                 $this->log->summary = 'Bad UUID';
                 stdlog($this->log);
-                if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format']) and $_GET['format'] == 'json')) {
+                if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false OR ( ! empty($_GET['format']) && $_GET['format'] === 'json')) {
                     echo json_encode($CI->response);
                     exit();
                 } else {
@@ -593,18 +563,18 @@ class M_users extends MY_Model
                 stdlog($this->log);
             }
         }
-        if (! empty($user) and ! empty($ip) and ! empty($supplied_uuid)) {
+        if ( ! empty($user) && ! empty($ip) && ! empty($supplied_uuid)) {
             unset($_GET['user']);
             unset($_GET['uuid']);
             $CI->user = $user;
             $access_token = array();
-            if (!empty($CI->user->access_token)) {
+            if ( ! empty($CI->user->access_token)) {
                 $access_token = @json_decode($CI->user->access_token);
             }
             $temp = bin2hex(openssl_random_pseudo_bytes(30));
             $access_token[] = $temp;
             $access_token = array_slice($access_token, -intval($CI->config->config['access_token_count']));
-            $sql = "UPDATE `users` SET `access_token` = ? WHERE `id` = ?";
+            $sql = 'UPDATE `users` SET `access_token` = ? WHERE `id` = ?';
             $data = array(json_encode($access_token), $CI->user->id);
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
@@ -612,18 +582,17 @@ class M_users extends MY_Model
             $CI->access_token = $temp;
             $userdata = array('user_id' => $CI->user->id, 'user_debug' => '', 'access_token' => $access_token);
             $this->session->set_userdata($userdata);
-            #$this->config->config['access_token_enable'] = 'n';
             $this->log->summary = 'User validated by name, uuid and localhost';
             stdlog($this->log);
             return;
         }
 
-        if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
+        if (isset($this->session->userdata['user_id']) && is_numeric($this->session->userdata['user_id'])) {
             // user is logged in, return the $this->user object
-            $sql = "SELECT * FROM " . $db_table . " WHERE " . $db_table . "." . $db_id_column . " = ?";
+            $sql = "SELECT * FROM `{$db_table}` WHERE `{$db_table}`.`{$db_id_column}` = ?";
             $sql = $this->clean_sql($sql);
             $access_token = '';
-            if (!empty($this->session->userdata['access_token'])) {
+            if ( ! empty($this->session->userdata['access_token'])) {
                 $access_token = $this->session->userdata['access_token'];
             }
             if (is_string($access_token)) {
@@ -637,7 +606,7 @@ class M_users extends MY_Model
                 $CI->user->db_table = $db_table;
                 $CI->user->db_prefix = $db_prefix;
                 $CI->user->db_id_column = $db_id_column;
-                if ($CI->user->db_id_column == 'user_id') {
+                if ($CI->user->db_id_column === 'user_id') {
                     $CI->user->id = $CI->user->user_id;
                     $CI->user->name = $CI->user->user_name;
                     $CI->user->password = $CI->user->user_password;
@@ -654,11 +623,11 @@ class M_users extends MY_Model
             } else {
                 // the user_id stored in the session does not exist
                 log_error('ERR-0015', 'm_users:validate Bad session data');
-                if ($CI->response->meta->format == 'json') {
+                if ($CI->response->meta->format === 'json') {
                     echo json_encode($CI->response);
                     exit();
                 } else {
-                    if (strtoupper($CI->input->server('REQUEST_METHOD')) == 'GET') {
+                    if (strtoupper($CI->input->server('REQUEST_METHOD')) === 'GET') {
                         $this->session->set_userdata('url', current_url());
                     }
                     redirect('logon');
@@ -666,11 +635,11 @@ class M_users extends MY_Model
             }
         } else {
             log_error('ERR-0020', current_url());
-            if (!empty($CI->response->meta->format) and $CI->response->meta->format == 'json') {
+            if ( ! empty($CI->response->meta->format) && $CI->response->meta->format === 'json') {
                 echo json_encode($CI->response);
                 exit();
             } else {
-                if (strtoupper($CI->input->server('REQUEST_METHOD')) == 'GET') {
+                if (strtoupper($CI->input->server('REQUEST_METHOD')) === 'GET') {
                     $this->session->set_userdata('url', current_url());
                 }
                 redirect('logon');
@@ -678,15 +647,18 @@ class M_users extends MY_Model
         }
     }
 
-    public function user_org($org_id = '')
+    /**
+     * [user_org description]
+     * @param  integer $org_id [description]
+     * @return [type]          [description]
+     */
+    public function user_org($org_id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'retrieving user orgs';
-        stdlog($this->log);
+        $org_id = intval($org_id);
         $CI = & get_instance();
         $temp = explode(',', $CI->user->org_list);
-        foreach ($temp as $key => $value) {
-            if ($org_id == $value) {
+        foreach ($temp as $value) {
+            if (intval($value) === $org_id) {
                 return true;
             }
         }
@@ -694,3 +666,5 @@ class M_users extends MY_Model
         return false;
     }
 }
+// End of file m_users.php
+// Location: ./models/m_users.php
