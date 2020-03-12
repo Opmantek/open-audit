@@ -63,6 +63,12 @@ class Widgets extends MY_Controller
         $this->output->url = $this->config->config['oa_web_index'];
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }

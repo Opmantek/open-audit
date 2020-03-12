@@ -229,13 +229,11 @@ class Database extends MY_Controller
     }
 
     /**
-    * Add a key on a table
-    *
-    * @access public
-    * @param  string    table      The table to be altered
-    * @param  string    key        The foreign key to be added
-    * @return void
-    */
+     * Add a key on a table
+     * @param string $table The table to be altered
+     * @param string $key   The foreign key to be added
+     * @param string $value [description]
+     */
     private function add_foreign_key($table = '', $key = '', $value = '')
     {
         if ($table == '' or $key == '' or $value == '') {
@@ -556,6 +554,12 @@ class Database extends MY_Controller
         }
     }
 
+    /**
+     * [log_db description]
+     * @param  string  $message  Your message
+     * @param  integer $severity The severity as per standard logging
+     * @return [type]            Does not return anything
+     */
     private function log_db($message = '', $severity = 5)
     {
         $log = new stdClass();
@@ -572,6 +576,10 @@ class Database extends MY_Controller
         $this->data['output'] .= $message . "\n\n";
     }
 
+    /**
+     * [update description]
+     * @return [type] [description]
+     */
     public function update()
     {
         error_reporting(E_ALL);

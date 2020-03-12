@@ -71,6 +71,12 @@ class Custom extends MY_Controller
         unset($log_details);
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
         redirect('/');

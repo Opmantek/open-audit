@@ -166,11 +166,9 @@ class Logon extends CI_Controller
     }
 
     /**
-    *
-    *
-    * @access public
-    * @return NULL
-    */
+     * [login description]
+     * @return [type] [description]
+     */
     public function login()
     {
         $temp = @$this->session->userdata('user_id');
@@ -254,18 +252,30 @@ class Logon extends CI_Controller
         }
     }
 
+    /**
+     * [logoff description]
+     * @return [type] [description]
+     */
     public function logoff()
     {
         $this->session->sess_destroy();
         redirect('logon');
     }
 
+    /**
+     * [logout description]
+     * @return [type] [description]
+     */
     public function logout()
     {
         $this->session->sess_destroy();
         redirect('logon');
     }
 
+    /**
+     * [check_defaults description]
+     * @return [type] [description]
+     */
     public function check_defaults()
     {
         if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {

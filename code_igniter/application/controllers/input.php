@@ -175,6 +175,10 @@ class Input extends CI_Controller
         }
     }
 
+    /**
+     * [scans description]
+     * @return [type] [description]
+     */
     public function scans()
     {
         $log = new stdClass();
@@ -264,12 +268,20 @@ class Input extends CI_Controller
         return;
     }
 
+    /**
+     * [discoveries description]
+     * @return [type] [description]
+     */
     public function discoveries()
     {
         $this->response->meta->action = 'discoveries';
         include "include_input_discoveries.php";
     }
 
+    /**
+     * [devices description]
+     * @return [type] [description]
+     */
     public function devices()
     {
         $log = new stdClass();
@@ -285,6 +297,10 @@ class Input extends CI_Controller
         include "include_input_devices.php";
     }
 
+    /**
+     * [logs description]
+     * @return [type] [description]
+     */
     public function logs()
     {
         if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '::1') {
@@ -312,6 +328,10 @@ class Input extends CI_Controller
         include "include_input_logs.php";
     }
 
+    /**
+     * [queue description]
+     * @return [type] [description]
+     */
     public function queue()
     {
         # Our processing queue's
