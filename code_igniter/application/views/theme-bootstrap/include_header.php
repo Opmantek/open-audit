@@ -431,7 +431,7 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <?php
-                    if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") {
+                    if ( ! empty($this->config->config['nmis_url'])) {
                         $link = htmlspecialchars($this->config->config['nmis_url'], REPLACE_FLAGS, CHARSET);
                     } else {
                         $link = "https://opmantek.com";
