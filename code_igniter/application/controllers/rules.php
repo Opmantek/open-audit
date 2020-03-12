@@ -25,21 +25,23 @@
 #
 # *****************************************************************************
 *
-* @category  Helper
-* @package   Open-AudIT
+* PHP version 5.3.3
+* 
+* @category  Controller
+* @package   Rules
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
- */
+*/
 
 /**
-* Base Object Agents
+* Base Object Rules
 *
 * @access   public
-* @category Object
-* @package  Open-AudIT
+* @category Controller
+* @package  Rules
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
@@ -55,6 +57,10 @@ class Rules extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_rules');
+        // This endpoint allows all users.orgs children and the users.org_id parents to be permitted
+        $this->load->model('m_orgs');
+        $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
+        unset($this->user->org_parents);
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
     }
@@ -143,7 +149,7 @@ class Rules extends MY_Controller
         $temp = explode('.', $this->response->meta->sub_resource_id);
         $item = new stdClass();
 
-        if ($this->response->meta->sub_resource == 'inputs') {
+        if ($this->response->meta->sub_resource === 'inputs') {
             $item->table = $temp[0];
             $item->attribute = $temp[1];
             $item->operator = $temp[2];
@@ -151,17 +157,17 @@ class Rules extends MY_Controller
             $inputs = json_decode($rule->attributes->inputs);
             $newinputs = array();
             foreach ($inputs as $input) {
-                if ($input->table != $item->table or $input->attribute != $item->attribute or $input->operator != $item->operator or $input->value != $item->value) {
+                if ($input->table !== $item->table OR $input->attribute !== $item->attribute OR $input->operator !== $item->operator OR $input->value !== $item->value) {
                     $newinputs[] = $input;
                 }
             }
             $rule->attributes->inputs = json_encode($newinputs);
-            $sql = "UPDATE rules SET inputs = ? WHERE id = ?";
+            $sql = 'UPDATE rules SET inputs = ? WHERE id = ?';
             $data = array($rule->attributes->inputs, $rule->id);
             $this->db->query($sql, $data);
         }
 
-        if ($this->response->meta->sub_resource == 'outputs') {
+        if ($this->response->meta->sub_resource === 'outputs') {
             $item->table = $temp[0];
             $item->attribute = $temp[1];
             $item->value_type = $temp[2];
@@ -169,12 +175,12 @@ class Rules extends MY_Controller
             $outputs = json_decode($rule->attributes->outputs);
             $newoutputs = array();
             foreach ($outputs as $db_output) {
-                if ($db_output->table != $item->table or $db_output->attribute != $item->attribute or $db_output->value_type != $item->value_type or $db_output->value != $item->value) {
+                if ($db_output->table !== $item->table OR $db_output->attribute !== $item->attribute OR $db_output->value_type !== $item->value_type OR $db_output->value !== $item->value) {
                     $newoutputs[] = $db_output;
                 }
             }
             $rule->attributes->outputs = json_encode($newoutputs);
-            $sql = "UPDATE rules SET outputs = ? WHERE id = ?";
+            $sql = 'UPDATE rules SET outputs = ? WHERE id = ?';
             $data = array($rule->attributes->outputs, $rule->id);
             $this->db->query($sql, $data);
         }
@@ -260,6 +266,5 @@ class Rules extends MY_Controller
         include 'include_reset.php';
     }
 }
-
 // End of file rules.php
 // Location: ./controllers/rules.php
