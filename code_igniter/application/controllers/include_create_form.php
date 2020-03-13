@@ -230,6 +230,8 @@ if ($collection == 'summaries') {
 
 # tasks
 if ($collection == 'tasks') {
+    $this->load->model('m_baselines');
+    $this->response->included = array_merge($this->response->included, $this->m_baselines->collection($this->user->id));
     $this->load->model('m_collectors');
     $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
     $this->load->model('m_clouds');
