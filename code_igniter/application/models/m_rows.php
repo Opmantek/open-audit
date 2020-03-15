@@ -140,7 +140,7 @@ class M_rows extends MY_Model
         $CI = & get_instance();
         if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = 'SELECT `rows`.*, rooms.id AS `rooms.id`, rooms.name AS `rooms.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM rows LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN orgs ON (`rows`.`org_id` = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
+            $sql = 'SELECT `rows`.*, rooms.id AS `rooms.id`, rooms.name AS `rooms.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM `rows` LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN orgs ON (`rows`.`org_id` = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'rows');
             return $result;

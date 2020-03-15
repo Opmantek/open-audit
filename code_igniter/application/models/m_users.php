@@ -366,7 +366,7 @@ class M_users extends MY_Model
         }
 
         if ($collection !== 'baselines_policies') {
-            $sql = "SELECT {$org_id_name} AS org_id FROM {$table} WHERE {$id_name} = ?";
+            $sql = "SELECT {$org_id_name} AS org_id FROM `{$table}` WHERE {$id_name} = ?";
         } else {
             $sql = 'SELECT orgs.id AS org_id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) LEFT JOIN orgs ON (baselines.org_id = orgs.id) WHERE baselines_policies.id = ?';
         }
