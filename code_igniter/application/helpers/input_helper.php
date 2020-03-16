@@ -582,6 +582,12 @@ if ( ! function_exists('inputRead')) {
         if ($request_method === 'GET' && is_null($CI->response->meta->id) && $action === 'create') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'create_form';
+            $CI->response->data = array();
+            unset($temp);
+            $temp = new stdClass();
+            $temp->type = $CI->response->meta->collection;
+            $CI->response->data[] = $temp;
+            unset($temp);
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
