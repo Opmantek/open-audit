@@ -134,17 +134,6 @@ class Database extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to create an object
-    *
-    * @access public
-    * @return NULL
-    */
-    // public function create_form()
-    // {
-    //     include 'include_create_form.php';
-    // }
-
-    /**
     * Execute one of various actions upon the database
     *
     * @access public

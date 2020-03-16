@@ -170,6 +170,41 @@ class M_locations extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'locations';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
+        $dictionary->marketing = '<p>A location is a physical address that can have devices associated with it.<br /><br />You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br /><br />You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>The <code>type</code> of the location will assign its icon.<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_locations.php
 // Location: ./models/m_locations.php

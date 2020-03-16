@@ -1766,6 +1766,39 @@ class M_devices extends MY_Model
         }
         return($device);
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'devices';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields('system');
+        $dictionary->attributes->create = array();
+        $dictionary->attributes->update = array();
+        $dictionary->sentence = 'Open-AudIT tracks every device on your network. Change a device - see it. Move a device - see it. Remove a device - see it.';
+        $dictionary->marketing = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Even add devices that aren\'t connected to your network or those devices your Open-AudIT server cannot reach.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->last_seen = 'The last time that Open-AudIT retrieved details of this device.';
+        $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
+        return $dictionary;
+    }
 }
 // End of file m_devices.php
 // Location: ./models/m_devices.php

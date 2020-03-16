@@ -258,4 +258,44 @@ class M_networks extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'networks';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT stores your networks and in addition, provides a secure mechanism for accepting input data.';
+        $dictionary->marketing = '<p>A network is derived from discovery entries and device attribtes.<br /><br />
+        Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>A network is derived from discovery entries and device attribtes.<br /><br />Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = 'The network should be in the format 192.168.1.0/24.';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->network = 'The network in the format 192.168.1.0/24.';
+        $dictionary->columns->type = 'The type of network.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
+// End of file m_networks.php
+// Location: ./models/m_networks.php

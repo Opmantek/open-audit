@@ -185,6 +185,60 @@ class M_dashboards extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'dashboards';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = "Open-AudIT Professional and Enterprises' interactive Dashboard provides a single point of access to audit status and results. The ability to customize and create Dashboards is an Enterprise feature.";
+        $dictionary->marketing = "<p>Simple, intuitive, dynamic - just some of the words used to describe Open-AudIT Enterprises' interactive dashboard. The dashboard provides a single point of access to audit status, new software installs, device breakdowns, and fast access to missing devices.<br /><br />" . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '                                <br /><br />
+                                    <h4 class="text-center">Layout</h4>
+                                    <br />
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td rowspan="2">Sidebar</td>
+                                                <td>Widget #1</td>
+                                                <td>Widget #2</td>
+                                                <td>Widget #3</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Widget #4</td>
+                                                <td>Widget #5</td>
+                                                <td>Widget #6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->sidebar = 'Do you wish to see the standard sidebar on the left.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_dashboards.php
 // Location: ./models/m_dashboards.php

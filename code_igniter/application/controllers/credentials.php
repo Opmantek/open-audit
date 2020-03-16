@@ -149,7 +149,10 @@ class Credentials extends MY_Controller
     */
     public function create_form()
     {
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_credentials->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        output($this->response);
     }
 
     /**

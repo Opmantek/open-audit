@@ -344,6 +344,72 @@ class M_discoveries extends MY_Model
         return $credentials;
     }
 
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'discoveries';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT Enterprise discovers every device on your network.';
+        $dictionary->marketing = '<p>Discoveries are at the very heart of what Open-AudIT does. How else would you know "What is on my network?"<br /><br />Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />Use Open-AudIT Professional and Enterprise to schedule your Discoveries to run automatically whenever you like.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br /><br />How else would you know "What is on my network?"<br /><br />Discoveries are preprepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br /><b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br /><br />If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.</p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->type = 'Currently supported types are <code>subnet</code> and <code>active directory</code>.';
+        $dictionary->columns->devices_assigned_to_org = 'Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery.';
+        $dictionary->columns->devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set.';
+        $dictionary->columns->network_address = 'The URL the audit_* scripts should submit their result to.';
+        $dictionary->columns->last_run = 'A calculated field that is updated each time the discovery has been executed.';
+        $dictionary->columns->complete = 'A internal field that indicates if the discovery has completed.';
+        $dictionary->columns->other = 'A JSON document containing the required attributes depending on the <code>discoveries.type</code>.';
+        $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
+        $dictionary->columns->ad_server = 'The Active Directory server to retrieve a list of subnets from.';
+        $dictionary->columns->ad_domain = 'The Active Directory domain to retrieve a list of subnets from.';
+        $dictionary->columns->system_id = 'Used internally when discovering a single device.';
+        $dictionary->columns->device_count = 'The number of devices found by this discovery.';
+        $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
+        $dictionary->columns->discard = 'Used internally when discovering a single device.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+
+        $dictionary->columns->match_dbus = 'Should we match a device based on its dbus id.';
+        $dictionary->columns->match_fqdn = 'Should we match a device based on its fqdn.';
+        $dictionary->columns->match_dns_fqdn = 'Should we match a device based on its DNS fqdn.';
+        $dictionary->columns->match_dns_hostname = 'Should we match a device based on its DNS hostname.';
+        $dictionary->columns->match_hostname = 'Should we match a device based only on its hostname.';
+        $dictionary->columns->match_hostname_dbus = 'Should we match a device based on its hostname and dbus id.';
+        $dictionary->columns->match_hostname_serial = 'Should we match a device based on its hostname and serial.';
+        $dictionary->columns->match_hostname_uuid = 'Should we match a device based on its hostname and UUID.';
+        $dictionary->columns->match_ip = 'Should we match a device based on its ip.';
+        $dictionary->columns->match_ip_no_data = 'Should we match a device based on its ip if we have an existing device with no data.';
+        $dictionary->columns->match_mac = 'Should we match a device based on its mac address.';
+        $dictionary->columns->match_mac_vmware = 'Should we match a device based mac address even if its a known likely duplicate from VMware.';
+        $dictionary->columns->match_serial = 'Should we match a device based on its serial number.';
+        $dictionary->columns->match_serial_type = 'Should we match a device based on its serial and type.';
+        $dictionary->columns->match_sysname = 'Should we match a device based only on its SNMP sysName.';
+        $dictionary->columns->match_sysname_serial = 'Should we match a device based only on its SNMP sysName and serial.';
+        $dictionary->columns->match_uuid = 'Should we match a device based on its UUID.';
+        return $dictionary;
+    }
 }
 // End of file m_discoveries.php
 // Location: ./models/m_discoveries.php

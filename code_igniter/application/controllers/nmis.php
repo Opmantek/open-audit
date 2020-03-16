@@ -460,15 +460,18 @@ class Nmis extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
+    * Supply a HTML form for the user to create an object
     *
     * @access public
     * @return NULL
     */
     public function create_form()
     {
-        #output($this->response);
-        include 'include_create_form.php';
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        output($this->response);
     }
 }
 // End of file nmis.php

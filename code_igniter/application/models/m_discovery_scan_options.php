@@ -124,6 +124,55 @@ class M_discovery_scan_options extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'discovery_scan_options';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = '';
+        $dictionary->marketing = '';
+        $dictionary->about = '<p>Scanning options allow you to easily apply a set of options to a discovery.<br /><br /></p>';
+        $dictionary->notes = '<p>The attributes of timeout, ssh ports and excluding TCP, UDP & IPs can be set here and overwritten for a specific discovery.<br /><br /></p><p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br /><br /><blockquote><p>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often don\'t realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</p><footer>Gordon \'Fyodor\' Lyon</footer></blockquote><br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->ping = 'Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.';
+        $dictionary->columns->service_version = 'When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.';
+        $dictionary->columns->filtered = 'Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?';
+        $dictionary->columns->{'open|filtered'} = 'Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?';
+        $dictionary->columns->timing = 'The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.';
+        $dictionary->columns->timeout = 'The number of seconds to try and communicate with the target IP.';
+        $dictionary->columns->nmap_tcp_ports = 'The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.';
+        $dictionary->columns->nmap_udp_ports = 'The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.';
+        $dictionary->columns->tcp_ports = 'Any specific TCP ports you wish tested (comma seperated, no spaces).';
+        $dictionary->columns->udp_ports = 'Any specific UDP ports you wish tested (comma seperated, no spaces).';
+        $dictionary->columns->exclude_tcp_ports = 'Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.';
+        $dictionary->columns->exclude_udp_ports = 'Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.';
+        $dictionary->columns->exclude_ip = 'Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.';
+        $dictionary->columns->ssh_ports = 'If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_discovery_scan_options.php
 // Location: ./models/m_discovery_scan_options.php

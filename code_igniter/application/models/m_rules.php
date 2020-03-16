@@ -664,4 +664,61 @@ class M_rules extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'rules';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
+        $dictionary->marketing = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->weight = 'A lower number means it will have a lower preference for being applied, versus other rules.';
+        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+
+        $tables = array('bios', 'credential', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        $columns = array();
+        foreach ($tables as $table) {
+            $fields = $this->db->list_fields($table);
+            $myfields = array();
+            foreach ($fields as $field) {
+                if ($field !== 'id' && $field !== 'current' && $field !== 'system_id' && $field !== 'first_seen' && $field !== 'last_seen') {
+                    $myfields[] = $field;
+                }
+            }
+            sort($myfields);
+            $columns[$table] = $myfields;
+        }
+        $dictionary->attributes->tables = $tables;
+        $dictionary->attributes->columns = $columns;
+
+        return $dictionary;
+    }
 }
+// End of file m_rules.php
+// Location: ./models/m_rules.php

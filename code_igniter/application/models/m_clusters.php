@@ -158,6 +158,46 @@ class M_clusters extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'clusters';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT enables you to create and record your clusters';
+        $dictionary->marketing = '<p>Clusters are stored in Open-AudIT to associate devices with.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = "<p>Cluster notes on <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Computer_cluster#Attributes_of_clusters\">wikipedia</a>.<br /><br /> A cluster can be setup in one of several ways (type) for high availability, load balancing, etc.<br /><br /> A cluster is usually dedicated to one particular task (purpose) - we have options for 'application','compute','database','storage','virtualisation','web' and'other' (or you can leave it blank).<br /><br /> And a cluster is usually configured as active/active, active/passive or another variation, see <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/High-availability_cluster#Node_configurations\">Wikipedia</a>.<br /><br /> The environment for your cluster is as per the attributes for device environments. Production, Training, et al.<br /><br /></p>";
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->type = "Can be one of several: 'high availability','load balancing','performance','storage','other' or blank.";
+        $dictionary->columns->purpose = "Can be one of: 'application','compute','database','storage','virtualisation','web','other' or blank.";
+        $dictionary->columns->status = 'Can be active, passive or blank.';
+        $dictionary->columns->configuration = "The configuration of your cluster can be: 'active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other' or blank.";
+        $dictionary->columns->environment = 'As per the attributes for device environments. Production, Training, et al.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_clusters.php
 // Location: ./models/m_clusters.php

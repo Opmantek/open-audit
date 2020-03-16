@@ -162,9 +162,31 @@ class Util extends CI_Controller
 
     public function dictionary()
     {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+
         $this->load->helper('url');
         $table = $this->uri->segment(3, 0);
-        include 'include_dictionary.php';
+
+        $this->temp_dictionary = new stdClass();
+        $this->temp_dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/$collection">Knowledge Base</a>.';
+        $this->temp_dictionary->purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" id="buy_more_licenses" data-toggle="modal" data-target="#myModalLicense">HERE</a>.</strong>';
+        $this->temp_dictionary->id = 'The internal identifier column in the database (read only).';
+        $this->temp_dictionary->name = 'The name given to this item. Ideally it should be unique.';
+        $this->temp_dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
+        $this->temp_dictionary->description = 'Your description of this item.';
+        $this->temp_dictionary->options = 'A JSON object containing collection specific options.';
+        $this->temp_dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
+        $this->temp_dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
+        $this->temp_dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
+
+        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
+        if (in_array($table, $collections)) {
+            $this->load->model('m_'.$table);
+            $dictionary = $this->{'m_'.$table}->dictionary();
+        } else {
+            include 'include_dictionary.php';
+        }
         header('Content-Type: application/json');
         echo json_encode($dictionary);
     }

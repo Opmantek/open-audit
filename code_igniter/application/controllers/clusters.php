@@ -140,15 +140,24 @@ class Clusters extends MY_Controller
     }
 
     /**
-    * Supply JSON attributes for the user to create an object
+    * Supply a HTML form for the user to create an object
     *
     * @access public
     * @return NULL
     */
     public function create_form()
     {
-        $this->response->meta->response = 'json';
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_clusters->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_attributes');
+        $attributes = $this->m_attributes->collection($this->user->id);
+        foreach ($attributes as $attribute) {
+            if ($attribute->attributes->resource === 'devices' && $attribute->attributes->type === 'environment') {
+                $this->response->included[] = $attribute;
+            }
+        }
+        output($this->response);
     }
 
     /**

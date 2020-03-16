@@ -191,6 +191,51 @@ class M_collectors extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'collectors';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT Enterprise includes Collectors. Have a single Open-AudIT server control many other servers that perform discovery and collect device information.';
+        if ($CI->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+            $dictionary->about = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        } else {
+            $dictionary->about = '<p>The Cloud Collector feature enables you to easily manage many "Cloud Collectors" that perform network discovery. All Cloud Collectors are centrally controlled from the Server. The only required network ports between the Cloud Collector and Open-AudIT.com are 80 and/or 443.<br /><br />This makes managing disparate networks quick, easy and simple. Open-AudIT Cloud licensees get a single collector license included and have the option to buy more as required..<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        }
+        $dictionary->marketing = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->ip = 'The IP address of this collector used to communicate with the server.';
+        $dictionary->columns->status = 'Unused.';
+        $dictionary->columns->check_minutes = 'How often should the collector ask the server for a task.';
+        $dictionary->columns->user_id = 'The <code>users.id</code> of the user account this collector uses.';
+        $dictionary->columns->uuid = 'This collectors universally unique identifier.';
+        $dictionary->columns->network_address = 'The collectors internal IP used when it runs a discovery.';
+        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_collectors.php
 // Location: ./models/m_collectors.php

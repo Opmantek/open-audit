@@ -143,7 +143,14 @@ class Rack_devices extends MY_Controller
     */
     public function create_form()
     {
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_rack_devices->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_racks');
+        $this->response->included = array_merge($this->response->included, $this->m_racks->collection($this->user->id));
+        $this->load->model('m_attributes');
+        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection($this->user->id));
+        output($this->response);
     }
 
     /**

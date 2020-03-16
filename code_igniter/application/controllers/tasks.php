@@ -145,8 +145,26 @@ class Tasks extends MY_Controller
     */
     public function create_form()
     {
-        $this->response->meta->response = 'json';
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_tasks->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_baselines');
+        $this->response->included = array_merge($this->response->included, $this->m_baselines->collection($this->user->id));
+        $this->load->model('m_collectors');
+        $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
+        $this->load->model('m_clouds');
+        $this->response->included = array_merge($this->response->included, $this->m_clouds->collection($this->user->id));
+        $this->load->model('m_discoveries');
+        $this->response->included = array_merge($this->response->included, $this->m_discoveries->collection($this->user->id));
+        $this->load->model('m_groups');
+        $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
+        $this->load->model('m_integrations');
+        $this->response->included = array_merge($this->response->included, $this->m_integrations->collection($this->user->id));
+        $this->load->model('m_queries');
+        $this->response->included = array_merge($this->response->included, $this->m_queries->collection($this->user->id));
+        $this->load->model('m_summaries');
+        $this->response->included = array_merge($this->response->included, $this->m_summaries->collection($this->user->id));
+        output($this->response);
     }
 
     /**

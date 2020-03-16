@@ -146,7 +146,20 @@ class Racks extends MY_Controller
     */
     public function create_form()
     {
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_racks->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        $this->load->model('m_buildings');
+        $this->response->included = array_merge($this->response->included, $this->m_buildings->collection($this->user->id));
+        $this->load->model('m_floors');
+        $this->response->included = array_merge($this->response->included, $this->m_floors->collection($this->user->id));
+        $this->load->model('m_rooms');
+        $this->response->included = array_merge($this->response->included, $this->m_rooms->collection($this->user->id));
+        $this->load->model('m_rows');
+        $this->response->included = array_merge($this->response->included, $this->m_rows->collection($this->user->id));
+        output($this->response);
     }
 
     /**

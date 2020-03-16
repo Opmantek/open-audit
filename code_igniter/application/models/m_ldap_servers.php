@@ -228,6 +228,56 @@ class M_ldap_servers extends MY_Model
         $id = intval($id);
         return array();
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'ldap_servers';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->about = '<p>Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate a user and in addition, to create a user account using assigned roles and orgs based on LDAP group membership.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>If using Active Directory, you do not need to populate the <code>user_dn</code> or <code>user_membership_attribute</code> attributes. These are used by OpenLDAP only.<br /><br />If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access. Use the <code>dn_account</code> and <code>dn_password</code> to configure this.<br /><br /><strong>Examples</strong><br /><br />If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set base_dn to <code>dc=your,dc=domain,dc=com</code> and user_dn to <code>uid=@username@@domain,cn=People</code>. The special words @username and @domain will be replaced by the login details provided by your user on the login page.<br /><br />If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your base_dn. here is no need to set user_dn.<br /><br />These are only examples. You may need to adjust these attributes to suit your particular LDAP.<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->lang = 'The default language assigned to any user created by this LDAP server.';
+        $dictionary->columns->host = 'The ip address of the LDAP server.';
+        $dictionary->columns->port = 'Default of <code>385</code>.';
+        $dictionary->columns->secure = 'Do you want to use LDAP or LDAPS. Set to <code>y</code> or <code>n</code>.';
+        $dictionary->columns->domain = 'The regular domain notation of your LDAP. Eg - <code>open-audit.lan</code>.';
+        $dictionary->columns->type = 'One of either <code>active directory</code> or <code>openldap</code>';
+        $dictionary->columns->version = 'Default of <code>3</code>';
+        $dictionary->columns->base_dn = 'The base path from which to search for Users.';
+        $dictionary->columns->user_dn = 'Used by OpenLDAP only.';
+        $dictionary->columns->user_membership_attribute = 'Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
+        $dictionary->columns->use_auth = 'Should we use this LDAP server to authenticate user credentials. Set to <code>y</code> or <code>n</code>.';
+        $dictionary->columns->use_people = 'Should we use this LDAP server to to populate people. Set to <code>y</code> or <code>n</code>.';
+        $dictionary->columns->use_roles = 'Should we use this LDAP server to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.';
+        $dictionary->columns->dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';
+        $dictionary->columns->dn_password = 'The password for the dn_account attribute.';
+        $dictionary->columns->refresh = 'Unused. Default of 24.';
+        $dictionary->columns->refreshed = 'Unused.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_ldap_servers.php
 // Location: ./models/m_ldap_servers.php

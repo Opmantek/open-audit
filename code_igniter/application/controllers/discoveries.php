@@ -273,7 +273,14 @@ class Discoveries extends MY_Controller
             // this is the form for a single device discovery
             $this->response->meta->action = 'create_single';
         }
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_discoveries->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_collectors');
+        $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        output($this->response);
     }
 
     /**

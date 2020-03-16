@@ -162,7 +162,9 @@ class Scripts extends MY_Controller
     */
     private function create_form()
     {
-        # include our scripts options
+        $options = array();
+        $options_scripts = array();
+        // include our scripts options
         include 'include_scripts_options.php';
         foreach ($options as $item) {
             $option = new stdClass();
@@ -180,7 +182,12 @@ class Scripts extends MY_Controller
             $this->response->included[] = $option;
             unset($option);
         }
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_scripts->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_files');
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection($this->user->id));
+        output($this->response);
     }
 
     /**

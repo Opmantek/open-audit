@@ -158,6 +158,69 @@ class M_racks extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'racks';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.';
+        $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->row_id = 'The row the rack is located in.';
+        $dictionary->columns->row_position = 'The height of this rack in rack units.';
+        $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
+        $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';
+        $dictionary->columns->physical_width = 'The physical width (in CMs) of the rack.';
+        $dictionary->columns->physical_depth = 'The physical depth (in CMs) of the rack.';
+        $dictionary->columns->weight_empty = 'The physical weight (in KGs) of the rack when empty.';
+        $dictionary->columns->weight_current = 'The physical weight (in KGs) of the rack at present.';
+        $dictionary->columns->weight_max = 'The maximum physical weight (in KGs) this rack can hold.';
+        $dictionary->columns->ru_start = 'TBD';
+        $dictionary->columns->ru_height = 'How many rack units in height is this rack.';
+        $dictionary->columns->type = 'The type of rack (compute, power, network, etc).';
+        $dictionary->columns->purpose = 'What is the purpose of this rack.';
+        $dictionary->columns->manufacturer = 'Who made this rack.';
+        $dictionary->columns->model = 'The rack model.';
+        $dictionary->columns->series = 'The rack series.';
+        $dictionary->columns->serial = 'The rack serial.';
+        $dictionary->columns->asset_number = 'The rack asset number.';
+        $dictionary->columns->asset_tag = 'The rack asset tag.';
+        $dictionary->columns->bar_code = 'The rack bar code.';
+        $dictionary->columns->power_circuit = 'The power circuit this rack attaches to.';
+        $dictionary->columns->power_sockets = 'How many power sockets in this rack.';
+        $dictionary->columns->circuit_count = 'How many circuit feed to this rack.';
+        $dictionary->columns->btu_total = 'The total BTU output by this rack.';
+        $dictionary->columns->btu_max = 'The maximum total BTUs this rack is rated for.';
+        $dictionary->columns->options = 'Not implemented as yet.';
+        $dictionary->columns->notes = 'Not implemented as yet.';
+        $dictionary->columns->tags = 'Not implemented as yet.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_racks.php
 // Location: ./models/m_racks.php

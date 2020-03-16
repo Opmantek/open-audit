@@ -171,6 +171,42 @@ class M_files extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'files';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT Enterprise includes Files, providing change control monitoring of individual files and folders on both Linux and Windows servers.';
+        $dictionary->about = '<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br /><br />This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br /><br />Supported clients are Windows and Linux.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Audit your computers and ensure any changed files are recorded. Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br /><br />Details such as name, directory, size, hash, last changed and permissions are all recorded. This feature works on both Windows and Linux target machines.<br /><br />This is ideal for monitoring configuration files in /etc on Linux machines (for example).<br /><br />' . $CI->temp_dictionary->link . '<br /><br />' . $CI->temp_dictionary->purchase_link . '<br /><br /></p>';
+        $dictionary->notes = '<p>See the note about enabling this feature when running a Windows Open-AudIT server on the wiki, here - <a href="https://community.opmantek.com/display/OA/files#Files-EnablingtheFeatureUnderWindows">https://community.opmantek.com/display/OA/files#Files-EnablingtheFeatureUnderWindows</a>.<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->path = 'The path to the file or directory.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_files.php
 // Location: ./models/m_files.php

@@ -183,7 +183,14 @@ class Users extends MY_Controller
     */
     public function create_form()
     {
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_users->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_roles');
+        $this->response->included = array_merge($this->response->included, $this->m_roles->collection($this->user->id));
+        $this->load->model('m_dashboards');
+        $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection($this->user->id));
+        output($this->response);
     }
 
     /**

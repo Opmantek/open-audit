@@ -121,6 +121,44 @@ class M_fields extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'fields';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'Open-AudIT is extensible with custom fields. If you have a particular attribute you need to record, easily add it to the database and use it to report or even group devices.';
+        $dictionary->marketing = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />Once a Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br /><br />Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br /><br />You can edit the value of the Field for each individual device in the group you have assigned the field to. View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br /><br /></p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->group_id = 'The group of devices this field applies to. To apply it to all devices, use the All Devices group. Linked to groups.id.';
+        $dictionary->columns->type = 'This can be either a varchar (a text field) or a list (a list of values that can be selected).';
+        $dictionary->columns->values = 'A comma separated list of values, one of which can be selected.';
+        $dictionary->columns->placement = 'Where on the Device Details screen you would like to see this field appear.';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
 }
 // End of file m_fields.php
 // Location: ./models/m_fields.php

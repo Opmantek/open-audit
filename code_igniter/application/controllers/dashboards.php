@@ -144,15 +144,19 @@ class Dashboards extends MY_Controller
     }
 
     /**
-    * Supply JSON attributes for the user to create an object
+    * Supply a HTML form for the user to create an object
     *
     * @access public
     * @return NULL
     */
     public function create_form()
     {
-        $this->response->meta->response = 'json';
-        include 'include_create_form.php';
+        $this->response->dictionary = $this->m_dashboards->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_widgets');
+        $this->response->included = array_merge($this->response->included, $this->m_widgets->collection($this->user->id));
+        output($this->response);
     }
 
     /**

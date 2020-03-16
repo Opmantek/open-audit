@@ -196,8 +196,12 @@ class Summaries extends MY_Controller
             unset($table);
         }
         $this->response->included = array_merge($this->response->included, $tables);
-        include 'include_create_form.php';
-        return;
+        $this->response->dictionary = $this->m_summaries->dictionary();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_attributes');
+        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection($this->user->id));
+        output($this->response);
     }
 
     /**

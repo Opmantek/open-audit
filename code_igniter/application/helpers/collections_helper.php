@@ -140,7 +140,6 @@ if (!function_exists('mandatory_fields')) {
                 break;
 
             case "discoveries":
-                #return(array('name','org_id','type','network_address','other'));
                 return(array('name','org_id','type','other'));
                 break;
 

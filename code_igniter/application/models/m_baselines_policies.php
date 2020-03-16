@@ -118,7 +118,7 @@ class M_baselines_policies extends MY_Model
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            if ( ! empty($result) and is_array($result)) {
+            if ( ! empty($result) && is_array($result)) {
                 for ($i=0; $i < count($result); $i++) {
                     $result[$i]->tests = json_decode($result[$i]->tests);
                 }
@@ -126,6 +126,45 @@ class M_baselines_policies extends MY_Model
             $CI->response->data = $this->format_data($result, 'baselines_policies');
             $CI->response->meta->filtered = count($CI->response->data);
         }
+    }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'baselines_policies';
+        $CI->temp_dictionary->link = str_replace('$collection', 'baselines policies', $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'sentence';
+        $dictionary->about = '<p>The About</p>';
+        $dictionary->marketing = '<p>Some Marketing</p>';
+        $dictionary->notes = '<p>More Notes</p>';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->baseline_id = '';
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
+        $dictionary->columns->notes = 'Any additional notes you care to make.';
+        $dictionary->columns->documentation = 'Any additional documentation you need.';
+        $dictionary->columns->table = 'The table to compare in the database.';
+        $dictionary->columns->tests = '';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
     }
 }
 // End of file m_baselines_policies.php
