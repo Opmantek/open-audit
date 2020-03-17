@@ -482,22 +482,22 @@ class M_devices_components extends MY_Model
                 if (empty($input[$i]->model_family)) {
                     $input[$i]->model_family = '';
                 }
-                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'vmware') !== 'false') {
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'vmware') !== false) {
                     $input[$i]->manufacturer = 'VMware';
                 }
-                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'intel') !== 'false') {
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'intel') !== false) {
                     $input[$i]->manufacturer = 'Intel';
                 }
                 if (empty($input[$i]->manufacturer) && $input[$i]->model === 'VBOX HARDDISK') {
                     $input[$i]->manufacturer = 'VirtualBox';
                 }
-                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'wdc') !== 'false') {
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'wdc') !== false) {
                     $input[$i]->manufacturer = 'Western Digital';
                 }
-                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'Western Digital') !== 'false') {
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'Western Digital') !== false) {
                     $input[$i]->manufacturer = 'Western Digital';
                 }
-                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'Seagate') !== 'false') {
+                if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'Seagate') !== false) {
                     $input[$i]->manufacturer = 'Seagate';
                 }
                 if (empty($input[$i]->manufacturer) && stripos($input[$i]->model_family, 'HP ') === 0) {
