@@ -288,6 +288,8 @@ ALTER TABLE `network` CHANGE `dhcp_lease_obtained` `dhcp_lease_obtained` varchar
 
 ALTER TABLE `network` CHANGE `dhcp_lease_expires` `dhcp_lease_expires` varchar(20) NOT NULL DEFAULT '';
 
+ALTER TABLE `networks` ADD `gateways` TEXT NOT NULL AFTER `cloud_id`;
+
 ALTER TABLE `nmap` ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`;
 
 UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`));
@@ -456,7 +458,7 @@ $this->alter_table('bios', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' 
 
 $this->alter_table('bios', 'manufacturer', "`manufacturer` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `name`");
 
-$this->alter_table('bios', 'description', "`model` varchar(100) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
+$this->alter_table('bios', 'description', "`model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
 
 $sql = "UPDATE `bios` SET `name` = `model`";
 $this->db->query($sql);
@@ -587,19 +589,42 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'queue_count','0','number','n',
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-
-$this->alter_table('discoveries', 'limit', "DROP `limit`", 'drop');
-$this->alter_table('discoveries', 'pid', "DROP pid", 'drop');
-$this->alter_table('discoveries', 'device_count', "DROP device_count", 'drop');
-$this->alter_table('discoveries', 'complete', "DROP complete", 'drop');
-$this->alter_table('discoveries', 'discovered', "DROP discovered", 'drop');
-$this->alter_table('discoveries', 'last_log', "DROP last_log", 'drop');
-$this->alter_table('discoveries', 'ip_all_count', "DROP ip_all_count", 'drop');
-$this->alter_table('discoveries', 'ip_responding_count', "DROP ip_responding_count", 'drop');
-$this->alter_table('discoveries', 'ip_scanned_count', "DROP ip_scanned_count", 'drop');
-$this->alter_table('discoveries', 'ip_discovered_count', "DROP ip_discovered_count", 'drop');
-$this->alter_table('discoveries', 'ip_audited_count', "DROP ip_audited_count", 'drop');
-$this->alter_table('discoveries', 'last_finished', "DROP last_finished", 'drop');
+if ($this->db->field_exists('limit', 'discoveries')) {
+    $this->alter_table('discoveries', 'limit', "DROP `limit`", 'drop');
+}
+if ($this->db->field_exists('pid', 'discoveries')) {
+    $this->alter_table('discoveries', 'pid', "DROP pid", 'drop');
+}
+if ($this->db->field_exists('device_count', 'discoveries')) {
+    $this->alter_table('discoveries', 'device_count', "DROP device_count", 'drop');
+}
+if ($this->db->field_exists('complete', 'discoveries')) {
+    $this->alter_table('discoveries', 'complete', "DROP complete", 'drop');
+}
+if ($this->db->field_exists('discovered', 'discoveries')) {
+    $this->alter_table('discoveries', 'discovered', "DROP discovered", 'drop');
+}
+if ($this->db->field_exists('last_log', 'discoveries')) {
+    $this->alter_table('discoveries', 'last_log', "DROP last_log", 'drop');
+}
+if ($this->db->field_exists('ip_all_count', 'discoveries')) {
+    $this->alter_table('discoveries', 'ip_all_count', "DROP ip_all_count", 'drop');
+}
+if ($this->db->field_exists('ip_responding_count', 'discoveries')) {
+    $this->alter_table('discoveries', 'ip_responding_count', "DROP ip_responding_count", 'drop');
+}
+if ($this->db->field_exists('ip_scanned_count', 'discoveries')) {
+    $this->alter_table('discoveries', 'ip_scanned_count', "DROP ip_scanned_count", 'drop');
+}
+if ($this->db->field_exists('ip_discovered_count', 'discoveries')) {
+    $this->alter_table('discoveries', 'ip_discovered_count', "DROP ip_discovered_count", 'drop');
+}
+if ($this->db->field_exists('ip_audited_count', 'discoveries')) {
+    $this->alter_table('discoveries', 'ip_audited_count', "DROP ip_audited_count", 'drop');
+}
+if ($this->db->field_exists('last_finished', 'discoveries')) {
+    $this->alter_table('discoveries', 'last_finished', "DROP last_finished", 'drop');
+}
 
 $this->alter_table('discoveries', 'last_finished', "ADD `last_finished` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `last_run`", 'add');
 $this->alter_table('discoveries', 'ip_all_count', "ADD `ip_all_count` int(10) unsigned NOT NULL DEFAULT 0 AFTER `status`", 'add');
@@ -646,7 +671,7 @@ $this->alter_table('disk', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFA
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "UPDATE `disk` SET `manufacturer` = '' WHERE `manufacturer` = '(Standard disk drives)'";
+$sql = "UPDATE `disk` SET `manufacturer` = '' WHERE `manufacturer` LIKE '(Standard disk drives)'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
@@ -760,6 +785,10 @@ $this->alter_table('network', 'dhcp_lease_obtained', "`dhcp_lease_obtained` varc
 
 $this->alter_table('network', 'dhcp_lease_expires', "`dhcp_lease_expires` varchar(20) NOT NULL DEFAULT ''");
 
+if ( ! $this->db->field_exists('gateways', 'networks')) {
+    $this->alter_table('networks', 'gateways', "ADD `gateways` TEXT NOT NULL AFTER `cloud_id`", 'add');
+}
+
 $this->alter_table('nmap', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
 $sql = "UPDATE `nmap` SET `name` = TRIM(BOTH ' ' FROM CONCAT(`program`, ' on ', `ip`, ' ', `protocol`, ' port ', `port`))";
@@ -780,7 +809,9 @@ $this->alter_table('policy', 'first_seen', "`first_seen` datetime NOT NULL DEFAU
 
 $this->alter_table('policy', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
 
-$this->alter_table('print_queue', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+$this->alter_table('print_queue', 'name', "`name` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `last_seen`");
+
+$this->alter_table('print_queue', 'model', "`model` varchar(200) NOT NULL NOT NULL DEFAULT '' AFTER `manufacturer`");
 
 $this->alter_table('processor', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `last_seen`", 'add');
 
@@ -922,44 +953,44 @@ $this->log_db($this->db->last_query() . ';');
 
 $directory_path = 'c:\\omk\\var\\oae\\baselines\\definitions\\';
 if (php_uname('s') !== 'Windows NT') {
-	$directory_path = '/usr/local/omk/var/oae/baselines/definitions/';
-	if (is_dir('/usr/local/opmojo/var/oae/baselines/definitions/')) {
-		$directory_path = '/usr/local/opmojo/var/oae/baselines/definitions/';
-	}
+    $directory_path = '/usr/local/omk/var/oae/baselines/definitions/';
+    if (is_dir('/usr/local/opmojo/var/oae/baselines/definitions/')) {
+        $directory_path = '/usr/local/opmojo/var/oae/baselines/definitions/';
+    }
 }
 if (is_dir($directory_path)) {
-	$directory = dir($directory_path);
-	while (false !== ($entry = $directory->read())) {
-		$contents = '';
-		if (strpos($entry, '.json') !== false) {
-			$contents = file_get_contents($directory_path . $entry);
-			$definition = @json_decode($contents);
-			if ($definition) {
-				if (is_array($definition->policies)) {
-					$sql = 'INSERT INTO `baselines` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-					$data = array($definition->id, $definition->name, $definition->org_id, $definition->description, $definition->notes, $definition->documentation, $definition->priority, 'system', '2000-01-01 00:00:00');
-					$this->db->query($sql, $data);
-					$this->log_db($this->db->last_query() . ';');
-					foreach ($definition->policies as $policy) {
-						if ( ! empty($policy->name)) {
-							$sql = 'INSERT INTO baselines_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-							$notes = '';
-							if ( ! empty($policy->notes)) {
-								$notes = $policy->notes;
-							}
-							$documentation = '';
-							if ( ! empty($policy->documentation)) {
-								$documentation = $policy->documentation;
-							}
-							$data = array($definition->id, $policy->name, $policy->priority, $notes, $documentation, $policy->table, json_encode($policy->tests), 'system', '2000-01-01 00:00:00');
-							$this->db->query($sql, $data);
-						}
-					}
-				}
-			}
-		}
-	}
-	$directory->close();
+    $directory = dir($directory_path);
+    while (false !== ($entry = $directory->read())) {
+        $contents = '';
+        if (strpos($entry, '.json') !== false) {
+            $contents = file_get_contents($directory_path . $entry);
+            $definition = @json_decode($contents);
+            if ($definition) {
+                if (is_array($definition->policies)) {
+                    $sql = 'INSERT INTO `baselines` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                    $data = array($definition->id, $definition->name, $definition->org_id, $definition->description, $definition->notes, $definition->documentation, $definition->priority, 'system', '2000-01-01 00:00:00');
+                    $this->db->query($sql, $data);
+                    $this->log_db($this->db->last_query() . ';');
+                    foreach ($definition->policies as $policy) {
+                        if ( ! empty($policy->name)) {
+                            $sql = 'INSERT INTO baselines_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                            $notes = '';
+                            if ( ! empty($policy->notes)) {
+                                $notes = $policy->notes;
+                            }
+                            $documentation = '';
+                            if ( ! empty($policy->documentation)) {
+                                $documentation = $policy->documentation;
+                            }
+                            $data = array($definition->id, $policy->name, $policy->priority, $notes, $documentation, $policy->table, json_encode($policy->tests), 'system', '2000-01-01 00:00:00');
+                            $this->db->query($sql, $data);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    $directory->close();
 }
 
 $this->m_roles->update_permissions('admin', 'clusters', 'r');

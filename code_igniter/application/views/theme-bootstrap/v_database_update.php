@@ -59,6 +59,21 @@
             </div>
         </div>
         <div class="panel-body">
+            <?php
+            if ( ! empty($issues)) {
+                foreach ($issues as $issue) {
+                    if (strpos($issue->detail, 'ERROR - ') === 0) {
+                        echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $issue->detail . "</div>\n";
+                    }
+                    if (strpos($issue->detail, 'WARNING - ') === 0) {
+                        echo '<div class="alert alert-warning alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $issue->detail . "</div>\n";
+                    }
+                    if (strpos($issue->detail, 'NOTICE - ') === 0) {
+                        echo '<div class="alert alert-info alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $issue->detail . "</div>\n";
+                    }
+                }
+            }
+            ?>
             <pre style="white-space: pre-wrap;"><?php echo htmlspecialchars( $output, REPLACE_FLAGS, CHARSET); ?></pre>
         </div>
     </div>

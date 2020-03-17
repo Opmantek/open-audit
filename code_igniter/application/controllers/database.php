@@ -825,6 +825,13 @@ class Database extends MY_Controller
         $this->data['heading'] = 'Database Upgrade';
         $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->config['display_version']." (".$this->config->config['internal_version'].")";
         $this->response->include = 'v_database_update';
+
+        $sql = "SELECT * FROM `logs` WHERE (detail LIKE 'WARNING - %' OR detail LIKE 'NOTICE - %' OR detail LIKE 'ERROR - %') AND request_microtime = " . $this->config->config['microtime'];
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $this->data['issues'] = $result;
+
+
         $this->load->view('v_template', $this->data);
     }
 }

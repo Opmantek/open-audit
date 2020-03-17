@@ -151,7 +151,7 @@ $this->alter_table('locations', 'longitude', "`longitude` float(10,6) NOT NULL D
 
 $this->alter_table('maps', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
-$this->alter_table('network', 'gateways', "ADD `gateways` TEXT NOT NULL AFTER `cloud_id`", 'add');
+$this->alter_table('networks', 'gateways', "ADD `gateways` TEXT NOT NULL AFTER `cloud_id`", 'add');
 
 $this->alter_table('networks', 'type', "`type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network'");
 
