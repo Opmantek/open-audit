@@ -42,11 +42,11 @@ $this->alter_table('logs', 'request_microtime', "ADD `request_microtime` varchar
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190620' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "UPDATE `configuration` SET `value` = '3.1.1' WHERE `name` = 'display_version'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $this->log_db("Upgrade database to 3.1.1 completed");
 $this->config->config['internal_version'] = '20190620';

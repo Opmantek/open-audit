@@ -205,7 +205,7 @@ class Database extends MY_Controller
         if (count($result) === 1) {
             $sql = "ALTER TABLE `" . $table . "` DROP FOREIGN KEY " . $key;
             $query = $this->db->query($sql);
-            $this->log_db($this->db->last_query());
+            $this->log_db($this->db->last_query() . ';');
             if ($this->db->_error_message()) {
                 $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                 log_error('ERR-0023', $this->db->_error_message());
@@ -258,7 +258,7 @@ class Database extends MY_Controller
             # ALTER TABLE `bios` ADD CONSTRAINT `bios_system_id` FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE;
             $sql = "ALTER TABLE `" . $table . "` ADD CONSTRAINT `" . $key . "` " . $value;
             $query = $this->db->query($sql);
-            $this->log_db($this->db->last_query());
+            $this->log_db($this->db->last_query() . ';');
             if ($this->db->_error_message()) {
                 $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                 log_error('ERR-0023', $this->db->_error_message());
@@ -311,7 +311,7 @@ class Database extends MY_Controller
         if (count($result) === 1) {
             $sql = "ALTER TABLE `" . $table . "` DROP KEY " . $key;
             $query = $this->db->query($sql);
-            $this->log_db($this->db->last_query());
+            $this->log_db($this->db->last_query() . ';');
             if ($this->db->_error_message()) {
                 $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                 log_error('ERR-0023', $this->db->_error_message());
@@ -364,7 +364,7 @@ class Database extends MY_Controller
         if (count($result) === 0) {
             $sql = "ALTER TABLE `" . $table . "` ADD KEY `" . $key . "` (`" . $key . "`)";
             $query = $this->db->query($sql);
-            $this->log_db($this->db->last_query());
+            $this->log_db($this->db->last_query() . ';');
             if ($this->db->_error_message()) {
                 $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                 log_error('ERR-0023', $this->db->_error_message());
@@ -391,7 +391,7 @@ class Database extends MY_Controller
         # DROP TABLE `bios` IF EXISTS;
         $sql = "DROP TABLE IF EXISTS `" . $table . "`";
         $this->db->query($sql);
-        $this->log_db($this->db->last_query());
+        $this->log_db($this->db->last_query() . ';');
         if ($this->db->_error_message()) {
             $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
             log_error('ERR-0023', $this->db->_error_message());
@@ -434,7 +434,7 @@ class Database extends MY_Controller
         # RENAME TABLE `sys_hw_bios` TO `bios`;
         $sql = "RENAME TABLE `" . $table . "` TO `" . $new_table . "`";
         $query = $this->db->query($sql);
-        $this->log_db($this->db->last_query());
+        $this->log_db($this->db->last_query() . ';');
         if ($this->db->_error_message()) {
             $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
             log_error('ERR-0023', $this->db->_error_message());
@@ -499,7 +499,7 @@ class Database extends MY_Controller
                 if ($type === 'change') {
                     $sql = "ALTER TABLE `" . $table . "` CHANGE `" . $column . "` " . $change;
                     $query = $this->db->query($sql);
-                    $this->log_db($this->db->last_query());
+                    $this->log_db($this->db->last_query() . ';');
                     if ($this->db->_error_message()) {
                         $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                         log_error('ERR-0023', $this->db->_error_message());
@@ -508,7 +508,7 @@ class Database extends MY_Controller
                 } else {
                     $sql = "ALTER TABLE `" . $table . "` " . $change;
                     $query = $this->db->query($sql);
-                    $this->log_db($this->db->last_query());
+                    $this->log_db($this->db->last_query() . ';');
                     if ($this->db->_error_message()) {
                         $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                         log_error('ERR-0023', $this->db->_error_message());
@@ -530,7 +530,7 @@ class Database extends MY_Controller
                 $this->db->db_debug = false;
                 $query = $this->db->query($sql);
                 $this->db->db_debug = $temp_debug;
-                $this->log_db($this->db->last_query());
+                $this->log_db($this->db->last_query() . ';');
                 if ($this->db->_error_message()) {
                     $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
                     log_error('ERR-0023', $this->db->_error_message());
@@ -824,6 +824,7 @@ class Database extends MY_Controller
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
         $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->config['display_version']." (".$this->config->config['internal_version'].")";
+        $this->response->include = 'v_database_update';
         $this->load->view('v_template', $this->data);
     }
 }

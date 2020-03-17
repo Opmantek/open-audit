@@ -179,23 +179,23 @@ $this->alter_table('users', 'password', "`password` varchar(250) NOT NULL DEFAUL
 
 $sql = "UPDATE `configuration` SET value = 5 WHERE `name` = 'collector_check_minutes'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "DELETE FROM configuration WHERE name = 'match_dns_fqdn'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.')";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "DELETE FROM configuration WHERE name = 'match_dns_hostname'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.')";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $this->drop_table("clusters");
 
@@ -212,17 +212,17 @@ $sql = "CREATE TABLE `clusters` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 if ($this->db->table_exists('cluster')) {
     $sql = "SELECT COUNT(*) AS `count` FROM `cluster`";
     $query = $this->db->query($sql);
-    $this->log_db($this->db->last_query());
+    $this->log_db($this->db->last_query() . ';');
     $result = $query->result();
     if (!empty($result[0]->count)) {
         $sql = "INSERT INTO `clusters` (SELECT NULL, name, org_id, description, type, purpose, 'active', edited_by, edited_date FROM `cluster`)";
         $this->db->query($sql);
-        $this->log_db($this->db->last_query());
+        $this->log_db($this->db->last_query() . ';');
     } else {
         $this->drop_table("cluster");
     }
@@ -230,7 +230,7 @@ if ($this->db->table_exists('cluster')) {
 
 $sql = "DROP TABLE IF EXISTS rules";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "CREATE TABLE `rules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -245,7 +245,7 @@ $sql = "CREATE TABLE `rules` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 // if (php_uname('s') != 'Windows NT') {
 // 	$command = 'mysql -h ' . $this->db->hostname . ' -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' < /usr/local/open-audit/other/assets/rules.sql';
@@ -262,11 +262,11 @@ $this->m_roles->update_permissions('user', 'rules', 'r');
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190810' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "UPDATE `configuration` SET `value` = '3.2.0' WHERE `name` = 'display_version'";
 $this->db->query($sql);
-$this->log_db($this->db->last_query());
+$this->log_db($this->db->last_query() . ';');
 
 $this->log_db("Upgrade database to 3.2.0 completed");
 $this->config->config['internal_version'] = '20190810';
