@@ -149,8 +149,7 @@ class M_rows extends MY_Model
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
             // Replaced $CI->response->meta->internal->properties with * as rows is now a reserved word and our internal->properties code doesn't ` escape words.
-            // $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.is AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) " .
-            $sql = 'SELECT `rows`.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.is AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) ' .
+            $sql = 'SELECT `rows`.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) ' .
                     $CI->response->meta->internal->filter . ' ' .
                     'GROUP BY rows.id ' .
                     $CI->response->meta->internal->sort . ' ' .
