@@ -1437,7 +1437,7 @@ class M_device extends MY_Model
         $log->file = 'm_device';
         $log->message = 'System insert start for '.ip_address_from_db($details->ip);
         $log->command = '';
-        $log->command_status = 'start';
+        $log->command_status = 'notice';
         $log->command_time_to_execute = '';
         $log->command_output = '';
         if ( ! empty($GLOBALS['discovery_id'])) {
@@ -1449,6 +1449,7 @@ class M_device extends MY_Model
             $log->discovery_id = '';
         }
         discovery_log($log);
+        $log->message = '';
 
         $parameters = new stdClass();
         $parameters->discovery_id = @$details->discovery_id;
@@ -1456,17 +1457,38 @@ class M_device extends MY_Model
         $parameters->input = $details;
         $details = audit_format_system($parameters);
 
+
         if (empty($details->name)) {
             if ( ! empty($details->hostname)) {
                 $details->name = strtolower($details->hostname);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on hostname.';
+                    discovery_log($log);
+                }
             } else if ( ! empty($details->sysName)) {
                 $details->name = strtolower($details->sysName);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on sysName.';
+                    discovery_log($log);
+                }
             } else if ( ! empty($details->dns_hostname)) {
                 $details->name = strtolower($details->dns_hostname);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on dns_hostname.';
+                    discovery_log($log);
+                }
             } else if ( ! empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on ip.';
+                    discovery_log($log);
+                }
             } else {
                 $details->name = '';
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'No attributes available to set name.';
+                    discovery_log($log);
+                }
             }
         }
 
@@ -1477,10 +1499,10 @@ class M_device extends MY_Model
             $details->type = 'unknown';
         }
         if (empty($details->org_id)) {
-            $details->org_id = '1';
+            $details->org_id = 1;
         }
         if (empty($details->location_id)) {
-            $details->location_id = '1';
+            $details->location_id = 1;
         }
         if (empty($details->first_seen)) {
             $details->first_seen = $this->config->config['timestamp'];
@@ -1511,7 +1533,6 @@ class M_device extends MY_Model
         $query = $this->db->query($sql, $data);
         $details->id = intval($this->db->insert_id());
         $log->system_id = intval($details->id);
-        discovery_log($log);
 
         $weight = intval($this->m_devices->weight($details->last_seen_by));
         $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
@@ -1607,7 +1628,7 @@ class M_device extends MY_Model
 
         $log->ip = ip_address_from_db($details->ip);
         $log->message = 'System insert end for '.ip_address_from_db($details->ip);
-        $log->command_status = 'finish';
+        $log->command_status = 'notice';
         discovery_log($log);
 
         return $details->id;
@@ -1664,38 +1685,18 @@ class M_device extends MY_Model
         if (empty($details->name)) {
             if ( ! empty($details->hostname)) {
                 $details->name = strtolower($details->hostname);
-                if ( ! empty($log->discovery_id)) {
-                    $log->message = 'Set name based on hostname.';
-                    discovery_log($log);
-                }
             } else if ( ! empty($details->sysName)) {
                 $details->name = strtolower($details->sysName);
-                if ( ! empty($log->discovery_id)) {
-                    $log->message = 'Set name based on sysName.';
-                    discovery_log($log);
-                }
             } else if ( ! empty($details->dns_hostname)) {
                 $details->name = strtolower($details->dns_hostname);
-                if ( ! empty($log->discovery_id)) {
-                    $log->message = 'Set name based on dns_hostname.';
-                    discovery_log($log);
-                }
             } else if ( ! empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
-                if ( ! empty($log->discovery_id)) {
-                    $log->message = 'Set name based on ip.';
-                    discovery_log($log);
-                }
             } else {
                 $details->name = '';
-                if ( ! empty($log->discovery_id)) {
-                    $log->message = 'No attributes available to set name.';
-                    discovery_log($log);
-                }
             }
         }
 
-        $log->message = "System update start for {$details->ip} ({$details->name}) (System ID {$details->id})";
+        $log->message = "System update start for {$details->ip}";
 
         if ( ! empty($log->discovery_id)) {
             discovery_log($log);
@@ -1891,7 +1892,7 @@ class M_device extends MY_Model
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
-        $log->message = 'System update end for '.@ip_address_from_db($details->ip).' ('.$details->name.') (System ID '.$details->id.')';
+        $log->message = 'System update end for '.@ip_address_from_db($details->ip);
         $log->summary = 'finish function';
         if ( ! empty($log->discovery_id)) {
             discovery_log($log);
