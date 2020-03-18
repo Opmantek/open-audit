@@ -619,9 +619,9 @@ class Devices extends MY_Controller
                     }
                     if (empty($data->other->match->match_hostname)) {
                         // use the defaults
-                        $match_rules = array('match_dbus', 'match_dns_fqdn', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
+                        $match_rules = array('match_dbus', 'match_dns_fqdn', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
                         foreach ($match_rules as $item) {
-                            $data->other->match->{$item} = $this->config->config[$item];
+                            $data->other->match->{$item} = @$this->config->config[$item];
                         }
                     }
                     $discovery_id = $this->m_collection->create($data, 'discoveries');
