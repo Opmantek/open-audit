@@ -1545,7 +1545,7 @@ class M_device extends MY_Model
         }
 
         // check if we have a matching entry in the vm table and update it if required
-        $sql = "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.current = 'y' and vm.system_id = system.id;";
+        $sql = "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.system_id = system.id";
         $sql = $this->clean_sql($sql);
         $data = array("{$details->uuid}", "{$details->vm_uuid}");
         $query = $this->db->query($sql, $data);
@@ -1644,20 +1644,13 @@ class M_device extends MY_Model
             return;
         }
 
-        $ip = 'unknown';
         if ( ! empty($details->ip)) {
-            $ip = @ip_address_from_db($details->ip);
+            $details->ip = @ip_address_from_db($details->ip);
             $log->ip = @ip_address_from_db($details->ip);
+        } else {
+            $details->ip = '';
+            $log->ip = '';
         }
-        $hostname = 'unknown';
-        if ( ! empty($details->hostname)) {
-            $ip = $details->hostname;
-        }
-        $id = 'unknown';
-        if ( ! empty($details->id)) {
-            $id = intval($details->id);
-        }
-        $log->message = "System update start for {$ip} ({$hostname}) (System ID {$id})";
 
         if ( ! empty($details->discovery_id)) {
             $log->discovery_id = $details->discovery_id;
@@ -1667,6 +1660,42 @@ class M_device extends MY_Model
         } else {
             $log->discovery_id = '';
         }
+
+        if (empty($details->name)) {
+            if ( ! empty($details->hostname)) {
+                $details->name = strtolower($details->hostname);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on hostname.';
+                    discovery_log($log);
+                }
+            } else if ( ! empty($details->sysName)) {
+                $details->name = strtolower($details->sysName);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on sysName.';
+                    discovery_log($log);
+                }
+            } else if ( ! empty($details->dns_hostname)) {
+                $details->name = strtolower($details->dns_hostname);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on dns_hostname.';
+                    discovery_log($log);
+                }
+            } else if ( ! empty($details->ip)) {
+                $details->name = ip_address_from_db($details->ip);
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'Set name based on ip.';
+                    discovery_log($log);
+                }
+            } else {
+                $details->name = '';
+                if ( ! empty($log->discovery_id)) {
+                    $log->message = 'No attributes available to set name.';
+                    discovery_log($log);
+                }
+            }
+        }
+
+        $log->message = "System update start for {$details->ip} ({$details->name}) (System ID {$details->id})";
 
         if ( ! empty($log->discovery_id)) {
             discovery_log($log);
@@ -1697,20 +1726,6 @@ class M_device extends MY_Model
                 stdlog($log);
             }
             return;
-        }
-
-        if (empty($details->name)) {
-            if ( ! empty($details->hostname)) {
-                $details->name = strtolower($details->hostname);
-            } else if ( ! empty($details->sysName)) {
-                $details->name = strtolower($details->sysName);
-            } else if ( ! empty($details->dns_hostname)) {
-                $details->name = strtolower($details->dns_hostname);
-            } else if ( ! empty($details->ip)) {
-                $details->name = ip_address_from_db($details->ip);
-            } else {
-                $details->name = '';
-            }
         }
 
         if (empty($details->discovery_id)) {
@@ -1831,7 +1846,7 @@ class M_device extends MY_Model
         }
 
         // check if we have a matching entry in the vm table and update it if required
-        $sql = '/* m_device::update */ ' . "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.current = 'y' and vm.system_id = system.id;";
+        $sql = '/* m_device::update */ ' . "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.system_id = system.id;";
         $sql = $this->clean_sql($sql);
         $data = array("{$details->uuid}", "{$details->vm_uuid}");
         $query = $this->db->query($sql, $data);
@@ -1876,7 +1891,7 @@ class M_device extends MY_Model
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
-        $log->message = 'System update end for '.@ip_address_from_db($details->ip).' ('.$details->hostname.') (System ID '.$details->id.')';
+        $log->message = 'System update end for '.@ip_address_from_db($details->ip).' ('.$details->name.') (System ID '.$details->id.')';
         $log->summary = 'finish function';
         if ( ! empty($log->discovery_id)) {
             discovery_log($log);
