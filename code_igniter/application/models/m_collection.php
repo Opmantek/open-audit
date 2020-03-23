@@ -413,7 +413,7 @@ class M_collection extends MY_Model
                 $data->other->nmap->exclude_ip = str_replace(' ', ',', $data->other->nmap->exclude_ip);
             }
 
-            if ($data->type == 'subnet') {
+            if (!empty($data->type) && $data->type == 'subnet') {
                 if (!empty($data->other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
                     $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
@@ -432,7 +432,7 @@ class M_collection extends MY_Model
                 } else {
                     $data->description = 'Subnet - ' . $data->other->subnet;
                 }
-            } elseif ($data->type == 'active directory') {
+            } elseif (!empty($data->type) && $data->type == 'active directory') {
                 if (empty($data->other->ad_server) or empty($data->other->ad_domain)) {
                     $temp = "Active Directory Domain";
                     if (empty($data->other->ad_server)) {
@@ -444,6 +444,8 @@ class M_collection extends MY_Model
                 } else {
                     $data->description = 'Active Directory - ' . $data->other->ad_domain;
                 }
+            } else if (empty($data->type)) {
+                // TODO - throw an error
             } else {
                 $data->description = '';
             }
@@ -451,8 +453,8 @@ class M_collection extends MY_Model
             $this->load->helper('network');
 
             if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false and filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
-                # We have a single IP - ie 192.168.1.1
-                # TODO - we should pass the OrgID
+                // We have a single IP - ie 192.168.1.1
+                // TODO - we should pass the OrgID
                 $test = $this->m_networks->check_ip($data->other->subnet);
                 if (!$test) {
                     # This IP is not in any existing subnets - insert a /30
@@ -659,7 +661,7 @@ class M_collection extends MY_Model
             }
             return ($id);
         } else {
-            # TODO - log a better error
+            // TODO - log a better error
             if (!empty($CI->session)) {
                 $CI->session->set_flashdata('failure', 'Failed to create resource (please see detailed logs).');
             }
