@@ -993,6 +993,8 @@ if (is_dir($directory_path)) {
     $directory->close();
 }
 
+$this->m_roles->update_permissions('admin', 'devices', 'r');
+$this->m_roles->update_permissions('admin', 'orgs', 'crud');
 $this->m_roles->update_permissions('admin', 'clusters', 'r');
 $this->m_roles->update_permissions('org_admin', 'clusters', 'crud');
 $this->m_roles->update_permissions('reporter', 'clusters', 'r');
