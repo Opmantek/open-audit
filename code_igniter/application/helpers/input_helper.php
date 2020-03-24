@@ -531,7 +531,11 @@ if ( ! function_exists('inputRead')) {
                 $log->severity = 7;
             } else {
                 $CI->response->meta->received_data = new stdClass();
-                $CI->response->meta->received_data = $data_object->data;
+                if ( ! empty($data_object->data)) {
+                    $CI->response->meta->received_data = $data_object->data;
+                } else {
+                    $CI->response->meta->received_data = $data_object;
+                }
                 if ( ! empty($options)) {
                     $CI->response->meta->received_data->attributes->options = $options;
                 }
