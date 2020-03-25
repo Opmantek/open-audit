@@ -1148,7 +1148,7 @@ class M_devices extends MY_Model
                     // we have a field from the system table
                     foreach ($ids as $id) {
                         // get the current value
-                        $sql = 'SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?';
+                        $sql = "SELECT `{$key}` AS `{$key}` FROM `system` WHERE `id` = ?";
                         $data = array(intval($id));
                         $result = $this->run_sql($sql, $data);
                         $previous_value = @$result[0]->{$key};
