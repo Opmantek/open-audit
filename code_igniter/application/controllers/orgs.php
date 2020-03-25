@@ -166,17 +166,6 @@ class Orgs extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function update_form()
-    {
-        include 'include_update_form.php';
-    }
-
-    /**
     * Supply a HTML form for the user to upload a collection of objects in CSV
     *
     * @access public

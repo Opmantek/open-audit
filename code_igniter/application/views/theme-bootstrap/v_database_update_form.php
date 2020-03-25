@@ -33,27 +33,25 @@
 * @version   3.3.0
 * @link      http://www.open-audit.org
  */
-if (php_uname('s') == "Windows NT") {
-    exec("echo. |WMIC OS Get Caption", $output);
+
+if (php_uname('s') === 'Windows NT') {
+    exec('echo. |WMIC OS Get Caption', $output);
     if (isset($output[1])) {
         $operating_system = $output[1];
     } else {
-        $operating_system = "unknown (You must run Apache as an administrator on Windows to determine this)";
+        $operating_system = 'unknown (You must run Apache as an administrator on Windows to determine this)';
     }
 } else {
     $operating_system = php_uname('s');
 }
 
-$upgrade_message = "";
+$upgrade_message = '';
 
-
-
-
-if (($this->config->config['display_version'] != $this->config->config['web_display_version']) and (!$this->m_users->get_user_permission('', 'database', 'u'))) {
-    $upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
+if (intval($this->config->config['internal_version']) < intval($this->config->config['web_internal_version']) && ! $this->m_users->get_user_permission('', 'database', 'u')) {
+    $upgrade_message = '<br /><span style="color: blue;">The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>';
 }
 
-if ($this->config->config['display_version'] != $this->config->config['web_display_version'] and ($this->m_users->get_user_permission($this->user->id, 'database', 'u') or $this->config->config['internal_version'] < 20160904)) {
+if (intval($this->config->config['internal_version']) < intval($this->config->config['web_internal_version']) && ($this->m_users->get_user_permission($this->user->id, 'database', 'u') OR $this->config->config['internal_version'] < 20160904)) {
 
     $upgrade_message = '<div class="form-group"><label for="display_version" class="col-sm-3 control-label">' . __('Database Upgrade Required') . '</label><div class="col-sm-8 input-group">';
 
@@ -65,8 +63,6 @@ if ($this->config->config['display_version'] != $this->config->config['web_displ
 
     $upgrade_message .= '</div></div>';
 }
-
-
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->config->config['base_url']; ?>index.php/database?action=update">
     <div class="panel panel-default">

@@ -33,7 +33,7 @@
 * @version   3.3.0
 * @link      http://www.open-audit.org
  */
-include "v_lang.php";
+include 'v_lang.php';
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +53,7 @@ include "v_lang.php";
 
 
 <?php
-if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'locations' and ($this->response->meta->action == 'read' or $this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
+if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'locations' and ($this->response->meta->action == 'read' or $this->response->meta->action == 'create_form')) { ?>
         <script src="//maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>
     <?php
 } ?>
@@ -186,9 +186,9 @@ unset($this->response->meta->sql);
 </html>
 <?php
 function json_format($json)
-            {
-    $tab = "  ";
-    $new_json = "";
+{
+    $tab = '  ';
+    $new_json = '';
     $indent_level = 0;
     $in_string = false;
 

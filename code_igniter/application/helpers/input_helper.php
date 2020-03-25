@@ -215,7 +215,7 @@ if ( ! function_exists('inputRead')) {
         $CI->response->included = array();
         $CI->response->meta->sql = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update ';
         $action = '';
 
         // Allow for URLs thus:
@@ -586,17 +586,11 @@ if ( ! function_exists('inputRead')) {
         if ($request_method === 'GET' && is_null($CI->response->meta->id) && $action === 'create') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'create_form';
-            // $CI->response->data = array();
-            // unset($temp);
-            // $temp = new stdClass();
-            // $temp->type = $CI->response->meta->collection;
-            // $CI->response->data[] = $temp;
-            unset($temp);
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
         if ($request_method === 'GET' && $action === 'create' && $CI->response->meta->sub_resource !== '' && empty($CI->response->meta->sub_resource_id)) {
-            // show a HTML form for entering a new item
+            // show a HTML form for entering a new SubResource item
             $CI->response->meta->action = 'sub_resource_create_form';
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, not sub_resource_id and action = create.';
             stdlog($log);
@@ -635,17 +629,10 @@ if ( ! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = test.';
             stdlog($log);
         }
-        if ($request_method === 'GET' && ! is_null($CI->response->meta->id) && $action === 'update' && empty($CI->response->meta->ids)) {
-            // show a HTML form for updating an existing item
-            $CI->response->meta->action = 'update_form';
-            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
-            stdlog($log);
-        }
         // Special case for the database endpoint
-        if ($request_method === 'GET' && $action === 'update' && $CI->response->meta->collection === 'database') {
-            // show a HTML form for updating an existing item
-            $CI->response->meta->action = 'update_form';
-            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+        if ($action === 'update' && $CI->response->meta->collection === 'database') {
+            $CI->response->meta->action = 'update';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because collection = database and action = update.';
             stdlog($log);
         }
         if ($request_method === 'GET' && $action === 'execute' && $CI->response->meta->collection === 'database' && $CI->response->meta->sub_resource !== '') {

@@ -157,18 +157,6 @@ class Configuration extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         output($this->response);
     }
-
-    /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function update_form()
-    {
-        include 'include_update_form.php';
-        return;
-    }
 }
 // End of file configuration.php
 // Location: ./controllers/configuration.php

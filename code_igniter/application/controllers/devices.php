@@ -401,25 +401,6 @@ class Devices extends MY_Controller
     }
 
     /**
-     * [update_form description]
-     * @return [type] [description]
-     */
-    private function update_form()
-    {
-        $this->response->meta->format = 'json';
-        $this->response->meta->debug = true;
-        output($this->response);
-        $log = new stdClass();
-        $log->type = 'access';
-        $log->detail = json_encode($this->response->meta);
-        $log->severity = 7;
-        $log->status = 'finish';
-        $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-        stdLog($log);
-    }
-
-    /**
      * [bulk_update_form description]
      * @return [type] [description]
      */

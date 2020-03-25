@@ -34,13 +34,14 @@
 * @link      http://www.open-audit.org
  */
 header("Content-Security-Policy: frame-ancestors 'none'");
-header("X-Frame-Options: DENY");
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_database_update' and $include != 'v_database_update_form') {
+header('X-Frame-Options: DENY');
+
+if (intval($this->config->config['internal_version']) < intval($this->config->config['web_internal_version']) && $this->response->include !== 'v_database_update' && $this->response->include !== 'v_database_update_form') {
     redirect('database?action=update');
 }
 
-# Define our constans for use in htmlspecialchars
-if (!defined('CHARSET')) {
+// Define our constans for use in htmlspecialchars
+if ( ! defined('CHARSET')) {
     define('CHARSET', 'UTF-8');
     if (phpversion() >= 5.4) {
         define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
@@ -51,7 +52,7 @@ if (!defined('CHARSET')) {
 
 function refine($property, $value, $display = '', $align = 'left')
 {
-    if ($display == '') {
+    if ($display === '') {
         $display = $value;
     }
     $CI = & get_instance();
@@ -81,11 +82,12 @@ function refine($property, $value, $display = '', $align = 'left')
     $exclude_link = create_url($query_parameters);
     unset($query_parameters);
 
-    if (!empty($value)) {
+    if ( ! empty($value)) {
         echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . htmlspecialchars($value) . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</span></td>\n";
     } else {
         echo '            <td class="text-' . $align . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</td>\n";
     }
 }
 
-include "theme-bootstrap/v_template.php";
+include 'theme-bootstrap/v_template.php';
+exit;

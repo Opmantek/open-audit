@@ -191,34 +191,6 @@ class Scripts extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    private function update_form()
-    {
-        include 'include_scripts_options.php';
-        foreach ($options as $item) {
-            $option = new stdClass();
-            $option->id = $item->name;
-            $option->type = 'option';
-            $option->attributes = $item;
-            $this->response->included[] = $option;
-            unset($option);
-        }
-        foreach ($options_scripts as $key => $value) {
-            $option = new stdClass();
-            $option->id = $key;
-            $option->type = 'script_option';
-            $option->attributes = $value;
-            $this->response->included[] = $option;
-            unset($option);
-        }
-        include 'include_update_form.php';
-    }
-
-    /**
     * Supply a HTML form for the user to upload a collection of objects in CSV
     *
     * @access public

@@ -146,7 +146,7 @@ class Files extends MY_Controller
     */
     public function create_form()
     {
-        $this->response->dictionary = $this->m_agents->dictionary();
+        $this->response->dictionary = $this->m_files->dictionary();
         $this->load->model('m_orgs');
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         output($this->response);

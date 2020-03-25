@@ -153,18 +153,6 @@ class Database extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function update_form()
-    {
-        output($this->response);
-    }
-
-
-    /**
     * Drop a foreign key on a table
     *
     * @access public
@@ -571,6 +559,14 @@ class Database extends MY_Controller
      */
     public function update()
     {
+
+        // Our update form
+        if (strtoupper($this->input->server('REQUEST_METHOD')) === 'GET') {
+            $this->response->include = 'v_database_update_form';
+            output($this->response);
+            exit;
+        }
+
         error_reporting(E_ALL);
 
         $log = new stdClass();

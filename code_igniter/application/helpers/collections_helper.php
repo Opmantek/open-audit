@@ -267,4 +267,4 @@ if ( ! function_exists('mandatory_fields')) {
     }
 }
 // End of file collections_helper.php
-// Location: ./models/collections_helper.php
+// Location: ./helpers/collections_helper.php

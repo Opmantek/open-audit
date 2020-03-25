@@ -210,30 +210,6 @@ class Summaries extends MY_Controller
     * @access public
     * @return NULL
     */
-    public function update_form()
-    {
-        $tables_temp = $this->db->list_tables();
-        $tables = array();
-        for ($i=0; $i < count($tables_temp); $i++) {
-            $table = new stdClass();
-            $table->type = 'table';
-            $table->id = '';
-            $table->attributes = new stdClass();
-            $table->attributes->name = $tables_temp[$i];
-            $tables[] = $table;
-            unset($table);
-        }
-        $this->response->included = array_merge($this->response->included, $tables);
-        include 'include_update_form.php';
-        return;
-    }
-
-    /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
     public function execute()
     {
         $this->response->data = $this->m_summaries->execute();

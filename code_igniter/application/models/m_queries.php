@@ -69,6 +69,7 @@ class M_queries extends MY_Model
      */
     public function read($id = 0)
     {
+        $id = intval($id);
         $sql = 'SELECT * FROM `queries` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -82,10 +83,7 @@ class M_queries extends MY_Model
      */
     public function update()
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        $this->log->summary = 'start';
-        stdlog($this->log);
+        $id = intval($id);
         $CI = & get_instance();
         $sql = '';
         $data_items = array();
@@ -134,6 +132,7 @@ class M_queries extends MY_Model
      */
     public function delete($id = 0)
     {
+        $id = intval($id);
         $sql = 'DELETE FROM `queries` WHERE `id` = ?';
         $data = array($id);
         $test = $this->run_sql($sql, $data);
