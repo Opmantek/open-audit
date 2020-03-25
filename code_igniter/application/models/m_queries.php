@@ -67,23 +67,12 @@ class M_queries extends MY_Model
      * @param  int $id The ID of the requested item
      * @return array The array of requested items
      */
-    public function read($id = '')
+    public function read($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = 'SELECT * FROM queries WHERE id = ?';
+        $sql = 'SELECT * FROM `queries` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'queries');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
         return ($result);
     }
 
@@ -143,30 +132,14 @@ class M_queries extends MY_Model
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail
      */
-    public function delete($id = '')
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if (intval($id) !== 1) {
-            $CI = & get_instance();
-            $sql = 'DELETE FROM `queries` WHERE id = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            $this->log->summary = 'finish';
-            stdlog($this->log);
+        $sql = 'DELETE FROM `queries` WHERE `id` = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            log_error('ERR-0013', 'm_queries::delete');
-            $this->log->summary = 'finish';
-            stdlog($this->log);
             return false;
         }
     }

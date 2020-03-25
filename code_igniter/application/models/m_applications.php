@@ -66,6 +66,7 @@ class M_applications extends MY_Model
      */
     public function read($id = 0)
     {
+        $id = intval($id);
         $sql = 'SELECT * FROM `applications` WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -81,6 +82,7 @@ class M_applications extends MY_Model
      */
     public function delete($id = 0)
     {
+        $id = intval($id);
         // remove any linked devices
         $sql = 'DELETE FROM `application` WHERE `applications_id` = ?';
         $data = array($id);
@@ -104,6 +106,7 @@ class M_applications extends MY_Model
      */
     public function read_sub_resource($id = 0)
     {
+        $id = intval($id);
         $CI = & get_instance();
         $org_ids = implode(',', $CI->user->orgs);
         $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `application`.`id` = ? and `system`.`org_id` IN  (' . $org_ids . ')';

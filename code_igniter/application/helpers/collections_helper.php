@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,31 +24,39 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-/**
+*
+* PHP version 5.3.3
+* 
 * @category  Helper
-* @package   Open-AudIT
+* @package   All
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
- */
-if (!defined('BASEPATH')) {
+*/
+
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-if (!function_exists('update_fields')) {
-    function update_fields($collection) {
+if ( ! function_exists('update_fields')) {
+    /**
+     * [update_fields description]
+     * @param  [type] $collection [description]
+     * @return [type]             [description]
+     */
+    function update_fields($collection)
+    {
         if (empty($collection)) {
             return array();
         }
         $CI = get_instance();
-        if (!$CI->db->table_exists($collection)) {
+        if ( ! $CI->db->table_exists($collection)) {
             return array();
         }
         $fields = $CI->db->list_fields($collection);
-        # Remove any non-user setable columns
+        // Remove any non-user setable columns
         foreach ($fields as $key => $value) {
             if ($value === 'id') {
                 unset($fields[$key]);
@@ -59,46 +67,29 @@ if (!function_exists('update_fields')) {
             if ($value === 'edited_date') {
                 unset($fields[$key]);
             }
-
-            // Remove any collection specific fields
-            if ($collection === 'applications') {
-                if ($value === 'options') {
-                    unset($fields[$key]);
-                }
-            }
-            if ($collection === 'clusters') {
-                if ($value === 'retrieved_name') {
-                    unset($fields[$key]);
-                }
-                if ($value === 'retrieved_ident') {
-                    unset($fields[$key]);
-                }
-            }
-            if ($collection === 'networks') {
-                if ($value === 'external_ident') {
-                    unset($fields[$key]);
-                }
-                if ($value === 'cloud_id') {
-                    unset($fields[$key]);
-                }
-            }
         }
         $fields = array_values($fields);
         return $fields;
     }
 }
 
-if (!function_exists('insert_fields')) {
-    function insert_fields($collection) {
+if ( ! function_exists('insert_fields')) {
+    /**
+     * [insert_fields description]
+     * @param  [type] $collection [description]
+     * @return [type]             [description]
+     */
+    function insert_fields($collection)
+    {
         if (empty($collection)) {
             return array();
         }
         $CI = get_instance();
-        if (!$CI->db->table_exists($collection)) {
+        if ( ! $CI->db->table_exists($collection)) {
             return array();
         }
         $fields = $CI->db->list_fields($collection);
-        # Remove any non-user setable columns
+        // Remove any non-user setable columns
         foreach ($fields as $key => $value) {
             if ($value === 'id') {
                 unset($fields[$key]);
@@ -116,156 +107,164 @@ if (!function_exists('insert_fields')) {
 }
 
 
-if (!function_exists('mandatory_fields')) {
-    function mandatory_fields($collection) {
+if ( ! function_exists('mandatory_fields')) {
+    /**
+     * [mandatory_fields description]
+     * @param  [type] $collection [description]
+     * @return [type]             [description]
+     */
+    function mandatory_fields($collection)
+    {
         if (empty($collection)) {
             return array();
         }
         switch ($collection) {
-            case "applications":
+            case 'applications':
                 return(array('name','org_id'));
                 break;
 
-            case "agents":
+            case 'agents':
                 return(array('name','org_id','status'));
                 break;
 
-            case "attributes":
+            case 'attributes':
                 return(array('name','org_id','type','resource','value'));
                 break;
 
-            case "baselines":
+            case 'baselines':
                 return(array('name','org_id'));
                 break;
 
-            case "buildings":
+            case 'buildings':
                 return(array('name','org_id','location_id'));
                 break;
 
-            case "clouds":
+            case 'clouds':
                 return(array('name','org_id','type'));
                 break;
 
-            case "clusters":
+            case 'clusters':
                 return(array('name','org_id'));
                 break;
 
-            case "collectors":
+            case 'collectors':
                 return(array('name','org_id','status'));
                 break;
 
-            case "configuration":
+            case 'configuration':
                 return(array('value'));
                 break;
 
-            case "connections":
+            case 'connections':
                 return(array('name','org_id'));
                 break;
 
-            case "credentials":
+            case 'credentials':
                 return(array('name','org_id','type','credentials'));
                 break;
 
-            case "dashboards":
+            case 'dashboards':
                 return(array('name','org_id', 'options', 'sidebar'));
                 break;
 
-            case "discoveries":
+            case 'discoveries':
                 return(array('name','org_id','type','other'));
                 break;
 
-            case "discovery_scan_options":
+            case 'discovery_scan_options':
                 return(array('name','org_id'));
                 break;
 
-            case "fields":
+            case 'fields':
                 return(array('name','org_id','type','placement','group_id'));
                 break;
 
-            case "files":
+            case 'files':
                 return(array('name','org_id','path'));
                 break;
 
-            case "floors":
+            case 'floors':
                 return(array('name','org_id','building_id'));
                 break;
 
-            case "groups":
+            case 'groups':
                 return(array('name','org_id','sql'));
                 break;
 
-            case "integrations":
+            case 'integrations':
                 return(array('name','org_id','options'));
                 break;
 
-            case "ldap_servers":
+            case 'ldap_servers':
                 return(array('name','org_id','lang','host','port','secure','domain','type','version','use_auth','use_roles','refresh'));
                 break;
 
-            case "licenses":
+            case 'licenses':
                 return(array('name','org_id','org_descendants','purchase_count','match_string'));
                 break;
 
-            case "locations":
+            case 'locations':
                 return(array('name','org_id'));
                 break;
 
-            case "networks":
+            case 'networks':
                 return(array('name','org_id','network'));
                 break;
 
-            case "orgs":
+            case 'orgs':
                 return(array('name','parent_id'));
                 break;
 
-            case "queries":
+            case 'queries':
                 return(array('name','org_id','sql','menu_category','menu_display'));
                 break;
 
-            case "racks":
+            case 'racks':
                 return(array('name','org_id','row_id'));
                 break;
 
-            case "rack_devices":
+            case 'rack_devices':
                 return(array('rack_id','system_id','position','height'));
                 break;
 
-            case "roles":
+            case 'roles':
                 return(array('name','permissions'));
                 break;
 
-            case "rooms":
+            case 'rooms':
                 return(array('name','org_id','floor_id'));
                 break;
 
-            case "rows":
+            case 'rows':
                 return(array('name','org_id','room_id'));
                 break;
 
-            case "rules":
+            case 'rules':
                 return(array('name','org_id','weight','inputs','outputs'));
                 break;
 
-            case "scripts":
+            case 'scripts':
                 return(array('name','org_id','options','based_on'));
                 break;
 
-            case "summaries":
+            case 'summaries':
                 return(array('name','org_id','table','column','menu_category'));
                 break;
 
-            case "tasks":
+            case 'tasks':
                 return(array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week'));
                 break;
 
-            case "users":
+            case 'users':
                 return(array('name','org_id','lang','active','roles','orgs'));
                 break;
 
-            case "widgets":
+            case 'widgets':
                 return(array('name','org_id','type'));
                 break;
         }
         return array();
     }
 }
+// End of file collections_helper.php
+// Location: ./models/collections_helper.php
