@@ -204,6 +204,18 @@ class M_queries extends MY_Model
                 $sql = trim($sql);
             }
             unset($queries);
+            // Determine the type
+            if (stripos($sql, 'SELECT system.id') !== false) {
+                $type = 'devices';
+            } else {
+                $temp = explode(' ', $sql);
+                $temp1 = explode('.', $temp[1]);
+                $type = $temp1[0];
+                $collections = array('agents','applications','attributes','baselines','baselines_policies','buildings','charts','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','help','integrations','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+                if ( ! in_array($type, $collections)) {
+                    $type = 'queries';
+                }
+            }
             $filter = "system.org_id IN ({$CI->user->org_list})";
             if ( ! empty($CI->response->meta->requestor)) {
                 $filter = "system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y'";
@@ -215,14 +227,14 @@ class M_queries extends MY_Model
             $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
             $sql .= ' ' . $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            $result = $this->format_data($result, 'queries');
+            $result = $this->format_data($result, $type);
             $this->log->summary = 'finish';
             stdlog($this->log);
         }
         if (empty($result)) {
             return array();
         }
-        if ( ! empty($CI->response->meta->format) === 'json') {
+        if ( ! empty($CI->response->meta->format) && $CI->response->meta->format === 'json') {
             if (isset($result[0]->attributes->{'system.credentials'}))  {
                 $this->load->library('encrypt');
                 $this->load->model('m_credentials');
