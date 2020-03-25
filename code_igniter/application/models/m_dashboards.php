@@ -235,6 +235,8 @@ class M_dashboards extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->sidebar = 'Do you wish to see the standard sidebar on the left.';
+        $dictionary->columns->user_id = 'unused';
+        $dictionary->columns->options = 'Contains a JSON object details the associated widgets and their positions.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

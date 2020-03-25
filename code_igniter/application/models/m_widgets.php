@@ -48,6 +48,11 @@
  */
 class M_widgets extends MY_Model
 {
+    /**
+    * Constructor
+    *
+    * @access public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -56,6 +61,12 @@ class M_widgets extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -73,76 +84,49 @@ class M_widgets extends MY_Model
         return ($result);
     }
 
-    public function update()
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
+    public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' name org_id type user_id description options ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "UPDATE `widgets` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
-        return;
-    }
-
-    public function delete($id = '')
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if ($id != 0) {
-            // do NOT allow deleting the default roles
-            $sql = "SELECT type FROM widgets WHERE id = ?";
-            $data = array($id);
-            $result = $this->run_sql($sql, $data);
-            if ($result[0]->type == 'default') {
-                log_error('ERR-0013', 'm_widgets::delete');
-                return false;
-            }
-            // attempt to delete the item
-            $sql = "DELETE FROM `widgets` WHERE id = ?";
-            $data = array($id);
-            $this->run_sql($sql, $data);
+        $id = intval($id);
+        $sql = 'DELETE FROM `widgets` WHERE `id` = ?';
+        $data = array($id);
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            log_error('ERR-0013', 'm_widgets::delete');
             return false;
         }
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = $CI->m_orgs->get_user_all($user_id);
-            $sql = "SELECT * FROM widgets WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $sql = 'SELECT * FROM widgets WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'widgets');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM widgets LEFT JOIN orgs ON (widgets.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . " " . 
-                    $CI->response->meta->internal->groupby . " " . 
-                    $CI->response->meta->internal->sort . " " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM widgets LEFT JOIN orgs ON (widgets.org_id = orgs.id) " . 
+                    $CI->response->meta->internal->filter .  ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'widgets');
@@ -150,6 +134,12 @@ class M_widgets extends MY_Model
         }
     }
 
+    /**
+     * [pie_data description]
+     * @param  [type] $widget   [description]
+     * @param  [type] $org_list [description]
+     * @return [type]           [description]
+     */
     private function pie_data($widget, $org_list) {
         $device_tables = array('bios','connections','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
         $other_tables = array('agents','attributes','collectors','connections','credentials','dashboards','discoveries','fields','files','groups','ldap_servers','licenses','locations','networks','orgs','queries','scripts','summaries','tasks','users','widgets');
@@ -168,10 +158,10 @@ class M_widgets extends MY_Model
         unset($temp);
 
         $CI = & get_instance();
-        if (!empty($widget->sql)) {
+        if ( ! empty($widget->sql)) {
             $sql = $widget->sql;
-            if (stripos($sql, 'where @filter and') === false and stripos($sql, 'where @filter group by') === false) {
-                # invalid query
+            if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
+                // invalid query
                 return false;
             }
             $temp = explode(' ', $sql);
@@ -180,31 +170,30 @@ class M_widgets extends MY_Model
             $primary_table = $temp[0];
             $attribute = $full;
             unset($temp);
-            if ($primary_table == 'system' or in_array($primary_table, $device_tables)) {
+            if ($primary_table === 'system' OR in_array($primary_table, $device_tables)) {
                 $collection = 'devices';
-                $filter = "system.org_id IN (" . $org_list . ")";
-                if (!empty($CI->response->meta->requestor)) {
-                    $filter = "system.org_id IN (" . $org_list . ") AND system.oae_manage = 'y'";
+                $filter = "system.org_id IN ({$org_list})";
+                if ( ! empty($CI->response->meta->requestor)) {
+                    $filter = "system.org_id IN ({$org_list}) AND system.oae_manage = 'y'";
                 }
                 $sql = str_replace('@filter', $filter, $sql);
             } else if (in_array($primary_table, $other_tables)) {
                 $collection = $primary_table;
-                if ($collection != 'orgs') {
-                    $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
+                if ($collection !== 'orgs') {
+                    $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . ' IN (' . $org_list . ')', $sql);
                 } else {
-                    $filter = "system.org_id in (" . $org_list . ")";
-                    if (!empty($CI->response->meta->requestor)) {
-                        $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
+                    $filter = "system.org_id in ({$org_list})";
+                    if ( ! empty($CI->response->meta->requestor)) {
+                        $filter = "system.org_id in ({$org_list}) AND system.oae_manage = 'y'";
                     }
                     $sql = str_replace('@filter', $filter, $sql);
                 }
             } else {
-                # invalid query
-                #return false;
+                // invalid query
                 $collection = 'devices';
-                $filter = "system.org_id in (" . $org_list . ")";
-                if (!empty($CI->response->meta->requestor)) {
-                    $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
+                $filter = "system.org_id in ({$org_list})";
+                if ( ! empty($CI->response->meta->requestor)) {
+                    $filter = "system.org_id in ({$org_list}) AND system.oae_manage = 'y'";
                 }
                 $sql = str_replace('@filter', $filter, $sql);
             }
@@ -212,28 +201,28 @@ class M_widgets extends MY_Model
         } else if (in_array($primary_table, $device_tables)) {
             $collection = 'devices';
             $attribute = $widget->primary;
-            $sql = "SELECT " .  $this->sql_esc($widget->primary) . " AS " . $this->sql_esc('name') . ", " . 
-                                $this->sql_esc($widget->secondary) . " AS " . $this->sql_esc('description') . ", " . 
-                                $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
-                                " COUNT(" . $this->sql_esc($widget->primary) . ") AS " . $this->sql_esc('count') . 
-                                " FROM " .  $this->sql_esc('system') . " LEFT JOIN " . $this->sql_esc($primary_table) . 
+            $sql = 'SELECT ' .  $this->sql_esc($widget->primary) . ' AS ' . $this->sql_esc('name') . ', ' . 
+                                $this->sql_esc($widget->secondary) . ' AS ' . $this->sql_esc('description') . ', ' . 
+                                $this->sql_esc($widget->ternary) . ' AS ' . $this->sql_esc('ternary') . ', ' . 
+                                " COUNT(" . $this->sql_esc($widget->primary) . ') AS ' . $this->sql_esc('count') . 
+                                " FROM " .  $this->sql_esc('system') . ' LEFT JOIN ' . $this->sql_esc($primary_table) . 
                                 " ON (" . $this->sql_esc('system.id') . ' = ' . $this->sql_esc($primary_table . '.system_id') . 
                                 " AND " . $this->sql_esc($primary_table.'.current') . " = 'y' ) " . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
             $filter = "system.org_id in (" . $org_list . ")";
-            if (!empty($CI->response->meta->requestor)) {
+            if ( ! empty($CI->response->meta->requestor)) {
                 $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
             }
-            if (!empty($widget->where)) {
+            if ( ! empty($widget->where)) {
                 $filter .= " AND " . $widget->where;
             }
             $sql = str_replace('@filter', $filter, $sql);
-            if (!empty($widget->limit)) {
+            if ( ! empty($widget->limit)) {
                 $limit = intval($widget->limit);
                 $sql .= ' LIMIT ' . $limit;
             }
 
-        } else if ($primary_table == 'system') {
+        } else if ($primary_table === 'system') {
             $collection = 'devices';
             $attribute = $widget->primary;
             $sql = "SELECT " .  $this->sql_esc($widget->primary) . " AS " . $this->sql_esc('name') . ", " . 
@@ -244,34 +233,34 @@ class M_widgets extends MY_Model
                                 " FROM " .  $this->sql_esc('system') . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
             $filter = "system.org_id in (" . $org_list . ")";
-            if (!empty($CI->response->meta->requestor)) {
+            if ( ! empty($CI->response->meta->requestor)) {
                 $filter = "system.org_id in (" . $org_list . ") AND system.oae_manage = 'y'";
             }
-            if (!empty($widget->where)) {
+            if ( ! empty($widget->where)) {
                 $filter .= " AND " . $widget->where;
             }
             $sql = str_replace('@filter', $filter, $sql);
-            if (!empty($widget->limit)) {
+            if ( ! empty($widget->limit)) {
                 $limit = intval($widget->limit);
                 $sql .= ' ORDER BY `count` DESC LIMIT ' . $limit;
             }
         }
         $result = $this->run_sql($sql, array());
         $CI->response->meta->sql[] = $sql;
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (empty($result[$i]->name) and empty($result[$i]->count)) {
                     unset($result[$i]);
                 }
             }
         }
-        if (!empty($result)) {
+        if ( ! empty($result)) {
             $result = array_values($result);
         }
         $total_count = 0;
-        # We need to allow for grouping using a column name that is NOT 'name' as this can clash with existing schema.
-        #   In this case (always in custom SQL), you should use my_name instead
-        if (!empty($result)) {
+        // We need to allow for grouping using a column name that is NOT 'name' as this can clash with existing schema.
+        //   In this case (always in custom SQL), you should use my_name instead
+        if ( ! empty($result)) {
             for ($i=0; $i < count($result); $i++) { 
                 foreach ($result[$i] as $key => $value) {
                     if (strpos($key, 'my_') === 0) {
@@ -283,18 +272,18 @@ class M_widgets extends MY_Model
             }
             for ($i=0; $i < count($result); $i++) {
                 $total_count += intval($result[$i]->count);
-                if (intval($result[$i]->count) === 0 and is_null($result[$i]->name)) {
+                if (intval($result[$i]->count) === 0 && is_null($result[$i]->name)) {
                     unset($result[$i]);
                 }
             }
             $result = array_values($result);
             for ($i=0; $i < count($result); $i++) {
-                if (!empty($result[$i]->count) and !empty($total_count)) {
+                if ( ! empty($result[$i]->count) && ! empty($total_count)) {
                     $result[$i]->percent = intval(($result[$i]->count / $total_count) * 100);
                 } else {
                     $result[$i]->percent = 0;
                 }
-                if (!empty($widget->link)) {
+                if ( ! empty($widget->link)) {
                     $result[$i]->link = $widget->link;
                     if (isset($result[$i]->name)) {
                         $result[$i]->link = str_ireplace('@name', $result[$i]->name, $result[$i]->link);
@@ -322,22 +311,26 @@ class M_widgets extends MY_Model
         return $result;
     }
 
+    /**
+     * [line_data description]
+     * @param  [type] $widget   [description]
+     * @param  [type] $org_list [description]
+     * @return [type]           [description]
+     */
     private function line_data($widget, $org_list) {
-        if (!empty($widget->sql)) {
+        if ( ! empty($widget->sql)) {
             $sql = $widget->sql;
-            if (stripos($sql, 'where @filter and') === false and stripos($sql, 'where @filter group by') === false) {
-                # invalid query
-                # return false;
-                # These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
+            if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
+                // These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
             } else {
-                $filter = "system.org_id IN (" . $org_list . ")";
-                if (!empty($CI->response->meta->requestor)) {
-                    $filter = "system.org_id IN (" . $org_list . ") AND oae_manage = 'y'";
+                $filter = "system.org_id IN ({$org_list})";
+                if ( ! empty($CI->response->meta->requestor)) {
+                    $filter = "system.org_id IN ({$org_list}) AND oae_manage = 'y'";
                 }
                 $sql = str_replace('@filter', $filter, $sql);
             }
             $result = $this->run_sql($sql, array());
-            if (!empty($result)) {
+            if ( ! empty($result)) {
                 foreach ($result as $row) {
                     $row->timestamp = strtotime($row->date);
                 }
@@ -590,9 +583,9 @@ class M_widgets extends MY_Model
         $dictionary->columns->where = 'Any required filter.';
         $dictionary->columns->limit = 'Limit the query to the first X items.';
         $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
-        $dictionary->columns->type = 'Only "line" and "pie" are used at present.';
+        $dictionary->columns->type = "Can be 'line' or 'pie'.";
         $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';
-        $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per "queries", you must include "WHERE @filter AND" in your SQL.';
+        $dictionary->columns->sql = "For advanced entry of a raw SQL query. As per Queries, you must include 'WHERE @filter AND' in your SQL.";
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
 

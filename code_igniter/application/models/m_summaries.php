@@ -205,7 +205,7 @@ class M_summaries extends MY_Model
                 $collection = 'devices';
                 break;
         }
-        if (!empty($dashboard[0]->extra_columns)) {
+        if ( ! empty($dashboard[0]->extra_columns)) {
             $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,' . $dashboard[0]->extra_columns;
         } else {
             $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status';
@@ -319,8 +319,8 @@ class M_summaries extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->table = 'The specific database table.';
         $dictionary->columns->column = 'The specific database column from the specified database table.';
-        $dictionary->columns->extra_columns = 'The fully qualified table.column. Multiple may be provided, separated by a comma.';
-        $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Reports" menu in the web interface.';
+        $dictionary->columns->extra_columns = 'The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).';
+        $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the Reports menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;

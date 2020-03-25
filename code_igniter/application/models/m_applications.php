@@ -171,7 +171,7 @@ class M_applications extends MY_Model
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->options = 'Currently unused.';
+        $dictionary->columns->options = 'unused';
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;

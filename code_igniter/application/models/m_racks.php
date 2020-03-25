@@ -189,7 +189,7 @@ class M_racks extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->row_id = 'The row the rack is located in.';
+        $dictionary->columns->row_id = 'The row the rack is located in. Links to <code>rows.id</code>.';
         $dictionary->columns->row_position = 'The height of this rack in rack units.';
         $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
         $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';
@@ -214,9 +214,9 @@ class M_racks extends MY_Model
         $dictionary->columns->circuit_count = 'How many circuit feed to this rack.';
         $dictionary->columns->btu_total = 'The total BTU output by this rack.';
         $dictionary->columns->btu_max = 'The maximum total BTUs this rack is rated for.';
-        $dictionary->columns->options = 'Not implemented as yet.';
-        $dictionary->columns->notes = 'Not implemented as yet.';
-        $dictionary->columns->tags = 'Not implemented as yet.';
+        $dictionary->columns->options = 'unused';
+        $dictionary->columns->notes = 'unused';
+        $dictionary->columns->tags = 'unused';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

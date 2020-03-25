@@ -434,7 +434,7 @@ class M_scripts extends MY_Model
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->based_on = 'The audit script upon which to base your customisations.';
         $dictionary->columns->options = 'A JSON document containing the required attributes depending on <code>scripts.type</code>.';
-        $dictionary->columns->hash = 'Not currently used. Intended as a hash of the script when the options are applied.';
+        $dictionary->columns->hash = 'unused';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

@@ -186,10 +186,10 @@ class M_floors extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->building_id = 'The building the floor is located in.';
-        $dictionary->columns->options = 'Not implemented as yet.';
-        $dictionary->columns->notes = 'Not implemented as yet.';
-        $dictionary->columns->tags = 'Not implemented as yet.';
+        $dictionary->columns->building_id = 'The building the floor is located in. Links to <code>buildings.id</code>.';
+        $dictionary->columns->options = 'unused';
+        $dictionary->columns->notes = 'unused';
+        $dictionary->columns->tags = 'unused';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

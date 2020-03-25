@@ -59,6 +59,29 @@ if (!function_exists('update_fields')) {
             if ($value === 'edited_date') {
                 unset($fields[$key]);
             }
+
+            // Remove any collection specific fields
+            if ($collection === 'applications') {
+                if ($value === 'options') {
+                    unset($fields[$key]);
+                }
+            }
+            if ($collection === 'clusters') {
+                if ($value === 'retrieved_name') {
+                    unset($fields[$key]);
+                }
+                if ($value === 'retrieved_ident') {
+                    unset($fields[$key]);
+                }
+            }
+            if ($collection === 'networks') {
+                if ($value === 'external_ident') {
+                    unset($fields[$key]);
+                }
+                if ($value === 'cloud_id') {
+                    unset($fields[$key]);
+                }
+            }
         }
         $fields = array_values($fields);
         return $fields;
@@ -111,12 +134,20 @@ if (!function_exists('mandatory_fields')) {
                 return(array('name','org_id','type','resource','value'));
                 break;
 
+            case "baselines":
+                return(array('name','org_id'));
+                break;
+
             case "buildings":
                 return(array('name','org_id','location_id'));
                 break;
 
             case "clouds":
                 return(array('name','org_id','type'));
+                break;
+
+            case "clusters":
+                return(array('name','org_id'));
                 break;
 
             case "collectors":
@@ -136,7 +167,7 @@ if (!function_exists('mandatory_fields')) {
                 break;
 
             case "dashboards":
-                return(array('name','options'));
+                return(array('name','org_id', 'options', 'sidebar'));
                 break;
 
             case "discoveries":

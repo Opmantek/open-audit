@@ -226,12 +226,12 @@ class M_collectors extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->ip = 'The IP address of this collector used to communicate with the server.';
-        $dictionary->columns->status = 'Unused.';
+        $dictionary->columns->status = 'unused';
         $dictionary->columns->check_minutes = 'How often should the collector ask the server for a task.';
-        $dictionary->columns->user_id = 'The <code>users.id</code> of the user account this collector uses.';
+        $dictionary->columns->user_id = 'The user account this collector uses. Links to <code>users.id</code>.';
         $dictionary->columns->uuid = 'This collectors universally unique identifier.';
         $dictionary->columns->network_address = 'The collectors internal IP used when it runs a discovery.';
-        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->options = 'unused';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

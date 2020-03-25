@@ -380,7 +380,7 @@ class M_queries extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
-        $dictionary->columns->link = 'Unused.';
+        $dictionary->columns->link = 'unused';
         $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Reports" menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;

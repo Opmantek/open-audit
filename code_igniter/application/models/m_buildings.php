@@ -188,9 +188,9 @@ class M_buildings extends MY_Model
         $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
         $dictionary->columns->location = 'The location of the building. Links to <code>locations.id</code>.';
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->options = 'Not implemented as yet.';
-        $dictionary->columns->notes = 'Not implemented as yet.';
-        $dictionary->columns->tags = 'Not implemented as yet.';
+        $dictionary->columns->options = 'unused';
+        $dictionary->columns->notes = 'unused';
+        $dictionary->columns->tags = 'unused';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

@@ -291,7 +291,10 @@ class M_networks extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->network = 'The network in the format 192.168.1.0/24.';
-        $dictionary->columns->type = 'The type of network.';
+        $dictionary->columns->type = "Can be 'Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network'.";
+        $dictionary->columns->external_ident = 'The ID retrieved from a Cloud discovery.';
+        $dictionary->columns->cloud_id = 'The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.';
+        $dictionary->columns->options = 'A JSON object populated via a Cloud discovery.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

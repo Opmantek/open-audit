@@ -452,7 +452,7 @@ class M_orgs extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->parent_id = 'Linked to <code>orgs.id</code>';
+        $dictionary->columns->parent_id = 'The ID of this orgs parent org. Linked to <code>orgs.id</code>';
         $dictionary->columns->type = 'The type of organisation.';
         $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;

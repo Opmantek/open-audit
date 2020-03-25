@@ -189,11 +189,14 @@ class M_clusters extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->type = "Can be one of several: 'high availability','load balancing','performance','storage','other' or blank.";
-        $dictionary->columns->purpose = "Can be one of: 'application','compute','database','storage','virtualisation','web','other' or blank.";
-        $dictionary->columns->status = 'Can be active, passive or blank.';
+        $dictionary->columns->type = "Can be 'high availability','load balancing','performance','storage','other' or blank.";
+        $dictionary->columns->purpose = "Can be 'application','compute','database','storage','virtualisation','web','other' or blank.";
+        $dictionary->columns->status = "Can be 'active', 'passive' or blank.";
         $dictionary->columns->configuration = "The configuration of your cluster can be: 'active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other' or blank.";
         $dictionary->columns->environment = 'As per the attributes for device environments. Production, Training, et al.';
+        $dictionary->columns->scaling = "Can be 'auto', 'fixed', 'other' or blank.";
+        $dictionary->columns->retrieved_name = 'unused';
+        $dictionary->columns->retrieved_ident = 'unused';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

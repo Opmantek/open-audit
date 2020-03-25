@@ -208,7 +208,7 @@ class M_groups extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select devices that will populate this group.';
-        $dictionary->columns->link = 'Unused at present. Leave blank.';
+        $dictionary->columns->link = 'unused';
         $dictionary->columns->expose = 'Should we expose this group in the web interface.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
