@@ -484,6 +484,7 @@ class M_devices_components extends MY_Model
                 }
                 if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'vmware') !== false) {
                     $input[$i]->manufacturer = 'VMware';
+                    $input[$i]->model_family = '';
                 }
                 if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'intel') !== false) {
                     $input[$i]->manufacturer = 'Intel';
@@ -505,6 +506,17 @@ class M_devices_components extends MY_Model
                 }
                 if (stripos($input[$i]->manufacturer, 'Apple') === 0) {
                     $input[$i]->manufacturer = 'Apple Inc.';
+                }
+                if (empty($input[$i]->interface_type)) {
+                    $input[$i]->interface_type = '';
+                } else {
+                    $input[$i]->interface_type = strtoupper($input[$i]->interface_type);
+                }
+                if (empty($input[$i]->status)) {
+                    $input[$i]->status = '';
+                }
+                if ($input[$i]->status === 'Not available') {
+                    $input[$i]->status = '';
                 }
 
                 // new DERIVED column `name`
