@@ -140,7 +140,15 @@ class Licenses extends MY_Controller
     */
     public function collection()
     {
-        include 'include_collection.php';
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        // If we have less than 100 license entries, run them all and include the used count.
+        if (intval($this->response->meta->total) < 100) {
+            for ($i=0; $i < count($this->response->data); $i++) {
+                $temp = $this->m_licenses->execute($this->response->data[$i]->attributes->id);
+                $this->response->data[$i]->attributes->used_count = intval(count($temp));
+            }
+        }
+        output($this->response);
     }
 
     /**

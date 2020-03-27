@@ -112,10 +112,11 @@ class Logs extends MY_Controller
     */
     public function collection()
     {
-        if ($this->response->meta->limit == 1000 and $this->response->meta->format == 'screen') {
+        if (intval($this->response->meta->limit) === 1000 && $this->response->meta->format === 'screen') {
             $this->response->meta->limit = 100; 
         }
-        include 'include_collection.php';
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        output($this->response);
     }
 
     /**

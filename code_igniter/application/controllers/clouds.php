@@ -135,7 +135,8 @@ class Clouds extends MY_Controller
     */
     public function collection()
     {
-        include 'include_collection.php';
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        output($this->response);
     }
 
     /**

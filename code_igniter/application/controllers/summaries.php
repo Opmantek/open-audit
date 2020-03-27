@@ -169,11 +169,11 @@ class Summaries extends MY_Controller
     */
     public function collection()
     {
-        if ($this->response->meta->format == 'screen') {
+        if ($this->response->meta->format === 'screen') {
             $this->response->included = array_merge($this->response->included, $this->m_summaries->read_sub_resource());
         }
-        include 'include_collection.php';
-        return;
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        output($this->response);
     }
 
     /**

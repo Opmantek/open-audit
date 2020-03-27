@@ -138,7 +138,6 @@ class Rules extends MY_Controller
     */
     public function sub_resource_delete()
     {
-
         $rule = $this->m_rules->read($this->response->meta->id);
         if (empty($rule)) {
             return;
@@ -206,7 +205,8 @@ class Rules extends MY_Controller
     */
     public function collection()
     {
-        include 'include_collection.php';
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        output($this->response);
     }
 
     /**

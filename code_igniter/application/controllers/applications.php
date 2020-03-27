@@ -140,8 +140,8 @@ class Applications extends MY_Controller
     */
     public function collection()
     {
-        include 'include_collection.php';
-        return;
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        output($this->response);
     }
 
     /**

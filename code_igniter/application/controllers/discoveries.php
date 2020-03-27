@@ -251,7 +251,8 @@ class Discoveries extends MY_Controller
             $this->load->model('m_collectors');
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
         }
-        include 'include_collection.php';
+        $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        output($this->response);
     }
 
     /**
