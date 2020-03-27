@@ -67,6 +67,7 @@ class Database extends MY_Controller
     * Constructor
     *
     * @access    public
+    * @return NULL
     */
     public function index()
     {
@@ -102,7 +103,7 @@ class Database extends MY_Controller
     */
     public function read()
     {
-        if ($this->response->meta->format == 'screen') {
+        if ($this->response->meta->format === 'screen') {
             $table = $this->response->meta->id;
             if ($table === 'devices') {
                 $table = 'system';
@@ -119,7 +120,22 @@ class Database extends MY_Controller
     */
     public function delete()
     {
-        include 'include_delete.php';
+        if ($this->{'m_database'}->delete($this->response->meta->id)) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = 'database';
+            $this->response->data[] = $temp;
+            unset($temp);
+            $this->session->set_flashdata('success', 'Object in database deleted.');
+        } else {
+            log_error('ERR-0013');
+            $this->session->set_flashdata('error', 'Object in database not deleted.');
+        }
+        if ($this->response->meta->format === 'json') {
+            output($this->response);
+        } else {
+            redirect('database');
+        }
     }
 
     /**
