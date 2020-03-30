@@ -406,7 +406,7 @@ class MY_Model extends CI_Model
                 if (!empty($this->session)) {
                     $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created, no ' . $field . ' supplied.');
                 }
-                log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $field);
+                log_error('ERR-0021', 'm_' . $collection . '::create', 'Missing field: ' . $field);
                 return false;
             }
         }

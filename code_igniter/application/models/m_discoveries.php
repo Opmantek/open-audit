@@ -101,7 +101,7 @@ class M_discoveries extends MY_Model
         }
         if ( ! empty($data->type) && $data->type === 'subnet') {
             if ( ! empty($data->other->subnet) && ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
-                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Invalid field data supplied for subnet');
                 $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
                 $data->other->subnet = '';
                 if ($CI->response->meta->format === 'screen') {
@@ -112,7 +112,7 @@ class M_discoveries extends MY_Model
                 }
             }
             if (empty($data->other->subnet)) {
-                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
+                log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing field: subnet');
             } else {
                 $data->description = 'Subnet - ' . $data->other->subnet;
             }
@@ -122,13 +122,13 @@ class M_discoveries extends MY_Model
                 if (empty($data->other->ad_server)) {
                     $temp = 'Active Directory Server';
                 }
-                log_error('ERR-0024', 'm_collection::create (ad discoveries)');
+                log_error('ERR-0024', 'm_discoveries::create (ad discoveries)');
                 $this->session->set_flashdata('error', 'Object in discoveries could not be created - no ' . $temp . ' supplied.');
             } else {
                 $data->description = 'Active Directory - ' . $data->other->ad_domain;
             }
         } else if (empty($data->type)) {
-            log_error('ERR-0024', 'm_collection::create, no type supplied');
+            log_error('ERR-0024', 'm_discoveries::create, no type supplied');
             $this->session->set_flashdata('error', 'Object in discoveries could not be created - no "type" supplied.');
         } else {
             $data->description = '';
@@ -158,7 +158,7 @@ class M_discoveries extends MY_Model
             $temp = network_details($data->other->subnet);
             if ( ! empty($temp->error)) {
                 $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
-                log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
+                log_error('ERR-0010', 'm_discoveries::create (networks) invalid subnet supplied');
                 return;
             }
             $network = new stdClass();

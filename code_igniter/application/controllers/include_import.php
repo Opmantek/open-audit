@@ -190,12 +190,9 @@ foreach ($csv as $key => $value) {
         } else {
             # CREATE
             unset($item->id);
-            if ($this->response->meta->collection !== 'devices') {
-                $test = $this->{'m_collection'}->create($item, $this->response->meta->collection);
-            } else {
-                $test = $this->{'m_devices'}->create($item, $this->response->meta->collection);
-            }
-            if ($test !== false) {
+            $test = false;
+            $test = $this->{'m_'.$this->response->meta->collection}->create($item);
+            if ( ! empty($test)) {
                 $count_create += 1;
                 $id = $test;
             }

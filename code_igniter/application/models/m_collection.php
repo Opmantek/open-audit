@@ -206,50 +206,12 @@ class M_collection extends MY_Model
         return $total;
     }
 
-    public function create($data = null, $collection = '')
-    {
-        $CI = & get_instance();
-
-        if (empty($collection)) {
-            $collection = @$CI->response->meta->collection;
-        }
-        if (empty($collection)) {
-            log_error('ERR-0010', 'm_collection::create No collection received.');
-            return false;
-        }
-
-        if (empty($data)) {
-            $data = @$CI->response->meta->received_data->attributes;
-        }
-        if (empty($data)) {
-            log_error('ERR-0010', 'm_collection::create (' . @$collection . ') No attributes received.');
-            return false;
-        }
-
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data (' . $collection . ')';
-        stdlog($this->log);
-
-
-        $id = $this->insert_collection($collection, $data);
-
-
-        if (!empty($id)) {
-            if (!empty($CI->session)) {
-                $CI->session->set_flashdata('success', 'New object in ' . $collection . ' created "' . htmlentities($data->name) . '".');
-            }
-            return ($id);
-        } else {
-            // TODO - log a better error
-            if (!empty($CI->session)) {
-                $CI->session->set_flashdata('failure', 'Failed to create resource (please see detailed logs).');
-            }
-            log_error('ERR-0023', 'Database error in resource create routine.');
-            return false;
-        }
-    }
-
-
+    /**
+     * [update description]
+     * @param  [type] $data       [description]
+     * @param  string $collection [description]
+     * @return [type]             [description]
+     */
     public function update($data = null, $collection = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -258,7 +220,7 @@ class M_collection extends MY_Model
         $CI = & get_instance();
 
         if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
+            if ( ! empty($CI->response->meta->received_data->attributes)) {
                 $data = $CI->response->meta->received_data->attributes;
                 $data->id = $CI->response->meta->id;
                 $collection = $CI->response->meta->collection;
@@ -276,7 +238,7 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'baselines_policies') {
-            if (!empty($data->tests)) {
+            if ( ! empty($data->tests)) {
                 $sql = 'SELECT * FROM baselines_policies WHERE `id` = ?';
                 $query = $this->db->query($sql, array($data->id));
                 $result = $query->result();
@@ -348,17 +310,17 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'credentials') {
-            if (!empty($data->credentials)) {
+            if ( ! empty($data->credentials)) {
                 $received_credentials = new stdClass();
                 foreach ($data->credentials as $key => $value) {
                         $received_credentials->$key = $value;
                 }
-                $select = "SELECT * FROM credentials WHERE id = ?";
+                $select = 'SELECT * FROM credentials WHERE id = ?';
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
                 $existing_credentials = json_decode(simpleDecrypt($result[0]->credentials));
                 $new_credentials = new stdClass();
-                if (!empty($existing_credentials)) {
+                if ( ! empty($existing_credentials)) {
                     foreach ($existing_credentials as $existing_key => $existing_value) {
                         if (isset($received_credentials->$existing_key)) {
                             $new_credentials->$existing_key = $received_credentials->$existing_key;
@@ -372,25 +334,25 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'dashboards') {
-            if (!empty($data->options)) {
-                $select = "SELECT * FROM dashboards WHERE id = ?";
+            if ( ! empty($data->options)) {
+                $select = 'SELECT * FROM dashboards WHERE id = ?';
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
                 $existing = new stdClass();
-                if (!empty($result[0]->options)) {
+                if ( ! empty($result[0]->options)) {
                     $existing = json_decode($result[0]->options);
                 }
-                if (!empty($data->options->layout)) {
+                if ( ! empty($data->options->layout)) {
                     $existing->layout = $data->options->layout;
                 }
-                if (!empty($data->options->widgets->position)) {
+                if ( ! empty($data->options->widgets->position)) {
                     foreach ($data->options->widgets->position as $key => $value) {
                         $widget_position = $key;
                         $widget_id = $value;
                     }
                 }
                 foreach ($existing->widgets as $widget) {
-                    if ($widget->position == $widget_position) {
+                    if (intval($widget->position) === intval($widget_position)) {
                         $widget->widget_id = $widget_id;
                     }
                 }
@@ -413,7 +375,7 @@ class M_collection extends MY_Model
                 }
 
                 if ( ! empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for subnet');
                     $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Subnet supplied.');
                     $data->other->subnet = '';
                     if ($CI->response->meta->format == 'screen') {
@@ -427,7 +389,7 @@ class M_collection extends MY_Model
                 $discovery_scan_options = '';
                 if (isset($received_other->nmap->discovery_scan_option_id)) {
                     if (!is_numeric($received_other->nmap->discovery_scan_option_id) and $received_other->nmap->discovery_scan_option_id != '') {
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (non-numeric) supplied.');
                         $data->other->subnet = '';
                         if ($CI->response->meta->format == 'screen') {
@@ -443,7 +405,7 @@ class M_collection extends MY_Model
                             $query = $this->db->query($select, $data_array);
                             $result = $query->result();
                             if (empty($result)) {
-                                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
+                                log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
                                 $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
                                 if ($CI->response->meta->format == 'screen') {
                                     redirect('/discoveries');
@@ -481,7 +443,7 @@ class M_collection extends MY_Model
                 if (!empty($received_other->nmap->tcp_ports)) {
                     if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->tcp_ports)) {
                         // Invalid TCP ports
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for tcp_ports');
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for tcp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
                         $data->other->nmap->tcp_ports = '';
                         if ($CI->response->meta->format == 'screen') {
@@ -499,7 +461,7 @@ class M_collection extends MY_Model
                 if (!empty($received_other->nmap->udp_ports)) {
                     if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->udp_ports)) {
                         // Invalid UDP ports
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for udp_ports');
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for udp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
                         $data->other->nmap->udp_ports = '';
                         if ($CI->response->meta->format == 'screen') {
@@ -517,7 +479,7 @@ class M_collection extends MY_Model
                 if (!empty($received_other->nmap->exclude_tcp_ports)) {
                     if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_tcp_ports)) {
                         // Invalud Exclude TCP ports
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
                         $data->other->nmap->exclude_tcp_ports = '';
                         if ($CI->response->meta->format == 'screen') {
@@ -534,7 +496,7 @@ class M_collection extends MY_Model
                 if (!empty($received_other->nmap->exclude_udp_ports)) {
                     if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_udp_ports)) {
                         // Invalid Exclude UDP ports
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
                         $data->other->nmap->exclude_udp_ports = '';
                         if ($CI->response->meta->format == 'screen') {
@@ -552,7 +514,7 @@ class M_collection extends MY_Model
                     $received_other->nmap->exclude_ip = str_replace(' ', ',', $received_other->nmap->exclude_ip);
                     if (!preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
                         // Invalid Exclude IP
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_ip');
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_ip');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
                         $data->other->nmap->exclude_ip = '';
                         if ($CI->response->meta->format == 'screen') {
@@ -575,7 +537,7 @@ class M_collection extends MY_Model
                         $temp = network_details($received_other->subnet);
                         if (!empty($temp->error) and filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
                             $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid subnet attribute supplied.');
-                            log_error('ERR-0010', 'm_collections::create (invalid subnet supplied)');
+                            log_error('ERR-0010', 'm_collections::update (invalid subnet supplied)');
                             return;
                         }
                     }
@@ -603,14 +565,14 @@ class M_collection extends MY_Model
                     $other->match = new stdClass();
                 }
 
-                if (!empty($received_other->match)) {
+                if ( ! empty($received_other->match)) {
                     foreach ($received_other->match as $key => $value) {
                         $other->match->{$key} = $received_other->match->{$key};
                     }
                 }
 
-                if (!empty($discovery_scan_options)) {
-                    # We have set a discovery options - reset all
+                if ( ! empty($discovery_scan_options)) {
+                    // We have set a discovery options - reset all
                     foreach ($all_options as $field) {
                         $other->nmap->{$field} = $discovery_scan_options->{$field};
                     }
@@ -619,17 +581,17 @@ class M_collection extends MY_Model
                 unset($data->other);
                 $data->other = (string)json_encode($other);
             }
-            if (!empty($data->killed)) {
+            if ( ! empty($data->killed)) {
                 unset($data->killed);
                 $log = new stdClass();
                 $log->discovery_id = $data->id;
                 $log->system_id = null;
                 $log->timestamp = $this->config->config['timestamp'];
                 $log->severity = 6;
-                $log->function = "logs";
-                $log->command_status = "stopped";
+                $log->function = 'logs';
+                $log->command_status = 'logs';
                 $log->pid = getmypid();
-                $log->message = "Discovery process has been manually stopped.";
+                $log->message = 'Discovery process has been manually stopped.';
                 discovery_log($log);
             }
         }
