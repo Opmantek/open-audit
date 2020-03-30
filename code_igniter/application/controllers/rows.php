@@ -90,7 +90,12 @@ class Rows extends MY_Controller
     */
     public function create()
     {
-        include 'include_create.php';
+        $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
+        if ( ! empty($this->response->meta->id)) {
+            $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+            $this->response->meta->action = 'read';
+        }
+        output($this->response);
     }
 
     /**
@@ -103,7 +108,7 @@ class Rows extends MY_Controller
     {
         $this->load->model('m_racks');
         $racks = $this->m_rows->children($this->response->meta->id);
-        if (!empty($racks) and is_array($racks)) {
+        if ( ! empty($racks) && is_array($racks)) {
             $this->response->included = array_merge($this->response->included, $racks);
         }
         include 'include_read.php';

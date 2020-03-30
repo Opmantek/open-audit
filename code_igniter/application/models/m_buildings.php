@@ -59,6 +59,38 @@ class M_buildings extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * NOTE - Also create sub-items (a floor, room and row)
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ($id = $this->insert_collection('buildings', $data)) {
+            $user = 'system';
+            if ( ! empty($this->user->full_name)) {
+                $user = $this->user->full_name;
+            }
+            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', ?, NOW())";
+            $data_array = array($data->org_id, $id, $user);
+            $floor_id = intval($this->run_sql($sql, $data_array));
+            if ( ! empty($floor_id)) {
+                $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default Room', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
+                $data_array = array($data->org_id, $floor_id, $user);
+                $room_id = intval($this->run_sql($sql, $data_array));
+            }
+            if ( ! empty($room_id)) {
+                $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
+                $data_array = array($data->org_id, $room_id, $user);
+                $this->run_sql($sql, $data_array);
+            }
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
@@ -76,6 +108,8 @@ class M_buildings extends MY_Model
 
     /**
      * Delete an individual item from the database, by ID
+     * NOTE - All descendants will also be deleted (floors, rooms, rows) 
+     *        because of the foreign keys in the database schema
      *
      * @param  int $id The ID of the requested item
      * @return bool True = success, False = fail

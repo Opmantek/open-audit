@@ -1995,7 +1995,7 @@ if ( ! function_exists('discover_ad')) {
 				if (empty($result)) {
 					$log->message = 'Creating and executing discovery on subnet ' . $network->name;
 					discovery_log($log);
-					$this_id = $CI->m_collection->create($ad_discovery, 'discoveries');
+					$this_id = $CI->m_discoveries->create($ad_discovery);
 				} else {
 					$this_id = $result[0]->id;
 					$log->message = 'Discovery for ' . $network->name . ' exists, running.';

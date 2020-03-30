@@ -62,6 +62,23 @@ class M_integrations extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ( ! empty($data->options) && ! is_string($data->options)) {
+            $data->options = json_encode($data->options);
+        }
+        if ($id = $this->insert_collection('integrations', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

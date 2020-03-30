@@ -90,7 +90,10 @@ class Floors extends MY_Controller
     */
     public function create()
     {
-        include 'include_create.php';
+        $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        $this->response->include = 'v_'.$this->response->meta->collection.'_read';
+        output($this->response);
     }
 
     /**

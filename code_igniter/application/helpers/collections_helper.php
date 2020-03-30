@@ -219,6 +219,10 @@ if ( ! function_exists('mandatory_fields')) {
                 return(array('name','org_id','sql','menu_category','menu_display'));
                 break;
 
+            case 'queue':
+                return(array('org_id', 'details', 'type'));
+                break;
+
             case 'racks':
                 return(array('name','org_id','row_id'));
                 break;

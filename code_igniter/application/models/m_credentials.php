@@ -63,6 +63,25 @@ class M_credentials extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ( ! empty($data->credentials) && is_string($data->credentials)) {
+            $data->credentials = (string)simpleEncrypt($data->credentials);
+        } else {
+            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
+        }
+        if ($id = $this->insert_collection('credentials', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  string $id The ID of the requested item

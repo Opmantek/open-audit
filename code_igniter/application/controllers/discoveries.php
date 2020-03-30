@@ -97,6 +97,7 @@ class Discoveries extends MY_Controller
 
         if ( ! empty($this->response->meta->received_data->attributes->other->single)) {
             $this->load->model('m_collection');
+            $this->load->model('m_credentials');
             $attributes = $this->response->meta->received_data->attributes;
             $subnet = $attributes->other->subnet;
             $this->response->meta->received_data->attributes->name = 'Device Discovery for ' . $subnet;
@@ -123,7 +124,7 @@ class Discoveries extends MY_Controller
             }
 
             // create our discovery
-            $this->response->meta->id = @$this->m_collection->create();
+            $this->response->meta->id = @$this->m_discoveries->create($this->response->meta->received_data->attributes);
             if (empty($this->response->meta->id)) {
                 // Houston, we have a problem
                 output($this->response);
@@ -140,7 +141,7 @@ class Discoveries extends MY_Controller
                 $data->credentials = new stdClass();
                 $data->credentials->username = $attributes->credentials->windows_username;
                 $data->credentials->password = $attributes->credentials->windows_password;
-                $this->m_collection->create($data, 'credentials');
+                $this->m_credentials->create($data);
             }
             if ( ! empty($attributes->credentials->ssh_username) && ! empty($attributes->credentials->ssh_password)) {
                 $data->type = 'ssh';
@@ -148,7 +149,7 @@ class Discoveries extends MY_Controller
                 $data->credentials = new stdClass();
                 $data->credentials->username = $attributes->credentials->ssh_username;
                 $data->credentials->password = $attributes->credentials->ssh_password;
-                $this->m_collection->create($data, 'credentials');
+                $this->m_credentials->create($data);
             }
             if ( ! empty($attributes->credentials->snmp_v2_community)) {
                 $data->type = 'snmp';
@@ -156,7 +157,7 @@ class Discoveries extends MY_Controller
                 $data->credentials = new stdClass();
                 $data->credentials->community = $attributes->credentials->snmp_v2_community;
                 $data->credentials->version = 2;
-                $this->m_collection->create($data, 'credentials');
+                $this->m_credentials->create($data);
             }
             if ( ! empty($attributes->credentials->snmp_v1_community)) {
                 $data->type = 'snmp';
@@ -164,7 +165,7 @@ class Discoveries extends MY_Controller
                 $data->credentials = new stdClass();
                 $data->credentials->community = $attributes->credentials->snmp_v1_community;
                 $data->credentials->version = 1;
-                $this->m_collection->create($data, 'credentials');
+                $this->m_credentials->create($data);
             }
 
             if ($this->response->meta->format === 'json') {
@@ -175,7 +176,10 @@ class Discoveries extends MY_Controller
                 redirect('discoveries/' . $this->response->meta->id . '?action=execute');
             }
         } else {
-            include 'include_create.php';
+            $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
+            $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+            $this->response->include = 'v_'.$this->response->meta->collection.'_read';
+            output($this->response);
         }
     }
 

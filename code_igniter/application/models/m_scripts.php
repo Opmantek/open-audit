@@ -56,33 +56,21 @@ class M_scripts extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create()
+    /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        # check to see if we already have a script with the same name
-        $sql = "SELECT COUNT(id) AS count FROM `scripts` WHERE `name` = ?";
-        $data = array($CI->response->meta->received_data->name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_scripts::create');
+        if ( ! is_string($data->options)) {
+            $data->options = json_encode($data->options);
+        }
+        if ($id = $this->insert_collection('scripts', $data)) {
+            return intval($id);
+        } else {
             return false;
         }
-        if (empty($CI->response->meta->received_data->org_id)) {
-            $CI->response->meta->received_data->org_id = 1;
-        }
-        $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array(  $CI->response->meta->received_data->name,
-                        $CI->response->meta->received_data->org_id,
-                        json_encode($CI->response->meta->received_data->options),
-                        $CI->response->meta->received_data->description,
-                        $CI->response->meta->received_data->based_on,
-                        '',
-                        $CI->user->full_name);
-        $id = intval($this->run_sql($sql, $data));
-        return ($id);
     }
 
     public function read($id = '')

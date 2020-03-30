@@ -62,6 +62,23 @@ class M_orgs extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if (empty($data->ad_group) and ! empty($data->name)) {
+            $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+        }
+        if ($id = $this->insert_collection('applications', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

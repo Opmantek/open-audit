@@ -85,18 +85,6 @@ class Configuration extends MY_Controller
     }
 
     /**
-    * Process the supplied data and create a new object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function create()
-    {
-        include 'include_create.php';
-        return;
-    }
-
-    /**
     * Read a single object
     *
     * @access public

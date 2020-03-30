@@ -56,54 +56,37 @@ class M_roles extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create()
+    /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            return false;
-        } else {
-            $name = $CI->response->meta->received_data->attributes->name;
+        if (empty($data->ad_group) && ! empty($data->name)) {
+            $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
         }
-        $sql = "SELECT COUNT(*) AS `count` FROM roles WHERE roles.name = ?";
-        $data = array("$name");
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_roles::create');
-            return false;
-        }
-
-        if (empty($CI->response->meta->received_data->attributes->description)) {
-            $description = '';
-        } else {
-            $description = $CI->response->meta->received_data->attributes->description;
-        }
-
-        $permissions = new stdClass();
-        if (empty($CI->response->meta->received_data->attributes->permissions)) {
-            $permissions = '';
-        } else {
-            foreach ($CI->response->meta->received_data->attributes->permissions as $endpoint => $object) {
+        if ( ! empty($data->permissions) && gettype($data->permissions) === 'string') {
+            // We likely have a CSV submitted item
+            // Replace quotes as it should already be stringified JSON
+            $item->permissions = str_replace("'", '"', $item->permissions);
+        } else if ( ! empty($data->permissions) && gettype($data->permissions) === 'object') {
+            // We likely have a submitted form or a JSON submission using the API
+            // Build up our permissions
+            $permissions = new stdClass();
+            foreach ($data->permissions as $endpoint => $object) {
                 $permissions->{$endpoint} = '';
                 foreach ($object as $key => $value) {
                     $permissions->{$endpoint} .= $key;
                 }
             }
-            $permissions = json_encode($permissions);
+            $data->permissions = json_encode($permissions);
         }
-        $ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $CI->response->meta->received_data->attributes->name));
-
-        if (empty($CI->user->name)) {
-            $user = '';
+        if ($id = $this->insert_collection('roles', $data)) {
+            return intval($id);
         } else {
-            $user = $CI->user->name;
+            return false;
         }
-        $sql = "INSERT INTO `roles` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
-        $data = array("$name", "$description", $permissions, $ad_group, $user);
-        $id = intval($this->run_sql($sql, $data));
-        return ($id);
     }
 
     public function read($id = '')

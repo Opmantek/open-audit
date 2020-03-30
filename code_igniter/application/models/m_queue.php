@@ -56,6 +56,38 @@ class M_queue extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ( ! empty($data->details) && is_string($data->details)) {
+            $details = json_decode($details);
+        } else if (empty($data->details)) {
+            $data->details = array();
+        }
+        $data->details = json_encode($data->details);
+        if (empty($data->name)) {
+            $data->name = '';
+        }
+        if (empty($data->org_id)) {
+            $data->org_id = 1;
+        }
+        if (empty($data->pid)) {
+            $data->pid = 0;
+        }
+        if (empty($data->status)) {
+            $data->status = 'queued';
+        }
+        if ($id = $this->insert_collection('queue', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
     # Return a queue item or FALSE
     # If nothing left in queue table, reset auto-inc
     public function pop()
@@ -184,48 +216,48 @@ class M_queue extends MY_Model
         }
     }
 
-    /**
-     * Insert an item into the queue table
-     * @param  [type] $type    [description]
-     * @param  [type] $details [description]
-     * @return [type]          Return a queue ID (integer) on success or FALSE on failure
-     */
-    public function create($type, $details)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->action = 'insert';
-        $this->log->summary = (string)$type;
-        if (empty($details) OR empty($type)) {
-            $this->log->status = 'fail';
-            $this->log->message = 'Empty type or details supplied.';
-            stdlog($this->log);
-            return false;
-        }
-        if (is_string($details)) {
-            $details = json_decode($details);
-        }
-        $name = '';
-        $org_id = 1;
-        if ( ! empty($details->name)) {
-            $name = $details->name;
-        }
-        if ( ! empty($details->org_id)) {
-            $org_id = intval($details->org_id);
-        }
-        $details = json_encode($details);
+    // /**
+    //  * Insert an item into the queue table
+    //  * @param  [type] $type    [description]
+    //  * @param  [type] $details [description]
+    //  * @return [type]          Return a queue ID (integer) on success or FALSE on failure
+    //  */
+    // public function create($type, $details)
+    // {
+    //     $this->log->function = strtolower(__METHOD__);
+    //     $this->log->action = 'insert';
+    //     $this->log->summary = (string)$type;
+    //     if (empty($details) OR empty($type)) {
+    //         $this->log->status = 'fail';
+    //         $this->log->message = 'Empty type or details supplied.';
+    //         stdlog($this->log);
+    //         return false;
+    //     }
+    //     if (is_string($details)) {
+    //         $details = json_decode($details);
+    //     }
+    //     $name = '';
+    //     $org_id = 1;
+    //     if ( ! empty($details->name)) {
+    //         $name = $details->name;
+    //     }
+    //     if ( ! empty($details->org_id)) {
+    //         $org_id = intval($details->org_id);
+    //     }
+    //     $details = json_encode($details);
 
-        $sql = '/* m_queue::create */ ' . "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
-        $data = array($name, $type, $org_id, $details);
-        $this->db->query($sql, $data);
-        $result = intval($this->db->insert_id());
-        $this->log->detail = $this->db->last_query();
-        if ( ! empty($result)) {
-            stdlog($this->log);
-            return $result;
-        } else {
-            $this->log->status = 'fail';
-            stdlog($this->log);
-            return false;
-        }
-    }
+    //     $sql = '/* m_queue::create */ ' . "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
+    //     $data = array($name, $type, $org_id, $details);
+    //     $this->db->query($sql, $data);
+    //     $result = intval($this->db->insert_id());
+    //     $this->log->detail = $this->db->last_query();
+    //     if ( ! empty($result)) {
+    //         stdlog($this->log);
+    //         return $result;
+    //     } else {
+    //         $this->log->status = 'fail';
+    //         stdlog($this->log);
+    //         return false;
+    //     }
+    // }
 }

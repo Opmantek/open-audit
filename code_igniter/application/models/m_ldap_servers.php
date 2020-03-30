@@ -62,48 +62,20 @@ class M_ldap_servers extends MY_Model
     }
 
     /**
-     * [create description]
-     * @return [type] [description]
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
      */
-    public function create()
+    public function create($data = null)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 1;
+        if ( ! empty($data->dn_password)) {
+            $data->dn_password = (string)simpleEncrypt($data->dn_password);
         }
-        // check to see if we already have an ldap server with the same name
-        $sql = 'SELECT COUNT(id) AS count FROM `ldap_servers` WHERE `name` = ?';
-        $data = array((string)$CI->response->meta->received_data->attributes->name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) !== 0) {
-            log_error('ERR-0010', 'm_ldap_servers::create_network');
+        if ($id = $this->insert_collection('ldap_servers', $data)) {
+            return intval($id);
+        } else {
             return false;
         }
-        $sql = "INSERT INTO `ldap_servers` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0000-00-00 00:00:00', NOW())";
-        $data = array(  (string)$CI->response->meta->received_data->attributes->name,
-                         intval($CI->response->meta->received_data->attributes->org_id),
-                        (string)$CI->response->meta->received_data->attributes->description,
-                        (string)$CI->response->meta->received_data->attributes->lang,
-                        (string)$CI->response->meta->received_data->attributes->host,
-                        (string)$CI->response->meta->received_data->attributes->port,
-                        (string)$CI->response->meta->received_data->attributes->secure,
-                        (string)$CI->response->meta->received_data->attributes->domain,
-                        (string)$CI->response->meta->received_data->attributes->type,
-                        (string)$CI->response->meta->received_data->attributes->version,
-                        (string)$CI->response->meta->received_data->attributes->base_dn,
-                        (string)$CI->response->meta->received_data->attributes->user_dn,
-                        (string)$CI->response->meta->received_data->attributes->user_membership_attribute,
-                        (string)$CI->response->meta->received_data->attributes->use_auth,
-                        (string)$CI->response->meta->received_data->attributes->use_roles,
-                        (string)$CI->response->meta->received_data->attributes->dn_account,
-                        (string)$CI->response->meta->received_data->attributes->dn_password,
-                        (string)$CI->response->meta->received_data->attributes->refresh,
-                        (string)$CI->user->full_name);
-        $id = intval($this->run_sql($sql, $data));
-        return ($id);
     }
 
 

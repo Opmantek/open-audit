@@ -56,6 +56,20 @@ class M_summaries extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ($id = $this->insert_collection('summaries', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
     public function read($id = '')
     {
         if (empty($this->log)) {

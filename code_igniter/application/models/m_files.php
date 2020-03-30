@@ -59,28 +59,17 @@ class M_files extends MY_Model
     }
 
     /**
-     * Create an individual entry in the DB
-     * 
-     * @return [type] [description]
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
      */
-    public function create()
+    public function create($data = null)
     {
-        $CI = & get_instance();
-        // check to see if we already have a file with the same name
-        $sql = 'SELECT COUNT(id) AS count FROM `files` WHERE `path` = ?';
-        $data = array($CI->response->meta->received_data->attributes->path);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) !== 0) {
-            log_error('ERR-0010', 'm_files::create_file');
+        if ($id = $this->insert_collection('files', $data)) {
+            return intval($id);
+        } else {
             return false;
         }
-        $sql = 'INSERT INTO `files` VALUES (NULL, ?, ?, ?, ?, NOW())';
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 1;
-        }
-        $data = array($CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->path, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
-        $id = intval($this->run_sql($sql, $data));
-        return ($id);
     }
 
     /**

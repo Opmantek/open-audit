@@ -533,7 +533,7 @@ if ($this->db->table_exists('oa_config')) {
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y',NOW(),0,'The API key for Google Maps.')";
+    $sql = "INSERT INTO `oa_config` VALUES ('maps_api_key','','y',NOW(),0,'The API key for Google Maps.')";
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 } else {
@@ -545,7 +545,7 @@ if ($this->db->table_exists('oa_config')) {
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system','2000-01-01 00:00:00','The API key for Google Maps.')";
+    $sql = "INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','','y','system','2000-01-01 00:00:00','The API key for Google Maps.')";
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
@@ -563,7 +563,7 @@ if (!empty($this->config->config['default_snmp_community'])) {
     $data->org_id = 1;
     $data->type = 'snmp';
     $data->credentials->community = $this->config->config['default_snmp_community'];
-    if ($this->m_collection->create($data, 'credentials')) {
+    if ($this->m_credentials->create($data)) {
         $this->log_db("Default SNMP community migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default SNMP community into credentials. Please add this to the credential sets.");
@@ -579,7 +579,7 @@ if (!empty($this->config->config['default_ssh_username']) and !empty($this->conf
     $data->type = 'ssh';
     $data->credentials->username = $this->config->config['default_ssh_username'];
     $data->credentials->password = $this->config->config['default_ssh_password'];
-    if ($this->m_collection->create(null, 'credentials')) {
+    if ($this->m_credentials->create($data)) {
         $this->log_db("Default SSH username and password migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default SSH username and password into credentials. Please add this to the credential sets.");
@@ -595,7 +595,7 @@ if (!empty($this->config->config['default_windows_username']) and !empty($this->
     $data->type = 'windows';
     $data->credentials->username = $this->config->config['default_windows_username'] . '@' . $this->config->config['default_windows_domain'];
     $data->credentials->password = $this->config->config['default_windows_password'];
-    if ($this->m_collection->create(null, 'credentials')) {
+    if ($this->m_credentials->create($data)) {
         $this->log_db("Default Windows username and password migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default Windows username and password into credentials. Please add this to the credential sets.");
@@ -607,11 +607,11 @@ if (!empty($this->config->config['default_ipmi_username']) and !empty($this->con
     $data->credentials = new stdClass();
     $data->name = 'Default IPMI';
     $data->description = 'Migrated from configuration.';
-    $data->org_id = 0;
+    $data->org_id = 1;
     $data->type = 'ipmi';
     $data->credentials->username = $this->config->config['default_ipmi_username'];
     $data->credentials->password = $this->config->config['default_ipmi_password'];
-    if ($this->m_collection->create(null, 'credentials')) {
+    if ($this->m_credentials->create($data)) {
         $this->log_db("Default IPMI username and password migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default IPMI username and password into credentials. Please add this to the credential sets.");

@@ -94,32 +94,10 @@ class Queries extends MY_Controller
     */
     public function create()
     {
-        if (empty($this->response->meta->received_data->attributes->sql)) {
-            log_error('ERR-0010', 'queries::create');
-            if ($this->response->meta->format === 'screen') {
-                $this->session->set_flashdata('warning', 'No SQL provided for query, not created.');
-                redirect('/queries');
-            } else {
-                echo json_encode($this->response);
-                exit();
-            }
-        }
-        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false
-            OR stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
-            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
-            // Ensure the user creating this query has the admin role
-            $allowed = false;
-            if (in_array('admin', $this->user->roles)) {
-                $allowed = true;
-            }
-            if ($allowed === false) {
-                unset($allowed);
-                log_error('ERR-0022', 'queries::create');
-                redirect('/queries');
-            }
-            unset($allowed);
-        }
-        include 'include_create.php';
+        $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        $this->response->include = 'v_'.$this->response->meta->collection.'_read';
+        output($this->response);
     }
 
     /**

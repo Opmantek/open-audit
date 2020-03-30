@@ -62,6 +62,28 @@ class M_rooms extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * NOTE - Also create sub-items (a row)
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ($id = $this->insert_collection('rooms', $data)) {
+            $user = 'system';
+            if ( ! empty($this->user->full_name)) {
+                $user = $this->user->full_name;
+            }
+            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
+            $data_array = array($data->org_id, $id, $user);
+            $this->run_sql($sql, $data_array);
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
@@ -70,7 +92,7 @@ class M_rooms extends MY_Model
     public function read($id = 0)
     {
         $id = intval($id);
-        $sql = 'SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN `rows` ON (rows.room_id = rooms.id) WHERE rooms.id = ?';
+        $sql = 'SELECT rooms.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN `rows` ON (rows.room_id = rooms.id) WHERE rooms.id = ?';
 
         $data = array($id);
         $result = $this->run_sql($sql, $data);

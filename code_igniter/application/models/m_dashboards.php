@@ -62,6 +62,47 @@ class M_dashboards extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ( ! empty($data->options) && is_string($data->options)) {
+            // good to go - stringified JSON
+        } else {
+            if (empty($data->options)) {
+                $options = new stdClass();
+                $options->widget_count = 0;
+                $options->widgets = new stdClass();
+            } else {
+                $options = $data->options;
+            }
+            $my_options = new stdClass();
+            $my_options->layout = '3x2';
+            if ( ! empty($options->widget_count)) {
+                $my_options->widget_count = intval($options->widget_count);
+            } else {
+                $my_options->widget_count = 0;
+            }
+            $my_options->widgets = array();
+            for ($i=1; $i <= $my_options->widget_count; $i++) {
+                $widget = new stdClass();
+                foreach ($options->widgets->$i as $key => $value) {
+                    $widget->{$key} = $value;
+                }
+                $my_options->widgets[] = $widget;
+            }
+            $data->options = json_encode($my_options);
+        }
+        if ($id = $this->insert_collection('dashboards', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

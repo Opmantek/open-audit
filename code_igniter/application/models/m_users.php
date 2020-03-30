@@ -62,6 +62,40 @@ class M_users extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        // JSON encode our roles
+        if ( ! empty($data->roles) && ! is_string($data->roles)) {
+            $data->roles = json_encode($data->roles);
+        }
+        // JSON encode our orgs
+        if ( ! empty($data->orgs) && ! is_string($data->orgs)) {
+            $data->orgs = json_encode(array_map('intval', $data->orgs));
+        }
+        // Encrypt the password
+        if ( ! empty($data->password)) {
+            set_include_path($this->config->config['base_path'] . '/code_igniter/application/third_party/random_compat');
+            require_once 'lib/random.php';
+            $salt = bin2hex(random_bytes(32));
+            $data->password = $salt.hash('sha256', $salt.(string)$data->password);
+            unset($salt);
+        }
+        $data->access_token = '';
+        if (empty($data->devices_default_display_columns)) {
+            $data->devices_default_display_columns = '';
+        }
+        if ($id = $this->insert_collection('users', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

@@ -59,6 +59,113 @@ class M_baselines_policies extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        $this->load->helper('software_version');
+        if ( ! empty($data->table) && $data->table === 'software') {
+            $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
+            $tests = array();
+            $entry = new stdClass();
+            $entry->column = 'name';
+            $entry->operator = '=';
+            $entry->value = $data->tests->name->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'version';
+            $entry->operator = $data->tests->version->operator;
+            $entry->value = $data->tests->version->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'version_padded';
+            $entry->operator = $data->tests->version->operator;
+            $entry->value = version_padded($data->tests->version->value);
+            $tests[] = $entry;
+
+            unset($data->tests);
+            $data->tests = json_encode($tests);
+        }
+
+        if ( ! empty($data->table) && $data->table === 'netstat') {
+            $data->name = $data->tests->program->value . ' on ' . $data->tests->port->value . ' using ' . $data->tests->protocol->value;
+            $tests = array();
+            $entry = new stdClass();
+            $entry->column = 'protocol';
+            $entry->operator = '=';
+            $entry->value = $data->tests->protocol->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'program';
+            $entry->operator = '=';
+            $entry->value = $data->tests->program->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'port';
+            $entry->operator = '=';
+            $entry->value = $data->tests->port->value;
+            $tests[] = $entry;
+
+            unset($data->tests);
+            $data->tests = json_encode($tests);
+        }
+
+        if ( ! empty($data->table) && $data->table === 'user') {
+            $data->name = $data->tests->name->value;
+            $tests = array();
+            $entry = new stdClass();
+            $entry->column = 'name';
+            $entry->operator = '=';
+            $entry->value = $data->tests->name->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'status';
+            $entry->operator = '=';
+            $entry->value = $data->tests->status->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'type';
+            $entry->operator = '=';
+            $entry->value = $data->tests->type->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'password_expires';
+            $entry->operator = '=';
+            $entry->value = $data->tests->password_expires->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'password_changeable';
+            $entry->operator = '=';
+            $entry->value = $data->tests->password_changeable->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'password_required';
+            $entry->operator = '=';
+            $entry->value = $data->tests->password_required->value;
+            $tests[] = $entry;
+
+            unset($data->tests);
+            $data->tests = json_encode($tests);
+        }
+        if ($id = $this->insert_collection('baselines_policies', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

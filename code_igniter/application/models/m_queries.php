@@ -62,6 +62,28 @@ class M_queries extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if (stripos($data->sql, 'where @filter') === false OR stripos($data->sql, 'where @filter or') !== false) {
+            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+            // Ensure the user creating this query has the admin role
+            if ( ! in_array('admin', $this->user->roles)) {
+                log_error('ERR-0022', 'queries::create');
+                return false;
+            }
+        }
+        if ($id = $this->insert_collection('applications', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

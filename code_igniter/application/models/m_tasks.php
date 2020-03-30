@@ -62,6 +62,48 @@ class M_tasks extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ( ! empty($data->options) && is_string($data->options)) {
+            $data->options = str_replace('\"', '"', $data->options);
+            $data->options = my_json_decode($data->options);
+            $data->options = json_encode($data->options);
+        } else if ( ! empty($data->options)) {
+            $data->options = json_encode($data->options);
+        } else {
+            $data->options = new stdClass();
+            $data->options = json_encode($data->options);
+        }
+        if ( ! empty($data->minute) && is_array($data->minute)) {
+            $data->minute = implode(',', $data->minute);
+        }
+        if ( ! empty($data->hour) && is_array($data->hour)) {
+            $data->hour = implode(',', $data->hour);
+        }
+        if ( ! empty($data->day_of_month) && is_array($data->day_of_month)) {
+            $data->day_of_month = implode(',', $data->day_of_month);
+        }
+        if ( ! empty($data->month) && is_array($data->month)) {
+            $data->month = implode(',', $data->month);
+        }
+        if ( ! empty($data->day_of_week) && is_array($data->day_of_week)) {
+            $data->day_of_week = implode(',', $data->day_of_week);
+        }
+        if (empty($data->uuid)) {
+            $data->uuid = $this->config->config['uuid'];
+        }
+        if ($id = $this->insert_collection('tasks', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

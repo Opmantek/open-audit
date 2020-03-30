@@ -83,17 +83,6 @@ class Discovery_log extends MY_Controller
     }
 
     /**
-    * Process the supplied data and create a new object
-    *
-    * @access public
-    * @return NULL
-    */
-    // public function create()
-    // {
-    //     include 'include_create.php';
-    // }
-
-    /**
     * Read a single object
     *
     * @access public

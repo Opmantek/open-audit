@@ -90,7 +90,12 @@ class Rooms extends MY_Controller
     */
     public function create()
     {
-        include 'include_create.php';
+        $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
+        if ( ! empty($this->response->meta->id)) {
+            $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+            $this->response->meta->action = 'read';
+        }
+        output($this->response);
     }
 
     /**

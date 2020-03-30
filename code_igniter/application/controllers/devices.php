@@ -605,7 +605,7 @@ class Devices extends MY_Controller
                             $data->other->match->{$item} = @$this->config->config[$item];
                         }
                     }
-                    $discovery_id = $this->m_collection->create($data, 'discoveries');
+                    $discovery_id = $this->m_discoveries->create($data);
                     $this->m_discoveries->queue($discovery_id);
                     $this->load->model('m_queue');
                     $this->m_queue->start();

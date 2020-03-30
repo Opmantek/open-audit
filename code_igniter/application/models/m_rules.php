@@ -62,6 +62,43 @@ class M_rules extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if (is_array($data->inputs) OR is_object($data->inputs)) {
+            $new_inputs = array();
+            foreach ($data->inputs as $input) {
+                $item = new stdClass();
+                foreach ($input as $key => $value) {
+                    $item->{$key} = $value;
+                }
+                $new_inputs[] = $item;
+            }
+            $data->inputs = json_encode($new_inputs);
+        }
+
+        if (is_array($data->outputs) OR is_object($data->outputs)) {
+            $new_outputs = array();
+            foreach ($data->outputs as $output) {
+                $item = new stdClass();
+                foreach ($output as $key => $value) {
+                    $item->{$key} = $value;
+                }
+                $new_outputs[] = $item;
+            }
+            $data->outputs = json_encode($new_outputs);
+        }
+        if ($id = $this->insert_collection('rules', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * [read description]
      * @param  string $id [description]
      * @return [type]     [description]

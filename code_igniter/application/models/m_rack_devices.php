@@ -62,6 +62,34 @@ class M_rack_devices extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if (empty($data->name) or empty($data->org_id)) {
+            $sql = "SELECT name, org_id FROM system WHERE id = " . intval($data->system_id);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if ( ! empty($result)) {
+                if (empty($data->name)) {
+                    $data->name = $result[0]->name;
+                }
+                if (empty($data->org_id)) {
+                    $data->org_id = $result[0]->org_id;
+                }
+            }
+        }
+        if ($id = $this->insert_collection('rack_devices', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

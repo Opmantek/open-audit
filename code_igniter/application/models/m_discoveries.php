@@ -62,6 +62,131 @@ class M_discoveries extends MY_Model
     }
 
     /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if (empty($data->devices_assigned_to_org)) {
+            unset($data->devices_assigned_to_org);
+        }
+        if (empty($data->devices_assigned_to_location)) {
+            unset($data->devices_assigned_to_location);
+        }
+        if ( ! empty($data->other) && is_string($data->other)) {
+            $data->other = json_decode($data->other);
+        }
+        if (empty($data->other)) {
+            $data->other = new stdClass();
+        }
+        if (empty($data->other->nmap)) {
+            $data->other->nmap = new stdClass();
+            if (empty($this->config->config['discovery_default_scan_option'])) {
+                $this->config->config['discovery_default_scan_option'] = 1;
+            }
+            $sql = "SELECT `id` AS 'discovery_scan_option_id', ping, service_version, filtered, timeout, timing, nmap_tcp_ports, nmap_udp_ports, tcp_ports, udp_ports, exclude_tcp_ports, exclude_udp_ports, exclude_ip, ssh_ports FROM discovery_scan_options WHERE id = " . intval($this->config->config['discovery_default_scan_option']);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if ( ! empty($result[0])) {
+                $data->other->nmap = $result[0];
+            } else {
+                $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","discovery_scan_option_id":"0","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161","ssh_ports":"22"}';
+                $data->other->nmap = json_decode($json);
+            }
+        }
+        if ( ! empty($data->other->nmap->exclude_ip)) {
+            $data->other->nmap->exclude_ip = str_replace(' ', ',', $data->other->nmap->exclude_ip);
+        }
+        if ( ! empty($data->type) && $data->type === 'subnet') {
+            if ( ! empty($data->other->subnet) && ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
+                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                $data->other->subnet = '';
+                if ($CI->response->meta->format === 'screen') {
+                    redirect('/discoveries');
+                } else {
+                    output($CI->response);
+                    exit();
+                }
+            }
+            if (empty($data->other->subnet)) {
+                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
+            } else {
+                $data->description = 'Subnet - ' . $data->other->subnet;
+            }
+        } elseif ( ! empty($data->type) && $data->type === 'active directory') {
+            if (empty($data->other->ad_server) OR empty($data->other->ad_domain)) {
+                $temp = 'Active Directory Domain';
+                if (empty($data->other->ad_server)) {
+                    $temp = 'Active Directory Server';
+                }
+                log_error('ERR-0024', 'm_collection::create (ad discoveries)');
+                $this->session->set_flashdata('error', 'Object in discoveries could not be created - no ' . $temp . ' supplied.');
+            } else {
+                $data->description = 'Active Directory - ' . $data->other->ad_domain;
+            }
+        } else if (empty($data->type)) {
+            log_error('ERR-0024', 'm_collection::create, no type supplied');
+            $this->session->set_flashdata('error', 'Object in discoveries could not be created - no "type" supplied.');
+        } else {
+            $data->description = '';
+        }
+        $this->load->model('m_networks');
+        $this->load->helper('network');
+        if ($data->type === 'subnet' && ! empty($data->other->subnet) && stripos($data->other->subnet, '-') === false && filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
+            // We have a single IP - ie 192.168.1.1
+            // TODO - we should pass the OrgID
+            $data->description = 'IP - ' . $data->other->subnet;
+            $test = $this->m_networks->check_ip($data->other->subnet);
+            if ( ! $test) {
+                // This IP is not in any existing subnets - insert a /30
+                // TODO - account for Org ID in existing as check_ip returns only true/false, and does not acount for orgs
+                $temp = network_details($data->other->subnet.'/30');
+                $network = new stdClass();
+                $network->name = $temp->network.'/'.$temp->network_slash;
+                $network->network = $temp->network.'/'.$temp->network_slash;
+                $network->org_id = $data->org_id;
+                $network->description = $data->name;
+                $this->m_networks->upsert($network);
+            }
+        }
+
+        if ($data->type === 'subnet' && ! empty($data->other->subnet) && stripos($data->other->subnet, '-') === false && strpos($data->other->subnet, '/') !== false) {
+            // We have a regular subnet - ie 192.168.1.0/24
+            $temp = network_details($data->other->subnet);
+            if ( ! empty($temp->error)) {
+                $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
+                log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
+                return;
+            }
+            $network = new stdClass();
+            $network->name = $temp->network.'/'.$temp->network_slash;
+            $network->network = $temp->network.'/'.$temp->network_slash;
+            $network->org_id = $data->org_id;
+            $network->description = $data->name;
+            $this->m_networks->upsert($network);
+        }
+
+        if ($data->type === 'subnet' && stripos($data->other->subnet, '-') !== false) {
+            // We have a range and cannot insert a network
+            $warning = 'IP range, instead of subnet supplied. No network entry created.';
+            if ($this->config->config['blessed_subnets_use'] !== 'n') {
+                $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
+            }
+            $this->session->set_flashdata('warning', $warning);
+        }
+        $data->other = json_encode($data->other);
+
+        if ($id = $this->insert_collection('discoveries', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item

@@ -57,6 +57,20 @@ class M_networks extends MY_Model
         $this->log->type = 'system';
     }
 
+    /**
+     * Create an individual item in the database
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public function create($data = null)
+    {
+        if ($id = $this->insert_collection('applications', $data)) {
+            return intval($id);
+        } else {
+            return false;
+        }
+    }
+
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
