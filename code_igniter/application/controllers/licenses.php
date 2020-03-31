@@ -105,12 +105,14 @@ class Licenses extends MY_Controller
     */
     public function read()
     {
-        $temp = $this->m_licenses->execute();
-        $this->response->included = array_merge($this->response->included, $temp);
-        if ( ! empty($temp) && ! empty($this->response->data[0]->attributes)) {
-            $this->response->data[0]->attributes->used_count = intval(count($temp));
+        $this->response->data = $this->{'m_licenses'}->read($this->response->meta->id);
+        if ($temp = $this->m_licenses->execute($this->response->meta->id)) {
+            $this->response->included = array_merge($this->response->included, $temp);
+            if ( ! empty($temp) && ! empty($this->response->data[0]->attributes)) {
+                $this->response->data[0]->attributes->used_count = intval(count($temp));
+            }
         }
-        include 'include_read.php';
+        output($this->response);
     }
 
     /**
@@ -198,7 +200,7 @@ class Licenses extends MY_Controller
     */
     public function execute()
     {
-        $this->response->data = $this->m_licenses->execute();
+        $this->response->data = $this->m_licenses->execute($this->response->meta->id);
         output($this->response);
     }
 
