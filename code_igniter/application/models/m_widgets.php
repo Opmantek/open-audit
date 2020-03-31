@@ -510,10 +510,10 @@ class M_widgets extends MY_Model
         $result = $this->run_sql($sql, $data);
         $widget = $result[0];
         if ($widget->type === 'pie') {
-            $result = $this->pie_data($widget, $CI->user->org_list);
+            $result = $this->pie_data($widget, $this->user->org_list);
         }
         if ($widget->type === 'line') {
-            $result = $this->line_data($widget, $CI->user->org_list);
+            $result = $this->line_data($widget, $this->user->org_list);
         }
         $result = $this->format_data($result, 'widgets');
         return ($result);
