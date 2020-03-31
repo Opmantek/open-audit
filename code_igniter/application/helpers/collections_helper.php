@@ -220,7 +220,7 @@ if ( ! function_exists('mandatory_fields')) {
                 break;
 
             case 'queue':
-                return(array('org_id', 'details', 'type'));
+                return(array('type'));
                 break;
 
             case 'racks':
