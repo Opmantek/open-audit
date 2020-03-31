@@ -176,7 +176,7 @@ class Widgets extends MY_Controller
     */
     public function execute()
     {
-        $this->response->data = $this->m_widgets->execute();
+        $this->response->data = $this->m_widgets->execute($this->response->meta->id);
         $this->response->meta->format = 'json';
         output();
         return;

@@ -503,24 +503,16 @@ class M_widgets extends MY_Model
         }
     }
 
-    public function execute($id = '') {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        if ($id == '') {
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+    public function execute($id = 0) {
+        $id = intval($id);
         $sql = "SELECT * FROM widgets WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $widget = $result[0];
-        if ($widget->type == 'pie') {
+        if ($widget->type === 'pie') {
             $result = $this->pie_data($widget, $CI->user->org_list);
         }
-        if ($widget->type == 'line') {
+        if ($widget->type === 'line') {
             $result = $this->line_data($widget, $CI->user->org_list);
         }
         $result = $this->format_data($result, 'widgets');
