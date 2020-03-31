@@ -458,7 +458,11 @@ if (! function_exists('stdlog')) {
             $log['detail'] = $log_details->message;
         }
         if (!empty($log_details->detail)) {
-            $log['detail'] = $log_details->detail;
+            if ( ! empty($log['detail'])) {
+                $log['detail'] .= $log_details->detail;
+            } else {
+                $log['detail'] = $log_details->detail;
+            }
         }
 
         if (!empty($log_details->title)) {
