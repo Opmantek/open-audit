@@ -312,7 +312,7 @@ if (! function_exists('output')) {
         if ($CI->response->meta->action === 'create' OR $CI->response->meta->action === 'update' OR $CI->response->meta->action === 'delete') {
             $log->severity = 5;
         }
-        $log->status = 'success';
+        $log->status = @$CI->response->meta->header;
         $log->summary = 'finish';
         $log->type = 'access';
         $log->detail = json_encode($CI->response->meta);
