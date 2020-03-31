@@ -68,10 +68,10 @@ class M_orgs extends MY_Model
      */
     public function create($data = null)
     {
-        if (empty($data->ad_group) and ! empty($data->name)) {
+        if (empty($data->ad_group) && ! empty($data->name)) {
             $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
         }
-        if ($id = $this->insert_collection('applications', $data)) {
+        if ($id = $this->insert_collection('orgs', $data)) {
             return intval($id);
         } else {
             return false;
