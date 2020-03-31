@@ -70,7 +70,7 @@ class M_roles extends MY_Model
             // We likely have a CSV submitted item
             // Replace quotes as it should already be stringified JSON
             $item->permissions = str_replace("'", '"', $item->permissions);
-        } else if ( ! empty($data->permissions) && gettype($data->permissions) === 'object') {
+        } else if ( ! empty($data->permissions) && gettype($data->permissions) !== 'string') {
             // We likely have a submitted form or a JSON submission using the API
             // Build up our permissions
             $permissions = new stdClass();
