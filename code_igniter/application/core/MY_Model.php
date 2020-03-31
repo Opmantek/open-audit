@@ -393,8 +393,14 @@ class MY_Model extends CI_Model
         return $accept;
     }
 
+    /**
+     * [insert_collection description]
+     * @param  [type] $collection [description]
+     * @param  [type] $data       [description]
+     * @return [type]             [description]
+     */
     function insert_collection($collection, $data) {
-        if (empty($collection) or empty($data)) {
+        if (empty($collection) OR empty($data)) {
             return false;
         }
         $CI = & get_instance();
@@ -402,27 +408,29 @@ class MY_Model extends CI_Model
         $mandatory_fields = mandatory_fields($collection);
         $fields = $this->db->field_data($collection);
         foreach ($mandatory_fields as $field) {
-            if (!isset($data->{$field}) or $data->{$field} == '') {
-                if (!empty($this->session)) {
-                    $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created, no ' . $field . ' supplied.');
+            if ( ! isset($data->{$field}) OR $data->{$field} === '') {
+                if ( ! empty($this->session)) {
+                    $this->session->set_flashdata('error', "Object in {$collection} could not be created, no {$field} supplied.");
                 }
-                log_error('ERR-0021', 'm_' . $collection . '::create', 'Missing field: ' . $field);
+                log_error('ERR-0021', 'm_' . $collection . '::create' . " Missing field: {$field}", "Missing field: {$field}");
                 return false;
             }
         }
         $insert_data = new stdClass();
         foreach ($insert_fields as $field) {
-            if (!empty($data->{$field})) {
+            if ( ! empty($data->{$field})) {
                 $insert_data->{$field} = $data->{$field};
             } else {
-                foreach ($fields as $def) {
-                    if ($def->name === $field) {
-                        if ($def->type === 'text') {
-                            # NOTE - Only provide a blank string if column type is TEXT
-                            #        because TEXT cannot have a default value in MySQL
-                            #        If we don't do this, strict mode MySQL will fail
-                            # NOTE #2 - All columns in our schema except IDs (and *_id) have
-                            #           NOT NULL DEFAULT <default> set, except TEXT type.
+                foreach ($fields as $definition) {
+                    if ($definition->name === $field) {
+                        if ($definition->type === 'text') {
+
+                            // NOTE - Only provide a blank string if column type is TEXT
+                            //        because TEXT cannot have a default value in MySQL
+                            //        If we don't do this, strict mode MySQL will fail
+                            // NOTE #2 - All columns in our schema except IDs (and *_id) have
+                            //           NOT NULL DEFAULT <default> set, except TEXT type.
+
                             $insert_data->{$field} = '';
                         }
                     }
@@ -431,7 +439,7 @@ class MY_Model extends CI_Model
         }
         if ($this->db->field_exists('edited_by', $collection)) {
             $insert_data->edited_by = 'system';
-            if (!empty($CI->user->full_name)) {
+            if ( ! empty($CI->user->full_name)) {
                 $insert_data->edited_by = $CI->user->full_name;
             }
             $insert_data->edited_date = $CI->config->config['timestamp'];
