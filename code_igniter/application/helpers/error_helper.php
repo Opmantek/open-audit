@@ -397,22 +397,38 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0043']->severity = 5;
         $error_array['ERR-0043']->severity_text = 'danger';
         $error_array['ERR-0043']->title = 'Nmap not found.';
-        if (php_uname('s') === "Windows NT") {
+        if (php_uname('s') === 'Windows NT') {
             $error_array['ERR-0043']->detail = "<strong>ERROR</strong> - Nmap <strong>must</strong> be installed. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
         } else {
             $error_array['ERR-0043']->detail = "<strong>ERROR</strong> - Nmap <strong>must</strong> be installed. Please install it using your package manager. See <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
         }
-        
-
 
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
-            if ($error_each->severity == '3') {
+            if ($error_each->severity === 0) {
+                $error_each->severity_text = 'emergency';
+            }
+            if ($error_each->severity === 1) {
+                $error_each->severity_text = 'alert';
+            }
+            if ($error_each->severity === 2) {
+                $error_each->severity_text = 'critical';
+            }
+            if ($error_each->severity === 3) {
                 $error_each->severity_text = 'error';
             }
-            if ($error_each->severity == '4') {
+            if ($error_each->severity === 4) {
                 $error_each->severity_text = 'warning';
+            }
+            if ($error_each->severity === 5) {
+                $error_each->severity_text = 'notice';
+            }
+            if ($error_each->severity === 6) {
+                $error_each->severity_text = 'informational';
+            }
+            if ($error_each->severity === 7) {
+                $error_each->severity_text = 'debug';
             }
         }
 
