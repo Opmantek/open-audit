@@ -173,20 +173,6 @@ class Dashboards extends MY_Controller
     {
         include 'include_import.php';
     }
-
-    /**
-    * Execute and return the data
-    *
-    * @access public
-    * @return NULL
-    */
-    public function execute()
-    {
-        $this->response->data = $this->m_dashboards->execute();
-        output();
-        return;
-    }
-
 }
 // End of file dashboards.php
 // Location: ./controllers/dashboards.php
