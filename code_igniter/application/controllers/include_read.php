@@ -94,29 +94,19 @@ $entry->detail = 'include_read::read';
 $entry->time_now = time();
 $GLOBALS['timer_log'][] = $entry;
 
-# required for the templates
-if ($this->m_users->get_user_permission("", $this->response->meta->collection, "u")) {
+// required for the templates
+if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
     $this->response->edit = true;
 }
 
-if (empty($this->response->data) or !is_array($this->response->data) or count($this->response->data) == 0) {
+if (empty($this->response->data) OR ! is_array($this->response->data) OR count($this->response->data) === 0) {
     log_error('ERR-0002', $this->response->meta->collection . ':read');
     $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
-    if ($this->response->meta->format != 'json') {
+    if ($this->response->meta->format !== 'json') {
         redirect($this->response->meta->collection);
     }
 } else {
     output($this->response);
 }
-
-$log = new stdClass();
-$log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-$log->severity = 7;
-$log->status = 'success';
-$log->summary = 'finish';
-$log->type = 'access';
-if ($this->config->config['log_level'] == 7) {
-    $log->detail = json_encode($this->response->meta);
-}
-stdLog($log);
+// End of file include_read.php
+// Location: ./controllers/include_read.php

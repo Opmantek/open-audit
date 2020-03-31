@@ -50,7 +50,7 @@ $this->response->meta->flash = new stdClass();
 $this->response->meta->flash->status = '';
 $this->response->meta->flash->message = '';
 
-ini_set("auto_detect_line_endings", true);
+ini_set('auto_detect_line_endings', true);
 $csv = @array_map('str_getcsv', file($_FILES['file_import']['tmp_name'], FILE_IGNORE_NEW_LINES));
 if (!$csv) {
     log_error('ERR-0011');
@@ -87,33 +87,25 @@ foreach ($csv as $key => $value) {
     $test = false;
     $count_all += 1;
 
-    // if ($this->response->meta->collection === 'roles') {
-    //     $test = $this->m_users->has_role('admin');
-    // } elseif ($this->response->meta->collection !== 'roles' and $this->response->meta->collection !== 'orgs') {
-    //     $test = $this->m_users->user_org($item->org_id);
-    // } elseif ($this->response->meta->collection === 'orgs') {
-    //     $test = $this->m_users->user_org($item->parent_id);
-    // }
-
     if ($this->response->meta->collection === 'roles') {
         $test = $this->m_users->has_role('admin');
     } elseif ($this->response->meta->collection === 'orgs') {
         $test = $this->m_users->user_org($item->parent_id);
     } else {
-        if (!empty($item->id)) {
-            # We have an ID - use that to get the OrgId
+        if ( ! empty($item->id)) {
+            // We have an ID - use that to get the OrgId
             $table = $this->response->meta->collection;
-            if ($table == 'devices') {
+            if ($table === 'devices') {
                 $table = 'system';
             }
-            if (!$this->db->table_exists($table)) {
+            if ( ! $this->db->table_exists($table)) {
                 $test = false;
             } else {
-                $sql = "/* include_import */ " . "SELECT org_id FROM `$table` WHERE `id` = ?";
+                $sql = '/* include_import */ ' . 'SELECT org_id FROM `$table` WHERE `id` = ?';
                 $data = array(intval($item->id));
                 $query = $this->db->query($sql, $data);
                 $result = $query->result();
-                if (!empty($result[0]->org_id)) {
+                if ( ! empty($result[0]->org_id)) {
                     $test = $this->m_users->user_org($result[0]->org_id);
                 } else {
                     $test = false;
@@ -128,12 +120,12 @@ foreach ($csv as $key => $value) {
         }
     }
 
-    if ($this->response->meta->collection == 'credentials') {
+    if ($this->response->meta->collection === 'credentials') {
         if (empty($item->credentials)) {
             $item->credentials = new stdClass();
             foreach ($item as $name => $value) {
                 $attribute = explode('.', $name);
-                if ($attribute[0] == 'credentials' and !empty($attribute[1]) and !empty($value)) {
+                if ($attribute[0] === 'credentials' && ! empty($attribute[1]) && ! empty($value)) {
                     $item->credentials->{$attribute[1]} = $value;
                     unset($item->{$name});
                 }
@@ -141,20 +133,20 @@ foreach ($csv as $key => $value) {
         }
     }
 
-    if ($this->response->meta->collection == 'discoveries') {
+    if ($this->response->meta->collection === 'discoveries') {
         if (empty($item->other)) {
             $item->other = new stdClass();
             $item->other->nmap = new stdClass();
             $item->other->match = new stdClass();
             foreach ($item as $name => $value) {
                 $attribute = explode('.', $name);
-                if ($attribute[0] == 'other' and !empty($attribute[1])  and $attribute[1] == 'nmap' and !empty($attribute[2]) and !empty($value)) {
+                if ($attribute[0] === 'other' && ! empty($attribute[1]) && $attribute[1] === 'nmap' && ! empty($attribute[2]) && ! empty($value)) {
                     $item->other->nmap->{$attribute[2]} = $value;
                     unset($item->{$name});
-                } else if ($attribute[0] == 'other' and !empty($attribute[1])  and $attribute[1] == 'match' and !empty($attribute[2]) and !empty($value)) {
+                } else if ($attribute[0] === 'other' && ! empty($attribute[1]) && $attribute[1] === 'match' && ! empty($attribute[2]) && ! empty($value)) {
                     $item->other->match->{$attribute[2]} = $value;
                     unset($item->{$name});
-                } else if ($attribute[0] == 'other' and !empty($attribute[1]) and !empty($value)) {
+                } else if ($attribute[0] === 'other' && ! empty($attribute[1]) && ! empty($value)) {
                     $item->other->{$attribute[1]} = $value;
                     unset($item->{$name});
                 }
@@ -162,7 +154,7 @@ foreach ($csv as $key => $value) {
         }
     }
 
-    if ($this->response->meta->collection == 'roles') {
+    if ($this->response->meta->collection === 'roles') {
         if (empty($item->permissions)) {
             $test = false;
         }
@@ -176,8 +168,8 @@ foreach ($csv as $key => $value) {
             $item->last_seen = $last_seen;
         }
         $test = false;
-        if (!empty($item->id)) {
-            # UPDATE
+        if ( ! empty($item->id)) {
+            // UPDATE
             $id = $item->id;
             if ($this->response->meta->collection !== 'devices') {
                 $test = $this->{'m_collection'}->update($item, $this->response->meta->collection);
@@ -188,7 +180,7 @@ foreach ($csv as $key => $value) {
                 $count_update += 1;
             }
         } else {
-            # CREATE
+            // CREATE
             unset($item->id);
             $test = false;
             $test = $this->{'m_'.$this->response->meta->collection}->create($item);
@@ -243,14 +235,5 @@ if ($this->response->meta->format === 'json') {
     redirect($this->response->meta->collection);
 }
 
-$log = new stdClass();
-$log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-$log->severity = 7;
-$log->status = 'success';
-$log->summary = 'finish';
-$log->type = 'access';
-if ($this->config->config['log_level'] == 7) {
-    $log->detail = json_encode($this->response->meta);
-}
-stdLog($log);
+// End of file include_import.php
+// Location: ./controllers/include_import.php

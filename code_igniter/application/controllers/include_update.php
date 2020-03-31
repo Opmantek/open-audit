@@ -60,21 +60,17 @@ if ($this->response->meta->format === 'json') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
     output($this->response);
 } else {
+    $log = new stdClass();
+    $log->object = $this->response->meta->collection;
+    $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
+    $log->severity = 5;
+    $log->status = 'success';
+    $log->summary = 'finish';
+    $log->type = 'access';
+    $log->detail = json_encode($this->response->meta);
+    stdLog($log);
     redirect($this->response->meta->collection);
 }
 
-$log = new stdClass();
-$log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-$log->severity = 7;
-$log->status = 'success';
-$log->summary = 'finish';
-$log->type = 'access';
-if ($this->config->config['log_level'] === 7) {
-    $log->detail = json_encode($this->response->meta);
-}
-stdLog($log);
-
 // End of file include_update.php
 // Location: ./controllers/include_update.php
-

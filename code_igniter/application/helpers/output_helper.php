@@ -305,17 +305,18 @@ if (! function_exists('output')) {
                 break;
         }
 
-        // $log = new stdClass();
-        // $log->object = $CI->response->meta->collection;
-        // $log->function = strtolower($CI->response->meta->collection) . '::' . strtolower($CI->response->meta->action); 
-        // $log->severity = 7;
-        // $log->status = 'success';
-        // $log->summary = 'finish';
-        // $log->type = 'access';
-        // if (intval($CI->config->config['log_level']) === 7) {
-        //     $log->detail = json_encode($CI->response->meta);
-        // }
-        // stdLog($log);
+        $log = new stdClass();
+        $log->object = $CI->response->meta->collection;
+        $log->function = strtolower($CI->response->meta->collection) . '::' . strtolower($CI->response->meta->action); 
+        $log->severity = 7;
+        if ($CI->response->meta->action === 'create' OR $CI->response->meta->action === 'update' OR $CI->response->meta->action === 'delete') {
+            $log->severity = 5;
+        }
+        $log->status = 'success';
+        $log->summary = 'finish';
+        $log->type = 'access';
+        $log->detail = json_encode($CI->response->meta);
+        stdLog($log);
     }
 
     function output_csv()
