@@ -182,7 +182,7 @@ if (!function_exists('audit_convert')) {
                 }
                 return false;
             }
-            if ($xml) {
+            if (!empty($xml)) {
                 $newxml = json_encode($xml);
                 $newxml = json_decode($newxml);
                 $audit = new stdClass();
@@ -288,8 +288,8 @@ if (!function_exists('audit_convert')) {
 if ( ! function_exists('audit_format_system')) {
     /**
      * [audit_format_system description]
-     * @param  [type] $parameters [description]
-     * @return [type]             [description]
+     * @param  object $parameters [description]
+     * @return object             [description]
      */
     function audit_format_system($parameters)
     {

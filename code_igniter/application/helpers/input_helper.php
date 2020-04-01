@@ -284,7 +284,6 @@ if ( ! function_exists('inputRead')) {
         stdlog($log);
 
         $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
-        unset($temp);
 
         // get the id of the collection item in question
         // if we have an integer
@@ -312,7 +311,8 @@ if ( ! function_exists('inputRead')) {
         }
 
         // if we have an item name (ie, not it's ID)
-        if (is_null($CI->response->meta->id) && ! empty($CI->uri->segment(2)) && stripos($actions, ' ' . $CI->uri->segment(2) . ' ') === false) {
+        $temp = @$CI->uri->segment(2);
+        if (is_null($CI->response->meta->id) && ! empty($temp) && stripos($actions, ' ' . $CI->uri->segment(2) . ' ') === false) {
             $log->summary = 'Search ID';
             $log->detail = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
@@ -399,7 +399,7 @@ if ( ! function_exists('inputRead')) {
         }
         if ( ! empty($CI->response->meta->include)) {
             if ($CI->response->meta->collection === 'devices') {
-                if (($CI->response->meta->format === 'screen' && $CI->response->meta->include === '') OR $CI->response->meta->include === '*' OR $CI->response->meta->include === 'all') {
+                if (($CI->response->meta->format === 'screen' && empty($CI->response->meta->include)) OR $CI->response->meta->include === '*' OR $CI->response->meta->include === 'all') {
                     $CI->response->meta->include = 'application,attachment,audit_log,bios,change_log,cluster,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
                 } else {
                     $valid = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
@@ -518,8 +518,6 @@ if ( ! function_exists('inputRead')) {
         }
 
         if ($request_method === 'PATCH') {
-            unset($data_json);
-            unset($data_object);
             $data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
             $data_object = json_decode($data_json);
             $options = @$data_object->data->attributes->options;
@@ -783,7 +781,7 @@ if ( ! function_exists('inputRead')) {
         if ($CI->response->meta->sort !== '') {
             $CI->response->meta->internal->sort = 'ORDER BY ' . implode(',', $properties);
             $log->summary = 'set sort';
-            $log->detail = 'Set sort to ' . $CI->response->meta->sort . ', according to POST.';
+            $log->detail = "Set sort to {$CI->response->meta->sort}, according to POST.";
             stdlog($log);
         } else {
             $CI->response->meta->internal->sort = '';

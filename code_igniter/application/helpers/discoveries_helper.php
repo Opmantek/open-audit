@@ -54,7 +54,7 @@ if ( ! function_exists('all_ip_list')) {
     /**
      *
      * @param  object $discovery The discovery object with all its parameters
-     * @return array All the IP addresses in this discovery (excluding the excluded list)
+     * @return array|false All the IP addresses in this discovery (excluding the excluded list)
      */
 	function all_ip_list($discovery = null)
 	{
@@ -93,7 +93,7 @@ if ( ! function_exists('ip_list')) {
     /**
      *
      * @param  object $discovery The discovery object with all its parameters
-     * @return array The array of all responding IP addresses in the discovery
+     * @return array|false The array of all responding IP addresses in the discovery
      */
 	function responding_ip_list($discovery = null)
 	{
@@ -217,7 +217,7 @@ if ( ! function_exists('discover_subnet')) {
 	/**
 	 * Run the discovery on the subnet
 	 * @param  object $queue_item The individual entry from the queue table
-	 * @return [type]             [description]
+	 * @return bool             [description]
 	 */
 	function discover_subnet($queue_item = null)
 	{
@@ -263,6 +263,8 @@ if ( ! function_exists('discover_subnet')) {
 		update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
 		queue_responding($discovery->id, $responding_ip_list);
 
+		$ip_all_count = 0;
+		$ip_responding_count = 0;
 		if ( ! empty($all_ip_list) && is_array($all_ip_list)) {
 			$ip_all_count = count($all_ip_list);
 		}
@@ -285,6 +287,7 @@ if ( ! function_exists('discover_subnet')) {
 			$log->ip = '127.0.0.1';
 			discovery_log($log);
 		}
+		return true;
 	}
 }
 
@@ -295,7 +298,7 @@ if ( ! function_exists('ip_scan')) {
 	/**
 	 * Scan an individual IP address according to our discovery settings
 	 * @param  object $details [description]
-	 * @return object A device results or boolean false
+	 * @return array|false   A device results or boolean false
 	 */
 	function ip_scan($details = null)
 	{
@@ -484,11 +487,11 @@ if ( ! function_exists('ip_scan')) {
 if ( ! function_exists('check_nmap_output')) {
 	/**
 	 * [check_nmap_output description]
-	 * @param  [type] $discovery [description]
-	 * @param  [type] $output    [description]
-	 * @param  [type] $ip        [description]
-	 * @param  [type] $command   [description]
-	 * @return [type]            [description]
+	 * @param  object $discovery [description]
+	 * @param  array $output    [description]
+	 * @param  string $ip        [description]
+	 * @param  string $command   [description]
+	 * @return array|false            [description]
 	 */
 	function check_nmap_output ($discovery, $output, $ip, $command)
 	{
@@ -600,8 +603,8 @@ if ( ! function_exists('check_nmap_output')) {
 if ( ! function_exists('ip_audit')) {
 	/**
 	 * [ip_audit description]
-	 * @param  [type] $ip_scan [description]
-	 * @return [type]          [description]
+	 * @param  object $ip_scan [description]
+	 * @return false          [description]
 	 */
 	function ip_audit($ip_scan = null)
 	{
@@ -728,7 +731,6 @@ if ( ! function_exists('ip_audit')) {
 						$ip_scan->details->ssh_status = 'true';
 					}
 				}
-				unset($nmap_item);
 				unset($temp);
 			}
 		}
@@ -1148,6 +1150,7 @@ if ( ! function_exists('ip_audit')) {
 			discovery_log($log);
 		}
 
+		$script_name = '';
 		if ( ! empty($credentials_windows) OR ! empty($credentials_ssh)) {
 			$temp = $CI->m_scripts->build(strtolower($device->os_group));
 			if (empty($temp)) {
@@ -1257,10 +1260,9 @@ if ( ! function_exists('ip_audit')) {
 			if ( ! empty($audit_file) && ! empty($output)) {        		
 				$copy = false;
 				$temp = explode('\\', $audit_file);
+				$destination = $filepath . '/scripts/' . end($temp);
 				if (php_uname('s') === 'Windows NT') {
 					$destination = $filepath . '\\scripts\\' . end($temp);
-				} else {
-					$destination = $filepath . '/scripts/' . end($temp);
 				}
 				if (php_uname('s') === 'Windows NT' && exec('whoami') === 'nt authority\system' && ! empty($CI->config->config['discovery_use_vintage_service']) && $CI->config->config['discovery_use_vintage_service'] === 'y') {
 					if (rename($audit_file, $destination)) {
@@ -1432,10 +1434,9 @@ if ( ! function_exists('ip_audit')) {
 						$audit_file = str_replace('//', '/', $audit_file);
 					}
 					$temp = explode('/', $audit_file);
+					$destination = $filepath . '/scripts/' . end($temp);
 					if (php_uname('s') === 'Windows NT') {
 						$destination = $filepath . '\\scripts\\' . end($temp);
-					} else {
-						$destination = $filepath . '/scripts/' . end($temp);
 					}
 					$parameters = new stdClass();
 					$parameters->ip = $device->ip;
@@ -1698,7 +1699,7 @@ if ( ! function_exists('ip_audit')) {
 				}
 			}
 			unset($item);
-			if (count($dns_entries) > 0) {
+			if ( ! empty($dns_entries) && count($dns_entries) > 0) {
 				$parameters = new stdClass();
 				$parameters->table = 'dns';
 				$parameters->input = $dns_entries;
@@ -1720,6 +1721,7 @@ if ( ! function_exists('ip_audit')) {
 			$log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
 			discovery_log($log);
 
+			$device_json = '';
 			if ( ! empty($device->id)) {
 				$device_json = new stdClass();
 				$device_json->system = new stdClass();
@@ -1854,8 +1856,8 @@ if ( ! function_exists('ip_audit')) {
 if ( ! function_exists('discover_ad')) {
 	/**
 	 * [discover_ad description]
-	 * @param  [type] $queue_item [description]
-	 * @return [type]             [description]
+	 * @param  object $queue_item [description]
+	 * @return bool             [description]
 	 */
 	function discover_ad($queue_item = null)
 	{
@@ -1907,6 +1909,7 @@ if ( ! function_exists('discover_ad')) {
 		// successful connect to AD, now try to bind using the credentials
 		ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+		$bind = false;
 		foreach ($credentials as $credential) {
 			if ($credential->attributes->type === 'windows') {
 				if ($bind = @ldap_bind($ldapconn, $credential->attributes->credentials->username, $credential->attributes->credentials->password)) {
@@ -1937,11 +1940,11 @@ if ( ! function_exists('discover_ad')) {
 					$log->message = 'Could not bind to AD using ' . $credential->attributes->name;
 					$log->command_status = 'warning';
 					discovery_log($log);
-					unset($bind);
+					$bind = false;
 				}
 			}
 		}
-		if ( ! $bind OR empty($info)) {
+		if ( $bind === false OR empty($info)) {
 			$log->severity = 5;
 			$log->command_status = 'fail';
 			$log->message = 'Could not bind to AD ' . $discovery->attributes->other->ad_domain . ' at ' . $discovery->attributes->other->ad_server;
@@ -2029,9 +2032,10 @@ if ( ! function_exists('discover_ad')) {
 		$log->command = '';
 		$log->command_output = '';
 		$log->command_status = 'finished';
-		$log->command_time_to_execute = gmdate('H:i:s', (microtime(true) - $start));
+		$log->command_time_to_execute = gmdate('H:i:s', intval(microtime(true) - $start));
 		$log->ip = '127.0.0.1';
 		discovery_log($log);
+		return true;
 	}
 }
 // End of file discoveries_helper.php

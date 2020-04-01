@@ -326,18 +326,17 @@ if (!function_exists('process_scan')) {
         discovery_log($log);
 
         $input->ssh_port = '22';
-        if (!empty($discovery->other->nmap->ssh_ports) and $discovery->other->nmap->ssh_ports != '22') {
+        if ( ! empty($discovery->other->nmap->ssh_ports) && intval($discovery->other->nmap->ssh_ports) !== 22) {
             $nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
             foreach (explode(',', $input->nmap_ports) as $port) {
                 $temp = explode('/', $port);
                 $port = $temp[0];
                 foreach ($nmap_ports as $nmap_port) {
-                    if ($port == $nmap_port) {
+                    if (intval($port) === intval($nmap_port)) {
                         $input->ssh_port = $port;
                         $input->ssh_status = 'true';
                     }
                 }
-                unset($nmap_item);
                 unset($temp);
             }
         }
