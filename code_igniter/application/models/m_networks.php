@@ -64,7 +64,7 @@ class M_networks extends MY_Model
      */
     public function create($data = null)
     {
-        if ($id = $this->insert_collection('applications', $data)) {
+        if ($id = $this->insert_collection('networks', $data)) {
             return intval($id);
         } else {
             return false;

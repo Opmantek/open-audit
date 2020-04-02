@@ -76,7 +76,7 @@ class M_queries extends MY_Model
                 return false;
             }
         }
-        if ($id = $this->insert_collection('applications', $data)) {
+        if ($id = $this->insert_collection('queries', $data)) {
             return intval($id);
         } else {
             return false;
