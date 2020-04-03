@@ -165,10 +165,16 @@ $item = $this->response->data[0];
                 </div>
 
                 <div class="col-md-6">
-                <strong><?php echo __("Query Creation Rules"); ?></strong>
-                    <p>Your columns in the SELECT section should be fully named. IE - SELECT system.id AS `system.id`, system.name AS `system.name`...</p>
-                    <p>You should include the WHERE @filter so Open-AudIT knows to restrict your query to the appropriate Orgs.</p>
-                    <p>An example<br /></p><pre class="wrap">SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type` system.name AS `system.name`, system.os_name AS `system.os_name` FROM system WHERE @filter AND system.os_group = 'Linux'</pre>
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
+                    </div>
                 </div>
 
 

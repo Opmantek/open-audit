@@ -159,51 +159,61 @@ $item = $this->response->data[0];
                     </div>
                 </div>
                 <?php } ?>
-            </div>
-            <div class="col-md-6">
+
                 <?php
                 $attributes = array('state', 'postcode', 'country', 'phone', 'geo', 'latitude', 'longitude');
                 foreach ($attributes as $attribute) {
                 ?>
                 <div class="form-group">
-                    <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
+                    <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <?php if (!empty($edit)) { ?>
+                        <span class="input-group-btn">
+                            <button id="edit_<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        </span>
+                        <?php } ?>
                     </div>
-                    <?php if ($attribute == 'geo') { ?>
-                        <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary"><?php echo __('Create'); ?></button>
-                    <?php } ?>
-                    <?php if ($attribute == 'latitude') { ?>
-                        <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-primary"><?php echo __('Get Lat/Long'); ?></button>
-                    <?php } ?>
                 </div>
                 <?php } ?>
 
                 <div class="form-group">
-                    <label for="edited_by" class="col-sm-2 control-label"><?php echo __('Edited By'); ?></label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
+                    <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="edited_date" class="col-sm-2 control-label"><?php echo __('Edited Date'); ?></label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
+                    <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="buttons" class="col-sm-3 control-label"> </label>
+                    <div class="col-sm-8 input-group">
+                        <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary"><?php echo __('Create'); ?></button>
+                        &nbsp;
+                        <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-primary"><?php echo __('Get Lat/Long'); ?></button>
                     </div>
                 </div>
             </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
+                    </div>
+                </div>
+
         </div> <!-- /row -->
       </div> <!-- /panel body -->
     </div>

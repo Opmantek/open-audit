@@ -149,8 +149,21 @@ $item = $this->response->data[0];
                                 <?php } ?>
                         </div>
                     </div>
-
                 </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

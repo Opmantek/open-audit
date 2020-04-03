@@ -85,6 +85,20 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -95,7 +109,12 @@ $endpoints = array('agents','applications','attributes','buildings','charts','cl
 
 $permissions = array('c', 'r', 'u', 'd');
 
-$item_permissions = json_decode($item->{'attributes'}->{'permissions'});
+$item_permissions = new stdClass();
+if (is_string($item->{'attributes'}->{'permissions'})) {
+    $item_permissions = json_decode($item->{'attributes'}->{'permissions'});
+} else if (!empty($item->{'attributes'}->{'permissions'})) {
+    $item_permissions = $item->{'attributes'}->{'permissions'};
+}
 
 ?>
 

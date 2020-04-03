@@ -163,13 +163,10 @@ $item = $this->response->data[0];
                         <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-6">
                 <div class="form-group">
                     <label for="roles" class="col-sm-3 control-label"><?php echo __('Roles'); ?></label>
-                    <div class="col-sm-8">
-                        <div class="col-sm-12 input-group">
+                    <div class="col-sm-8 input-group">
                             <select multiple size="6" class="data_type form-control" id="roles" name="roles" disabled>
                                 <?php foreach ($this->response->included as $role) {
                                 if ($role->type == 'roles') { ?>
@@ -178,7 +175,6 @@ $item = $this->response->data[0];
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <?php } ?>
-                        </div>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_roles" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="roles"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -187,6 +183,20 @@ $item = $this->response->data[0];
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="col-md-8 col-md-offset-2">
+                    <?php if ( ! empty($this->response->dictionary->about)) {
+                        echo "<h4 class=\"text-center\">About</h4><br />";
+                        echo $this->response->dictionary->about;
+                    } ?>
+                    <?php if ( ! empty($this->response->dictionary->notes)) {
+                        echo "<h4 class=\"text-center\">Notes</h4><br />";
+                        echo $this->response->dictionary->notes;
+                    } ?>
+                </div>
+            </div>
+
         </div>
         </div>
     </div>

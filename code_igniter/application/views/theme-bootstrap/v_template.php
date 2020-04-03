@@ -127,7 +127,7 @@ if (!empty($temp1) and !empty($temp2)) {
 }
 $temp = @$this->response->meta->flash;
 if (!empty($temp)) {
-    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . htmlentities($this->response->meta->flash->message) . "</div>\n";
+    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
 }
 
 include($this->response->include.'.php');

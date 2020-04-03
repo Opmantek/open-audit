@@ -132,8 +132,6 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <?php } ?>
-                </div>
-                <div class="col-md-6">
 
                     <?php $attributes = array('system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b'); ?>
                     <?php foreach ($attributes as $attribute) { ?>
@@ -163,8 +161,21 @@ $item = $this->response->data[0];
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
-
                 </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
