@@ -44,23 +44,16 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
@@ -69,6 +62,24 @@
                             } ?></select>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][description]" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]">
+                        </div>
+                    </div>
+
+                    <?php $attributes = array('provider', 'service_type', 'product_name', 'service_identifier', 'speed');
+                    foreach ($attributes as $attribute) { ?>    <div class="form-group">
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]">
+                        </div>
+                    </div>
+                <?php
+                    } ?>
+                    <hr />
 
                     <div class="form-group">
                         <label for="data[attributes][location_id_a]" class="col-sm-3 control-label"><?php echo __('Location A'); ?></label>
@@ -83,6 +94,17 @@
                         </div>
                     </div>
 
+                    <?php $attributes = array('system_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a');
+                    foreach ($attributes as $attribute) { ?>    <div class="form-group">
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars($attribute, REPLACE_FLAGS, CHARSET); ?>]">
+                        </div>
+                    </div>
+                <?php
+                    } ?>
+                    <hr />
+
                     <div class="form-group">
                         <label for="data[attributes][location_id_b]" class="col-sm-3 control-label"><?php echo __('Location B'); ?></label>
                         <div class="col-sm-8 input-group">
@@ -96,18 +118,7 @@
                         </div>
                     </div>
 
-                    <?php $attributes = array('provider', 'service_type', 'product_name', 'service_identifier', 'speed');
-                    foreach ($attributes as $attribute) { ?>    <div class="form-group">
-                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]">
-                        </div>
-                    </div>
-                <?php
-                    } ?></div>
-
-                <div class="col-md-6">
-                    <?php $attributes = array('system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
+                    <?php $attributes = array('system_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b');
                     foreach ($attributes as $attribute) { ?>    <div class="form-group">
                         <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
                         <div class="col-sm-8 input-group">
@@ -117,33 +128,28 @@
                 <?php
                     } ?>
 
-                    <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="form-group">
-                    <label for="submit" class="col-sm-2 control-label"></label>
+                    <label for="submit" class="col-sm-3 control-label"></label>
                     <div class="col-sm-8 input-group">
                         <input type="hidden" value="connections" id="data[type]" name="data[type]" />
                         <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                     </div>
                 </div>
-            </div>
 
+            </div>
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </form>

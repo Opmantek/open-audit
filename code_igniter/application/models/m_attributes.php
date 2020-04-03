@@ -157,9 +157,10 @@ class M_attributes extends MY_Model
         $dictionary->attributes->fields = $this->db->list_fields($collection);
         $dictionary->attributes->create = mandatory_fields($collection);
         $dictionary->attributes->update = update_fields($collection);
-        $dictionary->sentence = 'You can tag devices with an Application of your choosing.';
-        $dictionary->marketing = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
-        $dictionary->about = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->sentence = 'Open-AudIT enables you to create and use your own values for certain stored fields. For example, if you have another status than those provided, just add it and use it. Simple.';
+        $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br /><br />If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/images/map_icons<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons<br /><br /></p>';
         $dictionary->notes = '';
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

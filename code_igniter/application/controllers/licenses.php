@@ -112,6 +112,10 @@ class Licenses extends MY_Controller
                 $this->response->data[0]->attributes->used_count = intval(count($temp));
             }
         }
+        // required for the templates
+        if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
+            $this->response->edit = true;
+        }
         output($this->response);
     }
 

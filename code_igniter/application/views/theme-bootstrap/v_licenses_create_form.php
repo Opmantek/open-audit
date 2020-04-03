@@ -44,23 +44,16 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input required="true" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                             <input required="true" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
@@ -73,7 +66,7 @@
                     <div class="form-group">
                         <label for="data[attributes][org_descendants]" class="col-sm-3 control-label"><?php echo __('Organisation Descendants'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_descendants]" name="data[attributes][org_descendants]">
+                            <select class="form-control" id="data[attributes][org_descendants]" name="data[attributes][org_descendants]" required>
                             <option value="y"><?php echo __('Yes'); ?></option>
                             <option value="n"><?php echo __('No'); ?></option>
                             </select>
@@ -83,7 +76,7 @@
                     <div class="form-group">
                         <label for="data[attributes][purchase_count]" class="col-sm-3 control-label"><?php echo __('Purchace Count'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input required="true" type="text" class="form-control" id="data[attributes][purchase_count]" name="data[attributes][purchase_count]">
+                             <input required="true" type="text" class="form-control" id="data[attributes][purchase_count]" name="data[attributes][purchase_count]" required>
                         </div>
                     </div>
 
@@ -97,41 +90,33 @@
                     <div class="form-group">
                         <label for="data[attributes][match_string]" class="col-sm-3 control-label"><?php echo __('Match String'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input required="true" type="text" class="form-control" id="data[attributes][match_string]" name="data[attributes][match_string]">
+                             <input required="true" type="text" class="form-control" id="data[attributes][match_string]" name="data[attributes][match_string]" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                        <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
+                            <input type="hidden" value="licenses" id="data[type]" name="data[type]" />
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="col-md-6">
-                    <p><br /><strong><?php echo __('NOTE'); ?></strong> - You can use the percent % sign as a wildcard in the match_string.</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <label for="submit" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-8 input-group">
-                        <input type="hidden" value="licenses" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </form>

@@ -44,21 +44,14 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label"><strong>*</strong><?php echo __('Name'); ?></label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><strong>*</strong><?php echo __('Organisation'); ?></label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                                 <?php foreach ($this->response->included as $org) {
@@ -70,16 +63,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][full_name]" class="col-sm-3 control-label"><?php echo __('Full Name'); ?></label>
+                        <label for="data[attributes][password]" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][full_name]" name="data[attributes][full_name]" value="">
+                            <input type="password" class="form-control" id="data[attributes][password]" name="data[attributes][password]" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][password]" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
+                        <label for="data[attributes][full_name]" class="col-sm-3 control-label"><?php echo __('Full Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="data[attributes][password]" name="data[attributes][password]" value="">
+                            <input type="text" class="form-control" id="data[attributes][full_name]" name="data[attributes][full_name]" value="">
                         </div>
                     </div>
 
@@ -91,9 +84,21 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][roles][]" class="col-sm-3 control-label"><?php echo __('Roles'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select multiple size="6" class="data_type form-control" id="data[attributes][roles][]" name="data[attributes][roles][]" required>
+                                <?php foreach ($this->response->included as $role) {
+                                if ($role->type == 'roles' and ($role->attributes->name != 'collector' and $role->attributes->name != 'agent')) { ?>
+                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                <?php } } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][lang]" class="col-sm-3 control-label"><?php echo __('Language'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="data_type form-control" id="data[attributes][lang]" name="data[attributes][lang]">
+                            <select class="data_type form-control" id="data[attributes][lang]" name="data[attributes][lang]" required>
                                 <option value='cs'><?php echo __('Czech'); ?></option>
                                 <option value='de'><?php echo __('German'); ?></option>
                                 <option value='en' selected><?php echo __('English'); ?></option>
@@ -107,7 +112,7 @@
                     <div class="form-group">
                         <label for="data[attributes][active]" class="col-sm-3 control-label"><?php echo __('Active'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="data_type form-control" id="data[attributes][active]" name="data[attributes][active]">
+                            <select class="data_type form-control" id="data[attributes][active]" name="data[attributes][active]" required>
                                 <option value='y' selected><?php echo __('Yes'); ?></option>
                                 <option value='n'><?php echo __('No'); ?></option>
                             </select>
@@ -115,16 +120,38 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                        <label for="data[attributes][orgs]" class="col-sm-3 control-label"><?php echo __('Organisations'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="<?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
+                            <table class="table table-striped table-condensed">
+                                 <thead>
+                                    <tr>
+                                        <td class="text-center"><?php echo __('ID'); ?></td>
+                                        <td><?php echo __('Name'); ?></td>
+                                        <td><?php echo __('Parent'); ?></td>
+                                        <td style="text-align:center;"><?php echo __('Grant Permission'); ?></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <?php
+                            foreach ($this->response->included as $org) {
+                                if ($org->type == 'orgs') {
+                                    if ($org->id == 0) {
+                                        $org->attributes->parent_name = '';
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td class="text-center"><?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?></td>
+                                        <td><?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?></td>
+                                        <td><?php echo @htmlspecialchars( $org->attributes->parent_name, REPLACE_FLAGS, CHARSET); ?></td>
+                                        <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>"></td>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                            ?>
+                                </tbody>
+                            </table>
+                            <span>Note - Selecting a parent will automatically provide access to its children (although it won't be indicated here).</span>
                         </div>
                     </div>
 
@@ -132,72 +159,24 @@
                         <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
                             <input type="hidden" value="users" id="data[type]" name="data[type]" />
+                            <input type="hidden" value="user" id="data[attributes][type]" name="data[attributes][type]" />
+                            <input type="hidden" value="1" id="data[attributes][dashboard_id]" name="data[attributes][dashboard_id]" />
                             <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
-
-
                 </div>
-
                 <div class="col-md-6">
-
-                    <div class="form-group">
-                        <label for="data[attributes][roles][]" class="col-sm-3 control-label"><?php echo __('Roles'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <select multiple size="6" class="data_type form-control" id="data[attributes][roles][]" name="data[attributes][roles][]">
-                                <?php foreach ($this->response->included as $role) {
-                                if ($role->type == 'roles' and ($role->attributes->name != 'collector' and $role->attributes->name != 'agent')) { ?>
-                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
-                                <?php } } ?>
-                            </select>
-                        </div>
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo __('Organisations'); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
-        <div class="panel-body">
-            <span>Note - Selecting a parent will automatically provide access to its children (although it won't be indicated here).</span><br /><br />
-            <div class="col-md-12">
-<table class="table table-striped table-condensed">
-     <thead>
-        <tr>
-            <td><?php echo __('ID'); ?></td>
-            <td><?php echo __('Name'); ?></td>
-            <td style="text-align:center;"><?php echo __('Grant Permission'); ?></td>
-        </tr>
-    </thead>
-    <tbody>
-<?php
-foreach ($this->response->included as $org) {
-    if ($org->type == 'orgs') {
-        if ($org->id == 0) {
-            $org->attributes->parent_name = '';
-        }
-        ?>
-        <tr>
-            <td>
-        <?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>
-            </td>
-            <td>
-        <?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?>
-            </td>
-            <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>"></td>
-        </tr>
-        <?php
-    }
-}
-?>
-    </tbody>
-</table>
             </div>
         </div>
     </div>

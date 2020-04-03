@@ -44,37 +44,22 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="Your Network Name" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="Your Network Name" value="" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="data[attributes][network]" class="col-sm-3 control-label"><?php echo __('Network'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][network]" name="data[attributes][network]" placeholder="192.168.1.0/24" value="">
                         </div>
                     </div>
 
@@ -86,26 +71,52 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                        <label for="data[attributes][network]" class="col-sm-3 control-label"><?php echo __('Network'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][network]" name="data[attributes][network]" placeholder="192.168.1.0/24" value="" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
+                        <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
+                            <select class="form-control" id="data[attributes][type]" name="data[attributes][type]">
+                                <option value="Personal Area Network">Personal Area Network</option>
+                                <option value="Home Area Network">Home Area Network</option>
+                                <option value="Local Area Network" selected>Local Area Network</option>
+                                <option value="Wireless Local Area Network">Wireless Local Area Network</option>
+                                <option value="Campus Area Network">Campus Area Network</option>
+                                <option value="Metropolitan Area Network">Metropolitan Area Network</option>
+                                <option value="Wide Area Network">Wide Area Network</option>
+                                <option value="Storage-Area Network">Storage-Area Network</option>
+                                <option value="System-Area Network">System-Area Network</option>
+                                <option value="Passive Optical Local Area Network">Passive Optical Local Area Network</option>
+                                <option value="Enterprise Private Network">Enterprise Private Network</option>
+                                <option value="Virtual Private Network">Virtual Private Network</option>
+                            </select>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="submit" class="col-sm-3 control-label"></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="hidden" value="networks" id="data[type]" name="data[type]" />
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="submit" class="col-sm-3 control-label"></label>
-                    <div class="col-sm-8 input-group">
-                        <input type="hidden" value="networks" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
                     </div>
                 </div>
             </div>

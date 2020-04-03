@@ -34,6 +34,7 @@
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
+$types = array('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network');
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
@@ -101,6 +102,26 @@ $item = $this->response->data[0];
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="type" name="type" disabled>
+                            <?php foreach ($types as $type) {
+                                $selected = '';
+                                if ($type == $item->attributes->type) {
+                                    $selected = ' selected';
+                                }
+                                echo '<option value="' . $type . '"' . $selected . '>' . $type . "</option>\n";
+                            } ?>
+                            </select>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>

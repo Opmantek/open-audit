@@ -285,6 +285,8 @@ class Discoveries extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
         $this->load->model('m_locations');
         $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        $this->load->model('m_discovery_scan_options');
+        $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->collection($this->user->id));
         output($this->response);
     }
 

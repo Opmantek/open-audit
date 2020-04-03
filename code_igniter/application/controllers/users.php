@@ -106,7 +106,6 @@ class Users extends MY_Controller
         if ( $this->uri->segment(3) != 'cookie') {
             $this->load->model('m_roles');
             if ($this->response->meta->format == 'screen') {
-                $this->response->included = array_merge($this->response->included, $this->m_roles->collection($this->user->id));
                 if (!empty($this->response->data[0]->attributes)) {
                     $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
                 }

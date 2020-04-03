@@ -44,16 +44,9 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
@@ -66,8 +59,8 @@
                     <div class="form-group">
                         <label for="data[attributes][resource]" class="col-sm-3 control-label"><?php echo __('Resource'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][resource]" name="data[attributes][resource]">
-                                <option value="" label=" "></option>
+                            <select class="form-control" id="data[attributes][resource]" name="data[attributes][resource]" required>
+                                <option value="" label=" "><?php echo __('Choose') ?></option>
                                 <option value="devices"><?php echo __('Devices'); ?></option>
                                 <option value="locations"><?php echo __('Locations'); ?></option>
                                 <option value="orgs"><?php echo __('Orgs'); ?></option>
@@ -79,54 +72,46 @@
                     <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][type]" name="data[attributes][type]">
+                             <input type="text" class="form-control" id="data[attributes][type]" name="data[attributes][type]" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?> (display)</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][value]" class="col-sm-3 control-label"><?php echo __('Value'); ?> (store)</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][value]" name="data[attributes][value]">
+                             <input type="text" class="form-control" id="data[attributes][value]" name="data[attributes][value]" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                        <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
+                            <input type="hidden" value="attributes" id="data[type]" name="data[type]" />
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
 
                 </div>
                 <div class="col-md-6">
-                    <p>If you're adding a device type, don't forget to add an icon file in the below directories:<br /><br />Linux - /var/www/html/open-audit/device_images/<br /><br />Windows - <?php echo $this->config->config['base_path']; ?>\htdocs\open-audit\device_images\<br /><br />These should be in SVG format.
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <label for="submit" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-8 input-group">
-                        <input type="hidden" value="attributes" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </form>

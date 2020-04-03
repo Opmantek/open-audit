@@ -44,23 +44,16 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
@@ -138,58 +131,40 @@
                     </div>
                     <?php } ?>
 
-                </div>
-
-                <div class="col-md-6">
                     <?php
-                    $attributes = array('state', 'postcode', 'country', 'phone', 'geo', 'latitude', 'longitude');
+                    $attributes = array('state', 'postcode', 'country', 'phone', 'latitude', 'longitude', 'geo');
                     foreach ($attributes as $attribute) {
                     ?>
                     <div class="form-group">
-                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
-                        <div class="col-sm-6">
-                            <div class="col-sm-12 input-group">
-                                <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" value="">
-                            </div>
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" value="" >
                         </div>
-                        <?php if ($attribute == 'geo') { ?>
-                            <button type="button" id="locations_geocode_c" name="locations_geocode_c" class="locations_geocode_c btn btn-primary"><?php echo __('Create'); ?></button>
-                        <?php } ?>
-                        <?php if ($attribute == 'latitude') { ?>
-                            <button type="button" id="locations_latlong_c" name="locations_latlong_c" class="locations_latlong_c btn btn-primary"><?php echo __('Get Lat/Long'); ?></button>
-                        <?php } ?>
                     </div>
                     <?php } ?>
 
-                    <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-2 control-label"><?php echo __('Edited By'); ?></label>
-                        <div class="col-sm-6">
-                            <div class="col-sm-12 input-group">
-                                <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
-                            </div>
-                        </div>
+                <div class="form-group">
+                    <label for="submit" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="hidden" value="locations" id="data[type]" name="data[type]" />
+                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+                        &nbsp;
+                        <button type="button" id="locations_geocode_c" name="locations_geocode_c" class="locations_geocode_c btn btn-primary"><?php echo __('Create GeoCode'); ?></button>
+                        &nbsp;
+                        <button type="button" id="locations_latlong_c" name="locations_latlong_c" class="locations_latlong_c btn btn-primary"><?php echo __('Get Lat/Long'); ?></button>
                     </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-2 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-6">
-                            <div class="col-sm-12 input-group">
-                                <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="submit" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-4">
-                        <div class="col-sm-8 input-group">
-                            <input type="hidden" value="locations" id="data[type]" name="data[type]" />
-                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
-                        </div>
-                    </div>
+            <div class="col-md-6">
+                <div class="col-md-8 col-md-offset-2">
+                    <?php if ( ! empty($this->response->dictionary->about)) {
+                        echo "<h4 class=\"text-center\">About</h4><br />";
+                        echo $this->response->dictionary->about;
+                    } ?>
+                    <?php if ( ! empty($this->response->dictionary->notes)) {
+                        echo "<h4 class=\"text-center\">Notes</h4><br />";
+                        echo $this->response->dictionary->notes;
+                    } ?>
                 </div>
             </div>
         </div>

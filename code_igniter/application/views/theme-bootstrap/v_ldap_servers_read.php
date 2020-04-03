@@ -168,6 +168,19 @@ $item = $this->response->data[0];
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="use_auth" class="col-sm-3 control-label"><?php echo __('Use Auth'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="data_type form-control" id="use_auth" name="use_auth" disabled>
+                                <option value='n' <?php if ($item->attributes->use_auth == 'n') { echo "selected"; }?>><?php echo __('No'); ?></option>
+                                <option value='y' <?php if ($item->attributes->use_auth == 'y') { echo "selected"; }?>><?php echo __('Yes'); ?></option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button id="edit_use_auth" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="use_auth"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="col-md-6">
 

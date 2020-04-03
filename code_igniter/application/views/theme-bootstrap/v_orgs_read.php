@@ -81,6 +81,28 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
+                        <label for="type" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" name="type" id="type" disabled>
+                                <?php foreach ($this->response->included as $type) {
+                                if ($type->type === 'attributes') {
+                                    if ($type->attributes->resource === 'orgs' && $type->attributes->type === 'type') {
+                                        if ($type->attributes->value === $item->attributes->type) { $selected = ' selected'; } else { $selected = ''; }
+                                            echo '<option value="' . $type->attributes->value . '"' . $selected . '>' . $type->attributes->name . "</option>\n";
+                                        }
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="ad_group" class="col-sm-3 control-label"><?php echo __('AD Group'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="ad_group" name="ad_group" value="<?php echo htmlspecialchars( $item->attributes->ad_group, REPLACE_FLAGS, CHARSET); ?>" disabled>

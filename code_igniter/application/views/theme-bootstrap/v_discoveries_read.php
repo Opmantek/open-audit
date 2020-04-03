@@ -74,6 +74,14 @@ if ($nmap_installed == 'n') {
 if ($nmap_warning != '') {
     echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $nmap_warning . '</div>';
 }
+$discovery_scan_options = new stdClass();
+$discovery_scan_options->attributes = new stdClass();
+$discovery_scan_options->attributes->name = '';
+foreach ($this->response->included as $include) {
+    if ($include->type === 'discovery_scan_options' && intval($include->id) === intval($item->attributes->other->nmap->discovery_scan_option_id)) {
+        $discovery_scan_options = $include;
+    }
+}
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
@@ -136,6 +144,12 @@ if ($nmap_warning != '') {
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="other.nmap.discovery_scan_option_id" class="col-sm-3 control-label"><?php echo __('Discovery Options'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="other.nmap.discovery_scan_option_id" name="other.nmap.discovery_scan_option_id" value="<?php echo htmlspecialchars($discovery_scan_options->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
 
                     <?php
                     if ($item->attributes->type == 'subnet') { ?>
@@ -218,8 +232,6 @@ if ($nmap_warning != '') {
                                 <?php } ?>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
 
                     <div class="form-group">
                         <label for="status" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
@@ -266,6 +278,25 @@ if ($nmap_warning != '') {
                             <?php } ?>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text-center">Discovery Options</h4><br />
+                        Discovery Options are a global setting changed in the <a href="/open-audit/index.php/configuration/discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br />
+                        <strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An 'open|filtered' port is considered open. A 'filtered' port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br /><br/>
+
+                        <strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An 'open|filtered' port is considered open. A 'filtered' port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/>
+
+                        <strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An 'open|filtered' port is considered open. A 'filtered' port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/>
+
+                        <strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An 'open|filtered' port is considered open. A 'filtered' port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/>
+
+                        <strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An 'open|filtered' port is considered open. A 'filtered' port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/>
+
+                        <strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An 'open|filtered' port is considered open. A 'filtered' port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/>
+
+                        <strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An 'open|filtered' port is considered open. A 'filtered' port is considered open (and will trigger device detection). Use polite timing.<br/><br/>
+
+                        <strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br /><br />
                 </div>
             </div>
         </div>

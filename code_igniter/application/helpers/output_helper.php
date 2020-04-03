@@ -488,6 +488,9 @@ if (! function_exists('output')) {
     {
         $timer_start = microtime(true);
         $CI = & get_instance();
+        if ($CI->response->meta->action === 'create') {
+            redirect($CI->response->meta->collection . '/' . $CI->response->meta->id);
+        }
         header($CI->response->meta->header);
 
         $enterprise_report = new stdClass();

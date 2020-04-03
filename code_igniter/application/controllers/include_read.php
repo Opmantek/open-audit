@@ -80,6 +80,14 @@ if ($this->response->meta->collection == 'configuration') {
     }
 }
 
+if ($this->response->meta->collection == 'discoveries') {
+    // Discovery Scan Options
+    $this->load->model('m_discovery_scan_options');
+    if ( ! empty($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id)) {
+        $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->read($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id));
+    }
+}
+
 if ($this->response->meta->collection === 'users') {
     $this->load->model('m_roles');
     $this->response->included = array_merge($this->response->included, $this->m_roles->collection(1,0));

@@ -44,16 +44,9 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input required type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                             <input required type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" required>
                         </div>
                     </div>
 
@@ -67,7 +60,7 @@
                     <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]"><?php
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required><?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'orgs') { ?>
                                 <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
@@ -80,28 +73,28 @@
                     <div class="form-group">
                         <label for="data[attributes][domain]" class="col-sm-3 control-label"><?php echo __('Domain'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input required type="text" class="form-control" id="data[attributes][domain]" name="data[attributes][domain]" placeholder="your.domain.com">
+                             <input required type="text" class="form-control" id="data[attributes][domain]" name="data[attributes][domain]" placeholder="your.domain.com" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][host]" class="col-sm-3 control-label"><?php echo __('Host'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input required type="text" class="form-control" id="data[attributes][host]" name="data[attributes][host]" placeholder="192.168.1.88">
+                             <input required type="text" class="form-control" id="data[attributes][host]" name="data[attributes][host]" placeholder="192.168.1.88" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][port]" class="col-sm-3 control-label"><?php echo __('Port'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][port]" name="data[attributes][port]" placeholder="389" value="389">
+                             <input type="text" class="form-control" id="data[attributes][port]" name="data[attributes][port]" placeholder="389" value="389" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][secure]" class="col-sm-3 control-label"><?php echo __('Use Secure (LDAPS)'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select required class="form-control" id="data[attributes][secure]" name="data[attributes][secure]" size="2">
+                            <select required class="form-control" id="data[attributes][secure]" name="data[attributes][secure]" size="2" required>
                                 <option value="n" selected><?php echo __('No'); ?></option>
                                 <option value="y"><?php echo __('Yes'); ?></option>
                             </select>
@@ -118,20 +111,27 @@
                     <div class="form-group">
                         <label for="data[attributes][use_roles]" class="col-sm-3 control-label"><?php echo __('Use LDAP for Roles'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select id="data[attributes][use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]">
+                            <select id="data[attributes][use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]" required>
                                 <option value='n' selected><?php echo __('No'); ?></option>
                                 <option value='y'><?php echo __('Yes'); ?></option>
                             </select>
                         </div>
                     </div>
 
-                </div>
-                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="data[attributes][use_auth]" class="col-sm-3 control-label"><?php echo __('Use LDAP for Authentication'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select id="data[attributes][use_auth]" name="data[attributes][use_auth]" class="form-control" title="data[attributes[[use_auth]" required>
+                                <option value='n'><?php echo __('No'); ?></option>
+                                <option value='y' selected><?php echo __('Yes'); ?></option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select required class="form-control" id="data[attributes][type]" name="data[attributes][type]" size="2">
+                            <select required class="form-control" id="data[attributes][type]" name="data[attributes][type]" size="2" required>
                                 <option value="active directory" selected>Active Directory</option>
                                 <option value="openldap">OpenLDAP</option>
                             </select>
@@ -162,14 +162,14 @@
                     <div class="form-group">
                         <label for="data[attributes][refresh]" class="col-sm-3 control-label"><?php echo __('Refresh'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][refresh]" name="data[attributes][refresh]" placeholder="24" value="24">
+                             <input type="text" class="form-control" id="data[attributes][refresh]" name="data[attributes][refresh]" placeholder="24" value="24" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][lang]" class="col-sm-3 control-label"><?php echo __('Language'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="data_type form-control" id="data[attributes][lang]" name="data[attributes][lang]" title='Type'>
+                            <select class="data_type form-control" id="data[attributes][lang]" name="data[attributes][lang]" title='Language' required>
                                 <option value='de'><?php echo __('German'); ?></option>
                                 <option value='en' selected><?php echo __('English'); ?></option>
                                 <option value='es'><?php echo __('Spanish'); ?></option>
@@ -194,32 +194,27 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
+                        <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
+                            <input type="hidden" value="ldap_servers" id="data[type]" name="data[type]" />
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
-                        </div>
-                    </div>
-
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="form-group">
-                    <label for="submit" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-8 input-group">
-                        <input type="hidden" value="ldap_servers" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+                <div class="col-md-6">
+                    <div class="col-md-8 col-md-offset-2">
+                        <?php if ( ! empty($this->response->dictionary->about)) {
+                            echo "<h4 class=\"text-center\">About</h4><br />";
+                            echo $this->response->dictionary->about;
+                        } ?>
+                        <?php if ( ! empty($this->response->dictionary->notes)) {
+                            echo "<h4 class=\"text-center\">Notes</h4><br />";
+                            echo $this->response->dictionary->notes;
+                        } ?>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </form>
