@@ -223,8 +223,8 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <?php
-                    $collections = array('applications','attributes','baselines','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','orgs','queries','racks','roles','rules','summaries','users','widgets');
-                    $commercial_collections = array('applications','baselines','dashboards','maps','racks','roles','rules','widgets');
+                    $collections = array('applications','attributes','baselines','clusters','connections','dashboards','devices','fields','groups','integrations','licenses','locations','maps','networks','orgs','queries','racks','roles','rules','summaries','users','widgets');
+                    $commercial_collections = array('applications','baselines','clusters','dashboards','integrations','maps','racks','roles','rules','widgets');
                     ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Manage'); ?> <span class="caret"></span></a>
@@ -252,9 +252,9 @@ if (!empty($this->config->config['servers'])) {
                                     <ul class="dropdown-menu" style="min-width:250px;">
 
                                         <!-- LIST -->
-                                        <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections)) { ?>
+                                        <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections) and $collection !== 'roles') { ?>
                                         <li class="disabled"><a href="#">List <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                        <?php } else if (in_array($collection, $commercial_collections)) { ?>
+                                        <?php } else if (in_array($collection, $commercial_collections) and $collection !== 'roles') { ?>
                                         <li><a href='<?php echo $this->config->config['oae_url']; ?>/<?php echo $collection; ?>'><?php echo __('List').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } else { ?>
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/<?php echo $collection; ?>'><?php echo __('List').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
