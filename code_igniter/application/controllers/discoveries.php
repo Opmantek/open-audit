@@ -357,6 +357,9 @@ class Discoveries extends MY_Controller
             if ($user === 'SYSTEM') {
                 log_error('ERR-0041');
                 $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Windows is running the Apache service as "Local System". This <b>must</b> be changed to a real user (with network access). See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.');
+                $this->response->meta->flash = new stdClass();
+                $this->response->meta->flash->status = 'danger';
+                $this->response->meta->flash->message = '<strong>WARNING</strong> - Windows is running the Apache service as "Local System". This <b>must</b> be changed to a real user (with network access). See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
             }
         }
     }
@@ -376,6 +379,9 @@ class Discoveries extends MY_Controller
                 $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
 
                 $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.');
+                $this->response->meta->flash = new stdClass();
+                $this->response->meta->flash->status = 'danger';
+                $this->response->meta->flash->message = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
             }
         }
     }
