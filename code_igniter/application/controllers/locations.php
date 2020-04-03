@@ -196,6 +196,11 @@ class Locations extends MY_Controller
     */
     public function create_form()
     {
+        if (empty($this->config->config['maps_api_key'])) {
+            $this->response->meta->flash = new stdClass();
+            $this->response->meta->flash->status = 'warning';
+            $this->response->meta->flash->message = 'Google Maps API key required to retrieve lat/long and display map. See <a href="https://community.opmantek.com/display/opCommon/Google+Maps+API+Key" target="_blank">here</a>.';
+        }
         $this->response->dictionary = $this->m_locations->dictionary();
         $this->load->model('m_orgs');
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
