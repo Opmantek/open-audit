@@ -116,6 +116,9 @@ class Licenses extends MY_Controller
         if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
             $this->response->edit = true;
         }
+        if ($this->response->meta->format === 'screen') {
+            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+        }
         output($this->response);
     }
 
