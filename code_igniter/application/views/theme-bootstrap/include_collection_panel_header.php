@@ -50,7 +50,8 @@ if (strpos($this->response->links->first, '?') !== false) {
         if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'c') and
             $this->response->meta->collection != 'configuration' and
             $this->response->meta->collection != 'database' and
-            $this->response->meta->collection != 'logs') { ?>
+            $this->response->meta->collection != 'logs' and
+            $this->response->meta->collection != 'roles') { ?>
                 <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index'] . '/' . $this->response->meta->collection; ?>/create" role="button"><?php echo __('Create'); ?></a>
         <?php } ?>
         </div>
