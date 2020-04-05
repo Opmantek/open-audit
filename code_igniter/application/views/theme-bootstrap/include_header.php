@@ -15,7 +15,7 @@ if (!empty($this->config->config['servers'])) {
                     <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oac.png">
                 </a>
                 <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
-                    Open-AudIT <?php echo htmlspecialchars($this->config->config['display_version'], REPLACE_FLAGS, CHARSET) ?>
+                    Open-AudIT Community <?php echo htmlspecialchars($this->config->config['display_version'], REPLACE_FLAGS, CHARSET) ?>
                 </a>
             </div>
 
