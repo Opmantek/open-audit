@@ -66,9 +66,6 @@ class M_logon extends MY_Model
     public function logon()
     {
         // order of authenticating is against ldap_server(s) (if set), then against a local account with sha256.
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
         $CI = & get_instance();
         $CI->user = new stdClass();
 
@@ -360,35 +357,35 @@ class M_logon extends MY_Model
                                 $user->lang = (string)$ldap->lang;
                                 $user->active = 'y';
                                 $user->ldap = '';
-                                $user->type = 'user';
-                                $user->dashboard_id = 1;
-                                $user->devices_default_display_columns = '';
-                                $user->access_token = '';
-                                $user->edited_by = 'system';
                                 if ($ldap->type === 'active directory') {
                                     $user->ldap = @(string)$entries[0]['distinguishedname'][0];
                                 }
                                 if ($ldap->type === 'openldap') {
                                     $user->ldap = @(string)$entries[0]['dn'];
                                 }
+                                $user->type = 'user';
+                                $user->dashboard_id = 1;
+                                $user->devices_default_display_columns = '';
+                                $user->access_token = '';
+                                $user->edited_by = 'system';
                                 $user->edited_by = 'system';
                                 $user->uid = @(string)$entries[0]['uid'][0];
                             } else {
                                 $log->summary = 'LDAP retrieve entries failed';
-                                $log->detail = 'LDAP entries retrieval failed for user ' . $user['username'] . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection);
+                                $log->detail = 'LDAP entries retrieval failed for user ' . $username . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection);
                                 $log->status = 'fail';
                                 $log->severity = 6;
                                 stdlog($log);
-                                $CI->session->set_flashdata('error', "LDAP entries retrieval failed for user {$user['username']} at {$ldap->host} . {$log->detail}.");
+                                $CI->session->set_flashdata('error', $log->detail);
                                 continue;
                             }
                         } else {
                             $log->summary = 'LDAP search failed';
-                            $log->detail = 'LDAP search failed for user ' . $user->name . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection);
+                            $log->detail = 'LDAP search failed for user ' . $username . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection);
                             $log->status = 'fail';
-                            $log->severity = 6;
+                            $log->severity = 5;
                             stdlog($log);
-                            $CI->session->set_flashdata('error', "LDAP search failed for user {$user->name} at {$ldap->host}. {$log->detail}.");
+                            $CI->session->set_flashdata('error', $log->detail);
                             continue;
                         }
                         $log->detail = '';
@@ -419,7 +416,7 @@ class M_logon extends MY_Model
                                     $log->summary = 'LDAP group for Role miss';
                                     $log->details = 'No AD group associated with role ' . $role->name . ', skipping.';
                                     $log->status = 'reading data';
-                                    $log->severity = 7;
+                                    $log->severity = 5;
                                     stdlog($log);
                                 }
                             }
@@ -441,7 +438,7 @@ class M_logon extends MY_Model
                                     $log->summary = 'LDAP group for Org miss';
                                     $log->details = "No AD group associated with org {$org->name}, skipping.";
                                     $log->status = 'reading data';
-                                    $log->severity = 7;
+                                    $log->severity = 5;
                                     stdlog($log);
                                 }
                             }
@@ -473,9 +470,15 @@ class M_logon extends MY_Model
                                         $log->summary = "LDAP search failed for groups (roles) {$user->name} at {$ldap->host}";
                                         $log->detail = (string)ldap_error($ldap_connection);
                                         $log->status = 'fail';
-                                        $log->severity = 7;
+                                        $log->severity = 5;
                                         stdlog($log);
                                     }
+                                } else {
+                                    $log->summary = "No AD group associated with role {$role->name}, skipping.";
+                                    $log->details = json_encode($role);
+                                    $log->status = 'reading data';
+                                    $log->severity = 5;
+                                    stdlog($log);
                                 }
                             }
                             foreach ($orgs as $org) {
@@ -501,14 +504,14 @@ class M_logon extends MY_Model
                                         $log->summary = "LDAP search failed for groups (orgs) {$user->name} at {$ldap->host}";
                                         $log->detail = (string)ldap_error($ldap_connection);
                                         $log->status = 'fail';
-                                        $log->severity = 7;
+                                        $log->severity = 5;
                                         stdlog($log);
                                     }
                                 } else {
                                     $log->summary = "No AD group associated with org {$org->name}, skipping.";
-                                    $log->details = "Org: {$org->name}";
+                                    $log->details = json_encode($org);
                                     $log->status = 'reading data';
-                                    $log->severity = 7;
+                                    $log->severity = 5;
                                     stdlog($log);
                                 }
                             }
@@ -527,7 +530,7 @@ class M_logon extends MY_Model
                             $user_result = $user_query->result();
                             if (count($user_result) === 0) {
                                 // The user does not exist, insert
-                                $log->summary = 'New user created';
+                                $log->summary = 'User logged on';
                                 $log->detail = "New user {$username} logged on (AD account), " . json_encode($user);
                                 $log->status = 'success';
                                 $log->severity = 5;
@@ -537,14 +540,15 @@ class M_logon extends MY_Model
                                 } else {
                                     $user_sql = '/* m_logon::logon */ ' . 'INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
                                 }
+
                                 $user_query = $this->db->query($user_sql, (array)$user);
                                 $user->id = $this->db->insert_id();
                             } else {
                                 // The user exists, update
                                 $log->summary = 'User logged on';
-                                $log->detail = 'Existing user $username logged on (AD account).';
+                                $log->detail = "Existing user {$username} logged on (AD account).";
                                 $log->status = 'success';
-                                $log->severity = 7;
+                                $log->severity = 5;
                                 stdlog($log);
                                 if ($this->db->table_exists('users')) {
                                     $user_sql = '/* m_logon::logon */ ' . 'UPDATE users SET full_name = ?, email = ?, orgs = ?, roles = ?, ldap = ? WHERE id = ?';
@@ -573,7 +577,7 @@ class M_logon extends MY_Model
                                     $log->detail .= " Users AD groups are: {$user_ldap_groups}";
                                 }
                                 $log->status = 'fail';
-                                $log->severity = 6;
+                                $log->severity = 5;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', $log->message);
                             } else if (empty($user->orgs)) {
@@ -584,7 +588,7 @@ class M_logon extends MY_Model
                                     $log->detail .= " Users AD groups are: {$user_ldap_groups}";
                                 }
                                 $log->status = 'fail';
-                                $log->severity = 6;
+                                $log->severity = 5;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', $log->message);
                             } else if (empty($user->roles)) {
@@ -595,7 +599,7 @@ class M_logon extends MY_Model
                                     $log->detail .= " Users AD groups are: {$user_ldap_groups}";
                                 }
                                 $log->status = 'fail';
-                                $log->severity = 6;
+                                $log->severity = 5;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', $log->message);
                             }
@@ -637,9 +641,10 @@ class M_logon extends MY_Model
                 $test_hash = hash('sha256', $salt.$password);
                 // if the hashes are exactly the same, the password is valid
                 if ($test_hash === $valid_hash) {
-                    $log->message = "User {$username} logged on (local account).";
+                    $log->summary = 'User logged on';
+                    $log->detail = "Existing user {$username} logged on (local account).";
                     $log->status = 'success';
-                    $log->severity = 6;
+                    $log->severity = 5;
                     stdlog($log);
                     $CI->user = $db_user;
                     $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
