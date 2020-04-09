@@ -48,8 +48,9 @@ if ($this->response->meta->format == 'screen') {
     $table = $this->response->meta->collection;
     if ($table == 'database') {
         $table = $this->response->meta->id;
-    }
+    } else {
         $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+    }
     if (empty($this->response->dictionary)) {
         include 'include_dictionary.php';
         $this->response->dictionary = $dictionary;
