@@ -345,10 +345,10 @@ class M_discoveries extends MY_Model
         if (empty($discovery)) {
             return false;
         }
-        $sql = '/* m_discoveries::execute */ ' . 'DELETE from discovery_log WHERE discovery_id = ?';
+        $sql = '/* m_discoveries::queue */ ' . 'DELETE from discovery_log WHERE discovery_id = ?';
         $data = array($id);
         $this->db->query($sql, $data);
-        $sql = '/* m_discoveries::execute */ ' . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
+        $sql = '/* m_discoveries::queue */ ' . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
         $this->load->model('m_queue');
