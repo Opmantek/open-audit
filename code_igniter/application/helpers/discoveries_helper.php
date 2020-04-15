@@ -61,6 +61,16 @@ if ( ! function_exists('all_ip_list')) {
 		if (is_null($discovery)) {
 			return false;
 		}
+
+		$log = new stdClass();
+		$log->discovery_id = $discovery->id;
+		$log->severity = 6;
+		$log->file = 'discoveries_helper';
+		$log->function = 'all_ip_list';
+		$log->command_status = 'notice';
+		$log->message = 'Retrieving IP list';
+		$log->ip = '127.0.0.1';
+
 		$ip_addresses = array();
 		// hosts_in_subnet=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
 		if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
@@ -85,6 +95,9 @@ if ( ! function_exists('all_ip_list')) {
 		} else {
 			return false;
 		}
+		$log->command_output = 'Total IPs: ' . @count($ip_addresses);
+		$log->command = $command;
+		discovery_log($log);
 		return $ip_addresses;
 	}
 }
@@ -100,6 +113,16 @@ if ( ! function_exists('ip_list')) {
 		if (is_null($discovery)) {
 			return false;
 		}
+
+		$log = new stdClass();
+		$log->discovery_id = $discovery->id;
+		$log->severity = 6;
+		$log->file = 'discoveries_helper';
+		$log->function = 'responding_ip_list';
+		$log->command_status = 'notice';
+		$log->message = 'Testing for responding IPs';
+		$log->ip = '127.0.0.1';
+
 		$ip_addresses = array();
 		if ($discovery->attributes->other->nmap->ping === 'y') {
 			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
@@ -142,6 +165,9 @@ if ( ! function_exists('ip_list')) {
 				return false;
 			}
 		}
+		$log->command_output = 'Responding IPs: ' . @count($ip_addresses);
+		$log->command = $command;
+		discovery_log($log);
 		return $ip_addresses;
 	}
 }
@@ -243,6 +269,15 @@ if ( ! function_exists('discover_subnet')) {
 		$sql = '/* discoveries_helper::discover_subnet */ ' . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
 		$data = array($discovery_id);
 		$CI->db->query($sql, $data);
+
+		if ( ! empty($CI->config->config['discovery_ip_exclude'])) {
+			$exclude_ip = str_replace(' ', ',', $CI->config->config['discovery_ip_exclude']);
+			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
+				$discovery->attributes->other->nmap->exclude_ip .= ',' . $exclude_ip;
+			} else {
+				$discovery->attributes->other->nmap->exclude_ip = $exclude_ip;
+			}
+		}
 
 		$all_ip_list = all_ip_list($discovery);
 
@@ -488,7 +523,7 @@ if ( ! function_exists('check_nmap_output')) {
 	/**
 	 * [check_nmap_output description]
 	 * @param  object $discovery [description]
-	 * @param  array $output    [description]
+	 * @param  array  $output    [description]
 	 * @param  string $ip        [description]
 	 * @param  string $command   [description]
 	 * @return array|false            [description]
@@ -1404,6 +1439,7 @@ if ( ! function_exists('ip_audit')) {
 				$parameters->ssh_port = $ip_scan->details->ssh_port;
 				$result = ssh_command($parameters);
 			} else {
+
 				// $log->severity = 3;
 				// $log->message = 'No audit script for ' . $device->ip;
 				// $log->command_status = 'fail';
@@ -1411,9 +1447,10 @@ if ( ! function_exists('ip_audit')) {
 				// $log->severity = 7;
 				// $log->message = '';
 				// $log->command_status = 'notice';
+
 			}
 			$audit_result = '';
-			if ($audit_script !== '' and ! empty($result) && gettype($result) === 'array') {
+			if ($audit_script !== '' && ! empty($result) && gettype($result) === 'array') {
 				$audit_file = '';
 				foreach ($result as $line) {
 					if (strpos($line, 'File  ') !== false) {
@@ -1541,7 +1578,7 @@ if ( ! function_exists('ip_audit')) {
 		}
 
 		// Delete the local audit result file
-		if (! empty($audit_result)) {
+		if ( ! empty($audit_result)) {
 			if ($audit) {
 				if ( ! empty($destination)) {
 					$log->severity = 7;
