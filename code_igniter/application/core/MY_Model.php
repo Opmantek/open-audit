@@ -418,7 +418,7 @@ class MY_Model extends CI_Model
         }
         $insert_data = new stdClass();
         foreach ($insert_fields as $field) {
-            if ( ! empty($data->{$field})) {
+            if ( isset($data->{$field})) {
                 $insert_data->{$field} = $data->{$field};
             } else {
                 foreach ($fields as $definition) {
