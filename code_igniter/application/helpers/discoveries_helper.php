@@ -72,9 +72,7 @@ if ( ! function_exists('all_ip_list')) {
 		$log->ip = '127.0.0.1';
 
 		$ip_addresses = array();
-		// hosts_in_subnet=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
 		if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
-			$discovery->attributes->other->nmap->exclude_ip = str_replace(' ', ',', $discovery->attributes->other->nmap->exclude_ip);
 			$command = 'nmap -n -sL --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
 		} else {
 			$command = 'nmap -n -sL ' . $discovery->attributes->other->subnet;
@@ -83,6 +81,7 @@ if ( ! function_exists('all_ip_list')) {
 		if (php_uname('s') === 'Darwin') {
 			$command = '/usr/local/bin/' . $command;
 		}
+		$log->command = $command;
 
 		exec($command, $output, $return_var);
 		if ($return_var === 0) {
@@ -93,10 +92,10 @@ if ( ! function_exists('all_ip_list')) {
 				}
 			}
 		} else {
+			discovery_log($log);
 			return false;
 		}
 		$log->command_output = 'Total IPs: ' . @count($ip_addresses);
-		$log->command = $command;
 		discovery_log($log);
 		return $ip_addresses;
 	}
@@ -133,6 +132,7 @@ if ( ! function_exists('ip_list')) {
 			if (php_uname('s') === 'Darwin') {
 				$command = '/usr/local/bin/' . $command;
 			}
+			$log->command = $command;
 			exec($command, $output, $return_var);
 			if ($return_var === 0) {
 				foreach ($output as $line) {
@@ -142,6 +142,7 @@ if ( ! function_exists('ip_list')) {
 					}
 				}
 			} else {
+				discovery_log($log);
 				return false;
 			}
 		} else {
@@ -153,6 +154,7 @@ if ( ! function_exists('ip_list')) {
 			if (php_uname('s') === 'Darwin') {
 				$command = '/usr/local/bin/' . $command;
 			}
+			$log->command = $command;
 			exec($command, $output, $return_var);
 			if ($return_var === 0) {
 				foreach ($output as $line) {
@@ -162,11 +164,11 @@ if ( ! function_exists('ip_list')) {
 					}
 				}
 			} else {
+				discovery_log($log);
 				return false;
 			}
 		}
 		$log->command_output = 'Responding IPs: ' . @count($ip_addresses);
-		$log->command = $command;
 		discovery_log($log);
 		return $ip_addresses;
 	}
@@ -271,7 +273,10 @@ if ( ! function_exists('discover_subnet')) {
 		$CI->db->query($sql, $data);
 
 		if ( ! empty($CI->config->config['discovery_ip_exclude'])) {
-			$exclude_ip = str_replace(' ', ',', $CI->config->config['discovery_ip_exclude']);
+			// Account for users adding multiple spaces which would be converted to multiple comma's.
+			$exclude_ip = preg_replace('!\s+!', ' ', $CI->config->config['discovery_ip_exclude']);
+			// Convert spaces to comma's
+			$exclude_ip = str_replace(' ', ',', $exclude_ip);
 			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
 				$discovery->attributes->other->nmap->exclude_ip .= ',' . $exclude_ip;
 			} else {
