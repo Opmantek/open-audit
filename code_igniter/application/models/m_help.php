@@ -406,13 +406,15 @@ class M_help extends MY_Model
 
             // OS Timezone
             if ($data->os->name === 'Linux (Redhat)') {
-                $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
-                exec($command_string, $output, $return_var);
-                $data->os->timezone = @$output[0];
+                if (file_exists('/etc/sysconfig/clock')) {
+                    $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
+                    exec($command_string, $output, $return_var);
+                    $data->os->timezone = @$output[0];
+                }
                 if ($data->os->timezone === '') {
                     $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
                     exec($command_string, $output, $return_var);
-                    $data->os->timezone = @$output[0];
+                    $data->os->timezone = @trim($output[0]);
                 }
             }
             if ($data->os->name === 'Linux (Debian)') {
