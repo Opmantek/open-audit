@@ -349,11 +349,17 @@ if ( ! function_exists('inputRead')) {
                     $CI->response->meta->id = 1;
                     $CI->response->meta->sub_resource = $CI->uri->segment(2);
                     break;
+                case 'search':
+                    $sql = '';
+                    $CI->response->meta->id = 1;
+                    $CI->response->meta->sub_resource = '';
+                    break;
                 default:
                     $sql = '/* input_helper::inputRead */ ' . "SELECT id FROM `{$CI->response->meta->collection}` WHERE name LIKE ? LIMIT 1";
                     $table = $CI->response->meta->collection;
                     break;
             }
+
             if ($sql !== '') {
                 $data = array(urldecode($CI->uri->segment(2)));
                 if ($CI->response->meta->collection === 'users' && strpos($data[0], '@') !== false) {
@@ -736,6 +742,19 @@ if ( ! function_exists('inputRead')) {
             $CI->response->meta->action = 'collection';
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because not in reserved words.';
             stdlog($log);
+        }
+
+        if ($CI->response->meta->collection === 'search' && $request_method !== 'POST') {
+            // Redirect as we only accept POSTs for /search
+            log_error('ERR-0007', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+            $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+            if ($CI->response->meta->format !== 'screen') {
+                output();
+                exit();
+            } else {
+                redirect('devices');
+                exit();
+            }
         }
 
         // get the sort
