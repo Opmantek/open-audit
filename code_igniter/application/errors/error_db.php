@@ -56,7 +56,7 @@ p {
 <body>
 	<div id="container">
 		<h1><?php echo $heading; ?></h1>
-		<?php echo $message; ?>
+		<?php echo htmlentities($message); ?>
 	</div>
 </body>
 </html>
