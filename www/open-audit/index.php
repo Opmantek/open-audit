@@ -25,16 +25,18 @@
 #
 # *****************************************************************************
 *
+* PHP version 5.3.3
+* 
 * @category  Template
-* @package   Open-AudIT
+* @package   All
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   3.3.0
+* @version   GIT: Open-AudIT_3.3.0
 * @link      http://www.open-audit.org
 */
 
-ini_set('memory_limit','1024M');
+ini_set('memory_limit', '1024M');
 $query_count = 0;
 ob_start();
 
@@ -42,15 +44,15 @@ ob_start();
 // http://www.php.net/manual/en/timezones.php
 
 // Get the timezone from the system if not set in php.ini
-if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Australia/Brisbane') {
+if ( ! ini_get('date.timezone') OR (string) ini_get('date.timezone') === 'Australia/Brisbane') {
     // Australia/Brisbane is the default on our shipped Windows installer.
     // Consider Australia/Brisbane equivalent to not being set
     $timezone = '';
     $default = 'UTC';
 
-    if ((string) php_uname('s') == 'Darwin') {
+    if ((string) php_uname('s') === 'Darwin') {
         $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
-        # new for high sierra
+        // new for high sierra
         $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f8,9';
         exec($command_string, $output, $return_var);
         $timezone = @$output[0];
@@ -59,7 +61,7 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
         }
     }
 
-    if ((string) php_uname('s') == 'Linux') {
+    if ((string) php_uname('s') === 'Linux') {
         // On many systems (Mac, for instance) "/etc/localtime" is a symlink
         // to the file with the timezone info
         if (@is_link('/etc/localtime')) {
@@ -73,7 +75,7 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
         } else {
             // On other systems, like Ubuntu, there's file with the Olsen time right inside it.
             $timezone = @file_get_contents('/etc/timezone');
-            if (! strlen($timezone)) {
+            if ( ! strlen($timezone)) {
                 $timezone = $default;
             }
         }
@@ -82,7 +84,7 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
         }
     }
 
-    if ((string) php_uname('s') == 'Windows NT') {
+    if ((string) php_uname('s') === 'Windows NT') {
         $wbem_locator = new COM('WbemScripting.SWbemLocator');
         $wbem_services = $wbem_locator->ConnectServer('.', 'root\\cimv2');
         $zones = $wbem_services->ExecQuery('Select * from Win32_TimeZone');
@@ -94,7 +96,7 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
         // Attempt to match based on the offset and part of the WMI string in the Caption field
         foreach (timezone_abbreviations_list() as $timezone_abbr) {
             foreach ($timezone_abbr as $entry) {
-                if ((int) $entry['offset'] === (int) $wmi_zone_offset and strpos($entry['timezone_id'], $wmi_location) !== false) {
+                if ((int) $entry['offset'] === (int) $wmi_zone_offset && strpos($entry['timezone_id'], $wmi_location) !== false) {
                     $timezone = trim($entry['timezone_id']);
                 }
             }
@@ -149,15 +151,15 @@ if (defined('ENVIRONMENT')) {
     switch (ENVIRONMENT) {
         case 'development':
             error_reporting(E_ALL);
-                        break;
+            break;
 
         case 'testing':
         case 'production':
             error_reporting(0);
-                        break;
+            break;
 
         default:
-                        exit('The application environment is not set correctly.');
+            exit('The application environment is not set correctly.');
     }
 }
 
@@ -171,7 +173,7 @@ if (defined('ENVIRONMENT')) {
  * as this file.
  *
  **/
-    if ((string) php_uname('s') == 'Windows NT') {
+    if ((string) php_uname('s') === 'Windows NT') {
         // windows
         $system_path = 'c:/xampplite/open-audit/code_igniter/system';
         if (file_exists('c:/xampp/open-audit/code_igniter/system')) {
@@ -199,7 +201,7 @@ if (defined('ENVIRONMENT')) {
  * NO TRAILING SLASH!
  *
  **/
-    if ((string) php_uname('s') == 'Windows NT') {
+    if ((string) php_uname('s') === 'Windows NT') {
         // windows
         $application_folder = 'c:/xampplite/open-audit/code_igniter/application';
         if (file_exists('c:/xampp/open-audit/code_igniter/application')) {
@@ -284,7 +286,7 @@ if (defined('ENVIRONMENT')) {
     $system_path = rtrim($system_path, '/').'/';
 
     // Is the system path correct?
-    if (! is_dir($system_path)) {
+    if ( ! is_dir($system_path)) {
         exit('Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME));
     }
 
@@ -313,7 +315,7 @@ if (defined('ENVIRONMENT')) {
     if (is_dir($application_folder)) {
         define('APPPATH', $application_folder.'/');
     } else {
-        if (! is_dir(BASEPATH.$application_folder.'/')) {
+        if ( ! is_dir(BASEPATH.$application_folder.'/')) {
             exit('Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF);
         }
 
@@ -328,3 +330,6 @@ if (defined('ENVIRONMENT')) {
  * And away we go...
  **/
 require_once BASEPATH.'core/CodeIgniter.php';
+
+// End of file index.php
+// Location: ./../../../www/open-audit/index.php
