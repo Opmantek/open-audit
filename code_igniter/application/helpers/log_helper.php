@@ -524,7 +524,7 @@ if (! function_exists('stdlog')) {
             }
         }
 
-        $sql = "/* log_helper */ " . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "/* log_helper */ " . "INSERT INTO `logs` VALUES (NULL, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $query = $CI->db->query($sql, $log);
 
         $CI->response->logs[] = json_encode($log);

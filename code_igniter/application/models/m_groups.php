@@ -181,7 +181,7 @@ class M_groups extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM groups LEFT JOIN orgs ON (groups.org_id = orgs.id) " . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM `groups` LEFT JOIN `orgs` ON (`groups`.`org_id` = `orgs`.`id`) " .
                     $CI->response->meta->internal->filter . ' ' . 
                     $CI->response->meta->internal->groupby . ' ' . 
                     $CI->response->meta->internal->sort . ' ' . 

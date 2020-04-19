@@ -1068,7 +1068,7 @@ if ( ! function_exists('inputRead')) {
             // }
             // $CI->response->meta->internal->properties = implode(', ', $fields);
 
-            $CI->response->meta->internal->properties = $temp . '.*';
+            $CI->response->meta->internal->properties = '`' . $temp . '`.*';
         }
 
         if ($request_method === 'POST' && $data_supplied_by === 'form' && ! empty($CI->config->config['access_token_enable']) && $CI->config->config['access_token_enable'] === 'y') {

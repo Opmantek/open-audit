@@ -164,6 +164,11 @@ class MY_Model extends CI_Model
     public function run_sql($sql, $data = array())
     {
         $CI = & get_instance();
+        if (empty($CI->response)) {
+            $CI->response = new stdCLass();
+            $CI->response->meta = new stdClass();
+            $CI->response->meta->sql = array();
+        }
         if ($sql == '') {
             return;
         }
