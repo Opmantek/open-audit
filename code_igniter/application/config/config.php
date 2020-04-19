@@ -2,8 +2,8 @@
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-$config['web_internal_version'] = '20191010';
-$config['web_display_version'] = '3.3.0';
+$config['web_internal_version'] = '20200420';
+$config['web_display_version'] = '3.3.1';
 $config['microtime'] = microtime(true);
 # $config['debug'] = false;
 /*
