@@ -79,7 +79,7 @@ class M_collection extends MY_Model
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = false;
 
-        $sql = "SELECT count(*) AS `count` FROM `$collection`";
+        $sql = "SELECT count(*) AS `count` FROM `{$collection}`";
         $query = $this->db->query($sql);
         $result = @$query->result();
         if ($this->db->_error_message()) {
@@ -88,12 +88,12 @@ class M_collection extends MY_Model
             $this->log->summary = 'Query fail';
             $db_error = @$this->db->_error_message();
             $error = '';
-            if (!empty($db_error)) {
+            if ( ! empty($db_error)) {
                 $error = 'Error: ' . $db_error . ', ';
             }
             $this->log->detail = $error . 'Query: ' . $this->db->last_query();
             stdlog($this->log);
-            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ')'), $db_error);
             $this->db->db_debug = $temp_debug;
             $this->log->summary = 'finish';
             stdlog($this->log);
@@ -117,7 +117,7 @@ class M_collection extends MY_Model
             return false;
         }
 
-        $sql = "ALTER TABLE `$collection` AUTO_INCREMENT = 1";
+        $sql = "ALTER TABLE `{$collection}` AUTO_INCREMENT = 1";
         $query = $this->db->query($sql);
         if ($this->db->_error_message()) {
             $this->log->severity = 3;
@@ -125,12 +125,12 @@ class M_collection extends MY_Model
             $this->log->summary = $this->db->last_query();
             $this->log->detail = 'Query fail - ' . @$this->db->_error_message();
             stdlog($this->log);
-            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ')'), $db_error);
             $this->db->db_debug = $temp_debug;
             return false;
         }
 
-        $sql = "OPTIMIZE TABLE `$collection`";
+        $sql = "OPTIMIZE TABLE `{$collection}`";
         $query = $this->db->query($sql);
         if ($this->db->_error_message()) {
             $this->log->severity = 3;
@@ -138,7 +138,7 @@ class M_collection extends MY_Model
             $this->log->summary = $this->db->last_query();
             $this->log->detail = 'Query fail - ' . @$this->db->_error_message();
             stdlog($this->log);
-            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ')'), $db_error);
             $this->db->db_debug = $temp_debug;
             return false;
         }
@@ -162,41 +162,41 @@ class M_collection extends MY_Model
             return false;
         }
 
-        if ($collection == 'devices') {
-            $collection == 'system';
+        if ($collection === 'devices') {
+            $collection = 'system';
         }
 
         $total = 0;
 
-        if ($collection != 'database') {
-            if ($collection == 'orgs') {
-                # Orgs don't have an org_id, they have an id
-                $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "` WHERE id IN (" . $CI->user->org_list . ")";
-            } else if ($collection == 'logs') {
-                # logs are special as we have 2x different types
+        if ($collection !== 'database') {
+            if ($collection === 'orgs') {
+                // Orgs don't have an org_id, they have an id
+                $sql = "SELECT COUNT(*) as `count` FROM `{$collection}` WHERE id IN ({$CI->user->org_list})";
+            } else if ($collection === 'logs') {
+                // logs are special as we have 2x different types
                 $type = 'system';
-                if (!empty($CI->response->meta->filter)) {
+                if ( ! empty($CI->response->meta->filter)) {
                     foreach ($CI->response->meta->filter as $filter) {
-                        if ($filter->name == 'logs.type') {
+                        if ($filter->name === 'logs.type') {
                             $type = $filter->value;
                         }
                     }
                 }
-                if ($type != 'system' and $type != 'access') {
+                if ($type !== 'system' && $type !== 'access') {
                     $type = 'system';
                 }
                 $sql = "SELECT count(*) AS `count` FROM `logs` WHERE `logs`.`type` = '" . $type . "'";
             } else if ($this->db->field_exists('org_id', $collection)) {
-                # Anything else with an org_id
-                $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "` WHERE org_id IN (" . $CI->user->org_list . ")";
+                // Anything else with an org_id
+                $sql = "SELECT COUNT(*) as `count` FROM `{$collection}` WHERE org_id IN ({$CI->user->org_list})";
             } else {
-                # Anythng left that has no org_id
-                $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "`";
+                // Anythng left that has no org_id
+                $sql = "SELECT COUNT(*) as `count` FROM `{$collection}`";
             }
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $result = $query->result();
-            if (!empty($result[0]->count)) {
+            if ( ! empty($result[0]->count)) {
                 $total = intval($result[0]->count);
             }
         } else {
@@ -361,24 +361,24 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
-            $all_options = array('ping', 'service_version', 'filtered', 'timeout', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports', 'tcp_ports', 'udp_ports', 'exclude_tcp_ports', 'exclude_udp_ports', 'exclude_ip', 'ssh_ports');
+            $all_options = array('ping', 'service_version', 'open|filtered', 'filtered', 'timeout', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports', 'tcp_ports', 'udp_ports', 'exclude_tcp_ports', 'exclude_udp_ports', 'exclude_ip', 'ssh_ports');
 
-            $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
+            $query = $this->db->query('SELECT * FROM discoveries WHERE id = ?', array($data->id));
             $result = $query->result();
             $db_discovery = $result[0];
             $other = json_decode($db_discovery->other);
 
-            if (!empty($data->other)) {
+            if ( ! empty($data->other)) {
                 $received_other = new stdClass();
                 foreach ($data->other as $key => $value) {
                         $received_other->$key = $value;
                 }
 
-                if ( ! empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
+                if ( ! empty($received_other->subnet) && ! preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
                     log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for subnet');
                     $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Subnet supplied.');
                     $data->other->subnet = '';
-                    if ($CI->response->meta->format == 'screen') {
+                    if ($CI->response->meta->format === 'screen') {
                         redirect('/discoveries');
                     } else {
                         output($CI->response);
@@ -388,26 +388,26 @@ class M_collection extends MY_Model
 
                 $discovery_scan_options = '';
                 if (isset($received_other->nmap->discovery_scan_option_id)) {
-                    if (!is_numeric($received_other->nmap->discovery_scan_option_id) and $received_other->nmap->discovery_scan_option_id != '') {
+                    if ( ! is_numeric($received_other->nmap->discovery_scan_option_id) && $received_other->nmap->discovery_scan_option_id !== '') {
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (non-numeric) supplied.');
                         $data->other->subnet = '';
-                        if ($CI->response->meta->format == 'screen') {
+                        if ($CI->response->meta->format === 'screen') {
                             redirect('/discoveries');
                         } else {
                             output($CI->response);
                             exit();
                         }
                     } else {
-                        if ($received_other->nmap->discovery_scan_option_id != '' and $received_other->nmap->discovery_scan_option_id != '0') {
-                            $select = "SELECT * FROM discovery_scan_options WHERE id = ?";
+                        if ((string)$received_other->nmap->discovery_scan_option_id !== '' && intval($received_other->nmap->discovery_scan_option_id) !== 0) {
+                            $select = 'SELECT * FROM discovery_scan_options WHERE id = ?';
                             $data_array = array(intval($received_other->nmap->discovery_scan_option_id));
                             $query = $this->db->query($select, $data_array);
                             $result = $query->result();
                             if (empty($result)) {
                                 log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
                                 $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
-                                if ($CI->response->meta->format == 'screen') {
+                                if ($CI->response->meta->format === 'screen') {
                                     redirect('/discoveries');
                                 } else {
                                     output($CI->response);
@@ -420,33 +420,59 @@ class M_collection extends MY_Model
                     }
                 }
 
-                # If any of the below are changed, we're not using a default
-                if (!empty($received_other->nmap->filtered)) {
+                // If any of the below are changed, we're not using a default
+                if ( ! empty($received_other->nmap->ping)) {
+                    if ($received_other->nmap->ping === 'y' OR $received_other->nmap->ping === 'n') {
+                        $received_other->nmap->discovery_scan_option_id = '0';
+                    } else {
+                        $received_other->nmap->ping = '';
+                    }
+                }
+                if ( ! empty($received_other->nmap->service_version)) {
+                    if ($received_other->nmap->service_version === 'y' OR $received_other->nmap->service_version === 'n') {
+                        $received_other->nmap->discovery_scan_option_id = '0';
+                    } else {
+                        $received_other->nmap->service_version = '';
+                    }
+                }
+                if ( ! empty($received_other->nmap->{'open|filtered'})) {
+                    if ($received_other->nmap->{'open|filtered'} === 'y' OR $received_other->nmap->{'open|filtered'} === 'n') {
+                        $received_other->nmap->discovery_scan_option_id = '0';
+                    } else {
+                        $received_other->nmap->{'open|filtered'} = '';
+                    }
+                }
+                if ( ! empty($received_other->nmap->filtered)) {
+                    if ($received_other->nmap->filtered === 'y' OR $received_other->nmap->filtered === 'n') {
+                        $received_other->nmap->discovery_scan_option_id = '0';
+                    } else {
+                        $received_other->nmap->filtered = '';
+                    }
+                }
+                if ( ! empty($received_other->nmap->timeout)) {
+                    $received_other->nmap->timeout = intval($received_other->nmap->timeout);
                     $received_other->nmap->discovery_scan_option_id = '0';
                 }
-                if (!empty($received_other->nmap->ping)) {
+                if ( ! empty($received_other->nmap->timing)) {
+                    $received_other->nmap->timing = intval($received_other->nmap->timing);
                     $received_other->nmap->discovery_scan_option_id = '0';
                 }
-                if (!empty($received_other->nmap->service_version)) {
+                if ( ! empty($received_other->nmap->nmap_tcp_ports)) {
                     $received_other->nmap->discovery_scan_option_id = '0';
+                    $received_other->nmap->nmap_tcp_ports = intval($received_other->nmap->nmap_tcp_ports);
                 }
-                if (!empty($received_other->nmap->timing)) {
+                if ( ! empty($received_other->nmap->nmap_udp_ports)) {
                     $received_other->nmap->discovery_scan_option_id = '0';
-                }
-                if (!empty($received_other->nmap->nmap_tcp_ports)) {
-                    $received_other->nmap->discovery_scan_option_id = '0';
-                }
-                if (!empty($received_other->nmap->nmap_udp_ports)) {
-                    $received_other->nmap->discovery_scan_option_id = '0';
+                    $received_other->nmap->nmap_udp_ports = intval($received_other->nmap->nmap_udp_ports);
                 }
 
-                if (!empty($received_other->nmap->tcp_ports)) {
-                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->tcp_ports)) {
+                if ( ! empty($received_other->nmap->tcp_ports)) {
+                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->tcp_ports)) {
                         // Invalid TCP ports
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for tcp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
                         $data->other->nmap->tcp_ports = '';
-                        if ($CI->response->meta->format == 'screen') {
+                        if ($CI->response->meta->format === 'screen') {
                             redirect('/discoveries');
                         } else {
                             output($CI->response);
@@ -458,13 +484,13 @@ class M_collection extends MY_Model
                     }
                 }
 
-                if (!empty($received_other->nmap->udp_ports)) {
-                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->udp_ports)) {
+                if ( ! empty($received_other->nmap->udp_ports)) {
+                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->udp_ports)) {
                         // Invalid UDP ports
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for udp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
                         $data->other->nmap->udp_ports = '';
-                        if ($CI->response->meta->format == 'screen') {
+                        if ($CI->response->meta->format === 'screen') {
                             redirect('/discoveries');
                         } else {
                             output($CI->response);
@@ -476,13 +502,13 @@ class M_collection extends MY_Model
                     }
                 }
 
-                if (!empty($received_other->nmap->exclude_tcp_ports)) {
-                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_tcp_ports)) {
-                        // Invalud Exclude TCP ports
+                if ( ! empty($received_other->nmap->exclude_tcp_ports)) {
+                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_tcp_ports)) {
+                        // Invalid Exclude TCP ports
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
                         $data->other->nmap->exclude_tcp_ports = '';
-                        if ($CI->response->meta->format == 'screen') {
+                        if ($CI->response->meta->format === 'screen') {
                             redirect('/discoveries');
                         } else {
                             output($CI->response);
@@ -493,13 +519,13 @@ class M_collection extends MY_Model
                     }
                 }
 
-                if (!empty($received_other->nmap->exclude_udp_ports)) {
-                    if (!preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_udp_ports)) {
+                if ( ! empty($received_other->nmap->exclude_udp_ports)) {
+                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_udp_ports)) {
                         // Invalid Exclude UDP ports
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
                         $data->other->nmap->exclude_udp_ports = '';
-                        if ($CI->response->meta->format == 'screen') {
+                        if ($CI->response->meta->format === 'screen') {
                             redirect('/discoveries');
                         } else {
                             output($CI->response);
@@ -510,14 +536,14 @@ class M_collection extends MY_Model
                     }
                 }
 
-                if (!empty($received_other->nmap->exclude_ip)) {
+                if ( ! empty($received_other->nmap->exclude_ip)) {
                     $received_other->nmap->exclude_ip = str_replace(' ', ',', $received_other->nmap->exclude_ip);
-                    if (!preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
+                    if ( ! preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
                         // Invalid Exclude IP
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_ip');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
                         $data->other->nmap->exclude_ip = '';
-                        if ($CI->response->meta->format == 'screen') {
+                        if ($CI->response->meta->format === 'screen') {
                             redirect('/discoveries');
                         } else {
                             output($CI->response);
@@ -528,40 +554,60 @@ class M_collection extends MY_Model
                     }
                 }
 
+                if ( ! empty($received_other->nmap->ssh_ports)) {
+                    $received_other->nmap->ssh_ports = str_replace(' ', ',', $received_other->nmap->ssh_ports);
+                    if ( ! preg_match('/^[\d,\/,-]*$/', $received_other->nmap->ssh_ports)) {
+                        // Invalid SSH Ports
+                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for ssh_ports');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid ssh_ports supplied.');
+                        $data->other->nmap->exclude_ip = '';
+                        if ($CI->response->meta->format === 'screen') {
+                            redirect('/discoveries');
+                            return false;
+                        } else {
+                            output($CI->response);
+                            exit();
+                            return false;
+                        }
+                    } else {
+                        // Valid SSH Ports
+                    }
+                }
+
                 // top level - subnet, ad_domain, ad_server
-                if (!empty($received_other->subnet)) {
+                if ( ! empty($received_other->subnet)) {
                     $other->subnet = $received_other->subnet;
                     $data->description = 'Subnet - ' . $received_other->subnet;
-                    if (stripos($received_other->subnet, '-') === false and stripos($received_other->subnet, ',') === false) {
+                    if (stripos($received_other->subnet, '-') === false && stripos($received_other->subnet, ',') === false) {
                         $this->load->helper('network');
                         $temp = network_details($received_other->subnet);
-                        if (!empty($temp->error) and filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
+                        if ( ! empty($temp->error) && filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
                             $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid subnet attribute supplied.');
                             log_error('ERR-0010', 'm_collections::update (invalid subnet supplied)');
                             return;
                         }
                     }
                 }
-                if (!empty($received_other->ad_domain)) {
+                if ( ! empty($received_other->ad_domain)) {
                     $other->ad_domain = $received_other->ad_domain;
                     $data->description = 'Active Directory - ' . $received_other->ad_domain;
                 }
 
-                if (!empty($received_other->ad_server)) {
+                if ( ! empty($received_other->ad_server)) {
                     $other->ad_server = $received_other->ad_server;
                 }
 
-                if (empty($other->nmap) or count((array)$other->nmap) == 0) {
+                if (empty($other->nmap) OR count((array)$other->nmap) === 0) {
                     $other->nmap = new stdClass();
                 }
 
-                if (!empty($received_other->nmap)) {
+                if ( ! empty($received_other->nmap)) {
                     foreach ($received_other->nmap as $key => $value) {
                         $other->nmap->{$key} = $value;
                     }
                 }
 
-                if (empty($other->match) or count((array)$other->match) == 0) {
+                if (empty($other->match) OR count((array)$other->match) === 0) {
                     $other->match = new stdClass();
                 }
 
@@ -596,12 +642,12 @@ class M_collection extends MY_Model
             }
         }
 
-        if ($collection === 'integrations' and !empty($data->options)) {
+        if ($collection === 'integrations' && ! empty($data->options)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
             $result = $query->result();
             $existing = new stdClass();
-            if (!empty($result[0]->options)) {
+            if ( ! empty($result[0]->options)) {
                 $original = json_decode($result[0]->options);
             }
             $submitted = $data->options;
@@ -610,18 +656,18 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'ldap_servers') {
-            if (!empty($data->dn_password)) {
+            if ( ! empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);
             }
         }
 
         if ($collection === 'scripts') {
-            if (!empty($data->options)) {
-                $select = "SELECT * FROM scripts WHERE id = ?";
+            if ( ! empty($data->options)) {
+                $select = 'SELECT * FROM scripts WHERE id = ?';
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
                 $existing = new stdClass();
-                if (!empty($result[0]->options)) {
+                if ( ! empty($result[0]->options)) {
                     $existing = json_decode($result[0]->options);
                 }
                 foreach ($data->options as $key => $value) {
@@ -632,19 +678,19 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'tasks') {
-            if (!empty($data->options)) {
+            if ( ! empty($data->options)) {
                 $received = new stdClass();
-                if (gettype($data->options) === "object" or gettype($data->options) === "array") {
+                if (gettype($data->options) === 'object' OR gettype($data->options) === 'array') {
                     foreach ($data->options as $key => $value) {
                             $received->$key = $value;
                     }
                 }
                 $existing = new stdClass();
-                if (!empty($data->id)) {
-                    $select = "SELECT * FROM tasks WHERE id = ?";
+                if ( ! empty($data->id)) {
+                    $select = 'SELECT * FROM tasks WHERE id = ?';
                     $query = $this->db->query($select, array($data->id));
                     $result = $query->result();
-                    if (!empty($result[0]->options)) {
+                    if ( ! empty($result[0]->options)) {
                         $existing = json_decode($result[0]->options);
                     }
                 }
@@ -658,34 +704,34 @@ class M_collection extends MY_Model
                 }
                 $data->options = (string)json_encode($new);
             }
-            if (!empty($data->{'minute[]'}) and is_array($data->{'minute[]'})) {
+            if ( ! empty($data->{'minute[]'}) && is_array($data->{'minute[]'})) {
                 $data->minute = implode(',', $data->{'minute[]'});
                 unset($data->{'minute[]'});
             }
-            if (!empty($data->{'hour[]'}) and is_array($data->{'hour[]'})) {
+            if ( ! empty($data->{'hour[]'}) && is_array($data->{'hour[]'})) {
                 $data->hour = implode(',', $data->{'hour[]'});
                 unset($data->{'hour[]'});
             }
-            if (!empty($data->{'day_of_month[]'}) and is_array($data->{'day_of_month[]'})) {
+            if ( ! empty($data->{'day_of_month[]'}) && is_array($data->{'day_of_month[]'})) {
                 $data->day_of_month = implode(',', $data->{'day_of_month[]'});
                 unset($data->{'day_of_month[]'});
             }
-            if (!empty($data->{'month[]'}) and is_array($data->{'month[]'})) {
+            if ( ! empty($data->{'month[]'}) && is_array($data->{'month[]'})) {
                 $data->month = implode(',', $data->{'month[]'});
                 unset($data->{'month[]'});
             }
-            if (!empty($data->{'day_of_week[]'}) and is_array($data->{'day_of_week[]'})) {
+            if ( ! empty($data->{'day_of_week[]'}) && is_array($data->{'day_of_week[]'})) {
                 $data->day_of_week = implode(',', $data->{'day_of_week[]'});
                 unset($data->{'day_of_week[]'});
             }
         }
 
         if ($collection === 'users') {
-            if (!empty($data->password)) {
+            if ( ! empty($data->password)) {
                 set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/random_compat');
-                require_once "lib/random.php";
+                require_once 'lib/random.php';
                 $salt = bin2hex(random_bytes(32));
-                $data->password = $salt.hash("sha256", $salt.(string)$data->password);
+                $data->password = $salt.hash('sha256', $salt.(string)$data->password);
                 unset($salt);
             }
         }
@@ -695,7 +741,7 @@ class M_collection extends MY_Model
         $items = array();
         foreach ($data as $key => $value) {
             if (in_array($key, $update_fields)) {
-                if ($sql == '') {
+                if ($sql === '') {
                     $sql = "SET `" . $key . "` = ?";
                     $items[] = $value;
                 } else {

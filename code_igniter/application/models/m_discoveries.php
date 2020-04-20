@@ -68,17 +68,48 @@ class M_discoveries extends MY_Model
      */
     public function create($data = null)
     {
+        // Validate Main
+        // $data->name = 'a strng';
+        $data->org_id = intval($data->org_id);
+        // $data->description = 'a strng';
+        if (empty($data->type)) {
+            $data->type = '';
+        }
+        if ($data->type !== 'subnet' && $data->type !== 'active directory') {
+            $data->type = '';
+        }
         if (empty($data->devices_assigned_to_org)) {
             unset($data->devices_assigned_to_org);
+        } else {
+            $data->devices_assigned_to_org = intval($data->devices_assigned_to_org);
         }
         if (empty($data->devices_assigned_to_location)) {
             unset($data->devices_assigned_to_location);
+        } else {
+            $data->devices_assigned_to_location = intval($data->devices_assigned_to_location);
         }
+        // $data->network_address = 'a strng, but no longer used';
+        if (isset($data->system_id)) {
+            $data->system_id = intval($data->system_id);
+        }
+        if ( ! empty($data->discard)) {
+            if ($data->discard !== 'n' && $data->discard !== 'y') {
+                unset($data->discard);
+            }
+        }
+
+
+        // Validate Other
         if ( ! empty($data->other) && is_string($data->other)) {
             $data->other = json_decode($data->other);
         }
         if (empty($data->other)) {
             $data->other = new stdClass();
+        }
+        if ( ! empty($data->other->subnet)) {
+            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
+                $data->other->subnet = '';
+            }
         }
         if (empty($data->other->nmap)) {
             $data->other->nmap = new stdClass();
@@ -92,27 +123,98 @@ class M_discoveries extends MY_Model
             if ( ! empty($result[0])) {
                 $data->other->nmap = $result[0];
             } else {
-                $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","discovery_scan_option_id":"0","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161","ssh_ports":"22"}';
-                $data->other->nmap = json_decode($json);
+                // $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","discovery_scan_option_id":"0","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161","ssh_ports":"22"}';
+                // $data->other->nmap = json_decode($json);
+                $json = new stdClass();
+                $json->ping = 'y';
+                $json->service_version = 'n';
+                $json->{'open|filtered'} = 'n';
+                $json->filtered = 'n';
+                $json->timeout = 0;
+                $json->timing = 4;
+                $json->nmap_tcp_ports = '';
+                $json->nmap_udp_ports = '';
+                $json->tcp_ports = '';
+                $json->udp_ports = '';
+                $json->exclude_tcp_ports = 0;
+                $json->exclude_udp_ports = 0;
+                $json->exclude_ip = '';
+                $json->ssh_ports = '';
+                $json->options = '';
+                $data->other->nmap = $json;
             }
+        }
+        if ( ! empty($data->other->nmap->ping)) {
+            if ($data->other->nmap->ping !== 'y' && $data->other->nmap->ping !== 'n') {
+                $data->other->nmap->ping = 'y';
+            }
+        }
+        if ( ! empty($data->other->nmap->service_version)) {
+            if ($data->other->nmap->service_version !== 'y' && $data->other->nmap->service_version !== 'n') {
+                $data->other->nmap->service_version = 'n';
+            }
+        }
+        if ( ! empty($data->other->nmap->{'open|filtered'})) {
+            if ($data->other->nmap->{'open|filtered'} !== 'y' && $data->other->nmap->{'open|filtered'} !== 'n') {
+                $data->other->nmap->{'open|filtered'} = 'n';
+            }
+        }
+        if ( ! empty($data->other->nmap->filtered)) {
+            if ($data->other->nmap->filtered !== 'y' && $data->other->nmap->filtered !== 'n') {
+                $data->other->nmap->filtered = 'n';
+            }
+        }
+        if ( isset($data->other->nmap->timeout)) {
+            $data->other->nmap->timeout = intval($data->other->nmap->timeout);
+        } else {
+            $data->other->nmap->timeout = 0;
+        }
+        if ( isset($data->other->nmap->timing)) {
+            $data->other->nmap->timing = intval($data->other->nmap->timing);
+        } else {
+            $data->other->nmap->timing = 4;
+        }
+        if ( isset($data->other->nmap->nmap_tcp_ports)) {
+            $data->other->nmap->nmap_tcp_ports = intval($data->other->nmap->nmap_tcp_ports);
+        } else {
+            $data->other->nmap->nmap_tcp_ports = 0;
+        }
+        if ( isset($data->other->nmap->nmap_udp_ports)) {
+            $data->other->nmap->nmap_udp_ports = intval($data->other->nmap->nmap_udp_ports);
+        } else {
+            $data->other->nmap->nmap_udp_ports = 0;
+        }
+        if ( ! empty($data->other->nmap->tcp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->tcp_ports)) {
+            $data->other->nmap->tcp_ports = '';
+        }
+        if ( ! empty($data->other->nmap->udp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->udp_ports)) {
+            $data->other->nmap->udp_ports = '';
+        }
+        if ( ! empty($data->other->nmap->exclude_tcp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->exclude_tcp_ports)) {
+            $data->other->nmap->exclude_tcp_ports = '';
+        }
+        if ( ! empty($data->other->nmap->exclude_udp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->exclude_udp_ports)) {
+            $data->other->nmap->exclude_udp_ports = '';
         }
         if ( ! empty($data->other->nmap->exclude_ip)) {
             $data->other->nmap->exclude_ip = str_replace(' ', ',', $data->other->nmap->exclude_ip);
+            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->nmap->exclude_ip)) {
+                $data->other->nmap->exclude_ip = '';
+            }
         }
+        if ( ! empty($data->other->nmap->ssh_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->ssh_ports)) {
+            $data->other->nmap->ssh_ports = '';
+        }
+
         if ( ! empty($data->type) && $data->type === 'subnet') {
-            if ( ! empty($data->other->subnet) && ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
-                log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Invalid field data supplied for subnet');
-                $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
-                $data->other->subnet = '';
+            if (empty($data->other->subnet)) {
+                log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing or invalid field: subnet');
                 if ($CI->response->meta->format === 'screen') {
                     redirect('/discoveries');
                 } else {
                     output($CI->response);
                     exit();
                 }
-            }
-            if (empty($data->other->subnet)) {
-                log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing field: subnet');
             } else {
                 $data->description = 'Subnet - ' . $data->other->subnet;
             }
