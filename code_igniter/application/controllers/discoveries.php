@@ -315,7 +315,7 @@ class Discoveries extends MY_Controller
     }
 
     /**
-    * Supply a HTML form for the user to update an object
+    * Execute a given discovery
     *
     * @access public
     * @return NULL
