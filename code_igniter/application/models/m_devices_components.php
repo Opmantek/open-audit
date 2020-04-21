@@ -630,7 +630,9 @@ class M_devices_components extends MY_Model
         // MEMORY
         if ((string)$table === 'memory') {
             for ($i=0; $i<count($input); $i++) {
-                if (empty($input[$i]->speed) OR ! is_int($input[$i]->speed)) {
+                if ( ! empty($input[$i]->speed)) {
+                    $input[$i]->speed = intval(preg_replace('/[^\d.]/', '', $input[$i]->speed));
+                } else {
                     unset($input[$i]->speed);
                 }
                 // new DERIVED column `name`
