@@ -272,6 +272,13 @@ if ( ! function_exists('discover_subnet')) {
 		$data = array($discovery_id);
 		$CI->db->query($sql, $data);
 
+		if ( ! preg_match('/^[\d,\.,\/,\-]*$/', $discovery->attributes->other->subnet)) {
+			$log->message = 'Invalid subnet value supplied of ' . htmlentities($discovery->attributes->other->subnet);
+			$log->severity = 5;
+			discovery_log($log);
+			return;
+		}
+
 		if ( ! empty($CI->config->config['discovery_ip_exclude'])) {
 			// Account for users adding multiple spaces which would be converted to multiple comma's.
 			$exclude_ip = preg_replace('!\s+!', ' ', $CI->config->config['discovery_ip_exclude']);
@@ -282,6 +289,13 @@ if ( ! function_exists('discover_subnet')) {
 			} else {
 				$discovery->attributes->other->nmap->exclude_ip = $exclude_ip;
 			}
+		}
+		// Ensure we only have valid characters of digit, dot, slash and comma in attribute
+		if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $discovery->attributes->other->nmap->exclude_ip)) {
+			$discovery->attributes->other->nmap->exclude_ip = '';
+			$log->message = 'Invalid characters supplied in exclude_ip, setting to blank.';
+			$log->severity = 5;
+			discovery_log($log);
 		}
 
 		$all_ip_list = all_ip_list($discovery);
