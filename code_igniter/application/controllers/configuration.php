@@ -104,7 +104,9 @@ class Configuration extends MY_Controller
     */
     public function update()
     {
-        include 'include_update.php';
+        $this->m_configuration->update(intval($this->response->meta->id), $this->response->meta->received_data->attributes->value, $this->user->full_name);
+        $this->response->data = $this->m_configuration->read($this->response->meta->id);
+        output($this->response);
         return;
     }
 

@@ -124,46 +124,96 @@ class M_configuration extends MY_Model
         if ( ! empty($this->config->config['internal_version']) && $this->config->config['internal_version'] < 20160904) {
             return;
         }
-        $CI = & get_instance();
-        // We might just use the response->meta->id
-        if (empty($id) && ! empty($CI->response->meta->collection) && $CI->response->meta->collection === 'configuration') {
-            if ( ! empty($CI->response->meta->id)) {
-                $id = $CI->response->meta->id;
-            } else if ( ! empty($CI->response->meta->received_data->attributes->name)) {
-                $id = $CI->response->meta->received_data->attributes->name;
-            } else if ( ! empty($CI->response->meta->received_data->attributes->id)) {
-                $id = $CI->response->meta->received_data->attributes->id;
-            }
-        }
+
         // We accept either an integer ID or a string NAME
-        if ( ! empty($id) && ! is_integer($id)) {
-            $sql = 'SELECT id FROM configuration WHERE name = ?';
-            $data = array((string)$id);
-            $result = $this->run_sql($sql, $data);
-            if ( ! empty($result[0]->id)) {
-                $id = $result[0]->id;
+        if ( ! empty($id)) {
+            if ( ! is_int($id)) {
+                $sql = 'SELECT * FROM `configuration` WHERE `name` = ?';
+                $data = array((string)$id);
+                $result = $this->run_sql($sql, $data);
+                $config_item = $result[0];
+                $id = @intval($config_item->id);
             } else {
-                $id = '';
+                $sql = 'SELECT * FROM `configuration` WHERE `id` = ?';
+                $data = array($id);
+                $result = $this->run_sql($sql, $data);
+                $config_item = $result[0];
+                $id = @intval($config_item->id);
             }
         }
+
         if (empty($id)) {
             // We have nothing to ID the particular config item
+            log_error('ERR-0044', 'm_configuration::update', 'No ID or NAME supplied to update.');
             return false;
         }
-        // We can use the responsed received data if not explicitly provided a value
-        if (empty($value) && $CI->response->meta->collection === 'configuration') {
-            if (isset($CI->response->meta->received_data->attributes->value)) {
-                $value = $CI->response->meta->received_data->attributes->value;
+
+        if (empty($edited_by)) {
+            log_error('ERR-0044', 'm_configuration::update', 'No username supplied to update.');
+            return false;
+        }
+
+        if ($config_item->type === 'bool' && $value !== 'y' && $value !== 'n' && $value !== '') {
+            // invalid
+            log_error('ERR-0044', 'm_configuration::update', 'Value supplied must be either y or n.');
+            return false;
+        }
+
+        if ($config_item->type === 'number') {
+            if ( ! is_numeric($value) && ! is_int($value) && $value !== '') {
+                log_error('ERR-0044', 'm_configuration::update', 'Value supplied must be a number.');
+                return false;
+            } else {
+                if ( ! $value !== '') {
+                    $value = intval($value);
+                }
             }
         }
-        if (empty($edited_by)) {
-            $edited_by = $this->user->full_name;
+
+        if ($config_item->name === 'discovery_ip_exclude' && ! preg_match('/^[\d,\.,\/,-, ,\-]*$/', $value)) {
+            // invalid
+            log_error('ERR-0044', 'm_configuration::update', 'server_ip must be a valid IP address, range or subnet, separated by spaces or commas.');
+            return false;
         }
-        if ($this->db->dbdriver === 'mysql' OR $this->db->dbdriver === 'mysqli') {
-            $sql = 'UPDATE configuration SET value = ?, edited_by = ?, edited_date = NOW() WHERE id = ?';
-        } else if ($this->db->dbdriver === 'mssql') {
-            $sql = 'UPDATE [configuration] SET value = ?, edited_by = ?, edited_date = getdatetime2() WHERE id = ?';
+
+        if ($config_item->type === 'text' && $config_item->name !== 'modules' && $config_item->name !== 'servers') {
+            if (strpos($value, '"') !== false OR strpos($value, "'") !== false) {
+                // invalid
+                log_error('ERR-0044', 'm_configuration::update', 'URL value contains disallowed characters (quotes).');
+                return false;
+            }
         }
+
+        if ($config_item->name === 'modules' OR $config_item->name === 'servers') {
+            $test = @json_decode($value);
+            if (empty($test)) {
+                // invalid
+                log_error('ERR-0044', 'm_configuration::update', 'modules should be valid JSON.');
+                return false;
+            }
+        }
+
+        if (strpos($config_item->name, 'url') !== false OR $config_item->name === 'default_network_address') {
+            if (strpos($value, '"') !== false OR strpos($value, "'") !== false OR strpos($value, '<') !== false OR strpos($value, '>') !== false) {
+                // invalid
+                log_error('ERR-0044', 'm_configuration::update', 'URL value contains disallowed characters.');
+                return false;
+            }
+        }
+
+        if ($config_item->name === 'server_ip' && ! preg_match('/^[\d,\.]*$/', $value)) {
+            // invalid
+            log_error('ERR-0044', 'm_configuration::update', 'server_ip must be a valid IP address.');
+            return false;
+        }
+
+        if ($config_item->name === 'oae_prompt' && ! preg_match('/^[\d,\-]*$/', $value)) {
+            // invalid
+            log_error('ERR-0044', 'm_configuration::update', 'oae_prompt should be a valid date of the form YYYY-MM-DD.');
+            return false;
+        }
+
+        $sql = 'UPDATE configuration SET value = ?, edited_by = ?, edited_date = NOW() WHERE id = ?';
         $data = array((string)$value, (string)$edited_by, intval($id));
         $this->run_sql($sql, $data);
         return true;
@@ -391,7 +441,7 @@ class M_configuration extends MY_Model
 
             $filter = '';
             $filter_response = array();
-            if (!empty($CI->response->meta->filter)) {
+            if ( ! empty($CI->response->meta->filter)) {
                 foreach ($CI->response->meta->filter as $filter) {
                     if ($filter->operator === 'in' OR $filter->operator === 'not in') {
                         $filter_response[] = ' ' . $filter->name . ' ' . $filter->operator . ' ' . $filter->value;

@@ -403,6 +403,14 @@ if (! function_exists('getErrors')) {
             $error_array['ERR-0043']->detail = "<strong>ERROR</strong> - Nmap <strong>must</strong> be installed. Please install it using your package manager. See <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
         }
 
+        $error_array['ERR-0044'] = new stdClass();
+        $error_array['ERR-0044']->code = 'ERR-0044';
+        $error_array['ERR-0044']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0044']->severity = 5;
+        $error_array['ERR-0044']->severity_text = 'warning';
+        $error_array['ERR-0044']->title = 'Bad Configuration value supplied';
+        $error_array['ERR-0044']->detail = 'The configuration value supplied is invalid for this item.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
