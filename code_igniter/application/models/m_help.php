@@ -455,8 +455,8 @@ class M_help extends MY_Model
             // scripts perms - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/other | grep scripts | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if ( ! empty($output[1])) {
-                $data->permissions->scripts = $output[1];
+            if ( ! empty($output[0])) {
+                $data->permissions->scripts = $output[0];
             } else {
                 $data->permissions->scripts = 'Error - missing directory';
             }
@@ -465,8 +465,8 @@ class M_help extends MY_Model
             // Attachments - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/code_igniter/application | grep attachments | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if ( ! empty($output[1])) {
-                $data->permissions->attachments = $output[1];
+            if ( ! empty($output[0])) {
+                $data->permissions->attachments = $output[0];
             } else {
                 $data->permissions->attachments = 'Error - missing directory';
             }
@@ -475,8 +475,8 @@ class M_help extends MY_Model
             // Uploads - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/code_igniter/application | grep uploads | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if ( ! empty($output[1])) {
-                $data->permissions->uploads = $output[1];
+            if ( ! empty($output[0])) {
+                $data->permissions->uploads = $output[0];
             } else {
                 $data->permissions->uploads = 'Error - missing directory';
             }
@@ -485,8 +485,8 @@ class M_help extends MY_Model
             // custom images - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/www/open-audit | grep custom_images | cut -d" " -f1';
             exec($command_string, $output, $return_var);
-            if ( ! empty($output[1])) {
-                $data->permissions->custom_images = $output[1];
+            if ( ! empty($output[0])) {
+                $data->permissions->custom_images = $output[0];
             } else {
                 $data->permissions->custom_images = 'Error - missing directory';
             }
