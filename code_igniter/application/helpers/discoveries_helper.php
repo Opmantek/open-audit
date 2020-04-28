@@ -290,7 +290,7 @@ if ( ! function_exists('discover_subnet')) {
 				$discovery->attributes->other->nmap->exclude_ip = $exclude_ip;
 			}
 		}
-		// Ensure we only have valid characters of digit, dot, slash and comma in attribute
+		// Ensure we only have valid characters of digit, dot, slash, dash and comma in attribute
 		if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $discovery->attributes->other->nmap->exclude_ip)) {
 			$discovery->attributes->other->nmap->exclude_ip = '';
 			$log->message = 'Invalid characters supplied in exclude_ip, setting to blank.';
