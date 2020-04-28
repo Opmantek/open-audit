@@ -170,7 +170,7 @@ class M_configuration extends MY_Model
             }
         }
 
-        if ($config_item->name === 'discovery_ip_exclude' && ! preg_match('/^[\d,\.,\/,-, ,\-]*$/', $value)) {
+        if ($config_item->name === 'discovery_ip_exclude' && ! preg_match('/^[\d,\.,\/,\-,\,\s]*$/', $value)) {
             // invalid
             log_error('ERR-0044', 'm_configuration::update', 'server_ip must be a valid IP address, range or subnet, separated by spaces or commas.');
             return false;
