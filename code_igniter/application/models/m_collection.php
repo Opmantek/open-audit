@@ -538,7 +538,7 @@ class M_collection extends MY_Model
 
                 if ( ! empty($received_other->nmap->exclude_ip)) {
                     $received_other->nmap->exclude_ip = str_replace(' ', ',', $received_other->nmap->exclude_ip);
-                    if ( ! preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
+                    if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $received_other->nmap->exclude_ip)) {
                         // Invalid Exclude IP
                         log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_ip');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
