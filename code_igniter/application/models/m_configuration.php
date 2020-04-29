@@ -131,20 +131,24 @@ class M_configuration extends MY_Model
                 $sql = 'SELECT * FROM `configuration` WHERE `name` = ?';
                 $data = array((string)$id);
                 $result = $this->run_sql($sql, $data);
-                $config_item = $result[0];
-                $id = @intval($config_item->id);
+                if ( ! empty($result)) {
+                    $config_item = $result[0];
+                    $id = @intval($config_item->id);
+                }
             } else {
                 $sql = 'SELECT * FROM `configuration` WHERE `id` = ?';
                 $data = array($id);
                 $result = $this->run_sql($sql, $data);
-                $config_item = $result[0];
-                $id = @intval($config_item->id);
+                if ( ! empty($result)) {
+                    $config_item = $result[0];
+                    $id = @intval($config_item->id);
+                }
             }
         }
 
         if (empty($id)) {
             // We have nothing to ID the particular config item
-            log_error('ERR-0044', 'm_configuration::update', 'No ID or NAME supplied to update.');
+            log_error('ERR-0044', 'm_configuration::update', 'No (or invalid) ID or NAME supplied to update (supplied: ' . $id . ').');
             return false;
         }
 
