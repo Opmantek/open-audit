@@ -4317,7 +4317,6 @@ result.WriteText "  <service>" & vbcrlf
 set colItems = objWMIService.ExecQuery("Select * from Win32_Service",,32)
 for each objItem in colItems
     result.WriteText "      <item>" & vbcrlf
-    'result.WriteText "         <service_description>" & escape_xml(objItem.Description) & "</service_description>" & vbcrlf
     result.WriteText "          <description>" & escape_xml(objItem.DisplayName) & "</description>" & vbcrlf
     result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
     result.WriteText "          <executable>" & escape_xml(objItem.PathName) & "</executable>" & vbcrlf
@@ -4328,62 +4327,60 @@ for each objItem in colItems
 
     service_name = objItem.Name
     if details_to_lower = "y" then service_name = lcase(service_name) end if
+    test_name = lcase(service_name)
 
-    ' to account for SQL server instances not named "sql server (mssqlserver)", named "sql server (something else)"
-    'if (instr(service_name, "mssql$" ) = 1) then service_name = "mssqlserver": wscript.echo "in" end if
+    select case test_name
 
-    select case service_name
+        case "iisadmin"
+        iis = True
 
-    case "iisadmin"
-    iis = True
+        case "w3svc"
+        iis_w3svc = True
 
-    case "w3svc"
-    iis_w3svc = True
+        case "msftpsvc"
+        iis_ftpsvc = True
 
-    case "msftpsvc"
-    iis_ftpsvc = True
+        case "smtpsvc"
+        iis_smtpsvc = True
 
-    case "smtpsvc"
-    iis_smtpsvc = True
+        case "nntpsvc"
+        iis_nntpsvc = True
 
-    case "nntpsvc"
-    iis_nntpsvc = True
+        case "mssqlserver"
+        en_sql_server = "y"
+        en_sql_server_state = objItem.State
+        if debugging > "1" then wscript.echo service_name end if
 
-    case "mssqlserver"
-    en_sql_server = "y"
-    en_sql_server_state = objItem.State
-    if debugging > "1" then wscript.echo service_name end if
+        case "sql server (mssqlserver)"
+        en_sql_server = "y"
+        en_sql_server_state = objItem.State
+        if debugging > "1" then wscript.echo service_name end if
 
-    case "sql server (mssqlserver)"
-    en_sql_server = "y"
-    en_sql_server_state = objItem.State
-    if debugging > "1" then wscript.echo service_name end if
+        case "mssql$sqlexpress"
+        en_sql_express = "y"
+        en_sql_server_state = objItem.State
+        if debugging > "1" then wscript.echo service_name end if
 
-    case "mssql$sqlexpress"
-    en_sql_express = "y"
-    en_sql_server_state = objItem.State
-    if debugging > "1" then wscript.echo service_name end if
-
-    case "sql server (sqlexpress)"
-    en_sql_express = "y"
-    en_sql_server_state = objItem.State
-    if debugging > "1" then wscript.echo service_name end if
+        case "sql server (sqlexpress)"
+        en_sql_express = "y"
+        en_sql_server_state = objItem.State
+        if debugging > "1" then wscript.echo service_name end if
 
     end select
 
     if lcase(objItem.DisplayName) = "sql server (sqlexpress)" then
-    en_sql_express = "y"
-    en_sql_server_state = objItem.State
+        en_sql_express = "y"
+        en_sql_server_state = objItem.State
     end if
 
     if lcase(objItem.DisplayName) = "sql server (mssqlserver)"  then
-    en_sql_server = "y"
-    en_sql_server_state = objItem.State
+        en_sql_server = "y"
+        en_sql_server_state = objItem.State
     end if
 
     if (instr(objItem.DisplayName, "SQL Server (") = 1)  then
-    en_sql_server = "y"
-    en_sql_server_state = objItem.State
+        en_sql_server = "y"
+        en_sql_server_state = objItem.State
     end if
 
 next
@@ -4852,133 +4849,211 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000) 
 end if
 
 if audit_location = "local" then
-    iis_version = ""
-    w3wpPath = objShell.ExpandEnvironmentStrings("%windir%") & "\System32\inetsrv\w3wp.exe"
-    appcmd =   objShell.ExpandEnvironmentStrings("%windir%") & "\system32\inetsrv\appcmd.exe"
-    if (objFSO.FileExists(w3wpPath)) then  
-        iis_version = objFSO.GetFileVersion(w3wpPath)
-        if iis_version > "" then
-            if debugging > "1" then wscript.echo "IIS " & iis_version & " Installed" end if
-            server = server & "     <item>" & vbcrlf
-            server = server & "         <type>web</type>" & vbcrlf
-            server = server & "         <name>IIS</name>" & vbcrlf
-            server = server & "         <version>" & escape_xml(iis_version) & "</version>" & vbcrlf
-            server = server & "         <status>running</status>" & vbcrlf
-            server = server & "     </item>" & vbcrlf
-            strResults = ""
-            if (objFSO.FileExists(appcmd)) then
-                On Error Resume Next
-                    set objExecObject = objShell.Exec(appcmd & " list sites")
-                On Error GoTo 0
-                if (IsObject(objExecObject)) then
-                    do While Not objExecObject.StdOut.AtEndOfStream
-                        strResults = objExecObject.StdOut.ReadAll()
-                    Loop
-                    Sites = Split(strResults, vbcrlf)
+    if (iis = True or iis_w3svc = True) then
+        iis_version = ""
+        w3wpPath = objShell.ExpandEnvironmentStrings("%windir%") & "\System32\inetsrv\w3wp.exe"
+        appcmd =   objShell.ExpandEnvironmentStrings("%windir%") & "\system32\inetsrv\appcmd.exe"
+        if (objFSO.FileExists(w3wpPath)) then
+            iis_version = objFSO.GetFileVersion(w3wpPath)
+            if iis_version > "" then
+                if debugging > "1" then wscript.echo "IIS " & iis_version & " Installed" end if
+                server = server & "     <item>" & vbcrlf
+                server = server & "         <type>web</type>" & vbcrlf
+                server = server & "         <name>IIS</name>" & vbcrlf
+                server = server & "         <version>" & escape_xml(iis_version) & "</version>" & vbcrlf
+                server = server & "         <status>running</status>" & vbcrlf
+                server = server & "     </item>" & vbcrlf
+                strResults = ""
+
+                if (objFSO.FileExists(appcmd)) then
+                    On Error Resume Next
+                        set objExecObject = objShell.Exec(appcmd & " list sites")
+                    On Error GoTo 0
+                    if (IsObject(objExecObject)) then
+                        do While Not objExecObject.StdOut.AtEndOfStream
+                            strResults = objExecObject.StdOut.ReadAll()
+                        Loop
+                        Sites = Split(strResults, vbcrlf)
+                    end if
+
+                    On Error Resume Next
+                        set objExecObject = objShell.Exec(appcmd & " list vdir")
+                    On Error GoTo 0
+                    if (IsObject(objExecObject)) then
+                        do While Not objExecObject.StdOut.AtEndOfStream
+                            strResults = objExecObject.StdOut.ReadAll()
+                        Loop
+                        Vdir = Split(strResults, vbcrlf)
+                    end if
+
+                    On Error Resume Next
+                        set objExecObject = objShell.Exec(appcmd & " list apppool")
+                    On Error GoTo 0
+                    if (IsObject(objExecObject)) then
+                        do While Not objExecObject.StdOut.AtEndOfStream
+                            strResults = objExecObject.StdOut.ReadAll()
+                        Loop
+                        AppPool = Split(strResults, vbcrlf)
+                    end if
                 end if
 
-                On Error Resume Next
-                    set objExecObject = objShell.Exec(appcmd & " list vdir")
-                On Error GoTo 0
-                if (IsObject(objExecObject)) then
-                    do While Not objExecObject.StdOut.AtEndOfStream
-                        strResults = objExecObject.StdOut.ReadAll()
-                    Loop
-                    Vdir = Split(strResults, vbcrlf)
-                end if
+                if isArray(Sites) then
+                    for each line in Sites
+                        if line > "" then
+                            split_space = split(line)
+                            if (isarray(split_space)) then
+                                if (split_space(0) = "SITE") then
 
-                On Error Resume Next
-                    set objExecObject = objShell.Exec(appcmd & " list apppool")
-                On Error GoTo 0
-                if (IsObject(objExecObject)) then
-                    do While Not objExecObject.StdOut.AtEndOfStream
-                        strResults = objExecObject.StdOut.ReadAll()
-                    Loop
-                    AppPool = Split(strResults, vbcrlf)
-                end if
+                                    site_name = ""
+                                    internal_id = ""
+                                    site_status = ""
+                                    site_ip = ""
+                                    site_port = ""
+                                    site_hostname = ""
+                                    site_path = ""
+                                    site_size = ""
 
-            end if
-            if isArray(Sites) then
-                for each line in Sites
-                    if line > "" then
-                        split_space = split(line)
-                        if (isarray(split_space)) then
-                            if (split_space(0) = "SITE") then
+                                    split_quotes = split(line, """")
 
-                                site_name = ""
-                                internal_id = ""
-                                site_status = ""
-                                site_ip = ""
-                                site_port = ""
-                                site_hostname = ""
-                                site_path = ""
-                                site_size = ""
+                                    On Error Resume Next
+                                        site_name = split_quotes(1)
+                                    On Error GoTo 0
 
-                                split_quotes = split(line, """")
+                                    On Error Resume Next
+                                        temp = split(split_quotes(2), "(")
+                                    On Error GoTo 0
 
-                                site_name = split_quotes(1)
+                                    On Error Resume Next
+                                        temp2 = split(temp(1), ")")
+                                    On Error GoTo 0
 
-                                temp = split(split_quotes(2), "(")
-                                temp2 = split(temp(1), ")")
-                                details = split(temp2(0), ",")
+                                    On Error Resume Next
+                                        details = split(temp2(0), ",")
+                                    On Error GoTo 0
 
-                                temp3 = split(details(0), ":")
-                                internal_id = temp3(1)
+                                    On Error Resume Next
+                                        temp3 = split(details(0), ":")
+                                    On Error GoTo 0
 
-                                temp3 = split(details(2), ":")
-                                site_status = temp3(1)
+                                    On Error Resume Next
+                                        internal_id = temp3(1)
+                                    On Error GoTo 0
 
-                                temp3 = split(details(1), ":")
-                                site_ip = temp3(1)
-                                site_ip = replace(site_ip, "http/", "")
-                                site_ip = replace(site_ip, "https/", "")
+                                    On Error Resume Next
+                                        temp3 = split(details(Ubound(details)), ":")
+                                    On Error GoTo 0
 
-                                site_port = temp3(2)
-                                site_hostname = temp3(3)
+                                    On Error Resume Next
+                                        site_status = temp3(1)
+                                    On Error GoTo 0
 
-                                if isArray(Vdir) then
-                                    for each output in Vdir
-                                        if (output > "") then
-                                            vtemp = split(output, """")
-                                            vdir_name = vtemp(1)
-                                            if (vdir_name = (site_name  & "/")) then
-                                                vt = split(vtemp(2), ")")
-                                                vtemp2 = split(vt(0), ":")
-                                                vtemp2(0) = ""
-                                                site_path = join(vtemp2, ":")
-                                                site_path = mid(site_path, 2)
+                                    On Error Resume Next
+                                        temp3 = split(details(1), ":")
+                                    On Error GoTo 0
+
+                                    On Error Resume Next
+                                        temp3_ubound = Ubound(temp3)
+                                    On Error GoTo 0
+
+                                    if (temp3_ubound > 0) then
+                                        On Error Resume Next
+                                            site_ip = temp3(1)
+                                        On Error GoTo 0
+                                    else
+                                        site_ip = ""
+                                    end if
+
+                                    On Error Resume Next
+                                        site_ip = replace(site_ip, "http/", "")
+                                    On Error GoTo 0
+
+                                    On Error Resume Next
+                                        site_ip = replace(site_ip, "https/", "")
+                                    On Error GoTo 0
+
+                                    if (temp3_ubound > 1) then
+                                        On Error Resume Next
+                                            site_port = temp3(2)
+                                        On Error GoTo 0
+                                    else
+                                        site_port = ""
+                                    end if
+
+                                    if (temp3_ubound > 2) then
+                                        On Error Resume Next
+                                            site_hostname = temp3(3)
+                                        On Error GoTo 0
+                                    else
+                                        site_hostname = ""
+                                    end if
+
+                                    if isArray(Vdir) then
+                                        for each output in Vdir
+                                            if (output > "") then
+                                                On Error Resume Next
+                                                    vtemp = split(output, """")
+                                                On Error GoTo 0
+
+                                                On Error Resume Next
+                                                    vdir_name = vtemp(1)
+                                                On Error GoTo 0
+                                                if (vdir_name = (site_name  & "/")) then
+                                                    On Error Resume Next
+                                                        vt = split(vtemp(2), ")")
+                                                    On Error GoTo 0
+
+                                                    On Error Resume Next
+                                                        vtemp2 = split(vt(0), ":")
+                                                    On Error GoTo 0
+
+                                                    On Error Resume Next
+                                                        vtemp2(0) = ""
+                                                    On Error GoTo 0
+
+                                                    On Error Resume Next
+                                                        site_path = join(vtemp2, ":")
+                                                    On Error GoTo 0
+
+                                                    On Error Resume Next
+                                                        site_path = mid(site_path, 2)
+                                                    On Error GoTo 0
+                                                end if
                                             end if
-                                        end if
-                                    next
-                                end if
+                                        next
+                                    end if
 
-                                if objFSO.FolderExists(site_path) then
-                                    Set objFolder = objFSO.GetFolder(site_path)
-                                    site_size = int(objFolder.size / 1024 / 1024) ' NOTE - Returns in MB.
-                                end if
+                                    if objFSO.FolderExists(site_path) then
+                                        On Error Resume Next
+                                            Set objFolder = objFSO.GetFolder(site_path)
+                                        On Error GoTo 0
+                                        On Error Resume Next
+                                            site_size = int(objFolder.size / 1024 / 1024) ' NOTE - Returns in MB.
+                                        On Error GoTo 0
+                                    end if
 
-                                server_item = server_item & "       <item>" & vbcrlf
-                                server_item = server_item & "           <type>website</type>" & vbcrlf
-                                server_item = server_item & "           <name>" & escape_xml(site_name) & "</name>" & vbcrlf
-                                server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
-                                server_item = server_item & "           <id_internal>" & escape_xml(internal_id) & "</id_internal>" & vbcrlf
-                                server_item = server_item & "           <description></description>" & vbcrlf
-                                server_item = server_item & "           <status>" & escape_xml(site_status) & "</status>" & vbcrlf
-                                server_item = server_item & "           <log_status></log_status>" & vbcrlf
-                                server_item = server_item & "           <log_format></log_format>" & vbcrlf
-                                server_item = server_item & "           <log_path></log_path>" & vbcrlf
-                                server_item = server_item & "           <log_rotation></log_rotation>" & vbcrlf
-                                server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
-                                server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
-                                server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
-                                server_item = server_item & "           <path>" & escape_xml(site_path) & "</path>" & vbcrlf
-                                server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
-                                server_item = server_item & "           <instance></instance>" & vbcrlf
-                                server_item = server_item & "       </item>" & vbcrlf
+                                    server_item = server_item & "       <item>" & vbcrlf
+                                    server_item = server_item & "           <type>website</type>" & vbcrlf
+                                    server_item = server_item & "           <name>" & escape_xml(site_name) & "</name>" & vbcrlf
+                                    server_item = server_item & "           <parent_name>IIS</parent_name>" & vbcrlf
+                                    server_item = server_item & "           <id_internal>" & escape_xml(internal_id) & "</id_internal>" & vbcrlf
+                                    server_item = server_item & "           <description></description>" & vbcrlf
+                                    server_item = server_item & "           <status>" & escape_xml(site_status) & "</status>" & vbcrlf
+                                    server_item = server_item & "           <log_status></log_status>" & vbcrlf
+                                    server_item = server_item & "           <log_format></log_format>" & vbcrlf
+                                    server_item = server_item & "           <log_path></log_path>" & vbcrlf
+                                    server_item = server_item & "           <log_rotation></log_rotation>" & vbcrlf
+                                    server_item = server_item & "           <ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
+                                    server_item = server_item & "           <port>" & escape_xml(site_port) & "</port>" & vbcrlf
+                                    server_item = server_item & "           <hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
+                                    server_item = server_item & "           <path>" & escape_xml(site_path) & "</path>" & vbcrlf
+                                    server_item = server_item & "           <size>" & escape_xml(site_size) & "</size>" & vbcrlf
+                                    server_item = server_item & "           <instance></instance>" & vbcrlf
+                                    server_item = server_item & "       </item>" & vbcrlf
+                                end if
                             end if
                         end if
-                    end if
-                next
+                    next
+                end if
             end if
         end if
     end if
