@@ -54,6 +54,7 @@ if (! function_exists('output')) {
         $timer_start = microtime(true);
         error_reporting(E_ALL);
         $CI = & get_instance();
+
         if ($CI->response->meta->id == 888888888888) {
             $CI->response->meta->id = null;
             unset($CI->response->data);
@@ -488,7 +489,7 @@ if (! function_exists('output')) {
     {
         $timer_start = microtime(true);
         $CI = & get_instance();
-        if ($CI->response->meta->action === 'create') {
+        if ($CI->response->meta->action === 'create' && $CI->response->meta->collection !== 'search') {
             redirect($CI->response->meta->collection . '/' . $CI->response->meta->id);
         }
         header($CI->response->meta->header);
