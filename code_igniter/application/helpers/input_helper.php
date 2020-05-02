@@ -1113,6 +1113,74 @@ if ( ! function_exists('inputRead')) {
             stdlog($log);
         }
 
+
+        $org_list = array();
+        switch ($CI->response->meta->collection) {
+            case 'agents':
+            case 'applications':
+            case 'baselines':
+            case 'baselines_policies':
+            case 'buildings':
+            case 'clouds':
+            case 'clusters':
+            case 'collectors':
+            case 'connections':
+            case 'devices':
+            case 'discoveries':
+            case 'discovery_log':
+            case 'floors':
+            case 'integrations':
+            case 'ldap_servers':
+            case 'licenses':
+            case 'locations':
+            case 'logs':
+            case 'networks':
+            case 'orgs':
+            case 'rack_devices':
+            case 'racks':
+            case 'rooms':
+            case 'rows':
+            case 'tasks':
+            case 'users':
+                $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+                break;
+
+            case 'configuration':
+            case 'database':
+            case 'errors':
+            case 'help':
+            case 'nmis':
+            case 'san':
+            case 'search':
+            case 'test':
+            case 'util':
+                $org_list = $CI->user->orgs;
+                break;
+
+            case 'credentials';
+            case 'dashboards':
+            case 'discovery_scan_options':
+            case 'fields':
+            case 'files':
+            case 'groups':
+            case 'queries':
+            case 'reports':
+            case 'roles':
+            case 'rules':
+            case 'scripts':
+            case 'summaries':
+            case 'widgets':
+                $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+                $org_list = array_unique(array_merge($org_list, $CI->m_orgs->get_user_ascendants($CI->user->id)));
+                $org_list[] = 1;
+                break;
+
+            default:
+                $org_list = $CI->user->orgs;
+                break;
+        }
+        $CI->user->org_list = implode(',', $org_list);
+
         // get the filter
         // NOTE - Had to create our own parsing routine because PHP replaces .'s with underscores
         //        in incoming variable names. The unfortunate result is that we can not use a . in
