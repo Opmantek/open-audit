@@ -351,6 +351,8 @@ class M_orgs extends MY_Model
      */
     public function get_user_ascendants($user_id = 0)
     {
+        // NOTE - Calling function should add org.id 1 itself
+        //        because attempting to derive it here results in a circular reference
         $user_id = intval($user_id);
         if ( ! empty($this->user) && intval($this->user->id) === $user_id) {
             $org_list = $this->user->orgs_list;
@@ -366,6 +368,9 @@ class M_orgs extends MY_Model
             $org_list = json_decode($user->orgs);
         }
         $orgs = array();
+        if ( ! is_array($org_list)) {
+            $org_list = explode(',', $org_list);
+        }
         foreach ($org_list as $org_id) {
             $orgs = array_merge($orgs, $this->get_ascendant($org_id));
         }
