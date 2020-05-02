@@ -105,8 +105,26 @@ class Clusters extends MY_Controller
     */
     public function read()
     {
-        $this->response->included = array_merge($this->response->included, $this->m_clusters->read_sub_resource($this->response->meta->id));
-        include 'include_read.php';
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        if ( ! empty($this->response->data) && is_array($this->response->data)) {
+            $this->response->meta->total = 1;
+            $this->response->meta->filtered = 1;
+            $this->load->model('m_orgs');
+            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            $this->response->included = array_merge($this->response->included, $this->m_clusters->read_sub_resource($this->response->meta->id));
+            if ($this->response->meta->format === 'screen') {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+            } else {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            }
+        } else {
+            log_error('ERR-0002', $this->response->meta->collection . ':read');
+            $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+            if ($this->response->meta->format !== 'json') {
+                redirect($this->response->meta->collection);
+            }
+        }
+        output($this->response);
     }
 
     /**

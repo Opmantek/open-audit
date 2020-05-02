@@ -109,7 +109,7 @@ class Summaries extends MY_Controller
     */
     public function read()
     {
-        if ($this->response->meta->format == 'screen') {
+        if ($this->response->meta->format === 'screen') {
             $tables_temp = $this->db->list_tables();
             $tables = array();
             for ($i=0; $i < count($tables_temp); $i++) {
@@ -128,15 +128,32 @@ class Summaries extends MY_Controller
             $summary_attributes = array();
             if (is_array($attributes)) {
                 foreach ($attributes as $attribute) {
-                    if ($attribute->attributes->resource == 'summaries') {
+                    if ($attribute->attributes->resource === 'summaries') {
                         $summary_attributes[] = $attribute;
                     }
                 }
             }
             $this->response->included = array_merge($this->response->included, $summary_attributes);
         }
-        include 'include_read.php';
-        return;
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        if ( ! empty($this->response->data) && is_array($this->response->data)) {
+            $this->response->meta->total = 1;
+            $this->response->meta->filtered = 1;
+            $this->load->model('m_orgs');
+            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            if ($this->response->meta->format === 'screen') {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+            } else {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            }
+        } else {
+            log_error('ERR-0002', $this->response->meta->collection . ':read');
+            $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+            if ($this->response->meta->format !== 'json') {
+                redirect($this->response->meta->collection);
+            }
+        }
+        output($this->response);
     }
 
     /**

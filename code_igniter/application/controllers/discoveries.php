@@ -197,24 +197,44 @@ class Discoveries extends MY_Controller
         $this->test_nmap();
         $this->load->model('m_collectors');
         $this->load->model('m_locations');
-        $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
-        if ($this->response->meta->format === 'screen') {
-            // Discovery log
-            $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
-            // All Locations
-            $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
-        } else {
-            // Assign Devices to Location
-            $this->load->model('m_locations');
-            if ( ! empty($this->response->data[0]->attributes->devices_assigned_to_location)) {
-                $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->devices_assigned_to_location));
+        $this->load->model('m_discovery_scan_options');
+
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        if ( ! empty($this->response->data) && is_array($this->response->data)) {
+            $this->response->meta->total = 1;
+            $this->response->meta->filtered = 1;
+            $this->load->model('m_orgs');
+            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
+            if ( ! empty($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->read($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id));
             }
-            // Assign Devices to Org
-            if ( ! empty($this->response->data[0]->attributes->devices_assigned_to_org)) {
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
+            if ($this->response->meta->format === 'screen') {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+                // Discovery log
+                $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+                // All Locations
+                $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+            } else {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+                // Assign Devices to Location
+                $this->load->model('m_locations');
+                if ( ! empty($this->response->data[0]->attributes->devices_assigned_to_location)) {
+                    $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->devices_assigned_to_location));
+                }
+                // Assign Devices to Org
+                if ( ! empty($this->response->data[0]->attributes->devices_assigned_to_org)) {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
+                }
+            }
+        } else {
+            log_error('ERR-0002', $this->response->meta->collection . ':read');
+            $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+            if ($this->response->meta->format !== 'json') {
+                redirect($this->response->meta->collection);
             }
         }
-        include 'include_read.php';
+        output($this->response);
     }
 
     /**

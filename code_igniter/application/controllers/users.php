@@ -103,18 +103,40 @@ class Users extends MY_Controller
     public function read()
     {
         $this->load->helper('url');
-        if ( $this->uri->segment(3) != 'cookie') {
+        if ( $this->uri->segment(3) !== 'cookie') {
             $this->load->model('m_roles');
-            if ($this->response->meta->format == 'screen') {
-                if (!empty($this->response->data[0]->attributes)) {
+            if ($this->response->meta->format === 'screen') {
+                if ( ! empty($this->response->data[0]->attributes)) {
                     $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
                 }
                 $this->load->model('m_dashboards');
                 $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection($this->user->id));
             }
-            include 'include_read.php';
+            $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+            if ( ! empty($this->response->data) && is_array($this->response->data)) {
+                $this->response->meta->total = 1;
+                $this->response->meta->filtered = 1;
+                $this->load->model('m_orgs');
+                $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+                $this->load->model('m_roles');
+                $this->response->included = array_merge($this->response->included, $this->m_roles->collection(1, 0));
+                $this->load->model('m_dashboards');
+                $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection(1, 0));
+                if ($this->response->meta->format === 'screen') {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+                } else {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+                }
+            } else {
+                log_error('ERR-0002', $this->response->meta->collection . ':read');
+                $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+                if ($this->response->meta->format !== 'json') {
+                    redirect($this->response->meta->collection);
+                }
+            }
+            output($this->response);
         } else {
-            # Only allow users with config update permission (which should only be those with Admin role)
+            // Only allow users with config update permission (which should only be those with Admin role)
             if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
                 $this->response->data = $this->{'m_users'}->read($this->response->meta->id);
                 $access_token = bin2hex(openssl_random_pseudo_bytes(30));
@@ -137,11 +159,11 @@ class Users extends MY_Controller
     public function update()
     {
         // JSON encode our roles
-        if (!empty($this->response->meta->received_data->attributes->roles)) {
+        if ( ! empty($this->response->meta->received_data->attributes->roles)) {
             $this->response->meta->received_data->attributes->roles = json_encode($this->response->meta->received_data->attributes->roles);
         }
         // JSON encode our orgs
-        if (!empty($this->response->meta->received_data->attributes->orgs)) {
+        if ( ! empty($this->response->meta->received_data->attributes->orgs)) {
             $this->response->meta->received_data->attributes->orgs = json_encode(array_map('intval', $this->response->meta->received_data->attributes->orgs));
         }
         include 'include_update.php';

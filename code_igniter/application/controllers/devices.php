@@ -231,23 +231,7 @@ class Devices extends MY_Controller
         if (is_null($this->response->data)) {
             log_error('ERR-0002');
         }
-
-        $timer_end = microtime(true);
-        $entry = new stdClass();
-        $entry->time = ($timer_end - $timer_start);
-        $entry->detail = 'm_devices::read';
-        $entry->time_now = time();
-        $GLOBALS['timer_log'][] = $entry;
-
         output($this->response);
-        $log = new stdClass();
-        $log->type = 'access';
-        $log->detail = json_encode($this->response->meta);
-        $log->severity = 7;
-        $log->status = 'finish';
-        $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-        stdLog($log);
     }
 
     /**

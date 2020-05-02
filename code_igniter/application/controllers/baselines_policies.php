@@ -104,7 +104,19 @@ class Baselines_policies extends MY_Controller
     */
     public function read()
     {
-        include 'include_read.php';
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        if ( ! empty($this->response->data) && is_array($this->response->data)) {
+            $this->response->meta->total = 1;
+            $this->response->meta->filtered = 1;
+            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+        } else {
+            log_error('ERR-0002', $this->response->meta->collection . ':read');
+            $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+            if ($this->response->meta->format !== 'json') {
+                redirect($this->response->meta->collection);
+            }
+        }
+        output($this->response);
     }
 
     /**

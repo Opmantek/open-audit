@@ -105,13 +105,13 @@ class Locations extends MY_Controller
     */
     public function read()
     {
-        if ($this->response->meta->format == 'screen') {
+        if ($this->response->meta->format === 'screen') {
             $this->load->model('m_attributes');
             $attributes = $this->m_attributes->collection($this->user->id);
             $location_attributes = array();
             if (is_array($attributes)) {
                 foreach ($attributes as $attribute) {
-                    if ($attribute->attributes->resource == 'locations') {
+                    if ($attribute->attributes->resource === 'locations') {
                         $location_attributes[] = $attribute;
                     }
                 }
@@ -124,23 +124,23 @@ class Locations extends MY_Controller
         $this->load->model('m_rows');
         $this->load->model('m_racks');
         $buildings = $this->m_locations->children($this->response->meta->id);
-        if (!empty($buildings) and is_array($buildings)) {
+        if ( ! empty($buildings) && is_array($buildings)) {
             $this->response->included = array_merge($this->response->included, $buildings);
             foreach ($buildings as $building) {
                 $floors = $this->m_buildings->children($building->id);
-                if (!empty($floors) and is_array($floors)) {
+                if ( ! empty($floors) && is_array($floors)) {
                     $this->response->included = array_merge($this->response->included, $floors);
                     foreach ($floors as $floor) {
                         $rooms = $this->m_floors->children($floor->id);
-                        if (!empty($rooms) and is_array($rooms)) {
+                        if ( ! empty($rooms) && is_array($rooms)) {
                             $this->response->included = array_merge($this->response->included, $rooms);
                             foreach ($rooms as $room) {
                                 $rows = $this->m_rooms->children($room->id);
-                                if (!empty($rows) and is_array($rows)) {
+                                if ( ! empty($rows) && is_array($rows)) {
                                     $this->response->included = array_merge($this->response->included, $rows);
                                     foreach ($rows as $row) {
                                         $racks = $this->m_rows->children($row->id);
-                                        if (!empty($racks) and is_array($racks)) {
+                                        if ( ! empty($racks) && is_array($racks)) {
                                             $this->response->included = array_merge($this->response->included, $racks);
                                         }
                                     }
@@ -151,7 +151,25 @@ class Locations extends MY_Controller
                 }
             }
         }
-        include 'include_read.php';
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+        if ( ! empty($this->response->data) && is_array($this->response->data)) {
+            $this->response->meta->total = 1;
+            $this->response->meta->filtered = 1;
+            $this->load->model('m_orgs');
+            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            if ($this->response->meta->format === 'screen') {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+            } else {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            }
+        } else {
+            log_error('ERR-0002', $this->response->meta->collection . ':read');
+            $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
+            if ($this->response->meta->format !== 'json') {
+                redirect($this->response->meta->collection);
+            }
+        }
+        output($this->response);
     }
 
     /**
