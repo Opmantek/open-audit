@@ -123,7 +123,7 @@ class M_applications extends MY_Model
         $id = intval($id);
         $CI = & get_instance();
         $org_ids = implode(',', $CI->user->orgs);
-        $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `application`.`id` = ? and `system`.`org_id` IN  (' . $org_ids . ')';
+        $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `application`.`applications_id` = ? and `system`.`org_id` IN  (' . $org_ids . ')';
         $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'devices');
         return ($result);
