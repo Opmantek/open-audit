@@ -71,7 +71,7 @@ class M_discoveries extends MY_Model
         // Validate Main
         // $data->name = 'a strng';
         $data->org_id = intval($data->org_id);
-        // $data->description = 'a strng';
+        $CI = & get_instance();
         if (empty($data->type)) {
             $data->type = '';
         }
