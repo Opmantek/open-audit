@@ -223,6 +223,10 @@ if (! function_exists('output')) {
             #sort($CI->response->meta->data_order);
         }
 
+        if ($CI->response->meta->format === 'screen' && $CI->response->meta->action === 'read' && $CI->m_users->get_user_permission('', $CI->response->meta->collection, 'u')) {
+            $CI->response->edit = true;
+        }
+
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
