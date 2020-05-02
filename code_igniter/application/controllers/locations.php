@@ -105,19 +105,6 @@ class Locations extends MY_Controller
     */
     public function read()
     {
-        #if ($this->response->meta->format === 'screen') {
-            $this->load->model('m_attributes');
-            $attributes = $this->m_attributes->collection($this->user->id);
-            $location_attributes = array();
-            if (is_array($attributes)) {
-                foreach ($attributes as $attribute) {
-                    if ($attribute->attributes->resource === 'locations') {
-                        $location_attributes[] = $attribute;
-                    }
-                }
-            }
-            $this->response->included = array_merge($this->response->included, $location_attributes);
-        #}
         $this->load->model('m_buildings');
         $this->load->model('m_floors');
         $this->load->model('m_rooms');
@@ -159,6 +146,17 @@ class Locations extends MY_Controller
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+                $this->load->model('m_attributes');
+                $attributes = $this->m_attributes->collection($this->user->id);
+                $location_attributes = array();
+                if (is_array($attributes)) {
+                    foreach ($attributes as $attribute) {
+                        if ($attribute->attributes->resource === 'locations') {
+                            $location_attributes[] = $attribute;
+                        }
+                    }
+                }
+                $this->response->included = array_merge($this->response->included, $location_attributes);
             } else {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
             }
