@@ -107,7 +107,7 @@ if ( ! function_exists('inputRead')) {
         // id is the integer value (if any) following the controller name in the URL
         // sub_resource = blank
         // sub_resource_id = blank
-        // action = read if id is set or list if id is not set (create, read, update, delete, list, execute, download)
+        // action = read if id is set or list if id is not set (create, read, update, delete, collection, execute, download)
         // sort = blank
         // current = y
         // groupby = blank
@@ -1427,17 +1427,19 @@ if ( ! function_exists('inputRead')) {
                 }
                 if (( ! $CI->m_users->get_user_permission($CI->user->id, $perm_collection, $permission[$CI->response->meta->action]) && $CI->response->meta->collection !== 'errors')) {
                     log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                    //output();
                     $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
                     if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
                         redirect($CI->response->meta->collection);
+                        // TODO - redirect if screen, output if JSON
                     } else {
                         if ($CI->response->meta->collection === 'summaries' && $CI->response->meta->action === 'collection') {
                             $CI->session->unset_userdata('user_id');
                             $CI->session->set_flashdata('error', 'User cannot run summaries::collection.');
                             redirect('logon');
+                            // TODO - redirect if screen, output if JSON
                         } else {
                             redirect('summaries');
+                            // TODO - redirect if screen, output if JSON
                         }
                     }
                 }
