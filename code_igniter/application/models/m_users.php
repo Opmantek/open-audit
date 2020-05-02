@@ -387,23 +387,21 @@ class M_users extends MY_Model
             return true;
         }
 
-        $id_name = 'id';
+        $org_list = explode(',', $CI->user->org_list);
 
-        $table = $collection;
         if ($collection === 'devices') {
-            $table = 'system';
-        }
+            $sql = 'SELECT `system`.`org_id` AS org_id FROM `system` WHERE `id` = ?';
 
-        $org_id_name = 'org_id';
-        if ($collection === 'orgs') {
-            $org_id_name = 'id';
-        }
+        } else if ($collection === 'orgs') {
+            $sql = 'SELECT `orgs`.`id` AS org_id FROM `orgs` WHERE `id` = ?';
 
-        if ($collection !== 'baselines_policies') {
-            $sql = "SELECT {$org_id_name} AS org_id FROM `{$table}` WHERE {$id_name} = ?";
+        } else if ($collection === 'baselines_policies') {
+            $sql = 'SELECT `orgs`.`id` AS org_id FROM `baselines_policies` LEFT JOIN `baselines` ON (`baselines_policies`.`baseline_id` = `baselines`.`id`) LEFT JOIN `orgs` ON (`baselines`.`org_id` = `orgs`.`id`) WHERE `baselines_policies`.`id` = ?';
+
         } else {
-            $sql = 'SELECT orgs.id AS org_id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) LEFT JOIN orgs ON (baselines.org_id = orgs.id) WHERE baselines_policies.id = ?';
+            $sql = "SELECT `{$collection}`.`org_id` AS org_id FROM `{$collection}` WHERE `id` = ?";
         }
+
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -412,11 +410,9 @@ class M_users extends MY_Model
             return false;
         }
         $permitted = false;
-        $temp = explode(',', str_replace('"', '', $CI->user->org_list));
-        foreach ($temp as $value) {
-            if (intval($result[0]->org_id) === intval($value)) {
-                $permitted = true;
-            }
+        // if (in_array($result[0]->org_id, explode(',', $CI->user->org_list))) {
+        if (in_array($result[0]->org_id, $org_list)) {
+            $permitted = true;
         }
         if ( ! $permitted) {
             log_error('ERR-0008', '');
