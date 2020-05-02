@@ -105,7 +105,7 @@ class Locations extends MY_Controller
     */
     public function read()
     {
-        if ($this->response->meta->format === 'screen') {
+        #if ($this->response->meta->format === 'screen') {
             $this->load->model('m_attributes');
             $attributes = $this->m_attributes->collection($this->user->id);
             $location_attributes = array();
@@ -117,7 +117,7 @@ class Locations extends MY_Controller
                 }
             }
             $this->response->included = array_merge($this->response->included, $location_attributes);
-        }
+        #}
         $this->load->model('m_buildings');
         $this->load->model('m_floors');
         $this->load->model('m_rooms');

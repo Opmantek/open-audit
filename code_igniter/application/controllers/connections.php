@@ -111,7 +111,6 @@ class Connections extends MY_Controller
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id));
             $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_a));
             if ( ! empty($this->response->data[0]->attributes->location_id_b) && $this->response->data[0]->attributes->location_id_b !== $this->response->data[0]->attributes->location_id_a) {
                 $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_b));
