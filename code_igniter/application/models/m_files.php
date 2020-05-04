@@ -65,6 +65,10 @@ class M_files extends MY_Model
      */
     public function create($data = null)
     {
+        $data->path = str_replace("'", '', $data->path);
+        $data->path = str_replace('"', '', $data->path);
+        $data->path = str_replace(';', '', $data->path);
+        $data->path = str_replace("\n", '', $data->path);
         if ($id = $this->insert_collection('files', $data)) {
             return intval($id);
         } else {

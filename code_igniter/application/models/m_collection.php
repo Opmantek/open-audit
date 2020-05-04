@@ -642,6 +642,13 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'files') {
+            $data->path = str_replace("'", '', $data->path);
+            $data->path = str_replace('"', '', $data->path);
+            $data->path = str_replace(';', '', $data->path);
+            $data->path = str_replace("\n", '', $data->path);
+        }
+
         if ($collection === 'integrations' && ! empty($data->options)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
