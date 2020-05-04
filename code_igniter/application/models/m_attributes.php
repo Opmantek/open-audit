@@ -65,6 +65,21 @@ class M_attributes extends MY_Model
      */
     public function create($data = null)
     {
+        if ( ! empty($data->type)) {
+            $data->type = str_replace('<', '', $data->type);
+            $data->type = str_replace("'", '', $data->type);
+            $data->type = str_replace('"', '', $data->type);
+        }
+        if ( ! empty($data->name)) {
+            $data->name = str_replace('<', '', $data->name);
+            $data->name = str_replace("'", '', $data->name);
+            $data->name = str_replace('"', '', $data->name);
+        }
+        if ( ! empty($data->value)) {
+            $data->value = str_replace('<', '', $data->value);
+            $data->value = str_replace("'", '', $data->value);
+            $data->value = str_replace('"', '', $data->value);
+        }
         if ($id = $this->insert_collection('attributes', $data)) {
             return intval($id);
         } else {
