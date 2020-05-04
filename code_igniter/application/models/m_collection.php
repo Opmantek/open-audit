@@ -667,6 +667,21 @@ class M_collection extends MY_Model
             $data->path = str_replace("\n", '', $data->path);
         }
 
+        if ($collection === 'groups') {
+            if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+                    return false;
+            }
+            if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
+                    return false;
+            }
+            if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
+                return false;
+            }
+        }
+
         if ($collection === 'integrations' && ! empty($data->options)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
@@ -683,6 +698,21 @@ class M_collection extends MY_Model
         if ($collection === 'ldap_servers') {
             if ( ! empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);
+            }
+        }
+
+        if ($collection === 'queries') {
+            if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+                    return false;
+            }
+            if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
+                    return false;
+            }
+            if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
+                return false;
             }
         }
 

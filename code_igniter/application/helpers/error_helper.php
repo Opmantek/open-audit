@@ -411,6 +411,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0044']->title = 'Bad Configuration value supplied';
         $error_array['ERR-0044']->detail = 'The configuration value supplied is invalid for this item.';
 
+        $error_array['ERR-0045'] = new stdClass();
+        $error_array['ERR-0045']->code = 'ERR-0045';
+        $error_array['ERR-0045']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0045']->severity = 5;
+        $error_array['ERR-0045']->title = 'Invalid value supplied for attribute';
+        $error_array['ERR-0045']->detail = 'The value as passed cannot be used for this attribute.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
