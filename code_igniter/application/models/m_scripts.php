@@ -63,9 +63,91 @@ class M_scripts extends MY_Model
      */
     public function create($data = null)
     {
-        if ( ! is_string($data->options)) {
-            $data->options = json_encode($data->options);
+        $CI = & get_instance();
+        $options = $CI->options;
+        if (is_string($data->options)) {
+            $data->options = json_decode($data->options);
         }
+        // Validate options
+        foreach ($data->options as $name => $value) {
+            $value = str_replace("'", '', $value);
+            $value = str_replace('"', '', $value);
+            $value = str_replace(';', '', $value);
+            $value = str_replace("\n", '', $value);
+            $values = $options[$name]->values;
+            if ( ! empty($values)) {
+                $value_array = explode(',', $values);
+                if ( ! in_array($value, $value_array)) {
+                    $data->options->{$name} = '';
+                }
+            }
+            if ($name === 'ldap') {
+                // text - should not be set
+                $data->options->{$name} = '';
+            }
+            if ($name === 'ldap_seen_date') {
+                // date
+                if ( ! preg_match('/^[\d{4},\-,\d{2},\-,\d{2}]+$/', $value)) {
+                    $data->options->{$name} = '';
+                }
+            }
+            if ($name === 'ldap_seen_days') {
+                // number
+                if ( ! empty($value)) {
+                    $data->options->{$name} = intval($value);
+                    if (empty($data->options->{$name})) {
+                        $data->options->{$name} = '';
+                    }
+                }
+            }
+            if ($name === 'org_id') {
+                // number
+                if ( ! empty($value)) {
+                    $data->options->{$name} = intval($value);
+                    if (empty($data->options->{$name})) {
+                        $data->options->{$name} = '';
+                    }
+                }
+            }
+            if ($name === 'strcomputer') {
+                // text
+                if ( ! preg_match('/^[\w,\.]+$/', $value)) {
+                    $data->options->{$name} = '';
+                }
+            }
+            if ($name === 'strpass') {
+                // text - virtually any, except quotes
+            }
+            if ($name === 'system_id') {
+                // number
+                if ( ! empty($value)) {
+                    $data->options->{$name} = intval($value);
+                    if (empty($data->options->{$name})) {
+                        $data->options->{$name} = '';
+                    }
+                }
+            }
+            if ($name === 'url') {
+                // url
+                if ( ! preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $value)) {
+                    $data->options->{$name} = '';
+                }
+            }
+            if ($name === 'windows_user_work_1') {
+                // text
+                if ( ! preg_match('/^[\w]+$/', $value)) {
+                    $data->options->{$name} = '';
+                }
+            }
+            if ($name === 'windows_user_work_2') {
+                // text
+                if ( ! preg_match('/^[\w]+$/', $value)) {
+                    $data->options->{$name} = '';
+                }
+            }
+        }
+
+        $data->options = json_encode($data->options);
         if ($id = $this->insert_collection('scripts', $data)) {
             return intval($id);
         } else {
@@ -77,16 +159,16 @@ class M_scripts extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM scripts WHERE id = ?";
+        $sql = 'SELECT * FROM scripts WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        if (!empty($result[0]->options)) {
+        if ( ! empty($result[0]->options)) {
             $result[0]->options = json_decode($result[0]->options);
         }
         $result = $this->format_data($result, 'scripts');
@@ -95,52 +177,46 @@ class M_scripts extends MY_Model
 
     public function update()
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->file = 'system';
         $CI = & get_instance();
 
         $sql = 'UPDATE `scripts` SET ';
         $data = array();
         $log->message = json_encode($CI->response->meta->received_data);
         stdlog($log);
-        if ( !empty($CI->response->meta->received_data->attributes->options)) {
+        if ( ! empty($CI->response->meta->received_data->attributes->options)) {
             $received_options = new stdClass();
             foreach ($CI->response->meta->received_data->attributes->options as $key => $value) {
                     $received_options->$key = $value;
             }
-            $select = "SELECT * FROM scripts WHERE id = ?";
+            $select = 'SELECT * FROM scripts WHERE id = ?';
             $existing_options = $this->run_sql($select, array($CI->response->meta->id));
             $existing_options = json_decode($existing_options[0]->options);
             $new_options = new stdClass();
             foreach ($existing_options as $existing_key => $existing_value) {
-                if (!empty($received_options->$existing_key)) {
+                if ( ! empty($received_options->$existing_key)) {
                     $new_options->$existing_key = $received_options->$existing_key;
                 } else {
                     $new_options->$existing_key = $existing_options->$existing_key;
                 }
             }
-            $sql .= "`options` = ?, ";
+            $sql .= '`options` = ?, ';
             $data[] = (string)json_encode($new_options);
         }
         
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
-            $sql .= "`name` = ?, ";
+        if ( ! empty($CI->response->meta->received_data->attributes->name)) {
+            $sql .= '`name` = ?, ';
             $data[] = $CI->response->meta->received_data->attributes->name;
         }
 
-        if (!empty($CI->response->meta->received_data->attributes->description)) {
-            $sql .= "`description` = ?, ";
+        if ( ! empty($CI->response->meta->received_data->attributes->description)) {
+            $sql .= '`description` = ?, ';
             $data[] = $CI->response->meta->received_data->attributes->description;
         }
 
-        if ($sql == 'UPDATE `scripts` SET ') {
-            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
+        if ($sql === 'UPDATE `scripts` SET ') {
+            // TODO - THROW AN ERROR, no credentials or name or description supplied for updating
         }
-        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
+        $sql .= ' `edited_by` = ?, `edited_date` = NOW() WHERE id = ?';
         $data[] = (string)$CI->user->full_name;
         $data[] = intval($CI->response->meta->id);
         $this->run_sql($sql, $data);

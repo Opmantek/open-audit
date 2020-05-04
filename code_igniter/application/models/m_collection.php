@@ -662,7 +662,156 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'scripts') {
+            $options = $CI->options;
             if ( ! empty($data->options)) {
+                if (is_string($data->options)) {
+                    $data->options = json_decode($data->options);
+                }
+
+                // Validate options
+                foreach ($data->options as $name => $value) {
+                    $value = str_replace("'", '', $value);
+                    $value = str_replace('"', '', $value);
+                    $value = str_replace(';', '', $value);
+                    $value = str_replace("\n", '', $value);
+                    $values = $options[$name]->values;
+                    if ( ! empty($values)) {
+                        $value_array = explode(',', $values);
+                        if ( ! in_array($value, $value_array)) {
+                            $value = '';
+                            log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                            if ($CI->response->meta->format === 'screen') {
+                                redirect('/scripts');
+                            } else {
+                                output($CI->response);
+                                exit();
+                            }
+                        }
+                    }
+                    if ($name === 'ldap') {
+                        // text - should not be set
+                        unset($data->options->{$name});
+                    }
+                    if ($name === 'ldap_seen_date') {
+                        // date
+                        if ( ! preg_match('/^[\d{4},\-,\d{2},\-,\d{2}]+$/', $value)) {
+                            unset($data->options->{$name});
+                            log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                            if ($CI->response->meta->format === 'screen') {
+                                redirect('/scripts');
+                            } else {
+                                output($CI->response);
+                                exit();
+                            }
+                        }
+                    }
+                    if ($name === 'ldap_seen_days') {
+                        // number
+                        if ( ! empty($value)) {
+                            $data->options->{$name} = intval($value);
+                            // Check if we have set it to 0 and if so, remove it
+                            if (empty($data->options->{$name})) {
+                                $data->options->{$name} = '';
+                                log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                                if ($CI->response->meta->format === 'screen') {
+                                    redirect('/scripts');
+                                } else {
+                                    output($CI->response);
+                                    exit();
+                                }
+                            }
+                        }
+                    }
+                    if ($name === 'org_id') {
+                        // number
+                        if ( ! empty($value)) {
+                            $data->options->{$name} = intval($value);
+                            // Check if we have set it to 0 and if so, remove it
+                            if (empty($data->options->{$name})) {
+                                $data->options->{$name} = '';
+                                log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                                if ($CI->response->meta->format === 'screen') {
+                                    redirect('/scripts');
+                                } else {
+                                    output($CI->response);
+                                    exit();
+                                }
+                            }
+                        }
+                    }
+                    if ($name === 'strcomputer') {
+                        // text
+                        if ( ! preg_match('/^[\w,\.]+$/', $value)) {
+                            unset($data->options->{$name});
+                            log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                            if ($CI->response->meta->format === 'screen') {
+                                redirect('/scripts');
+                            } else {
+                                output($CI->response);
+                                exit();
+                            }
+                        }
+                    }
+                    if ($name === 'strpass') {
+                        // text - virtually any, except quotes
+                    }
+                    if ($name === 'system_id') {
+                        // number
+                        if ( ! empty($value)) {
+                            $data->options->{$name} = intval($value);
+                            // Check if we have set it to 0 and if so, remove it
+                            if (empty($data->options->{$name})) {
+                                $data->options->{$name} = '';
+                                log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                                if ($CI->response->meta->format === 'screen') {
+                                    redirect('/scripts');
+                                } else {
+                                    output($CI->response);
+                                    exit();
+                                }
+                            }
+                        }
+                    }
+                    if ($name === 'url') {
+                        // url
+                        if ( ! preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $value)) {
+                            unset($data->options->{$name});
+                            log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                            if ($CI->response->meta->format === 'screen') {
+                                redirect('/scripts');
+                            } else {
+                                output($CI->response);
+                                exit();
+                            }
+                        }
+                    }
+                    if ($name === 'windows_user_work_1') {
+                        // text
+                        if ( ! preg_match('/^[\w]+$/', $value)) {
+                            unset($data->options->{$name});
+                            log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                            if ($CI->response->meta->format === 'screen') {
+                                redirect('/scripts');
+                            } else {
+                                output($CI->response);
+                                exit();
+                            }
+                        }
+                    }
+                    if ($name === 'windows_user_work_2') {
+                        // text
+                        if ( ! preg_match('/^[\w]+$/', $value)) {
+                            unset($data->options->{$name});
+                            log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
+                            if ($CI->response->meta->format === 'screen') {
+                                redirect('/scripts');
+                            } else {
+                                output($CI->response);
+                                exit();
+                            }
+                        }
+                    }
+                }
                 $select = 'SELECT * FROM scripts WHERE id = ?';
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();

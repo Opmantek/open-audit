@@ -88,6 +88,8 @@ class Scripts extends MY_Controller
     */
     public function create()
     {
+        include 'include_scripts_options.php';
+        $this->options = $options;
         $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         $this->response->include = 'v_'.$this->response->meta->collection.'_read';
@@ -150,6 +152,8 @@ class Scripts extends MY_Controller
     */
     public function update()
     {
+        include 'include_scripts_options.php';
+        $this->options = $options;
         include 'include_update.php';
     }
 
