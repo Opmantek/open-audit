@@ -76,6 +76,10 @@ class M_queries extends MY_Model
             log_error('ERR-0045', 'm_queries::create', 'SQL cannot contain DELETE clause.');
             return false;
         }
+        if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+            log_error('ERR-0045', 'm_queries::create', 'SQL cannot contain INSERT clause.');
+            return false;
+        }
         if (stripos($data->sql, 'where @filter') === false OR stripos($data->sql, 'where @filter or') !== false) {
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
