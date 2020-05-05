@@ -150,7 +150,6 @@ $item = $this->response->data[0];
                                 <th><?php echo __('Max Length'); ?></th>
                                 <th><?php echo __('Primary Key'); ?></th>
                                 <th><?php echo __('Valid Values'); ?></th>
-                                <th><?php echo __('Dictionary'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -171,13 +170,6 @@ $item = $this->response->data[0];
                                 } else {
                                     echo "<td></td>\n";
                                 }
-                                echo "<td>";
-                                foreach ($this->response->dictionary->columns as $dict_name => $dict_column) {
-                                    if ($column->name == $dict_name) {
-                                        echo htmlspecialchars($dict_column, REPLACE_FLAGS, CHARSET);
-                                    }
-                                }
-                                echo "</td>";
                                 ?>
 
                             </tr>
