@@ -1125,6 +1125,7 @@ if ( ! function_exists('inputRead')) {
             case 'clusters':
             case 'collectors':
             case 'connections':
+            case 'credentials':
             case 'devices':
             case 'discoveries':
             case 'discovery_log':
@@ -1157,7 +1158,6 @@ if ( ! function_exists('inputRead')) {
                 $org_list = $CI->user->orgs;
                 break;
 
-            case 'credentials';
             case 'dashboards':
             case 'discovery_scan_options':
             case 'fields':
