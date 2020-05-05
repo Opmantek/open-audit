@@ -755,7 +755,7 @@ class Devices extends MY_Controller
 
         $temp = explode(',', $this->response->meta->include);
         foreach ($temp as $table) {
-            $sql = 'SELECT * FROM `$table` WHERE system_id = ? AND current = "y"';
+            $sql = "SELECT * FROM `{$table}` WHERE system_id = ? AND current = 'y'";
             $query = $this->db->query($sql, array(intval($this->response->meta->id)));
             $result = $query->result();
             if ( ! empty($result)) {
