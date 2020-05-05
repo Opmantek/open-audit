@@ -99,11 +99,6 @@ class Database extends MY_Controller
             $this->load->model('m_orgs');
             // TODO - A dictionary for each database table
             // $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            if ($this->response->meta->format === 'screen') {
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
-            } else {
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
-            }
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
