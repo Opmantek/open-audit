@@ -68,6 +68,18 @@ class M_widgets extends MY_Model
      */
     public function create($data = null)
     {
+        if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+            log_error('ERR-0045', 'm_widgets::create', 'SQL cannot contain UPDATE clause');
+            return false;
+        }
+        if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+            log_error('ERR-0045', 'm_widgets::create', 'SQL cannot contain DELETE clause.');
+            return false;
+        }
+        if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+            log_error('ERR-0045', 'm_widgets::create', 'SQL cannot contain INSERT clause.');
+            return false;
+        }
         if ($id = $this->insert_collection('widgets', $data)) {
             return intval($id);
         } else {
