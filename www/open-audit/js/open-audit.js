@@ -207,9 +207,6 @@ $(document).ready(function () {
             document.getElementById('submit_'+attribute).remove();
             // need this for regular fields (name, description, etc)
             $('#submit_' + attribute).remove();
-            if (attribute == 'status' && value == 'deleted' && device_auto_delete == 'y') {
-                window.location = baseurl + 'index.php/devices';
-            }
         }
     });
 });
