@@ -335,17 +335,13 @@ class Devices extends MY_Controller
         $this->m_devices->update();
         // TODO - replace this old function
         if ($this->response->meta->format === 'json') {
-            $this->response->data = $this->m_devices->read($this->response->meta->id);
-            output($this->response);
+            if ( ! empty($this->response->meta->received_data->attributes->status) && $this->response->meta->received_data->attributes->status === 'deleted') {
+                output($this->response);
+            } else {
+                $this->response->data = $this->m_devices->read($this->response->meta->id);
+                output($this->response);
+            }
         }
-        $log = new stdClass();
-        $log->type = 'access';
-        $log->detail = json_encode($this->response->meta);
-        $log->severity = 7;
-        $log->status = 'finish';
-        $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-        stdLog($log);
         exit();
     }
 
