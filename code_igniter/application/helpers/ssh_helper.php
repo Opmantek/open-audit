@@ -742,16 +742,39 @@ if ( !  function_exists('ssh_audit')) {
             $log->command_output = $device->bash;
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_status = 'success';
-            if ( ! empty($device->bash)) {
+            if ( ! empty($device->bash) && stripos($device->bash, 'Command not found') === false) {
                 $log->message = 'Bash installed';
             } else {
                 $log->message = 'Bash not installed';
                 $log->command_status = 'notice';
                 $log->severity = 6;
+                $device->bash = '';
             }
             discovery_log($log);
         }
         $log->severity = 7;
+
+        if ($device->bash === '') {
+            // See if we have /bin/sh
+            $item_start = microtime(true);
+            $device->sh = trim($ssh->exec('which sh'));
+            $log->command = 'which sh';
+            $log->command_output = $device->sh;
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->command_status = 'success';
+            if ( ! empty($device->sh) && stripos($device->sh, 'Command not found') === false) {
+                $log->message = 'SH installed';
+                $device->bash = '/bin/sh';
+                $device->shell = '/bin/sh';
+            } else {
+                $log->message = 'Bash not installed';
+                $log->command_status = 'notice';
+                $log->severity = 6;
+                $device->bash = '';
+            }
+            discovery_log($log);
+            unset($device->sh);
+        }
 
         if (strpos($device->shell, 'bash') === false && $device->bash === '') {
             $log->command = '';
@@ -783,17 +806,24 @@ if ( !  function_exists('ssh_audit')) {
             'ubiquiti_os' => 'cat /etc/motd 2>/dev/null | grep -i EdgeOS 2>/dev/null',
             'ubiquiti_os_version' => 'cat /etc/version 2>/dev/null',
             'ddwrt_os_name' => 'cat /etc/motd 2>/dev/null | grep -i DD-WRT 2>/dev/null',
-            'solaris_os_name' => 'cat /etc/release 2>/dev/null | head -n1 | awk \'{print $1, $2, $3}\'',
+            'solaris_os_name' => 'cat /etc/release 2>/dev/null | head -n1 | awk "{print $1, $2, $3}" 2>/dev/null',
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
             'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
             'ubiquiti_serial' => 'grep serialno /proc/ubnthal/system.info 2>/dev/null | cut -d= -f2',
 
             'dbus_identifier' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
-            'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk \'{print $2}\'',
+            'bsd_uuid' => 'sysctl -n kern.hostuuid 2>/dev/null',
+            'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}" 2>/dev/null',
             'esx_uuid' => 'vim-cmd hostsvc/hostsummary 2>/dev/null | sed -n "/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p" | grep uuid | cut -d= -f2 | sed s/,//g | sed s/\"//g',
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
             'lshal_uuid' => 'lshal 2>/dev/null | grep \'system.hardware.uuid\'',
+
+            'bsd_manufacturer' => 'kenv 2>/dev/null | grep smbios.chassis.maker | cut -d\" -f2',
+            'bsd_model' => 'kenv 2>/dev/null | grep smbios.planar.product | cut -d\" -f2',
+            'bsd_os_family' => 'sysctl -n kern.ostype 2>/dev/null',
+            'bsd_os_name' => 'sysctl -n kern.osrelease 2>/dev/null',
+            'bsd_os_version' => 'sysctl -n kern.version 2>/dev/null',
 
             'hpux_hostname' => 'hostname 2>/dev/null',
             'hpux_domain' => 'domainname 2>/dev/null',
@@ -1060,9 +1090,23 @@ if ( !  function_exists('ssh_audit')) {
         if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type)) {
             $device->type = 'computer';
         }
+        if ( ! empty($device->os_group) && stripos($device->os_group, 'BSD') !== false) {
+            $device->type = 'computer';
+            $device->model = $device->bsd_model;
+            $device->os_group = 'BSD';
+            $device->manufacturer = $device->bsd_manufacturer;
+            $device->os_family = $device->bsd_os_family;
+            $device->os_name = $device->bsd_os_family . ' ' . $device->bsd_os_name;
+            $device->os_version = $device->bsd_os_version;
+        }
+        unset($device->bsd_model);
+        unset($device->bsd_manufacturer);
+        unset($device->bsd_os_family);
+        unset($device->bsd_os_name);
+        unset($device->bsd_os_version);
 
         // UUID
-        $array = array('solaris_uuid', 'esx_uuid', 'osx_uuid', 'lshal_uuid');
+        $array = array('bsd_uuid', 'solaris_uuid', 'esx_uuid', 'osx_uuid', 'lshal_uuid');
         foreach ($array as $attribute) {
             if (empty($device->uuid) && ! empty($device->$attribute)) {
                 if ($attribute === 'lshal_uuid') {
