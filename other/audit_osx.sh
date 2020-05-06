@@ -495,7 +495,7 @@ software_version=""
 software_install_source=""
 for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A 1 | grep -e '^$' -v); do
 
-    if [[ "$software_name" == "" && "$line" != *"Get Info String: "* ]]; then
+    if [[ "$software_name" == "" && "$line" != *"Get Info String: "* && "$line" != *"Kind: "* ]]; then
         #software_name=`echo "$line"`     # | cut -d":" -f0 | sed 's/^ *//'`
         software_name=`echo "$line" | sed 's/^ *//'`
     fi
