@@ -1059,12 +1059,6 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $this->db->db_debug = false;
 
-        $log_details = new stdClass();
-        $log_details->severity = 7;
-        $log_details->file = 'system';
-        $log_details->message = 'System update start';
-        stdlog($log_details);
-
         // account for a single id or multiple id's
         $ids = array();
 
