@@ -218,6 +218,44 @@ if ( ! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update ';
         $action = '';
 
+        // get the output format
+        $CI->response->meta->format = '';
+        $log->summary = 'set format';
+        $log->detail = '';
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            $CI->response->meta->format = 'json';
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
+        }
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'html') !== false) {
+            $CI->response->meta->format = 'screen';
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
+        }
+        if (isset($_GET['format'])) {
+            $CI->response->meta->format = $_GET['format'];
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to GET.';
+        }
+        if (isset($_POST['format'])) {
+            $CI->response->meta->format = $_POST['format'];
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to POST.';
+        }
+        if ($CI->response->meta->format === '') {
+            $CI->response->meta->format = 'json';
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', because default.';
+        }
+        $reserved_words = ' json json_data html screen xml csv sql table ';
+        if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
+            $log->detail = 'Set format to json, because unknown format provided.';
+            $log->status = 'warning';
+            $CI->response->meta->format = 'json';
+        }
+        if (empty($log->detail)) {
+            $log->status = 'fail';
+            $log->detail = 'Could not set format';
+            $log->severity = 4;
+        }
+        stdlog($log);
+        $log->severity = 7;
+
         // Allow for URLs thus:
         // /api/{version}/
         // /v1/
@@ -864,44 +902,6 @@ if ( ! function_exists('inputRead')) {
         } else {
             $CI->response->meta->internal->groupby = '';
         }
-
-        // get the output format
-        $CI->response->meta->format = '';
-        $log->summary = 'set format';
-        $log->detail = '';
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
-            $CI->response->meta->format = 'json';
-            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
-        }
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'html') !== false) {
-            $CI->response->meta->format = 'screen';
-            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
-        }
-        if (isset($_GET['format'])) {
-            $CI->response->meta->format = $_GET['format'];
-            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to GET.';
-        }
-        if (isset($_POST['format'])) {
-            $CI->response->meta->format = $_POST['format'];
-            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to POST.';
-        }
-        if ($CI->response->meta->format === '') {
-            $CI->response->meta->format = 'json';
-            $log->detail = 'Set format to ' . $CI->response->meta->format . ', because default.';
-        }
-        $reserved_words = ' json json_data html screen xml csv sql table ';
-        if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
-            $log->detail = 'Set format to json, because unknown format provided.';
-            $log->status = 'warning';
-            $CI->response->meta->format = 'json';
-        }
-        if (empty($log->detail)) {
-            $log->status = 'fail';
-            $log->detail = 'Could not set format';
-            $log->severity = 4;
-        }
-        stdlog($log);
-        $log->severity = 7;
 
         // get the offset
         $log->summary = 'set offset';
