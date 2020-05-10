@@ -186,8 +186,8 @@ class M_licenses extends MY_Model
         } else {
             $license = $result[0];
         }
-        $sql = "SELECT system.id AS `system.id`, system.name AS `system.name`, software.name AS `software.name`, software.version AS `software.version` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE software.name LIKE '" . $license->match_string . "'";
-        $result = $this->run_sql($sql, array());
+        $sql = "SELECT system.id AS `system.id`, system.name AS `system.name`, software.name AS `software.name`, software.version AS `software.version` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE software.name LIKE ?";
+        $result = $this->run_sql($sql, array($license->match_string));
         $result = $this->format_data($result, 'licenses');
         return ($result);
     }
