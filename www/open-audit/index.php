@@ -40,85 +40,6 @@ ini_set('memory_limit', '1024M');
 $query_count = 0;
 ob_start();
 
-// date_default_timezone_set('YOUR_TIMEZONE');
-// http://www.php.net/manual/en/timezones.php
-
-// Get the timezone from the system if not set in php.ini
-if ( ! ini_get('date.timezone') OR (string) ini_get('date.timezone') === 'Australia/Brisbane') {
-    // Australia/Brisbane is the default on our shipped Windows installer.
-    // Consider Australia/Brisbane equivalent to not being set
-    $timezone = '';
-    $default = 'UTC';
-
-    if ((string) php_uname('s') === 'Darwin') {
-        $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
-        // new for high sierra
-        $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f8,9';
-        exec($command_string, $output, $return_var);
-        $timezone = @$output[0];
-        if ((string) $timezone === '') {
-            $timezone = $default;
-        }
-    }
-
-    if ((string) php_uname('s') === 'Linux') {
-        // On many systems (Mac, for instance) "/etc/localtime" is a symlink
-        // to the file with the timezone info
-        if (@is_link('/etc/localtime')) {
-            // If it is, that file's name is actually the "Olsen" format timezone
-            $temp_file = @readlink('/etc/localtime');
-            $temp_pos = strpos($temp_file, 'zoneinfo');
-            if ($temp_pos) {
-                // When it is, it's in the "/usr/share/zoneinfo/" folder
-                $timezone = substr($temp_file, $temp_pos + strlen('zoneinfo/'));
-            }
-        } else {
-            // On other systems, like Ubuntu, there's file with the Olsen time right inside it.
-            $timezone = @file_get_contents('/etc/timezone');
-            if ( ! strlen($timezone)) {
-                $timezone = $default;
-            }
-        }
-        if ((string) $timezone === '') {
-            $timezone = $default;
-        }
-    }
-
-    if ((string) php_uname('s') === 'Windows NT') {
-        $wbem_locator = new COM('WbemScripting.SWbemLocator');
-        $wbem_services = $wbem_locator->ConnectServer('.', 'root\\cimv2');
-        $zones = $wbem_services->ExecQuery('Select * from Win32_TimeZone');
-        foreach ($zones as $zone) {
-            $wmi_zone_offset = (int) $zone->Bias * 60;
-            $wmi_caption = strtok($zone->Caption, ' ');
-            $wmi_location = strtok('|');
-        }
-        // Attempt to match based on the offset and part of the WMI string in the Caption field
-        foreach (timezone_abbreviations_list() as $timezone_abbr) {
-            foreach ($timezone_abbr as $entry) {
-                if ((int) $entry['offset'] === (int) $wmi_zone_offset && strpos($entry['timezone_id'], $wmi_location) !== false) {
-                    $timezone = trim($entry['timezone_id']);
-                }
-            }
-        }
-        if ((string) $timezone === '') {
-            // No match on offset + string, try for simply offset
-            foreach (timezone_abbreviations_list() as $timezone_abbr) {
-                foreach ($timezone_abbr as $entry) {
-                    if ((int) $entry['offset'] === (int) $wmi_zone_offset) {
-                        $timezone = trim($entry['timezone_id']);
-                    }
-                }
-            }
-        }
-        if ((string) $timezone === '') {
-            // last resort
-            $timezone = $default;
-        }
-    }
-    date_default_timezone_set(trim($timezone));
-}
-
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -182,9 +103,6 @@ if (defined('ENVIRONMENT')) {
     } else {
         // everything else
         $system_path = '/usr/local/open-audit/code_igniter/system';
-        if (file_exists('/home/vagrant/Code/open-audit')) {
-            $system_path = '/home/vagrant/Code/open-audit/code_igniter/system';
-        }
     }
 
 /*
@@ -210,9 +128,6 @@ if (defined('ENVIRONMENT')) {
     } else {
         // everything else
         $application_folder = '/usr/local/open-audit/code_igniter/application';
-        if (file_exists('/home/vagrant/Code/open-audit')) {
-            $application_folder = '/home/vagrant/Code/open-audit/code_igniter/application';
-        }
     }
 /*
  * --------------------------------------------------------------------
