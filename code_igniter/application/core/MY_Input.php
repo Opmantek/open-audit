@@ -50,7 +50,7 @@ class MY_Input extends CI_Input {
         // Allow for a | in a variable name, think discoveries options open|filtered.
         if ( ! preg_match("/^[\|a-z0-9:_\/-]+$/i", $str))
         {
-            exit('Disallowed Key Characters in ' . $str);
+            exit('Disallowed Key Characters in ' . htmlentities($str));
         }
 
         // Clean UTF-8 if supported
