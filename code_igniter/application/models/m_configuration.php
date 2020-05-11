@@ -257,6 +257,10 @@ class M_configuration extends MY_Model
         // set all items to value or ''
         if ( ! empty($result)) {
             foreach ($result as $row) {
+                //  make sure we have a default here
+                if ( ! empty($row->name) && $row->name === 'page_size' && empty($row->value)) {
+                    $row->value = 1000;
+                }
                 $temp_name = $row->name;
                 if (empty($row->value)) {
                     $this->config->config[$temp_name] = '';
