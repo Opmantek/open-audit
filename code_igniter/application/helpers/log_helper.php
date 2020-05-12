@@ -442,6 +442,10 @@ if (! function_exists('stdlog')) {
             $log['collection'] = $CI->response->meta->collection;
         }
 
+        if (!empty($log_details->collection)) {
+            $log['collection'] = $log_details->collection;
+        }
+
         if (empty($log_details->action) and !empty($CI->response->meta->action)) {
             $log['action'] = $CI->response->meta->action;
         }
