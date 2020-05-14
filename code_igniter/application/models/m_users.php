@@ -387,7 +387,11 @@ class M_users extends MY_Model
             return true;
         }
 
-        $org_list = explode(',', $CI->user->org_list);
+        if (is_string($CI->user->org_list)) {
+            $org_list = explode(',', $CI->user->org_list);
+        } else {
+            $org_list = $CI->user->org_list;
+        }
 
         if ($collection === 'devices') {
             $sql = 'SELECT `system`.`org_id` AS org_id FROM `system` WHERE `id` = ?';
