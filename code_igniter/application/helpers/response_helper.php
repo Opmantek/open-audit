@@ -56,6 +56,10 @@ if ( ! function_exists('response_create')) {
         $log->status = 'creating response object';
         $log->summary = '';
 
+        $instance->load->model('m_roles');
+        $instance->roles = $instance->m_roles->collection(1);
+        $instance->load->model('m_users');
+
         // Define our constans for use in htmlspecialchars
         if ( ! defined('CHARSET')) {
             define('CHARSET', 'UTF-8');
@@ -268,6 +272,30 @@ if ( ! function_exists('response_create')) {
         $response->meta->internal->join = response_get_internal_join($response->meta->filter, $response->meta->collection);
 
         $response->links = response_get_links($response->meta->collection, $response->meta->id, $response->meta->sub_resource, $response->meta->sub_resource_id);
+
+        $permission = response_get_permission_ca($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
+        if ( ! $permission) {
+            if ($response->meta->format === 'json') {
+                echo json_encode($response);
+                exit;
+            } else {
+                $instance->session->set_flashdata('error', 'Permission denied for collection / action.');
+                redirect($response->meta->collection);
+            }
+            redirect('/');
+        }
+
+        $permission = response_get_permission_id($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
+        if ( ! $permission) {
+            if ($response->meta->format === 'json') {
+                echo json_encode($response);
+                exit;
+            } else {
+                $instance->session->set_flashdata('error', 'Permission denied for OrgID.');
+                redirect($response->meta->collection);
+            }
+            redirect('/');
+        }
 
         return $response;
     }
@@ -595,6 +623,12 @@ if ( ! function_exists('response_get_filter')) {
 
         $reserved_words = response_valid_reserved_words();
         $filter = array();
+
+        // NOTE - Had to create our own parsing routine because PHP replaces .'s with underscores
+        //        in incoming variable names. The unfortunate result is that we can not use a . in
+        //        a variable value when using GET (so no system.manufacturer=Dell, for example)
+        //        PHP Bug Report - https://bugs.php.net/bug.php?id=45272
+        //        PHP Docs - https://php.net/manual/en/language.variables.external.php
 
         if (empty($query_string)) {
             return array();
@@ -1083,11 +1117,16 @@ if ( ! function_exists('response_get_internal_filter')) {
             }
         }
         if ($collection !== 'configuration' && $collection !== 'logs' ) {
-            if ($internal_filter !== '') {
-                $internal_filter = substr($filter, 5);
-                $internal_filter = ' WHERE orgs.id IN (' . $instance->user->org_list . ') AND ' . $internal_filter;
+            if (is_string($instance->user->org_list)) {
+                $org_list = $instance->user->org_list;
             } else {
-                $internal_filter = ' WHERE orgs.id IN (' . $instance->user->org_list . ')';
+                $org_list = implode(',', $instance->user->org_list);
+            }
+            if ($internal_filter !== '') {
+                $internal_filter = substr($internal_filter, 5);
+                $internal_filter = ' WHERE orgs.id IN (' . $org_list . ') AND ' . $internal_filter;
+            } else {
+                $internal_filter = ' WHERE orgs.id IN (' . $org_list . ')';
             }
         }
         if ($collection === 'configuration' OR $collection === 'logs' ) {
@@ -1097,11 +1136,11 @@ if ( ! function_exists('response_get_internal_filter')) {
                 $internal_filter = '';
             }
         }
-        if ($filter !== '') {
-            $log->detail = 'INTERNAL FILTER: ' . $filter;
+        if ($internal_filter !== '') {
+            $log->detail = 'INTERNAL FILTER: ' . json_encode($internal_filter);
             stdlog($log);
         }
-        return $filter;
+        return $internal_filter;
     }
 }
 
@@ -1420,6 +1459,173 @@ if ( ! function_exists('response_get_org_list')) {
         $log->detail = 'ORG LIST: ' . json_encode($org_list);
         stdlog($log);
         return $org_list;
+    }
+}
+
+if ( ! function_exists('response_get_permission_ca')) {
+    /**
+     * Is the user allowed to perform $action on $collection according to their role membership
+     * @param  class  $user          [description]
+     * @param  string $collection    [description]
+     * @param  string $action        [description]
+     * @param  class  $received_data [description]
+     * @param  int    $id            [description]
+     * @return bool                  [description]
+     */
+    function response_get_permission_ca($user = null, $collection = '', $action = '', $received_data = null, $id = null)
+    {
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->type = 'system';
+        $log->object = 'response_helper';
+        $log->function = 'response_helper::response_get_permission_ca';
+        $log->status = 'parsing';
+        $log->summary = 'get permission for collection / action';
+
+        $instance = & get_instance();
+
+        $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action;
+
+        if (empty($instance->roles) && intval($instance->config->config['internal_version']) >= 20160904) {
+            return true;
+        }
+
+        if (empty($user->orgs)) {
+            $instance->session->unset_userdata('user_id');
+            $instance->session->set_flashdata('error', 'User has no permissions on any orgs.');
+            redirect('logon');
+        }
+
+        if (empty($user) OR empty($collection) OR empty($action)) {
+            $log->severity = 4;
+            $log->details = 'Cannot retrieve permission, missing attribute';
+            stdlog($log);
+            return false;
+        }
+
+        $permissions = response_valid_permissions($collection);
+
+        if ($collection === 'users' && intval($user->id) === intval($id) && $action === 'read' ) {
+            // Always allow a user to READ their own object
+            return true;
+        }
+        if ($collection === 'help') {
+            // Always allow a user to view help
+            return true;
+        }
+        if ($collection === 'errors') {
+            // Always allow a user to view help
+            return true;
+        }
+        if ($collection === 'users' && $action === 'update' && $id === $user->id && ! empty($received_data)) {
+            // A user is allowed to update some of their own fields
+            $allowed_attributes = array('id', 'name', 'full_name', 'email', 'lang', 'password', 'dashboard_id');
+            $check_permission = false;
+            foreach (array_keys($received_data->attributes) as $key) {
+                if ( ! in_array($key, $allowed_attributes)) {
+                    $check_permission = true;
+                }
+            }
+            if ($check_permission === false) {
+                return true;
+            }
+        }
+        // TODO - move the below into the function
+        $perm_collection = $collection;
+        if ($collection === 'baselines_policies') {
+            $perm_collection = 'baselines';
+        }
+        if ( ! $instance->m_users->get_user_permission($user->id, $perm_collection, $permissions[$action])) {
+            log_error('ERR-0015', $collection . ':' . $permissions[$action]);
+            $log->details = 'User not permittied to perform ' . $action . ' on ' . $collection;
+            $log->severity = 5;
+            stdlog($log);
+            return false;
+        }
+        $log->summary = 'User permittied to perform ' . $action . ' on ' . $collection;
+        stdlog($log);
+        return true;
+    }
+}
+
+if ( ! function_exists('response_get_permission_id')) {
+    /**
+     * [response_get_permission_id description]
+     * @param  [type] $user          [description]
+     * @param  string $collection    [description]
+     * @param  string $action        [description]
+     * @param  [type] $received_data [description]
+     * @param  [type] $id            [description]
+     * @return [type]                [description]
+     */
+    //function response_get_permission_id($user = null, $collection = '', $action = '', $received_data = null, $id = null)
+    function response_get_permission_id($user, $collection, $action, $received_data, $id)
+    {
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->type = 'system';
+        $log->object = 'response_helper';
+        $log->function = 'response_helper::response_get_permission_id';
+        $log->status = 'parsing';
+        $log->summary = 'get permission for collection / action / ID';
+
+        $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action . ' ID: ' . @$id;
+
+        $instance = & get_instance();
+        $collections = array('charts', 'configuration', 'database', 'errors', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
+
+        if ( empty($id) OR intval($id) === 888888888888 OR in_array($collection, $collections)) {
+            $log->summary = 'User permittied to access ' . $collection;
+            stdlog($log);
+            return true;
+        }
+
+        if ( ! $instance->m_users->get_user_collection_org_permission($collection, $id)) {
+            log_error('ERR-0018', $collection . ':' . $action);
+            $log->severity = 5;
+            $log->summary = 'User not permittied to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
+            stdlog($log);
+            return false;
+        }
+        // check (if we're supplying data) that the OrgID is one we are allowed to supply
+        if ($action === 'create' OR $action === 'update' OR $action === 'import' OR $action === 'delete') {
+            $temp = explode(',', $user->org_list);
+            // org_id
+            if ( ! empty($received_data->org_id)) {
+                $allowed = false;
+                foreach ($temp as $key => $value) {
+                    if ($received_data->org_id === $value) {
+                        $allowed = true;
+                    }
+                }
+                if ( ! $allowed) {
+                    log_error('ERR-0018', $collection . ':' . $action);
+                    $log->severity = 5;
+                    $log->summary = 'User not permittied to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
+                    stdlog($log);
+                    return false;
+                }
+            }
+            // devices_assigned_to_org
+            if ( ! empty($received_data->devices_assigned_to_org)) {
+                $allowed = false;
+                foreach ($temp as $key => $value) {
+                    if ($received_data->devices_assigned_to_org === $value) {
+                        $allowed = true;
+                    }
+                }
+                if ( ! $allowed) {
+                    log_error('ERR-0018', $collection . ':' . $action);
+                    $log->severity = 5;
+                    $log->summary = 'User not ermittied to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
+                    stdlog($log);
+                    return false;
+                }
+            }
+            $log->summary = 'User permittied to perform ' . $action . ' on OrgID ' . $received_data->org_id;
+        }
+        stdlog($log);
+        return true;
     }
 }
 
