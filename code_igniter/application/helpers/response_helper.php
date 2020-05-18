@@ -140,7 +140,7 @@ if ( ! function_exists('response_create')) {
         // no dependencies - set in GET or POST
         $response->meta->debug = response_get_debug();
 
-        // no dependencies - set in GET or POST
+        // no dependencies - set in GET or POST or HEADERS
         $response->meta->format = response_get_format();
 
         // depends on version affecting URI - set in URI or POST
@@ -772,7 +772,6 @@ if ( ! function_exists('response_get_format')) {
         $log->status = 'parsing';
         $log->summary = 'get version';
 
-        $instance = & get_instance();
         $format = 'json';
 
         if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
@@ -790,10 +789,6 @@ if ( ! function_exists('response_get_format')) {
         if ( ! empty($_POST['format'])) {
             $format = $_POST['format'];
             $log->summary = 'Set format according to POST.';
-        }
-        if ($format === '') {
-            $format = 'json';
-            $log->summary = 'Set format to default.';
         }
         $valid_formats = response_valid_formats();
         if ( ! in_array($format, $valid_formats)) {
@@ -843,7 +838,7 @@ if ( ! function_exists('response_get_groupby')) {
                     stdlog($log);
                 }
             } else {
-                $temp = $instance->response->meta->collection;
+                $temp = $collection;
                 if ($temp === 'devices') {
                     $temp = 'system';
                 }
@@ -902,7 +897,6 @@ if ( ! function_exists('response_get_id')) {
             $no_org_id = array('chart', 'configuration', 'database', 'errors', 'help', 'logs', 'nmis', 'reports', 'roles', 'search', 'sessions');
             if ( ! in_array($id, $actions)) {
                 // Our 'id' is a string, but not an action - therefore it's a name
-                $name = $id;
                 if ($collection === 'database') {
                     $instance = & get_instance();
                     $tables = $instance->db->list_tables();
@@ -990,7 +984,6 @@ if ( ! function_exists('response_get_ids')) {
         $log->status = 'parsing';
         $log->summary = 'get ids';
 
-        $instance = & get_instance();
         $device_ids = '';
 
         if (isset($_GET['ids'])) {
@@ -1040,7 +1033,6 @@ if ( ! function_exists('response_get_include')) {
         $log->status = 'parsing';
         $log->summary = 'get include';
 
-        $instance = & get_instance();
         $include = '';
 
         // We only use include for devices.
@@ -1338,7 +1330,6 @@ if ( ! function_exists('response_get_offset')) {
         $log->status = 'parsing';
         $log->summary = 'get action';
 
-        $instance = & get_instance();
         $offset = 0;
 
         if (isset($_GET['offset'])) {
@@ -1558,7 +1549,6 @@ if ( ! function_exists('response_get_permission_id')) {
      * @param  [type] $id            [description]
      * @return [type]                [description]
      */
-    //function response_get_permission_id($user = null, $collection = '', $action = '', $received_data = null, $id = null)
     function response_get_permission_id($user, $collection, $action, $received_data, $id)
     {
         $log = new stdClass();
@@ -1994,8 +1984,9 @@ if ( ! function_exists('response_valid_includes')) {
 
 if ( ! function_exists('response_valid_permissions')) {
     /**
-     * An array of permissions
-     * @return array
+     * Set permissions array. Execute depends on $collection
+     * @param  string $collection Execute depends on $collection
+     * @return array              The array.
      */
     function response_valid_permissions($collection)
     {
