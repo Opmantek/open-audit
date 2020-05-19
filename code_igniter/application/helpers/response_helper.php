@@ -94,6 +94,7 @@ if ( ! function_exists('response_create')) {
             $response->meta->cloud_id = $instance->config->config['id'];
         }
         $response->meta->collection = '';
+        $response->meta->current = 'y';
         $response->meta->debug = false;
         $response->meta->filtered = '';
         $response->meta->format = '';
@@ -142,6 +143,9 @@ if ( ! function_exists('response_create')) {
 
         // no dependencies - set in GET or POST or HEADERS
         $response->meta->format = response_get_format();
+
+        // no dependencies - set in GET or POST or HEADERS
+        $response->meta->current = response_get_current();
 
         // depends on version affecting URI - set in URI or POST
         if ( ! empty($instance->uri->segment(1))) {
@@ -495,6 +499,45 @@ if ( ! function_exists('response_get_collection')) {
             stdlog($log);
         }
         return $collection;
+    }
+}
+
+
+if ( ! function_exists('response_get_current')) {
+    /**
+     * Return the current ettribute derived from the HEADERS or URL (get) or BODY (post)
+     * @return string The response format requested
+     */
+    function response_get_current()
+    {
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->type = 'system';
+        $log->object = 'response_helper';
+        $log->function = 'response_helper::response_get_current';
+        $log->status = 'parsing';
+        $log->summary = 'get current';
+
+        $current = 'y';
+        $log->summary = 'Set current according default.';
+
+        if ( ! empty($_GET['current'])) {
+            $current = $_GET['current'];
+            $log->summary = 'Set current according to GET.';
+        }
+        if ( ! empty($_POST['current'])) {
+            $current = $_POST['current'];
+            $log->summary = 'Set current according to POST.';
+        }
+        $valid_current = response_valid_current();
+        if ( ! in_array($current, $valid_current)) {
+            $log->summary = 'Set current to y, because unknown current: ' . $current;
+            $log->status = 'warning';
+            $current = 'y';
+        }
+        $log->detail = 'CURRENT: ' . $current;
+        stdlog($log);
+        return $current;
     }
 }
 
@@ -1956,6 +1999,17 @@ if ( ! function_exists('response_valid_collections')) {
     function response_valid_collections()
     {
         return array('agents','applications','attributes','baselines','baselines_policies','buildings','chart','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','groups','help','integrations','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+    }
+}
+
+if ( ! function_exists('response_valid_current')) {
+    /**
+     * An array of valid current
+     * @return array
+     */
+    function response_valid_current()
+    {
+        return array('y','n','all','delta','full');
     }
 }
 
