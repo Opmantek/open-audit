@@ -324,100 +324,121 @@ if (! function_exists('output')) {
         stdLog($log);
     }
 
+    /**
+     * [output_csv description]
+     * @return [type] [description]
+     */
     function output_csv()
     {
         $CI = & get_instance();
 
-        if (!empty($CI->response->meta->heading)) {
+        if ( ! empty($CI->response->meta->heading)) {
             $filename = $CI->response->meta->heading;
-        } else if (!empty($CI->response->meta->collection)) {
+        } else if ( ! empty($CI->response->meta->collection)) {
             $filename = $CI->response->meta->collection;
         } else {
             $filename = 'openaudit';
         }
 
         $output_csv = '';
-        $table_name = $CI->response->meta->collection;
-        if ($table_name == 'devices') {
-            $table_name = 'system';
-        }
 
-        # TODO - if the individual item in data order doesn't exist in the table, no rows shown
-
-        # TODO - individual credentials.credentials.password (discoveries.other, tasks.options, etc)
-
-        # TODO - move there into output function. Need to check credentials.credentials isn't being used anywhere (and tasks.options, files.options, discoveries.other, etc).
-        if ($CI->response->meta->collection == 'credentials') {
-            foreach ($CI->response->meta->data_order as $key => $value) {
-                if ($value == 'credentials') {
-                    unset($CI->response->meta->data_order[$key]);
+        if ($CI->response->meta->collection === 'credentials') {
+            $CI->response->meta->data_order = array('id','name','org_id','description','type');
+            $items = array();
+            // NOTE - need to enumerate over the complete dataset as credentials attributes only populate
+            //        their required attributes (an SNMP entry does not populate credentials.username for example).
+            foreach ($CI->response->data as $data) {
+                $items = array_merge($items, array_keys(get_object_vars($data->attributes->credentials)));
+                $items = array_unique($items);
+            }
+            foreach ($items as $item) {
+                $CI->response->meta->data_order[] = 'credentials.' . $item;
+            }
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                foreach ($CI->response->data[$i]->attributes as $key => $value) {
+                    if ( ! is_string($value) && is_object($value)) {
+                        foreach ($CI->response->data[$i]->attributes->{$key} as $key2 => $value2) {
+                            $CI->response->data[$i]->attributes->{$key . '.' . $key2} = $value2;
+                        }
+                    }
                 }
             }
         }
-        if ($CI->response->meta->collection == 'discoveries') {
-            foreach ($CI->response->meta->data_order as $key => $value) {
-                if ($value == 'other') {
-                    unset($CI->response->meta->data_order[$key]);
+
+        if ($CI->response->meta->collection === 'discoveries') {
+            $CI->response->meta->data_order = array('id','name','org_id','type','description','devices_assigned_to_org','devices_assigned_to_location','network_address','system_id','discard');
+            // Note - need to go two levels deep as attributes.other.nmap and attributes.other.match
+            foreach ($CI->response->data[0]->attributes->other as $key => $value) {
+                if (is_string($value)) {
+                    $CI->response->meta->data_order[] = 'other.' . $key;
+                } else {
+                    foreach ($CI->response->data[0]->attributes->other->{$key} as $key2 => $value2) {
+                        $CI->response->meta->data_order[] = 'other.' . $key . '.' . $key2;
+                    }
+                }
+            }
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                foreach ($CI->response->data[$i]->attributes as $key => $value) {
+                    if ( ! is_string($value) && is_object($value)) {
+                        foreach ($CI->response->data[$i]->attributes->{$key} as $key2 => $value2) {
+                            $CI->response->data[$i]->attributes->{$key . '.' . $key2} = $value2;
+                        }
+                    }
                 }
             }
         }
-        if ($CI->response->meta->collection == 'queue') {
-            foreach ($CI->response->meta->data_order as $key => $value) {
-                if ($value == 'details') {
-                    unset($CI->response->meta->data_order[$key]);
-                }
-            }
+
+        if ($CI->response->meta->collection === 'tasks') {
+            $CI->response->meta->data_order = array('id','name','org_id','description','sub_resource_id','uuid','enabled','type','minute','hour','day_of_month','month','day_of_week');
         }
-        if ($CI->response->meta->collection == 'tasks') {
+
+        if ($CI->response->meta->collection === 'queue') {
             foreach ($CI->response->meta->data_order as $key => $value) {
-                if ($value == 'options') {
+                if ($value === 'details') {
                     unset($CI->response->meta->data_order[$key]);
                 }
             }
         }
 
         $table = $CI->response->meta->collection;
-        if ($table == 'devices' or $table == 'queries') {
+        if ($table === 'devices' OR $table === 'queries') {
             $table = 'system';
         }
 
         $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
+
         $csv_header = $CI->response->meta->data_order;
-        if ($CI->response->meta->collection != 'credentials' and
-            $CI->response->meta->collection != 'discoveries' and
-            $CI->response->meta->collection != 'tasks') {
-            for ($i=0; $i < count($csv_header); $i++) {
-                if (stripos($csv_header[$i], $table.'.') === 0) {
-                    $csv_header[$i] = str_ireplace($table.'.', '', $csv_header[$i]);
-                }
+
+        for ($i=0; $i < count($csv_header); $i++) {
+            if (stripos($csv_header[$i], $table.'.') === 0) {
+                $csv_header[$i] = str_ireplace($table.'.', '', $csv_header[$i]);
             }
         }
 
-        # Our header line
+        // Our header line
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
-
-        # Each individual data line
+        // Each individual data line
         $output_escape_csv = @$CI->config->config['output_escape_csv'];
-        if (!empty($CI->response->data)) {
+        if ( ! empty($CI->response->data)) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
                 foreach ($CI->response->meta->data_order as $field) {
                     $value = '';
-                    if (!empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
+                    if ( ! empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
                         $value = $item->attributes->{$CI->response->meta->collection.'.'.$field};
                     }
-                    if (!empty($item->attributes->$field)) {
+                    if ( ! empty($item->attributes->$field)) {
                         $value = $item->attributes->$field;
                     }
-                    if (empty($value) and  stripos($field, '.') !== false) {
+                    if (empty($value) && stripos($field, '.') !== false) {
                         $temp = explode('.', $field);
-                        if (!empty($item->attributes->{$temp[1]})) {
+                        if ( ! empty($item->attributes->{$temp[1]})) {
                             $value = $item->attributes->{$temp[1]};
                         }
                     }
-                    $value = str_replace('"', '""', $value);
-                    if (!empty($output_escape_csv) and $output_escape_csv === 'y') {
-                        if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
+                    $value = str_replace('"', '""', (string)$value);
+                    if ( ! empty($output_escape_csv) && $output_escape_csv === 'y') {
+                        if (strpos($value, '=') === 0 OR strpos($value, '+') === 0 OR strpos($value, '-') === 0 OR strpos($value, '@') === 0) {
                             $value = "'" . $value;
                         }
                     }
@@ -433,9 +454,7 @@ if (! function_exists('output')) {
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
             header('Cache-Control: max-age=0');
         } else {
-            echo "<pre>\n";
             echo $output_csv;
-            echo "</pre>";
         }
     }
 
