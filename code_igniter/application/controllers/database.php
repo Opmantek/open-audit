@@ -155,7 +155,7 @@ class Database extends MY_Controller
     */
     public function execute()
     {
-        $this->data = $this->m_database->execute();
+        $this->data = $this->m_database->execute($this->response->meta->id, 'export table', $this->response->meta->format);
         $this->response->meta->action = 'read';
         $this->response->meta->format = 'screen';
         if ( ! empty($this->response->meta->groupby)) {
@@ -167,12 +167,13 @@ class Database extends MY_Controller
         if ( ! empty($this->response->data) && is_array($this->response->data)) {
             $this->response->meta->total = 1;
             $this->response->meta->filtered = 1;
-            $this->load->model('m_orgs');
-            // $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            if ($this->response->meta->format === 'screen') {
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
-            } else {
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            if ( ! empty($this->response->data[0]->attributes->org_id)) {
+                $this->load->model('m_orgs');
+                if ($this->response->meta->format === 'screen') {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+                } else {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+                }
             }
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');

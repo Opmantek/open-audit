@@ -886,11 +886,15 @@ if ( ! function_exists('inputRead')) {
                 if ($temp === 'devices') {
                     $temp = 'system';
                 }
-                if ( ! $CI->db->field_exists($CI->response->meta->groupby, $temp)) {
-                    $CI->response->meta->groupby = '';
-                    $log->detail = 'Invalid groupby supplied, removed.';
+                if ($CI->response->meta->collection !== 'database') {
+                    if ( ! $CI->db->field_exists($CI->response->meta->groupby, $temp)) {
+                        $CI->response->meta->groupby = '';
+                        $log->detail = 'Invalid groupby supplied, removed.';
+                    } else {
+                        $CI->response->meta->groupby = $temp . '.' . $CI->response->meta->groupby;
+                    }
                 } else {
-                    $CI->response->meta->groupby = $temp . '.' . $CI->response->meta->groupby;
+                    $CI->response->meta->groupby = 1;
                 }
             }
         }
