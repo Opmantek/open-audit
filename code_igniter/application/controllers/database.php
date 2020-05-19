@@ -168,7 +168,7 @@ class Database extends MY_Controller
             $this->response->meta->total = 1;
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
-            $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            // $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {
