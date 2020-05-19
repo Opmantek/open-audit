@@ -160,8 +160,8 @@ class Database extends MY_Controller
         $this->response->meta->format = 'screen';
         if ( ! empty($this->response->meta->groupby)) {
             $this->response->meta->format = 'json';
-            $this->response->special = $this->data;
         }
+        $this->response->special = $this->data;
         $this->response->errors = array();
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         if ( ! empty($this->response->data) && is_array($this->response->data)) {

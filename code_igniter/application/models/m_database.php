@@ -236,6 +236,25 @@ class M_database extends MY_Model
                         return;
                     }
                 }
+                if ($format === 'json') {
+                    $sql = 'SELECT * FROM `' . $table . '`';
+                    $query = $this->db->query($sql);
+                    $result = $query->result();
+                    // if ($table === 'credentials' && ! empty($result) && $this->config->config['decrypt_credentials'] === 'y') {
+                    //     for ($i=0; $i < count($result); $i++) {
+                    //         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                    //     }
+                    // }
+                    if ($count < intval($this->config->config['database_show_row_limit'])) {
+                        $return = json_encode($result);
+                        return $return;
+                    } else {
+                        $backup = json_encode($result);
+                        $this->load->helper('download');
+                        force_download('open-audit_' . $table . '.json', $backup);
+                        return;
+                    }
+                }
                 if ($format === 'xml') {
                     $this->load->dbutil();
                     $sql = 'SELECT * FROM `' . $table . '`';
