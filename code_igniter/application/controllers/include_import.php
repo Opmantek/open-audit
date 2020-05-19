@@ -101,7 +101,7 @@ foreach ($csv as $key => $value) {
             if ( ! $this->db->table_exists($table)) {
                 $test = false;
             } else {
-                $sql = '/* include_import */ ' . 'SELECT org_id FROM `$table` WHERE `id` = ?';
+                $sql = '/* include_import */ ' . "SELECT org_id FROM `{$table}` WHERE `id` = ?";
                 $data = array(intval($item->id));
                 $query = $this->db->query($sql, $data);
                 $result = $query->result();
