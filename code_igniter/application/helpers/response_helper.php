@@ -1109,11 +1109,11 @@ if ( ! function_exists('response_get_include')) {
             $include = $_POST['include'];
             $log->sumary = 'Set include according to POST. ';
         }
-        if ( ! empty($include)) {
-            $valid_includes = response_valid_includes();
-            if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
-                $include = implode(',', $valid_includes);
-            } else {
+        $valid_includes = response_valid_includes();
+        if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
+            $include = implode(',', $valid_includes);
+        } else {
+            if ( ! empty($include)) {
                 $temp = explode(',', $include);
                 for ($i=0; $i < count($temp); $i++) {
                     if ( ! in_array($temp[$i], $valid_includes)) {
@@ -1146,7 +1146,7 @@ if ( ! function_exists('response_get_internal_filter')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_internal_filter';
         $log->status = 'parsing';
-        $log->summary = 'get filter';
+        $log->summary = 'get internal filter';
 
         $instance = & get_instance();
         $reserved_words = response_valid_reserved_words();
@@ -1694,7 +1694,7 @@ if ( ! function_exists('response_get_properties')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_properties';
         $log->status = 'parsing';
-        $log->summary = 'get action';
+        $log->summary = 'get properties';
 
         $instance = & get_instance();
         $properties = '';
@@ -1744,7 +1744,8 @@ if ( ! function_exists('response_get_properties')) {
             $properties = $table . '.' . implode(','.$table.'.', $instance->db->list_fields($table));
             $log->summary = 'Set properties to TABLE ALL.';
         }
-        if ( ! empty($properties)) {
+
+        if ( ! empty($properties) and $properties !== $sub_resource . '.*') {
             // Validate the properties are database columns
             $properties = explode(',', $properties);
             for ($i=0; $i < count($properties); $i++) {
@@ -1763,8 +1764,9 @@ if ( ! function_exists('response_get_properties')) {
             }
             $properties = implode(',', $properties);
         }
+
         if ($properties === '' && $collection !== 'devices') {
-            $properties = '*';
+            $properties = '.*';
             $log->summary = 'Set properties according to NON-DEVICES DEFAULT.';
         }
         // perform some simple data cleansing
@@ -1772,7 +1774,6 @@ if ( ! function_exists('response_get_properties')) {
             $properties = implode(',', $properties);
         }
         $temp = $properties;
-        $properties = strtolower($properties);
         $properties = preg_replace('/[^A-Za-z0-9\.\_\,\*]/', '', $properties);
         if ($temp !== $properties) {
             // something was filtered
@@ -1780,6 +1781,7 @@ if ( ! function_exists('response_get_properties')) {
         }
         if ( ! empty($properties)) {
             $log->detail = 'PROPERTIES: ' . $properties;
+            stdlog($log);
         }
         return $properties;
     }
