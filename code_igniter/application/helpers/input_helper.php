@@ -176,7 +176,7 @@ if ( ! function_exists('inputRead')) {
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
         $CI->response->meta->id = null;
-        $CI->response->meta->ids = 0;
+        $CI->response->meta->ids = '';
         $CI->response->meta->include = '';
         // if (empty($CI->config->config['page_size'])) {
         //     $CI->config->config['page_size'] = 1000;
@@ -1583,11 +1583,14 @@ if ( ! function_exists('filter')) {
         }
 
         if ($collection !== 'configuration' && $collection !== 'logs' ) {
+            $temp = explode(',', $user->org_list);
+            $temp = array_unique($temp);
+            $org_list = implode(',', $temp);
             if ($filter !== '') {
                 $filter = substr($filter, 5);
-                $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+                $filter = ' WHERE orgs.id IN (' . $org_list . ') AND ' . $filter;
             } else {
-                $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+                $filter = ' WHERE orgs.id IN (' . $org_list . ')';
             }
         }
 
