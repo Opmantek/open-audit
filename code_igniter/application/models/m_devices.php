@@ -834,6 +834,9 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->_build_filter();
+        if (is_array($CI->user->org_list)) {
+            $CI->user->org_list = implode(',', $CI->user->org_list);
+        }
         if ( ! empty($CI->response->meta->groupby)) {
             if ( ! empty($CI->response->meta->internal->properties)) {
                 $CI->response->meta->internal->properties .= ', COUNT(*) AS `count`';
