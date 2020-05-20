@@ -166,6 +166,10 @@ class Rules extends MY_Controller
             $rule = $rule[0];
         }
 
+        if (empty($this->response->meta->sub_resource_id)) {
+            $this->response->meta->sub_resource_id = '';
+        }
+
         $temp = explode('.', $this->response->meta->sub_resource_id);
         $item = new stdClass();
 

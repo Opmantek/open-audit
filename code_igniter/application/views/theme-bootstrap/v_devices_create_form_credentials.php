@@ -42,7 +42,7 @@
     </h3>
   </div>
   <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo htmlspecialchars( $this->response->meta->ids, REPLACE_FLAGS, CHARSET); ?>">
+    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo @htmlspecialchars($this->response->meta->ids, REPLACE_FLAGS, CHARSET); ?>">
         <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
         <div class="form-group">
             <label for="id" class="col-sm-2 control-label"><?php echo __('ID'); ?></label>
