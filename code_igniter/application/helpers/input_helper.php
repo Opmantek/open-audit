@@ -1483,10 +1483,10 @@ if ( ! function_exists('inputRead')) {
             if ($CI->response->meta->action === 'create' OR $CI->response->meta->action === 'update' OR $CI->response->meta->action === 'import') {
                 $temp = explode(',', $CI->user->org_list);
                 // org_id
-                if ( ! empty($CI->meta->received_data->org_id)) {
+                if ( ! empty($CI->response->meta->received_data->org_id)) {
                     $allowed = false;
                     foreach ($temp as $key => $value) {
-                        if ($CI->meta->received_data->org_id === $value) {
+                        if ($CI->response->meta->received_data->org_id === $value) {
                             $allowed = true;
                         }
                     }
@@ -1497,10 +1497,10 @@ if ( ! function_exists('inputRead')) {
                     }
                 }
                 // devices_assigned_to_org
-                if ( ! empty($CI->meta->received_data->devices_assigned_to_org)) {
+                if ( ! empty($CI->response->meta->received_data->devices_assigned_to_org)) {
                     $allowed = false;
                     foreach ($temp as $key => $value) {
-                        if ($CI->meta->received_data->devices_assigned_to_org === $value) {
+                        if ($CI->response->meta->received_data->devices_assigned_to_org === $value) {
                             $allowed = true;
                         }
                     }
