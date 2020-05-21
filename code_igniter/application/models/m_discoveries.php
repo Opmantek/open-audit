@@ -111,6 +111,9 @@ class M_discoveries extends MY_Model
                 $data->other->subnet = '';
             }
         }
+        if (empty($data->other->match)) {
+            $data->other->match = new stdClass();
+        }
         if (empty($data->other->nmap)) {
             $data->other->nmap = new stdClass();
             if (empty($this->config->config['discovery_default_scan_option'])) {
