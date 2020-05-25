@@ -123,11 +123,17 @@ if (! function_exists('output')) {
             foreach ($special as $table => $column) {
                 if ($CI->response->meta->collection == $table) {
                     $array = array();
-                    if (!empty($CI->response->data)) {
+                    if ( ! empty($CI->response->data)) {
                         foreach ($CI->response->data as $item) {
-                            if (!empty($item->attributes) and !empty($item->attributes->{$column})) {
+                            if ( ! empty($item->attributes) && ! empty($item->attributes->{$column})) {
                                 foreach ($item->attributes->{$column} as $key => $value) {
-                                    $array[] = $column.'.'.$key;
+                                    if (is_string($item->attributes->{$column}->{$key}) or is_int($item->attributes->{$column}->{$key})) {
+                                        $array[] = $column.'.'.$key;
+                                    } else {
+                                        foreach ($item->attributes->{$column}->{$key} as $key2 => $value2) {
+                                            $array[] = $column.'.'.$key.'.'.$key2;
+                                        }
+                                    }
                                 }
                             }
                         }
