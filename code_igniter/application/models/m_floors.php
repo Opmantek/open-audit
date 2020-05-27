@@ -213,6 +213,7 @@ class M_floors extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->location_id = 'The location where the building is located. Links to <code>locations.id</code>.';
         $dictionary->columns->building_id = 'The building the floor is located in. Links to <code>buildings.id</code>.';
         $dictionary->columns->options = 'unused';
         $dictionary->columns->notes = 'unused';

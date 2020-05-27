@@ -204,6 +204,9 @@ class M_rows extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->location_id = 'The location where the building is located. Links to <code>locations.id</code>.';
+        $dictionary->columns->building_id = 'The building the floor is located on. Links to <code>buildingsP.id</code>.';
+        $dictionary->columns->floor_id = 'The floor the room is located on. Links to <code>floors.id</code>.';
         $dictionary->columns->room_id = 'The room the rack is located in. Links to <code>rooms.id</code>.';
         $dictionary->columns->options = 'unused';
         $dictionary->columns->notes = 'unused';
