@@ -379,9 +379,7 @@ class M_help extends MY_Model
             foreach ($prereqs as $prereq) {
                 $command_string = 'which ' . $prereq . ' 2>/dev/null';
                 exec($command_string, $output, $return_var);
-                if (isset($output[0])) {
-                    $data->prereq->$prereq = @$output[0];
-                }
+                $data->prereq->{$prereq} = @$output[0];
                 unset($output);
                 unset($command_string);
             }
@@ -443,7 +441,7 @@ class M_help extends MY_Model
             unset($output);
             unset($command_string);
             // nmap perms - should be -rwsr-xr-x
-            if ($data->prereq->nmap !== '' && $data->prereq->nmap !== 'n') {
+            if ( ! empty($data->prereq->nmap) && $data->prereq->nmap !== 'n') {
                 $command_string = 'ls -l '.$data->prereq->nmap.' | cut -d" " -f1';
                 exec($command_string, $output, $return_var);
                 if (isset($output[0])) {
