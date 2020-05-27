@@ -1,7 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
+/**
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -28,7 +26,7 @@ if (!defined('BASEPATH')) {
 #
 # *****************************************************************************
 
-/*
+* PHP version 5.3.3
 * @category  Helper
 * @package   Open-AudIT
 * @author    Mark Unwin <marku@opmantek.com>
@@ -36,8 +34,13 @@ if (!defined('BASEPATH')) {
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   GIT: Open-AudIT_3.3.2
 * @link      http://www.open-audit.org
- */
-if (! function_exists('output')) {
+*/
+
+if ( ! defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+
+if ( ! function_exists('output')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
      *
@@ -55,23 +58,23 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
 
-        if ($CI->response->meta->id == 888888888888) {
+        if ($CI->response->meta->id === 888888888888) {
             $CI->response->meta->id = null;
             unset($CI->response->data);
             $CI->response->data = array();
         }
-        if (!empty($CI->response->data) and count($CI->response->data) > 0) {
+        if ( ! empty($CI->response->data) && count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
         }
         if (empty($CI->response->data)) {
             $CI->response->data = false;
         }
-        if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
+        if ( ! empty($CI->response->included) && $CI->response->meta->collection !== 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }
         create_links();
         // if we have errors set, make sure we remove the data object / array
-        if (!empty($CI->response->errors) and count($CI->response->errors) > 0) {
+        if ( ! empty($CI->response->errors) && count($CI->response->errors) > 0) {
             if ($CI->response->meta->collection !== 'discoveries') {
                 unset($CI->response->data);
             }
@@ -79,13 +82,13 @@ if (! function_exists('output')) {
             unset($CI->response->errors);
         }
 
-        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute') {
+        if ($CI->response->meta->collection === 'summaries' && $CI->response->meta->action === 'execute') {
            unset($CI->response->meta->data_order);
            $CI->response->meta->data_order = array('name','count');
-        } else if ($CI->response->meta->collection == 'charts') {
-            # Do nothing
-        } else if ($CI->response->meta->collection == 'nmis') {
-            # Do nothing
+        } else if ($CI->response->meta->collection === 'charts') {
+            // Do nothing
+        } else if ($CI->response->meta->collection === 'nmis') {
+            // Do nothing
             if (empty($CI->response->meta->data_order)) {
                 $CI->response->meta->data_order = array();
             }
@@ -94,19 +97,13 @@ if (! function_exists('output')) {
             unset($CI->response->meta->data_order);
             $CI->response->meta->data_order = array();
 
-            // if (!empty($CI->response->data[0]->attributes)) {
-            //     foreach ($CI->response->data[0]->attributes as $key => $value) {
-            //         $CI->response->meta->data_order[] = $key;
-            //     }
-            // }
-
-            if (!empty($CI->response->data[0]->attributes)) {
+            if ( ! empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'search' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
+                    if (strpos($key, '.') !== false OR $CI->response->meta->collection === 'reports' OR $CI->response->meta->collection === 'search' OR $CI->response->meta->collection === 'help' OR $CI->response->meta->collection === 'database') {
                         $CI->response->meta->data_order[] = $key;
                     } else {
                         $table = $CI->response->meta->collection;
-                        if ($table == 'devices') {
+                        if ($table === 'devices') {
                             $table = 'system';
                         }
                         if ($CI->db->field_exists($key, $table)) {
@@ -240,12 +237,12 @@ if (! function_exists('output')) {
         $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
-        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug === true) {
+        if ( ! empty($CI->response->meta->debug) && $CI->response->meta->debug === true) {
             $CI->response->meta->user = $CI->user;
             $CI->response->meta->timing = $GLOBALS['timer_log'];
             $CI->response->meta->time_end = microtime(true);
             $CI->response->meta->time_elapsed = '';
-            if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
+            if ( ! empty($CI->response->meta->time_end) && ! empty($CI->response->meta->time_start)) {
                 $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
             }
         } else {
@@ -442,7 +439,11 @@ if (! function_exists('output')) {
                             $value = $item->attributes->{$temp[1]};
                         }
                     }
-                    $value = str_replace('"', '""', (string)$value);
+                    if (is_string($value) OR is_int($value)) {
+                        $value = str_replace('"', '""', (string)$value);
+                    } else {
+                        $value = '';
+                    }
                     if ( ! empty($output_escape_csv) && $output_escape_csv === 'y') {
                         if (strpos($value, '=') === 0 OR strpos($value, '+') === 0 OR strpos($value, '-') === 0 OR strpos($value, '@') === 0) {
                             $value = "'" . $value;
@@ -778,24 +779,24 @@ if (! function_exists('output')) {
             if (is_array($row)) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
-                if (!empty($row->attributes)) {
+                if ( ! empty($row->attributes)) {
                     foreach ($row->attributes as $key => $value) {
-                        if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
+                        if (isset($key) && ($key === 'id' OR $key === 'free' OR $key === 'used' OR $key === 'size' OR $key === 'speed' OR $key === 'total' OR $key === 'col_order' OR $key === 'access_level' OR $key === 'count')) {
                             $row->attributes->$key = intval($value);
-                        } elseif ((strrpos($key, '_id') === strlen($key)-3) or
-                                    (strrpos($key, '.id') === strlen($key)-3) or
-                                    (strrpos($key, '_count') === strlen($key)-6) or
-                                    (strrpos($key, '_percent') === strlen($key)-8) or
+                        } elseif ((strrpos($key, '_id') === strlen($key)-3) OR
+                                    (strrpos($key, '.id') === strlen($key)-3) OR
+                                    (strrpos($key, '_count') === strlen($key)-6) OR
+                                    (strrpos($key, '_percent') === strlen($key)-8) OR
                                     (strrpos($key, '_size') === strlen($key)-5)) {
                             $row->attributes->$key = intval($value);
-                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
-                                (strrpos($key, 'next_hop') === strlen($key)-8) or
+                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) OR
+                                (strrpos($key, 'next_hop') === strlen($key)-8) OR
                                 (strrpos($key, 'destination') === strlen($key)-11)) {
                             $temp_name = $key . '_padded';
                             $row->attributes->$temp_name = ip_address_from_db($value);
                             $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
                             $row->attributes->$key = ip_address_from_db($value);
-                            if ($row->attributes->$temp_name == $row->attributes->$key) {
+                            if ($row->attributes->$temp_name === $row->attributes->$key) {
                                 unset($row->attributes->$temp_name);
                             }
                         }
