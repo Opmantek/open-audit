@@ -461,6 +461,7 @@ if ( ! function_exists('output')) {
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
             header('Cache-Control: max-age=0');
         } else {
+            echo "<pre>\n";
             echo $output_csv;
         }
     }

@@ -125,7 +125,7 @@ class M_tasks extends MY_Model
 
         if ($result !== false) {
             for ($i=0; $i < count($result); $i++) {
-                if ($result[$i]->type !== 'reports') {
+                if ($result[$i]->type !== 'reports' && $result[$i]->type !== 'collector') {
                     $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                     $data = array($result[$i]->sub_resource_id);
                     $data_result = $this->run_sql($sql, $data);
