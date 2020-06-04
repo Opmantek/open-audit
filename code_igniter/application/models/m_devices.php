@@ -602,7 +602,7 @@ class M_devices extends MY_Model
                 }
 
                 // we only store a SINGLE credential set of each type per device - delete any existing
-                $sql ='"DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?';
+                $sql ='DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?';
                 $data = array(intval($id), (string)$type);
                 $this->run_sql($sql, $data);
                 // insert the new credentials
