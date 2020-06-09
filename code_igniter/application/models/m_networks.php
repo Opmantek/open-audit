@@ -48,6 +48,9 @@
  */
 class M_networks extends MY_Model
 {
+    /**
+     * [__construct description]
+     */
     public function __construct()
     {
         parent::__construct();
@@ -71,57 +74,74 @@ class M_networks extends MY_Model
         }
     }
 
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        if ($id == '') {
+        if ($id === '') {
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?";
+        $sql = 'SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
         return $result;
     }
 
+    /**
+     * Delete an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     * @return bool True = success, False = fail
+     */
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
         $CI = & get_instance();
-        $sql = "DELETE FROM `networks` WHERE id = ?";
+        $sql = 'DELETE FROM `networks` WHERE id = ?';
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
     }
 
+    /**
+     * [sub_resource description]
+     * @param  string $id [description]
+     * @return [type]     [description]
+     */
     public function sub_resource($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT `network` FROM `networks` WHERE `id` = ?";
+        $sql = 'SELECT `network` FROM `networks` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         if (count($result) > 0) {
             $network = $result[0]->network;
-            if ($network != '') {
+            if ($network !== '') {
                 $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
                 $data = array((string)$network);
                 $result = $this->run_sql($sql, $data);
@@ -135,6 +155,11 @@ class M_networks extends MY_Model
         }
     }
 
+    /**
+     * [upsert description]
+     * @param  [type] $network [description]
+     * @return [type]          [description]
+     */
     public function upsert($network = null)
     {
         $router = & load_class('Router', 'core');
@@ -145,7 +170,7 @@ class M_networks extends MY_Model
         if (is_null($network)) {
             return false;
         }
-        if (empty($network->network) and !empty($network->name)) {
+        if (empty($network->network) && ! empty($network->name)) {
             $network->network = $network->name;
         }
         if (empty($network->network)) {
@@ -157,21 +182,20 @@ class M_networks extends MY_Model
         if (empty($network->org_id)) {
             $network->org_id = 1;
         }
-        if (!empty($this->config->config['internal_version']) and $this->config->config['internal_version'] < 20160904) {
+        if ( ! empty($this->config->config['internal_version']) && $this->config->config['internal_version'] < 20160904) {
             return;
         }
-        $sql = "SELECT * FROM networks WHERE networks.org_id = ? AND networks.network = ?";
+        $sql = 'SELECT * FROM networks WHERE networks.org_id = ? AND networks.network = ?';
         $data = array(intval($network->org_id), (string)$network->network);
         $result = $this->run_sql($sql, $data);
-        # Note we receive false back from run_sql if it's a select and no rows are returned.
-        if ($result == false) {
-            # the network does not exist. Log it and insert it
-            if (!empty($network->description)) {
+        // Note we receive false back from run_sql if it's a select and no rows are returned.
+        if ($result === false) {
+            // the network does not exist. Log it and insert it
+            $this->log->summary = "Inserting {$network->name} ({$network->network}) into blessed subnet list.";
+            if ( ! empty($network->description)) {
                 $description = $network->description;
-                $this->log->summary = "Inserting " . $network->name . ' (' . $network->network . ') into blessed subnet list.';
             } else {
                 $description = '';
-                $this->log->summary = "Inserting " . $network->name . ' (' . $network->network . ') into blessed subnet list.';
             }
             $sql = "INSERT INTO `networks` (id, name, network, org_id, type, description, edited_by, edited_date) VALUES (NULL, ?, ?, ?, 'Local Area Network', ?, ?, NOW())";
             $data = array((string)$network->name, (string)$network->network, intval($network->org_id), (string)$description, 'auto-generated by '.@$model.'::'.@$function);
@@ -182,35 +206,40 @@ class M_networks extends MY_Model
         }
     }
 
-    # supply a standard ip address - 192.168.1.1
-    # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
-    # returns true if ip is contained in a subnet, false otherwise
-    # TODO - we should take an OrgID (or 1 if not exists)
+    /**
+     * [check_ip description]
+     * @param  string $ip_address [description]
+     * @return [type]             [description]
+     */
     public function check_ip($ip_address = '')
     {
+        // supply a standard ip address - 192.168.1.1
+        // supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
+        // returns true if ip is contained in a subnet, false otherwise
+        // TODO - we should take an OrgID (or 1 if not exists)
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         if (empty($this->config)) {
             $this->load->model('m_configuration');
             $this->m_configuration->load();
         }
-        if (empty($this->config->config['blessed_subnets_use']) or trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+        if (empty($this->config->config['blessed_subnets_use']) OR trim(strtolower($this->config->config['blessed_subnets_use'])) !== 'y') {
             return true;
         }
         if (empty($ip_address)) {
             return false;
         }
-        if ($ip_address === '127.0.0.1' or $ip_address === '127.0.1.1') {
+        if ($ip_address === '127.0.0.1' OR $ip_address === '127.0.1.1') {
             return true;
         }
         if ($ip_address === '::1') {
             return true;
         }
-        # TODO - IPv6 support
+        // TODO - IPv6 support
         if (stripos($ip_address, ':') !== false) {
             return true;
         }
-        $sql = "/* m_networks::check_ip */ " . "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
+        $sql = '/* m_networks::check_ip */ ' . "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
         $sql = $this->clean_sql($sql);
 
         $temp_debug = $this->db->db_debug;
@@ -219,7 +248,7 @@ class M_networks extends MY_Model
         $this->db->db_debug = $temp_debug;
 
         if ($this->db->_error_message()) {
-            # need to log down here for the above so we can use $this->db to get the last insert id
+            // need to log down here for the above so we can use $this->db to get the last insert id
             $db_error = $this->db->_error_message();
             $sqllog = new stdClass();
             $sqllog->function =  'm_networks::check_ip';
@@ -230,7 +259,7 @@ class M_networks extends MY_Model
             $sqllog->detail = $this->db->last_query();
             $sqllog->detail .= ' - FAILURE - ' . $db_error;
             stdlog($sqllog);
-            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ')'), $db_error);
             return true;
         }
 
@@ -249,23 +278,33 @@ class M_networks extends MY_Model
         }
     }
 
+    /**
+     * Read the collection from the database
+     *
+     * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
+     * @param  int $response A flag to tell us if we need to use $response->meta->filter and populate $response->data
+     * @return bool True = success, False = fail
+     */
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if (!empty($user_id)) {
+        if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = "SELECT * FROM networks WHERE org_id IN (" . implode(',', $org_list) . ")";
+            $sql = 'SELECT * FROM networks WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'networks');
             return $result;
         }
-        if (!empty($response)) {
+        if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) " . $CI->response->meta->internal->filter . " GROUP BY networks.id " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
-
-            if (!empty($CI->response->meta->requestor)) {
-            $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id AND system.oae_manage = 'y') " . $CI->response->meta->internal->filter . " GROUP BY networks.id " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
+            // As at 3.4.0, if we have >1,000 networks, exclude the device count
+            if ($CI->response->meta->total > 1000) {
+                $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, 0 `device_count` FROM `networks` LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN orgs ON (networks.org_id = orgs.id) {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
+            }
+            if ( ! empty($CI->response->meta->requestor) && $CI->response->meta->total < 1001) {
+                $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id AND system.oae_manage = 'y') {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
             }
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'networks');
