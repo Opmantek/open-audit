@@ -115,115 +115,19 @@ if ( ! function_exists('output')) {
                 }
             }
 
-            # TODO - do we need this is the models already do this for us?
-            $special = array('credentials' => 'credentials', 'baselines_policies' => 'tests', 'discoveries' => 'other', 'queue' => 'details', 'tasks' => 'options');
-            foreach ($special as $table => $column) {
-                if ($CI->response->meta->collection == $table) {
-                    $array = array();
-                    if ( ! empty($CI->response->data)) {
-                        foreach ($CI->response->data as $item) {
-                            if ( ! empty($item->attributes) && ! empty($item->attributes->{$column})) {
-                                foreach ($item->attributes->{$column} as $key => $value) {
-                                    if (is_string($item->attributes->{$column}->{$key}) or is_int($item->attributes->{$column}->{$key})) {
-                                        $array[] = $column.'.'.$key;
-                                    } else {
-                                        foreach ($item->attributes->{$column}->{$key} as $key2 => $value2) {
-                                            $array[] = $column.'.'.$key.'.'.$key2;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $array = array_unique($array);
-                    $CI->response->meta->data_order = array_merge($CI->response->meta->data_order, $array);
-                    $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
-                    $position = array_search($table.'.'.$column, $CI->response->meta->data_order);
-                    unset($CI->response->meta->data_order[$position]);
-                }
-            }
-
-            if ($CI->response->meta->collection === 'devices' and $CI->response->meta->action === 'sub_resource_read') {
+            if ($CI->response->meta->collection === 'devices' && $CI->response->meta->action === 'sub_resource_read') {
                 unset($CI->response->meta->data_order);
                 $CI->response->meta->data_order = array();
-                if (!empty($CI->response->data) and is_array($CI->response->data)) {
+                if ( ! empty($CI->response->data) && is_array($CI->response->data)) {
                     foreach ($CI->response->data[0]->attributes as $key => $value) {
                         $CI->response->meta->data_order[] = $key;
                     }
                 }
             }
 
-            if ($CI->response->meta->collection === 'clouds') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'credentials') {
-                        $fields = array('key', 'secret_key', 'subscription_id', 'tenant_id', 'client_id', 'client_secret');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'credentials.' . $field;
-                        }
-                    }
-                }
-                $test = @$CI->config->config['decrypt_credentials'];
-                if (!empty($test) and $test != 'y') {
-                    for ($i=0; $i < count($CI->response->data); $i++) {
-                        $fields = array('key','secret_key');
-                        foreach ($fields as $field) {
-                            if (!empty($CI->response->data[$i]->attributes->credentials->{$field})) {
-                                $CI->response->data[$i]->attributes->credentials->{$field} = '';
-                                $CI->response->data[$i]->attributes->{"credentials.$field"} = '';
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($CI->response->meta->collection == 'credentials') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'credentials') {
-                        $fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'credentials.' . $field;
-                        }
-                    }
-                }
-                $test = @$CI->config->config['decrypt_credentials'];
-                if (!empty($test) and $test != 'y') {
-                    for ($i=0; $i < count($CI->response->data); $i++) {
-                        $fields = array('community', 'security_name', 'authentication_passphrase', 'privacy_passphrase', 'password', 'ssh_key');
-                        foreach ($fields as $field) {
-                            if (!empty($CI->response->data[$i]->attributes->credentials->{$field})) {
-                                $CI->response->data[$i]->attributes->credentials->{$field} = '';
-                                $CI->response->data[$i]->attributes->{"credentials.$field"} = '';
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($CI->response->meta->collection == 'discoveries') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'other') {
-                        $fields = array('email_address','format','group_id');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'other.' . $field;
-                        }
-                    }
-                }
-            }
-
-            if ($CI->response->meta->collection == 'tasks') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'options') {
-                        $fields = array('ad_domain','ad_server','single','subnet');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'options.' . $field;
-                        }
-                    }
-                }
-            }
-
             $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
             $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
-            #sort($CI->response->meta->data_order);
+            // sort($CI->response->meta->data_order);
         }
 
         if ($CI->response->meta->format === 'screen' && $CI->response->meta->action === 'read' && $CI->m_users->get_user_permission('', $CI->response->meta->collection, 'u')) {
@@ -346,53 +250,27 @@ if ( ! function_exists('output')) {
         $output_csv = '';
 
         if ($CI->response->meta->collection === 'credentials') {
-            $CI->response->meta->data_order = array('id','name','org_id','description','type');
-            $items = array();
-            // NOTE - need to enumerate over the complete dataset as credentials attributes only populate
-            //        their required attributes (an SNMP entry does not populate credentials.username for example).
-            foreach ($CI->response->data as $data) {
-                $items = array_merge($items, array_keys(get_object_vars($data->attributes->credentials)));
-                $items = array_unique($items);
-            }
-            foreach ($items as $item) {
-                $CI->response->meta->data_order[] = 'credentials.' . $item;
-            }
             for ($i=0; $i < count($CI->response->data); $i++) {
-                foreach ($CI->response->data[$i]->attributes as $key => $value) {
-                    if ( ! is_string($value) && is_object($value)) {
-                        foreach ($CI->response->data[$i]->attributes->{$key} as $key2 => $value2) {
-                            $CI->response->data[$i]->attributes->{$key . '.' . $key2} = $value2;
-                        }
-                    }
-                }
+                $CI->response->data[$i]->attributes->credentials = json_encode($CI->response->data[$i]->attributes->credentials);
+            }
+        }
+
+        if ($CI->response->meta->collection === 'dashboards') {
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                $CI->response->data[$i]->attributes->options = json_encode($CI->response->data[$i]->attributes->options);
             }
         }
 
         if ($CI->response->meta->collection === 'discoveries') {
-            $CI->response->meta->data_order = array('id','name','org_id','type','description','devices_assigned_to_org','devices_assigned_to_location','network_address','system_id','discard');
-            // Note - need to go two levels deep as attributes.other.nmap and attributes.other.match
-            foreach ($CI->response->data[0]->attributes->other as $key => $value) {
-                if (is_string($value)) {
-                    $CI->response->meta->data_order[] = 'other.' . $key;
-                } else {
-                    foreach ($CI->response->data[0]->attributes->other->{$key} as $key2 => $value2) {
-                        $CI->response->meta->data_order[] = 'other.' . $key . '.' . $key2;
-                    }
-                }
-            }
             for ($i=0; $i < count($CI->response->data); $i++) {
-                foreach ($CI->response->data[$i]->attributes as $key => $value) {
-                    if ( ! is_string($value) && is_object($value)) {
-                        foreach ($CI->response->data[$i]->attributes->{$key} as $key2 => $value2) {
-                            $CI->response->data[$i]->attributes->{$key . '.' . $key2} = $value2;
-                        }
-                    }
-                }
+                $CI->response->data[$i]->attributes->other = json_encode($CI->response->data[$i]->attributes->other);
             }
         }
 
         if ($CI->response->meta->collection === 'tasks') {
-            $CI->response->meta->data_order = array('id','name','org_id','description','sub_resource_id','uuid','enabled','type','minute','hour','day_of_month','month','day_of_week');
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                $CI->response->data[$i]->attributes->options = json_encode($CI->response->data[$i]->attributes->options);
+            }
         }
 
         if ($CI->response->meta->collection === 'queue') {
