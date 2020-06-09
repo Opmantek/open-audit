@@ -142,7 +142,7 @@ class M_tasks extends MY_Model
             }
         }
         $result = $this->format_data($result, 'tasks');
-        if ( ! empty($result[0]->attributes->options)) {
+        if ( ! empty($result[0]->attributes->options) and is_string($result[0]->attributes->options)) {
             $result[0]->attributes->options = my_json_decode($result[0]->attributes->options);
         }
         return ($result);
