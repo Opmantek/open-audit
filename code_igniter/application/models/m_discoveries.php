@@ -414,9 +414,6 @@ class M_discoveries extends MY_Model
                 for ($i=0; $i < count($result); $i++) {
                     if ( ! empty($result[$i]->other)) {
                         $result[$i]->other = json_decode($result[$i]->other);
-                        foreach ($result[$i]->other as $key => $value) {
-                            $result[$i]->{'other.'.$key} = $value;
-                        }
                     }
                 }
             }
