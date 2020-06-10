@@ -398,7 +398,7 @@ class M_configuration extends MY_Model
                 }
             }
         }
-        $this->load->helper('network_helper');
+        $this->load->helper('network');
         $networks = array();
         if (is_array($ip_address_array) && count($ip_address_array) > 0) {
             foreach ($ip_address_array as $network) {

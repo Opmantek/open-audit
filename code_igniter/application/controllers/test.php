@@ -805,11 +805,11 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
     {
         # NOTE - must edit code to return blank in snmp_helper::my_snmp_get
         echo "<pre>\n";
-        $this->load->helper('snmp_helper');
+        $this->load->helper('snmp');
         $dir = BASEPATH.'../application/helpers/';
         $dir_files = scandir($dir);
         $file_list = array();
-        $this->load->helper('snmp_oid_helper');
+        $this->load->helper('snmp_oid');
         foreach ($dir_files as $file) {
             if (strpos($file, 'snmp_') !== false and strpos($file, '_helper.php') !== false and $file != 'snmp_helper.php' and $file != 'snmp_oid_helper.php') {
                 $file_list[] = $file;

@@ -267,7 +267,7 @@ class M_networks extends MY_Model
         if (intval($result[0]->count) > 0) {
             return true;
         } else {
-            $this->load->helper('log_helper');
+            $this->load->helper('log');
             $log_details = new stdClass();
             $log_details->severity = 5;
             $log_details->file = 'system';

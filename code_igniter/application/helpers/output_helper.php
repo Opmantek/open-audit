@@ -653,7 +653,7 @@ if ( ! function_exists('output')) {
     function output_convert($data)
     {
         $CI = & get_instance();
-        $CI->load->helper('network_helper');
+        $CI->load->helper('network');
         foreach ($data as $row) {
             if (is_array($row)) {
                 $row = output_convert($row);

@@ -399,7 +399,7 @@ class Util extends CI_Controller
         $this->load->helper('audit');
         $this->load->helper('discoveries');
         $this->load->helper('mac');
-        $this->load->helper('mac_model_helper');
+        $this->load->helper('mac_model');
         $this->load->helper('network');
         $this->load->helper('security');
         $this->load->helper('snmp');
