@@ -388,22 +388,23 @@ if ( ! function_exists('ip_scan')) {
 		$device['timestamp'] = $result[0]->timestamp;
 
 		$timing = '-T4';
-		if ( ! empty($nmap_timing)) {
-			$timing = '-T' . intval($nmap_timing);
+		if (isset($nmap->timing) && (is_int($nmap->timing) OR is_numeric($nmap->timing)) && (intval($nmap->timing) > 0 && intval($nmap->timing) < 6)) {
+			$timing = '-T' . intval($nmap->timing);
 		}
 
+		// If ping = n, scan the target regardless
 		$ping = '';
-		if (empty($nmap->ping) && $nmap->ping === 'n') {
+		if ( ! empty($nmap->ping) && $nmap->ping === 'n') {
 			$ping = '-Pn';
 		}
 
 		$service_version = '';
-		if ( ! empty($nmap->service_version)) {
+		if ( ! empty($nmap->service_version) && $nmap->service_version === 'y') {
 			$service_version = '-sV';
 		}
 
 		$timeout = '';
-		if ( ! empty($timeout)) {
+		if ( ! empty($timeout) && (is_int($nmap->timeout) OR is_numeric($nmap->timeout))) {
 			$timeout = '--host-timeout ' . intval($nmap->timeout);
 		}
 
