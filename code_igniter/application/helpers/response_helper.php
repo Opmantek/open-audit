@@ -190,6 +190,15 @@ if ( ! function_exists('response_create')) {
             }
         }
 
+        // depends on version affecting URI, collection and format
+        $response->meta->sub_resource = response_get_sub_resource($response->meta->collection, $response->meta->format);
+
+        // depends on version affecting URI, sub_resource
+        $temp = response_get_sub_resource_id($response->meta->sub_resource);
+        if ( ! empty($temp)) {
+            $response->meta->sub_resource_id = $temp;
+        }
+
         // depends on id, ids, recevied_data, request_method, sub_resource and sub_resource_id
         $response->meta->action = response_get_action($response);
 
@@ -227,15 +236,6 @@ if ( ! function_exists('response_create')) {
 
         // depends on collection and format
         $response->meta->include = response_get_include($response->meta->collection, $response->meta->format);
-
-        // depends on version affecting URI, collection and format
-        $response->meta->sub_resource = response_get_sub_resource($response->meta->collection, $response->meta->format);
-
-        // depends on version affecting URI, sub_resource
-        $temp = response_get_sub_resource_id($response->meta->sub_resource);
-        if ( ! empty($temp)) {
-            $response->meta->sub_resource_id = $temp;
-        }
 
         // depends on version affecting URI, collection
         $response->meta->sort = response_get_sort($response->meta->collection);
