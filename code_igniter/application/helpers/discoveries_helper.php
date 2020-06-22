@@ -266,6 +266,8 @@ if ( ! function_exists('discover_subnet')) {
 		$log->message = 'Starting discovery for ' . $discovery->attributes->name;
 		$log->ip = '127.0.0.1';
 		$log->severity = 6;
+		$log->file = 'discoveries_helper';
+		$log->function = 'discover_subnet';
 		discovery_log($log);
 
 		$sql = '/* discoveries_helper::discover_subnet */ ' . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW() WHERE id = ?";
