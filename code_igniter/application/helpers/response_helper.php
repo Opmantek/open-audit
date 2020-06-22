@@ -1259,7 +1259,7 @@ if ( ! function_exists('response_get_internal_properties')) {
         if ($properties !== '*' && $properties !== $sub_resource . '.*' && $properties !== '') {
             $temp = explode(',', $properties);
             foreach ($temp as $property) {
-                if ($property === 'count') {
+                if ($property === 'count' && $collection !== 'chart') {
                     $internal_properties .= 'count(*) as `count`,';
                 } elseif ($property === 'system_id') {
                     $internal_properties .= 'system.id as `system_id`,';
@@ -1271,7 +1271,7 @@ if ( ! function_exists('response_get_internal_properties')) {
         } else {
             $internal_properties = $properties;
         }
-        if ($properties === '*') {
+        if ($properties === '*' or $properties === '.*') {
             $temp = $collection;
             if ($temp === 'devices') {
                 $temp = 'system';
@@ -1886,9 +1886,9 @@ if ( ! function_exists('response_get_sub_resource')) {
             $sub_resource = $_POST['sub_resource'];
             $log->summary = 'Set sub_resource according to POST.';
         }
-        if ( ! empty($sub_resource)) {
+        if ( ! empty($sub_resource) and $collection === 'devices') {
             $valid_sub_resources = response_valid_sub_resources();
-            if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
+            if ($format === 'screen' && (empty($sub_resource) OR $sub_resource === '*' OR $sub_resource === 'all')) {
                 $sub_resource = implode(',', $valid_sub_resources);
             } else {
                 $temp = explode(',', $sub_resource);
@@ -1899,6 +1899,8 @@ if ( ! function_exists('response_get_sub_resource')) {
                 }
                 $sub_resource = implode(',', $temp);
             }
+        } else {
+            $sub_resource = '';
         }
         if ( ! empty($sub_resource)) {
             $log->detail = 'SUB_RESOURCE: ' . $sub_resource;
@@ -2100,7 +2102,7 @@ if ( ! function_exists('response_valid_sub_resources')) {
      */
     function response_valid_sub_resources()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
     }
 }
 
