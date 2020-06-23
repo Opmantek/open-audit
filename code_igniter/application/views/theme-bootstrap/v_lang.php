@@ -33,48 +33,49 @@
 * @version   GIT: Open-AudIT_3.3.2
 * @link      http://www.open-audit.org
  */
-if (!isset($this->user->lang) or $this->user->lang == "") {
-    $GLOBALS["user_lang"] = 'en';
+if (empty($this->user->lang)) {
+    $GLOBALS['user_lang'] = 'en';
 } else {
-    $GLOBALS["user_lang"] = $this->user->lang;
+    $GLOBALS['user_lang'] = $this->user->lang;
 }
 
-include  APPPATH."views/lang/".$GLOBALS["user_lang"].".inc";
+if ( ! file_exists(APPPATH . 'views/lang/' . $GLOBALS['user_lang'] . '.inc')) {
+    $GLOBALS['user_lang'] = 'en';
+}
 
-if (!function_exists('__')) {
+include APPPATH . 'views/lang/' . $GLOBALS['user_lang'] . '.inc';
+
+if ( ! function_exists('__')) {
     function __($word)
     {
-
-        //Learning-Mode
-        //Only for Developers !!!!
+        // Learning-Mode
+        // Only for Developers !!!!
         $language_learning_mode = 0;
 
-        if ($language_learning_mode == 1) {
-            include APPPATH."views/lang/".$GLOBALS["user_lang"].".inc";
-        }
         $word = (string) $word;
-        if (isset($GLOBALS["lang"][$word])) {
-            return $GLOBALS["lang"][$word];
+
+        if (isset($GLOBALS['lang'][$word])) {
+            return $GLOBALS['lang'][$word];
         } else {
-            //Learning-Mode
-            if ($language_learning_mode == 1 and isset($word) and $word != "") {
+            // Learning-Mode
+            if ($language_learning_mode === 1 && isset($word) && $word !== '') {
                 if (is_writable($language_file)) {
-                    //Deleting
-                    $buffer = "";
-                    $handle = fopen($language_file, "r");
-                    while (!feof($handle)) {
+                    // Deleting
+                    $buffer = '';
+                    $handle = fopen($language_file, 'r');
+                    while ( ! feof($handle)) {
                         $line = fgets($handle, 4096);
-                        if (!preg_match('/\?>/', $line)) {
+                        if ( ! preg_match('/\?>/', $line)) {
                             $buffer .= $line;
                         }
                     }
                     fclose($handle);
-                    //Writing new Variables
-                    $handle = fopen($language_file, "w+");
-                    fwrite($handle, $buffer.""."\$GLOBALS[\"lang\"][\"$word\"]=\"$word\";\n?>");
+                    // Writing new Variables
+                    $handle = fopen($language_file, 'w+');
+                    fwrite($handle, $buffer.''."\$GLOBALS[\"lang\"][\"$word\"]=\"$word\";\n?>");
                     fclose($handle);
                 } else {
-                    die("Language-Learning-Mode, but $language_file not writeable");
+                    die('Language-Learning-Mode, but $language_file not writeable');
                 }
             }
 
