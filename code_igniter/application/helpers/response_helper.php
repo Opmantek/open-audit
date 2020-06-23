@@ -94,18 +94,19 @@ if ( ! function_exists('response_create')) {
             $response->meta->cloud_id = $instance->config->config['id'];
         }
         $response->meta->collection = '';
+        $response->meta->current = 'y';
         $response->meta->debug = false;
         $response->meta->filtered = '';
         $response->meta->format = '';
         $response->meta->groupby = '';
         $response->meta->header = 'HTTP/1.1 200 OK';
         $response->meta->id = null;
-        $response->meta->ids = null;
+        // $response->meta->ids = null; // Only set below if it contains data
         $response->meta->include = '';
         $response->meta->limit = '';
         $response->meta->offset = 0;
         $response->meta->properties = '';
-        // NOTE see response_get_filter for why we do the below with the query string
+        // NOTE see response_get_query_filter for why we do the below with the query string
         $response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         $response->meta->query_string = str_replace('&amp;', '&', $response->meta->query_string);
         $response->meta->request_method = strtoupper($instance->input->server('REQUEST_METHOD'));
@@ -115,7 +116,7 @@ if ( ! function_exists('response_create')) {
         }
         $response->meta->sort = '';
         $response->meta->sub_resource = '';
-        $response->meta->sub_resource_id = 0;
+        // $response->meta->sub_resource_id = 0; // Only set below if it contains data
         if ( ! empty($GLOBALS['timer_start'])) {
             $response->meta->time_start = $GLOBALS['timer_start'];
         } else {
@@ -142,6 +143,9 @@ if ( ! function_exists('response_create')) {
 
         // no dependencies - set in GET or POST or HEADERS
         $response->meta->format = response_get_format();
+
+        // no dependencies - set in GET or POST or HEADERS
+        $response->meta->current = response_get_current();
 
         // depends on version affecting URI - set in URI or POST
         if ( ! empty($instance->uri->segment(1))) {
@@ -172,7 +176,11 @@ if ( ! function_exists('response_create')) {
         }
 
         // no dependencies - set in GET or POST
-        $response->meta->ids = response_get_ids();
+        // $response->meta->ids = response_get_ids();
+        $temp = response_get_ids();
+        if ( ! empty($temp)) {
+            $response->meta->ids = $temp;
+        }
 
         // no dependencies - set in PATCH or POST, can set ID
         $response->meta->received_data = response_get_data($response->meta->request_method);
@@ -180,6 +188,15 @@ if ( ! function_exists('response_create')) {
             if ($response->meta->collection !== 'database' && $response->meta->collection !== 'configuration') {
                 $response->meta->id = intval($response->meta->received_data->id);
             }
+        }
+
+        // depends on version affecting URI, collection and format
+        $response->meta->sub_resource = response_get_sub_resource($response->meta->collection, $response->meta->format);
+
+        // depends on version affecting URI, sub_resource
+        $temp = response_get_sub_resource_id($response->meta->sub_resource);
+        if ( ! empty($temp)) {
+            $response->meta->sub_resource_id = $temp;
         }
 
         // depends on id, ids, recevied_data, request_method, sub_resource and sub_resource_id
@@ -220,12 +237,6 @@ if ( ! function_exists('response_create')) {
         // depends on collection and format
         $response->meta->include = response_get_include($response->meta->collection, $response->meta->format);
 
-        // depends on version affecting URI, collection and format
-        $response->meta->sub_resource = response_get_sub_resource($response->meta->collection, $response->meta->format);
-
-        // depends on version affecting URI, sub_resource
-        $response->meta->sub_resource_id = response_get_sub_resource_id($response->meta->sub_resource);
-
         // depends on version affecting URI, collection
         $response->meta->sort = response_get_sort($response->meta->collection);
         if ($response->meta->sort !== '') {
@@ -256,22 +267,27 @@ if ( ! function_exists('response_create')) {
         }
 
         // depends on collection
-        $response->meta->properties = response_get_properties($response->meta->collection);
+        $response->meta->properties = response_get_properties($response->meta->collection, $response->meta->action, $response->meta->sub_resource);
 
         // depends on properties, collection, sub_resource
         $response->meta->internal->properties = response_get_internal_properties($response->meta->properties, $response->meta->collection, $response->meta->sub_resource);
 
         // depends on query string
-        $response->meta->filter = response_get_filter($response->meta->query_string);
+        $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
+
+        // depends on query string
+        $response->meta->query_parameters = response_get_query_filter($response->meta->query_string, 'query');
 
         // depends on filter
-        $response->meta->query_parameters = $response->meta->filter;
+        // $response->meta->query_parameters = $response->meta->filter;
 
         $response->meta->internal->filter = response_get_internal_filter($response->meta->filter, $response->meta->collection);
 
-        $response->meta->internal->join = response_get_internal_join($response->meta->filter, $response->meta->collection);
+        if ($response->meta->collection === 'devices') {
+            $response->meta->internal->join = response_get_internal_join($response->meta->filter, $response->meta->collection);
+        }
 
-        $response->links = response_get_links($response->meta->collection, $response->meta->id, $response->meta->sub_resource, $response->meta->sub_resource_id);
+        $response->links = response_get_links($response->meta->collection, $response->meta->id, $response->meta->sub_resource, @$response->meta->sub_resource_id);
 
         $permission = response_get_permission_ca($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
         if ( ! $permission) {
@@ -320,11 +336,13 @@ if ( ! function_exists('response_get_action')) {
         $instance = & get_instance();
         $collection = $response->meta->collection;
         $id = $response->meta->id;
-        $device_ids = $response->meta->ids;
+        // NOTE - devices IDs may or may not be set. We only test for ! empty, so @ is fine.
+        $device_ids = @$response->meta->ids;
         $received_data = $response->meta->received_data;
         $request_method = $response->meta->request_method;
         $sub_resource = $response->meta->sub_resource;
-        $sub_resource_id = $response->meta->sub_resource_id;
+        // NOTE - sub_resource_id may or may not be set. We only test for ! empty, so @ is fine.
+        $sub_resource_id = @$response->meta->sub_resource_id;
 
         $action = '';
 
@@ -498,6 +516,45 @@ if ( ! function_exists('response_get_collection')) {
     }
 }
 
+
+if ( ! function_exists('response_get_current')) {
+    /**
+     * Return the current ettribute derived from the HEADERS or URL (get) or BODY (post)
+     * @return string The response format requested
+     */
+    function response_get_current()
+    {
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->type = 'system';
+        $log->object = 'response_helper';
+        $log->function = 'response_helper::response_get_current';
+        $log->status = 'parsing';
+        $log->summary = 'get current';
+
+        $current = 'y';
+        $log->summary = 'Set current to default.';
+
+        if ( ! empty($_GET['current'])) {
+            $current = $_GET['current'];
+            $log->summary = 'Set current according to GET.';
+        }
+        if ( ! empty($_POST['current'])) {
+            $current = $_POST['current'];
+            $log->summary = 'Set current according to POST.';
+        }
+        $valid_current = response_valid_current();
+        if ( ! in_array($current, $valid_current)) {
+            $log->summary = 'Set current to y, because unknown current: ' . $current;
+            $log->status = 'warning';
+            $current = 'y';
+        }
+        $log->detail = 'CURRENT: ' . $current;
+        stdlog($log);
+        return $current;
+    }
+}
+
 if ( ! function_exists('response_get_data')) {
     /**
      * Parse $_POST and $_PATCH for sent data
@@ -611,7 +668,7 @@ if ( ! function_exists('response_get_filter')) {
      * @param  [type] $query_string [description]
      * @return [type]               [description]
      */
-    function response_get_filter($query_string)
+    function response_get_query_filter($query_string, $type = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -744,13 +801,17 @@ if ( ! function_exists('response_get_filter')) {
                     $query->operator = '=';
                 }
 
-                if ( ! empty($query->name) && ! in_array($query->name, $reserved_words)) {
+                if ( ! empty($query->name) && ! in_array($query->name, $reserved_words) && $type === 'filter') {
+                    $filter[] = $query;
+                }
+
+                if ($type === 'query') {
                     $filter[] = $query;
                 }
             }
         }
         if ( ! empty($filter)) {
-            $log->detail = 'FILTER: ' . json_encode($filter);
+            $log->detail = strtoupper($type) .': ' . json_encode($filter);
             stdlog($log);
         }
         return $filter;
@@ -1048,11 +1109,11 @@ if ( ! function_exists('response_get_include')) {
             $include = $_POST['include'];
             $log->sumary = 'Set include according to POST. ';
         }
-        if ( ! empty($include)) {
-            $valid_includes = response_valid_includes();
-            if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
-                $include = implode(',', $valid_includes);
-            } else {
+        $valid_includes = response_valid_includes();
+        if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
+            $include = implode(',', $valid_includes);
+        } else {
+            if ( ! empty($include)) {
                 $temp = explode(',', $include);
                 for ($i=0; $i < count($temp); $i++) {
                     if ( ! in_array($temp[$i], $valid_includes)) {
@@ -1085,15 +1146,12 @@ if ( ! function_exists('response_get_internal_filter')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_internal_filter';
         $log->status = 'parsing';
-        $log->summary = 'get filter';
+        $log->summary = 'get internal filter';
 
         $instance = & get_instance();
         $reserved_words = response_valid_reserved_words();
         $internal_filter = '';
 
-        if (empty($filter)) {
-            return '';
-        }
         foreach ($filter as $item) {
             if ( ! in_array($item->name, $reserved_words)) {
                 // We MUST have a name like 'connections.name', not just 'name'
@@ -1198,10 +1256,10 @@ if ( ! function_exists('response_get_internal_properties')) {
         $internal_properties = '';
 
         // create our internal properties list - this is what gets executed in SQL
-        if ($properties !== '*' && $properties !== $sub_resource . '.*') {
+        if ($properties !== '*' && $properties !== $sub_resource . '.*' && $properties !== '') {
             $temp = explode(',', $properties);
             foreach ($temp as $property) {
-                if ($property === 'count') {
+                if ($property === 'count' && $collection !== 'chart') {
                     $internal_properties .= 'count(*) as `count`,';
                 } elseif ($property === 'system_id') {
                     $internal_properties .= 'system.id as `system_id`,';
@@ -1213,7 +1271,7 @@ if ( ! function_exists('response_get_internal_properties')) {
         } else {
             $internal_properties = $properties;
         }
-        if ($properties === '*') {
+        if ($properties === '*' or $properties === '.*') {
             $temp = $collection;
             if ($temp === 'devices') {
                 $temp = 'system';
@@ -1438,6 +1496,7 @@ if ( ! function_exists('response_get_org_list')) {
                 $org_list = array_unique(array_merge($user->orgs, $instance->m_orgs->get_user_descendants($user->id)));
                 $org_list = array_unique(array_merge($org_list, $instance->m_orgs->get_user_ascendants($user->id)));
                 $org_list[] = 1;
+                $org_list = array_unique($org_list);
                 break;
 
             default:
@@ -1633,9 +1692,9 @@ if ( ! function_exists('response_get_properties')) {
         $log->severity = 7;
         $log->type = 'system';
         $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_groupby';
+        $log->function = 'response_helper::response_get_properties';
         $log->status = 'parsing';
-        $log->summary = 'get action';
+        $log->summary = 'get properties';
 
         $instance = & get_instance();
         $properties = '';
@@ -1670,22 +1729,23 @@ if ( ! function_exists('response_get_properties')) {
         if ($collection === 'devices') {
             if ($action === 'collection' && ($properties === 'default' OR $properties === '') && ($sub_resource === '' OR $sub_resource === 'system')) {
                 if ($properties === 'default') {
-                    $log->summary = 'Set properties according to DEFAULT.';
+                    $log->summary = 'Set properties to config DEFAULT.';
                     $properties = $instance->config->config['devices_default_retrieve_columns'];
                 } else {
-                    $log->summary = 'Set properties according to BLANK.';
+                    $log->summary = 'Set properties because BLANK.';
                     $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.description,system.manufacturer,system.os_family,system.status';
                 }
             } else if ($action === 'collection' && $sub_resource !== '') {
-                $log->summary = 'Set properties according to ALL.';
+                $log->summary = 'Set properties to ALL.';
                 $properties = $sub_resource . '.*';
             }
         }
         if ($properties === 'all' OR $properties === '*') {
             $properties = $table . '.' . implode(','.$table.'.', $instance->db->list_fields($table));
-            $log->summary = 'Set properties according to TABLE ALL.';
+            $log->summary = 'Set properties to TABLE ALL.';
         }
-        if ( ! empty($properties)) {
+
+        if ( ! empty($properties) and $properties !== $sub_resource . '.*') {
             // Validate the properties are database columns
             $properties = explode(',', $properties);
             for ($i=0; $i < count($properties); $i++) {
@@ -1702,9 +1762,11 @@ if ( ! function_exists('response_get_properties')) {
                     }
                 }
             }
+            $properties = implode(',', $properties);
         }
+
         if ($properties === '' && $collection !== 'devices') {
-            $properties = '*';
+            $properties = '.*';
             $log->summary = 'Set properties according to NON-DEVICES DEFAULT.';
         }
         // perform some simple data cleansing
@@ -1712,7 +1774,6 @@ if ( ! function_exists('response_get_properties')) {
             $properties = implode(',', $properties);
         }
         $temp = $properties;
-        $properties = strtolower($properties);
         $properties = preg_replace('/[^A-Za-z0-9\.\_\,\*]/', '', $properties);
         if ($temp !== $properties) {
             // something was filtered
@@ -1720,6 +1781,7 @@ if ( ! function_exists('response_get_properties')) {
         }
         if ( ! empty($properties)) {
             $log->detail = 'PROPERTIES: ' . $properties;
+            stdlog($log);
         }
         return $properties;
     }
@@ -1824,9 +1886,9 @@ if ( ! function_exists('response_get_sub_resource')) {
             $sub_resource = $_POST['sub_resource'];
             $log->summary = 'Set sub_resource according to POST.';
         }
-        if ( ! empty($sub_resource)) {
+        if ( ! empty($sub_resource) and $collection === 'devices') {
             $valid_sub_resources = response_valid_sub_resources();
-            if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
+            if ($format === 'screen' && (empty($sub_resource) OR $sub_resource === '*' OR $sub_resource === 'all')) {
                 $sub_resource = implode(',', $valid_sub_resources);
             } else {
                 $temp = explode(',', $sub_resource);
@@ -1837,6 +1899,8 @@ if ( ! function_exists('response_get_sub_resource')) {
                 }
                 $sub_resource = implode(',', $temp);
             }
+        } else {
+            $sub_resource = '';
         }
         if ( ! empty($sub_resource)) {
             $log->detail = 'SUB_RESOURCE: ' . $sub_resource;
@@ -1959,6 +2023,17 @@ if ( ! function_exists('response_valid_collections')) {
     }
 }
 
+if ( ! function_exists('response_valid_current')) {
+    /**
+     * An array of valid current
+     * @return array
+     */
+    function response_valid_current()
+    {
+        return array('y','n','all','delta','full');
+    }
+}
+
 if ( ! function_exists('response_valid_formats')) {
     /**
      * An array of valid response formats
@@ -2027,7 +2102,7 @@ if ( ! function_exists('response_valid_sub_resources')) {
      */
     function response_valid_sub_resources()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
     }
 }
 

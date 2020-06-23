@@ -189,11 +189,13 @@ class M_configuration extends MY_Model
         }
 
         if ($config_item->name === 'modules' OR $config_item->name === 'servers') {
-            $test = @json_decode($value);
-            if (empty($test)) {
-                // invalid
-                log_error('ERR-0044', 'm_configuration::update', 'modules should be valid JSON.');
-                return false;
+            if ($value !== '') {
+                $test = @json_decode($value);
+                if (empty($test)) {
+                    // invalid
+                    log_error('ERR-0044', 'm_configuration::update', 'modules should be valid JSON.');
+                    return false;
+                }
             }
         }
 
@@ -396,7 +398,7 @@ class M_configuration extends MY_Model
                 }
             }
         }
-        $this->load->helper('network_helper');
+        $this->load->helper('network');
         $networks = array();
         if (is_array($ip_address_array) && count($ip_address_array) > 0) {
             foreach ($ip_address_array as $network) {

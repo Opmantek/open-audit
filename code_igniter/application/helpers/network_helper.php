@@ -451,7 +451,7 @@ if (! function_exists('dns_validate')) {
                 # we got an ip address back from DNS, remove it
                 $details->dns_hostname = '';
                 $log->message = 'Received IP, not hostname for ' . $details->ip . ' in network_helper::dns_validate';
-                $log->command_output = $details->dns_domain;
+                $log->command_output = $details->hostname;
                 discovery_log($log);
             }
         } else {

@@ -333,8 +333,10 @@ class M_devices extends MY_Model
             return false;
         }
 
-        if ($sub_resource_id === '') {
-            $sub_resource_id = intval($CI->response->meta->sub_resource_id);
+        if (empty($sub_resource_id)) {
+            if ( ! empty($CI->response->meta->sub_resource_id)) {
+                $sub_resource_id = intval($CI->response->meta->sub_resource_id);
+            }
         } else {
             $sub_resource_id = intval($sub_resource_id);
         }
@@ -600,7 +602,7 @@ class M_devices extends MY_Model
                 }
 
                 // we only store a SINGLE credential set of each type per device - delete any existing
-                $sql ='"DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?';
+                $sql ='DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?';
                 $data = array(intval($id), (string)$type);
                 $this->run_sql($sql, $data);
                 // insert the new credentials
@@ -832,6 +834,9 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->_build_filter();
+        if (is_array($CI->user->org_list)) {
+            $CI->user->org_list = implode(',', $CI->user->org_list);
+        }
         if ( ! empty($CI->response->meta->groupby)) {
             if ( ! empty($CI->response->meta->internal->properties)) {
                 $CI->response->meta->internal->properties .= ', COUNT(*) AS `count`';
@@ -893,7 +898,7 @@ class M_devices extends MY_Model
         $system_id_list = implode(',', $temp_ids);
         unset($temp, $temp_ids);
 
-        $sql = 'SELECT * FROM oa_report WHERE report_id = ' . intval($CI->response->meta->sub_resource_id);
+        $sql = 'SELECT * FROM oa_report WHERE report_id = ' . @intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $report = $result[0];
         $CI->response->meta->sub_resource_name = $report->report_name;
@@ -939,7 +944,7 @@ class M_devices extends MY_Model
         $filter = $this->_build_filter();
         $join = $this->_build_join();
 
-        $sql = 'SELECT * FROM queries WHERE id = ' . intval($CI->response->meta->sub_resource_id);
+        $sql = 'SELECT * FROM queries WHERE id = ' . @intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $query = $result[0];
         $CI->response->meta->sub_resource_name = $query->menu_category . ' - ' . $query->name;
@@ -998,7 +1003,7 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $filter = $this->_build_filter();
 
-        $sql = 'SELECT * FROM groups WHERE id = ' . intval($CI->response->meta->sub_resource_id);
+        $sql = 'SELECT * FROM groups WHERE id = ' . @intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $group = $result[0];
         $CI->response->meta->sub_resource_name = $group->name;

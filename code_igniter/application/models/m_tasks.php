@@ -125,7 +125,7 @@ class M_tasks extends MY_Model
 
         if ($result !== false) {
             for ($i=0; $i < count($result); $i++) {
-                if ($result[$i]->type !== 'reports') {
+                if ($result[$i]->type !== 'reports' && $result[$i]->type !== 'collector') {
                     $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                     $data = array($result[$i]->sub_resource_id);
                     $data_result = $this->run_sql($sql, $data);
@@ -142,7 +142,7 @@ class M_tasks extends MY_Model
             }
         }
         $result = $this->format_data($result, 'tasks');
-        if ( ! empty($result[0]->attributes->options)) {
+        if ( ! empty($result[0]->attributes->options) and is_string($result[0]->attributes->options)) {
             $result[0]->attributes->options = my_json_decode($result[0]->attributes->options);
         }
         return ($result);

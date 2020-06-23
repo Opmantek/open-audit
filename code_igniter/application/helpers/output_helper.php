@@ -1,7 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
+/**
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -28,7 +26,7 @@ if (!defined('BASEPATH')) {
 #
 # *****************************************************************************
 
-/*
+* PHP version 5.3.3
 * @category  Helper
 * @package   Open-AudIT
 * @author    Mark Unwin <marku@opmantek.com>
@@ -36,8 +34,13 @@ if (!defined('BASEPATH')) {
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   GIT: Open-AudIT_3.3.2
 * @link      http://www.open-audit.org
- */
-if (! function_exists('output')) {
+*/
+
+if ( ! defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+
+if ( ! function_exists('output')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
      *
@@ -55,23 +58,23 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
 
-        if ($CI->response->meta->id == 888888888888) {
+        if ($CI->response->meta->id === 888888888888) {
             $CI->response->meta->id = null;
             unset($CI->response->data);
             $CI->response->data = array();
         }
-        if (!empty($CI->response->data) and count($CI->response->data) > 0) {
+        if ( ! empty($CI->response->data) && count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
         }
         if (empty($CI->response->data)) {
             $CI->response->data = false;
         }
-        if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
+        if ( ! empty($CI->response->included) && $CI->response->meta->collection !== 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }
         create_links();
         // if we have errors set, make sure we remove the data object / array
-        if (!empty($CI->response->errors) and count($CI->response->errors) > 0) {
+        if ( ! empty($CI->response->errors) && count($CI->response->errors) > 0) {
             if ($CI->response->meta->collection !== 'discoveries') {
                 unset($CI->response->data);
             }
@@ -79,13 +82,13 @@ if (! function_exists('output')) {
             unset($CI->response->errors);
         }
 
-        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute') {
+        if ($CI->response->meta->collection === 'summaries' && $CI->response->meta->action === 'execute') {
            unset($CI->response->meta->data_order);
            $CI->response->meta->data_order = array('name','count');
-        } else if ($CI->response->meta->collection == 'charts') {
-            # Do nothing
-        } else if ($CI->response->meta->collection == 'nmis') {
-            # Do nothing
+        } else if ($CI->response->meta->collection === 'charts') {
+            // Do nothing
+        } else if ($CI->response->meta->collection === 'nmis') {
+            // Do nothing
             if (empty($CI->response->meta->data_order)) {
                 $CI->response->meta->data_order = array();
             }
@@ -94,19 +97,13 @@ if (! function_exists('output')) {
             unset($CI->response->meta->data_order);
             $CI->response->meta->data_order = array();
 
-            // if (!empty($CI->response->data[0]->attributes)) {
-            //     foreach ($CI->response->data[0]->attributes as $key => $value) {
-            //         $CI->response->meta->data_order[] = $key;
-            //     }
-            // }
-
-            if (!empty($CI->response->data[0]->attributes)) {
+            if ( ! empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'search' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
+                    if (strpos($key, '.') !== false OR $CI->response->meta->collection === 'reports' OR $CI->response->meta->collection === 'search' OR $CI->response->meta->collection === 'help' OR $CI->response->meta->collection === 'database') {
                         $CI->response->meta->data_order[] = $key;
                     } else {
                         $table = $CI->response->meta->collection;
-                        if ($table == 'devices') {
+                        if ($table === 'devices') {
                             $table = 'system';
                         }
                         if ($CI->db->field_exists($key, $table)) {
@@ -118,109 +115,19 @@ if (! function_exists('output')) {
                 }
             }
 
-            # TODO - do we need this is the models already do this for us?
-            $special = array('credentials' => 'credentials', 'baselines_policies' => 'tests', 'discoveries' => 'other', 'queue' => 'details', 'tasks' => 'options');
-            foreach ($special as $table => $column) {
-                if ($CI->response->meta->collection == $table) {
-                    $array = array();
-                    if (!empty($CI->response->data)) {
-                        foreach ($CI->response->data as $item) {
-                            if (!empty($item->attributes) and !empty($item->attributes->{$column})) {
-                                foreach ($item->attributes->{$column} as $key => $value) {
-                                    $array[] = $column.'.'.$key;
-                                }
-                            }
-                        }
-                    }
-                    $array = array_unique($array);
-                    $CI->response->meta->data_order = array_merge($CI->response->meta->data_order, $array);
-                    $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
-                    $position = array_search($table.'.'.$column, $CI->response->meta->data_order);
-                    unset($CI->response->meta->data_order[$position]);
-                }
-            }
-
-            if ($CI->response->meta->collection === 'devices' and $CI->response->meta->action === 'sub_resource_read') {
+            if ($CI->response->meta->collection === 'devices' && $CI->response->meta->action === 'sub_resource_read') {
                 unset($CI->response->meta->data_order);
                 $CI->response->meta->data_order = array();
-                if (!empty($CI->response->data) and is_array($CI->response->data)) {
+                if ( ! empty($CI->response->data) && is_array($CI->response->data)) {
                     foreach ($CI->response->data[0]->attributes as $key => $value) {
                         $CI->response->meta->data_order[] = $key;
                     }
                 }
             }
 
-            if ($CI->response->meta->collection === 'clouds') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'credentials') {
-                        $fields = array('key', 'secret_key', 'subscription_id', 'tenant_id', 'client_id', 'client_secret');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'credentials.' . $field;
-                        }
-                    }
-                }
-                $test = @$CI->config->config['decrypt_credentials'];
-                if (!empty($test) and $test != 'y') {
-                    for ($i=0; $i < count($CI->response->data); $i++) {
-                        $fields = array('key','secret_key');
-                        foreach ($fields as $field) {
-                            if (!empty($CI->response->data[$i]->attributes->credentials->{$field})) {
-                                $CI->response->data[$i]->attributes->credentials->{$field} = '';
-                                $CI->response->data[$i]->attributes->{"credentials.$field"} = '';
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($CI->response->meta->collection == 'credentials') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'credentials') {
-                        $fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'credentials.' . $field;
-                        }
-                    }
-                }
-                $test = @$CI->config->config['decrypt_credentials'];
-                if (!empty($test) and $test != 'y') {
-                    for ($i=0; $i < count($CI->response->data); $i++) {
-                        $fields = array('community', 'security_name', 'authentication_passphrase', 'privacy_passphrase', 'password', 'ssh_key');
-                        foreach ($fields as $field) {
-                            if (!empty($CI->response->data[$i]->attributes->credentials->{$field})) {
-                                $CI->response->data[$i]->attributes->credentials->{$field} = '';
-                                $CI->response->data[$i]->attributes->{"credentials.$field"} = '';
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($CI->response->meta->collection == 'discoveries') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'other') {
-                        $fields = array('email_address','format','group_id');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'other.' . $field;
-                        }
-                    }
-                }
-            }
-
-            if ($CI->response->meta->collection == 'tasks') {
-                foreach ($CI->response->meta->data_order as $item) {
-                    if ($item === 'options') {
-                        $fields = array('ad_domain','ad_server','single','subnet');
-                        foreach ($fields as $field) {
-                            $CI->response->meta->data_order[] = 'options.' . $field;
-                        }
-                    }
-                }
-            }
-
             $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
             $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
-            #sort($CI->response->meta->data_order);
+            // sort($CI->response->meta->data_order);
         }
 
         if ($CI->response->meta->format === 'screen' && $CI->response->meta->action === 'read' && $CI->m_users->get_user_permission('', $CI->response->meta->collection, 'u')) {
@@ -234,12 +141,12 @@ if (! function_exists('output')) {
         $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
-        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug === true) {
+        if ( ! empty($CI->response->meta->debug) && $CI->response->meta->debug === true) {
             $CI->response->meta->user = $CI->user;
             $CI->response->meta->timing = $GLOBALS['timer_log'];
             $CI->response->meta->time_end = microtime(true);
             $CI->response->meta->time_elapsed = '';
-            if (!empty($CI->response->meta->time_end) and !empty($CI->response->meta->time_start)) {
+            if ( ! empty($CI->response->meta->time_end) && ! empty($CI->response->meta->time_start)) {
                 $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
             }
         } else {
@@ -343,53 +250,27 @@ if (! function_exists('output')) {
         $output_csv = '';
 
         if ($CI->response->meta->collection === 'credentials') {
-            $CI->response->meta->data_order = array('id','name','org_id','description','type');
-            $items = array();
-            // NOTE - need to enumerate over the complete dataset as credentials attributes only populate
-            //        their required attributes (an SNMP entry does not populate credentials.username for example).
-            foreach ($CI->response->data as $data) {
-                $items = array_merge($items, array_keys(get_object_vars($data->attributes->credentials)));
-                $items = array_unique($items);
-            }
-            foreach ($items as $item) {
-                $CI->response->meta->data_order[] = 'credentials.' . $item;
-            }
             for ($i=0; $i < count($CI->response->data); $i++) {
-                foreach ($CI->response->data[$i]->attributes as $key => $value) {
-                    if ( ! is_string($value) && is_object($value)) {
-                        foreach ($CI->response->data[$i]->attributes->{$key} as $key2 => $value2) {
-                            $CI->response->data[$i]->attributes->{$key . '.' . $key2} = $value2;
-                        }
-                    }
-                }
+                $CI->response->data[$i]->attributes->credentials = json_encode($CI->response->data[$i]->attributes->credentials);
+            }
+        }
+
+        if ($CI->response->meta->collection === 'dashboards') {
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                $CI->response->data[$i]->attributes->options = json_encode($CI->response->data[$i]->attributes->options);
             }
         }
 
         if ($CI->response->meta->collection === 'discoveries') {
-            $CI->response->meta->data_order = array('id','name','org_id','type','description','devices_assigned_to_org','devices_assigned_to_location','network_address','system_id','discard');
-            // Note - need to go two levels deep as attributes.other.nmap and attributes.other.match
-            foreach ($CI->response->data[0]->attributes->other as $key => $value) {
-                if (is_string($value)) {
-                    $CI->response->meta->data_order[] = 'other.' . $key;
-                } else {
-                    foreach ($CI->response->data[0]->attributes->other->{$key} as $key2 => $value2) {
-                        $CI->response->meta->data_order[] = 'other.' . $key . '.' . $key2;
-                    }
-                }
-            }
             for ($i=0; $i < count($CI->response->data); $i++) {
-                foreach ($CI->response->data[$i]->attributes as $key => $value) {
-                    if ( ! is_string($value) && is_object($value)) {
-                        foreach ($CI->response->data[$i]->attributes->{$key} as $key2 => $value2) {
-                            $CI->response->data[$i]->attributes->{$key . '.' . $key2} = $value2;
-                        }
-                    }
-                }
+                $CI->response->data[$i]->attributes->other = json_encode($CI->response->data[$i]->attributes->other);
             }
         }
 
         if ($CI->response->meta->collection === 'tasks') {
-            $CI->response->meta->data_order = array('id','name','org_id','description','sub_resource_id','uuid','enabled','type','minute','hour','day_of_month','month','day_of_week');
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                $CI->response->data[$i]->attributes->options = json_encode($CI->response->data[$i]->attributes->options);
+            }
         }
 
         if ($CI->response->meta->collection === 'queue') {
@@ -436,7 +317,11 @@ if (! function_exists('output')) {
                             $value = $item->attributes->{$temp[1]};
                         }
                     }
-                    $value = str_replace('"', '""', (string)$value);
+                    if (is_string($value) OR is_int($value)) {
+                        $value = str_replace('"', '""', (string)$value);
+                    } else {
+                        $value = '';
+                    }
                     if ( ! empty($output_escape_csv) && $output_escape_csv === 'y') {
                         if (strpos($value, '=') === 0 OR strpos($value, '+') === 0 OR strpos($value, '-') === 0 OR strpos($value, '@') === 0) {
                             $value = "'" . $value;
@@ -454,6 +339,7 @@ if (! function_exists('output')) {
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
             header('Cache-Control: max-age=0');
         } else {
+            echo "<pre>\n";
             echo $output_csv;
         }
     }
@@ -767,29 +653,29 @@ if (! function_exists('output')) {
     function output_convert($data)
     {
         $CI = & get_instance();
-        $CI->load->helper('network_helper');
+        $CI->load->helper('network');
         foreach ($data as $row) {
             if (is_array($row)) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
-                if (!empty($row->attributes)) {
+                if ( ! empty($row->attributes)) {
                     foreach ($row->attributes as $key => $value) {
-                        if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
+                        if (isset($key) && ($key === 'id' OR $key === 'free' OR $key === 'used' OR $key === 'size' OR $key === 'speed' OR $key === 'total' OR $key === 'col_order' OR $key === 'access_level' OR $key === 'count')) {
                             $row->attributes->$key = intval($value);
-                        } elseif ((strrpos($key, '_id') === strlen($key)-3) or
-                                    (strrpos($key, '.id') === strlen($key)-3) or
-                                    (strrpos($key, '_count') === strlen($key)-6) or
-                                    (strrpos($key, '_percent') === strlen($key)-8) or
+                        } elseif ((strrpos($key, '_id') === strlen($key)-3) OR
+                                    (strrpos($key, '.id') === strlen($key)-3) OR
+                                    (strrpos($key, '_count') === strlen($key)-6) OR
+                                    (strrpos($key, '_percent') === strlen($key)-8) OR
                                     (strrpos($key, '_size') === strlen($key)-5)) {
                             $row->attributes->$key = intval($value);
-                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
-                                (strrpos($key, 'next_hop') === strlen($key)-8) or
+                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) OR
+                                (strrpos($key, 'next_hop') === strlen($key)-8) OR
                                 (strrpos($key, 'destination') === strlen($key)-11)) {
                             $temp_name = $key . '_padded';
                             $row->attributes->$temp_name = ip_address_from_db($value);
                             $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
                             $row->attributes->$key = ip_address_from_db($value);
-                            if ($row->attributes->$temp_name == $row->attributes->$key) {
+                            if ($row->attributes->$temp_name === $row->attributes->$key) {
                                 unset($row->attributes->$temp_name);
                             }
                         }

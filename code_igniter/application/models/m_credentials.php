@@ -286,11 +286,6 @@ class M_credentials extends MY_Model
                 for ($i=0; $i < count($result); $i++) {
                     if ( ! empty($result[$i]->credentials)) {
                         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
-                        if ( ! empty($result[$i]->credentials)) {
-                            foreach ($result[$i]->credentials as $key => $value) {
-                                $result[$i]->{'credentials.'.$key} = $value;
-                            }
-                        }
                     }
                 }
             }

@@ -78,6 +78,100 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+    public function discoveries_fix()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $sql = 'SELECT * FROM discovery_scan_options WHERE id = ' . intval($this->config->config['discovery_default_scan_option']);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if ( ! empty($result)) {
+            $scan_options = $result[0];
+        } else {
+            $sql = 'SELECT * FROM discovery_scan_options WHERE name LIKE "%fast" ORDER BY `name` DESC LIMIT 1';
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if ( ! empty($result)) {
+                $scan_options = $result[0];
+            } else {
+                echo '<h1>ERROR</h1><br /><p>There are no discovery scan options in the database we can use, please run the below in the MySQL client or contact <a href="https://opmantek.com">Opmantek</a> if you are a supported customer.';
+                echo "<br /><br /><pre>\n";
+                echo "INSERT INTO `discovery_scan_options` VALUES (1,'UltraFast',1,'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,0,0,'22,135,62078','161','','','','22','','system','2000-01-01 00:00:00');\n\n
+INSERT INTO `discovery_scan_options` VALUES (2,'SuperFast',1,'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,10,10,'62078','','','','','22','','system','2000-01-01 00:00:00');\n\n
+INSERT INTO `discovery_scan_options` VALUES (3,'Fast',1,'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,100,100,'62078','','','','','22','','system','2000-01-01 00:00:00');\n\n
+INSERT INTO `discovery_scan_options` VALUES (4,'Medium (Classic)',1,'Approximately 90 seconds per target. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An open|filtered port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.','n','n','y','y',0,4,1000,0,'62078','161','','','','22','','system','2000-01-01 00:00:00');\n\n
+INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 seconds per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00');\n\n
+INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y','y',0,3,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00');\n\n
+INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y','y',0,2,1000,1000,'62078','','','','','22','','system','2000-01-01 00:00:00');\n\n</pre>";
+                exit;
+            }
+        }
+        echo "<h3>Please save this page for reference</h3>\n";
+        echo '<hr /><pre>';
+        $other = new stdCLass();
+        $other->ad_domain = '';
+        $other->ad_server = '';
+        $other->subnet = '';
+        $other->nmap = new stdClass();
+        $other->nmap->discovery_scan_option_id = intval($scan_options->id);
+        $other->nmap->filtered = $scan_options->filtered;
+        $other->nmap->{'open|filtered'} = $scan_options->{'open|filtered'};
+        $other->nmap->ping = $scan_options->ping;
+        $other->nmap->service_version = $scan_options->service_version;
+        $other->nmap->ssh_ports = $scan_options->ssh_ports;
+        $other->nmap->tcp_ports = $scan_options->tcp_ports;
+        $other->nmap->timing = $scan_options->timing;
+        $other->nmap->udp_ports = $scan_options->udp_ports;
+        $other->nmap->timeout = $scan_options->timeout;
+        $other->nmap->nmap_tcp_ports = $scan_options->nmap_tcp_ports;
+        $other->nmap->nmap_udp_ports = $scan_options->nmap_udp_ports;
+        $other->match = new stdClass();
+        $warning = '<b>WARNING</b>';
+        $error = '<b>ERROR</b>';
+        $sql = 'SELECT * FROM discoveries';
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as $discovery) {
+            echo 'Checking discovery named: ' . htmlentities($discovery->name);
+            $original_discovery = clone $discovery;
+            $original_discovery->other = @json_decode($original_discovery->other);
+            $output = '';
+            if (empty($discovery->other)) {
+                $output .= $error . " - There is no discoveries.other attribute. This discovery will never run. Please delete it.\n";
+                $discovery->other = $other;
+            } else {
+                $discovery->other = json_decode($discovery->other);
+            }
+            if (empty($discovery->other->subnet) && $discovery->type === 'subnet') {
+                $output .= $error . " - There is no discoveries.other.subnet attribute, although the discoveries.type is subnet. This discovery will never run. Please delete it.\n";
+            }
+            if ((empty($discovery->other->ad_server) OR empty($discovery->other->ad_domain)) && $discovery->type === 'active directory') {
+                $output .= $error . " - There is no discoveries.other.ad_server or discoveries.other.ad_domain attribute, although the discoveries.type is active directory. This discovery will never run. Please delete it.\n";
+            }
+            if (empty($discovery->other->nmap)) {
+                $discovery->other->nmap = $other->nmap;
+                $output .= $warning . " - No discoveries.other.nmap, populating with default.\n";
+            }
+            if (empty($discovery->other->match)) {
+                $discovery->other->match = $other->match;
+                $output .= $warning . " - No discoveries.other.match, populating with default.\n";
+            }
+            if ($output !== '') {
+                echo "\n{$output}\n";
+                $sql = "UPDATE discoveries SET other = '" . json_encode($discovery->other) . "' WHERE id = " . intval($discovery->id);
+                echo $sql . "\n";
+                $query = $this->db->query($sql);
+                echo "</pre>\n";
+                echo "<table><tr><td style=\"vertical-align:text-top\"><b>Original</b>\n<pre>\n";
+                print_r($original_discovery);
+                echo "</pre></td><td style=\"vertical-align:text-top\"><b>Modified</b>\n<pre>\n";
+                print_r($discovery);
+                echo "</pre></td></tr></table>\n<pre>\n\n<hr />\n";
+            } else {
+                echo " - PASSED.\n\n<hr />\n";
+            }
+        }
+    }
 
     public function base()
     {
@@ -711,11 +805,11 @@ class Test extends CI_Controller
     {
         # NOTE - must edit code to return blank in snmp_helper::my_snmp_get
         echo "<pre>\n";
-        $this->load->helper('snmp_helper');
+        $this->load->helper('snmp');
         $dir = BASEPATH.'../application/helpers/';
         $dir_files = scandir($dir);
         $file_list = array();
-        $this->load->helper('snmp_oid_helper');
+        $this->load->helper('snmp_oid');
         foreach ($dir_files as $file) {
             if (strpos($file, 'snmp_') !== false and strpos($file, '_helper.php') !== false and $file != 'snmp_helper.php' and $file != 'snmp_oid_helper.php') {
                 $file_list[] = $file;

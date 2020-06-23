@@ -112,8 +112,17 @@ class M_discovery_log extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            // Don't use the above as large datasets will exhaust the allocated PHP memory (when all we need is a count)
+            $select_filter = '';
+            foreach ($CI->response->meta->filter as $filter) {
+                if ($filter->name === 'discovery_log.discovery_id') {
+                    $select_filter = ' AND discovery_log.discovery_id = ' . intval($filter->value);
+                }
+            }
+            $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+            $sql = 'SELECT count(*) AS `count` FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN orgs ON (discoveries.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')' . $select_filter;
+            $result = $this->run_sql($sql, array());
+            $CI->response->meta->total = intval($result[0]->count);
             $sql = 'SELECT ' . $CI->response->meta->internal->properties . ' FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN orgs ON (discoveries.org_id = orgs.id) ' . 
                     $CI->response->meta->internal->filter . ' ' . 
                     $CI->response->meta->internal->groupby . ' ' . 

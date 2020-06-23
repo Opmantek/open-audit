@@ -176,7 +176,7 @@ if ( ! function_exists('inputRead')) {
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
         $CI->response->meta->id = null;
-        $CI->response->meta->ids = 0;
+        $CI->response->meta->ids = '';
         $CI->response->meta->include = '';
         // if (empty($CI->config->config['page_size'])) {
         //     $CI->config->config['page_size'] = 1000;
@@ -484,7 +484,7 @@ if ( ! function_exists('inputRead')) {
         }
 
         if ($CI->response->meta->collection === 'devices') {
-            $valid_sub_resources = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+            $valid_sub_resources = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery', 'disk', 'dns', 'edit_log', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
             if ($CI->response->meta->sub_resource !== '' && ! in_array($CI->response->meta->sub_resource, $valid_sub_resources)) {
                 $log->summary = 'invalid sub_resource';
                 $log->detail = 'Removed invalid sub_resource of ' . $CI->response->meta->sub_resource . '.';
@@ -1483,10 +1483,10 @@ if ( ! function_exists('inputRead')) {
             if ($CI->response->meta->action === 'create' OR $CI->response->meta->action === 'update' OR $CI->response->meta->action === 'import') {
                 $temp = explode(',', $CI->user->org_list);
                 // org_id
-                if ( ! empty($CI->meta->received_data->org_id)) {
+                if ( ! empty($CI->response->meta->received_data->org_id)) {
                     $allowed = false;
                     foreach ($temp as $key => $value) {
-                        if ($CI->meta->received_data->org_id === $value) {
+                        if ($CI->response->meta->received_data->org_id === $value) {
                             $allowed = true;
                         }
                     }
@@ -1497,10 +1497,10 @@ if ( ! function_exists('inputRead')) {
                     }
                 }
                 // devices_assigned_to_org
-                if ( ! empty($CI->meta->received_data->devices_assigned_to_org)) {
+                if ( ! empty($CI->response->meta->received_data->devices_assigned_to_org)) {
                     $allowed = false;
                     foreach ($temp as $key => $value) {
-                        if ($CI->meta->received_data->devices_assigned_to_org === $value) {
+                        if ($CI->response->meta->received_data->devices_assigned_to_org === $value) {
                             $allowed = true;
                         }
                     }
@@ -1583,11 +1583,14 @@ if ( ! function_exists('filter')) {
         }
 
         if ($collection !== 'configuration' && $collection !== 'logs' ) {
+            $temp = explode(',', $user->org_list);
+            $temp = array_unique($temp);
+            $org_list = implode(',', $temp);
             if ($filter !== '') {
                 $filter = substr($filter, 5);
-                $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+                $filter = ' WHERE orgs.id IN (' . $org_list . ') AND ' . $filter;
             } else {
-                $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+                $filter = ' WHERE orgs.id IN (' . $org_list . ')';
             }
         }
 

@@ -250,7 +250,7 @@ class M_orgs extends MY_Model
         $id = intval($id);
         $org_list = array();
         if (empty($this->orgs)) {
-            $sql = '/* m_orgs::get_descendants */ ' . 'SELECT * FROM orgs';
+            $sql = 'SELECT * FROM orgs';
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $this->orgs = $query->result();

@@ -446,6 +446,9 @@ if ( ! function_exists('snmp_audit')) {
         $module = new stdclass();
         $return_ips = new stdClass();
         $return_ips->item = array();
+        $routes = array();
+        $guests = array();
+        $modules = array();
 
         $details->ip = (string)$ip;
         $details->manufacturer = '';
@@ -648,16 +651,18 @@ if ( ! function_exists('snmp_audit')) {
 
         // Ubiquiti specific items to determine manufacturer
         $temp_services = my_snmp_walk($ip, $credentials, '1.3.6.1.2.1.1.9.1.3');
-        foreach ($temp_services as $line) {
-            if (strpos($line, 'Ubiquiti') !== false) {
-                $details->manufacturer = 'Ubiquiti Networks Inc.';
-                $log->command_time_to_execute = 0;
-                $log->message = 'Manufacturer set to Ubiquiti '.$ip . ', because in services list.';
-                $log->command = 'snmpwalk 1.3.6.1.2.1.1.9.1.3';
-                $log->command_output = (string)$line;
-                $log->command_status = 'notice';
-                discovery_log($log);
-                break;
+        if ( ! empty($temp_services)) {
+            foreach ($temp_services as $line) {
+                if (strpos($line, 'Ubiquiti') !== false) {
+                    $details->manufacturer = 'Ubiquiti Networks Inc.';
+                    $log->command_time_to_execute = 0;
+                    $log->message = 'Manufacturer set to Ubiquiti '.$ip . ', because in services list.';
+                    $log->command = 'snmpwalk 1.3.6.1.2.1.1.9.1.3';
+                    $log->command_output = (string)$line;
+                    $log->command_status = 'notice';
+                    discovery_log($log);
+                    break;
+                }
             }
         }
         // guess at manufacturer using entity mib
@@ -1009,7 +1014,6 @@ if ( ! function_exists('snmp_audit')) {
         // modules - NOTE, we call these 'entities' in the web interface
         unset($log->command_output);
         $item_start = microtime(true);
-        $modules = array();
         $modules_list = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.2');
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->message = 'Module retrieval for '.$ip;
@@ -1517,7 +1521,6 @@ if ( ! function_exists('snmp_audit')) {
 
         if ($retrieve_routes === 1) {
             // Route table
-            $routes = array();
             $item_start = microtime(true);
             $table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.21.1.1');
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1603,7 +1606,6 @@ if ( ! function_exists('snmp_audit')) {
         }
 
         // Virtual Guests
-        $guests = array();
         if (intval($details->snmp_enterprise_id) === 6876) {
             if (file_exists(BASEPATH.'../application/helpers/snmp_6876_2_helper.php')) {
                 $log->severity = 7;

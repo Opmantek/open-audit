@@ -139,6 +139,9 @@ class Devices extends MY_Controller
             $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource !== '') {
+            if (empty($this->response->meta->sub_resource_id)) {
+                $this->response->meta->sub_resource_id = 0;
+            }
             if ($this->response->meta->sub_resource === 'partition_graph') {
                 $this->response->data = $this->m_devices_components->graph($this->response->meta->id, $this->response->meta->sub_resource_id, 'partition', 30);
                 $this->response->meta->action = 'read_partition_graph';
@@ -163,7 +166,7 @@ class Devices extends MY_Controller
                         $result = $this->m_devices->read_sub_resource(
                             $this->response->meta->id,
                             $table, // sub_resource
-                            $this->response->meta->sub_resource_id, // sub id
+                            @$this->response->meta->sub_resource_id, // sub id
                             $this->response->meta->properties,
                             '', // sort
                             $this->response->meta->current,
@@ -387,6 +390,9 @@ class Devices extends MY_Controller
     private function bulk_update_form()
     {
         $timer_start = microtime(true);
+        if (empty($this->response->meta->ids)) {
+            $this->response->meta->ids = '0';
+        }
         $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in ({$this->response->meta->ids})";
         $query = $this->db->query($sql);
         // TODO - change the below to use this->response->included
@@ -440,6 +446,9 @@ class Devices extends MY_Controller
                 }
             }
         }
+        if (empty($this->response->meta->sub_resource_id)) {
+            $this->response->meta->sub_resource_id = 0;
+        }
 
         $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current);
         $this->response->meta->total = 0;
@@ -456,6 +465,9 @@ class Devices extends MY_Controller
      */
     private function sub_resource_delete()
     {
+        if (empty($this->response->meta->sub_resource_id)) {
+            $this->response->meta->sub_resource_id = 0;
+        }
         $this->m_devices->sub_resource_delete($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
         if ($this->response->meta->format === 'json') {
             output($this->response);
@@ -668,6 +680,9 @@ class Devices extends MY_Controller
      */
     private function sub_resource_download()
     {
+        if (empty($this->response->meta->sub_resource_id)) {
+            $this->response->meta->sub_resource_id = 0;
+        }
         $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
         $this->load->helper('file');
         if (php_uname('s') === 'Windows NT') {

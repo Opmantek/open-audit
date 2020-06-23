@@ -111,6 +111,9 @@ class M_discoveries extends MY_Model
                 $data->other->subnet = '';
             }
         }
+        if (empty($data->other->match)) {
+            $data->other->match = new stdClass();
+        }
         if (empty($data->other->nmap)) {
             $data->other->nmap = new stdClass();
             if (empty($this->config->config['discovery_default_scan_option'])) {
@@ -322,22 +325,21 @@ class M_discoveries extends MY_Model
             }
         }
         // Do not check if 0 because 0 is for custom scans
-        if ( ! empty($discovery->other->nmap->discovery_scan_option_id)) {
+        if ( ! empty($result[0]->other->nmap->discovery_scan_option_id)) {
             $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
             $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
             $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
-            $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
-            $result = $this->run_sql($sql, $data);
-            if ( ! empty($result)) {
-                $options = $result[0];
-                foreach ($options as $key => $value) {
+            $data = array(intval($result[0]->other->nmap->discovery_scan_option_id));
+            $discovery_scan_option = $this->run_sql($sql, $data);
+            if ( ! empty($discovery_scan_option[0])) {
+                foreach ($discovery_scan_option[0] as $key => $value) {
                     if ( ! in_array($key, $do_not_use)) {
                         if (in_array($key, $prefer_individual)) {
-                            if ( ! empty($value) && empty($discovery->other->nmap->{$key})) {
-                                $discovery->other->nmap->{$key} = $value;
+                            if ( ! empty($value) && empty($result[0]->other->nmap->{$key})) {
+                                $result[0]->other->nmap->{$key} = $value;
                             }
                         } else {
-                            $discovery->other->nmap->{$key} = $value;
+                            $result[0]->other->nmap->{$key} = $value;
                         }
                     }
                 }
@@ -411,9 +413,6 @@ class M_discoveries extends MY_Model
                 for ($i=0; $i < count($result); $i++) {
                     if ( ! empty($result[$i]->other)) {
                         $result[$i]->other = json_decode($result[$i]->other);
-                        foreach ($result[$i]->other as $key => $value) {
-                            $result[$i]->{'other.'.$key} = $value;
-                        }
                     }
                 }
             }

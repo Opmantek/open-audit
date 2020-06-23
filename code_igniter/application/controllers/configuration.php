@@ -98,7 +98,7 @@ class Configuration extends MY_Controller
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            if ($this->response->data[0]->attributes->name == 'discovery_default_scan_option') {
+            if ($this->response->data[0]->attributes->name === 'discovery_default_scan_option') {
                 $this->load->model('m_discovery_scan_options');
                 $options = $this->m_discovery_scan_options->collection($this->user->id);
                 $this->response->included = array_merge($this->response->included, $options);
