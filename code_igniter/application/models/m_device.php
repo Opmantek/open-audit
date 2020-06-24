@@ -1976,18 +1976,18 @@ class M_device extends MY_Model
         }
         if ( ! empty($identification)) {
             if (empty($device->type) OR $device->type === 'unknown') {
-                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = '{$identification}' WHERE `id` = ?";
+                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = ? WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
             } else {
-                $sql = "UPDATE `system` SET `identification` = '{$identification}' WHERE `id` = ?";
+                $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
             }
         } else {
             $identification = 'No information could be retrieved.';
-            $sql = "UPDATE `system` SET `identification` = '{$identification}' WHERE `id` = ?";
+            $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
             $sql = $this->clean_sql($sql);
         }
-        $data = array(intval($id));
+        $data = array($identification, intval($id));
         $query = $this->db->query($sql, $data);
         return true;
     }
