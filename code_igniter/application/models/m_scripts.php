@@ -286,28 +286,32 @@ class M_scripts extends MY_Model
         if ($id === 0) {
             return;
         }
-        $sql = "SELECT * FROM scripts WHERE id = ?";
+        $sql = 'SELECT * FROM scripts WHERE id = ?';
         $result = $this->run_sql($sql, array(intval($id)));
         $data = $result[0];
         if (empty($data)) {
-            # TODO - insert an error
+            // TODO - insert an error
             return;
         }
         $filename = $CI->config->config['base_path'] . '/other/' . $data->based_on;
-        if (! file_exists($filename)) {
-            # TODO - insert an error
+        if ( ! file_exists($filename)) {
+            // TODO - insert an error
             return;
         }
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
 
-        if (empty($options->url) or 
-            $options->url == 'http://open-audit/index.php/system/add_system' or 
-            $options->url == 'http://open-audit/index.php/input/devices' or 
-            $options->url == 'http://localhost/open-audit/index.php/system/add_system' or 
-            $options->url == 'http://localhost/open-audit/index.php/input/devices') {
-            # inject our default network address
-            if (!empty($CI->config->config['default_network_address'])) {
+        if (empty($options->url) OR
+            $options->url ===  'http://open-audit/index.php/system/add_system' OR
+            $options->url === 'https://open-audit/index.php/system/add_system' OR
+            $options->url ===  'http://open-audit/index.php/input/devices' OR
+            $options->url === 'https://open-audit/index.php/input/devices' OR
+            $options->url ===  'http://localhost/open-audit/index.php/system/add_system' OR
+            $options->url === 'https://localhost/open-audit/index.php/system/add_system' OR
+            $options->url ===  'http://localhost/open-audit/index.php/input/devices' OR
+            $options->url === 'https://localhost/open-audit/index.php/input/devices') {
+            // inject our default network address
+            if ( ! empty($CI->config->config['default_network_address'])) {
                 $options->url = $CI->config->config['default_network_address'] . 'index.php/input/devices';
             } else {
                 unset($options->url);
@@ -317,45 +321,45 @@ class M_scripts extends MY_Model
         $find = 'Configuration from web UI here';
         $files = false;
         foreach ($options as $key => $value) {
-            if ($key != 'files') {
-                $replace = $find . "\n" . $key . "=\"" . $value . "\"";
+            if ($key !== 'files') {
+                $replace = $find . "\n" . $key . '="' . $value . '"';
                 $file = str_replace($find, $replace, $file);
             } else {
                 $files = true;
             }
         }
 
-        # TODO - enable the below for a per script list of files
-        #if (!$files and $data->based_on == $data->name) {
-            $sql = "SELECT * FROM files";
+        // TODO - enable the below for a per script list of files
+        // if (!$files and $data->based_on == $data->name) {
+            $sql = 'SELECT * FROM files';
             $result = $this->run_sql($sql, array());
             $options = new stdClass();
             $options->files = array();
-            if (!empty($result)) {
+            if ( ! empty($result)) {
                 foreach ($result as $item) {
                     $options->files[] = ($item->path);
                 }
             }
-            if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
+            if (isset($options->files) && is_array($options->files) && count($options->files) > 0) {
                 foreach (array_reverse($options->files) as $key => $value) {
-                    if ($data->based_on != 'audit_windows.vbs') {
+                    if ($data->based_on !== 'audit_windows.vbs') {
                         $value = str_replace('\\', '\\\\', $value);
-                        $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
+                        $replace = $find . "\nfiles[".intval($key+1).']="' . $value . '"';
                     } else {
                         if (strpos($value, '/') === 0) {
-                            # skip this file as it starts with /, hence is a Unix style path
+                            // skip this file as it starts with /, hence is a Unix style path
                         } else {
-                            $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
+                            $replace = $find . "\nfiles(".intval($key+1).')="' . $value . '"';
                         }
                     }
                     $file = str_replace($find, $replace, $file);
                 }
-                if ($data->based_on == 'audit_windows.vbs') {
-                    $replace = $find . "\ndim files(".count($options->files).")";
+                if ($data->based_on === 'audit_windows.vbs') {
+                    $replace = $find . "\ndim files(".count($options->files).')';
                     $file = str_replace($find, $replace, $file);
                 }
             }
-        #}
+        // }
         return $file;
     }
 
