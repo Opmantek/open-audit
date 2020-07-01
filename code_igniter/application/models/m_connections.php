@@ -106,6 +106,19 @@ class M_connections extends MY_Model
     }
 
     /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $CI = & get_instance();
+        $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+        $sql = 'SELECT COUNT(id) AS `count` FROM connections WHERE org_id IN (' . implode(',', $org_list) . ')';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
+    /**
      * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
@@ -123,8 +136,7 @@ class M_connections extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, loc_a.name AS `location_name_a`, loc_b.name AS `location_name_b`, sys_a.hostname as `system_hostname_a`, sys_b.hostname AS `system_hostname_b` FROM connections LEFT JOIN orgs ON (connections.org_id = orgs.id) LEFT JOIN locations loc_a ON (connections.location_id_a = loc_a.id) LEFT JOIN locations loc_b ON (connections.location_id_b = loc_b.id) LEFT JOIN system sys_a ON (connections.system_id_a = sys_a.id) LEFT JOIN system sys_b ON (connections.system_id_b = sys_b.id) ' .
                     $CI->response->meta->internal->filter . ' ' . 
                     $CI->response->meta->internal->groupby . ' ' . 

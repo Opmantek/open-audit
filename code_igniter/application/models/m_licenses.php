@@ -129,6 +129,19 @@ class M_licenses extends MY_Model
         }
     }
 
+    // /**
+    //  * Count the number of rows a user is allowed to see
+    //  * @return int The count
+    //  */
+    // public function count()
+    // {
+    //     $CI = & get_instance();
+    //     $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+    //     $sql = 'SELECT COUNT(id) AS `count` FROM licenses WHERE org_id IN (' . implode(',', $org_list) . ')';
+    //     $result = $this->run_sql($sql, array());
+    //     return intval($result[0]->count);
+    // }
+
     /**
      * Read the collection from the database
      *

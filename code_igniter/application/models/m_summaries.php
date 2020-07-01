@@ -120,6 +120,19 @@ class M_summaries extends MY_Model
         }
     }
 
+    /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $CI = & get_instance();
+        $org_list = $CI->m_orgs->get_user_all($CI->user->id);
+        $sql = 'SELECT COUNT(id) AS `count` FROM summaries WHERE org_id IN (' . implode(',', $org_list) . ')';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
@@ -131,8 +144,7 @@ class M_summaries extends MY_Model
             return $result;
         }
         if (!empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM summaries LEFT JOIN orgs ON (summaries.org_id = orgs.id) " . 
                     $CI->response->meta->internal->filter . " " . 
                     $CI->response->meta->internal->groupby . " " . 

@@ -143,6 +143,19 @@ class M_racks extends MY_Model
     }
 
     /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $CI = & get_instance();
+        $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+        $sql = 'SELECT COUNT(id) AS `count` FROM racks WHERE org_id IN (' . implode(',', $org_list) . ')';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
+    /**
      * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
@@ -160,8 +173,7 @@ class M_racks extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rows.id AS `rows.id`, rows.name as `rows.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(rack_devices.id) as `rack_devices_count`, SUM(rack_devices.height) AS `used`, COALESCE(racks.ru_height, 0) - COALESCE(SUM(rack_devices.height), 0) AS `free` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN `rows` ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) ' .
                 $CI->response->meta->internal->filter . ' ' . 
                 ' GROUP BY racks.id ' . 

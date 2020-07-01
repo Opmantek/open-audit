@@ -430,6 +430,17 @@ class M_configuration extends MY_Model
     }
 
     /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $sql = 'SELECT COUNT(id) AS `count` FROM configuration';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
+    /**
      * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
@@ -446,8 +457,7 @@ class M_configuration extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
 
             $filter = '';
             $filter_response = array();

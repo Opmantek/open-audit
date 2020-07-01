@@ -85,6 +85,70 @@ class Main extends MY_Controller
         }
     }
 
+    public function summary()
+    {
+        #echo json_encode($this->user); exit;
+        // $this->load->model('m_summaries');
+        // $response = array();
+
+        // $this->load->model('m_applications');
+        // $count = $this->m_applications->count();
+        // $response[] = array('name' => 'applications', 'icon' => '',  'count' => $count);
+
+        // $this->load->model('m_attributes');
+        // $count = $this->m_attributes->count();
+        // $response[] = array('name' => 'attributes', 'count' => $count);
+
+        $this->load->model('m_users');
+        $this->load->model('m_orgs');
+        $items = array();
+        $items[] = array('name' => 'applications', 'icon' => 'fa-code');
+        $items[] = array('name' => 'attributes', 'icon' => 'fa-list');
+        $items[] = array('name' => 'baselines', 'icon' => 'fa-files-o');
+        $items[] = array('name' => 'clouds', 'icon' => 'fa-cloud');
+        $items[] = array('name' => 'clusters', 'icon' => 'fa-cubes');
+        $items[] = array('name' => 'collectors', 'icon' => 'fa-cogs');
+        $items[] = array('name' => 'configuration', 'icon' => 'fa-sliders');
+        $items[] = array('name' => 'connections', 'icon' => 'fa-link');
+        $items[] = array('name' => 'credentials', 'icon' => 'fa-shield');
+        $items[] = array('name' => 'dashboards', 'icon' => 'fa-pie-chart');
+        // $items[] = array('name' => 'database', 'icon' => 'fa-database');
+        $items[] = array('name' => 'devices', 'icon' => 'fa-desktop');
+        $items[] = array('name' => 'discoveries', 'icon' => 'fa-binoculars');
+        $items[] = array('name' => 'fields', 'icon' => 'fa-list');
+        $items[] = array('name' => 'files', 'icon' => 'fa-folder-open-o');
+        $items[] = array('name' => 'groups', 'icon' => 'fa-tags');
+        $items[] = array('name' => 'integrations', 'icon' => 'fa-exchange');
+        $items[] = array('name' => 'ldap_servers', 'icon' => 'fa-address-card-o');
+        // $items[] = array('name' => 'licenses', 'icon' => 'fa-leanpub');
+        $items[] = array('name' => 'locations', 'icon' => 'fa-globe');
+        $items[] = array('name' => 'logs', 'icon' => 'fa-bars');
+        // $items[] = array('name' => 'maps', 'icon' => 'fa-map-o');
+        $items[] = array('name' => 'networks', 'icon' => 'fa-wifi');
+        $items[] = array('name' => 'orgs', 'icon' => 'fa-bank');
+        $items[] = array('name' => 'queries', 'icon' => 'fa-table');
+        $items[] = array('name' => 'racks', 'icon' => 'fa-film');
+        $items[] = array('name' => 'roles', 'icon' => 'fa-lock');
+        $items[] = array('name' => 'rules', 'icon' => 'fa-map-signs');
+        $items[] = array('name' => 'scripts', 'icon' => 'fa-code');
+        $items[] = array('name' => 'summaries', 'icon' => 'fa-file-image-o');
+        $items[] = array('name' => 'tasks', 'icon' => 'fa-repeat');
+        $items[] = array('name' => 'users', 'icon' => 'fa-users');
+        $items[] = array('name' => 'widgets', 'icon' => 'fa-bar-chart');
+        $items = json_encode($items);
+        $items = json_decode($items);
+        foreach ($items as $item) {
+            if ($this->m_users->get_user_permission($this->user->id, $item->name, 'r') !== false) {
+                $this->load->model('m_' . $item->name);
+                $item->count = $this->{'m_'.$item->name}->count();
+            }
+        }
+
+
+
+        echo json_encode($items);
+    }
+
     public function api_index()
     {
         $level = $this->uri->segment(3, 0);
