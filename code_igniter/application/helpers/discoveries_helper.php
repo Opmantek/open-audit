@@ -51,11 +51,11 @@ if ( ! defined('BASEPATH')) {
 }
 
 if ( ! function_exists('all_ip_list')) {
-    /**
-     *
-     * @param  object $discovery The discovery object with all its parameters
-     * @return array|false All the IP addresses in this discovery (excluding the excluded list)
-     */
+	/**
+	 *
+	 * @param  object $discovery The discovery object with all its parameters
+	 * @return array|false All the IP addresses in this discovery (excluding the excluded list)
+	 */
 	function all_ip_list($discovery = null)
 	{
 		if (is_null($discovery)) {
@@ -102,11 +102,11 @@ if ( ! function_exists('all_ip_list')) {
 }
 
 if ( ! function_exists('ip_list')) {
-    /**
-     *
-     * @param  object $discovery The discovery object with all its parameters
-     * @return array|false The array of all responding IP addresses in the discovery
-     */
+	/**
+	 *
+	 * @param  object $discovery The discovery object with all its parameters
+	 * @return array|false The array of all responding IP addresses in the discovery
+	 */
 	function responding_ip_list($discovery = null)
 	{
 		if (is_null($discovery)) {
@@ -175,13 +175,13 @@ if ( ! function_exists('ip_list')) {
 }
 
 if ( ! function_exists('update_non_responding')) {
-    /**
-     *
-     * @param  int   $discovery_id       discoveries.id
-     * @param  array $all_ip_list        All the IP addresses in this discovery (excluding the excluded list)
-     * @param  array $responding_ip_list The array of all responding IP addresses in the discovery
-     * @return void
-     */
+	/**
+	 *
+	 * @param  int   $discovery_id       discoveries.id
+	 * @param  array $all_ip_list        All the IP addresses in this discovery (excluding the excluded list)
+	 * @param  array $responding_ip_list The array of all responding IP addresses in the discovery
+	 * @return void
+	 */
 	function update_non_responding($discovery_id, $all_ip_list, $responding_ip_list)
 	{
 		$CI = get_instance();
@@ -665,7 +665,15 @@ if ( ! function_exists('ip_audit')) {
 	 */
 	function ip_audit($ip_scan = null)
 	{
+
 		if (empty($ip_scan)) {
+			$mylog = new stdClass();
+			$mylog->severity = 4;
+			$mylog->status = 'fail';
+			$mylog->message = 'No ip_scan passed to ip_audit.';
+			$mylog->file = 'discoveries_helper';
+			$mylog->function = 'ip_audit';
+			stdlog($mylog);
 			return false;
 		}
 		$start = microtime(true);
@@ -673,6 +681,13 @@ if ( ! function_exists('ip_audit')) {
 		$item = $CI->m_discoveries->read($ip_scan->discovery_id);
 		$discovery = @$item[0]->attributes;
 		if (empty($discovery)) {
+			$mylog = new stdClass();
+			$mylog->severity = 4;
+			$mylog->status = 'fail';
+			$mylog->message = 'Invalid discovery_id (' . @$ip_scan->discovery_id . ') passed to ip_audit.';
+			$mylog->file = 'discoveries_helper';
+			$mylog->function = 'ip_audit';
+			stdlog($mylog);
 			return false;
 		}
 		unset($item);
@@ -680,6 +695,13 @@ if ( ! function_exists('ip_audit')) {
 			$ip_scan->details = @json_decode($ip_scan->details);
 		}
 		if (empty($ip_scan->details)) {
+			$mylog = new stdClass();
+			$mylog->severity = 4;
+			$mylog->status = 'fail';
+			$mylog->message = 'No ip_scan->details (or invalid JSON) passed to ip_audit.';
+			$mylog->file = 'discoveries_helper';
+			$mylog->function = 'ip_audit';
+			stdlog($mylog);
 			return false;
 		}
 		if (empty($ip_scan->details->snmp_status)) {
