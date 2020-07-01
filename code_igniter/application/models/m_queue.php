@@ -86,11 +86,15 @@ class M_queue extends MY_Model
         }
         $details = json_encode($details);
 
+        $sql = '/* m_queue::create */ ' . "LOCK TABLES queue WRITE";
+        $this->db->query($sql);
         $sql = '/* m_queue::create */ ' . "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
         $data = array($name, $type, $org_id, $details);
         $this->db->query($sql, $data);
         $result = intval($this->db->insert_id());
         $this->log->detail = $this->db->last_query();
+        $sql = '/* m_queue::create */ ' . "UNLOCK TABLES";
+        $query = $this->db->query($sql);
         if ( ! empty($result)) {
             stdlog($this->log);
             return $result;
