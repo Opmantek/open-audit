@@ -132,7 +132,7 @@ class Main extends MY_Controller
         $items[] = array('name' => 'rules', 'icon' => 'fa-map-signs');
         $items[] = array('name' => 'scripts', 'icon' => 'fa-code');
         $items[] = array('name' => 'summaries', 'icon' => 'fa-file-image-o');
-        $items[] = array('name' => 'tasks', 'icon' => 'fa-repeat');
+        $items[] = array('name' => 'tasks', 'icon' => 'fa-clock-o');
         $items[] = array('name' => 'users', 'icon' => 'fa-users');
         $items[] = array('name' => 'widgets', 'icon' => 'fa-bar-chart');
         $items = json_encode($items);
