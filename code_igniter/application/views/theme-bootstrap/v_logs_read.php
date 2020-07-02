@@ -42,7 +42,7 @@ $item = $this->response->data[0];
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    <?php foreach (array('id', 'timestamp', 'type', 'severity', 'pid', 'user', 'server') as $attribute) { ?>
+                    <?php foreach (array('id', 'timestamp', 'type', 'severity', 'pid', 'user') as $attribute) { ?>
                     <div class="form-group">
                         <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(htmlspecialchars(ucwords(str_replace('_', ' ', $attribute)), REPLACE_FLAGS, CHARSET)); ?></label>
                         <div class="col-sm-8 input-group">
@@ -50,41 +50,24 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <?php } ?>
-                </div>
-
-                <div class="col-md-6">
-                    <?php foreach (array('ip', 'collection', 'action', 'function', 'status', 'summary') as $attribute) { ?>
-                    <div class="form-group">
-                        <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(htmlspecialchars(ucwords(str_replace('_', ' ', $attribute)), REPLACE_FLAGS, CHARSET)); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                        </div>
-                    </div>
-                    <?php } ?>
-                </div>
-
-                <div class="col-md-12">
-                    <?php
-                    // if ($detail = json_decode($item->attributes->detail)) {
-                    //     //
-                    // } else {
-                    //     if ($detail = json_encode($item->attributes->detail)) {
-                    //         //
-                    //     } else {
-                    //         $detail = $item->attributes->detail;
-                    //     }
-                    // }
-                    ?>
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><?php echo __('Detail'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <pre>
-                            <?php echo htmlspecialchars($item->attributes->detail) ?>
-                            </pre>
+                            <textarea class="form-control" rows="12" disabled><?php echo json_format(($item->attributes->detail)); ?></textarea>
                         </div>
                     </div>
                 </div>
 
+                <div class="col-md-6">
+                    <?php foreach (array('server', 'ip', 'collection', 'action', 'function', 'status', 'summary') as $attribute) { ?>
+                    <div class="form-group">
+                        <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(htmlspecialchars(ucwords(str_replace('_', ' ', $attribute)), REPLACE_FLAGS, CHARSET)); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
     </div>
