@@ -29,6 +29,8 @@
 
 /*
 
+INSERT INTO `rules` VALUES (NULL,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based on model.',100,'[{\"attribute\":\"model\",\"operator\":\"li\",\"table\":\"system\",\"value\":\"RP-5AC-Gen2\"}]','[{\"attribute\":\"type\",\"table\":\"system\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+
 UPDATE `configuration` SET `value` = '20200620' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.4.0' WHERE `name` = 'display_version';
@@ -36,8 +38,11 @@ UPDATE `configuration` SET `value` = '3.4.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.4.0 commenced');
 
+$sql = "INSERT INTO `rules` VALUES (NULL,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based on model.',100,'[{\"attribute\":\"model\",\"operator\":\"li\",\"table\":\"system\",\"value\":\"RP-5AC-Gen2\"}]','[{\"attribute\":\"type\",\"table\":\"system\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
-# set our versions
+// set our versions
 $sql = "UPDATE `configuration` SET `value` = '20200620' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
