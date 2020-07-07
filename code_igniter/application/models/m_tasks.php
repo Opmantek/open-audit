@@ -238,6 +238,7 @@ class M_tasks extends MY_Model
             $result = $this->run_sql($sql, array());
             if ( ! empty($result) && is_array($result)) {
                 for ($i=0; $i < count($result); $i++) {
+                    // Decode JSON
                     if ( ! empty($result[$i]->options)) {
                         $result[$i]->options = json_decode($result[$i]->options);
                         foreach ($result[$i]->options as $key => $value) {
@@ -246,6 +247,7 @@ class M_tasks extends MY_Model
                     } else {
                         $result[$i]->options = new stdCLass();
                     }
+                    // SubResources
                     if ($this->db->table_exists($result[$i]->type)) {
                         $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                         $data = array($result[$i]->sub_resource_id);
@@ -259,6 +261,18 @@ class M_tasks extends MY_Model
                         }
                     } else {
                         $result[$i]->sub_resource_name = '';
+                    }
+                    // Collectors
+                    $result[$i]->{'collectors.name'} = 'localhost';
+                    $result[$i]->{'collectors.id'} = 0;
+                    if ($result[$i]->uuid !== $this->config->config['uuid']) {
+                        $sql = 'SELECT id, name FROM collectors WHERE uuid = ? LIMIT 1';
+                        $data = array($result[$i]->uuid);
+                        $data_result = $this->run_sql($sql, $data);
+                        if ( ! empty($data_result[0]->name)) {
+                            $result[$i]->{'collectors.name'} = $data_result[0]->name;
+                            $result[$i]->{'collectors.id'} = $data_result[0]->id;
+                        }
                     }
                 }
             }
