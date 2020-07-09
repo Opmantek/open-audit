@@ -1160,6 +1160,7 @@ CREATE TABLE `discovery_log` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `pid` (`pid`),
+  KEY `discovery_id` (`discovery_id`),
   CONSTRAINT `discovery_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

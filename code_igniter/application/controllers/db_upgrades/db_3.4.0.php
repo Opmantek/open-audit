@@ -31,6 +31,8 @@
 
 INSERT INTO `rules` VALUES (NULL,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based on model.',100,'[{\"attribute\":\"model\",\"operator\":\"li\",\"table\":\"system\",\"value\":\"RP-5AC-Gen2\"}]','[{\"attribute\":\"type\",\"table\":\"system\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 
+CREATE INDEX discovery_id ON discovery_log (`discovery_id`);
+
 UPDATE `configuration` SET `value` = '20200620' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.4.0' WHERE `name` = 'display_version';
@@ -39,6 +41,14 @@ UPDATE `configuration` SET `value` = '3.4.0' WHERE `name` = 'display_version';
 $this->log_db('Upgrade database to 3.4.0 commenced');
 
 $sql = "INSERT INTO `rules` VALUES (NULL,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based on model.',100,'[{\"attribute\":\"model\",\"operator\":\"li\",\"table\":\"system\",\"value\":\"RP-5AC-Gen2\"}]','[{\"attribute\":\"type\",\"table\":\"system\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->drop_key('discovery_log', 'discovery_log_discovery_id');
+
+$this->drop_key('discovery_log', 'discovery_id');
+
+$sql = 'CREATE INDEX discovery_id ON discovery_log (`discovery_id`)';
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
@@ -51,6 +61,6 @@ $sql = "UPDATE `configuration` SET `value` = '3.4.0' WHERE `name` = 'display_ver
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->log_db("Upgrade database to 3.4.0 completed");
+$this->log_db('Upgrade database to 3.4.0 completed');
 $this->config->config['internal_version'] = '20200620';
 $this->config->config['display_version'] = '3.4.0';
