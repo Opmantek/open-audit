@@ -882,9 +882,19 @@ if ( ! function_exists('ip_audit')) {
 			}
 		}
 
-		if ( ! empty($device->type) && $device->type !== 'computer' && $device->type !== 'unknown' && $device->type !== 'unclassified'
-			&& ! empty($device->os_name) && stripos($device->os_name, 'dd-wrt') === false
-			&& ! empty($device->manufacturer) && stripos($device->manufacturer, 'Ubiquiti') === false) {
+		// Set these here before testing them below
+		if (empty($device->os_name)) {
+			$device->os_name = '';
+		}
+		if (empty($device->manufacturer)) {
+			$device->manufacturer = '';
+		}
+		if ( ! empty($device->type)
+			&& $device->type !== 'computer'
+			&& $device->type !== 'unknown'
+			&& $device->type !== 'unclassified'
+			&& stripos($device->os_name, 'dd-wrt') === false
+			&& stripos($device->manufacturer, 'Ubiquiti') === false) {
 			$log->message = 'Not a computer and not a DD-WRT or Ubiquiti device setting SSH status to false for ' . $device->ip;
 			$log->severity = 5;
 			discovery_log($log);
