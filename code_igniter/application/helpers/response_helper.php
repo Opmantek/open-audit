@@ -1328,7 +1328,7 @@ if ( ! function_exists('response_get_limit')) {
             $log->summary = 'Set limit according to SCREEN default.';
         }
         if ($format === 'json' && empty($limit)) {
-            $limit = intval($instance->config->config['database_show_row_limit']);
+            $limit = intval($instance->config->config['page_size']);
             $log->summary = 'Set limit according to JSON default.';
         }
         if ( ! empty($limit)) {
