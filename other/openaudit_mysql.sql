@@ -2251,7 +2251,8 @@ CREATE TABLE `networks` (
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `networks_cloud_id` (`cloud_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

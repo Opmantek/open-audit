@@ -52,6 +52,10 @@ $sql = 'CREATE INDEX discovery_id ON discovery_log (`discovery_id`)';
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+$sql = 'CREATE INDEX networks_cloud_id ON networks (`cloud_id`)';
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20200620' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
