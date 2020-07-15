@@ -668,17 +668,19 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'groups') {
-            if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
-                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+            if ( ! empty($data->sql)) {
+                if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+                        log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+                        return false;
+                }
+                if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                        log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
+                        return false;
+                }
+                if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
                     return false;
-            }
-            if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
-                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
-                    return false;
-            }
-            if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
-                log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
-                return false;
+                }
             }
         }
 
@@ -702,17 +704,19 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'queries') {
-            if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
-                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+            if ( ! empty($data->sql)) {
+                if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+                        log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+                        return false;
+                }
+                if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                        log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
+                        return false;
+                }
+                if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
                     return false;
-            }
-            if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
-                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
-                    return false;
-            }
-            if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
-                log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
-                return false;
+                }
             }
         }
 
@@ -941,17 +945,19 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'widgets') {
-            if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
-                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+            if ( ! empty($data->sql)) {
+                if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+                        log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
+                        return false;
+                }
+                if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                        log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
+                        return false;
+                }
+                if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
                     return false;
-            }
-            if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
-                    log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
-                    return false;
-            }
-            if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
-                log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
-                return false;
+                }
             }
         }
 

@@ -63,9 +63,10 @@ class M_scripts extends MY_Model
      */
     public function create($data = null)
     {
+        // $CI->options are from include_scripts_options.php in /controllers
         $CI = & get_instance();
         $options = $CI->options;
-        if (is_string($data->options)) {
+        if ( ! empty($data->options) && is_string($data->options)) {
             $data->options = json_decode($data->options);
         }
         // Validate options
@@ -228,16 +229,16 @@ class M_scripts extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
 
-        # do not allow deletion of default Scripts
+        // do not allow deletion of default Scripts
         $script = $this->m_scripts->read();
-        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+        if ($script[0]->attributes->name === $script[0]->attributes->based_on) {
             $CI->response->data = array();
             $temp = new stdClass();
             $temp->type = $this->response->meta->collection;
@@ -246,7 +247,7 @@ class M_scripts extends MY_Model
             log_error('ERR-0014');
             return false;
         } else {
-            $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
+            $sql = 'DELETE FROM `scripts` WHERE id = ? AND name != based_on';
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;

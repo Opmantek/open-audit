@@ -153,7 +153,7 @@ foreach ($this->response->included as $item) {
                             <?php # TODO - enable per script file retrieval ?>
                             <?php # TODO - Maybe only display files per based_on ?>
                                 <tr>
-                                    <td class="text-center"><input type="checkbox" value="<?php echo htmlspecialchars( $file->path, REPLACE_FLAGS, CHARSET); ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked></td>
+                                    <td class="text-center"><input type="checkbox" value="<?php echo htmlspecialchars( $file->path, REPLACE_FLAGS, CHARSET); ?>" id="data[attributes][options][files][<?php echo intval($file->id); ?>]" title="data[attributes][options][files][<?php echo intval($file->id); ?>]" name="data[attributes][options][files][<?php echo intval($file->id); ?>]" checked></td>
                                     <td><?php echo htmlspecialchars($file->name, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->description, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->path, REPLACE_FLAGS, CHARSET); ?></td>
@@ -211,10 +211,10 @@ function generate_options($option_list, $options, $files, $orgs) {
                     case 'url';
                     case 'date':
                         if ($option->name != 'org_id') {
-                            $return .= '<input type="' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '" class="form-control" id="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" name="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" value="' . htmlspecialchars( $option->default, REPLACE_FLAGS, CHARSET) . '" aria-describedby="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '"><span id="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '" class="help-block">' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '</span>';
+                            $return .= '<input type="' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '" class="form-control" id="data[attributes][options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" name="data[attributes][options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" value="' . htmlspecialchars( $option->default, REPLACE_FLAGS, CHARSET) . '" aria-describedby="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '"><span id="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '" class="help-block">' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '</span>';
 
                         } else {
-                            $return .= '<select name="data[options][org_id]" id="data[options][org_id]" class="form-control" aria-describedby="option_org_id">';
+                            $return .= '<select name="data[attributes][options][org_id]" id="data[attributes][options][org_id]" class="form-control" aria-describedby="option_org_id">';
                             $return .= '<option value="" label=" "></option>';
                             foreach ($orgs as $org) {
                                 $return .= '<option value="' . htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET) . '">' . htmlentities($org->name, ENT_QUOTES) . '</option>';
@@ -224,7 +224,7 @@ function generate_options($option_list, $options, $files, $orgs) {
                         break;
 
                     case 'select':
-                        $return .= '<select id="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" name="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" class="form-control" aria-describedby="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '">';
+                        $return .= '<select id="data[attributes][options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" name="data[attributes][options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" class="form-control" aria-describedby="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '">';
                         foreach (explode(',', $option->values) as $value) {
                             if ($value == $option->default) {
                                 $selected = 'selected';
