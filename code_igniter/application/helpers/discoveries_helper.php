@@ -327,19 +327,29 @@ if ( ! function_exists('discover_subnet')) {
 		if ( ! empty($responding_ip_list) && is_array($responding_ip_list)) {
 			$ip_responding_count = count($responding_ip_list);
 		}
-		$sql = '/* discoveries_helper::discover_subnet */ ' . 'UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE `id` = ?';
-		$data = array($ip_all_count, $ip_responding_count, $discovery_id);
-		$CI->db->query($sql, $data);
+
+		$time_to_execute = microtime(true) - $start;
+
+		// This will increment discoveries.ip_all_count using tyhe log helper (think Collector / Server)
+		$log->message = 'Total IPs count: ' . $ip_all_count;
+		$log->command_time_to_execute = $time_to_execute;
+		discovery_log($log);
+
+		// This will increment discoveries.ip_responding_count using tyhe log helper (think Collector / Server)
+		$log->message = 'Responding IPs count: ' . $ip_responding_count;
+		$log->command_time_to_execute = $time_to_execute;
+		discovery_log($log);
+
 		if (empty($responding_ip_list)) {
 			$log->message = 'No IPs are responding. You may wish to check your discovery configuration.';
-			$log->command_time_to_execute = microtime(true) - $start;
+			$log->command_time_to_execute = $time_to_execute;
 			discovery_log($log);
 			// NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
 			$log->message = 'Discovery has finished.';
 			$log->command = '';
 			$log->command_output = '';
 			$log->command_status = 'finished';
-			$log->command_time_to_execute = microtime(true) - $start;
+			$log->command_time_to_execute = $time_to_execute;
 			$log->ip = '127.0.0.1';
 			discovery_log($log);
 		}

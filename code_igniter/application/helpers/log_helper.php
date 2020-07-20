@@ -1,5 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
      exit('No direct script access allowed');
 }
 #
@@ -37,19 +37,19 @@ if (!defined('BASEPATH')) {
 * @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
  */
-if (! function_exists('log_error')) {
+if ( ! function_exists('log_error')) {
 
     function log_error($error_code, $model = '', $message = '')
     {
         $CI = & get_instance();
-        # ensure we have an array in the $response object to hold our error
-        if (!empty($CI->response)) {
-            if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
+        // ensure we have an array in the $response object to hold our error
+        if ( ! empty($CI->response)) {
+            if ( ! isset($CI->response->errors) OR is_null($CI->response->errors)) {
                 $CI->response->errors = array();
             }
         }
 
-        # this object will hold this specific error data and be added to the above array at the end
+        // this object will hold this specific error data and be added to the above array at the end
         $error = new stdClass();
         $error->code = $error_code;
         $error->model = $model;
@@ -58,7 +58,7 @@ if (! function_exists('log_error')) {
             $error->summary = $error->title;
         }
 
-        if (!empty($message)) {
+        if ( ! empty($message)) {
             $error->message = $message;
         }
 
@@ -66,7 +66,7 @@ if (! function_exists('log_error')) {
         $error->file = 'system';
         stdlog($error);
 
-        if (!empty($error->controller) and !empty($error->function)) {
+        if ( ! empty($error->controller) && ! empty($error->function)) {
             $error->controller = $error->controller . '::' . $error->function;
         } else {
             $error->controller = '';
@@ -77,9 +77,9 @@ if (! function_exists('log_error')) {
         }
 
         error_reporting(E_ALL);
-        unset($error->file); # we don't care about where this was logged (into which file)
+        unset($error->file); // we don't care about where this was logged (into which file)
         $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
-        if (!empty($CI->response)) {
+        if ( ! empty($CI->response)) {
             $CI->response->errors[] = $error;
             $CI->response->meta->header = $error->status;
         }
@@ -87,7 +87,7 @@ if (! function_exists('log_error')) {
 
 }
 
-if (! function_exists('discovery_log')) {
+if ( ! function_exists('discovery_log')) {
       /**
      * The database logging function for Open-AudIT. Writes logs to a table in the DB.
      *
@@ -103,6 +103,7 @@ if (! function_exists('discovery_log')) {
      */
     function discovery_log($log = null)
     {
+
         /*
         All attributes are optional
         $log->discovery_id,            The ID of the discovery being performed (if known)
@@ -171,7 +172,7 @@ if (! function_exists('discovery_log')) {
                 $log->severity_text = 'emergency';
             }
         }
-        if (!isset($log->pid) or $log->pid == '') {
+        if ( ! isset($log->pid) OR $log->pid == '') {
             $log->pid = getmypid();
         } else {
             $log->pid = intval($log->pid);
@@ -205,13 +206,20 @@ if (! function_exists('discovery_log')) {
             $log->command_output = '';
         }
 
-        if (!is_null($log->id)) {
-            $sql = "/* log_helper::discovery_log */ " . "UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?";
+        if ( ! empty($log->message) && stripos($log->message, 'Collector - Starting discovery') === 0 && ! empty($log->discovery_id)) {
+            // Special clear of local discovery logs if start of a Collector discovery
+            $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
+            $data = array(intval($log->discovery_id));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        if ( ! is_null($log->id)) {
+            $sql = '/* log_helper::discovery_log */ ' . 'UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?';
             $data = array((string)$log->command, (string)$log->command_status, $log->command_time_to_execute, (string)$log->command_output, $log->id);
             $query = $CI->db->query($sql, $data);
             $return_id = intval($log->id);
         } else {
-            $sql = "/* log_helper::discovery_log */ " . "INSERT INTO discovery_log VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = '/* log_helper::discovery_log */ ' . 'INSERT INTO discovery_log VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             $data = array($log->discovery_id,
                             $log->system_id,
                             $log->severity,
@@ -229,28 +237,28 @@ if (! function_exists('discovery_log')) {
             $return_id = intval($CI->db->insert_id());
         }
 
-        # If we are a collector, forward the log
+        // If we are a collector, forward the log
         if ($CI->config->config['servers'] !== '') {
             $post_items = array();
             $post_items[] = 'type=discovery';
             $log->message = str_replace('Collector - ', '', $log->message);
             $log->message = 'Collector - ' . $log->message;
-            if (stripos($log->command, 'Rules Match - ') === 0 and stripos($log->command, ', ID: ') !== false) {
+            if (stripos($log->command, 'Rules Match - ') === 0 && stripos($log->command, ', ID: ') !== false) {
                 $original_command = $log->command;
                 $temp = explode(':', $log->command);
                 $log->command = str_replace(', ID', '', $temp[0]);
             }
             foreach ($log as $key => $value) {
-                if ($key != 'id' and $key != 'system_id') {
+                if ($key !== 'id' && $key !== 'system_id') {
                     $post_items[] = $key . '=' . urlencode($value);
                 }
             }
             $post = implode('&', $post_items);
             $server = json_decode($CI->config->config['servers']);
-            if (!empty($server->host) and !empty($server->community)) {
+            if ( ! empty($server->host) && ! empty($server->community)) {
                 $connection = curl_init($server->host . $server->community . '/index.php/input/logs');
                 curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
-                curl_setopt($connection, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+                curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)');
                 curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
@@ -273,21 +281,43 @@ if (! function_exists('discovery_log')) {
             $log->message = str_replace('Collector - ', '', $log->message);
         }
 
+        // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
+        if (strpos($log->message, 'Total IPs count: ') !== false) {
+            $temp = @intval(@str_replace('Total IPs count: ', '', $log->message));
+            $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_all_count` = ? WHERE id = ?';
+            $data = array($temp, $log->discovery_id);
+            $this->db->query($sql, $data);
+        }
+
+        // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
+        if (strpos($log->message, 'Responding IPs count: ') !== false) {
+            $temp = @intval(@str_replace('Responding IPs count: ', '', $log->message));
+            $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_responding_count` = ? WHERE id = ?';
+            $data = array($temp, $log->discovery_id);
+            $this->db->query($sql, $data);
+        }
+
+        if (strpos($log->message, 'IP scan finish on device ') !== false) {
+            $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?';
+            $data = array($log->discovery_id);
+            $this->db->query($sql, $data);
+        }
+
         if (strpos($log->message, 'Discovered device at ') !== false) {
-            $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `ip_discovered_count` = `ip_discovered_count` + 1 WHERE id = ?";
+            $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_discovered_count` = `ip_discovered_count` + 1 WHERE id = ?';
             $data = array($log->discovery_id);
             $CI->db->query($sql, $data);
         }
 
         if (strpos($log->message, 'Audited device at ') !== false) {
-            $sql = "/* discoveries_helper::ip_audit */ " . "UPDATE `discoveries` SET `ip_audited_count` = `ip_audited_count` + 1 WHERE id = ?";
+            $sql = '/* discoveries_helper::ip_audit */ ' . 'UPDATE `discoveries` SET `ip_audited_count` = `ip_audited_count` + 1 WHERE id = ?';
             $data = array($log->discovery_id);
             $CI->db->query($sql, $data);
         }
 
-        # If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
-        if ($log->message == 'Discovery has finished.' and !empty($log->discovery_id)) {
-            $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
+        // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
+        if ($log->message === 'Discovery has finished.' && ! empty($log->discovery_id)) {
+            $sql = '/* log_helper::discovery_log */ ' . "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
             $data = array($log->discovery_id);
             $query = $CI->db->query($sql, $data);
         }
@@ -298,19 +328,11 @@ if (! function_exists('discovery_log')) {
 }
 
 
-if (! function_exists('stdlog')) {
+if ( ! function_exists('stdlog')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @param     Object    log_details     An object containing details you wish to log
-     *
-     * @return NULL [logs the provided string to the log file]
+     * @param  object $log_details An object containing details you wish to log
+     * @return NULL                Logs the provided string to the log file
      */
     function stdlog($log_details = null)
     {
@@ -368,7 +390,7 @@ if (! function_exists('stdlog')) {
         $log['user'] = '';
         $log['server'] = php_uname('n');
         $log['ip'] = '127.0.0.1';
-        if (!empty($_SERVER['REMOTE_ADDR'])) {
+        if ( ! empty($_SERVER['REMOTE_ADDR'])) {
             $log['ip'] = $_SERVER['REMOTE_ADDR'];
         }
         $log['collection'] = '';
@@ -378,14 +400,14 @@ if (! function_exists('stdlog')) {
         $log['summary'] = '';
         $log['detail'] = '';
 
-        if (!empty($log_details->file)) {
+        if ( ! empty($log_details->file)) {
             $log['type'] = $log_details->file;
         }
-        if (!empty($log_details->type)) {
+        if ( ! empty($log_details->type)) {
             $log['type'] = $log_details->type;
         }
 
-        if (!empty($log_details->severity)) {
+        if ( ! empty($log_details->severity)) {
             $log['severity'] = intval($log_details->severity);
         }
         switch ($log['severity']) {
@@ -419,7 +441,7 @@ if (! function_exists('stdlog')) {
                 break;
         }
 
-        if (!empty($CI->user->full_name)) {
+        if ( ! empty($CI->user->full_name)) {
             $log['user'] = $CI->user->full_name;
         }
 
@@ -434,34 +456,34 @@ if (! function_exists('stdlog')) {
         }
         unset($log_level);
 
-        if (!empty($log_details->user)) {
+        if ( ! empty($log_details->user)) {
             $log['user'] = $log_details->user;
         }
 
-        if (!empty($CI->response->meta->collection)) {
+        if ( ! empty($CI->response->meta->collection)) {
             $log['collection'] = $CI->response->meta->collection;
         }
 
-        if (!empty($log_details->collection)) {
+        if ( ! empty($log_details->collection)) {
             $log['collection'] = $log_details->collection;
         }
 
-        if (empty($log_details->action) and !empty($CI->response->meta->action)) {
+        if (empty($log_details->action) && ! empty($CI->response->meta->action)) {
             $log['action'] = $CI->response->meta->action;
         }
 
-        if (!empty($log_details->action)) {
+        if ( ! empty($log_details->action)) {
             $log['action'] = $log_details->action;
         }
 
-        if (!empty($log_details->function)) {
+        if ( ! empty($log_details->function)) {
             $log['function'] = $log_details->function;
         }
 
-        if (!empty($log_details->message)) {
+        if ( ! empty($log_details->message)) {
             $log['detail'] = $log_details->message;
         }
-        if (!empty($log_details->detail)) {
+        if ( ! empty($log_details->detail)) {
             if ( ! empty($log['detail'])) {
                 $log['detail'] .= $log_details->detail;
             } else {
@@ -469,23 +491,23 @@ if (! function_exists('stdlog')) {
             }
         }
 
-        if (!empty($log_details->title)) {
+        if ( ! empty($log_details->title)) {
             $log['title'] = $log_details->title;
         }
 
-        if (!empty($log_details->code)) {
+        if ( ! empty($log_details->code)) {
             $log['code'] = $log_details->code;
         }
 
-        if (!empty($log_details->status)) {
+        if ( ! empty($log_details->status)) {
             $log['status'] = $log_details->status;
         }
 
-        if (!empty($log_details->summary)) {
+        if ( ! empty($log_details->summary)) {
             $log['summary'] = $log_details->summary;
         }
 
-        if (!empty($log_details->detail)) {
+        if ( ! empty($log_details->detail)) {
             $log['detail'] = $log_details->detail;
         }
 
@@ -494,7 +516,7 @@ if (! function_exists('stdlog')) {
             // $query = $CI->db->query($sql);
             // $result = $query->result();
             // if (count($result) === 0) {
-            if (!$CI->db->table_exists('logs')) {
+            if ( ! $CI->db->table_exists('logs')) {
                 $sql = "CREATE TABLE `logs` (
                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                       `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -518,7 +540,7 @@ if (! function_exists('stdlog')) {
             }
         }
 
-        if (!$CI->db->field_exists('request_microtime', 'logs')) {
+        if ( ! $CI->db->field_exists('request_microtime', 'logs')) {
             $sql = "SHOW COLUMNS FROM `logs` WHERE Field = 'request_microtime'";
             $query = $CI->db->query($sql);
             $result = $query->result();
@@ -528,7 +550,7 @@ if (! function_exists('stdlog')) {
             }
         }
 
-        $sql = "/* log_helper */ " . "INSERT INTO `logs` VALUES (NULL, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = '/* log_helper */ ' . 'INSERT INTO `logs` VALUES (NULL, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         $query = $CI->db->query($sql, $log);
 
         $CI->response->logs[] = json_encode($log);
@@ -540,6 +562,5 @@ if (! function_exists('stdlog')) {
         }
     }
 }
-
 /* End of file log_helper.php */
 /* Location: ./system/application/helpers/log_helper.php */

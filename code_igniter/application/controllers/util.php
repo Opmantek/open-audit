@@ -477,9 +477,6 @@ class Util extends CI_Controller
                     $queue_item->discovery_id = $details->discovery_id;
                     $queue_item->details = $result;
                     $this->m_queue->create('ip_audit', $queue_item);
-                    $sql = '/* util::queue */ ' . 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?';
-                    $data = array($details->discovery_id);
-                    $this->db->query($sql, $data);
                 }
             }
 
