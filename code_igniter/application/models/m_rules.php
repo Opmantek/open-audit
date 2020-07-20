@@ -165,6 +165,10 @@ class M_rules extends MY_Model
      */
     public function execute($parameters = null)
     {
+        $CI = & get_instance();
+        $CI->load->helper('snmp_model');
+        $CI->load->helper('mac_model');
+
         $log = new stdClass();
         $log->discovery_id = @intval($parameters->discovery_id);
         $log->message = 'Running rules::execute function.';
