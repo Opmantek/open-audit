@@ -286,7 +286,7 @@ if ( ! function_exists('discovery_log')) {
             $temp = @intval(@str_replace('Total IPs count: ', '', $log->message));
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_all_count` = ? WHERE id = ?';
             $data = array($temp, $log->discovery_id);
-            $this->db->query($sql, $data);
+            $CI->db->query($sql, $data);
         }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
@@ -294,13 +294,13 @@ if ( ! function_exists('discovery_log')) {
             $temp = @intval(@str_replace('Responding IPs count: ', '', $log->message));
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_responding_count` = ? WHERE id = ?';
             $data = array($temp, $log->discovery_id);
-            $this->db->query($sql, $data);
+            $CI->db->query($sql, $data);
         }
 
         if (strpos($log->message, 'IP scan finish on device ') !== false) {
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?';
             $data = array($log->discovery_id);
-            $this->db->query($sql, $data);
+            $CI->db->query($sql, $data);
         }
 
         if (strpos($log->message, 'Discovered device at ') !== false) {
