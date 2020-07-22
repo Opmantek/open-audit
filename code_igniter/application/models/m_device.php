@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -1976,18 +1976,18 @@ class M_device extends MY_Model
         }
         if ( ! empty($identification)) {
             if (empty($device->type) OR $device->type === 'unknown') {
-                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = '{$identification}' WHERE `id` = ?";
+                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = ? WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
             } else {
-                $sql = "UPDATE `system` SET `identification` = '{$identification}' WHERE `id` = ?";
+                $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
             }
         } else {
             $identification = 'No information could be retrieved.';
-            $sql = "UPDATE `system` SET `identification` = '{$identification}' WHERE `id` = ?";
+            $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
             $sql = $this->clean_sql($sql);
         }
-        $data = array(intval($id));
+        $data = array($identification, intval($id));
         $query = $this->db->query($sql, $data);
         return true;
     }

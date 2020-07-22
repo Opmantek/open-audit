@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -51,11 +51,11 @@ if ( ! defined('BASEPATH')) {
 }
 
 if ( ! function_exists('all_ip_list')) {
-    /**
-     *
-     * @param  object $discovery The discovery object with all its parameters
-     * @return array|false All the IP addresses in this discovery (excluding the excluded list)
-     */
+	/**
+	 *
+	 * @param  object $discovery The discovery object with all its parameters
+	 * @return array|false All the IP addresses in this discovery (excluding the excluded list)
+	 */
 	function all_ip_list($discovery = null)
 	{
 		if (is_null($discovery)) {
@@ -102,11 +102,11 @@ if ( ! function_exists('all_ip_list')) {
 }
 
 if ( ! function_exists('ip_list')) {
-    /**
-     *
-     * @param  object $discovery The discovery object with all its parameters
-     * @return array|false The array of all responding IP addresses in the discovery
-     */
+	/**
+	 *
+	 * @param  object $discovery The discovery object with all its parameters
+	 * @return array|false The array of all responding IP addresses in the discovery
+	 */
 	function responding_ip_list($discovery = null)
 	{
 		if (is_null($discovery)) {
@@ -175,13 +175,13 @@ if ( ! function_exists('ip_list')) {
 }
 
 if ( ! function_exists('update_non_responding')) {
-    /**
-     *
-     * @param  int   $discovery_id       discoveries.id
-     * @param  array $all_ip_list        All the IP addresses in this discovery (excluding the excluded list)
-     * @param  array $responding_ip_list The array of all responding IP addresses in the discovery
-     * @return void
-     */
+	/**
+	 *
+	 * @param  int   $discovery_id       discoveries.id
+	 * @param  array $all_ip_list        All the IP addresses in this discovery (excluding the excluded list)
+	 * @param  array $responding_ip_list The array of all responding IP addresses in the discovery
+	 * @return void
+	 */
 	function update_non_responding($discovery_id, $all_ip_list, $responding_ip_list)
 	{
 		$CI = get_instance();
@@ -327,19 +327,29 @@ if ( ! function_exists('discover_subnet')) {
 		if ( ! empty($responding_ip_list) && is_array($responding_ip_list)) {
 			$ip_responding_count = count($responding_ip_list);
 		}
-		$sql = '/* discoveries_helper::discover_subnet */ ' . 'UPDATE `discoveries` SET ip_all_count = ?, ip_responding_count = ? WHERE `id` = ?';
-		$data = array($ip_all_count, $ip_responding_count, $discovery_id);
-		$CI->db->query($sql, $data);
+
+		$time_to_execute = microtime(true) - $start;
+
+		// This will increment discoveries.ip_all_count using tyhe log helper (think Collector / Server)
+		$log->message = 'Total IPs count: ' . $ip_all_count;
+		$log->command_time_to_execute = $time_to_execute;
+		discovery_log($log);
+
+		// This will increment discoveries.ip_responding_count using tyhe log helper (think Collector / Server)
+		$log->message = 'Responding IPs count: ' . $ip_responding_count;
+		$log->command_time_to_execute = $time_to_execute;
+		discovery_log($log);
+
 		if (empty($responding_ip_list)) {
 			$log->message = 'No IPs are responding. You may wish to check your discovery configuration.';
-			$log->command_time_to_execute = microtime(true) - $start;
+			$log->command_time_to_execute = $time_to_execute;
 			discovery_log($log);
 			// NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
 			$log->message = 'Discovery has finished.';
 			$log->command = '';
 			$log->command_output = '';
 			$log->command_status = 'finished';
-			$log->command_time_to_execute = microtime(true) - $start;
+			$log->command_time_to_execute = $time_to_execute;
 			$log->ip = '127.0.0.1';
 			discovery_log($log);
 		}
@@ -665,7 +675,15 @@ if ( ! function_exists('ip_audit')) {
 	 */
 	function ip_audit($ip_scan = null)
 	{
+
 		if (empty($ip_scan)) {
+			$mylog = new stdClass();
+			$mylog->severity = 4;
+			$mylog->status = 'fail';
+			$mylog->message = 'No ip_scan passed to ip_audit.';
+			$mylog->file = 'discoveries_helper';
+			$mylog->function = 'ip_audit';
+			stdlog($mylog);
 			return false;
 		}
 		$start = microtime(true);
@@ -673,6 +691,13 @@ if ( ! function_exists('ip_audit')) {
 		$item = $CI->m_discoveries->read($ip_scan->discovery_id);
 		$discovery = @$item[0]->attributes;
 		if (empty($discovery)) {
+			$mylog = new stdClass();
+			$mylog->severity = 4;
+			$mylog->status = 'fail';
+			$mylog->message = 'Invalid discovery_id (' . @$ip_scan->discovery_id . ') passed to ip_audit.';
+			$mylog->file = 'discoveries_helper';
+			$mylog->function = 'ip_audit';
+			stdlog($mylog);
 			return false;
 		}
 		unset($item);
@@ -680,6 +705,13 @@ if ( ! function_exists('ip_audit')) {
 			$ip_scan->details = @json_decode($ip_scan->details);
 		}
 		if (empty($ip_scan->details)) {
+			$mylog = new stdClass();
+			$mylog->severity = 4;
+			$mylog->status = 'fail';
+			$mylog->message = 'No ip_scan->details (or invalid JSON) passed to ip_audit.';
+			$mylog->file = 'discoveries_helper';
+			$mylog->function = 'ip_audit';
+			stdlog($mylog);
 			return false;
 		}
 		if (empty($ip_scan->details->snmp_status)) {
@@ -860,9 +892,19 @@ if ( ! function_exists('ip_audit')) {
 			}
 		}
 
-		if ( ! empty($device->type) && $device->type !== 'computer' && $device->type !== 'unknown' && $device->type !== 'unclassified'
-			&& ! empty($device->os_name) && stripos($device->os_name, 'dd-wrt') === false
-			&& ! empty($device->manufacturer) && stripos($device->manufacturer, 'Ubiquiti') === false) {
+		// Set these here before testing them below
+		if (empty($device->os_name)) {
+			$device->os_name = '';
+		}
+		if (empty($device->manufacturer)) {
+			$device->manufacturer = '';
+		}
+		if ( ! empty($device->type)
+			&& $device->type !== 'computer'
+			&& $device->type !== 'unknown'
+			&& $device->type !== 'unclassified'
+			&& stripos($device->os_name, 'dd-wrt') === false
+			&& stripos($device->manufacturer, 'Ubiquiti') === false) {
 			$log->message = 'Not a computer and not a DD-WRT or Ubiquiti device setting SSH status to false for ' . $device->ip;
 			$log->severity = 5;
 			discovery_log($log);

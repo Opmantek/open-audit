@@ -34,7 +34,7 @@ if ( ! defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -1328,7 +1328,7 @@ if ( ! function_exists('response_get_limit')) {
             $log->summary = 'Set limit according to SCREEN default.';
         }
         if ($format === 'json' && empty($limit)) {
-            $limit = intval($instance->config->config['database_show_row_limit']);
+            $limit = intval($instance->config->config['page_size']);
             $log->summary = 'Set limit according to JSON default.';
         }
         if ( ! empty($limit)) {
@@ -2053,7 +2053,7 @@ if ( ! function_exists('response_valid_includes')) {
      */
     function response_valid_includes()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
     }
 }
 

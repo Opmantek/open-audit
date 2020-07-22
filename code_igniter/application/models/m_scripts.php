@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -63,9 +63,10 @@ class M_scripts extends MY_Model
      */
     public function create($data = null)
     {
+        // $CI->options are from include_scripts_options.php in /controllers
         $CI = & get_instance();
         $options = $CI->options;
-        if (is_string($data->options)) {
+        if ( ! empty($data->options) && is_string($data->options)) {
             $data->options = json_decode($data->options);
         }
         // Validate options
@@ -228,16 +229,16 @@ class M_scripts extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        if ($id === '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
 
-        # do not allow deletion of default Scripts
+        // do not allow deletion of default Scripts
         $script = $this->m_scripts->read();
-        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+        if ($script[0]->attributes->name === $script[0]->attributes->based_on) {
             $CI->response->data = array();
             $temp = new stdClass();
             $temp->type = $this->response->meta->collection;
@@ -246,11 +247,24 @@ class M_scripts extends MY_Model
             log_error('ERR-0014');
             return false;
         } else {
-            $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
+            $sql = 'DELETE FROM `scripts` WHERE id = ? AND name != based_on';
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
         }
+    }
+
+    /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $CI = & get_instance();
+        $org_list = $CI->m_orgs->get_user_all($CI->user->id);
+        $sql = 'SELECT COUNT(id) AS `count` FROM scripts WHERE org_id IN (' . implode(',', $org_list) . ')';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
     }
 
     public function collection($user_id = null, $response = null)
@@ -264,8 +278,7 @@ class M_scripts extends MY_Model
             return $result;
         }
         if (!empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = "SELECT " . $CI->response->meta->internal->properties . ", orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM scripts LEFT JOIN orgs ON (scripts.org_id = orgs.id) " . 
                     $CI->response->meta->internal->filter . " " . 
                     $CI->response->meta->internal->groupby . " " . 
@@ -286,28 +299,32 @@ class M_scripts extends MY_Model
         if ($id === 0) {
             return;
         }
-        $sql = "SELECT * FROM scripts WHERE id = ?";
+        $sql = 'SELECT * FROM scripts WHERE id = ?';
         $result = $this->run_sql($sql, array(intval($id)));
         $data = $result[0];
         if (empty($data)) {
-            # TODO - insert an error
+            // TODO - insert an error
             return;
         }
         $filename = $CI->config->config['base_path'] . '/other/' . $data->based_on;
-        if (! file_exists($filename)) {
-            # TODO - insert an error
+        if ( ! file_exists($filename)) {
+            // TODO - insert an error
             return;
         }
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
 
-        if (empty($options->url) or 
-            $options->url == 'http://open-audit/index.php/system/add_system' or 
-            $options->url == 'http://open-audit/index.php/input/devices' or 
-            $options->url == 'http://localhost/open-audit/index.php/system/add_system' or 
-            $options->url == 'http://localhost/open-audit/index.php/input/devices') {
-            # inject our default network address
-            if (!empty($CI->config->config['default_network_address'])) {
+        if (empty($options->url) OR
+            $options->url ===  'http://open-audit/index.php/system/add_system' OR
+            $options->url === 'https://open-audit/index.php/system/add_system' OR
+            $options->url ===  'http://open-audit/index.php/input/devices' OR
+            $options->url === 'https://open-audit/index.php/input/devices' OR
+            $options->url ===  'http://localhost/open-audit/index.php/system/add_system' OR
+            $options->url === 'https://localhost/open-audit/index.php/system/add_system' OR
+            $options->url ===  'http://localhost/open-audit/index.php/input/devices' OR
+            $options->url === 'https://localhost/open-audit/index.php/input/devices') {
+            // inject our default network address
+            if ( ! empty($CI->config->config['default_network_address'])) {
                 $options->url = $CI->config->config['default_network_address'] . 'index.php/input/devices';
             } else {
                 unset($options->url);
@@ -317,45 +334,45 @@ class M_scripts extends MY_Model
         $find = 'Configuration from web UI here';
         $files = false;
         foreach ($options as $key => $value) {
-            if ($key != 'files') {
-                $replace = $find . "\n" . $key . "=\"" . $value . "\"";
+            if ($key !== 'files') {
+                $replace = $find . "\n" . $key . '="' . $value . '"';
                 $file = str_replace($find, $replace, $file);
             } else {
                 $files = true;
             }
         }
 
-        # TODO - enable the below for a per script list of files
-        #if (!$files and $data->based_on == $data->name) {
-            $sql = "SELECT * FROM files";
+        // TODO - enable the below for a per script list of files
+        // if (!$files and $data->based_on == $data->name) {
+            $sql = 'SELECT * FROM files';
             $result = $this->run_sql($sql, array());
             $options = new stdClass();
             $options->files = array();
-            if (!empty($result)) {
+            if ( ! empty($result)) {
                 foreach ($result as $item) {
                     $options->files[] = ($item->path);
                 }
             }
-            if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
+            if (isset($options->files) && is_array($options->files) && count($options->files) > 0) {
                 foreach (array_reverse($options->files) as $key => $value) {
-                    if ($data->based_on != 'audit_windows.vbs') {
+                    if ($data->based_on !== 'audit_windows.vbs') {
                         $value = str_replace('\\', '\\\\', $value);
-                        $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
+                        $replace = $find . "\nfiles[".intval($key+1).']="' . $value . '"';
                     } else {
                         if (strpos($value, '/') === 0) {
-                            # skip this file as it starts with /, hence is a Unix style path
+                            // skip this file as it starts with /, hence is a Unix style path
                         } else {
-                            $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
+                            $replace = $find . "\nfiles(".intval($key+1).')="' . $value . '"';
                         }
                     }
                     $file = str_replace($find, $replace, $file);
                 }
-                if ($data->based_on == 'audit_windows.vbs') {
-                    $replace = $find . "\ndim files(".count($options->files).")";
+                if ($data->based_on === 'audit_windows.vbs') {
+                    $replace = $find . "\ndim files(".count($options->files).')';
                     $file = str_replace($find, $replace, $file);
                 }
             }
-        #}
+        // }
         return $file;
     }
 

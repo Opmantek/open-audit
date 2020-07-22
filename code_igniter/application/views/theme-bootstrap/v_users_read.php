@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -227,7 +227,7 @@ $item = $this->response->data[0];
             </thead>
             <tbody>
         <?php
-        foreach ($this->orgs as $org) {
+        foreach ($this->response->included as $org) {
             if ($org->type == 'orgs') {
                 if ($org->id == 1) {
                     $org->attributes->parent_name = '';

@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   GIT: Open-AudIT_3.3.2
+# @version   GIT: Open-AudIT_3.4.0
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="3.3.2"
+version="3.4.0"
 
 # Display help
 help="n"
@@ -804,6 +804,9 @@ if [ "$memory_slots" != "0" ]; then
 	for memory_handle in $(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}'); do
 		bank_info=$(dmidecode -t 17 2>/dev/null | sed -n '/^Handle '"$memory_handle"'/,/^$/p')
 		memory_capacity=$(echo "$bank_info" | awk '/Size:/{print $2}' | sed 's/[^0-9]//g')
+		if [ "$(echo "$bank_info" | awk '/Size:/{print $3}')" = "GB" ];then
+				memory_capacity=$((memory_capacity * 1024))
+		fi
 		system_pc_memory=$((system_pc_memory + memory_capacity))
 	done;
 	system_pc_memory=$((system_pc_memory * 1024))
@@ -1098,13 +1101,16 @@ fi
 # Get processor manufacturer
 processor_manufacturer=$(grep vendor_id /proc/cpuinfo | head -n1 | cut -d: -f2)
 
-#'''''''''''''''''''''''''''''''''
-#' Write to the audit file       '
-
-#'''''''''''''''''''''''''''''''''
+if [ "$processor_socket" = "<OUT OF SPEC>" ]; then
+	processor_socket="Unknown"
+fi
 
 total_cores=$(( $system_pc_cores_x_processor * $system_pc_physical_processors ))
 total_logical_processors=$(( $system_pc_threads_x_processor * $system_pc_physical_processors ))
+
+#'''''''''''''''''''''''''''''''''
+#' Write to the audit file       '
+#'''''''''''''''''''''''''''''''''
 {
 echo "	<processor>"
 echo "		<item>"
@@ -1156,6 +1162,10 @@ if [ "$memory_slots" != "0" ]; then
 
 			if [ "$(echo "$bank_info" | awk '/Size:/{print $3}')" = "kB" ];then
 					memory_capacity=$((memory_capacity / 1024))
+			fi
+
+			if [ "$(echo "$bank_info" | awk '/Size:/{print $3}')" = "GB" ];then
+					memory_capacity=$((memory_capacity * 1024))
 			fi
 
 			memory_speed=$(echo "$bank_info" |\

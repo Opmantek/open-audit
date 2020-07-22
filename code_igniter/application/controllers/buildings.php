@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -57,6 +57,7 @@ class Buildings extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_buildings');
+        $this->load->model('m_locations');
         inputRead();
         $this->output->url = $this->config->config['oa_web_index'];
     }

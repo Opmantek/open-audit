@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -217,6 +217,17 @@ class M_roles extends MY_Model
         return true;
     }
 
+    /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $sql = 'SELECT COUNT(id) AS `count` FROM roles';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
@@ -227,8 +238,7 @@ class M_roles extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM roles " . 
                     $CI->response->meta->internal->groupby . " " . 
                     $CI->response->meta->internal->sort . " " . 

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -177,6 +177,19 @@ class M_tasks extends MY_Model
     }
 
     /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $CI = & get_instance();
+        $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+        $sql = 'SELECT COUNT(id) AS `count` FROM tasks WHERE org_id IN (' . implode(',', $org_list) . ')';
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
+    /**
      * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
@@ -216,8 +229,7 @@ class M_tasks extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM tasks LEFT JOIN orgs ON (tasks.org_id = orgs.id) " .
                     $CI->response->meta->internal->filter . ' ' .
                     $CI->response->meta->internal->groupby . ' ' .
@@ -226,6 +238,7 @@ class M_tasks extends MY_Model
             $result = $this->run_sql($sql, array());
             if ( ! empty($result) && is_array($result)) {
                 for ($i=0; $i < count($result); $i++) {
+                    // Decode JSON
                     if ( ! empty($result[$i]->options)) {
                         $result[$i]->options = json_decode($result[$i]->options);
                         foreach ($result[$i]->options as $key => $value) {
@@ -234,6 +247,7 @@ class M_tasks extends MY_Model
                     } else {
                         $result[$i]->options = new stdCLass();
                     }
+                    // SubResources
                     if ($this->db->table_exists($result[$i]->type)) {
                         $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                         $data = array($result[$i]->sub_resource_id);
@@ -247,6 +261,18 @@ class M_tasks extends MY_Model
                         }
                     } else {
                         $result[$i]->sub_resource_name = '';
+                    }
+                    // Collectors
+                    $result[$i]->{'collectors.name'} = 'localhost';
+                    $result[$i]->{'collectors.id'} = 0;
+                    if ($result[$i]->uuid !== $this->config->config['uuid']) {
+                        $sql = 'SELECT id, name FROM collectors WHERE uuid = ? LIMIT 1';
+                        $data = array($result[$i]->uuid);
+                        $data_result = $this->run_sql($sql, $data);
+                        if ( ! empty($data_result[0]->name)) {
+                            $result[$i]->{'collectors.name'} = $data_result[0]->name;
+                            $result[$i]->{'collectors.id'} = $data_result[0]->id;
+                        }
                     }
                 }
             }

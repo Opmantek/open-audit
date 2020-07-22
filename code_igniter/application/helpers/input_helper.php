@@ -34,7 +34,7 @@ if ( ! defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -446,7 +446,7 @@ if ( ! function_exists('inputRead')) {
                 if (($CI->response->meta->format === 'screen' && empty($CI->response->meta->include)) OR $CI->response->meta->include === '*' OR $CI->response->meta->include === 'all') {
                     $CI->response->meta->include = 'application,attachment,audit_log,bios,change_log,cluster,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
                 } else {
-                    $valid = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                    $valid = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                     $temp = explode(',', $CI->response->meta->include);
                     for ($i=0; $i < count($temp); $i++) {
                         if ( ! in_array($temp[$i], $valid)) {
@@ -942,8 +942,8 @@ if ( ! function_exists('inputRead')) {
             stdlog($log);
         }
         if ($CI->response->meta->format === 'json' && empty($CI->response->meta->limit)) {
-            $CI->response->meta->limit = intval($CI->config->config['database_show_row_limit']);
-            $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', because JSON format and no limit requested, so default (database_show_row_limit).';
+            $CI->response->meta->limit = intval($CI->config->config['page_size']);
+            $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', because JSON format and no limit requested, so default (page_size).';
             stdlog($log);
         }
         if ( ! empty($CI->response->meta->limit)) {

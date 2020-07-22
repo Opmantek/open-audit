@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -160,6 +160,19 @@ class M_ldap_servers extends MY_Model
     }
 
     /**
+     * Count the number of rows a user is allowed to see
+     * @return int The count
+     */
+    public function count()
+    {
+        $CI = & get_instance();
+        $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id))));
+        $sql = "SELECT COUNT(id) AS `count` FROM ldap_servers WHERE org_id IN ({$org_list})";
+        $result = $this->run_sql($sql, array());
+        return intval($result[0]->count);
+    }
+
+    /**
      * Read the collection from the database
      *
      * @param  int $user_id  The ID of the requesting user, no $response->meta->filter used and no $response->data populated
@@ -177,8 +190,7 @@ class M_ldap_servers extends MY_Model
             return $result;
         }
         if ( ! empty($response)) {
-            $total = $this->collection($CI->user->id);
-            $CI->response->meta->total = count($total);
+            $CI->response->meta->total = $this->count();
             $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) " . 
                     $CI->response->meta->internal->filter . ' ' . 
                     $CI->response->meta->internal->groupby . ' ' . 

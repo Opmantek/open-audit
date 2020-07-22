@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -477,9 +477,6 @@ class Util extends CI_Controller
                     $queue_item->discovery_id = $details->discovery_id;
                     $queue_item->details = $result;
                     $this->m_queue->create('ip_audit', $queue_item);
-                    $sql = '/* util::queue */ ' . 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?';
-                    $data = array($details->discovery_id);
-                    $this->db->query($sql, $data);
                 }
             }
 

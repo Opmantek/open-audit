@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
  */
 
@@ -199,7 +199,9 @@ class MY_Model extends CI_Model
         // to output a nice formatted page with the $error object
         $this->db->db_debug = false;
         // run the query
+        $timer_start = microtime(true);
         $query = $this->db->query($sql, $data);
+        $duration = microtime(true) - $timer_start;
         // $temp = explode(';', $sql);
         // if (count($temp) > 1) {
         //     foreach ($temp as $split_sql) {
@@ -215,7 +217,7 @@ class MY_Model extends CI_Model
         $sqllog = new stdClass();
         $sqllog->function =  strtolower($model . '::' . $function);
         $sqllog->status = 'success';
-        $sqllog->summary = 'running sql';
+        $sqllog->summary = 'running sql (' . $duration . ')';
         $sqllog->type = 'system';
         $sqllog->detail = $this->db->last_query();
         # log below so we don't break the insert id on the next lines

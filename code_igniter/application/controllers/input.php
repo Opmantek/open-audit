@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.3.2
+* @version   GIT: Open-AudIT_3.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -117,7 +117,7 @@ class Input extends CI_Controller
         $this->response->meta->action = '';
         $this->response->meta->time_start = microtime(true);
 
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+        if ( ! empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
             $this->response->meta->format = 'json';
         } else {
             $this->response->meta->format = 'screen';
