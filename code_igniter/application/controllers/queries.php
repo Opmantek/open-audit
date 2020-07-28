@@ -216,9 +216,9 @@ class Queries extends MY_Controller
     */
     public function execute()
     {
+        $this->response->meta->total = $this->m_queries->execute_count($this->response->meta->id);
         $this->response->data = $this->m_queries->execute($this->response->meta->id);
         $this->response->meta->filtered = count($this->response->data);
-        $this->response->meta->total = count($this->response->data);
         output();
     }
 

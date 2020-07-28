@@ -223,6 +223,57 @@ class M_queries extends MY_Model
     }
 
     /**
+     * Run the SQL definition and return the count of the resultset
+     * @param  integer $id The ID of the group
+     * @return integer The number of rows
+     */
+    public function execute_count($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
+        stdlog($this->log);
+        $CI = & get_instance();
+        $id = intval($id);
+        $sql = 'SELECT * FROM queries WHERE id = ?';
+        $data = array($id);
+        $queries = $this->run_sql($sql, $data);
+        if (empty($queries)) {
+            return 0;
+        }
+        $query = $queries[0];
+        // below accounts for queries that end in a ; and/or a CR or spaces, etc
+        // when we add on LIMIT = 12345, it will break unless we strip those characters
+        $sql = trim($query->sql);
+        if (strpos($sql, ';') === strlen($sql)-1) {
+            $sql = substr($sql, 0, strlen($sql)-1);
+            $sql = trim($sql);
+        }
+        unset($queries);
+        // Determine the type
+        if (stripos($sql, 'SELECT system.id') !== false) {
+            $type = 'devices';
+        } else {
+            $temp = explode(' ', $sql);
+            $temp1 = explode('.', $temp[1]);
+            $type = $temp1[0];
+            $collections = array('agents','applications','attributes','baselines','baselines_policies','buildings','charts','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','help','integrations','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+            if ( ! in_array($type, $collections)) {
+                $type = 'queries';
+            }
+        }
+        $filter = "system.org_id IN ({$CI->user->org_list})";
+        if ( ! empty($CI->response->meta->requestor)) {
+            $filter = "system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y'";
+        }
+        $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, $type);
+        $this->log->summary = 'finish';
+        stdlog($this->log);
+        return count($result);
+    }
+
+    /**
      * Run the SQL definition and return the provided properties OR the system.id list
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
