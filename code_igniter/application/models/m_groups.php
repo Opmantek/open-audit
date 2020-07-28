@@ -125,6 +125,31 @@ class M_groups extends MY_Model
         return true;
     }
 
+    public function execute_count($id = 0)
+    {
+        $CI = & get_instance();
+        $sql = 'SELECT * FROM groups WHERE id = ? LIMIT 1';
+        $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
+        if ( ! empty($result) && is_array($result)) {
+            $group = $result[0];
+            // below accounts for queries that end in a ; and/or a CR or spaces, etc
+            // when we add on LIMIT = 12345, it will break unless we strip those characters
+            $sql = trim($group->sql);
+            if (strpos($sql, ';') === strlen($sql)-1) {
+                $sql = substr($sql, 0, strlen($sql)-1);
+                $sql = trim($sql);
+            }
+            $filter = "system.org_id IN ({$CI->user->org_list})";
+            if ( ! empty($CI->response->meta->requestor)) {
+                $filter = "system.org_id IN ({$CI->user->org_list}) AND system.oae_manage = 'y'";
+            }
+            $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
+            $result = $this->run_sql($sql, array());
+        }
+        return count($result);
+    }
+
     /**
      * Run the SQL definition and return the provided properties OR the system.id list
      * @param  integer $id         The ID of the group
