@@ -3840,6 +3840,7 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES (1,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','[\"admin\",\"org_admin\"]','[1]','en','y','','user',1,'','','system','2000-01-01 00:00:00');
 INSERT INTO `users` VALUES (2,'open-audit_enterprise',1,'','Open-AudIT Enterprise','','[\"admin\",\"org_admin\"]','[1]','en','y','','user',1,'','','system','2000-01-01 00:00:00');
+INSERT INTO `users` VALUES (3,'nmis',1,'','NMIS','','[\"admin\",\"org_admin\"]','[1]','en','y','','user',1,'','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
