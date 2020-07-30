@@ -1812,10 +1812,9 @@ if [[ "$system_os_name" == "CentOS release 5"* ]]; then
 	old="yes"
 fi
 if [ "$system_os_family" == "RedHat" -o "$system_os_family" == "Centos" ]; then
-	if (( $(echo "$system_os_version >= 4" | bc -l) )); then
-		if (( $(echo "$system_os_version < 6" | bc -l) )); then
-			old="yes"
-		fi
+	major=$(echo "$system_os_version" | cut -c1-1)
+	if [ "$major" -ge 4 ] && [ "$major" -lt 6 ]; then
+		old="yes"
 	fi
 fi
 
