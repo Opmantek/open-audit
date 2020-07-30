@@ -706,11 +706,6 @@ if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
 
-# Some old distro's return 0
-#if [ "$system_serial" = "0" ]; then
-#	system_serial=""
-# fi
-
 # Get the System Model
 if [ -z "$system_model" ]; then
 	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#")
@@ -740,7 +735,6 @@ fi
 if [ -z "$system_manufacturer" ]; then
 	system_manufacturer=$(cat /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null)
 fi
-
 
 # A few specific checks below here
 if [ -z "$system_model" ] && [ -e "/proc/user_beancounters" ] && [ "$(cat /proc/1/status 2>/dev/null | grep "^envID:" | cut -d: -f2 | awk '{print $1}')" != "1" ]; then
@@ -817,8 +811,8 @@ fi
 
 # Get the Number of Physical Processors
 #
-#	Each Physical Processor have one or more Processor Cores.
-#	Each Processor Core have one or more Threads
+#	Each Physical Processor has one or more Processor Cores.
+#	Each Processor Core has one or more Threads
 #	Each thread appears as one active processor to the OS
 # EX:
 #   Two Dual Core Processors with Hyper-Threading enabled will show :
@@ -1810,7 +1804,6 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
 
-# FIX ME - no bc on RH (even 7.5)
 old="no"
 if [[ "$system_os_name" == "CentOS release 4"* ]]; then
 	old="yes"
@@ -1825,10 +1818,6 @@ if [ "$system_os_family" == "RedHat" -o "$system_os_family" == "Centos" ]; then
 		fi
 	fi
 fi
-
-# if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "5" ]; then
-# 	old="yes"
-# fi
 
 if [ "$old" = "yes" ]; then
 	if [ "$debugging" -gt "0" ]; then
