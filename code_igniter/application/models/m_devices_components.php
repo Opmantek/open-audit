@@ -933,13 +933,13 @@ class M_devices_components extends MY_Model
         $data = array($details->id);
         $query = $this->db->query($sql, $data);
         $db_result = $query->result();
+
         $alert = false;
         if (count($db_result) !== 0) {
             // we have existing items in the database
             // we should raise an alert where required
             $alert = true;
         }
-
         // get the field list from the table
         $fields = $this->db->list_fields($table);
 
@@ -1009,6 +1009,7 @@ class M_devices_components extends MY_Model
                     $db_item->last_seen = (string)$details->last_seen;
                     // update all values in the table
                     $sql = "UPDATE `{$table}` SET {$sql} WHERE `{$table}`.`id` = '{$db_item->id}'";
+
                     // make sure no data is in $data
                     unset($data);
                     // populate $data with the values from the database, combined with those of the audit
@@ -1126,11 +1127,11 @@ class M_devices_components extends MY_Model
         // Global
         if ( ! empty($this->config->config['delete_noncurrent']) && strtolower($this->config->config['delete_noncurrent']) === 'y') {
             $id_array = array();
-            for ($i=0; $i < count($db_result); $i++) {
-                if ( ! empty($db_result[$i]->id)) {
-                    $id_array[] = intval($db_result[$i]->id);
-                    unset($db_result[$i]);
+            foreach ($db_result as $key => $value) {
+                if ( ! empty($value->id)) {
+                    $id_array[] = intval($value->id);
                 }
+                unset($db_result[$key]);
             }
             $in_ids = implode(',', $id_array);
             if ( ! empty($in_ids)) {
@@ -1140,15 +1141,14 @@ class M_devices_components extends MY_Model
             }
             return;
         }
-
         // Individual table
         if ( ! empty($this->config->config['delete_noncurrent_' . $table]) && strtolower($this->config->config['delete_noncurrent_' . $table]) === 'y') {
             $id_array = array();
-            for ($i=0; $i < count($db_result); $i++) {
-                if ( ! empty($db_result[$i]->id)) {
-                    $id_array[] = intval($db_result[$i]->id);
-                    unset($db_result[$i]);
+            foreach ($db_result as $key => $value) {
+                if ( ! empty($value->id)) {
+                    $id_array[] = intval($value->id);
                 }
+                unset($db_result[$key]);
             }
             $in_ids = implode(',', $id_array);
             if ( ! empty($in_ids)) {
