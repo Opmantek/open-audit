@@ -2838,7 +2838,7 @@ fi
 if [ -e "/etc/my.cnf" ]; then
 	datadir=$(grep datadir /etc/my.cnf 2>/dev/null | cut -d= -f2)
 	if [ -n "$datadir" ]; then
-		for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+		for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
 			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
 			{
 			echo "		<item>"
@@ -2859,7 +2859,7 @@ fi
 if [ -e "/etc/mysql/my.cnf" ]; then
 	datadir=$(grep datadir /etc/mysql/my.cnf 2>/dev/null | awk '{ print $3 }')
 	if [ -n "$datadir" ]; then
-		for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+		for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
 			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
 			{
 			echo "		<item>"
@@ -2879,7 +2879,7 @@ fi
 
 datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2)
 if [ -n "$datadir" ]; then
-	for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+	for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
 		size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
 		{
 		echo "		<item>"
