@@ -482,8 +482,19 @@ class M_devices_components extends MY_Model
                 if (empty($input[$i]->model_family)) {
                     $input[$i]->model_family = '';
                 }
+                if (stripos($input[$i]->manufacturer, 'QEMU') !== false) {
+                    $input[$i]->manufacturer = 'QEMU';
+                    $input[$i]->model = 'Virtual I/O device';
+                    $input[$i]->model_family = '';
+                }
+                if (stripos($input[$i]->manufacturer, 'VMware') !== false) {
+                    $input[$i]->manufacturer = 'VMware';
+                    $input[$i]->model = 'VMware Virtual Disk';
+                    $input[$i]->model_family = '';
+                }
                 if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'vmware') !== false) {
                     $input[$i]->manufacturer = 'VMware';
+                    $input[$i]->model = 'VMware Virtual Disk';
                     $input[$i]->model_family = '';
                 }
                 if (empty($input[$i]->manufacturer) && stripos($input[$i]->model, 'intel') !== false) {
@@ -507,6 +518,7 @@ class M_devices_components extends MY_Model
                 if (stripos($input[$i]->manufacturer, 'Apple') === 0) {
                     $input[$i]->manufacturer = 'Apple Inc.';
                 }
+
                 if (empty($input[$i]->interface_type)) {
                     $input[$i]->interface_type = '';
                 } else {
