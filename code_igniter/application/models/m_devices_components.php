@@ -328,7 +328,7 @@ class M_devices_components extends MY_Model
             }
 
             // Don't bother to log the below as most of the time, they're empty
-            if (@$table !== 'file' && @$table !== 'share' && @$table !== 'server_item') {
+            if (@$parameters->table !== 'file' && @$parameters->table !== 'share' && @$parameters->table !== 'server_item') {
                 $mylog = new stdClass();
                 $mylog->severity = 6;
                 $mylog->status = 'notice';
