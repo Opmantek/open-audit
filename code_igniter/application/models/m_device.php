@@ -1192,7 +1192,6 @@ class M_device extends MY_Model
                 }
                 $message->command_status = 'notice';
                 $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
-                $message->command_output = json_encode($details->mac_addresses);
                 $log_message[] = $message;
             }
         } else {
