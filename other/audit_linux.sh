@@ -2320,27 +2320,7 @@ if [ "$system_os_family" != "Arch" ]; then
 		fi
 	done
 fi
-
-# Puppet facts
-if [ -n "$(which facter 2>/dev/null)" ]; then
-    exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
-    for variable in $(facter -p); do
-        name=$( echo "$variable" | cut -d" " -f1 )
-        if [ -z "$(echo "$exclusions" | grep " $name ")" ]; then
-            value=$(echo "$variable" | cut -d" " -f3-)
-            echo "      <item>" >> "$xml_file"
-            echo "          <program>facter</program>" >> "$xml_file"
-            echo "          <name>$(escape_xml "$name")</name>" >> "$xml_file"
-            echo "          <value>$(escape_xml "$value")</value>" >> "$xml_file"
-            echo "      </item>" >> "$xml_file"
-        fi
-    done
-fi
-
-
 echo "	</variable>" >> "$xml_file"
-
-
 
 
 ##################################
