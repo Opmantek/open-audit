@@ -175,7 +175,7 @@ if(!empty($json)){
             }
         }
     }
-    array_unique($json->system->mac_addresses);
+    $json->system->mac_addresses = array_unique($json->system->mac_addresses);
 
     if (empty($details->id) and empty($details->ip) and empty($details->hostname)) {
         $log->summary = "Invalid audit result submitted";

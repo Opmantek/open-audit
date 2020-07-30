@@ -978,6 +978,11 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on Mac Address (ip table).';
+            if (strtolower($match->match_mac_vmware) === 'n') {
+                if (strpos($details->mac_address, '00:0c:29:') === 0 or strpos($details->mac_address, '00:50:56:') === 0 or strpos($details->mac_address, '00:05:69:') === 0 or strpos($details->mac_address, '00:1c:14:') === 0) {
+                    $message->message = 'MISS on Mac Address, VMware specified not match (ip table).';
+                }
+            }
             $message->command_status = 'notice';
             $message->command_output = 'MAC: ' . $details->mac_address;
             $log_message[] = $message;
@@ -1039,6 +1044,11 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on Mac Address (network table).';
+            if (strtolower($match->match_mac_vmware) === 'n') {
+                if (strpos($details->mac_address, '00:0c:29:') === 0 or strpos($details->mac_address, '00:50:56:') === 0 or strpos($details->mac_address, '00:05:69:') === 0 or strpos($details->mac_address, '00:1c:14:') === 0) {
+                    $message->message = 'MISS on Mac Address, VMware specified not match (network table).';
+                }
+            }
             $message->command_status = 'notice';
             $message->command_output = 'MAC: ' . $details->mac_address;
             $log_message[] = $message;
@@ -1069,6 +1079,76 @@ class M_device extends MY_Model
                 $log_message[] = $message;
             }
         }
+
+
+        if (strtolower($match->match_mac) === 'y' && empty($details->id) && ! empty($details->mac_addresses)) {
+            foreach ($details->mac_addresses as $mac) {
+                if (strtolower($match->match_mac_vmware) === 'n') {
+                    $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+                    $sql = $this->clean_sql($sql);
+                } else {
+                    $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND system.status != 'deleted' LIMIT 1";
+                    $sql = $this->clean_sql($sql);
+                }
+                $data = array("{$mac}");
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                if ( ! empty($row->id)) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on Mac Address (network table all).';
+                    $message->command_status = 'success';
+                    $message->command_output = 'MAC: ' . $mac . ', SystemID : ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        discovery_log($log);
+                    }
+                    $message->command_output = '';
+                    return $details->id;
+                }
+                $message = new stdClass();
+                $message->message = 'MISS on Mac Address (network table) all.';
+                if (strtolower($match->match_mac_vmware) === 'n') {
+                    if (strpos($mac, '00:0c:29:') === 0 OR strpos($mac, '00:50:56:') === 0 OR strpos($mac, '00:05:69:') === 0 OR strpos($mac, '00:1c:14:') === 0) {
+                        $message->message = 'MISS on Mac Address, VMware specified not match (network table) all.';
+                    }
+                }
+                $message->command_status = 'notice';
+                $message->command_output = 'MAC: ' . $mac;
+                $log_message[] = $message;
+            }
+        } else {
+            if (strtolower($match->match_mac) !== 'y') {
+                $message = new stdClass();
+                $message->message = 'Not running match_mac (network table) all, matching rule set to: ' . $match->match_mac .  '.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if ( ! empty($details->id)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_mac (network table) all, device id already set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else if (empty($details->mac_address)) {
+                $message = new stdClass();
+                $message->message = 'Not running match_mac (network table) all, mac_address not set.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            } else  {
+                $message = new stdClass();
+                $message->message = 'Not running match_mac (network table) all.';
+                $message->command_status = 'notice';
+                $message->command_output = '';
+                $log_message[] = $message;
+            }
+        }
+
 
         if (strtolower($match->match_mac) === 'y' && empty($details->id) && ! empty($details->mac_addresses)) {
             // check all MAC addresses - this caters for an actual audit script result
@@ -1103,34 +1183,40 @@ class M_device extends MY_Model
                         return $details->id;
                     }
                 }
+                $message = new stdClass();
+                $message->message = 'MISS on Mac Address (addresses).';
+                if (strtolower($match->match_mac_vmware) === 'n') {
+                    if (strpos($mac, '00:0c:29:') === 0 OR strpos($mac, '00:50:56:') === 0 OR strpos($mac, '00:05:69:') === 0 OR strpos($mac, '00:1c:14:') === 0) {
+                        $message->message = 'MISS on Mac Address, VMware specified not match (ip) all.';
+                    }
+                }
+                $message->command_status = 'notice';
+                $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
+                $message->command_output = json_encode($details->mac_addresses);
+                $log_message[] = $message;
             }
-            $message = new stdClass();
-            $message->message = 'MISS on Mac Address (addresses).';
-            $message->command_status = 'notice';
-            $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
-            $log_message[] = $message;
         } else {
             if (strtolower($match->match_mac) !== 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (addresses), matching rule set to: ' . $match->match_mac .  '.';
+                $message->message = 'Not running match_mac (ip) all, matching rule set to: ' . $match->match_mac .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
             } else if ( ! empty($details->id)) {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (addresses), device id already set.';
+                $message->message = 'Not running match_mac (ip) all, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
             } else if (empty($details->mac_addresses)) {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (addresses), mac_addresses not set.';
+                $message->message = 'Not running match_mac (ip) all, mac_addresses not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
             } else  {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (addresses).';
+                $message->message = 'Not running match_mac (ip) all.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
