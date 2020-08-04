@@ -2780,6 +2780,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.2636.1.1.1.2.117': $device->model = 'Juniper ACX2200'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.2636.1.1.1.2.13': $device->model = 'Juniper J2300'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.2636.1.1.1.2.133': $device->model = 'Juniper SRX300'; $device->type = 'firewall'; break;
+			case '1.3.6.1.4.1.2636.1.1.1.2.134': $device->model = 'Juniper SRX320'; $device->type = 'firewall'; break;
 			case '1.3.6.1.4.1.2636.1.1.1.2.135': $device->model = 'Juniper SRX340'; $device->type = 'firewall'; break;
 			case '1.3.6.1.4.1.2636.1.1.1.2.136': $device->model = 'Juniper SRX345'; $device->type = 'firewall'; break;
 			case '1.3.6.1.4.1.2636.1.1.1.2.137': $device->model = 'Juniper SRX 1500'; $device->type = 'firewall'; break;
@@ -4934,6 +4935,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.9.1.3': $device->model = 'Cisco 2500'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.30': $device->model = 'Cisco 2514'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.300': $device->model = 'Cisco Catalyst 4232 L3'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.9.1.3009': $device->model = 'Cisco NCS 540 16G'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.301': $device->model = 'Cisco Catalyst 6k Msfc2'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.9.1.302': $device->model = 'Cisco 7750 Mrp200'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.303': $device->model = 'Cisco 7750 Ssp80'; $device->type = 'router'; break;
