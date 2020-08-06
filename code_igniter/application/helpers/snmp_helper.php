@@ -517,73 +517,6 @@ if ( ! function_exists('snmp_audit')) {
             $details->uptime = intval($details->sysUpTime / 100);
         }
 
-        $item_start = microtime(true);
-        $details->sysObjectID = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.1.2.0');
-        $log->command_time_to_execute = (microtime(true) - $item_start);
-        $log->message = 'sysObjectID retrieval for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.2.1.1.2.0';
-        $log->command_output = (string)$details->sysObjectID;
-        discovery_log($log);
-        unset($log->command_time_to_execute);
-
-        $details->snmp_oid = (string)$details->sysObjectID;
-        $details->snmp_enterprise_id = '';
-        if ( ! empty($details->snmp_oid)) {
-            if (substr($details->snmp_oid, 0, 1) === '.') {
-                $temp = substr($details->snmp_oid, 1, strlen($details->snmp_oid));
-            } else {
-                $temp = $details->snmp_oid;
-            }
-            $temp_array = explode('.', $temp);
-            if ( ! empty($temp_array[6])) {
-                $details->snmp_enterprise_id = @intval($temp_array[6]);
-            }
-        }
-
-        $log->message = 'snmp_enterprise_id set for '.$ip;
-        $log->command = 'snmp_enterprise_id';
-        $log->command_time_to_execute = 0;
-        $log->command_output = $details->snmp_enterprise_id;
-        discovery_log($log);
-        unset($log->command_time_to_execute, $log->command_output);
-
-        // sometimes we get an OID, but not enough to specify a manufacturer
-        if (empty($details->snmp_enterprise_id)) {
-            $details->snmp_enterprise_id = 0;
-        }
-
-        if ( ! empty($details->sysDescr) && stripos($details->sysDescr, 'ZyXEL') !== false) {
-            $details->snmp_enterprise_id = 890;
-        }
-
-        if ( ! empty($details->sysDescr) && (stripos($details->sysDescr, 'synology') !== false OR stripos($details->sysDescr, 'diskstation') !== false)) {
-            $details->snmp_enterprise_id = 6574;
-        }
-
-        if (file_exists(BASEPATH.'../application/helpers/snmp_'.$details->snmp_enterprise_id.'_helper.php')) {
-            $log->message = 'Loading the snmp helper for '.$details->snmp_enterprise_id.' when scanning '.$ip;
-            discovery_log($log);
-            unset($get_oid_details);
-            include 'snmp_' . $details->snmp_enterprise_id . '_helper.php';
-            $log->message = 'Specific details based on sysObjectID retrieval for '.$ip;
-            $log->command_status = 'notice';
-            $item_start = microtime(true);
-            $new_details = $get_oid_details($ip, $credentials, $details->snmp_oid);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            foreach ($new_details as $key => $value) {
-                $details->$key = $value;
-                $log->command = $key;
-                $log->command_output = $value;
-                discovery_log($log);
-            }
-            unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
-            unset($new_details);
-        } else {
-            $log->message = 'No snmp helper for '.$details->snmp_enterprise_id.' when scanning '.$ip;
-            discovery_log($log);
-            $log->severity = 7;
-        }
-
         // mac address
         if (empty($details->mac_address)) {
             $item_start = microtime(true);
@@ -640,6 +573,74 @@ if ( ! function_exists('snmp_audit')) {
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
+        }
+
+        $item_start = microtime(true);
+        $details->sysObjectID = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.1.2.0');
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'sysObjectID retrieval for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.2.1.1.2.0';
+        $log->command_output = (string)$details->sysObjectID;
+        discovery_log($log);
+        unset($log->command_time_to_execute);
+
+        $details->snmp_oid = (string)$details->sysObjectID;
+        $details->snmp_enterprise_id = '';
+        if ( ! empty($details->snmp_oid)) {
+            if (substr($details->snmp_oid, 0, 1) === '.') {
+                $temp = substr($details->snmp_oid, 1, strlen($details->snmp_oid));
+            } else {
+                $temp = $details->snmp_oid;
+            }
+            $temp_array = explode('.', $temp);
+            if ( ! empty($temp_array[6])) {
+                $details->snmp_enterprise_id = @intval($temp_array[6]);
+            }
+        }
+
+        // sometimes we get an OID, but not enough to specify a manufacturer
+        if (empty($details->snmp_enterprise_id)) {
+            $details->snmp_enterprise_id = 0;
+        }
+
+        if ( ! empty($details->sysDescr) && stripos($details->sysDescr, 'ZyXEL') !== false) {
+            $details->snmp_enterprise_id = 890;
+        }
+
+        if ( ! empty($details->sysDescr) &&  (stripos($details->sysDescr, 'synology') !== false OR stripos($details->sysDescr, 'diskstation') !== false) OR 
+            ( ! empty($details->mac_address) && stripos($details->mac_address, '00:11:32') === 0)) {
+            $details->snmp_enterprise_id = 6574;
+        }
+
+        $log->message = 'snmp_enterprise_id set for ' . $ip;
+        $log->command = 'snmp_enterprise_id';
+        $log->command_time_to_execute = 0;
+        $log->command_output = $details->snmp_enterprise_id;
+        discovery_log($log);
+        unset($log->command_time_to_execute, $log->command_output);
+
+        if (file_exists(BASEPATH.'../application/helpers/snmp_'.$details->snmp_enterprise_id.'_helper.php')) {
+            $log->message = 'Loading the snmp helper for '.$details->snmp_enterprise_id.' when scanning '.$ip;
+            discovery_log($log);
+            unset($get_oid_details);
+            include 'snmp_' . $details->snmp_enterprise_id . '_helper.php';
+            $log->message = 'Specific details based on sysObjectID retrieval for '.$ip;
+            $log->command_status = 'notice';
+            $item_start = microtime(true);
+            $new_details = $get_oid_details($ip, $credentials, $details->snmp_oid);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            foreach ($new_details as $key => $value) {
+                $details->$key = $value;
+                $log->command = $key;
+                $log->command_output = $value;
+                discovery_log($log);
+            }
+            unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
+            unset($new_details);
+        } else {
+            $log->message = 'No snmp helper for '.$details->snmp_enterprise_id.' when scanning '.$ip;
+            discovery_log($log);
+            $log->severity = 7;
         }
 
         $parameters = new stdClass();
