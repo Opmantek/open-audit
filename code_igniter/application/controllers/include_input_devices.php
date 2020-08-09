@@ -130,7 +130,7 @@ $ids = array();
 
 
 # NOTE - $input may also be set by $POSTing to /devices the attribute upload_input.
-if (!empty($_POST['data']) and empty($input)) {
+if ( ! empty($_POST['data']) and empty($input)) {
     $input = html_entity_decode($_POST['data']);
 }
 if (empty($input)) {
@@ -143,14 +143,14 @@ $parameters->input = $input;
 $parameters->log = $log;
 $json = audit_convert($parameters);
 
-if(!empty($json)){
+if ( ! empty($json)){
     if (empty($json->system->discovery_id)) {
         $json->system->discovery_id = '';
     } else {
         $log->discovery_id = $json->system->discovery_id;
         $GLOBALS['discovery_id'] = $json->system->discovery_id;
     }
-    if (!empty($json->system->id)) {
+    if ( ! empty($json->system->id)) {
         $log->system_id = $json->system->id;
     }
 
@@ -161,25 +161,25 @@ if(!empty($json)){
     $details = $json->system;
 
     $json->system->mac_addresses = array();
-    if (!empty($json->network) and count($json->network) > 0) {
+    if ( ! empty($json->network) && count($json->network) > 0) {
         foreach ($json->network as $card) {
-            if (!empty($card->mac)) {
+            if ( ! empty($card->mac)) {
                 $json->system->mac_addresses[] = $card->mac;
             }
         }
     }
-    if (!empty($json->ip) and count($json->ip) > 0) {
+    if ( ! empty($json->ip) && count($json->ip) > 0) {
         foreach ($json->ip as $ip) {
-            if (!empty($ip->mac)) {
+            if ( ! empty($ip->mac)) {
                 $json->system->mac_addresses[] = $ip->mac;
             }
         }
     }
     $json->system->mac_addresses = array_unique($json->system->mac_addresses);
 
-    if (empty($details->id) and empty($details->ip) and empty($details->hostname)) {
-        $log->summary = "Invalid audit result submitted";
-        $log->detail = "Audit result submitted, but no device id, ip or hostname received from " . $_SERVER['REMOTE_ADDR'] . " - NOT inserting or updating.";
+    if (empty($details->id) && empty($details->ip) && empty($details->hostname)) {
+        $log->summary = 'Invalid audit result submitted';
+        $log->detail = 'Audit result submitted, but no device id, ip or hostname received from ' . $_SERVER['REMOTE_ADDR'] . ' - NOT inserting or updating.';
         $log->type = 'system';
         $log->collection = 'input';
         $log->action = 'create';
@@ -190,8 +190,8 @@ if(!empty($json)){
         exit;
     }
 
-    if (!isset($details->type)) {
-        # As this routine is processing an audit script result, set the type if not already set
+    if ( ! isset($details->type)) {
+        // As this routine is processing an audit script result, set the type if not already set
         $details->type = 'computer';
     }
     if (empty($details->last_seen_by)) {
@@ -203,16 +203,16 @@ if(!empty($json)){
     $parameters->log = $log;
     $i = $this->m_device->match($parameters);
 
-    if (empty($i) and !empty($details->id)) {
+    if (empty($i) && ! empty($details->id)) {
         $i = intval($details->id);
     }
 
-    if (!empty($i) and !empty($details->id) and $i != $details->id) {
+    if ( ! empty($i) && ! empty($details->id) && intval($i) !== intval($details->id)) {
         // We delete this original system as likely with limited data (from
         // nmap and/or snmp) we couldn't match an existing system
         // Now we have an actual audit result with plenty of data
         // we have found a match and it's not the original
-        $sql = "/* include_input_devices */ DELETE FROM system WHERE id = ?";
+        $sql = '/* include_input_devices */ DELETE FROM system WHERE id = ?';
         $query = $this->db->query($sql, array($details->id));
         $log->system_id = $i;
         $log->message = 'System Id provided differs from System Id found for ' . $details->hostname;
@@ -233,14 +233,14 @@ if(!empty($json)){
         $log->ip = @ip_address_from_db($details->ip);
         $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
         discovery_log($log);
-        # In the case where we inserted a new device, m_device::match will add a log entry, but have no
-        # associated system_id. Update this one row.
+        // In the case where we inserted a new device, m_device::match will add a log entry, but have no
+        // associated system_id. Update this one row.
         $sql = "/* include_input_devices */" . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
         $data = array($log->system_id, $log->pid);
         $query = $this->db->query($sql, $data);
         $details->original_last_seen = "";
         if ($this->response->meta->format == 'screen') {
-            #echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            // echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         }
     } else {
         // update an existing system
@@ -252,24 +252,24 @@ if(!empty($json)){
         // $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
         $this->m_device->update($details);
         if ($this->response->meta->format == 'screen') {
-            #echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            // echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         }
     }
 
-    if (!empty($ids)) {
-        $sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
+    if ( ! empty($ids)) {
+        $sql = 'UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (' . implode(',', $ids) . ')';
         $query = $this->db->query($sql, array($details->id, (string)$log->ip));
     }
 
-    # We now have a system.id - either supplied, found or created.
-    if (!empty($details->discovery_id)) {
-        # we have a discovery_id, insert our $log_message's and delete anything where log.pid != our pid
+    // We now have a system.id - either supplied, found or created.
+    if ( ! empty($details->discovery_id)) {
+        // we have a discovery_id, insert our $log_message's and delete anything where log.pid != our pid
         $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
         $data = array(intval($details->id), intval(getmypid()));
         $query = $this->db->query($sql, $data);
     } else {
-        # we were supplied an audit result, but no discovery_id
-        # delete all dicovery logs where system_id = our ID and log.pid != our pid
+        // we were supplied an audit result, but no discovery_id
+        // delete all dicovery logs where system_id = our ID and log.pid != our pid
         $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `pid` != ?";
         $data = array(intval($details->id), intval(getmypid()));
         $query = $this->db->query($sql, $data);
@@ -278,13 +278,13 @@ if(!empty($json)){
     $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
 
     $script_version = '';
-    if (!empty($details->script_version)) {
+    if ( ! empty($details->script_version)) {
         $script_version = $details->script_version;
     }
     $this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen, $script_version);
 
     foreach ($json as $key => $value) {
-        if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
+        if ($key !== 'system' && $key !== 'audit_wmi_fail' && $key !== 'dns') {
             $parameters = new stdClass();
             $parameters->table = $key;
             $parameters->details = $details;
