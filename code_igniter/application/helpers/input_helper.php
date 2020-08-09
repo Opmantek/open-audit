@@ -620,9 +620,10 @@ if ( ! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, action = reset.';
             stdlog($log);
         }
-        if ($request_method === 'GET' && is_null($CI->response->meta->id) && $action === 'export') {
+        #if ($request_method === 'GET' && is_null($CI->response->meta->id) && $action === 'export') {
+        if ($request_method === 'GET' && $action === 'export') {
             $CI->response->meta->action = 'export';
-            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, action = reset.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, action = export.';
             stdlog($log);
         }
         if ($request_method === 'GET' && is_null($CI->response->meta->id) && $action === 'create') {
