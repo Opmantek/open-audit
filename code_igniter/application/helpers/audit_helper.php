@@ -145,7 +145,7 @@ if (!function_exists('audit_convert')) {
                     }
                 }
                 foreach ($audit as $section => $something) {
-                    if ($section != 'system') {
+                    if ($section !== 'system' && $section !== 'sys') {
                         for ($i=0; $i < count($audit->{$section}); $i++) {
                             if (!empty($audit->{$section}[$i])) {
                                 foreach ($audit->{$section}[$i] as $key => $value) {
@@ -222,7 +222,7 @@ if (!function_exists('audit_convert')) {
                                     }
                                     $newitem->options = @json_encode($new);
 
-                                } else if ($key == 'keys' and $section = 'user') {
+                                } else if ($key === 'keys' && $section === 'user') {
                                     $new = array();
                                     foreach ($value->key as $k => $v) {
                                         $new[] = (string)$v;
