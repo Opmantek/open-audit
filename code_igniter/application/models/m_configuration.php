@@ -159,7 +159,7 @@ class M_configuration extends MY_Model
 
         if ($config_item->type === 'bool' && $value !== 'y' && $value !== 'n' && $value !== '') {
             // invalid
-            log_error('ERR-0044', 'm_configuration::update', 'Value supplied must be either y or n.');
+            log_error('ERR-0044', 'm_configuration::update', 'Value supplied must be either y or n. Supplied \'' . $value . '\'. ');
             return false;
         }
 
