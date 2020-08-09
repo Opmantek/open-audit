@@ -507,15 +507,7 @@ if ( ! function_exists('stdlog')) {
             $log['summary'] = $log_details->summary;
         }
 
-        if ( ! empty($log_details->detail)) {
-            $log['detail'] = $log_details->detail;
-        }
-
         if (intval($CI->config->config['internal_version']) <= 20160820) {
-            // $sql = "/* log_helper */" . "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = '" . $CI->db->database . "' AND TABLE_NAME = 'logs'";
-            // $query = $CI->db->query($sql);
-            // $result = $query->result();
-            // if (count($result) === 0) {
             if ( ! $CI->db->table_exists('logs')) {
                 $sql = "CREATE TABLE `logs` (
                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
