@@ -85,7 +85,7 @@ if (!function_exists('accept_input')) {
 if (!function_exists('audit_convert')) {
     function audit_convert($parameters)
     {
-        if (empty($parameters) or empty($parameters->input)) {
+        if (empty($parameters) OR empty($parameters->input)) {
             $mylog = new stdClass();
             $mylog->severity = 4;
             $mylog->status = 'fail';
@@ -99,10 +99,10 @@ if (!function_exists('audit_convert')) {
         $input = $parameters->input;
         if (empty($parameters->log)) {
             $log = new stdClass();
-            if (!empty($parameters->discovery_log)) {
+            if ( ! empty($parameters->discovery_log)) {
                 $log->discovery_log = $parameters->discovery_log;
             }
-            if (!empty($parameters->ip)) {
+            if ( ! empty($parameters->ip)) {
                 $log->ip = $parameters->ip;
             }
         } else {
@@ -113,7 +113,7 @@ if (!function_exists('audit_convert')) {
         $log->command = '';
 
         if (is_string($input)) {
-            # See if we have stringified JSON
+            // See if we have stringified JSON
             $json = html_entity_decode($input);
             if (mb_detect_encoding($json) !== 'UTF-8') {
                 $json = utf8_encode($json);
@@ -121,11 +121,11 @@ if (!function_exists('audit_convert')) {
             $json = @json_decode($json);
             if ($json) {
                 $audit = new stdClass();
-                if (!empty($json->sys)) {
+                if ( ! empty($json->sys)) {
                     $audit->system = $json->sys;
                     unset($json->sys);
                 }
-                if (!empty($json->system)) {
+                if ( ! empty($json->system)) {
                     $audit->system = $json->system;
                     unset($json->system);
                 }
@@ -136,7 +136,7 @@ if (!function_exists('audit_convert')) {
                 }
                 foreach ($json as $section => $something) {
                     $audit->{$section} = array();
-                    if (!empty($json->{$section}->item) and is_array($json->{$section}->item)) {
+                    if ( ! empty($json->{$section}->item) and is_array($json->{$section}->item)) {
                         $audit->{$section}[] = $json->{$section}->item[0];
                     } else {
                         if (is_array($json->{$section})) {
@@ -147,7 +147,7 @@ if (!function_exists('audit_convert')) {
                 foreach ($audit as $section => $something) {
                     if ($section !== 'system' && $section !== 'sys') {
                         for ($i=0; $i < count($audit->{$section}); $i++) {
-                            if (!empty($audit->{$section}[$i])) {
+                            if ( ! empty($audit->{$section}[$i])) {
                                 foreach ($audit->{$section}[$i] as $key => $value) {
                                     if (empty($value)) {
                                         unset ($audit->{$section}[$i]->{$key});
@@ -164,7 +164,7 @@ if (!function_exists('audit_convert')) {
         }
 
         if (is_string($input)) {
-            # See if we have stringified XML
+            // See if we have stringified XML
             $xml = html_entity_decode($input);
             if (mb_detect_encoding($xml) !== 'UTF-8') {
                 $xml = utf8_encode($xml);
@@ -182,19 +182,19 @@ if (!function_exists('audit_convert')) {
                 }
                 return false;
             }
-            if (!empty($xml)) {
+            if ( ! empty($xml)) {
                 $newxml = json_encode($xml);
                 $newxml = json_decode($newxml);
                 $audit = new stdClass();
                 $audit->system = new stdClass();
-                if (!empty($newxml->sys)) {
+                if ( ! empty($newxml->sys)) {
                     foreach ($newxml->sys as $key => $value) {
                         if (@(string)$value !== '') {
                             $audit->system->{$key} = @(string)$newxml->sys->{$key};
                         }
                     }
                 }
-                if (!empty($newxml->system)) {
+                if ( ! empty($newxml->system)) {
                     foreach ($newxml->system as $key => $value) {
                         if (@(string)$value !== '') {
                             $audit->system->{$key} = @(string)$newxml->system->{$key};
@@ -204,14 +204,14 @@ if (!function_exists('audit_convert')) {
 
                 unset($newxml);
                 foreach ($xml as $section => $something) {
-                    if ($section != 'sys') {
+                    if ($section !== 'sys') {
                         $audit->{$section} = array();
                         foreach ($xml->{$section}->item as $item) {
                             $newitem = new stdClass();
                             foreach ($item as $key => $value) {
-                                if ($key === 'options' and $section == 'policy') {
+                                if ($key === 'options' && $section === 'policy') {
                                     $json = @json_decode($value);
-                                    if (!empty($json)) {
+                                    if ( ! empty($json)) {
                                         $values = $json;
                                     } else {
                                         $values = $value;
@@ -229,7 +229,7 @@ if (!function_exists('audit_convert')) {
                                     }
                                     $newitem->keys = @json_encode($new);
                                 } else {
-                                    if ((string)$value != '') {
+                                    if ((string)$value !== '') {
                                         $newitem->{$key} = (string)$value;
                                     }
                                 }
@@ -244,9 +244,9 @@ if (!function_exists('audit_convert')) {
         }
 
         if (is_string($input)) {
-            # We have a string that could not be converted
+            // We have a string that could not be converted
             $log->severity = 5;
-            if (!empty($parameters->discovery_id)) {
+            if ( ! empty($parameters->discovery_id)) {
                 $log->message = 'Could not convert string to JSON or XML';
                 $log->command_status = 'fail';
                 discovery_log($log);
@@ -257,20 +257,20 @@ if (!function_exists('audit_convert')) {
             }
             return false;
         } else {
-            if (!empty($audit->system->discovery_id)) {
+            if ( ! empty($audit->system->discovery_id)) {
                 $log->discovery_id = intval($audit->system->discovery_id);
             }
-            if (!empty($audit->system->id)) {
+            if ( ! empty($audit->system->id)) {
                 $log->system_id = intval($audit->system->id);
             }
-            if (!empty($audit->system->ip)) {
+            if ( ! empty($audit->system->ip)) {
                 $log->ip = $audit->system->ip;
             }
         }
 
         $log->severity = 7;
-        $log->message = 'string converted from XML';
-        if (!empty($log->discovery_id)) {
+        $log->message = 'audit converted';
+        if ( ! empty($log->discovery_id)) {
             $log->command_status = 'success';
             discovery_log($log);
         } else {
