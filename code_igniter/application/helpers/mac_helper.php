@@ -15009,7 +15009,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '28:26:a6': $manufacturer = 'Pbr Electronics Gmbh'; break;
             case '28:27:bf': $manufacturer = 'Samsung Electronics'; break;
             case '28:28:5d': $manufacturer = 'Zyxel Communications Corporation'; break;
-            case '28:29:86': $manufacturer = 'Apc By Schneider Electric'; break;
+            case '28:29:86': $manufacturer = 'APC By Schneider Electric'; break;
             case '28:29:cc': $manufacturer = 'Corsa Technology Incorporated'; break;
             case '28:29:d9': $manufacturer = 'Globalbeiming Technology (beijing)co. Ltd'; break;
             case '28:2c:02': $manufacturer = 'Ieee Registration Authority'; break;
