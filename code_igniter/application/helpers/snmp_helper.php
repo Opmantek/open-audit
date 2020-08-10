@@ -607,8 +607,13 @@ if ( ! function_exists('snmp_audit')) {
             $details->snmp_enterprise_id = 890;
         }
 
-        if ( ! empty($details->sysDescr) &&  (stripos($details->sysDescr, 'synology') !== false OR stripos($details->sysDescr, 'diskstation') !== false) OR 
-            ( ! empty($details->mac_address) && stripos($details->mac_address, '00:11:32') === 0)) {
+        if ( ! empty($details->sysDescr) && (stripos($details->sysDescr, 'synology') !== false OR stripos($details->sysDescr, 'diskstation') !== false)) {
+            // Synology
+            $details->snmp_enterprise_id = 6574;
+        }
+
+        if ( ! empty($details->mac_address) && stripos($details->mac_address, '00:11:32') === 0) {
+            // Synology
             $details->snmp_enterprise_id = 6574;
         }
 
