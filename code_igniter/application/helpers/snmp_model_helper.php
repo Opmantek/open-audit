@@ -3061,8 +3061,8 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.318.1.3.21.4': $device->model = 'Gutor WDW'; $device->type = 'ups'; break;
 			case '1.3.6.1.4.1.318.1.3.21.5': $device->model = 'Gutor SDC'; $device->type = 'ups'; break;
 			case '1.3.6.1.4.1.318.1.3.22': $device->model = 'accControl'; $device->type = 'ups'; break;
-			case '1.3.6.1.4.1.318.1.3.22.1': $device->model = 'accPX'; $device->type = 'ups'; break;
-			case '1.3.6.1.4.1.318.1.3.27': $device->model = 'ap9631'; $device->type = 'ups'; break;
+			case '1.3.6.1.4.1.318.1.3.22.1': $device->model = 'NetBotz Rack Access'; $device->type = 'ups'; break;
+			case '1.3.6.1.4.1.318.1.3.27': $device->model = 'Smart-UPS 1500'; $device->type = 'ups'; break;
 			case '1.3.6.1.4.1.318.1.3.28.1': $device->model = 'galaxy 7000UPS200kVA'; $device->type = 'ups'; break;
 			case '1.3.6.1.4.1.318.1.3.28.10': $device->model = 'galaxy 300UPS15kVA33'; $device->type = 'ups'; break;
 			case '1.3.6.1.4.1.318.1.3.28.11': $device->model = 'galaxy 300UPS20kVA33'; $device->type = 'ups'; break;
