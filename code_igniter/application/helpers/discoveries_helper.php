@@ -742,11 +742,15 @@ if ( ! function_exists('ip_audit')) {
 		}
 
 		$device = new stdClass();
-		$device->audits_ip = 	$ip_scan->ip;
+		$device->audits_ip = $ip_scan->ip;
 		$device->credentials = 	array();
 		$device->discovery_id = $discovery->id;
-		$device->id = 			'';
-		$device->ip = 			$ip_scan->ip;
+		$device->id = '';
+		if ( ! empty($discovery->system_id)) {
+			// This may have been set on the discovery itself - a single device discovery
+			$device->id = intval($discovery->system_id);
+		}
+		$device->ip = $ip_scan->ip;
 
 		$sql = 'SELECT NOW() AS `timestamp`';
 		$query = $CI->db->query($sql);
@@ -777,7 +781,10 @@ if ( ! function_exists('ip_audit')) {
 		$parameters->details = $device;
 		$parameters->discovery_id = $discovery->id;
 		$parameters->match = @$discovery->other->match;
-		$device->id = $CI->m_device->match($parameters);
+		if (empty($device->id)) {
+			// This may have been set on the discovery itself - a single device discovery, if not run the match code
+			$device->id = $CI->m_device->match($parameters);
+		}
 
 		if ( ! empty($device->id) && ! empty($discovery->id)) {
 			$sql = '/* discoveries_helper::ip_audit */ ' . 'SELECT name FROM system WHERE id = ' . intval($device->id);
