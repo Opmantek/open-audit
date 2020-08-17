@@ -1605,13 +1605,14 @@ if ( ! function_exists('ip_audit')) {
 		}
 
 		// Delete the local audit script if it's not a default script
-		if ( ! empty($audit_script) && strpos($audit_script, 'scripts') !== false) {
+		// if ( ! empty($audit_script) && strpos($audit_script, 'scripts') !== false) {
+		if ( strpos($parameters->source, 'scripts') !== false) {
 			$log->severity = 7;
 			$log->message = 'Attempt to delete temp audit script succeeded';
 			$log->command_status = 'notice';
-			$log->command = "unlink('" . $audit_script ."')";
+			$log->command = "unlink('" . $parameters->source ."')";
 			try {
-				unlink($audit_script);
+				unlink($parameters->source);
 			} catch (Exception $error) {
 				$log->severity = 4;
 				$log->message = 'Could not delete temp audit script';
