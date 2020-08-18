@@ -410,6 +410,7 @@ fi
 ########################################################
 
 start_time=$(timer)
+rev_exists=$(which rev 2>/dev/null)
 
 if [ "$debugging" -gt 0 ]; then
 	echo "Starting audit"
@@ -570,21 +571,24 @@ system_os_name=$(cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d
 system_os_version=$(cat /etc/os-release 2>/dev/null | grep -i ^VERSION_ID | cut -d= -f2 | cut -d\" -f2)
 system_manufacturer=""
 system_model=""
+system_serial=""
 
 # Some DD-WRT specials stuff
-if [ -z "$system_os_family" ] && grep -qi 'DD-WRT' /etc/motd ; then
-	system_os_family="DD-WRT"
-	system_os_version=$(grep DD-WRT /etc/motd | cut -dv -f2)
-	system_os_version="v$system_os_version"
-	system_os_name="DD-WRT $system_os_version"
-	system_model=$(nvram get DD_BOARD)
-	if echo "$system_model" | grep -qi "tplink"; then
-		system_manufacturer="TP-Link Technology"
+if [ -z "$system_os_family" ]; then
+	if [ -f "/etc/motd" ] && [ grep -qi 'DD-WRT' /etc/motd ]; then
+		system_os_family="DD-WRT"
+		system_os_version=$(grep DD-WRT /etc/motd | cut -dv -f2)
+		system_os_version="v$system_os_version"
+		system_os_name="DD-WRT $system_os_version"
+		system_model=$(nvram get DD_BOARD)
+		if echo "$system_model" | grep -qi "tplink"; then
+			system_manufacturer="TP-Link Technology"
+		fi
+		system_ip_address=$(nvram get lan_ipaddr)
+		system_domain=$(nvram get lan_domain)
+		system_type="router"
+		busybox="y"
 	fi
-	system_ip_address=$(nvram get lan_ipaddr)
-	system_domain=$(nvram get lan_domain)
-	system_type="router"
-	busybox="y"
 fi
 
 if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
@@ -693,7 +697,6 @@ fi
 system_os_icon=$(lcase "$system_os_family")
 
 # Get the System Serial Number
-system_serial=""
 system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
 
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
@@ -2396,26 +2399,29 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Group Info"
 fi
 echo "	<user_group>" >> "$xml_file"
-for line in $(getent group); do
-	name=$(echo "$line" | cut -d: -f1)
-	sid=$(echo "$line" | cut -d: -f3)
-	members=$(echo "$line" | cut -d: -f4)
-	
-	for user in $(cat /etc/passwd); do
-		gid=$(echo "$user" | cut -d: -f4)
-		if [ "$gid" = "$sid" ]; then
-			extra_user=$(echo "$user" | cut -d: -f1)
-			members=$(echo "$extra_user","$members")
-		fi
-	done
-	members=$(echo "$members" | sed 's/,$//')
+test=`which getent 2>/dev/null`
+if [ -n "$test" ]; then
+	for line in $(getent group); do
+		name=$(echo "$line" | cut -d: -f1)
+		sid=$(echo "$line" | cut -d: -f3)
+		members=$(echo "$line" | cut -d: -f4)
 
-	echo "		<item>" >> $xml_file
-	echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
-	echo "			<name>$(escape_xml "$name")</name>" >> $xml_file
-	echo "			<members>$(escape_xml "$members")</members>" >> $xml_file
-	echo "		</item>" >> $xml_file
-done
+		for user in $(cat /etc/passwd); do
+			gid=$(echo "$user" | cut -d: -f4)
+			if [ "$gid" = "$sid" ]; then
+				extra_user=$(echo "$user" | cut -d: -f1)
+				members=$(echo "$extra_user","$members")
+			fi
+		done
+		members=$(echo "$members" | sed 's/,$//')
+
+		echo "		<item>" >> $xml_file
+		echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
+		echo "			<name>$(escape_xml "$name")</name>" >> $xml_file
+		echo "			<members>$(escape_xml "$members")</members>" >> $xml_file
+		echo "		</item>" >> $xml_file
+	done
+fi
 echo "	</user_group>" >> "$xml_file"
 
 
@@ -2651,17 +2657,24 @@ echo "	</service>" >> "$xml_file"
 if [ "$debugging" -gt "0" ]; then
 	echo "Server Info"
 fi
-
 echo "	<server>" >> "$xml_file"
+
 test=$(which apache2 2>/dev/null)
 if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	apache"
+	fi
 	version=$(apache2 -v 2>/dev/null | grep "Server version" | cut -d: -f2 | cut -d/ -f2 | awk '{ print $1 }')
 	version_string=$(apache2 -v 2>/dev/null | grep "Server version" | cut -d: -f2)
 	apache_status=$(service apache2 status 2>/dev/null | grep Active | awk '{ print $2 }')
 	if [ -z "$apache_status" ]; then
 		apache_status=$(service apache2 status 2>/dev/null | head -n1)
 	fi
-	port=$(netstat -tulpn 2>/dev/null | grep apache | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	if [ -n "$rev_exists" ]; then
+		port=$(netstat -tulpn 2>/dev/null | grep apache | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	else
+		port=""
+	fi
 	{
 	echo "		<item>"
 	echo "			<type>web</type>"
@@ -2673,12 +2686,20 @@ if [ -n "$test" ]; then
 	echo "		</item>"
 	} >> "$xml_file"
 fi
+
 test=$(which httpd 2>/dev/null)
 if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	httpd"
+	fi
 	version=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2 | cut -d/ -f2 | awk '{ print $1 }')
 	version_string=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2)
 	apache_status=$(service httpd status 2>/dev/null | grep Active | awk '{ print $2 }')
-	port=$(netstat -tulpn 2>/dev/null | grep httpd | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	if [ -n "$rev_exists" ]; then
+		port=$(netstat -tulpn 2>/dev/null | grep httpd | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	else
+		port=""
+	fi
 	{
 	echo "		<item>"
 	echo "			<type>web</type>"
@@ -2693,6 +2714,9 @@ fi
 
 test=$(which mysql 2>/dev/null)
 if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	mysql"
+	fi
 	version=$(mysql --version | awk '{ print $5 }' | cut -d, -f1)
 	version_string=$(mysql --version 2>/dev/null)
 	status=$(service mysql status 2>/dev/null | grep Active | awk '{ print $2 }')
@@ -2702,7 +2726,11 @@ if [ -n "$test" ]; then
 			status="active"
 		fi
 	fi
-	port=$(netstat -tulpn 2>/dev/null | grep mysql | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	if [ -n "$rev_exists" ]; then
+		port=$(netstat -tulpn 2>/dev/null | grep mysql | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	else
+		port=""
+	fi
 	ip=$(netstat -tulpn 2>/dev/null | grep mysql | awk '{ print $4 }' | cut -d: -f1 | head -n1)
 	{
 	echo "		<item>"
@@ -2721,10 +2749,17 @@ fi
 # Pull web server info from nginx
 test=$(which nginx 2>/dev/null)
 if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	nginx"
+	fi
 	version=$(nginx -v 2>&1 | cut -d/ -f2)
 	version_string=$(nginx -v 2>&1 | cut -d: -f2 | sed -e 's/^[[:space:]]*//')
 	nginx_status=$(service nginx status 2>/dev/null | grep Active | awk '{ print $2 }')
-	port=$(netstat -tulpn 2>/dev/null | grep nginx | awk '{ print$4 }' | rev | cut -d: -f1 | rev | head -n1)
+	if [ -n "$rev_exists" ]; then
+		port=$(netstat -tulpn 2>/dev/null | grep nginx | awk '{ print$4 }' | rev | cut -d: -f1 | rev | head -n1)
+	else
+		port=""
+	fi
 	{
 	echo "		<item>"
 	echo "			<type>web</type>"
@@ -2742,6 +2777,9 @@ fi
 # test = PID of java tomcat process
 test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
 if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	tomcat"
+	fi
 	instance=0
 	for pid in $test
 	do
@@ -2783,9 +2821,11 @@ fi
 
 # Custom addition - alexander.szele@umanitoba.ca
 # Pull db server info from mongodb
-#
 test=$(which mongo 2>/dev/null)
 if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	mongo"
+	fi
 	version=$(mongo --version | grep -i mongodb | awk '{ print $4 }')
 	version_string=$(mongo --version | grep -i mongodb)
 	status=$(service mongod status 2>/dev/null | grep Active | awk '{ print $2 }')
@@ -2795,7 +2835,11 @@ if [ -n "$test" ]; then
 			status="active"
 		fi
 	fi
-	port=$(netstat -tulpn 2>/dev/null | grep mongod | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	if [ -n "$rev_exists" ]; then
+		port=$(netstat -tulpn 2>/dev/null | grep mongod | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	else
+		port=""
+	fi
 	ip=$(netstat -tulpn 2>/dev/null | grep mongod | awk '{ print $4 }' | cut -d: -f1 | head -n1)
 	{
 	echo "		<item>"
@@ -2811,54 +2855,96 @@ if [ -n "$test" ]; then
 fi
 echo "	</server>" >> "$xml_file"
 
-
+if [ "$debugging" -gt "0" ]; then
+	echo "Server Items"
+fi
 
 echo "	<server_item>" >> "$xml_file"
 if [ -e "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	mysqld using /etc/mysql/mysql.conf.d/mysqld.cnf"
+	fi
 	datadir=$(grep datadir /etc/mysql/mysql.conf.d/mysqld.cnf 2>/dev/null | awk '{ print $3 }')
 	if [ -n "$datadir" ]; then
-		for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
-			size=$(ls -lk "$datadir"/"$i" 2>/dev/null | awk '{ total += $5 }; END { print total/1024/1024 }')
-			{
-			echo "		<item>"
-			echo "			<type>database</type>"
-			echo "			<parent_name>MySQL</parent_name>"
-			echo "			<name>$(escape_xml "$i")</name>"
-			echo "			<description></description>"
-			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-			echo "			<instance>MySQL</instance>"
-			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
-			echo "			<size>$(escape_xml "$size")</size>"
-			echo "		</item>"
-			} >> "$xml_file"
-		done
+		if [ -n "$rev_exists" ]; then
+			for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
+				size=$(ls -lk "$datadir"/"$i" 2>/dev/null | awk '{ total += $5 }; END { print total/1024/1024 }')
+				{
+				echo "		<item>"
+				echo "			<type>database</type>"
+				echo "			<parent_name>MySQL</parent_name>"
+				echo "			<name>$(escape_xml "$i")</name>"
+				echo "			<description></description>"
+				echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+				echo "			<instance>MySQL</instance>"
+				echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+				echo "			<size>$(escape_xml "$size")</size>"
+				echo "		</item>"
+				} >> "$xml_file"
+			done
+		fi
 	fi
 fi
 
 if [ -e "/etc/my.cnf" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	mysql using /etc/my.cnf"
+	fi
 	datadir=$(grep datadir /etc/my.cnf 2>/dev/null | cut -d= -f2)
 	if [ -n "$datadir" ]; then
-		for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
-			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
-			{
-			echo "		<item>"
-			echo "			<type>database</type>"
-			echo "			<parent_name>MySQL</parent_name>"
-			echo "			<name>$(escape_xml "$i")</name>"
-			echo "			<description></description>"
-			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-			echo "			<instance>MySQL</instance>"
-			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
-			echo "			<size>$(escape_xml "$size")</size>"
-			echo "		</item>"
-			} >> "$xml_file"
-		done
+		if [ -n "$rev_exists" ]; then
+			for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
+				size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+				{
+				echo "		<item>"
+				echo "			<type>database</type>"
+				echo "			<parent_name>MySQL</parent_name>"
+				echo "			<name>$(escape_xml "$i")</name>"
+				echo "			<description></description>"
+				echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+				echo "			<instance>MySQL</instance>"
+				echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+				echo "			<size>$(escape_xml "$size")</size>"
+				echo "		</item>"
+				} >> "$xml_file"
+			done
+		fi
 	fi
 fi
 
 if [ -e "/etc/mysql/my.cnf" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	mysql using /etc/mysql/my.cnf"
+	fi
 	datadir=$(grep datadir /etc/mysql/my.cnf 2>/dev/null | awk '{ print $3 }')
 	if [ -n "$datadir" ]; then
+		if [ -n "$rev_exists" ]; then
+			for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
+				size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+				{
+				echo "		<item>"
+				echo "			<type>database</type>"
+				echo "			<parent_name>MySQL</parent_name>"
+				echo "			<name>$(escape_xml "$i")</name>"
+				echo "			<description></description>"
+				echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+				echo "			<instance>MySQL</instance>"
+				echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+				echo "			<size>$(escape_xml "$size")</size>"
+				echo "		</item>"
+				} >> "$xml_file"
+			done
+		fi
+	fi
+fi
+
+
+datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2)
+if [ -n "$datadir" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	mariadb using /etc/mysql/mariadb.conf.d"
+	fi
+	if [ -n "$rev_exists" ]; then
 		for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
 			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
 			{
@@ -2877,26 +2963,10 @@ if [ -e "/etc/mysql/my.cnf" ]; then
 	fi
 fi
 
-datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2)
-if [ -n "$datadir" ]; then
-	for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
-		size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
-		{
-		echo "		<item>"
-		echo "			<type>database</type>"
-		echo "			<parent_name>MySQL</parent_name>"
-		echo "			<name>$(escape_xml "$i")</name>"
-		echo "			<description></description>"
-		echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-		echo "			<instance>MySQL</instance>"
-		echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
-		echo "			<size>$(escape_xml "$size")</size>"
-		echo "		</item>"
-		} >> "$xml_file"
-	done
-fi
-
 for i in $(apachectl -S 2>/dev/null  | grep port); do
+	if [ "$debugging" -gt "0" ]; then
+		echo "	apache using apachectl"
+	fi
 	if [ -n "$i" ]; then
 		name=$(echo "$i" | awk '{ print $4 }')
 		port=$(echo "$i" | awk '{ print $2 }')
@@ -2922,6 +2992,9 @@ for i in $(apachectl -S 2>/dev/null  | grep port); do
 done
 
 for i in $(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep -v NameVirtualHost); do
+	if [ "$debugging" -gt "0" ]; then
+		echo "	apache using apachectl for VirtualHosts"
+	fi
 	if [ -n "$i" ]; then
 		name=$(echo "$i" | awk '{ print $2 }')
 		port=$(echo "$i" | awk '{ print $1 }' | cut -d: -f2)
@@ -2946,15 +3019,21 @@ for i in $(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep 
 	fi
 done
 
-
 # Custom addition - alexander.szele@umanitoba.ca
 # Pull db server info from mongodb
 # Inconsistent results if non-standard configurations are used.
 if [ -e "/etc/mongod.conf" ]; then
 	datadir=$(grep "^[^#][[:space:]]dbPath" /etc/mongod.conf 2>/dev/null | awk '{ print $2 }')
 	if [ -n "$datadir" ]; then
+		if [ "$debugging" -gt "0" ]; then
+			echo "	mongod using /etc/mongod.conf"
+		fi
 		for i in $(grep "^[^#][[:space:]]dbPath" /etc/mongod.conf 2>/dev/null | awk '{ print $2 }'); do
-			name=$(echo $i | rev | cut -d/ -f1 | rev)
+			if [ -n "$rev_exists" ]; then
+				name=$(echo $i | rev | cut -d/ -f1 | rev)
+			else
+				name=""
+			fi
 			size=$(ls -lk "$i" | awk '{ total += $5 }; END { print int(total/1024/1024) }')
 			{
 			echo "		<item>"
@@ -2976,8 +3055,14 @@ fi
 # Pull website info from nginx
 for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 2>/dev/null | xargs -0 egrep '^([[:space:]])*server_name ' | awk '{ print $1 }' | cut -d':' -f1 | sort | uniq); do
 	if [ -n "$i" ]; then
-		name=$(echo "$i" | rev | cut -d/ -f1 | rev)
-		name=${name%.conf}
+		if [ "$debugging" -gt "0" ]; then
+			echo "	nginx using /etc/nginx"
+		fi
+		name=""
+		if [ -n "$rev_exists" ]; then
+			name=$(echo "$i" | rev | cut -d/ -f1 | rev)
+			name=${name%.conf}
+		fi
 		hostname=$(egrep '^([[:space:]])*server_name ' $i | awk '{ print $2 }' | cut -d';' -f1)
 		port=$(egrep '^([[:space:]])*listen ' $i | awk '{ print $2 }' | cut -d: -f2 | cut -d';' -f1)
 		path=$(awk '/location \/ {/,/}/{ print $0 }' $i | grep root | awk '{ print $2 }' | cut -d';' -f1)
