@@ -833,6 +833,12 @@ if ( !  function_exists('ssh_audit')) {
             'hpux_serial' => 'machinfo 2>/dev/null | grep "Machine serial number:" | cut -d: -f2',
             'hpux_uuid' => 'machinfo 2>/dev/null | grep -i "Machine ID number:" | cut -d: -f2',
 
+            'synology_model' => 'grep model /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
+            'synology_serial' => 'grep serial /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
+            'synology_os_major' => 'grep version_major /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
+            'synology_os_minor' => 'grep version_minor /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
+            'synology_os_build' => 'grep version_build /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
+
             'which_sudo' => 'which sudo 2>/dev/null'
         );
 
@@ -1085,6 +1091,17 @@ if ( !  function_exists('ssh_audit')) {
         unset($device->hpux_hostname);
         unset($device->hpux_domain);
         unset($device->hpux_os_name);
+
+        if ( ! empty($device->synology_model)) {
+            $device->system_manufacturer = 'Synology';
+            $device->model = 'Diskstation ' . trim($device->synology_model);
+            $device->serial = trim($device->synology_serial);
+            $device->type = 'nas';
+            $device->os_group = 'Linux';
+            $device->os_family = 'Synology DSM';
+            $device->os_name = 'Synology DSM ' . trim($device->synology_os_major) . '.' . trim($device->synology_os_minor) . '-' . trim($device->synology_os_build);
+            $device->os_version = trim($device->synology_os_major) . '.' . trim($device->synology_os_minor);
+        }
 
         // Type based on os_group = Linux (set to computer)
         if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type)) {
