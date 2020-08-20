@@ -394,7 +394,7 @@ class M_users extends MY_Model
             // Always allow a user to view help
             return true;
         }
-        if ($collection === 'users' && $CI->response->meta->id === $CI->user->id) {
+        if ($collection === 'users' && $id === $CI->user->id) {
             // Always allow a user to view their own user item
             return true;
         }
