@@ -591,6 +591,25 @@ if [ -z "$system_os_family" ]; then
 	fi
 fi
 
+if [ -z "$system_os_family" ] && [ -f "/etc/avahi/services/dsminfo.service" ]; then
+	if [ -f "/etc/synoinfo.conf" ]; then
+		# Keep these as per the SNMP helper
+		system_type="nas"
+		system_os_group="Linux"
+		system_os_family="Synology DSM"
+		system_manufacturer="Synology"
+
+		# Query the OS for these
+		major=`grep version_major /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1`
+		minor=`grep version_minor /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1`
+		build=`grep version_build /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1`
+		system_os_version="$major.$minor-$build"
+		system_os_name="Synology DSM $major.$minor-$build"
+		system_model=`grep model /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1`
+		system_serial=`grep serial /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1`;
+	fi
+fi
+
 if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	if grep -q 'Alpine Linux' /etc/os-release ; then
 		system_os_family="Alpine Linux"
@@ -1821,12 +1840,16 @@ if [ "$system_os_family" == "RedHat" -o "$system_os_family" == "Centos" ]; then
 	fi
 fi
 
+if [ "$system_os_family" == "Synology DSM" ]; then
+	old="yes"
+fi
+
 if [ "$old" = "yes" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "Running old disk checking for RHEL/CentOS 4/5."
 	fi
 	echo "	<disk>" >> "$xml_file"
-	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | cut -d" " -f2 | cut -d: -f1); do
+	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | grep -v "^Disk identifier" | cut -d" " -f2 | cut -d: -f1); do
 		hard_drive_caption="$disk"
 		hard_drive_index=$(echo "$hard_drive_caption" | cut -d/ -f3)
 		hard_drive_interface_type=""
