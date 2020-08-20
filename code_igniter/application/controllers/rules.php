@@ -61,7 +61,8 @@ class Rules extends MY_Controller
         $this->load->model('m_orgs');
         $this->user->org_list = implode(',', $this->m_orgs->get_user_all($this->user->id));
         unset($this->user->org_parents);
-        inputRead();
+        // inputRead();
+        $this->response = response_create();
         $this->output->url = $this->config->config['oa_web_index'];
     }
 

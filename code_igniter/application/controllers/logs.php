@@ -57,7 +57,8 @@ class Logs extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_logs');
-        inputRead();
+        // inputRead();
+        $this->response = response_create();
         $this->output->url = $this->config->config['oa_web_index'];
     }
 

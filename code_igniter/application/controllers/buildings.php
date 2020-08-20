@@ -58,7 +58,8 @@ class Buildings extends MY_Controller
         parent::__construct();
         $this->load->model('m_buildings');
         $this->load->model('m_locations');
-        inputRead();
+        // inputRead();
+        $this->response = response_create();
         $this->output->url = $this->config->config['oa_web_index'];
     }
 

@@ -59,7 +59,8 @@ class Database extends MY_Controller
         $this->load->helper('network');
         $this->load->helper('error');
         $this->load->model('m_database');
-        inputRead();
+        // inputRead();
+        $this->response = response_create();
         $this->output->url = $this->config->config['oa_web_index'];
     }
 

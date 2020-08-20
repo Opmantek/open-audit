@@ -86,6 +86,7 @@ class MY_Controller extends CI_Controller
         // $this->m_configuration->load();
         $this->load->model('m_users');
         // $this->m_users->validate();
+        $this->load->helper('response');
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');

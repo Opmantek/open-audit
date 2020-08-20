@@ -70,7 +70,8 @@ class Main extends MY_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
-        inputRead();
+        // inputRead();
+        $this->response = response_create();
         if ($this->response->meta->format == 'json') {
             // JSON request to the base URL
             // return a document providing futher links

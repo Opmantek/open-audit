@@ -57,7 +57,8 @@ class Applications extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_applications');
-        inputRead();
+        // inputRead();
+        $this->response = response_create();
         $this->output->url = $this->config->config['oa_web_index'];
         return;
     }
