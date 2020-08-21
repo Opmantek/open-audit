@@ -66,7 +66,6 @@ $item = $this->response->data[0];
                     <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="data_type form-control" id="org_id" name="org_id" disabled>
-                            <option value='' label=' '></option>
                             <?php foreach ($this->response->included as $org) {
                             if ($org->type == 'orgs') { ?>
                                 <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
