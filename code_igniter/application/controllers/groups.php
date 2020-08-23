@@ -218,7 +218,7 @@ class Groups extends MY_Controller
     */
     public function execute()
     {
-        if (empty($this->response->meta->properties) OR $this->response->meta->properties === '*') {
+        if (empty($this->response->meta->properties) OR $this->response->meta->properties === '*' OR $this->response->meta->properties === '.*') {
             $this->response->meta->properties = $this->config->config['devices_default_group_columns'];
         }
         $group = $this->m_groups->read($this->response->meta->id);
