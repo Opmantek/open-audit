@@ -134,29 +134,37 @@ if ( ! function_exists('response_create')) {
         $response->meta->received_data = array();
         $response->meta->sql = array();
 
-
         // Need to set vesrion FIRST because it may impact routes
-        $response->meta->version = response_get_version();
+        $response->meta->version = response_get_version($instance->uri->segments,
+                                                        $instance->input->get_request_header('Accept'));
+
+        // Refactor the uri->segments to remove /api/1 or /v1, /v2, etc
+        $instance->uri->segments = response_set_uri($instance->uri->segments);
 
         // no dependencies - set in GET or POST
-        $response->meta->debug = response_get_debug();
+        $response->meta->debug = response_get_debug($instance->input->get('debug'),
+                                                    $instance->input->post('debug'),
+                                                    $instance->input->get_request_header('debug'));
 
         // no dependencies - set in GET or POST or HEADERS
-        $response->meta->format = response_get_format();
+        $response->meta->format = response_get_format($instance->input->get('format'),
+                                                      $instance->input->post('format'),
+                                                      $instance->input->get_request_header('Accept'));
 
         // no dependencies - set in GET or POST or HEADERS
-        $response->meta->current = response_get_current();
+        $response->meta->current = response_get_current($instance->input->get('current'),
+                                                        $instance->input->post('current'));
 
         // depends on version affecting URI - set in URI or POST
-        if ( ! empty($instance->uri->segment(1))) {
-            $response->meta->collection = response_get_collection($instance->uri->segment(1));
-        }
+        $response->meta->collection = response_get_collection($instance->uri->segment(1));
+
+        // Set the heading based on the collection
         $response->meta->heading = ucfirst($response->meta->collection);
 
         // depends on version affecting URI, collection, request_method, format
         if ($response->meta->collection === 'search' && $response->meta->request_method !== 'POST') {
             // Redirect as we only accept POSTs for /search
-            log_error('ERR-0007', 'search:' . $response->response->meta->request_method);
+            log_error('ERR-0007', 'search:' . $response->meta->request_method);
             if ($instance->response->meta->format !== 'screen') {
                 $response->errors = array();
                 return($response);
@@ -170,14 +178,13 @@ if ( ! function_exists('response_create')) {
         $instance->user->org_list = response_get_org_list($response->meta->collection, $instance->user);
 
         // depends on version affecting URI, collection - set in URI or POST
-        $response->meta->id = null;
-        if ( ! empty($instance->uri->segment(2))) {
-            $response->meta->id = response_get_id($instance->uri->segment(2), $response->meta->collection, $instance->user->org_list);
-        }
+        $response->meta->id = response_get_id($instance->uri->segment(2),
+                                              $response->meta->collection,
+                                              $instance->user->org_list);
 
         // no dependencies - set in GET or POST
-        // $response->meta->ids = response_get_ids();
-        $temp = response_get_ids();
+        $temp = response_get_ids($instance->input->get('ids'), $instance->input->post('ids'));
+        // Only set if not empty
         if ( ! empty($temp)) {
             $response->meta->ids = $temp;
         }
@@ -191,10 +198,16 @@ if ( ! function_exists('response_create')) {
         }
 
         // depends on version affecting URI, collection and format
-        $response->meta->sub_resource = response_get_sub_resource($response->meta->collection, $response->meta->format);
+        $response->meta->sub_resource = response_get_sub_resource($instance->input->get('sub_resource'),
+                                                                  $instance->input->post('sub_resource'),
+                                                                  $response->meta->collection,
+                                                                  $response->meta->format);
 
         // depends on version affecting URI, sub_resource
-        $temp = response_get_sub_resource_id($response->meta->sub_resource);
+        $temp = response_get_sub_resource_id($response->meta->sub_resource,
+                                            intval((string)urldecode($instance->uri->segment(4, ''))),
+                                            $instance->input->get('ids'),
+                                            $instance->input->post('ids'));
         if ( ! empty($temp)) {
             $response->meta->sub_resource_id = $temp;
         }
@@ -235,35 +248,40 @@ if ( ! function_exists('response_create')) {
         }
 
         // depends on collection and format
-        $response->meta->include = response_get_include($response->meta->collection, $response->meta->format);
+        $response->meta->include = response_get_include($instance->input->get('include'),
+                                                        $instance->input->post('include'),
+                                                        $response->meta->collection,
+                                                        $response->meta->format);
 
         // depends on version affecting URI, collection
         $response->meta->sort = response_get_sort($response->meta->collection);
+        $response->meta->internal->sort = '';
         if ($response->meta->sort !== '') {
             $response->meta->internal->sort = 'ORDER BY ' . $response->meta->sort;
-        } else {
-            $response->meta->internal->sort = '';
         }
 
         // depends on version affecting URI, collection
-        $response->meta->groupby = response_get_groupby($response->meta->collection);
+        $response->meta->groupby = response_get_groupby($instance->input->get('groupby'),
+                                                        $instance->input->post('groupby'),
+                                                        $response->meta->collection);
+        $response->meta->internal->groupby = '';
         if ($response->meta->groupby) {
             $response->meta->internal->groupby = 'GROUP BY ' . $response->meta->groupby;
-        } else {
-            $response->meta->internal->groupby = '';
         }
 
         // no dependencies - set in GET or POST
         $response->meta->offset = response_get_offset();
 
         // depends on format - set in GET or POST
-        $response->meta->limit = response_get_limit($response->meta->format);
+        $response->meta->limit = response_get_limit($instance->input->get('limit'),
+                                                    $instance->input->post('limit'),
+                                                    $response->meta->format,
+                                                    $instance->config->config['page_size']);
 
         // depends on offset
+        $response->meta->internal->limit = '';
         if ( ! empty($response->meta->limit)) {
             $response->meta->internal->limit = 'LIMIT ' . intval($response->meta->offset) . ',' . intval($response->meta->limit);
-        } else {
-            $response->meta->internal->limit = '';
         }
 
         // depends on collection
@@ -312,7 +330,7 @@ if ( ! function_exists('response_create')) {
             }
             redirect('/');
         }
-
+        $response->logs = $instance->response->logs;
         return $response;
     }
 }
@@ -522,7 +540,7 @@ if ( ! function_exists('response_get_current')) {
      * Return the current ettribute derived from the HEADERS or URL (get) or BODY (post)
      * @return string The response format requested
      */
-    function response_get_current()
+    function response_get_current($get = '', $post = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -534,13 +552,12 @@ if ( ! function_exists('response_get_current')) {
 
         $current = 'y';
         $log->summary = 'Set current to default.';
-
-        if ( ! empty($_GET['current'])) {
-            $current = $_GET['current'];
+        if ( ! empty($get)) {
+            $current = $get;
             $log->summary = 'Set current according to GET.';
         }
-        if ( ! empty($_POST['current'])) {
-            $current = $_POST['current'];
+        if ( ! empty($post)) {
+            $current = $post;
             $log->summary = 'Set current according to POST.';
         }
         $valid_current = response_valid_current();
@@ -623,7 +640,7 @@ if ( ! function_exists('response_get_debug')) {
      * Determine if the request uses debug
      * @return bool
      */
-    function response_get_debug()
+    function response_get_debug($get = '', $post = '', $header = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -635,29 +652,29 @@ if ( ! function_exists('response_get_debug')) {
 
         $instance = & get_instance();
         $debug = false;
+        $instance->output->enable_profiler(false);
 
-        if (isset($_GET['debug'])) {
-            $debug = $_GET['debug'];
+        if ( ! empty($get) && strtolower($get) === 'true') {
             $log->summary = 'Set debug according to GET.';
-        }
-        if (isset($_POST['debug'])) {
-            $debug = $_POST['debug'];
-            $log->summary = 'Set debug according to POST.';
-        }
-        if (strtolower($debug) === 'true') {
-            $debug = true;
-            $instance->output->enable_profiler(true);
-        } else {
-            $debug = false;
-            $instance->output->enable_profiler(false);
-        }
-        if ($debug) {
             $log->detail = 'DEBUG: true';
-            $instance->config->config['log_level'] = 7;
-        } else {
-            $log->detail = 'DEBUG: false';
+            $instance->output->enable_profiler(true);
+            $debug = true;
+            stdlog($log);
         }
-        stdlog($log);
+        if ( ! empty($post) && strtolower($post) === 'true') {
+            $log->summary = 'Set debug according to POST.';
+            $log->detail = 'DEBUG: true';
+            $instance->output->enable_profiler(true);
+            $debug = true;
+            stdlog($log);
+        }
+        if ( ! empty($header) && strtolower($header) === 'true') {
+            $log->summary = 'Set debug according to HEADER.';
+            $log->detail = 'DEBUG: true';
+            $instance->output->enable_profiler(true);
+            $debug = true;
+            stdlog($log);
+        }
         return $debug;
     }
 }
@@ -778,7 +795,6 @@ if ( ! function_exists('response_get_filter')) {
                     $query->value = str_replace('"', '\"', $query->value);
                 }
 
-                // $query->name = str_replace(array(',', "'", '"', '(', ')'), '', $query->name);
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
 
                 if ($query->value === false) {
@@ -823,7 +839,7 @@ if ( ! function_exists('response_get_format')) {
      * Return the response format derived from the HEADERS or URL (get) or BODY (post)
      * @return string The response format requested
      */
-    function response_get_format()
+    function response_get_format($get = '', $post = '', $header = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -835,20 +851,20 @@ if ( ! function_exists('response_get_format')) {
 
         $format = 'json';
 
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+        if (strpos($header, 'application/json') !== false) {
             $format = 'json';
             $log->summary = 'Set format according to HEADERS.';
         }
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'html') !== false) {
+        if (strpos($header, 'html') !== false) {
             $format = 'screen';
             $log->summary = 'Set format according to HEADERS.';
         }
-        if ( ! empty($_GET['format'])) {
-            $format = $_GET['format'];
+        if ( ! empty($get)) {
+            $format = $get;
             $log->summary = 'Set format according to GET.';
         }
-        if ( ! empty($_POST['format'])) {
-            $format = $_POST['format'];
+        if ( ! empty($post)) {
+            $format = $post;
             $log->summary = 'Set format according to POST.';
         }
         $valid_formats = response_valid_formats();
@@ -869,7 +885,7 @@ if ( ! function_exists('response_get_groupby')) {
      * @param  string $collection The request collection
      * @return string             The validated groupby
      */
-    function response_get_groupby($collection)
+    function response_get_groupby($get = '', $post = '', $collection = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -882,12 +898,12 @@ if ( ! function_exists('response_get_groupby')) {
         $instance = & get_instance();
         $groupby = '';
 
-        if (isset($_GET['groupby'])) {
-            $groupby = $_GET['groupby'];
+        if ( ! empty($get)) {
+            $groupby = $get;
             $log->summary = 'Set groupby according to GET.';
         }
-        if (isset($_POST['groupby'])) {
-            $groupby = $_POST['groupby'];
+        if ( ! empty($post)) {
+            $groupby = $post;
             $log->summary = 'Set groupby according to POST.';
         }
         if ( ! empty($groupby)) {
@@ -1035,7 +1051,7 @@ if ( ! function_exists('response_get_ids')) {
      * Determine the list of device IDs
      * @return string The comma separated list of device IDs
      */
-    function response_get_ids()
+    function response_get_ids($get = '', $post = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1047,12 +1063,12 @@ if ( ! function_exists('response_get_ids')) {
 
         $device_ids = '';
 
-        if (isset($_GET['ids'])) {
-            $device_ids = $_GET['ids'];
+        if ( ! empty($get)) {
+            $device_ids = $get;
             $log->summary = 'Set IDs according to GET.';
         }
-        if (isset($_POST['ids'])) {
-            $device_ids = $_POST['ids'];
+        if ( ! empty($post)) {
+            $device_ids = $post;
             $log->summary = 'Set IDs according to POST.';
         }
         if ($device_ids !== '') {
@@ -1068,8 +1084,6 @@ if ( ! function_exists('response_get_ids')) {
             // Join by comma's
             $device_ids = implode(',', $temp);
             unset($temp);
-        }
-        if ($device_ids !== '') {
             $log->detail = 'IDS: ' . $device_ids;
             stdlog($log);
         }
@@ -1084,7 +1098,7 @@ if ( ! function_exists('response_get_include')) {
      * @param  string $format     [description]
      * @return string The requested includes, or all valid includes, or none
      */
-    function response_get_include($collection = '', $format = '')
+    function response_get_include($get = '', $post = '', $collection = '', $format = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1101,12 +1115,12 @@ if ( ! function_exists('response_get_include')) {
             return $include;
         }
 
-        if (isset($_GET['include'])) {
-            $include = $_GET['include'];
+        if ( ! empty($get)) {
+            $include = $get;
             $log->summary = 'Set include according to GET. ';
         }
-        if (isset($_POST['include'])) {
-            $include = $_POST['include'];
+        if ( ! empty($post)) {
+            $include = $post;
             $log->sumary = 'Set include according to POST. ';
         }
         $valid_includes = response_valid_includes();
@@ -1302,7 +1316,7 @@ if ( ! function_exists('response_get_limit')) {
      * @param  string $format [description]
      * @return [type]         [description]
      */
-    function response_get_limit($format = '')
+    function response_get_limit($get = '', $post = '', $format = '', $default_limit = 1000)
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1315,20 +1329,20 @@ if ( ! function_exists('response_get_limit')) {
         $instance = & get_instance();
         $limit = 0;
 
-        if (isset($_GET['limit'])) {
+        if ( ! empty($get)) {
             $limit = intval($_GET['limit']);
             $log->summary = 'Set limit according to GET.';
         }
-        if (isset($_POST['limit'])) {
+        if ( ! empty($post)) {
             $limit = intval($_POST['limit']);
             $log->summary = 'Set limit according to POST.';
         }
         if ($format === 'screen' && empty($limit)) {
-            $limit = intval($instance->config->config['page_size']);
+            $limit = intval($default_limit);
             $log->summary = 'Set limit according to SCREEN default.';
         }
         if ($format === 'json' && empty($limit)) {
-            $limit = intval($instance->config->config['page_size']);
+            $limit = intval($default_limit);
             $log->summary = 'Set limit according to JSON default.';
         }
         if ( ! empty($limit)) {
@@ -1504,7 +1518,7 @@ if ( ! function_exists('response_get_org_list')) {
                 $org_list = $user->orgs;
                 break;
         }
-        $user->org_list = implode(',', $org_list);
+        $org_list = implode(',', $org_list);
 
         $log->detail = 'ORG LIST: ' . json_encode($org_list);
         stdlog($log);
@@ -1861,7 +1875,7 @@ if ( ! function_exists('response_get_sub_resource')) {
      * @param  string $format     [description]
      * @return string The requested includes, or all valid includes, or none
      */
-    function response_get_sub_resource($collection = '', $format = '')
+    function response_get_sub_resource($get = '', $post = '', $collection = '', $format = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1878,15 +1892,15 @@ if ( ! function_exists('response_get_sub_resource')) {
             return $sub_resource;
         }
 
-        if (isset($_GET['sub_resource'])) {
-            $sub_resource = $_GET['sub_resource'];
+        if ( ! empty($get)) {
+            $sub_resource = $get;
             $log->summary = 'Set sub_resource according to GET.';
         }
-        if (isset($_POST['sub_resource'])) {
+        if ( ! empty($post)) {
             $sub_resource = $_POST['sub_resource'];
             $log->summary = 'Set sub_resource according to POST.';
         }
-        if ( ! empty($sub_resource) and $collection === 'devices') {
+        if ( ! empty($sub_resource) && $collection === 'devices') {
             $valid_sub_resources = response_valid_sub_resources();
             if ($format === 'screen' && (empty($sub_resource) OR $sub_resource === '*' OR $sub_resource === 'all')) {
                 $sub_resource = implode(',', $valid_sub_resources);
@@ -1954,7 +1968,7 @@ if ( ! function_exists('response_get_version')) {
      * Determine if the user specifically requested a version. If so, adjust the URI.
      * @return int The version number, defaults to 1
      */
-    function response_get_version()
+    function response_get_version($uri_segments = [], $accept_header = '')
     {
         return 1;
 
@@ -1969,27 +1983,20 @@ if ( ! function_exists('response_get_version')) {
         $instance = & get_instance();
         $version = 1;
 
-        if ( ! empty($instance->uri->segments[1]) && ($instance->uri->segments[1] === 'api' OR $instance->uri->segments[1] === 'v1' OR $instance->uri->segments[1] === 'v2')) {
-            if ($instance->uri->segments[1] === 'api') {
+        if ( ! empty($uri_segments[1]) && ($uri_segments[1] === 'api' OR $uri_segments[1] === 'v1' OR $uri_segments[1] === 'v2')) {
+            if ($uri_segments[1] === 'api') {
                 $version = intval($instance->uri->segment(2));
-                $log->summary = 'Set version according to URI segment.';
-                unset($instance->uri->segments[1]);
-                unset($instance->uri->segments[2]);
-
-            } else if ($instance->uri->segments[1] === 'v1') {
+                $log->summary = 'Set version according to URI api segment.';
+            } else if ($uri_segments[1] === 'v1') {
                 $version = 1;
-                $log->summary = 'Set version according to URI segment.';
-                unset($instance->uri->segments[1]);
+                $log->summary = 'Set version according to URI v1 segment.';
 
-            } else if ($instance->uri->segments[1] === 'v2') {
+            } else if ($uri_segments[1] === 'v2') {
                 $version = 2;
-                $log->summary = 'Set version according to URI segment.';
-                unset($instance->uri->segments[1]);
+                $log->summary = 'Set version according to URI v2 segment.';
             }
-            array_unshift($instance->uri->segments, '');
-            $instance->uri->segments = array_values($instance->uri->segments);
-        } else if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {
-            $version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
+        } else if (strpos($accept_header, 'application/json;version=') !== false) {
+            $version = intval(str_replace('application/json;version=', '', $accept_header));
             $log->summary = 'Set version according to headers.';
         }
         if ($version !== 1 && $version !== 2) {
@@ -1998,6 +2005,29 @@ if ( ! function_exists('response_get_version')) {
         $log->detail = 'VERSION: ' . $version;
         stdlog($log);
         return $version;
+    }
+}
+
+if ( ! function_exists('response_set_uri')) {
+    /**
+     * Determine if the user specifically requested a version. If so, adjust the URI.
+     * @return array The URI after removing any API version items
+     */
+    function response_set_uri($uri_segments = [])
+    {
+        if ( ! empty($uri_segments[1]) && ($uri_segments[1] === 'api' OR $uri_segments[1] === 'v1' OR $uri_segments[1] === 'v2')) {
+            if ($uri_segments[1] === 'api') {
+                unset($uri_segments[1]);
+                unset($uri_segments[2]);
+            } else if ($uri_segments[1] === 'v1') {
+                unset($uri_segments[1]);
+            } else if ($uri_segments[1] === 'v2') {
+                unset($uri_segments[1]);
+            }
+        }
+        array_unshift($uri_segments, '');
+        $filtered_segments = array_values($uri_segments);
+        return $filtered_segments;
     }
 }
 
