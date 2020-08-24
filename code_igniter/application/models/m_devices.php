@@ -138,7 +138,7 @@ class M_devices extends MY_Model
             $result = $this->run_sql($sql, array());
             if ( ! empty($result[0]->count) && intval($result[0]->count) > 0) {
                 $item = new stdClass();
-                $item ->$table = new stdClass();
+                $item->$table = new stdClass();
                 $item->$table->links = new stdClass();
                 $item->$table->links->self = $CI->config->config['base_url'] . 'index.php/devices/' . $id . '/' . $table;
                 $return[] = $item;
@@ -385,10 +385,10 @@ class M_devices extends MY_Model
         } else {
             $currency = false;
             $first_seen = false;
-            if ($this->db->field_exists('current', $sub_resource)) {
+            if ($this->db->table_exists($sub_resource) && $this->db->field_exists('current', $sub_resource)) {
                 $currency = true;
             }
-            if ($this->db->field_exists('first_seen', $sub_resource)) {
+            if ($this->db->table_exists($sub_resource) && $this->db->field_exists('first_seen', $sub_resource)) {
                 $first_seen = true;
             }
             if ($currency) {
