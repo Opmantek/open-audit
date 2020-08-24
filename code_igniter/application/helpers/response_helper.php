@@ -51,8 +51,8 @@ if ( ! function_exists('response_create')) {
         $log = new stdClass();
         $log->severity = 7;
         $log->type = 'system';
-        $log->object = 'input_helper';
-        $log->function = 'input_helper::create_response';
+        $log->object = 'response_helper';
+        $log->function = 'response_helper::response_create';
         $log->status = 'creating response object';
         $log->summary = '';
 
@@ -200,6 +200,7 @@ if ( ! function_exists('response_create')) {
         // depends on version affecting URI, collection and format
         $response->meta->sub_resource = response_get_sub_resource($instance->input->get('sub_resource'),
                                                                   $instance->input->post('sub_resource'),
+                                                                  $instance->uri->segment(3, ''),
                                                                   $response->meta->collection,
                                                                   $response->meta->format);
 
@@ -1124,7 +1125,7 @@ if ( ! function_exists('response_get_include')) {
             $log->sumary = 'Set include according to POST. ';
         }
         $valid_includes = response_valid_includes();
-        if ($format === 'screen' && (empty($include) OR $include === '*' OR $include === 'all')) {
+        if (($format === 'screen' && empty($include)) OR $include === '*' OR $include === 'all') {
             $include = implode(',', $valid_includes);
         } else {
             if ( ! empty($include)) {
@@ -1875,7 +1876,7 @@ if ( ! function_exists('response_get_sub_resource')) {
      * @param  string $format     [description]
      * @return string The requested includes, or all valid includes, or none
      */
-    function response_get_sub_resource($get = '', $post = '', $collection = '', $format = '')
+    function response_get_sub_resource($get = '', $post = '', $uri = '', $collection = '', $format = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1899,6 +1900,10 @@ if ( ! function_exists('response_get_sub_resource')) {
         if ( ! empty($post)) {
             $sub_resource = $_POST['sub_resource'];
             $log->summary = 'Set sub_resource according to POST.';
+        }
+        if ( ! empty($uri)) {
+            $sub_resource = $uri;
+            $log->summary = 'Set sub_resource according to URI.';
         }
         if ( ! empty($sub_resource) && $collection === 'devices') {
             $valid_sub_resources = response_valid_sub_resources();
@@ -2083,7 +2088,7 @@ if ( ! function_exists('response_valid_includes')) {
      */
     function response_valid_includes()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
     }
 }
 
