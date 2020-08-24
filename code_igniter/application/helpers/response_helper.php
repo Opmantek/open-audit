@@ -388,10 +388,6 @@ if ( ! function_exists('response_get_action')) {
             $action = 'reset';
             $log->summary = 'Set action because GET, action = reset.';
         }
-        if ($request_method === 'GET' && $action === 'export') {
-            $action = 'export';
-            $log->summary = 'Set action because GET, action = export.';
-        }
         if ($request_method === 'GET' && empty($id) && $action === 'create') {
             $action = 'create_form';
             $log->summary = 'Set action because GET, no id and action = create.';
@@ -1331,11 +1327,11 @@ if ( ! function_exists('response_get_limit')) {
         $limit = 0;
 
         if ( ! empty($get)) {
-            $limit = intval($_GET['limit']);
+            $limit = intval($get);
             $log->summary = 'Set limit according to GET.';
         }
         if ( ! empty($post)) {
-            $limit = intval($_POST['limit']);
+            $limit = intval($post);
             $log->summary = 'Set limit according to POST.';
         }
         if ($format === 'screen' && empty($limit)) {
