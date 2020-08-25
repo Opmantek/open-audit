@@ -374,14 +374,24 @@ if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.js
 }
 
 #function __autoload($class)
-if (!function_exists('__spl_autoload_register')) {
-	function __spl_autoload_register($class)
-	{
-	    if (strpos($class, 'CI_') !== 0) {
-	        @include_once(APPPATH . 'core/'. $class . EXT);
-	    }
-	}
+// if (!function_exists('__spl_autoload_register')) {
+// 	function __spl_autoload_register($class)
+// 	{
+// 	    if (strpos($class, 'CI_') !== 0) {
+// 	        @include_once(APPPATH . 'core/'. $class . EXT);
+// 	    }
+// 	}
+// }
+
+// Added for PHP 7.4.x compatibility
+function my_autoloader($class) {
+if (strpos($class, 'CI_') !== 0) {
+    if (file_exists($file = APPPATH . 'core/' . $class . 'php')) {
+        include $file;
+    }
+  }
 }
+spl_autoload_register('my_autoloader');
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
