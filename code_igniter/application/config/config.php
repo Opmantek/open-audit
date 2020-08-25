@@ -1,11 +1,11 @@
 <?php
-if (! defined('BASEPATH')) {
+if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 $config['web_internal_version'] = '20200620';
 $config['web_display_version'] = '3.4.0';
 $config['microtime'] = microtime(true);
-# $config['debug'] = false;
+// $config['debug'] = false;
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -19,14 +19,14 @@ $config['microtime'] = microtime(true);
 */
 # $config['base_url']	= "http://localhost/";
 
-#$config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
-#$config['base_url'] .= "://".$_SERVER['HTTP_HOST'];
-#$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
+// $config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
+// $config['base_url'] .= "://".$_SERVER['HTTP_HOST'];
+// $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 
 if (isset($_SERVER['HTTP_HOST'])) {
-    $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
+    $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? 'https' : 'http';
     $config['base_url'] .= '://'.$_SERVER['HTTP_HOST'];
-    #$config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
+    // $config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
     $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 } else {
     $config['base_url'] = 'http://localhost/';
@@ -270,13 +270,13 @@ $config['sess_time_to_update']    = 300;
 |
 */
 
-#$base_url_parts             = parse_url($config['base_url']);
+// $base_url_parts             = parse_url($config['base_url']);
 $config['cookie_prefix']    = "";
-#$config['cookie_domain']	= $base_url_parts['host'];
-#$config['cookie_path']		= $base_url_parts['path'];
+// $config['cookie_domain']	= $base_url_parts['host'];
+// $config['cookie_path']		= $base_url_parts['path'];
 $config['cookie_domain']    = '';
 $config['cookie_path']        = '';
-#unset($base_url_parts);
+// unset($base_url_parts);
 
 
 /*
@@ -349,16 +349,16 @@ $config['proxy_ips'] = '';
 
 
 if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.json')) {
-	if (!empty($_SERVER['REQUEST_URI'])) {
+	if ( ! empty($_SERVER['REQUEST_URI'])) {
 		$company = explode('/', $_SERVER['REQUEST_URI']);
 		$name = $company[1];
 		unset($company);
 		$file_config = @file_get_contents('/usr/local/open-audit/code_igniter/application/config/config.json');
-		if (!empty($file_config)) {
+		if ( ! empty($file_config)) {
 			$json_config = json_decode($file_config);
 			unset($file_config);
 			foreach ($json_config as $item) {
-				if ($item->id == $name) {
+				if ($item->id === $name) {
 					$config['base_url'] = $item->url;
 					$config['encryption_key'] = $item->encryption_key;
 					$config['id'] = $item->id;
@@ -373,25 +373,22 @@ if (file_exists('/usr/local/open-audit/code_igniter/application/config/config.js
 	}
 }
 
-#function __autoload($class)
-// if (!function_exists('__spl_autoload_register')) {
-// 	function __spl_autoload_register($class)
-// 	{
-// 	    if (strpos($class, 'CI_') !== 0) {
-// 	        @include_once(APPPATH . 'core/'. $class . EXT);
-// 	    }
-// 	}
-// }
-
 // Added for PHP 7.4.x compatibility
-function my_autoloader($class) {
-if (strpos($class, 'CI_') !== 0) {
-    if (file_exists($file = APPPATH . 'core/' . $class . 'php')) {
-        include $file;
-    }
-  }
+/**
+ * [my_autoloader description]
+ * @param  [type] $class [description]
+ * @return [type]        [description]
+ */
+function my_autoloader($class)
+{
+	if (strpos($class, 'CI_') !== 0) {
+		if (file_exists($file = APPPATH . 'core/' . $class . 'php')) {
+			include $file;
+		}
+	}
 }
+
 spl_autoload_register('my_autoloader');
 
-/* End of file config.php */
-/* Location: ./system/application/config/config.php */
+// End of file config.php
+// Location: ./config/config.php
