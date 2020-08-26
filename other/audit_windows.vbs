@@ -3474,7 +3474,11 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
     if (not isnull(colItems)) then
         for each objItem in colItems
             user_home = ""
-            set userItems = objWMIService.ExecQuery ("Select * from Win32_UserProfile Where SID = '" & objItem.SID & "'",,32)
+            if (cint(windows_build_number) > 6001) then
+                set userItems = objWMIService.ExecQuery ("Select * from Win32_UserProfile Where SID = '" & objItem.SID & "'",,32)
+            else
+                userItems = null
+            end if
             if (not isnull(userItems)) then
                 for each userItem in userItems
                     if (userItem.LocalPath > "") then
