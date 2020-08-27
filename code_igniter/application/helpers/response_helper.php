@@ -459,7 +459,7 @@ if ( ! function_exists('response_get_action')) {
         }
         if (($request_method === 'PUT' OR $request_method === 'PATCH') && $action === '' && ! empty($id)) {
             $action = 'update';
-            $log->summary = 'Set action because POST/PATCH/PUT, id and no action.';
+            $log->summary = 'Set action because PATCH/PUT, id and no action.';
         }
         if ($request_method === 'PATCH' && ! empty($device_ids)) {
             $action = 'update';
