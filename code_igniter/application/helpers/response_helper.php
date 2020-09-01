@@ -165,7 +165,7 @@ if ( ! function_exists('response_create')) {
         if ($response->meta->collection === 'search' && $response->meta->request_method !== 'POST') {
             // Redirect as we only accept POSTs for /search
             log_error('ERR-0007', 'search:' . $response->meta->request_method);
-            if ($instance->response->meta->format !== 'screen') {
+            if ($response->meta->format !== 'screen') {
                 $response->errors = array();
                 return($response);
             } else {
@@ -331,7 +331,9 @@ if ( ! function_exists('response_create')) {
             }
             redirect('/');
         }
-        $response->logs = $instance->response->logs;
+        if ( ! empty($instance->response->logs)) {
+            $response->logs = $instance->response->logs;
+        }
         return $response;
     }
 }
@@ -800,7 +802,7 @@ if ( ! function_exists('response_get_filter')) {
 
                 // Accept first_seen, last_seen, edited_date and timestamp as numeric unix_timestamp's and convert them to a local timestamp string
                 $item = substr($query->name, strpos($query->name, '.')+1);
-                if (($item === 'first_seen' OR $item === 'last_seen' OR $item === 'when' OR $item === 'edited_date' OR $item === 'timestamp') && is_numeric($value)) {
+                if (($item === 'first_seen' OR $item === 'last_seen' OR $item === 'when' OR $item === 'edited_date' OR $item === 'timestamp') && is_numeric($query->value)) {
                     if ($query->operator === 'like' OR $query->operator === 'not like') {
                         $query->value = str_replace('%', '', $query->value);
                     }
@@ -1682,7 +1684,7 @@ if ( ! function_exists('response_get_permission_id')) {
                     return false;
                 }
             }
-            $log->summary = 'User permittied to perform ' . $action . ' on OrgID ' . $received_data->org_id;
+            $log->summary = 'User permittied to perform ' . $action . ' on OrgID ' . @$received_data->org_id;
         }
         stdlog($log);
         return true;
