@@ -758,6 +758,14 @@ class M_devices_components extends MY_Model
             }
         }
 
+        // PAGEFILE
+        if ((string)$table === 'pagefile') {
+            for ($i=0; $i<count($input); $i++) {
+                $input[$i]->initial_size = abs($input[$i]->initial_size);
+                $input[$i]->max_size = abs($input[$i]->max_size);
+            }
+        }
+
         // PARTITION
         if ((string)$table === 'partition') {
             // AIX needs to also match on partition.description
@@ -836,6 +844,9 @@ class M_devices_components extends MY_Model
                 if (empty($input[$i]->port)) {
                     $input[$i]->port = 0;
                 }
+                if (empty($input[$i]->server_id)) {
+                    unset($input[$i]->server_id);
+                }
             }
         }
 
@@ -857,6 +868,10 @@ class M_devices_components extends MY_Model
                     $input[$i]->version_padded = version_padded($input[$i]->version);
                 } else {
                     $input[$i]->version_padded = '';
+                }
+                if ( ! empty($input[$i]->installed_on)) {
+                    $date = date_create($input[$i]->installed_on);
+                    $input[$i]->installed_on = date_format($date,"Y-m-d H:i:s");
                 }
             }
         }
@@ -899,7 +914,7 @@ class M_devices_components extends MY_Model
                     $virtual_machine->group = '';
                 }
                 if ( ! isset($virtual_machine->guest_system_id)) {
-                    $virtual_machine->guest_system_id = '';
+                    $virtual_machine->guest_system_id = 0;
                 }
                 if ( ! isset($virtual_machine->icon)) {
                     $virtual_machine->icon = '';
@@ -1016,7 +1031,9 @@ class M_devices_components extends MY_Model
                     // this is stored in $fields
                     $data = array();
                     foreach ($fields as $field) {
-                        $data[] = (string)$db_item->$field;
+                        // $data[] = (string)$db_item->$field;
+                        // removed the above cast to string as it prevents NULL from the database being used
+                        $data[] = $db_item->$field;
                     }
                     $sql = $this->clean_sql($sql);
                     $query = $this->db->query($sql, $data);
