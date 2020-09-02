@@ -1658,36 +1658,38 @@ class M_device extends MY_Model
         }
 
         // check if we have a matching entry in the vm table and update it if required
-        $sql = "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.system_id = system.id";
-        $sql = $this->clean_sql($sql);
-        $data = array("{$details->uuid}", "{$details->vm_uuid}");
-        $query = $this->db->query($sql, $data);
-        if ($query->num_rows() > 0) {
-            $row = $query->row();
-            $temp_vm_id = $row->{'vm.id'};
-            $details->vm_system_id = $row->{'vm.system_id'};
-            $details->vm_server_name = $row->{'system.hostname'};
-            $sql = "SELECT icon, 'vm' FROM system WHERE system.id = ?";
+        if ( ! empty($details->uuid) && ! empty($details->vm_uuid)) {
+            $sql = "SELECT vm.id AS `vm.id`, vm.system_id AS `vm.system_id`, system.hostname AS `system.hostname` FROM vm, system WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.system_id = system.id";
             $sql = $this->clean_sql($sql);
-            $data = array($details->id);
+            $data = array("{$details->uuid}", "{$details->vm_uuid}");
             $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            $details->icon = $row->icon;
-            $sql = 'UPDATE vm SET guest_system_id = ?, icon = ?, name = ? WHERE id = ?';
-            $sql = $this->clean_sql($sql);
-            $name = $details->name;
-            if (empty($details->name)) {
-                $name = $details->hostname;
+            if ($query->num_rows() > 0) {
+                $row = $query->row();
+                $temp_vm_id = $row->{'vm.id'};
+                $details->vm_system_id = $row->{'vm.system_id'};
+                $details->vm_server_name = $row->{'system.hostname'};
+                $sql = "SELECT icon, 'vm' FROM system WHERE system.id = ?";
+                $sql = $this->clean_sql($sql);
+                $data = array($details->id);
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                $details->icon = $row->icon;
+                $sql = 'UPDATE vm SET guest_system_id = ?, icon = ?, name = ? WHERE id = ?';
+                $sql = $this->clean_sql($sql);
+                $name = $details->name;
+                if (empty($details->name)) {
+                    $name = $details->hostname;
+                }
+                if (empty($details->name)) {
+                    $name = $details->dns_hostname;
+                }
+                $data = array($details->id, "{$details->icon}", "{$name}", "{$temp_vm_id}");
+                $query = $this->db->query($sql, $data);
+                $sql = 'UPDATE system SET vm_system_id = ?, vm_server_name = ? WHERE id = ?';
+                $sql = $this->clean_sql($sql);
+                $data = array($details->vm_system_id, $details->vm_server_name, $details->id);
+                $query = $this->db->query($sql, $data);
             }
-            if (empty($details->name)) {
-                $name = $details->dns_hostname;
-            }
-            $data = array($details->id, "{$details->icon}", "{$name}", "{$temp_vm_id}");
-            $query = $this->db->query($sql, $data);
-            $sql = 'UPDATE system SET vm_system_id = ?, vm_server_name = ? WHERE id = ?';
-            $sql = $this->clean_sql($sql);
-            $data = array($details->vm_system_id, $details->vm_server_name, $details->id);
-            $query = $this->db->query($sql, $data);
         }
 
         // insert an entry into the change log
