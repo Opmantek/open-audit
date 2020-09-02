@@ -1593,6 +1593,13 @@ class M_device extends MY_Model
             $details->first_seen = $this->config->config['timestamp'];
         }
 
+        // Remove any empty fields to satisfy STRICT MODE, particularly TEXT fields
+        foreach ($details as $key => $value) {
+            if (empty($value)) {
+                unset($details->{$key});
+            }
+        }
+
         $columns = $this->db->list_fields('system');
 
         $keys = '';
