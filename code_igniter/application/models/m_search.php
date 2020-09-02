@@ -96,12 +96,9 @@ class M_search extends MY_Model
                 }
             }
             $padded_ip = '%' . implode('.', $temp) . '%';
-
-            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status`, ip.ip AS `ip.ip` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE system.org_id IN ({$CI->user->org_list}) AND (
-                system.name LIKE ? OR system.hostname LIKE ? OR  system.dns_hostname LIKE ? OR  system.sysName LIKE ? OR  system.domain LIKE ? OR  system.dns_domain LIKE ? OR 
-                system.ip LIKE ? OR system.ip LIKE ? OR ip.ip LIKE ? OR ip.ip LIKE ? ) GROUP BY system.id, ip.ip";
+            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status`, system.dns_hostname AS `system.dns_hostname`, system.dns_domain AS `system.dns_domain`, system.sysName AS `system.sysName`, ip.ip AS `ip.ip` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y' AND (ip.ip LIKE ? or ip.ip LIKE ?)) WHERE system.org_id IN ({$CI->user->org_list}) AND ( system.name LIKE ? OR system.hostname LIKE ? OR  system.dns_hostname LIKE ? OR  system.sysName LIKE ? OR  system.domain LIKE ? OR  system.dns_domain LIKE ? OR system.ip LIKE ? OR system.ip LIKE ? OR ip.ip LIKE ? or ip.ip LIKE ?)";
             $value = '%' . $value . '%';
-            $result = $this->run_sql($sql, array($value, $value, $value, $value, $value, $value, $padded_ip, $value, $padded_ip, $value));
+            $result = $this->run_sql($sql, array($value, $padded_ip, $value, $value, $value, $value, $value, $value, $padded_ip, $value, $value, $padded_ip));
             $return = $this->format_data($result, 'devices');
         } else {
             $CI->response->meta->data_order = array('system.id', 'system.icon', 'system.type', 'system.name', 'table', 'column', 'value');
