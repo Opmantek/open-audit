@@ -96,6 +96,7 @@ if ( ! function_exists('response_create')) {
         $response->meta->collection = '';
         $response->meta->current = 'y';
         $response->meta->debug = false;
+        $response->meta->debug = true;
         $response->meta->filtered = '';
         $response->meta->format = '';
         $response->meta->groupby = '';
@@ -1474,6 +1475,7 @@ if ( ! function_exists('response_get_org_list')) {
             case 'racks':
             case 'rooms':
             case 'rows':
+            case 'search':
             case 'tasks':
             case 'users':
                 $log->summary = 'Set org_list according to ' . $collection . ' for DESCENDANTS.';
@@ -1486,7 +1488,6 @@ if ( ! function_exists('response_get_org_list')) {
             case 'help':
             case 'nmis':
             case 'san':
-            case 'search':
             case 'test':
             case 'util':
                 $log->summary = 'Set org_list according to ' . $collection . ' for USER.';

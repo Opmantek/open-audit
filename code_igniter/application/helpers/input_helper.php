@@ -1146,6 +1146,7 @@ if ( ! function_exists('inputRead')) {
             case 'racks':
             case 'rooms':
             case 'rows':
+            case 'search':
             case 'tasks':
             case 'users':
                 $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
@@ -1157,7 +1158,6 @@ if ( ! function_exists('inputRead')) {
             case 'help':
             case 'nmis':
             case 'san':
-            case 'search':
             case 'test':
             case 'util':
                 $org_list = $CI->user->orgs;
