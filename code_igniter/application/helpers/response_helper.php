@@ -278,7 +278,7 @@ if ( ! function_exists('response_create')) {
         $response->meta->limit = response_get_limit($instance->input->get('limit'),
                                                     $instance->input->post('limit'),
                                                     $response->meta->format,
-                                                    $instance->config->config['page_size']);
+                                                    @$instance->config->config['page_size']);
 
         // depends on offset
         $response->meta->internal->limit = '';
