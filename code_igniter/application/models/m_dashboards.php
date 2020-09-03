@@ -218,9 +218,21 @@ class M_dashboards extends MY_Model
         $CI = & get_instance();
         if ( ! empty($user_id)) {
             $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
-            $sql = "SELECT * FROM dashboards WHERE org_id IN ({$org_list})";
-            $result = $this->run_sql($sql, array());
-            $result = $this->format_data($result, 'dashboards');
+            $sql = '/* m_dashboards::collection */ ' . "SELECT * FROM dashboards WHERE org_id IN ({$org_list})";
+            // NOTE - running this here because on early version of Open-AudIT, the dashboard table does exist
+            //        and our run_sql function will throw an error and cause a redirect loop
+            $temp_debug = $this->db->db_debug;
+            $this->db->db_debug = false;
+            $query = $this->db->query($sql);
+            $this->db->db_debug = $temp_debug;
+            unset($temp_debug);
+            $CI->response->meta->sql[] = $this->db->last_query();
+            if ( ! empty($result)) {
+                $result = @$query->result();
+                $result = $this->format_data($result, 'dashboards');
+            } else {
+                $result = array();
+            }
             return $result;
         }
         if ( ! empty($response)) {
