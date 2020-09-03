@@ -1599,7 +1599,7 @@ if ( ! function_exists('response_get_permission_ca')) {
         if ($collection === 'baselines_policies') {
             $perm_collection = 'baselines';
         }
-        if ( ! $instance->m_users->get_user_permission($user->id, $perm_collection, $permissions[$action])) {
+        if ( ! $instance->m_users->get_user_permission($user->id, $perm_collection, $permissions[$action]) and $instance->config->config['internal_version'] >= '20160904') {
             log_error('ERR-0015', $collection . ':' . $permissions[$action]);
             $log->details = 'User not permittied to perform ' . $action . ' on ' . $collection;
             $log->severity = 5;
