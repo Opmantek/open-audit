@@ -35,7 +35,7 @@ ALTER TABLE system ADD maintenance_expires date NOT NULL DEFAULT '2000-01-01' AF
 
 ALTER TABLE system ADD warranty_status VARCHAR(100) NOT NULL DEFAULT '' AFTER warranty_type;
 
-INSERT INTO `users` VALUES (3,'nmis',1,'','NMIS','','[\"admin\",\"org_admin\"]','[1]','en','y','','user',1,'','system','2000-01-01 00:00:00');
+INSERT INTO `users` VALUES (null, 'nmis', 1, '', 'NMIS', '', '[\"admin\",\"org_admin\"]', '[1]', 'en', 'y', '', 'user', 1, '', '', 'system', '2000-01-01 00:00:00')
 
 UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal_version';
 
