@@ -146,9 +146,15 @@ class M_configuration extends MY_Model
             }
         }
 
+        if (empty($config_item)) {
+            // We have nothing to ID the particular config item
+            log_error('ERR-0044', 'm_configuration::update', 'Could not retrieve config_item for update (supplied: ' . $id . ').');
+            return false;
+        }
+
         if (empty($id)) {
             // We have nothing to ID the particular config item
-            log_error('ERR-0044', 'm_configuration::update', 'No (or invalid) ID or NAME supplied to update (supplied: ' . $id . ').');
+            log_error('ERR-0044', 'm_configuration::update', 'No (or invalid) ID or NAME supplied to update');
             return false;
         }
 
@@ -157,13 +163,13 @@ class M_configuration extends MY_Model
             return false;
         }
 
-        if ($config_item->type === 'bool' && $value !== 'y' && $value !== 'n' && $value !== '') {
+        if ( ! empty($config_item->type) && $config_item->type === 'bool' && $value !== 'y' && $value !== 'n' && $value !== '') {
             // invalid
             log_error('ERR-0044', 'm_configuration::update', 'Value supplied must be either y or n. Supplied \'' . $value . '\'. ');
             return false;
         }
 
-        if ($config_item->type === 'number') {
+        if ( ! empty($config_item->type) && $config_item->type === 'number') {
             if ( ! is_numeric($value) && ! is_int($value) && $value !== '') {
                 log_error('ERR-0044', 'm_configuration::update', 'Value supplied must be a number.');
                 return false;
@@ -180,7 +186,7 @@ class M_configuration extends MY_Model
             return false;
         }
 
-        if ($config_item->type === 'text' && $config_item->name !== 'modules' && $config_item->name !== 'servers') {
+        if ( ! empty($config_item->type) && $config_item->type === 'text' && $config_item->name !== 'modules' && $config_item->name !== 'servers') {
             if (strpos($value, '"') !== false OR strpos($value, "'") !== false) {
                 // invalid
                 log_error('ERR-0044', 'm_configuration::update', 'URL value contains disallowed characters (quotes).');
