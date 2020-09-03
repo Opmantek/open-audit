@@ -316,6 +316,9 @@ class M_orgs extends MY_Model
      */
     public function get_user_descendants($user_id = 0)
     {
+        if ($this->config->config['internal_version'] < '20170104') {
+            return array(1);
+        }
         $user_id = intval($user_id);
         if ( ! empty($this->user) && intval($this->user->id) === $user_id) {
             $org_list = $this->user->orgs_list;
