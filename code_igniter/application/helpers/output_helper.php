@@ -720,6 +720,9 @@ if ( ! function_exists('output')) {
     function create_links()
     {
         $CI = & get_instance();
+        if (empty($CI->config->config['page_size'])) {
+            $CI->config->config['page_size'] = 1000;
+        }
         $offset = '';
         if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
