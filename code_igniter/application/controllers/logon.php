@@ -278,7 +278,7 @@ class Logon extends CI_Controller
      */
     public function check_defaults()
     {
-        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+        if ( empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             $oae_url = '';
             if (!empty($this->config->config['oae_url'])) {
                 $oae_url = $this->config->config['oae_url'];
@@ -357,7 +357,7 @@ class Logon extends CI_Controller
         $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 
         // If the default_network_address has not been altered by the user, update it.
-        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+        if ((empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') && $this->db->table_exists('configuration')) {
             $sql = '/* logon::check_defaults */ ' . "SELECT * FROM configuration WHERE name = 'default_network_address'";
             $query = $this->db->query($sql);
             $result = $query->result();
@@ -398,10 +398,12 @@ class Logon extends CI_Controller
         }
 
         # Cleanup (delete) any single discoveries older than 1 hour
-        $sql = "DELETE FROM `discoveries` WHERE `discard` = 'y' AND `edited_date` < (NOW() - INTERVAL 1 HOUR)";
-        $query = $this->db->query($sql);
+        if ($this->db->table_exists('discoveries')) {
+            $sql = "DELETE FROM `discoveries` WHERE `discard` = 'y' AND `edited_date` < (NOW() - INTERVAL 1 HOUR)";
+            $query = $this->db->query($sql);
+        }
 
-        if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+        if (empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             # Get the installed application list from Enterprise
             $url = str_replace('open-audit/', '', $oae_url);
             $installed = @json_decode(@file_get_contents($url . '.json'));
