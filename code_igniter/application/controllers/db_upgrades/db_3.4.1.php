@@ -29,6 +29,12 @@
 
 /*
 
+ALTER TABLE connections CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '';
+
+ALTER TABLE network CHANGE `dhcp_lease_obtained` `dhcp_lease_obtained` varchar(30) NOT NULL DEFAULT '';
+
+ALTER TABLE network CHANGE `dhcp_lease_expires` `dhcp_lease_expires` varchar(30) NOT NULL DEFAULT '';
+
 ALTER TABLE system ADD end_of_production date NOT NULL DEFAULT '2000-01-01' AFTER end_of_service;
 
 ALTER TABLE system ADD maintenance_expires date NOT NULL DEFAULT '2000-01-01' AFTER warranty_type;
@@ -42,7 +48,13 @@ UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal_version
 UPDATE `configuration` SET `value` = '3.4.1' WHERE `name` = 'display_version';
 */
 
-$this->log_db('Upgrade database to 3.4.0 commenced');
+$this->log_db('Upgrade database to 3.4.1 commenced');
+
+$this->alter_table('connections', 'name', "`name` `name` varchar(200) NOT NULL DEFAULT ''");
+
+$this->alter_table('networks', 'dhcp_lease_obtained', "`dhcp_lease_obtained` varchar(30) NOT NULL DEFAULT ''");
+
+$this->alter_table('networks', 'dhcp_lease_expires', "`dhcp_lease_expires` varchar(30) NOT NULL DEFAULT ''");
 
 $this->alter_table('system', 'end_of_production', "ADD `end_of_production` date NOT NULL DEFAULT '2000-01-01' AFTER `end_of_service`", 'add');
 
@@ -53,6 +65,7 @@ $this->alter_table('system', 'warranty_status', "ADD warranty_status VARCHAR(100
 $sql = "INSERT INTO `users` VALUES (null, 'nmis', 1, '', 'NMIS', '', '[\"admin\",\"org_admin\"]', '[1]', 'en', 'y', '', 'user', 1, '', '', 'system', '2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
+
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal_version'";

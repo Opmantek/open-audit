@@ -3537,7 +3537,7 @@ CREATE TABLE `system` (
   `uptime` varchar(50) NOT NULL DEFAULT '',
   `form_factor` varchar(50) NOT NULL DEFAULT '',
   `os_bit` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `memory_count` bigint unsigned NOT NULL DEFAULT '0',
+  `memory_count` bigint(20) unsigned NOT NULL DEFAULT '0',
   `processor_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `storage_count` int(10) unsigned NOT NULL DEFAULT '0',
   `os_installation_date` date NOT NULL DEFAULT '2000-01-01',
@@ -3581,7 +3581,7 @@ CREATE TABLE `system` (
   `warranty_duration` int(5) unsigned NOT NULL DEFAULT '0',
   `warranty_expires` date NOT NULL DEFAULT '2000-01-01',
   `warranty_type` enum('','24x7x365','9x5x5','Next Business Day') NOT NULL DEFAULT '',
-  `warranty_status` VARCHAR(100) NOT NULL DEFAULT '',
+  `warranty_status` varchar(100) NOT NULL DEFAULT '',
   `maintenance_expires` date NOT NULL DEFAULT '2000-01-01',
   `end_of_life` date NOT NULL DEFAULT '2000-01-01',
   `end_of_service` date NOT NULL DEFAULT '2000-01-01',
@@ -3814,7 +3814,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `password` varchar(250) NOT NULL DEFAULT '',
   `full_name` varchar(100) NOT NULL DEFAULT '',
