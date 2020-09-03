@@ -508,7 +508,11 @@ if ( ! function_exists('stdlog')) {
         }
 
         if (intval($CI->config->config['internal_version']) <= 20160820) {
-            if ( ! $CI->db->table_exists('logs')) {
+            $sql = "SHOW TABLES LIKE 'logs'";
+            $query = $CI->db->query($sql);
+            $count = count($query->result());
+            // if ( ! $CI->db->table_exists('logs')) {
+            if ($count === 0) {
                 $sql = "CREATE TABLE `logs` (
                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                       `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
