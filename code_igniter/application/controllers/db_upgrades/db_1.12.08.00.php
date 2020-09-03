@@ -554,6 +554,7 @@ if ($this->db->table_exists('oa_config')) {
 $this->load->model('m_configuration');
 $this->m_configuration->load();
 $this->load->model('m_collection');
+$this->load->model('m_credentials');
 $this->load->library('encrypt');
 if (!empty($this->config->config['default_snmp_community'])) {
     $data = new stdClass();
