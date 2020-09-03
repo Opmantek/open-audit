@@ -233,8 +233,18 @@ class M_roles extends MY_Model
         $CI = & get_instance();
         if ( ! empty($user_id)) {
             $sql = 'SELECT * FROM roles';
-            $result = $this->run_sql($sql, array());
-            $result = $this->format_data($result, 'roles');
+            $temp_debug = $this->db->db_debug;
+            $this->db->db_debug = false;
+            $query = $this->db->query($sql);
+            $this->db->db_debug = $temp_debug;
+            unset($temp_debug);
+            $CI->response->meta->sql[] = $this->db->last_query();
+            if ( ! empty($result)) {
+                $result = @$query->result();
+                $result = $this->format_data($result, 'dashboards');
+            } else {
+                $result = array();
+            }
             return $result;
         }
         if ( ! empty($response)) {
