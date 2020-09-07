@@ -61,7 +61,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a href="devices?location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo $item->attributes->device_count?></a></td>
+                    <td class="text-center"><a href="devices?system.location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo $item->attributes->device_count?></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('locations.name', $item->attributes->name); ?>
                     <?php refine('locations.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
