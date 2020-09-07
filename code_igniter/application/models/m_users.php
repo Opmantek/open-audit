@@ -541,12 +541,15 @@ class M_users extends MY_Model
         }
         if ( ! empty($_SERVER['HTTP_UUID'])) {
             $supplied_uuid = $_SERVER['HTTP_UUID'];
-            $files = array('/usr/local/opmojo/conf/opCommon.nmis', '/usr/local/omk/conf/opCommon.nmis');
+            $files = array('/usr/local/omk/conf/opCommon.nmis', '/usr/local/opmojo/conf/opCommon.nmis');
             $operating_system = php_uname('s');
             if ($operating_system === 'Windows NT') {
                 $files = array('c:\\omk\\conf\\opCommon.nmis', 'c:\\usr\\local\\opmojo\\conf\\opCommon.nmis');
             }
             unset($operating_system);
+            if ( ! empty($CI->config->config['oae_location'])) {
+                $files = array($CI->config->config['oae_location']);
+            }
             $uuid = '';
             foreach ($files as $file) {
                 if (empty($uuid)) {

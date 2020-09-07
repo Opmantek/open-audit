@@ -28,6 +28,9 @@
 **/
 
 /*
+DELETE FROM configuration WHERE name = 'oae_location';
+
+INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','n','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
 
 ALTER TABLE connections CHANGE `name` `name` varchar(200) NOT NULL DEFAULT '';
 
@@ -41,14 +44,20 @@ ALTER TABLE system ADD maintenance_expires date NOT NULL DEFAULT '2000-01-01' AF
 
 ALTER TABLE system ADD warranty_status VARCHAR(100) NOT NULL DEFAULT '' AFTER warranty_type;
 
-INSERT INTO `users` VALUES (null, 'nmis', 1, '', 'NMIS', '', '[\"admin\",\"org_admin\"]', '[1]', 'en', 'y', '', 'user', 1, '', '', 'system', '2000-01-01 00:00:00')
-
 UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.4.1' WHERE `name` = 'display_version';
 */
 
 $this->log_db('Upgrade database to 3.4.1 commenced');
+
+$sql = "DELETE FROM configuration WHERE name = 'oae_location'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','n','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('connections', 'name', "`name` `name` varchar(200) NOT NULL DEFAULT ''");
 
@@ -62,10 +71,16 @@ $this->alter_table('system', 'maintenance_expires', "ADD `maintenance_expires` d
 
 $this->alter_table('system', 'warranty_status', "ADD warranty_status VARCHAR(100) NOT NULL DEFAULT '' AFTER warranty_type", 'add');
 
-$sql = "INSERT INTO `users` VALUES (null, 'nmis', 1, '', 'NMIS', '', '[\"admin\",\"org_admin\"]', '[1]', 'en', 'y', '', 'user', 1, '', '', 'system', '2000-01-01 00:00:00')";
-$this->db->query($sql);
+$sql = "SELECT COUNT(*) FROM users WHERE name = 'nmis'";
+$query = $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
+$result = $query->result();
 
+if (count($result) == 0) {
+	$sql = "INSERT INTO `users` VALUES (null, 'nmis', 1, '', 'NMIS', '', '[\"admin\",\"org_admin\"]', '[1]', 'en', 'y', '', 'user', 1, '', '', 'system', '2000-01-01 00:00:00')";
+	$this->db->query($sql);
+	$this->log_db($this->db->last_query() . ';');
+}
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal_version'";
