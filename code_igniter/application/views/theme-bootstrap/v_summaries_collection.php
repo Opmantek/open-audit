@@ -96,8 +96,8 @@
                 <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="summaries/<?php echo intval($item->attributes->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                         <td><?php echo ucwords(htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET))?></td>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>

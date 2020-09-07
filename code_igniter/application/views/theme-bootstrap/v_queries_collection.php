@@ -57,7 +57,7 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <?php if (strlen($item->attributes->description) > 30) { $item->attributes->description = substr($item->attributes->description, 0, 27) . '...'; } ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="devices?sub_resource=query&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('queries.name', $item->attributes->name); ?>
                     <?php refine('queries.description', $item->attributes->description); ?>
