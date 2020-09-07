@@ -58,10 +58,8 @@
                         <div class="row">
                             <div class="col-lg-10 col-lg-offset-1">
                                 <span class="badge" style="position:absolute; bottom:-8px; right:15%; font-size:1em; font-weight:400;"><?php echo htmlspecialchars( $endpoint->attributes->count, REPLACE_FLAGS, CHARSET) ?></span>
-                                <a href="<?php echo htmlspecialchars( $endpoint->attributes->collection, REPLACE_FLAGS, CHARSET) ?>">
-                                    <button type="button" class="btn btn-default">
-                                        <i class="fa fa-<?php echo htmlspecialchars( $endpoint->attributes->icon, REPLACE_FLAGS, CHARSET) ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
-                                    </button>
+                                <a href="<?php echo htmlspecialchars( $endpoint->attributes->collection, REPLACE_FLAGS, CHARSET) ?>" class="btn btn-default">
+                                    <i class="fa fa-<?php echo htmlspecialchars( $endpoint->attributes->icon, REPLACE_FLAGS, CHARSET) ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
                                 </a>
                             </div>
                         </div>
@@ -75,6 +73,7 @@
             ?>
             </div>
         </div>
+    </div>
 
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
