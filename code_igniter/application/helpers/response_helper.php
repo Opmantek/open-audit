@@ -1972,7 +1972,7 @@ if ( ! function_exists('response_get_version')) {
      * Determine if the user specifically requested a version. If so, adjust the URI.
      * @return int The version number, defaults to 1
      */
-    function response_get_version($uri_segments = [], $accept_header = '')
+    function response_get_version($uri_segments = null, $accept_header = '')
     {
         return 1;
 
@@ -1983,6 +1983,12 @@ if ( ! function_exists('response_get_version')) {
         $log->function = 'response_helper::response_get_version';
         $log->status = 'parsing';
         $log->summary = 'Set version per default.';
+
+        if (empty($uri_segments) or ! is_array($uri_segments)) {
+            $log->summary = 'Bad segments array passed to function';
+            stdlog($log);
+            return 1;
+        }
 
         $instance = & get_instance();
         $version = 1;
@@ -2017,9 +2023,9 @@ if ( ! function_exists('response_set_uri')) {
      * Determine if the user specifically requested a version. If so, adjust the URI.
      * @return array The URI after removing any API version items
      */
-    function response_set_uri($uri_segments = [])
+    function response_set_uri($uri_segments = null)
     {
-        if ( ! empty($uri_segments[1]) && ($uri_segments[1] === 'api' OR $uri_segments[1] === 'v1' OR $uri_segments[1] === 'v2')) {
+        if ( ! empty($uri_segments[1]) && is_array($uri_segments) && ($uri_segments[1] === 'api' OR $uri_segments[1] === 'v1' OR $uri_segments[1] === 'v2')) {
             if ($uri_segments[1] === 'api') {
                 unset($uri_segments[1]);
                 unset($uri_segments[2]);
