@@ -59,7 +59,7 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','n','s
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->alter_table('connections', 'name', "`name` `name` varchar(200) NOT NULL DEFAULT ''");
+$this->alter_table('connections', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 $this->alter_table('networks', 'dhcp_lease_obtained', "`dhcp_lease_obtained` varchar(30) NOT NULL DEFAULT ''");
 
