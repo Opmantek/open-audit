@@ -61,9 +61,9 @@ $this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('connections', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
-$this->alter_table('networks', 'dhcp_lease_obtained', "`dhcp_lease_obtained` varchar(30) NOT NULL DEFAULT ''");
+$this->alter_table('network', 'dhcp_lease_obtained', "`dhcp_lease_obtained` varchar(30) NOT NULL DEFAULT ''");
 
-$this->alter_table('networks', 'dhcp_lease_expires', "`dhcp_lease_expires` varchar(30) NOT NULL DEFAULT ''");
+$this->alter_table('network', 'dhcp_lease_expires', "`dhcp_lease_expires` varchar(30) NOT NULL DEFAULT ''");
 
 $this->alter_table('system', 'end_of_production', "ADD `end_of_production` date NOT NULL DEFAULT '2000-01-01' AFTER `end_of_service`", 'add');
 
