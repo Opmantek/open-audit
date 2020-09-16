@@ -197,6 +197,14 @@ if (! function_exists('execute_windows')) {
             // test for working 'new' winexe first
             $command_string = "${filepath}/winexe-static-2 -U \"${domain}${username}%${password}\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" ";
             exec($command_string, $output, $return_var);
+            // Log this test.
+            $log->command = "${filepath}/winexe-static-2 -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" ";
+            $log->command_time_to_execute = 1;
+            $log->message = 'Testing winexe-static-2';
+            $output[] = intval($return_var);
+            $log->command_output = json_encode($output);
+            $log->command_status = 'notice';
+            discovery_log($log);
             if (intval($return_var) !== 0) {
                 // Winexe 2 using SMB2 failed.
                 $command_string = "timeout 5m ${filepath}/winexe-static -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
@@ -213,6 +221,7 @@ if (! function_exists('execute_windows')) {
             $log_id = discovery_log($log);
             $item_start = microtime(true);
             $output = '';
+
             exec($command_string, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->id = $log_id;
