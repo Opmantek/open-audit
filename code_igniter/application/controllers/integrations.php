@@ -149,6 +149,25 @@ class Integrations extends MY_Controller
     }
 
     /**
+     * [execute description]
+     * @return [type] [description]
+     */
+    public function execute()
+    {
+        $this->m_integrations->queue($this->response->meta->id);
+        $this->load->model('m_queue');
+        $this->m_queue->start();
+        sleep(2);
+        if ($this->response->meta->format === 'json') {
+            $this->response->meta->format = 'json';
+            $this->response->data = $this->m_integrations->read($this->response->meta->id);
+            output($this->response);
+        } else {
+            redirect('integrations/'.$this->response->meta->id);
+        }
+    }
+
+    /**
     * Collection of objects
     *
     * @access public

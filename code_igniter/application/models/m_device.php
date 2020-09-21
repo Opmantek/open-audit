@@ -240,7 +240,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -272,7 +274,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -303,7 +307,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -365,7 +371,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -427,7 +435,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -495,7 +505,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -551,7 +563,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 return $details->id;
             }
@@ -606,7 +620,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 return $details->id;
             }
@@ -661,7 +677,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -717,7 +735,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -785,7 +805,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -847,7 +869,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -915,7 +939,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -971,7 +997,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -1037,7 +1065,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -1105,7 +1135,9 @@ class M_device extends MY_Model
                         $log->message = $message->message;
                         $log->command_status = $message->command_status;
                         $log->command_output = $message->command_output;
-                        discovery_log($log);
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
                     $message->command_output = '';
                     return $details->id;
@@ -1177,7 +1209,9 @@ class M_device extends MY_Model
                             $log->message = $message->message;
                             $log->command_status = $message->command_status;
                             $log->command_output = $message->command_output;
-                            discovery_log($log);
+                            if ( ! empty($log->discovery_id)) {
+                                discovery_log($log);
+                            }
                         }
                         $message->command_output = '';
                         return $details->id;
@@ -1247,7 +1281,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -1272,7 +1308,9 @@ class M_device extends MY_Model
                         $log->message = $message->message;
                         $log->command_status = $message->command_status;
                         $log->command_output = $message->command_output;
-                        discovery_log($log);
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
                     $message->command_output = '';
                     return $details->id;
@@ -1329,7 +1367,9 @@ class M_device extends MY_Model
                     $log->message = $message->message;
                     $log->command_status = $message->command_status;
                     $log->command_output = $message->command_output;
-                    discovery_log($log);
+                    if ( ! empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
                 $message->command_output = '';
                 return $details->id;
@@ -1360,7 +1400,9 @@ class M_device extends MY_Model
                                 $log->message = $message->message;
                                 $log->command_status = $message->command_status;
                                 $log->command_output = $message->command_output;
-                                discovery_log($log);
+                                if ( ! empty($log->discovery_id)) {
+                                    discovery_log($log);
+                                }
                             }
                             $message->command_output = '';
                             return $details->id;
@@ -1423,7 +1465,9 @@ class M_device extends MY_Model
                         $log->message = $message->message;
                         $log->command_status = $message->command_status;
                         $log->command_output = $message->command_output;
-                        discovery_log($log);
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
                     $message->command_output = '';
                     return $details->id;
@@ -1473,7 +1517,9 @@ class M_device extends MY_Model
                 $log->message = $message->message;
                 $log->command_status = $message->command_status;
                 $log->command_output = $message->command_output;
-                discovery_log($log);
+                if ( ! empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
             }
         } else {
             $message = new stdClass();
@@ -1485,7 +1531,9 @@ class M_device extends MY_Model
                 $log->message = $message->message;
                 $log->command_status = $message->command_status;
                 $log->command_output = $message->command_output;
-                discovery_log($log);
+                if ( ! empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
             }
         }
         unset($log);

@@ -483,6 +483,10 @@ class Util extends CI_Controller
             if ($item->type === 'ip_audit') {
                 $result = ip_audit($details);
             }
+
+            if ($item->type === 'integrations') {
+                $this->m_integrations->execute($details);
+            }
         }
     }
 }

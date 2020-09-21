@@ -78,6 +78,23 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+    public function integrations()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        #$this->load->model('m_orgs');
+        $response = new stdCLass();
+        $response->meta = new stdClass();
+        $response->meta->filter = array();
+        $this->load->model('m_integrations');
+        $this->m_integrations->execute(2);
+        $sql = "SELECT * FROM integrations_log";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        echo "<pre>\n";
+        print_r($result);
+    }
+
     /**
      * [response description]
      * @return [type] [description]
