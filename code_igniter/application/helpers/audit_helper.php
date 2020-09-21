@@ -269,7 +269,7 @@ if (!function_exists('audit_convert')) {
         }
 
         $log->severity = 7;
-        $log->message = 'audit converted';
+        $log->message = 'Audit converted';
         if ( ! empty($log->discovery_id)) {
             $log->command_status = 'success';
             discovery_log($log);
