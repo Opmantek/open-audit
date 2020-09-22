@@ -1434,7 +1434,7 @@ if ( ! function_exists('ip_audit')) {
 			$log->message = "IP {$device->ip} is running {$device->os_family}, which will not run our audit_linux.sh script, skipping.";
 			discovery_log($log);
 		}
-
+		$temp_audit_script = $audit_script;
 		// Audit via SSH
 		if ($ip_scan->details->ssh_status === 'true' && $device->os_family !== 'DD-WRT' && $device->os_family !== 'LEDE' && ! empty($credentials_ssh) && ! empty($audit_script)) {
 			$result = '';
@@ -1607,13 +1607,13 @@ if ( ! function_exists('ip_audit')) {
 
 		// Delete the local audit script if it's not a default script
 		// if ( ! empty($audit_script) && strpos($audit_script, 'scripts') !== false) {
-		if ( strpos($parameters->source, 'scripts') !== false) {
+		if ($temp_audit_script) {
 			$log->severity = 7;
 			$log->message = 'Attempt to delete temp audit script succeeded';
 			$log->command_status = 'notice';
-			$log->command = "unlink('" . $parameters->source ."')";
+			$log->command = "unlink('" . $temp_audit_script ."')";
 			try {
-				unlink($parameters->source);
+				unlink($temp_audit_script);
 			} catch (Exception $error) {
 				$log->severity = 4;
 				$log->message = 'Could not delete temp audit script';
@@ -1625,6 +1625,7 @@ if ( ! function_exists('ip_audit')) {
 			$log->message = '';
 			$log->command_status = 'notice';
 			$log->command = '';
+			unset($temp_audit_script);
 		}
 
 		$audit = false;
