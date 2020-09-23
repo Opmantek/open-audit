@@ -90,8 +90,14 @@ class M_networks extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = 'SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?';
+        $sql = "SELECT * FROM networks WHERE id = ?";
         $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
+        $org_list = $this->m_orgs->get_descendants($result[0]->org_id);
+        $org_list[] = $result[0]->org_id;
+        $org_list = implode(',', $org_list);
+        $sql = 'SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id AND system.org_id IN(?)) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?';
+        $data = array($org_list, intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
         return $result;
@@ -136,14 +142,18 @@ class M_networks extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = 'SELECT `network` FROM `networks` WHERE `id` = ?';
+        $this->load->model('m_orgs');
+        $sql = 'SELECT `network`, `org_id` FROM `networks` WHERE `id` = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         if (count($result) > 0) {
             $network = $result[0]->network;
+            $org_list = $this->m_orgs->get_descendants($result[0]->org_id);
+            $org_list[] = $result[0]->org_id;
+            $org_list = implode(',', $org_list);
             if ($network !== '') {
-                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
-                $data = array((string)$network);
+                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ? AND system.org_id IN (${org_list})";
+                $data = array((string)$network, $org_list);
                 $result = $this->run_sql($sql, $data);
                 $result = $this->format_data($result, 'devices');
                 return $result;
@@ -189,7 +199,8 @@ class M_networks extends MY_Model
         $data = array(intval($network->org_id), (string)$network->network);
         $result = $this->run_sql($sql, $data);
         // Note we receive false back from run_sql if it's a select and no rows are returned.
-        if ($result === false) {
+        if (empty($result) OR $result === false OR count($result) == 0) {
+
             // the network does not exist. Log it and insert it
             $this->log->summary = "Inserting {$network->name} ({$network->network}) into blessed subnet list.";
             if ( ! empty($network->description)) {
@@ -310,15 +321,9 @@ class M_networks extends MY_Model
         }
         if ( ! empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
-            // As at 3.4.0, if we have >1,000 networks, exclude the device count
-            if ($CI->response->meta->total > 1000) {
-                $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, 0 `device_count` FROM `networks` LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN orgs ON (networks.org_id = orgs.id) {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
-            }
-            // If requested from OAE, include the oae_manage attribute
-            if ( ! empty($CI->response->meta->requestor) && $CI->response->meta->total < 1001) {
-                $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id AND system.oae_manage = 'y') {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
-            }
+            // As at 3.4.1, excluding the device count completely as networks with org_id > 1 need to calculate device counts based on system.org_id AND descendants.
+            //     We have no way of doing this in sql alone. It would require looping through every network and be a massive performance hit.
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, 0 `device_count` FROM `networks` LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN orgs ON (networks.org_id = orgs.id) {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'networks');
             $CI->response->meta->filtered = count($CI->response->data);
