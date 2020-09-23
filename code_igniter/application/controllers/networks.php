@@ -114,6 +114,9 @@ class Networks extends MY_Controller
             } else {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
             }
+            if ($this->response->meta->include === 'all' OR ! empty($this->response->meta->requestor)) {
+                $this->response->included = array_merge($this->response->included, $this->m_networks->sub_resource($this->response->meta->id));
+            }
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
