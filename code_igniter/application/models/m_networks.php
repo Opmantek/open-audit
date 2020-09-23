@@ -96,9 +96,52 @@ class M_networks extends MY_Model
         $org_list = $this->m_orgs->get_descendants($result[0]->org_id);
         $org_list[] = $result[0]->org_id;
         $org_list = implode(',', $org_list);
-        $sql = 'SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id AND system.org_id IN(?)) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?';
-        $data = array($org_list, intval($id));
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id AND system.org_id IN ($org_list)) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) WHERE networks.id = ?";
+        $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
+        $network = network_details($result[0]->network);
+        $result[0]->ip_total_count = @intval($network->hosts_total);
+        $result[0]->ip_available_count = $result[0]->ip_total_count - $result[0]->device_count;
+        // Get the DHCP Servers for this network
+        $sql = "SELECT DISTINCT(network.dhcp_server) FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac) WHERE system.org_id IN ({$org_list}) AND network.dhcp_server != ''";
+        $data = array();
+        $dhcp_result = $this->run_sql($sql, $data);
+        $dhcp_servers = array();
+        foreach ($dhcp_result as $dhcp_entry) {
+            if (ip_address_to_db($dhcp_entry->dhcp_server) >= ip_address_to_db($network->host_min) && ip_address_to_db($dhcp_entry->dhcp_server) < ip_address_to_db($network->host_max)) {
+                $dhcp_servers[] = $dhcp_entry->dhcp_server;
+            }
+        }
+        $dhcp_servers = array_unique($dhcp_servers);
+        $result[0]->dhcp_servers = implode(', ', $dhcp_servers);
+        // Get the DNS Servers for this network
+        $sql = "SELECT DISTINCT(network.dns_server) FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac) WHERE system.org_id IN ({$org_list}) AND network.dns_server != ''";
+        $data = array();
+        $dns_result = $this->run_sql($sql, $data);
+        $dns_servers = array();
+        foreach ($dns_result as $dns_entry) {
+            $dns_items = explode(',', $dns_entry->dns_server);
+            foreach ($dns_items as $dns_item) {
+                if (ip_address_to_db(trim($dns_item)) >= ip_address_to_db($network->host_min) && ip_address_to_db(trim($dns_item)) < ip_address_to_db($network->host_max)) {
+                $dns_servers[] = $dns_item;
+                }
+            }
+        }
+        $dns_servers = array_unique($dns_servers);
+        $result[0]->dns_servers = implode(', ', $dns_servers);
+
+        // Get the Gateways for this network
+        $sql = "SELECT DISTINCT(route.next_hop) FROM system LEFT JOIN route ON (route.system_id = system.id AND route.current= 'y') WHERE system.org_id IN ({$org_list}) AND route.next_hop != '' AND route.next_hop != '0.0.0.0'";
+        $data = array();
+        $gateway_result = $this->run_sql($sql, $data);
+        $gateways = array();
+        foreach ($gateway_result as $gateway) {
+            if (ip_address_to_db($gateway->next_hop) >= ip_address_to_db($network->host_min) && ip_address_to_db($gateway->next_hop) < ip_address_to_db($network->host_max)) {
+                $gateways[] = $gateway->next_hop;
+            }
+        }
+        $gateways = array_unique($gateways);
+        $result[0]->getways = implode(', ', $gateways);
         $result = $this->format_data($result, 'networks');
         return $result;
     }
@@ -152,7 +195,8 @@ class M_networks extends MY_Model
             $org_list[] = $result[0]->org_id;
             $org_list = implode(',', $org_list);
             if ($network !== '') {
-                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ? AND system.org_id IN (${org_list})";
+                $sql = "SELECT system.id AS `system.id`, MAX(system.icon) AS `system.icon`, MAX(system.name) AS `system.name`, MAX(system.domain) AS `system.domain`, ip.ip AS `ip.ip`, MAX(ip.last_seen) AS `ip.last_seen`, MAX(ip.mac) AS `ip.mac`, MAX(system.os_family) AS `system.os_family`, MAX(system.status) AS `system.status`, network.connection AS `network.connection` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac AND system.id = network.system_id) WHERE ip.network = ? AND system.org_id IN (${org_list}) GROUP BY ip.ip, system.id, network.connection ORDER BY ip.ip;
+";
                 $data = array((string)$network, $org_list);
                 $result = $this->run_sql($sql, $data);
                 $result = $this->format_data($result, 'devices');

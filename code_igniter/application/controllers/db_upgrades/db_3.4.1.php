@@ -38,6 +38,12 @@ ALTER TABLE network CHANGE `dhcp_lease_obtained` `dhcp_lease_obtained` varchar(3
 
 ALTER TABLE network CHANGE `dhcp_lease_expires` `dhcp_lease_expires` varchar(30) NOT NULL DEFAULT '';
 
+ALTER TABLE networks ADD `network_domain` varchar(200) NOT NULL DEFAULT '' AFTER gateways;
+
+ALTER TABLE networks ADD `secutity_zone` varchar(200) NOT NULL DEFAULT '' AFTER network_domain;
+
+ALTER TABLE networks ADD `location_id` int(10) unsigned DEFAULT NULL AFTER secutity_zone;
+
 ALTER TABLE system ADD end_of_production date NOT NULL DEFAULT '2000-01-01' AFTER end_of_service;
 
 ALTER TABLE system ADD maintenance_expires date NOT NULL DEFAULT '2000-01-01' AFTER warranty_type;
@@ -64,6 +70,12 @@ $this->alter_table('connections', 'name', "`name` varchar(200) NOT NULL DEFAULT 
 $this->alter_table('network', 'dhcp_lease_obtained', "`dhcp_lease_obtained` varchar(30) NOT NULL DEFAULT ''");
 
 $this->alter_table('network', 'dhcp_lease_expires', "`dhcp_lease_expires` varchar(30) NOT NULL DEFAULT ''");
+
+$this->alter_table('networks', 'network_domain', "ADD `network_domain` varchar(200) NOT NULL DEFAULT '' AFTER `gateways`", 'add');
+
+$this->alter_table('networks', 'secutity_zone', "ADD `secutity_zone` varchar(200) NOT NULL DEFAULT '' AFTER `network_domain`", 'add');
+
+$this->alter_table('networks', 'location_id', "ADD `location_id` int(10) unsigned DEFAULT NULL AFTER secutity_zone", 'add');
 
 $this->alter_table('system', 'end_of_production', "ADD `end_of_production` date NOT NULL DEFAULT '2000-01-01' AFTER `end_of_service`", 'add');
 
