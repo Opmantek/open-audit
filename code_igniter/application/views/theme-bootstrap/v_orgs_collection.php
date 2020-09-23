@@ -44,7 +44,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th class="text-center"><?php echo __('View')?></th>
+                        <th class="text-center"><?php echo __('Devices')?></th>
                         <th class="text-center"><?php echo __('Details')?></th>
                         <th><?php echo __('Systems')?></th>
                         <th><?php echo __('Organisation Name')?></th>

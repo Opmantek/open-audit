@@ -44,7 +44,7 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><?php echo __('View')?></th>
+                    <th class="text-center"><?php echo __('Devices')?></th>
                     <th class="text-center"><?php echo __('Details')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Organisation')?></th>
@@ -60,7 +60,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                 <tr>
-                    <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?ip.network=<?php echo $item->attributes->network; ?>&properties=system.id,system.icon,system.type,system.name,system.domain,ip.ip,system.description,system.manufacturer,system.os_family,system.status"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
+                    <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?ip.network=<?php echo $item->attributes->network; ?>&properties=system.id,system.icon,system.type,system.name,system.domain,ip.ip,system.description,system.manufacturer,system.os_family,system.status"><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('networks.name', $item->attributes->name); ?>
                     <?php refine('networks.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
