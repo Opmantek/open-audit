@@ -194,9 +194,8 @@ class M_networks extends MY_Model
             $org_list[] = $result[0]->org_id;
             $org_list = implode(',', $org_list);
             if ($network !== '') {
-                $sql = "SELECT system.id AS `system.id`, MAX(system.icon) AS `system.icon`, MAX(system.name) AS `system.name`, MAX(system.domain) AS `system.domain`, ip.ip AS `ip.ip`, MAX(ip.last_seen) AS `ip.last_seen`, MAX(ip.mac) AS `ip.mac`, MAX(system.os_family) AS `system.os_family`, MAX(system.status) AS `system.status`, network.connection AS `network.connection` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac AND system.id = network.system_id) WHERE ip.network = ? AND system.org_id IN (${org_list}) GROUP BY ip.ip, system.id, network.connection ORDER BY ip.ip;
-";
-                $data = array((string)$network, $org_list);
+                $sql = "SELECT system.id AS `system.id`, MAX(system.icon) AS `system.icon`, MAX(system.name) AS `system.name`, MAX(system.domain) AS `system.domain`, ip.ip AS `ip.ip`, MAX(ip.last_seen) AS `ip.last_seen`, MAX(ip.mac) AS `ip.mac`, MAX(system.os_family) AS `system.os_family`, MAX(system.status) AS `system.status`, MAX(network.connection) AS `network.connection` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac AND system.id = network.system_id) WHERE ip.network = ? AND system.org_id IN ($org_list) GROUP BY ip.ip, system.id ORDER BY ip.ip;";
+                $data = array((string)$network);
                 $result = $this->run_sql($sql, $data);
                 $result = $this->format_data($result, 'devices');
                 return $result;
