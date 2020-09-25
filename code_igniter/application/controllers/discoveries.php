@@ -442,6 +442,11 @@ class Discoveries extends MY_Controller
                     $nmap_installed = 'y';
                 }
             }
+            if ($nmap_installed === 'n') {
+                if (file_exists('/usr/bin/nmap')) {
+                    $nmap_installed = 'y';
+                }
+            }
         }
         if ($nmap_installed === 'n') {
             log_error('ERR-0043');
