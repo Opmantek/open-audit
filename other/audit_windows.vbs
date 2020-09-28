@@ -3624,7 +3624,9 @@ if (audit_software = "y") then
     if debugging > "0" then wscript.echo "Powershell info" end if
     strKeyPath = "SOFTWARE\Microsoft\PowerShell\3\PowerShellEngine"
     strValueName = "PowerShellVersion"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,powershell_version
+    on error resume next
+        oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,powershell_version
+    on error goto 0
     if (not isnull(powershell_version)) then
         result.WriteText "      <item>" & vbcrlf
         result.WriteText "          <name>PowerShell</name>" & vbcrlf
