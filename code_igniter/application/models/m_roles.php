@@ -241,7 +241,7 @@ class M_roles extends MY_Model
             $CI->response->meta->sql[] = $this->db->last_query();
             $result = @$query->result();
             if ( ! empty($result)) {
-                $result = $this->format_data($result, 'dashboards');
+                $result = $this->format_data($result, 'roles');
             } else {
                 $result = array();
             }
