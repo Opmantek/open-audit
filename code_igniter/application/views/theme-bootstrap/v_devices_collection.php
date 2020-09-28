@@ -196,7 +196,7 @@ if (count($this->response->meta->filter) > 0) {
             }
         }
         $link = create_url($query_parameters);
-        echo '<span class="label label-info">' . htmlentities($item->name) . ' ' . htmlentities($item->operator) . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
+        echo '<span class="label label-info">' . htmlentities($item->name) . ' ' . htmlentities($item->operator) . ' ' . htmlentities(urldecode($item->value)) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
         unset($query_parameters);
     }
     echo '</h4></div>';
