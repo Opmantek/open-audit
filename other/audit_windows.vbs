@@ -3621,6 +3621,20 @@ if (audit_software = "y") then
     result.WriteText "          <description>Operating System</description>" & vbcrlf
     result.WriteText "      </item>" & vbcrlf
 
+    if debugging > "0" then wscript.echo "Powershell info" end if
+    strKeyPath = "SOFTWARE\Microsoft\PowerShell\3\PowerShellEngine"
+    strValueName = "PowerShellVersion"
+    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,powershell_version
+    if (not isnull(powershell_version)) then
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>PowerShell</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(powershell_version) & "</version>" & vbcrlf
+        result.WriteText "          <install_date></install_date>" & vbcrlf
+        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
+        result.WriteText "          <url>https://docs.microsoft.com/en-us/powershell/</url>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
+    end if
+
     if debugging > "0" then wscript.echo "Codec info" end if
     set colItems = objWMIService.ExecQuery("Select * FROM Win32_CodecFile", , 48)
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CodecFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_CodecFile " : end if
@@ -3645,20 +3659,20 @@ if (audit_software = "y") then
     strKeyPath = "SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers"
     oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, arrValueNames, arrValueTypes
     if (not isnull(arrValueNames)) then
-    for i = 0 to UBound(arrValueNames)
-    strValueName = arrValueNames(i)
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
-    if strValue = "Installed" then
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(strValueName) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(driver_version) & "</version>" & vbcrlf
-    result.WriteText "          <location>" & escape_xml(file_name) & "</location>" & vbcrlf
-    result.WriteText "          <type>odbc driver</type>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    end if
-    next
+        for i = 0 to UBound(arrValueNames)
+            strValueName = arrValueNames(i)
+            oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
+            if strValue = "Installed" then
+                oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
+                oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(strValueName) & "</name>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(driver_version) & "</version>" & vbcrlf
+                result.WriteText "          <location>" & escape_xml(file_name) & "</location>" & vbcrlf
+                result.WriteText "          <type>odbc driver</type>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+            end if
+        next
     end if
 
 
@@ -3689,18 +3703,18 @@ if (audit_software = "y") then
     strValueName = "Version"
     oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dac_version
     if (not isnull(dac_version)) then
-    if SystemBuildNumber <> "6000" then
-     display_name = "MDAC"
-    else
-     display_name = "Windows DAC"
-    end if
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(display_name) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(dac_version) & "</version>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-    result.WriteText "          <url>http://msdn2.microsoft.com/en-us/data/default.aspx</url>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
+        if SystemBuildNumber <> "6000" then
+            display_name = "MDAC"
+        else
+            display_name = "Windows DAC"
+        end if
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>" & escape_xml(display_name) & "</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(dac_version) & "</version>" & vbcrlf
+        result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
+        result.WriteText "          <url>http://msdn2.microsoft.com/en-us/data/default.aspx</url>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
     end if
 
 
