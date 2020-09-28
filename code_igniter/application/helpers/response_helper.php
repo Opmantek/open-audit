@@ -982,6 +982,15 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! in_array($id, $tables)) {
                         $id = null;
                     }
+                } else if ($collection === 'configuration') {
+                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM `configuration` WHERE name = ? ORDER BY id DESC LIMIT 1";
+                    $data = array($id);
+                    $query = $instance->db->query($sql, $data);
+                    $result = $query->result();
+                    if ( ! empty($result)) {
+                        $log->summary = 'ID to Name match in configuration';
+                        $id = intval($result[0]->id);
+                    }
                 } else if ($collection === 'devices') {
                     // devices -> system table
                     $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM system WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
