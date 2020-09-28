@@ -73,6 +73,22 @@ class Util extends CI_Controller
         return;
     }
 
+    public function subnet_size()
+    {
+        $command = "nmap -n -sL " . $_POST['subnet'];
+        exec($command, $output, $return_var);
+        $count = 0;
+        if ($return_var === 0) {
+            foreach ($output as $line) {
+                if (stripos($line, 'Nmap scan report for') === 0) {
+                    $count = $count + 1;
+                }
+            }
+        }
+        echo $count;
+        return;
+    }
+
     /**
     * Process the supplied data and return a padded version string
     *
