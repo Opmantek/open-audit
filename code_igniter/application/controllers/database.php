@@ -867,8 +867,8 @@ class Database extends MY_Controller
         }
 
         if (($db_internal_version < '20200810') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
-            # upgrade for 3.4.1
-            include "db_upgrades/db_3.4.1.php";
+            # upgrade for 3.5.1
+            include "db_upgrades/db_3.5.1.php";
         }
 
         $this->data['include'] = 'v_database_update';
