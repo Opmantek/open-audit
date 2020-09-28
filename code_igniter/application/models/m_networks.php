@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.1
 * @link      http://www.open-audit.org
 */
 
@@ -363,7 +363,7 @@ class M_networks extends MY_Model
         }
         if ( ! empty($response)) {
             $CI->response->meta->total = $this->count();
-            // As at 3.4.1, excluding the device count completely as networks with org_id > 1 need to calculate device counts based on system.org_id AND descendants.
+            // As at 3.5.1, excluding the device count completely as networks with org_id > 1 need to calculate device counts based on system.org_id AND descendants.
             //     We have no way of doing this in sql alone. It would require looping through every network and be a massive performance hit.
             $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, 0 `device_count`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM `networks` LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN locations ON (networks.location_id = locations.id) {$CI->response->meta->internal->filter} GROUP BY networks.id {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
             $result = $this->run_sql($sql, array());
