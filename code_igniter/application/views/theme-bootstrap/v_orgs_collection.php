@@ -60,7 +60,7 @@
                     <?php foreach ($this->response->data as $item):
                         ?>
                         <tr>
-                            <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?system.org_id=<?php echo intval($item->id); ?>"><?php echo $item->attributes->device_count?></a></td>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?system.org_id=<?php echo intval($item->id); ?>"><?php echo intval($item->attributes->device_count) ?></a></td>
                             <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                             <td class="text-center"><?php $item->attributes->device_count?></td>
                             <?php refine('orgs.name', $item->attributes->name); ?>
