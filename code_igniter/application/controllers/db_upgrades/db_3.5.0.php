@@ -52,10 +52,10 @@ ALTER TABLE system ADD warranty_status VARCHAR(100) NOT NULL DEFAULT '' AFTER wa
 
 UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal_version';
 
-UPDATE `configuration` SET `value` = '3.5.1' WHERE `name` = 'display_version';
+UPDATE `configuration` SET `value` = '3.5.0' WHERE `name` = 'display_version';
 */
 
-$this->log_db('Upgrade database to 3.5.1 commenced');
+$this->log_db('Upgrade database to 3.5.0 commenced');
 
 $sql = "DELETE FROM configuration WHERE name = 'oae_location'";
 $this->db->query($sql);
@@ -99,10 +99,10 @@ $sql = "UPDATE `configuration` SET `value` = '20200810' WHERE `name` = 'internal
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "UPDATE `configuration` SET `value` = '3.5.1' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '3.5.0' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->log_db('Upgrade database to 3.5.1 completed');
+$this->log_db('Upgrade database to 3.5.0 completed');
 $this->config->config['internal_version'] = '20200810';
-$this->config->config['display_version'] = '3.5.1';
+$this->config->config['display_version'] = '3.5.0';
