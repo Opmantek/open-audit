@@ -294,7 +294,7 @@ foreach ($this->response->included as $include) {
                         <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
                     <?php } ?>
                     <?php if (!empty($item->attributes->command_output)) {
-                        $output = $item->attributes->command_output;
+                        $output = htmlentities($item->attributes->command_output);
                         $output = str_replace("\",", "\", ", $output);
                         $output = str_replace("\n", "<br />", $output); ?>
                         <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>

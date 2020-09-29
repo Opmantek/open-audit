@@ -116,7 +116,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                 if ($type == $item->attributes->type) {
                                     $selected = ' selected';
                                 }
-                                echo '<option value="' . $type . '"' . $selected . '>' . $type . "</option>\n";
+                                echo '<option value="' . htmlentities($type) . '"' . $selected . '>' . htmlentities($type) . "</option>\n";
                             } ?>
                             </select>
                             <?php if (!empty($edit)) { ?>

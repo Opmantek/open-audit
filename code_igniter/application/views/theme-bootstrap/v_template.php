@@ -78,8 +78,7 @@ if (!empty($this->response->meta->baseurl)) {
 }
 ?>
         var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
-<?php $value = ''; if (!empty($this->config->config['device_auto_delete'])) { $value = $this->config->config['device_auto_delete']; } ?>
-        var device_auto_delete = '<?php echo $value; ?>';
+        var device_auto_delete = '<?php echo $this->config->config['device_auto_delete']; ?>';
 
         function logout() {
             $.get( "/omk/open-audit/logout");

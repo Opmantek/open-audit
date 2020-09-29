@@ -34,7 +34,6 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<!--<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->meta->collection; ?>">-->
 <form class="form-horizontal" id="form_update" method="post">
     <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">

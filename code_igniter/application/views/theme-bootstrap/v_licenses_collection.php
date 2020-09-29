@@ -58,7 +58,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="licenses/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="licenses/<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('licenses.name',  $item->attributes->name); ?>
                     <?php refine('licenses.org_id',  $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
                     <?php refine('licenses.org_descendants',  $item->attributes->org_descendants, '', 'center'); ?>
@@ -71,7 +71,7 @@
                     } else {
                         echo '<span class="btn btn-sm btn-success">';
                     }
-                        echo $item->attributes->used_count;
+                        echo intval($item->attributes->used_count);
                     ?>
                     </span>
                     </td>

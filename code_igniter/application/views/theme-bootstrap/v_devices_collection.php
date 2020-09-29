@@ -148,7 +148,7 @@ if ($this->response->meta->sub_resource !== 'group') {
                         <?php } ?>
                     </div>
                 </div>
-                &nbsp;&nbsp;&nbsp;<?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?>
+                &nbsp;&nbsp;&nbsp;<?php echo intval($this->response->meta->filtered) . ' of ' . intval($this->response->meta->total) . ' results'; ?>
             </div>
         </div>
     </div>

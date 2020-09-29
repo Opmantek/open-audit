@@ -46,7 +46,7 @@ $export_link = $this->response->links->first . '&';
                 <a href="<?php echo $export_link; ?>format=xml" role="button" class="btn btn-xs btn-default">xml</a>
             </div>
             <span class="pull-right">
-                <?php echo $this->response->meta->total . ' of ' . $this->response->meta->total . ' results'; ?>&nbsp;
+                <?php echo intval($this->response->meta->total) . ' of ' . intval($this->response->meta->total) . ' results'; ?>&nbsp;
             </span>
         </div>
     </div>

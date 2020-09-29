@@ -60,7 +60,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="logs/<?php echo $item->id; ?>"><?php echo $item->id; ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="logs/<?php echo intval($item->id); ?>"><?php echo intval($item->id); ?></a></td>
                     <?php refine('logs.timestamp', $item->attributes->timestamp); ?>
                     <?php refine('logs.type', $item->attributes->type); ?>
                     <?php refine('logs.severity_text', $item->attributes->severity_text); ?>

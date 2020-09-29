@@ -141,8 +141,8 @@ var id = 0;
                 <div class="panel panel-default">
                     <div class="panel-body">
                     <?php for ($i=$field_count; $i < count($fields); $i++) { ?>
-                        <?php if (!empty($special[$fields[$i]])) { ?>
-                            <?php echo $special[$fields[$i]]; } else { ?>
+                        <?php if ( ! empty($special[$fields[$i]])) { ?>
+                            <?php echo htmlentities($special[$fields[$i]]); } else { ?>
                                 <div class="form-group">
                                     <label for="form_factor" class="col-sm-4 control-label"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', __($fields[$i]))), REPLACE_FLAGS, CHARSET); ?></label>
                                     <div class="col-sm-8 input-group">

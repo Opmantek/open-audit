@@ -55,6 +55,6 @@ if (strpos($this->response->links->first, '?') !== false) {
                 <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index'] . '/' . $this->response->meta->collection; ?>/create" role="button"><?php echo __('Create'); ?></a>
         <?php } ?>
         </div>
-        &nbsp;&nbsp;&nbsp;<?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?>
+        &nbsp;&nbsp;&nbsp;<?php echo intval($this->response->meta->filtered) . ' of ' . intval($this->response->meta->total) . ' results'; ?>
     </div>
 </div>

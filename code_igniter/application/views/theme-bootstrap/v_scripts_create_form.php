@@ -185,7 +185,7 @@ function based_on(){
     {
         <?php foreach ($script_options as $key => $value) { ?>
         case "<?php echo htmlspecialchars( $key, REPLACE_FLAGS, CHARSET); ?>":
-            based_on_text = '<?php echo $value; ?>';
+            based_on_text = '<?php echo htmlentities($value); ?>';
         break;
         <?php } ?>
     }

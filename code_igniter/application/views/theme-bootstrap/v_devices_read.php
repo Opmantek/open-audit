@@ -722,7 +722,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="vm_host" class="col-sm-4 control-label"><?php echo __('VM Host')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_host" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
+                                <input type="text" class="form-control" id="vm_host" value="<?php #echo htmlentities($data['system']->vm_server_name); ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
