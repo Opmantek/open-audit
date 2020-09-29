@@ -58,7 +58,7 @@
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="fields/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="fields/<?php echo htmlentities($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                         <?php refine('fields.name',$item->attributes->name); ?>
                         <?php refine('fields.org_id',$item->attributes->org_id,$item->attributes->{'orgs.name'}); ?>
                         <?php refine('fields.type',$item->attributes->type); ?>
