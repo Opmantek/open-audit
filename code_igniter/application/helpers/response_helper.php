@@ -1896,11 +1896,6 @@ if ( ! function_exists('response_get_sub_resource')) {
 
         $sub_resource = '';
 
-        // We only use include for devices.
-        if ($collection !== 'devices') {
-            return $sub_resource;
-        }
-
         if ( ! empty($get)) {
             $sub_resource = $get;
             $log->summary = 'Set sub_resource according to GET.';
@@ -1926,8 +1921,6 @@ if ( ! function_exists('response_get_sub_resource')) {
                 }
                 $sub_resource = implode(',', $temp);
             }
-        } else {
-            $sub_resource = '';
         }
         if ( ! empty($sub_resource)) {
             $log->detail = 'SUB_RESOURCE: ' . $sub_resource;
