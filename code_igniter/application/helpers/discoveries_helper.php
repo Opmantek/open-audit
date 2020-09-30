@@ -508,7 +508,7 @@ if ( ! function_exists('ip_scan')) {
 			$log->message = 'Nmap Command (Custom TCP Ports)';
 			$log->command = "{$command} # Custom TCP Ports";
 			discovery_log($log);
-			echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
+			#echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
 			if ( ! empty($ports)) {
@@ -529,7 +529,7 @@ if ( ! function_exists('ip_scan')) {
 			$log->message = 'Nmap Command (Custom UDP Ports)';
 			$log->command = "{$command} # Custom UDP Ports";
 			discovery_log($log);
-			echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
+			#echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
 			if ( ! empty($ports)) {
@@ -1430,11 +1430,11 @@ if ( ! function_exists('ip_audit')) {
 		$log->severity = 7;
 		$log->command_time_to_execute = '';
 
-		if ($device->os_family === 'DD-WRT' OR $device->os_family === 'LEDE') {
+		if ( ! empty($device->os_family) && ($device->os_family === 'DD-WRT' OR $device->os_family === 'LEDE')) {
 			$log->message = "IP {$device->ip} is running {$device->os_family}, which will not run our audit_linux.sh script, skipping.";
 			discovery_log($log);
 		}
-		$temp_audit_script = $audit_script;
+		$temp_audit_script = @$audit_script;
 		// Audit via SSH
 		if ($ip_scan->details->ssh_status === 'true' && $device->os_family !== 'DD-WRT' && $device->os_family !== 'LEDE' && ! empty($credentials_ssh) && ! empty($audit_script)) {
 			$result = '';
