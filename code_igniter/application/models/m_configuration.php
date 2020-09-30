@@ -262,6 +262,8 @@ class M_configuration extends MY_Model
             $result = $this->run_sql($sql, array());
         }
 
+        $this->load->helper('url');
+
         // set all items to value or ''
         if ( ! empty($result)) {
             foreach ($result as $row) {
