@@ -262,7 +262,7 @@ class M_help extends MY_Model
         $data->php->error_log = ini_get('error_log');
         $data->php->error_reporting = ini_get('error_reporting');
         $extensions = get_loaded_extensions();
-        $data->php->extensions = implode($extensions, ', ');
+        $data->php->extensions = implode(', ', $extensions);
         if (php_uname('s') === 'Windows NT') {
             $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mysqli', 'session', 'simplexml', 'snmp', 'xml');
         } else {
