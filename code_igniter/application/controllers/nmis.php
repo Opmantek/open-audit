@@ -85,74 +85,203 @@ class Nmis extends MY_Controller
         }
     }
 
-    /**
-    * Process the supplied data and update an existing object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function create()
+    private function _from_nmis_9($nodes)
     {
-
-        $string = '';
-        $flash_message = '';
-        $this->load->helper('network');
-
+        $this->load->model('m_devices');
+        $this->load->model('m_device');
         $log = new stdClass();
         $log->type = 'system';
         $log->severity = 7;
         $log->user = @$this->user->full_name;
         $log->collection = @$this->response->meta->collection;
         $log->action = @$this->response->meta->action;
-        $log->status = 'processing Nodes submission';
+        $log->status = 'processing NMIS9 Nodes';
 
-        # The uploaded file
-        if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
-            $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
-            try {
-                move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
-            } catch (Exception $e) {
-                $log->severity = 5;
-                $log->summary = 'Could not move uploaded Nodes file.';
-                $log->detail = $e;
-                stdlog($log);
-                unset($log);
-                $this->data['query'] = $e;
-                $this->data['error'] = "There was an error uploading the file, please try again.";
-                $this->data['include'] = 'v_error';
-                $this->load->view('v_template', $this->data);
+        $match = new stdClass();
+        $match->match_ip = 'y';
+        
+        $devices = array();
+        $this->load->model('m_attributes');
+        $attributes = $this->m_attributes->collection(1);
+
+        // $nodes = array($nodes[0]);
+
+        foreach ($nodes as $node) {
+            $device = new stdClass();
+            $device->name = strtolower(@$node['name']);
+            $device->ip = '';
+            $device->hostname = '';
+            $device->fqdn = '';
+            if (filter_var($node['configuration']['host'], FILTER_VALIDATE_IP) !== false) {
+                $device->ip = $node['configuration']['host'];
+            } else {
+                if (strpos($node['configuration']['host'], '.') !== false) {
+                    $device->fqdn =  $node['configuration']['host'];
+                    $temp = explode('.', $device->fqdn);
+                    $device->hostname = $temp[0];
+                    unset($temp[0]);
+                    $device->domain = implode('.', $temp);
+                    unset($temp);
+                } else {
+                    $device->hostname =  $node['configuration']['host'];
+                }
             }
-            $string = file_get_contents($target_path);
-            unlink($target_path);
-            $flash_message = 'Nodes imported from uploaded file.<br />';
-        }
-
-        # the local file
-        if (empty($string)) {
-            $file = $this->response->meta->received_data->attributes->file;
-            $log = new stdClass();
-            $log->log_level = 7;
-            $log->severity = 6;
-            $log->message = 'NMIS import, importing nodes from ' . $file;
-            stdlog($log);
-            $file_handle = @fopen($file, 'r');
-            if (!$file_handle) {
-                log_error('ERR-0016', 'nmis:create - Reading ' . $file);
-                output();
-                return;
+            $serviceStatus = $node['configuration']['serviceStatus'];
+            foreach ($attributes as $attribute) {
+                if ($attribute->attributes->type === 'environment') {
+                    if (strtolower($serviceStatus) === strtolower($attribute->attributes->value) OR strtolower($serviceStatus) === strtolower($attribute->attributes->name)) {
+                        $device->envionment = $attribute->attributes->value;
+                    }
+                }
             }
-            $string = fread($file_handle, filesize($file));
-            $flash_message = 'Nodes imported from local file.<br />';
-        }
+            $device->org_id = $node['org_id'];
+            $device->location_id = $node['location_id'];
+            $device->nmis_manage = 'y';
+            $device->omk_uuid = @$node['uuid'];
+            $device->status = 'production';
+            $device->nmis_group = @$node['configuration']['group'];
+            $device->nmis_name = @$node['name'];
+            $device->nmis_role = @$node['configuration']['roleType'];
+            $device->nmis_notes = @$node['configuration']['notes'];
+            $device->nmis_business_service = @$node['configuration']['businessService'];
+            $device->last_seen_by = 'nmis';
+            $device->last_seen = $this->config->config['timestamp'];
 
-        if (empty($string)) {
-            log_error('ERR-0011');
-            print_r($this->response->errors);
-        }
+            $device->credentials = new stdClass();
+            $device->credentials->description = 'Imported from NMIS 9';
+            $device->credentials->name = 'Device Specific Credentials';
+            $device->credentials->type = 'snmp';
+            $device->credentials->credentials = new stdClass();
+            $temp =  @$node['configuration']['version'];
+            switch ($temp) {
+                case 'snmpv1':
+                    $device->credentials->credentials->version = 1;
+                    break;
 
-        $timestamp = $this->config->config['timestamp'];
+                case 'snmpv2c':
+                    $device->credentials->credentials->version = 2;
+                    break;
+
+                case 'snmpv3':
+                    $device->credentials->credentials->version = 3;
+                    break;
+                
+                default:
+                    $device->credentials->credentials->version = 2;
+                    break;
+            }
+
+            if ($device->credentials->credentials->version == 1) {
+                $device->credentials->credentials->community =  @$node['configuration']['community'];
+            }
+            if ($device->credentials->credentials->version == 2) {
+                $device->credentials->credentials->community =  @$node['configuration']['community'];
+            }
+            if ($device->credentials->credentials->version == 3) {
+                $device->credentials->type = 'snmp_v3';
+                $device->credentials->credentials->security_name = @$node['configuration']['username'];
+                $device->credentials->credentials->authentication_passphrase = @$node['configuration']['authpassword'];
+                $device->credentials->credentials->authentication_protocol = @$node['configuration']['authprotocol'];
+                $device->credentials->credentials->privacy_passphrase = @$node['configuration']['privpassword'];
+                $device->credentials->credentials->privacy_protocol = @$node['configuration']['privprotocol'];
+                $device->credentials->credentials->security_level = 'noAuthNoPriv';
+                if ( ! empty($node['configuration']['authpassword']) && !empty($node['configuration']['authprotocol']) && empty($node['configuration']['privpassword'])) {
+                    $device->credentials->credentials->security_level = 'authNoPriv';
+                }
+                if ( ! empty($node['configuration']['authpassword']) && ! empty($node['configuration']['authprotocol']) && ! empty($node['configuration']['privpassword']) && ! empty($node['configuration']['privprotocol'])) {
+                    $device->credentials->credentials->security_level = 'authPriv';
+                }
+            }
+            $devices[] = $device;
+        }
+        $ids = array();
+        $updated = 0;
+        $inserted = 0;
+        foreach ($devices as $device) {
+
+            $parameters = new stdCLass();
+            $parameters->details = $device;
+            $parameters->log = $log;
+            $parameters->match = $match;
+
+            // echo "<pre>"; print_r($device); echo "</pre>";
+            // Remove any empty entries
+            foreach ($device as $key => $value) {
+                if (empty($value)) {
+                    unset($device->$key);
+                }
+            }
+            // echo "<pre>"; print_r($device); echo "</pre>"; exit;
+
+            // Need to manually remove any discovery logs.
+            $sql = '/* nmis::_from_nmis_9 */ ' . 'DELETE FROM discovery_log WHERE ip = ?';
+            $data = array(ip_address_from_db($device->ip));
+            $this->db->query($sql, $data);
+
+            $device->id = $this->m_device->match($parameters);
+            $device->ip = ip_address_to_db($device->ip);
+            $log->command_output = '';
+
+            $credentials = $device->credentials;
+            unset($device->credentials);
+            if ( ! empty($device->id)) {
+                $log->message = "Updating device " . $device->name . " (ID:" . $device->id . ")";
+                discovery_log($log);
+                $this->m_devices->update($device);
+                $updated++;
+                // must manually update last seen and last seen by
+                $sql = '/* nmis::_from_nmis_9 */ ' . 'UPDATE system SET last_seen_by = "nmis", last_seen = ? WHERE id = ?';
+                $data = array($device->last_seen, $device->id);
+                $this->db->query($sql, $data);
+            } else {
+                $device->first_seen = $this->config->config['timestamp'];
+                $log->message = "Creating device " . $device->name;
+                discovery_log($log);
+                $device->id = $this->m_devices->create($device);
+                $inserted++;
+                // need to update the discovery log with our system.id
+                $sql = '/* nmis::_from_nmis_9 */ ' . 'UPDATE discovery_log SET system_id = ? WHERE ip = ?';
+                $data = array($device->id, ip_address_from_db($device->ip));
+                $this->db->query($sql, $data);
+            }
+            $this->m_devices->sub_resource_create($device->id, 'credential', $credentials);
+            $ids[] = $device->id;
+            # NOTE - this applies for returning a JSON result
+            #      - a HTML output redirects
+            $data = new stdClass();
+            $data->id = $device->id;
+            $data->type = 'devices';
+            $data->attributes = new stdClass();
+            $data->attributes->id = $device->id;
+            $data->attributes->name = $device->name;
+            $data->attributes->hostname = @$device->hostname;
+            $data->attributes->ip = ip_address_from_db($device->ip);
+            $this->response->data[] = $data;
+        }
+        $ids = implode(',', $ids);
+        $this->response->meta->ids = $ids;
+        $this->response->meta->inserted = $inserted;
+        $this->response->meta->updated = $updated;
+        $this->response->total = $inserted + $updated;
+        return true;
+    }
+
+    private function _from_nmis_8($string)
+    {
         $this->load->model('m_devices');
         $this->load->model('m_device');
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 7;
+        $log->user = @$this->user->full_name;
+        $log->collection = @$this->response->meta->collection;
+        $log->action = @$this->response->meta->action;
+        $log->status = 'processing NMIS9 Nodes';
+
+        $match = new stdClass();
+        $match->match_ip = 'y';
+        
+        $devices = array();
 
         $string = str_replace(PHP_EOL, ' ', $string);
         $string = str_replace("\r\n", ' ', $string);
@@ -164,10 +293,13 @@ class Nmis extends MY_Controller
         $string = str_replace("'undef'", "''", $string);
         $string = str_replace('undef', "''", $string);
         $string = str_replace("'", '"', $string);
+        if (empty($string)) {
+            log_error('ERR-0011');
+            print_r($this->response->errors);
+            exit;
+        }
         $nodes = json_decode($string, true);
         unset($string);
-        unset($file_handle);
-        unset($file);
         switch (json_last_error()) {
             case JSON_ERROR_NONE:
                 // no errors
@@ -200,7 +332,6 @@ class Nmis extends MY_Controller
 
         $nodes_in_file = 0;
         $nodes_collect = 0;
-        $nodes_array = array();
         foreach ($nodes as $node) {
             $nodes_in_file++;
             if (@$node['collect'] == 'true') {
@@ -226,7 +357,6 @@ class Nmis extends MY_Controller
                         $device->hostname =  $node['host'];
                     }
                 }
-                #dns_validate($device, 'n');
                 if (!empty($device->ip)) {
                     $device->ip = ip_address_to_db($device->ip);
                 }
@@ -238,11 +368,8 @@ class Nmis extends MY_Controller
                 $device->nmis_role = @$node['roleType'];
                 $device->nmis_notes = @$node['notes'];
                 $device->nmis_business_service = @$node['businessService'];
-
-                $parameters = new stdCLass();
-                $parameters->details = $device;
-                $parameters->log = $log;
-                $device->id = $this->m_device->match($parameters);
+                $device->last_seen = $this->config->config['timestamp'];
+                $device->last_seen_by = 'nmis';
 
                 $device->credentials = new stdClass();
                 $device->credentials->description = 'Imported from NMIS';
@@ -289,50 +416,156 @@ class Nmis extends MY_Controller
                         $device->credentials->credentials->security_level = 'authPriv';
                     }
                 }
-                $nodes_array[$device->name] = $device;
+                $devices[] = $device;
             }
         }
-        // echo "Nodes in file: " . $nodes_in_file . "\n";
-        // echo "Nodes with collect: " . $nodes_collect . "\n";
-        // echo "Total nodes: " . count($nodes_array) . "\n";
-        // echo "<pre>\n"; print_r($nodes_array); echo "</pre>\n";
-        // exit();
         $ids = array();
         $updated = 0;
         $inserted = 0;
-        foreach ($nodes_array as $details) {
-            $details->last_seen_by = 'nmis';
-            $details->last_seen = $timestamp;
-            if (!empty($details->id)) {
-                $log->message = "Updating device " . $details->name . " (ID:" . $details->id . ")";
-                stdlog($log);
-                $this->m_devices->update($details);
-                $updated++;
-            } else {
-                $log->message = "Creating device " . $details->name;
-                stdlog($log);
-                $details->id = $this->m_devices->create($details);
-                $inserted++;
+        foreach ($devices as $device) {
+
+            $parameters = new stdCLass();
+            $parameters->details = $device;
+            $parameters->log = $log;
+            $parameters->match = $match;
+
+            // echo "<pre>"; print_r($device); echo "</pre>";
+            // Remove any empty entries
+            foreach ($device as $key => $value) {
+                if (empty($value)) {
+                    unset($device->$key);
+                }
             }
-            $this->m_devices->sub_resource_create($details->id, 'credential', $details->credentials);
-            $ids[] = $details->id;
+            // echo "<pre>"; print_r($device); echo "</pre>"; exit;
+
+            // Need to manually remove any discovery logs.
+            $sql = '/* nmis::_from_nmis_8 */ ' . 'DELETE FROM discovery_log WHERE ip = ?';
+            $data = array(ip_address_from_db($device->ip));
+            $this->db->query($sql, $data);
+
+            $device->id = $this->m_device->match($parameters);
+            $device->ip = ip_address_to_db($device->ip);
+            $log->command_output = '';
+
+            $credentials = $device->credentials;
+            unset($device->credentials);
+            if ( ! empty($device->id)) {
+                $log->message = 'Updating device ' . $device->name . ' (ID:' . $device->id . ')';
+                discovery_log($log);
+                $this->m_devices->update($device);
+                $updated++;
+                // must manually update last seen and last seen by
+                $sql = '/* nmis::_from_nmis_8 */ ' . 'UPDATE system SET last_seen_by = "nmis", last_seen = ? WHERE id = ?';
+                $data = array($device->last_seen, $device->id);
+                $this->db->query($sql, $data);
+            } else {
+                $device->first_seen = $this->config->config['timestamp'];
+                $log->message = "Creating device " . $device->name;
+                discovery_log($log);
+                $device->id = $this->m_devices->create($device);
+                $inserted++;
+                // need to update the discovery log with our system.id
+                $sql = '/* nmis::_from_nmis_8 */ ' . 'UPDATE discovery_log SET system_id = ? WHERE ip = ?';
+                $data = array($device->id, ip_address_from_db($device->ip));
+                $this->db->query($sql, $data);
+            }
+            $this->m_devices->sub_resource_create($device->id, 'credential', $credentials);
+            $ids[] = $device->id;
+            # NOTE - this applies for returning a JSON result
+            #      - a HTML output redirects
             $data = new stdClass();
-            $data->id = $details->id;
+            $data->id = $device->id;
             $data->type = 'devices';
             $data->attributes = new stdClass();
-            $data->attributes->id = $details->id;
-            $data->attributes->name = $details->name;
-            $data->attributes->hostname = $details->hostname;
-            $data->attributes->ip = $details->ip;
+            $data->attributes->id = $device->id;
+            $data->attributes->name = $device->name;
+            $data->attributes->hostname = @$device->hostname;
+            $data->attributes->ip = ip_address_from_db($device->ip);
             $this->response->data[] = $data;
         }
         $ids = implode(',', $ids);
+        $this->response->meta->ids = $ids;
+        $this->response->meta->inserted = $inserted;
+        $this->response->meta->updated = $updated;
+        $this->response->total = $inserted + $updated;
+        return true;
+    }
+
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
+    {
+
+        $string = '';
+        $flash_message = '';
+        $this->load->helper('network');
+
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 7;
+        $log->user = @$this->user->full_name;
+        $log->collection = @$this->response->meta->collection;
+        $log->action = @$this->response->meta->action;
+        $log->status = 'processing Nodes submission';
+
+        // Use nmis9 node admin tool
+        if ($this->response->meta->received_data->attributes->source === 'nmis9' && file_exists('/usr/local/nmis9/admin/node_admin.pl')) {
+            $command = '/usr/local/nmis9/admin/node_admin.pl act=export format=json keep_ids=1 2>&1';
+            exec($command, $string, $return_var);
+            if ($return_var !== 0) {
+                echo "<pre>\n";
+                print_r($string);
+                exit;
+            }
+            $nodes = json_decode($string, true);
+            unset($string);
+            unset($command);
+            unset($return_var);
+            $nodes = json_decode($string, true);
+            for ($i=0; $i < count($nodes); $i++) { 
+                $nodes[$i]['org_id'] = @intval(@$this->response->meta->received_data->attributes->org_id);
+                $nodes[$i]['location_id'] = @intval(@$this->response->meta->received_data->attributes->location_id);
+            }
+            $this->_from_nmis_9($nodes);
+        }
+
+        // The uploaded NMIS8 nodes file
+        if ($this->response->meta->received_data->attributes->source === 'nmis8_nodes' && ! empty($_FILES['upload_file']['tmp_name'])) {
+            $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+            try {
+                move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
+            } catch (Exception $e) {
+                $log->severity = 5;
+                $log->summary = 'Could not move uploaded Nodes file.';
+                $log->detail = $e;
+                stdlog($log);
+                unset($log);
+                $this->data['query'] = $e;
+                $this->data['error'] = "There was an error uploading the file, please try again.";
+                $this->data['include'] = 'v_error';
+                $this->load->view('v_template', $this->data);
+            }
+            $string = file_get_contents($target_path);
+            unlink($target_path);
+            $this->_from_nmis_8($string);
+        }
+
+        // the local NMIS8 nodes file
+        if ($this->response->meta->received_data->attributes->source === 'nmis8') {
+            $file = '/usr/local/nmis8/conf/Nodes.nmis';
+            $string = file_get_contents($file);
+            $this->_from_nmis_8($string);
+        }
 
         if ($this->response->meta->format === 'json') {
             output($this->response);
         } else {
-            $this->session->set_flashdata('success', $flash_message . count($nodes_array) . ' devices imported (' . intval($inserted) . ' inserted and ' . intval($updated) . ' updated).');
-            redirect('devices?system.id=in('.htmlentities($ids).')&properties=system.id,system.icon,system.type,system.name,nmis_name,system.ip,system.nmis_business_service,system.nmis_group,system.nmis_role,system.nmis_notes');
+            $this->session->set_flashdata('success', $flash_message . count($this->response->meta->total) . ' devices imported (' . intval($this->response->meta->inserted) . ' inserted and ' . intval($this->response->meta->updated) . ' updated).');
+            redirect('devices?system.last_seen=' . $this->config->config['timestamp'] . '&system.last_seen_by=nmis&properties=system.id,system.icon,system.type,system.name,nmis_name,system.ip,system.nmis_business_service,system.nmis_group,system.nmis_role,system.nmis_notes');
         }
     }
 
@@ -472,6 +705,11 @@ class Nmis extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         $this->load->model('m_locations');
         $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
+        if (file_exists('/usr/local/nmis9/admin/node_admin.pl')) {
+            $this->default = '/usr/local/nmis9/conf/Nodes.nmis';
+        } else {
+            $this->default = '/usr/local/nmis8/conf/Nodes.nmis';
+        }
         output($this->response);
     }
 }

@@ -36,28 +36,34 @@
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>" accept-charset="utf-8" enctype="multipart/form-data">
     <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+    <input type="hidden" value="nmis" id="data[type]" name="data[type]" />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <span class="text-left"><?php echo __('NMIS Import'); ?></span>
             </h3>
         </div>
-
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-
                     <div class="form-group">
-                        <label for="data[attributes][file]" class="col-sm-3 control-label"><?php echo __('Local Nodes.nmis file'); ?></label>
-                        <div class="col-sm-7 input-group">
-                            <input type="text" class="form-control" id="data[attributes][file]" name="data[attributes][file]" size="30" value="/usr/local/nmis8/conf/Nodes.nmis">
+                        <label for="data[attributes][source]" class="col-sm-3 control-label"><?php echo __('Source'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][source]" name="data[attributes][source]">
+                                <?php $show = false; ?>
+                                <?php if (file_exists('/usr/local/nmis9/admin/node_admin.pl')) { $show = true; ?><option value='nmis9'>Local NMIS 9</option><?php } ?>
+                                <?php if (file_exists('/usr/local/nmis8/conf/Nodes.nmis')) { $show = true; ?><option value='nmis8'>Local NMIS 8</option><?php } ?>
+                                <option value='nmis8_nodes'>Uploaded NMIS 8 Nodes file</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="upload_file" class="col-sm-3 control-label"><?php echo __('File Upload'); ?></label>
-                        <div class="col-sm-8">
-                            <input type="file" id="upload_file" name="upload_file">
+                    <div id="file_upload_div" style="display:none;">
+                        <div class="form-group">
+                            <label for="upload_file" class="col-sm-3 control-label"><?php echo __('File Upload'); ?></label>
+                            <div class="col-sm-8">
+                                <input type="file" id="upload_file" name="upload_file">
+                            </div>
                         </div>
                     </div>
 
@@ -93,25 +99,39 @@
                             <input type="checkbox" id="data[attributes][run_discovery]" name="data[attributes][run_discovery]">
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="statusmsg" class="col-sm-3 control-label">&nbsp;</label>
+                        <div class="col-sm-8 input-group">
+                            <span id="statusmsg"></span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                                <input type="hidden" value="nmis" id="data[type]" name="data[type]" />
-                                <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
+                                <button id="submit" name="submit" type="submit" class="btn btn-default" onClick="document.getElementById('statusmsg').innerHTML = '<br />Please wait while we import the devices.<br /><br /><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <p>NOTE - Please choose either a local file (on the Open-AudIT server) <code>OR</code> a file that you can upload.<br /></p>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+<script>
+$(document).ready(function(){
+    <?php if (! $show) { ?>$("#file_upload_div").css('display', 'block'); <?php } ?>
+
+    $('#data\\[attributes\\]\\[source\\]').change(function() {
+        var $type = $(this).val();
+        if ($type == "nmis9_nodes") {
+            $("#file_upload_div").css('display', 'block');
+        } else if ($type == "nmis8_nodes") {
+            $("#file_upload_div").css('display', 'block');
+        } else {
+            $("#file_upload_div").css('display', 'none');
+        }
+    });
+});
+</script>
