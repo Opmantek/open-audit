@@ -98,7 +98,7 @@ class M_device extends MY_Model
             $log->ip = ip_address_from_db($details->ip);
         }
 
-        $log_message = array(); // we will store our messages until we get a system.id, then wrtie them to the log
+        $log_message = array(); // we will store our messages until we get a system.id, then write them to the log
 
         $message = new stdClass();
         $message->message = 'Running devices::match function.';
@@ -125,42 +125,35 @@ class M_device extends MY_Model
         }
 
         // check if we have an ip address or a hostname (possibly a fqdn)
-        if ( ! empty($details->hostname) && ! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-            if (strpos($details->hostname, '.') !== false) {
-                $message = new stdClass();
-                $message->message = "Provided hostname contains a '.' and is not a valid IP. Assuming a FQDN.";
-                $message->command_status = 'notice';
-                $message->command_output = 'Hostname: ' . $details->hostname;
-                $log_message[] = $message;
-                if (empty($details->fqdn)) {
-                    $details->fqdn = $details->hostname;
+        if ( ! empty($details->hostname)) {
+            if ( ! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                if (strpos($details->hostname, '.') !== false) {
                     $message = new stdClass();
-                    $message->message = 'No FQDN provided, storing hostname as FQDN.';
+                    $message->message = "Provided hostname contains a '.' and is not a valid IP. Assuming a FQDN.";
                     $message->command_status = 'notice';
-                    $message->command_output = 'FQDN: ' . $details->fqdn;
+                    $message->command_output = 'Hostname: ' . $details->hostname;
                     $log_message[] = $message;
+                    if (empty($details->fqdn)) {
+                        $details->fqdn = $details->hostname;
+                        $message = new stdClass();
+                        $message->message = 'No FQDN provided, storing hostname as FQDN.';
+                        $message->command_status = 'notice';
+                        $message->command_output = 'FQDN: ' . $details->fqdn;
+                        $log_message[] = $message;
+                    }
+                    $temp = explode('.', $details->hostname);
+                    $hostname = $temp[0];
+                    $details->hostname = $hostname;
+                    $message = new stdClass();
+                    $message->message = "Using first split '.' from hostname as hostname.";
+                    $message->command_status = 'notice';
+                    $message->command_output = 'Hostname: ' . $details->hostname;
+                    $log_message[] = $message;
+                    unset($temp);
                 }
-                $temp = explode('.', $details->hostname);
-                $hostname = $temp[0];
-                $details->hostname = $hostname;
-                $message = new stdClass();
-                $message->message = "Using first split '.' from hostname as hostname.";
-                $message->command_status = 'notice';
-                $message->command_output = 'Hostname: ' . $details->hostname;
-                $log_message[] = $message;
-                unset($temp);
-            }
-        } else {
-            if (empty($details->hostname)) {
-                $message = new stdClass();
-                $message->message = 'Provided hostname is empty.';
-                $message->command_status = 'notice';
-                $message->command_output = 'Hostname: ';
-                $log_message[] = $message;
-
             } else {
                 // we have an ip address in the hostname field - remove it
-                // likely because DNS is not fully setup and working correctly
+                // possibly because DNS is not fully setup and working correctly
                 $message = new stdClass();
                 $message->message = 'Provided hostname is actually an IP address.';
                 $message->command_status = 'notice';
@@ -174,13 +167,14 @@ class M_device extends MY_Model
                     $message->command_output = 'IP: ' . $details->ip;
                     $log_message[] = $message;
                 }
+                unset($details->hostname);
             }
+        } else {
             $message = new stdClass();
-            $message->message = 'Provided hostname is actually an IP, removing.';
+            $message->message = 'Provided hostname is empty.';
             $message->command_status = 'notice';
-            $message->command_output = '';
+            $message->command_output = 'Hostname: ';
             $log_message[] = $message;
-            unset($details->hostname);
         }
 
         if ( ! empty($details->hostname) && ! empty($details->domain) && $details->domain !== '.' && empty($details->fqdn)) {
@@ -234,7 +228,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on NMIS uuid';
                 $message->command_status = 'success';
-                $message->command_output = 'NMIS UUID: ' . $details->omk_uuid . ', SystemID : ' . $details->id;
+                $message->command_output = 'NMIS UUID: ' . $details->omk_uuid . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -266,7 +260,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on instance_ident';
                 $message->command_status = 'success';
-                $message->command_output = 'Instance Ident: ' . $details->instance_ident . ', SystemID : ' . $details->id;
+                $message->command_output = 'Instance Ident: ' . $details->instance_ident . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -297,7 +291,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT hostname + uuid';
                 $message->command_status = 'success';
-                $message->command_output = 'Hostname: ' . $details->hostname . ', UUID: ' . $details->uuid . ', SystemID : ' . $details->id;
+                $message->command_output = 'Hostname: ' . $details->hostname . ', UUID: ' . $details->uuid . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -359,7 +353,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on hostname + dbus_identifier.';
                 $message->command_status = 'success';
-                $message->command_output = 'Hostname: ' . $details->hostname . ', DbusID: ' . $details->dbus_identifier . ', SystemID : ' . $details->id;
+                $message->command_output = 'Hostname: ' . $details->hostname . ', DbusID: ' . $details->dbus_identifier . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -421,7 +415,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on hostname + serial.';
                 $message->command_status = 'success';
-                $message->command_output = 'Hostname: ' . $details->hostname . ', Serial: ' . $details->serial . ', SystemID : ' . $details->id;
+                $message->command_output = 'Hostname: ' . $details->hostname . ', Serial: ' . $details->serial . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -489,7 +483,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on dbus_identifier.';
                 $message->command_status = 'success';
-                $message->command_output = 'DbusID: ' . $details->dbus_identifier . ', SystemID : ' . $details->id;
+                $message->command_output = 'DbusID: ' . $details->dbus_identifier . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -545,7 +539,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on dns_fqdn.';
                 $message->command_status = 'success';
-                $message->command_output = 'DNS FQDN: ' . $details->dns_fqdn . ', SystemID : ' . $details->id;
+                $message->command_output = 'DNS FQDN: ' . $details->dns_fqdn . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -600,7 +594,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on dns_hostname.';
                 $message->command_status = 'success';
-                $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname . ', SystemID : ' . $details->id;
+                $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -655,7 +649,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on fqdn.';
                 $message->command_status = 'success';
-                $message->command_output = 'FQDN: ' . $details->fqdn . ', SystemID : ' . $details->id;
+                $message->command_output = 'FQDN: ' . $details->fqdn . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -711,7 +705,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on serial + type.';
                 $message->command_status = 'success';
-                $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type . ', SystemID : ' . $details->id;
+                $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -779,7 +773,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on serial.';
                 $message->command_status = 'success';
-                $message->command_output = 'Serial: ' . $details->serial . ', SystemID : ' . $details->id;
+                $message->command_output = 'Serial: ' . $details->serial . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -841,7 +835,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on sysname + serial.';
                 $message->command_status = 'success';
-                $message->command_output = 'SysName: ' . $details->sysName . ', Serial: ' . $details->serial . ', SystemID : ' . $details->id;
+                $message->command_output = 'SysName: ' . $details->sysName . ', Serial: ' . $details->serial . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -909,7 +903,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on sysName.';
                 $message->command_status = 'success';
-                $message->command_output = 'SysName: ' . $details->sysName . ', SystemID : ' . $details->id;
+                $message->command_output = 'SysName: ' . $details->sysName . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -965,7 +959,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on Mac Address (ip table).';
                 $message->command_status = 'success';
-                $message->command_output = 'MAC: ' . $details->mac_address . ', SystemID : ' . $details->id;
+                $message->command_output = 'MAC: ' . $details->mac_address . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -1031,7 +1025,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on Mac Address (network table).';
                 $message->command_status = 'success';
-                $message->command_output = 'MAC: ' . $details->mac_address . ', SystemID : ' . $details->id;
+                $message->command_output = 'MAC: ' . $details->mac_address . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -1099,7 +1093,7 @@ class M_device extends MY_Model
                     $message = new stdClass();
                     $message->message = 'HIT on Mac Address (network table all).';
                     $message->command_status = 'success';
-                    $message->command_output = 'MAC: ' . $mac . ', SystemID : ' . $details->id;
+                    $message->command_output = 'MAC: ' . $mac . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
                     foreach ($log_message as $message) {
                         $log->message = $message->message;
@@ -1171,7 +1165,7 @@ class M_device extends MY_Model
                         $message = new stdClass();
                         $message->message = 'HIT on Mac Address (addresses).';
                         $message->command_status = 'success';
-                        $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
+                        $message->command_output = "MAC: {$mac} , SystemID: {$details->id}";
                         $log_message[] = $message;
                         foreach ($log_message as $message) {
                             $log->message = $message->message;
@@ -1191,7 +1185,7 @@ class M_device extends MY_Model
                     }
                 }
                 $message->command_status = 'notice';
-                $message->command_output = "MAC: {$mac} , SystemID : {$details->id}";
+                $message->command_output = "MAC: {$mac} , SystemID: {$details->id}";
                 $log_message[] = $message;
             }
         } else {
@@ -1241,7 +1235,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on IP Address (network table).';
                 $message->command_status = 'success';
-                $message->command_output = 'IP: ' . $details->ip . ', SystemID : ' . $details->id;
+                $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -1266,7 +1260,7 @@ class M_device extends MY_Model
                     $message = new stdClass();
                     $message->message = 'HIT on IP Address (system table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', SystemID : ' . $details->id;
+                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
                     foreach ($log_message as $message) {
                         $log->message = $message->message;
@@ -1323,7 +1317,7 @@ class M_device extends MY_Model
                 $message = new stdClass();
                 $message->message = 'HIT on hostname.';
                 $message->command_status = 'success';
-                $message->command_output = 'Hostname: ' . $details->hostname . ', SystemID : ' . $details->id;
+                $message->command_output = 'Hostname: ' . $details->hostname . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
                 foreach ($log_message as $message) {
                     $log->message = $message->message;
@@ -1354,7 +1348,7 @@ class M_device extends MY_Model
                             $message = new stdClass();
                             $message->message = 'HIT on hostname (short).';
                             $message->command_status = 'success';
-                            $message->command_output = 'Hostname: ' . $hostname . ', SystemID : ' . $details->id;
+                            $message->command_output = 'Hostname: ' . $hostname . ', SystemID: ' . $details->id;
                             $log_message[] = $message;
                             foreach ($log_message as $message) {
                                 $log->message = $message->message;
@@ -1417,7 +1411,7 @@ class M_device extends MY_Model
                     $message = new stdClass();
                     $message->message = 'HIT on IP Address No Data (system table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', SystemID : ' . $details->id;
+                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
                     foreach ($log_message as $message) {
                         $log->message = $message->message;
@@ -1465,7 +1459,7 @@ class M_device extends MY_Model
         $temp = @(string)$details->id;
         if (is_null($temp) OR $temp === '') {
             $message = new stdClass();
-            $message->message = 'Could not find any matching attributes for the device with IP '  . $details->ip;
+            $message->message = 'Could not find any matching attributes for the device with IP '  . ip_address_from_db($details->ip);
             $message->command_status = 'notice';
             $message->command_output = '';
             $log_message[] = $message;
@@ -1477,7 +1471,7 @@ class M_device extends MY_Model
             }
         } else {
             $message = new stdClass();
-            $message->message = 'Returning system.id for device with IP '  . $details->ip . ' (' . $details->id . ')';
+            $message->message = 'Returning system.id for device with IP '  . ip_address_from_db($details->ip) . ' (' . $details->id . ')';
             $message->command_status = 'notice';
             $message->command_output = '';
             $log_message[] = $message;
@@ -1490,7 +1484,7 @@ class M_device extends MY_Model
         }
         unset($log);
         $message->command_output = '';
-        return $details->id;
+        return intval($details->id);
     }
 
     /**
