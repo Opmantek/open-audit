@@ -125,6 +125,7 @@ $item = $this->response->data[0];
                             <option value='es' <?php if ($item->attributes->lang == 'es') { echo 'selected'; } ?>><?php echo __('Spanish'); ?></option>
                             <option value='fr' <?php if ($item->attributes->lang == 'fr') { echo 'selected'; } ?>><?php echo __('French'); ?></option>
                             <option value='pt-br' <?php if ($item->attributes->lang == 'pt-br') { echo 'selected'; } ?>><?php echo __('Brazilian Portuguese'); ?></option>
+                            <option value='zh-tw' <?php if ($item->attributes->lang == 'zh-tw') { echo 'selected'; } ?>><?php echo __('Traditional Chinese'); ?></option>
                         </select>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
