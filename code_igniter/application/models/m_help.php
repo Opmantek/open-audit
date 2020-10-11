@@ -285,14 +285,13 @@ class M_help extends MY_Model
         $data->php->version = phpversion();
         $data->php->ini = php_ini_loaded_file();
 
+        $os = $this->get_os();
+        $data->os->name = $os->os_name;
+        $data->os->version = $os->os_version;
+        unset($os);
+
 
         if (php_uname('s') === 'Windows NT') {
-            $data->os->name = 'Windows';
-            exec('echo. |WMIC OS Get Caption', $output);
-            if (isset($output[1])) {
-                $data->os->version = $output[1];
-            }
-            unset($output);
             $test_path = 'c:\Program Files\Nmap\Nmap.exe';
             if (file_exists($test_path)) {
                 $data->prereq->nmap = 'c:\Program Files\Nmap\Nmap.exe';
@@ -309,12 +308,6 @@ class M_help extends MY_Model
         }
 
         if (php_uname('s') === 'Darwin') {
-            $data->os->name = 'OSX';
-            $command_string = 'sw_vers | grep "ProductVersion:" | cut -f2';
-            @exec($command_string, $return['output'], $return['status']);
-            $data->os->version = $return['output'][0];
-            unset($output);
-            unset($command_string);
             $test_path = '/usr/local/bin/nmap';
             if (file_exists($test_path)) {
                 $data->prereq->nmap = '/usr/local/bin/nmap';
@@ -327,45 +320,6 @@ class M_help extends MY_Model
         }
 
         if (php_uname('s') === 'Linux') {
-            $data->os->name = 'linux';
-            if (file_exists('/etc/os-release')) {
-                $command_string = 'grep PRETTY_NAME= /etc/os-release';
-                exec($command_string, $return['output'], $return['status']);
-                $data->os->version = str_replace('PRETTY_NAME=', '', $return['output'][0]);
-                $data->os->version = str_replace('"', '', $data->os->version);
-                if (empty($data->os->version)) {
-                    $command_string = 'grep ^NAME= /etc/os-release';
-                    exec($command_string, $return['output'], $return['status']);
-                    $data->os->version = str_replace('NAME=', '', $return['output'][0]);
-                    $data->os->version = str_replace('"', '', $data->os->version);
-                }
-            } elseif (file_exists('/etc/issue.net')) {
-                $file_contents = file('/etc/issue.net');
-                $data->os->version = trim($file_contents[0]);
-                unset($file_contents);
-            } elseif (file_exists('/etc/redhat-release')) {
-                // RedHat 6 doesn't have /etc/os-release
-                $data->os->version = 'RedHat';
-            }
-            if ((stripos($data->os->version, 'red') !== false) && (stripos($data->os->version, 'hat') !== false)) {
-                $data->os->name = 'Linux (Redhat)';
-            }
-            if (stripos($data->os->version, 'centos') !== false) {
-                $data->os->name = 'Linux (Redhat)';
-            }
-            if (stripos($data->os->version, 'fedora') !== false) {
-                $data->os->name = 'Linux (Redhat)';
-            }
-
-            if (stripos($data->os->version, 'debian') !== false) {
-                $data->os->name = 'Linux (Debian)';
-            }
-            if (stripos($data->os->version, 'ubuntu') !== false) {
-                $data->os->name = 'Linux (Debian)';
-            }
-            if (stripos($data->os->version, 'mint') !== false) {
-                $data->os->name = 'Linux (Debian)';
-            }
             // php process owner
             if (extension_loaded('posix')) {
                 $posix_getpwuid = posix_getpwuid(posix_geteuid());
@@ -496,6 +450,67 @@ class M_help extends MY_Model
         $CI->response->data = array();
         $CI->response->data[0] = $data;
     }
+
+    public function get_os()
+    {
+        $data = new stdClass();
+        if (php_uname('s') === 'Linux') {
+            $data->os_name = 'linux';
+            if (file_exists('/etc/os-release')) {
+                $command_string = 'grep PRETTY_NAME= /etc/os-release';
+                exec($command_string, $return['output'], $return['status']);
+                $data->os_version = str_replace('PRETTY_NAME=', '', $return['output'][0]);
+                $data->os_version = str_replace('"', '', $data->os_version);
+                if (empty($data->os_version)) {
+                    $command_string = 'grep ^NAME= /etc/os-release';
+                    exec($command_string, $return['output'], $return['status']);
+                    $data->os_version = str_replace('NAME=', '', $return['output'][0]);
+                    $data->os_version = str_replace('"', '', $data->os_version);
+                }
+            } elseif (file_exists('/etc/issue.net')) {
+                $file_contents = file('/etc/issue.net');
+                $data->os_version = trim($file_contents[0]);
+                unset($file_contents);
+            } elseif (file_exists('/etc/redhat-release')) {
+                // RedHat 6 doesn't have /etc/os-release
+                $data->os_version = 'RedHat';
+            }
+            if ((stripos($data->os_version, 'red') !== false) && (stripos($data->os_version, 'hat') !== false)) {
+                $data->os_name = 'Linux (Redhat)';
+            }
+            if (stripos($data->os_version, 'centos') !== false) {
+                $data->os_name = 'Linux (Redhat)';
+            }
+            if (stripos($data->os_version, 'fedora') !== false) {
+                $data->os_name = 'Linux (Redhat)';
+            }
+
+            if (stripos($data->os_version, 'debian') !== false) {
+                $data->os_name = 'Linux (Debian)';
+            }
+            if (stripos($data->os_version, 'ubuntu') !== false) {
+                $data->os_name = 'Linux (Debian)';
+            }
+            if (stripos($data->os_version, 'mint') !== false) {
+                $data->os_name = 'Linux (Debian)';
+            }
+        }
+        if (php_uname('s') === 'Darwin') {
+            $data->os_name = 'OSX';
+            $command_string = 'sw_vers | grep "ProductVersion:" | cut -f2';
+            @exec($command_string, $return['output'], $return['status']);
+            $data->os_version = $return['output'][0];
+        }
+        if (php_uname('s') === 'Windows NT') {
+            $data->os_name = 'Windows';
+            exec('echo. |WMIC OS Get Caption', $output);
+            if (isset($output[1])) {
+                $data->os_version = $output[1];
+            }
+        }
+        return $data;
+    }
+
 }
 // End of file m_help.php
 // Location: ./models/m_help.php
