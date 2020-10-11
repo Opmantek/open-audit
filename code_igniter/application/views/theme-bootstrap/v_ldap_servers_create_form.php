@@ -175,6 +175,7 @@
                                 <option value='es'><?php echo __('Spanish'); ?></option>
                                 <option value='fr'><?php echo __('French'); ?></option>
                                 <option value='pt-br'><?php echo __('Brazilian Portuguese'); ?></option>
+                                <option value='zh-tw'><?php echo __('Traditional Chinese'); ?></option>
                             </select>
                         </div>
                     </div>

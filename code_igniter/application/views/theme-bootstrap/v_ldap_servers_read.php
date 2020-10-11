@@ -251,6 +251,7 @@ $item = $this->response->data[0];
                                 <option value='es' <?php if ($item->attributes->lang == 'es') { echo "selected"; }?>><?php echo __('Spanish'); ?></option>
                                 <option value='fr' <?php if ($item->attributes->lang == 'fr') { echo "selected"; }?>><?php echo __('French'); ?></option>
                                 <option value='pt-br' <?php if ($item->attributes->lang == 'pt-br') { echo "selected"; }?>><?php echo __('Brazilian Portuguese'); ?></option>
+                                <option value='zh-tw' <?php if ($item->attributes->lang == 'zh-tw') { echo "selected"; }?>><?php echo __('Traditional Chinese'); ?></option>
                             </select>
                             <span class="input-group-btn">
                                 <button id="edit_lang" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="lang"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
