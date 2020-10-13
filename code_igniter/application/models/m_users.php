@@ -570,6 +570,22 @@ class M_users extends MY_Model
                     }
                 }
             }
+            $json = '';
+            if (empty($uuid) && file_exists('/usr/local/omk/conf/opCommon.json')) {
+                $json = file_get_contents('/usr/local/omk/conf/opCommon.json');
+            }
+            if (empty($uuid) && file_exists('/usr/local/opmojo/conf/opCommon.json')) {
+                $json = file_get_contents('/usr/local/opmojo/conf/opCommon.json');
+            }
+            if (empty($uuid) && file_exists('c:\\omk\\conf\\opCommon.json')) {
+                $json = file_get_contents('c:\\omk\\conf\\opCommon.json');
+            }
+            if (empty($uuid) && ! empty($json)) {
+                $commercial_config = json_decode($json);
+                $uuid = @$commercial_config->id->uuid;
+            }
+            unset($commercial_config);
+            unset($json);
             if (empty($uuid)) {
                 // Cannot read from filesystem and parse opCommon.nmis config file - abort
                 $CI->response = new stdClass();
