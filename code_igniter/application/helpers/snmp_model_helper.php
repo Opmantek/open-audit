@@ -322,6 +322,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.12532.256.5.1': $device->model = 'PSA-7000c'; $device->type = 'vpn terminator'; break;
 			case '1.3.6.1.4.1.12532.256.6': $device->model = 'PSA-10000'; $device->type = 'vpn terminator'; break;
 			case '1.3.6.1.4.1.12532.256.6.1': $device->model = 'PSA-10000'; $device->type = 'vpn terminator'; break;
+			case '1.3.6.1.4.1.1271.3': $device->model = 'Waveserver'; $device->type = 'wan accelerator'; break;
 			case '1.3.6.1.4.1.13858': $device->model = 'Valere DC Power Plant'; $device->type = 'ups'; break;
 			case '1.3.6.1.4.1.1411.102': $device->model = 'Juniper EX2500'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.14179.1.1.4.3': $device->model = '4402 WLAN Controller'; $device->type = 'wap'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
