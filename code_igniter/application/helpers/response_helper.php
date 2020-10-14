@@ -179,7 +179,7 @@ if ( ! function_exists('response_create')) {
         $instance->user->org_list = response_get_org_list($response->meta->collection, $instance->user);
 
         // depends on version affecting URI, collection - set in URI or POST
-        $response->meta->id = response_get_id($instance->uri->segment(2),
+        $response->meta->id = response_get_id(html_entity_decode(urldecode($instance->uri->segment(2))),
                                               $response->meta->collection,
                                               $instance->user->org_list);
 
