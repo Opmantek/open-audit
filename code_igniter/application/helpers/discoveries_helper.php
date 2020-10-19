@@ -123,6 +123,11 @@ if ( ! function_exists('ip_list')) {
 		$log->ip = '127.0.0.1';
 
 		$ip_addresses = array();
+		// Nmap:
+		//   -n     No DNS lookup
+		//   -oG    Output in grappable format
+		//   -      No filename, command line output for above
+		//   -sP    Ping scan only
 		if ($discovery->attributes->other->nmap->ping === 'y') {
 			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
 				$command = 'nmap -n -oG - -sP --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
