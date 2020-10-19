@@ -1172,7 +1172,7 @@ class M_devices extends MY_Model
             }
 
             // now check the regular system table fields
-            if ((string)$value === '' && ($key === 'system.id' OR $key === 'id' OR $key === 'system.oae_manage' OR $key === 'oae_manage' OR $key === 'system.status' OR $key === 'status' OR $key === 'system.nmis_manage' OR $key === 'nmis_manage' OR $key === 'system.environment' OR $key === 'environment' OR $key === 'system.location_id' OR $key === 'location_id' OR $key === 'system.org_id' OR $key === 'org_id' OR $key === 'system.type' OR $key === 'type')) {
+            if ((is_string($value) or is_int($value)) && (string)$value === '' && ($key === 'system.id' OR $key === 'id' OR $key === 'system.oae_manage' OR $key === 'oae_manage' OR $key === 'system.status' OR $key === 'status' OR $key === 'system.nmis_manage' OR $key === 'nmis_manage' OR $key === 'system.environment' OR $key === 'environment' OR $key === 'system.location_id' OR $key === 'location_id' OR $key === 'system.org_id' OR $key === 'org_id' OR $key === 'system.type' OR $key === 'type')) {
                 // We cannot set these fields to blank, they MUST contain a value
 
             } else {
@@ -1196,7 +1196,7 @@ class M_devices extends MY_Model
                         }
                         // calculate the weight
                         $weight = intval($this->weight($source));
-                        if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
+                        if ((is_string($value) or is_int($value)) && $weight <= $previous_weight && (string)$value !== (string)$previous_value) {
                             if ($key !== 'id' && $key !== 'last_seen' && $key !== 'last_seen_by' && $key !== 'first_seen') {
                                 // update the system table
                                 $sql = "UPDATE `system` SET `{$key}` = ? WHERE id = ?";
@@ -1417,7 +1417,7 @@ class M_devices extends MY_Model
 
         $sql = 'INSERT INTO system ( ';
         foreach ($details as $key => $value) {
-            if ($key > '') {
+            if ((is_string($value) or is_string($value)) && $key > '') {
                 // need to iterate through available columns and only insert where $key == valid column name
                 foreach ($columns as $column) {
                     if ((string)$key === (string)$column->Field) {
@@ -1429,7 +1429,7 @@ class M_devices extends MY_Model
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
         $sql .= ' ) VALUES ( ';
         foreach ($details as $key => $value) {
-            if ($key > '') {
+            if ((is_string($value) or is_string($value)) && $key != '') {
                 foreach ($columns as $column) {
                     if ((string)$key === (string)$column->Field) {
                         $sql .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
@@ -1451,9 +1451,11 @@ class M_devices extends MY_Model
             if ($key > '') {
                 foreach ($columns as $column) {
                     if ((string)$key === (string)$column->Field) {
-                        $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
-                        $data = array(intval($details->id), "{$details->last_seen_by}", "{$weight}", "{$key}", "{$details->last_seen}", "{$value}", '');
-                        $query = $this->db->query($sql, $data);
+                        if (is_string($value) or is_string($value)) {
+                            $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
+                            $data = array(intval($details->id), "{$details->last_seen_by}", "{$weight}", "{$key}", "{$details->last_seen}", "{$value}", '');
+                            $query = $this->db->query($sql, $data);
+                        }
                     }
                 }
             }
