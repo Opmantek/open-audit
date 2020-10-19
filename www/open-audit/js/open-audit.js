@@ -54,7 +54,7 @@ $(document).ready(function () {
             }
         });
         ids = ids.substring(1);
-        var url = baseurl + 'index.php/nmis?action=export&system.id=in' + ids;
+        var url = baseurl + 'index.php/nmis?action=export&system.id=in(' + ids + ')';
         window.location = url;
     });
 });

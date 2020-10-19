@@ -578,15 +578,17 @@ class Nmis extends MY_Controller
     public function collection()
     {
         $this->load->model('m_devices');
+        $this->response->meta->internal->join = '';
         $this->response->meta->internal->properties = 'system.id, system.name, system.ip, system.nmis_manage, system.type, system.nmis_name, system.omk_uuid, system.nmis_notes, system.nmis_role, system.nmis_business_service, system.nmis_group';
-        $devices = $this->m_devices->collection();
-        if (!empty($devices)) {
-            $this->response->meta->total = intval(count($devices));
+        $this->m_devices->collection(0,1);
+        if ( ! empty($this->response->data)) {
+            $this->response->meta->total = intval(count($this->response->data));
         } else {
             $this->response->meta->total = 0;
         }
-        if ($devices) {
-            foreach ($devices as &$device) {
+        $devices = array();
+        if ($this->response->data) {
+            foreach ($this->response->data as &$device) {
                 $this_device = new stdClass();
                 $this_device->id = intval($device->attributes->id);
                 $this_device->type = 'devices';
@@ -594,7 +596,7 @@ class Nmis extends MY_Controller
                 $this_device->attributes->id = $device->attributes->id;
                 $this_device->attributes->name = $device->attributes->nmis_name;
                 if (empty($this_device->attributes->name)) {
-                    if (!empty($device->attributes->hostname)) {
+                    if ( ! empty($device->attributes->hostname)) {
                         $this_device->attributes->name = $device->attributes->hostname;
                     } else {
                         $this_device->attributes->name = $device->attributes->name;
@@ -610,11 +612,11 @@ class Nmis extends MY_Controller
                     $this_device->attributes->group = 'Open-AudIT';
                 }
                 $this_device->attributes->host = '';
-                if (!empty($device->attributes->ip)) {
+                if ( ! empty($device->attributes->ip)) {
                     $this_device->attributes->host = ip_address_from_db($device->attributes->ip);
-                } else if (!empty($device->attributes->fqdn)) {
+                } else if ( ! empty($device->attributes->fqdn)) {
                     $this_device->attributes->host = $device->attributes->fqdn;
-                } else if (!empty($device->attributes->hostname)) {
+                } else if ( ! empty($device->attributes->hostname)) {
                     $this_device->attributes->host = $device->attributes->hostname;
                 }
                 $this_device->attributes->community = '';
@@ -686,9 +688,10 @@ class Nmis extends MY_Controller
 
                     }
                 }
-                $this->response->data[] = $this_device;
+                $devices[] = $this_device;
             }
         }
+        $this->response->data = $devices;
         unset($this->response->meta->data_order);
         output($this->response);
     }
