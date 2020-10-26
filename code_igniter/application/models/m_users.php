@@ -571,22 +571,23 @@ class M_users extends MY_Model
                 }
             }
             $json = '';
-            if (empty($uuid) && file_exists('/usr/local/omk/conf/opCommon.json')) {
+            $uuid_2 = '';
+            if (file_exists('/usr/local/omk/conf/opCommon.json')) {
                 $json = file_get_contents('/usr/local/omk/conf/opCommon.json');
             }
-            if (empty($uuid) && file_exists('/usr/local/opmojo/conf/opCommon.json')) {
+            if (file_exists('/usr/local/opmojo/conf/opCommon.json')) {
                 $json = file_get_contents('/usr/local/opmojo/conf/opCommon.json');
             }
-            if (empty($uuid) && file_exists('c:\\omk\\conf\\opCommon.json')) {
+            if (file_exists('c:\\omk\\conf\\opCommon.json')) {
                 $json = file_get_contents('c:\\omk\\conf\\opCommon.json');
             }
-            if (empty($uuid) && ! empty($json)) {
+            if (! empty($json)) {
                 $commercial_config = json_decode($json);
-                $uuid = @$commercial_config->id->uuid;
+                $uuid_2 = @$commercial_config->id->uuid;
             }
             unset($commercial_config);
             unset($json);
-            if (empty($uuid)) {
+            if (empty($uuid) && empty($uuid_2)) {
                 // Cannot read from filesystem and parse opCommon.nmis config file - abort
                 $CI->response = new stdClass();
                 $CI->response->meta = new stdClass();
@@ -606,7 +607,7 @@ class M_users extends MY_Model
                     exit();
                 }
             }
-            if ($supplied_uuid !== $uuid) {
+            if ($supplied_uuid !== $uuid && $supplied_uuid !== $uuid_2) {
                 // Bad UUID supplied
                 $CI->response = new stdClass();
                 $CI->response->meta = new stdClass();
@@ -623,7 +624,7 @@ class M_users extends MY_Model
                     exit();
                 }
             }
-            if ($supplied_uuid === $uuid) {
+            if ($supplied_uuid === $uuid OR $supplied_uuid === $uuid_2) {
                 $this->log->summary = 'Valid UUID submitted via headers';
                 stdlog($this->log);
             }
@@ -638,6 +639,7 @@ class M_users extends MY_Model
             }
             $temp = bin2hex(openssl_random_pseudo_bytes(30));
             $access_token[] = $temp;
+            // only keep the last access_token_count number of tokens
             $access_token = array_slice($access_token, -intval($CI->config->config['access_token_count']));
             $sql = 'UPDATE `users` SET `access_token` = ? WHERE `id` = ?';
             $data = array(json_encode($access_token), $CI->user->id);
