@@ -107,9 +107,13 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.11.2.3.7.11.17': $device->model = 'ProCurve Switch 5308xl'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.17.11': $device->model = 'ProCurve Wireless Edge xl'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.17.12': $device->model = 'ProCurve Wireless Edge Redundant xl'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.11.2.3.7.11.174.1': $device->model = 'Aruba JL071A 3810M-24G-1-slot'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.174.3': $device->model = 'Aruba JL073A 3810M-24G-PoE+-1-slot'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.174.4': $device->model = 'Aruba JL074A 3810M-48G-PoE+-1-slot'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.18': $device->model = 'ProCurve Switch 2512'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.11.2.3.7.11.181.18': $device->model = 'Aruba JL253A 2930F-24G-4SFP+'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.11.2.3.7.11.181.2': $device->model = 'Aruba JL319A 2930M-24G'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.11.2.3.7.11.181.22': $device->model = 'Aruba JL259A 2930F-24G-4SFP'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.19': $device->model = 'ProCurve Switch 2524'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.2': $device->model = 'AdvanceStack Switch 2000 (B version)'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.11.20': $device->model = 'ProCurve Switch 5304XL'; $device->type = 'switch'; break;
@@ -195,7 +199,8 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.11.2.3.7.8.1': $device->model = 'RepeaterAgent'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.8.2.5': $device->model = 'AdvanceStack 10BT Switching Hub'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.8.5.2': $device->model = '3800 Switch Stack'; $device->type = 'switch'; break;
-			case '1.3.6.1.4.1.11.2.3.7.8.5.6': $device->model = '5412Rzl2 VSF VC'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.11.2.3.7.8.5.5': $device->model = 'Aruba 2930F VSF VC'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.11.2.3.7.8.5.6': $device->model = 'Aruba 5412Rzl2 VSF VC'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.7.8.5.7': $device->model = 'Aruba HPE-2930M'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.11.2.3.9.1': $device->model = 'Jet Direct Print Server'; $device->type = 'network printer'; break;
 			case '1.3.6.1.4.1.11.2.3.9.2': $device->model = 'Jet Direct Print Server'; $device->type = 'network printer'; break;
