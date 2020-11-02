@@ -108,7 +108,7 @@ class M_networks extends MY_Model
         $dhcp_result = $this->run_sql($sql, $data);
         $dhcp_servers = array();
         foreach ($dhcp_result as $dhcp_entry) {
-            if (ip_address_to_db($dhcp_entry->dhcp_server) >= ip_address_to_db($network->host_min) && ip_address_to_db($dhcp_entry->dhcp_server) <= ip_address_to_db($network->host_max)) {
+            if (@ip_address_to_db($dhcp_entry->dhcp_server) >= @ip_address_to_db($network->host_min) && @ip_address_to_db($dhcp_entry->dhcp_server) <= @ip_address_to_db($network->host_max)) {
                 $dhcp_servers[] = $dhcp_entry->dhcp_server;
             }
         }
@@ -122,7 +122,7 @@ class M_networks extends MY_Model
         foreach ($dns_result as $dns_entry) {
             $dns_items = explode(',', $dns_entry->dns_server);
             foreach ($dns_items as $dns_item) {
-                if (ip_address_to_db(trim($dns_item)) >= ip_address_to_db($network->host_min) && ip_address_to_db(trim($dns_item)) <= ip_address_to_db($network->host_max)) {
+                if (@ip_address_to_db(trim($dns_item)) >= @ip_address_to_db($network->host_min) && @ip_address_to_db(trim($dns_item)) <= @ip_address_to_db($network->host_max)) {
                 $dns_servers[] = $dns_item;
                 }
             }
@@ -135,7 +135,7 @@ class M_networks extends MY_Model
         $gateway_result = $this->run_sql($sql);
         $gateways = array();
         foreach ($gateway_result as $gateway) {
-            if (ip_address_to_db($gateway->next_hop) >= ip_address_to_db($network->host_min) && ip_address_to_db($gateway->next_hop) <= ip_address_to_db($network->host_max)) {
+            if (@ip_address_to_db($gateway->next_hop) >= @ip_address_to_db($network->host_min) && @ip_address_to_db($gateway->next_hop) <= @ip_address_to_db($network->host_max)) {
                 $gateways[] = $gateway->next_hop;
             }
         }
