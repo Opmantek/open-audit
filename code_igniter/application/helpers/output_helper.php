@@ -358,7 +358,6 @@ if ( ! function_exists('output')) {
         $timer_start = microtime(true);
         $CI = & get_instance();
         $CI->output->enable_profiler(false);
-
         header('Content-Type: application/json');
         if ((string) $CI->config->config['download_reports'] === 'y') {
             if (!empty($CI->response->meta->heading)) {
@@ -609,7 +608,23 @@ if ( ! function_exists('output')) {
             unset($CI->response->logs);
         }
 
+        $CI->response = filter_response($CI->response);
         $CI->load->view('v_template', $CI->response);
+    }
+
+    function filter_response(&$response)
+    {
+        if (is_array($response) or is_object($response)) {
+            foreach ($response as &$item) {
+                $item = filter_response($item);
+            }
+        } else if (is_string($response)) {
+            $response = htmlentities($response, ENT_QUOTES);
+            return $response;
+        } else {
+            return $response;
+        }
+        return($response);
     }
 
     function output_xml()
