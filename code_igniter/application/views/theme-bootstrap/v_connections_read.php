@@ -87,7 +87,7 @@ $item = $this->response->data[0];
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="location_id_a" name="location_id_a" disabled>
                                 <?php
-                                foreach ($this->locations as $location) {
+                                foreach ($this->response->included as $location) {
                                     if ($location->type == 'locations') { ?>
                                         <option value="<?php echo $location->id; ?>"<?php if ($item->attributes->location_id_a == $location->id) { echo " selected"; } ?>><?php echo htmlspecialchars($location->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
@@ -105,7 +105,7 @@ $item = $this->response->data[0];
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="location_id_b" name="location_id_b" disabled>
                                 <?php
-                                foreach ($this->locations as $location) {
+                                foreach ($this->response->included as $location) {
                                     if ($location->type == 'locations') { ?>
                                         <option value="<?php echo $location->id; ?>"<?php if ($item->attributes->location_id_b == $location->id) { echo " selected"; } ?>><?php echo htmlspecialchars($location->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php

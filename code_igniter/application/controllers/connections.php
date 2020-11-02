@@ -106,20 +106,20 @@ class Connections extends MY_Controller
     public function read()
     {
         $this->load->model('m_locations');
+        $this->load->model('m_orgs');
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         if ( ! empty($this->response->data) && is_array($this->response->data)) {
             $this->response->meta->total = 1;
             $this->response->meta->filtered = 1;
-            $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_a));
-            if ( ! empty($this->response->data[0]->attributes->location_id_b) && $this->response->data[0]->attributes->location_id_b !== $this->response->data[0]->attributes->location_id_a) {
-                $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_b));
-            }
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
-                $this->locations = $this->m_locations->collection($this->user->id);
+                $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
             } else {
+                $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_a));
+                if ( ! empty($this->response->data[0]->attributes->location_id_b) && $this->response->data[0]->attributes->location_id_b !== $this->response->data[0]->attributes->location_id_a) {
+                    $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id_b));
+                }
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
             }
         } else {
