@@ -292,28 +292,22 @@ class M_help extends MY_Model
 
 
         if (php_uname('s') === 'Windows NT') {
-            $test_path = 'c:\Program Files\Nmap\Nmap.exe';
-            if (file_exists($test_path)) {
-                $data->prereq->nmap = 'c:\Program Files\Nmap\Nmap.exe';
-            } else {
-                $data->prereq->nmap = 'n';
-            }
-            $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
-            if ($data->prereq->nmap === 'n' && file_exists($test_path)) {
-                $data->prereq->nmap = 'c:\Program Files (x86)\Nmap\Nmap.exe';
-            }
+            $data->prereq->nmap = '';
+            $command_string = 'nmap --version';
+            exec($command_string, $output, $return_var);
+            $data->prereq->nmap = @$output[0];
+
             $command_string = 'tzutil /g';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
         }
 
         if (php_uname('s') === 'Darwin') {
-            $test_path = '/usr/local/bin/nmap';
-            if (file_exists($test_path)) {
-                $data->prereq->nmap = '/usr/local/bin/nmap';
-            } else {
-                $data->prereq->nmap = '';
-            }
+            $data->prereq->nmap = '';
+            $command_string = 'nmap --version';
+            exec($command_string, $output, $return_var);
+            $data->prereq->nmap = @$output[0];
+
             $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
@@ -329,7 +323,12 @@ class M_help extends MY_Model
                 $data->php->process_owner = 'No PHP posix extension loaded - cannot determine process owner.';
             }
 
-            $prereqs = array('nmap', 'screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
+            $data->prereq->nmap = '';
+            $command_string = 'nmap --version';
+            exec($command_string, $output, $return_var);
+            $data->prereq->nmap = @$output[1];
+
+            $prereqs = array('screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
             foreach ($prereqs as $prereq) {
                 $command_string = 'which ' . $prereq . ' 2>/dev/null';
                 exec($command_string, $output, $return_var);
