@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
-    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -56,7 +56,7 @@
                             <select class="data_type form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                                 <?php foreach ($this->response->included as $org) {
                                 if ($org->type == 'orgs') { ?>
-                                    <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == 0) { echo "selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                    <option value="<?php echo $org->id; ?>" <?php if ($org->id == 0) { echo "selected"; } ?>><?php echo $org->attributes->name; ?></option>
                                 <?php } } ?>
                             </select>
                         </div>
@@ -89,7 +89,7 @@
                             <select multiple size="6" class="data_type form-control" id="data[attributes][roles][]" name="data[attributes][roles][]" required>
                                 <?php foreach ($this->response->included as $role) {
                                 if ($role->type == 'roles' and ($role->attributes->name != 'collector' and $role->attributes->name != 'agent')) { ?>
-                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                    <option value="<?php echo $role->attributes->name; ?>"><?php echo $role->attributes->name; ?></option>
                                 <?php } } ?>
                             </select>
                         </div>
@@ -141,10 +141,10 @@
                                     }
                                     ?>
                                     <tr>
-                                        <td class="text-center"><?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?></td>
-                                        <td><?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?></td>
-                                        <td><?php echo @htmlspecialchars( $org->attributes->parent_name, REPLACE_FLAGS, CHARSET); ?></td>
-                                        <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>"></td>
+                                        <td class="text-center"><?php echo $org->id; ?></td>
+                                        <td><?php echo $org->attributes->name; ?></td>
+                                        <td><?php echo $org->attributes->parent_name; ?></td>
+                                        <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo $org->id; ?>"></td>
                                     </tr>
                                     <?php
                                 }
@@ -170,11 +170,11 @@
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>

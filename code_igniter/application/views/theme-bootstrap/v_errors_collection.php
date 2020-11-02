@@ -55,12 +55,12 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->code, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->severity, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->status_code, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->title, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><?php echo $item->attributes->code; ?></td>
+                    <td class="text-center"><?php echo $item->attributes->severity; ?></td>
+                    <td class="text-center"><?php echo $item->attributes->status_code; ?></td>
+                    <td><?php echo $item->attributes->status; ?></td>
+                    <td><?php echo $item->attributes->title; ?></td>
+                    <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

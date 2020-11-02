@@ -95,7 +95,7 @@ if (!empty($this->response->meta->baseurl)) {
 include "include_header.php";
 if (!empty($this->response->errors) and is_array($this->response->errors)) {
     foreach ($this->response->errors as $error) {
-        echo '<div class="alert alert-danger" role="alert"><strong>' . htmlentities($error->title) . "</strong><br />" . $error->detail . "</div>\n";
+        echo '<div class="alert alert-danger" role="alert"><strong>' . $error->title . "</strong><br />" . $error->detail . "</div>\n";
     }
 }
 $temp = @$this->session->flashdata('error');
@@ -122,7 +122,7 @@ if (!empty($temp)) {
 $temp1 = @$this->session->flashdata('error');
 $temp2 = @$this->response->errors[0]->detail;
 if (!empty($temp1) and !empty($temp2)) {
-    echo '<div class="alert alert-danger" role="alert">' . htmlentities($this->response->errors[0]->detail) . "</div>\n";
+    echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->detail . "</div>\n";
 }
 $temp = @$this->response->meta->flash;
 if (!empty($temp)) {
@@ -164,7 +164,7 @@ unset($this->response->meta->sql);
                 $CI =& get_instance();
                 $times = $CI->db->query_times;
                  foreach ($CI->db->queries as $key => $query) {
-                     echo __('Query').": " . htmlentities(str_replace("\n", " ", $query)) . "\n";
+                     echo __('Query').": " . str_replace("\n", " ", $query) . "\n";
                      echo __('Time').": " . $times[$key] . "\n\n";
                  }
             ?>
@@ -173,7 +173,7 @@ unset($this->response->meta->sql);
             if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
                 ?>
                 <h3><?php echo __('User Session Data'); ?></h3>
-                <pre><?php htmlentities(print_r($this->session->all_userdata())); ?></pre>
+                <pre><?php print_r($this->session->all_userdata()); ?></pre>
             <?php
             }
             ?>

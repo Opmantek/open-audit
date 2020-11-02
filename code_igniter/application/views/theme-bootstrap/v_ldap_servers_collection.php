@@ -59,7 +59,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="ldap_servers/<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="ldap_servers/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('ldap_servers.name', $item->attributes->name); ?>
                     <?php refine('ldap_servers.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
                     <?php refine('ldap_servers.description', $item->attributes->description); ?>
@@ -67,7 +67,7 @@
                     <?php refine('ldap_servers.host', $item->attributes->host); ?>
                     <?php refine('ldap_servers.domain', $item->attributes->domain); ?>
                     <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'd')) { ?>
-                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
                 </tr>
                 <?php endforeach; ?>

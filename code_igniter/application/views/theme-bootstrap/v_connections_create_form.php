@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
-    <input type="hidden" value="<?php echo htmlspecialchars($this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -56,7 +56,7 @@
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" required>
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type === 'orgs') { ?>     <option value="<?php echo $item->id; ?>"><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -72,9 +72,9 @@
 
                     <?php $attributes = array('provider', 'service_type', 'product_name', 'service_identifier', 'speed');
                     foreach ($attributes as $attribute) { ?>    <div class="form-group">
-                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
                         </div>
                     </div>
                 <?php
@@ -87,7 +87,7 @@
                             <select class="form-control" id="data[attributes][location_id_a]" name="data[attributes][location_id_a]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo $item->id; ?>"><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -96,9 +96,9 @@
 
                     <?php $attributes = array('system_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a');
                     foreach ($attributes as $attribute) { ?>    <div class="form-group">
-                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars($attribute, REPLACE_FLAGS, CHARSET); ?>]">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
                         </div>
                     </div>
                 <?php
@@ -111,7 +111,7 @@
                             <select class="form-control" id="data[attributes][location_id_b]" name="data[attributes][location_id_b]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo $item->id; ?>"><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -120,9 +120,9 @@
 
                     <?php $attributes = array('system_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b');
                     foreach ($attributes as $attribute) { ?>    <div class="form-group">
-                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars($attribute, REPLACE_FLAGS, CHARSET); ?>]">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
                         </div>
                     </div>
                 <?php
@@ -141,11 +141,11 @@
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>

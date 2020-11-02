@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -46,14 +46,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo  htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -65,7 +65,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo $item->attributes->description; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -81,7 +81,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                        <option value="<?php echo $org->id; ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo $org->attributes->name; ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -97,7 +97,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="domain" class="col-sm-3 control-label"><?php echo __('Domain'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="domain" name="domain" value="<?php echo htmlspecialchars($item->attributes->domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="domain" name="domain" value="<?php echo $item->attributes->domain; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -109,7 +109,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="host" class="col-sm-3 control-label"><?php echo __('Host'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="host" name="host" value="<?php echo htmlspecialchars($item->attributes->host, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="host" name="host" value="<?php echo $item->attributes->host; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -121,7 +121,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="port" class="col-sm-3 control-label"><?php echo __('Port'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="port" name="port" value="<?php echo htmlspecialchars($item->attributes->port, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="port" name="port" value="<?php echo $item->attributes->port; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_port" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="port"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -146,7 +146,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="version" class="col-sm-3 control-label"><?php echo __('Version'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="version" name="version" value="<?php echo htmlspecialchars($item->attributes->version, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="version" name="version" value="<?php echo $item->attributes->version; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_version" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="version"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -197,7 +197,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="base_dn" class="col-sm-3 control-label"><?php echo __('Base DN'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="base_dn" name="base_dn" value="<?php echo htmlspecialchars($item->attributes->base_dn, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="base_dn" name="base_dn" value="<?php echo $item->attributes->base_dn; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_base_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="base_dn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -209,7 +209,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="user_dn" class="col-sm-3 control-label"><?php echo __('User DN'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="user_dn" name="user_dn" value="<?php echo htmlspecialchars($item->attributes->user_dn, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="user_dn" name="user_dn" value="<?php echo $item->attributes->user_dn; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_user_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="user_dn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -221,7 +221,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="user_membership_attribute" class="col-sm-3 control-label"><?php echo __('User Membership Attribute'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="user_membership_attribute" name="user_membership_attribute" value="<?php echo htmlspecialchars($item->attributes->user_membership_attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="user_membership_attribute" name="user_membership_attribute" value="<?php echo $item->attributes->user_membership_attribute; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_user_membership_attribute" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="user_membership_attribute"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -233,7 +233,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="refresh" class="col-sm-3 control-label"><?php echo __('Refresh'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="refresh" name="refresh" value="<?php echo intval($item->attributes->refresh); ?>" disabled>
+                            <input type="text" class="form-control" id="refresh" name="refresh" value="<?php echo $item->attributes->refresh; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_refresh" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="refresh"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -262,7 +262,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="dn_account" class="col-sm-3 control-label"><?php echo __('DN Account'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="dn_account" name="dn_account" value="<?php echo htmlspecialchars($item->attributes->dn_account, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="dn_account" name="dn_account" value="<?php echo $item->attributes->dn_account; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_base_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dn_account"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -274,7 +274,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="dn_password" class="col-sm-3 control-label"><?php echo __('DN Password'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="dn_password" name="dn_password" value="<?php echo htmlspecialchars($item->attributes->dn_password, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="password" class="form-control" id="dn_password" name="dn_password" value="<?php echo $item->attributes->dn_password; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_user_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dn_password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -286,14 +286,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -302,11 +302,11 @@ $item = $this->response->data[0];
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>

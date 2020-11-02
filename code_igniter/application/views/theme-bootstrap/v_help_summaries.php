@@ -49,10 +49,10 @@
             <tbody>
                 <?php foreach ($this->response->data as $item) { ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><?php echo htmlspecialchars($item->table, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><?php echo htmlspecialchars($item->column, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->sql, REPLACE_FLAGS, CHARSET); ?></pre></td>
+                    <td><?php echo $item->name; ?></td>
+                    <td><?php echo $item->table; ?></td>
+                    <td><?php echo $item->column; ?></td>
+                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo $item->sql; ?></pre></td>
                 </tr>
                 <?php } ?>
             </tbody>

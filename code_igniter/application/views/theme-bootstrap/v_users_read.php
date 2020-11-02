@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -46,14 +46,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -68,7 +68,7 @@ $item = $this->response->data[0];
                         <select class="data_type form-control" id="org_id" name="org_id" disabled>
                             <?php foreach ($this->response->included as $org) {
                             if ($org->type == 'orgs') { ?>
-                                <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                <option value="<?php echo $org->attributes->id; ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo $org->attributes->name; ?></option>
                             <?php } } ?>
                         </select>
                         <?php if (!empty($edit)) { ?>
@@ -82,7 +82,7 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="full_name" class="col-sm-3 control-label"><?php echo __('Full Name'); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo $item->attributes->full_name; ?>" disabled>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_full_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="full_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -106,7 +106,7 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label"><?php echo __('Email'); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <input type="email" class="form-control" id="email" name="email" value="<?php echo $item->attributes->email; ?>" disabled>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_email" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="email"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -153,14 +153,14 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                     </div>
                 </div>
 
@@ -170,7 +170,7 @@ $item = $this->response->data[0];
                             <select multiple size="6" class="data_type form-control" id="roles" name="roles" disabled>
                                 <?php foreach ($this->response->included as $role) {
                                 if ($role->type == 'roles') { ?>
-                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>" <?php if (in_array($role->attributes->name, $item->attributes->roles)) { echo "selected"; } ?>><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                    <option value="<?php echo $role->attributes->name; ?>" <?php if (in_array($role->attributes->name, $item->attributes->roles)) { echo "selected"; } ?>><?php echo $role->attributes->name; ?></option>
                                 <?php } } ?>
                             </select>
                             <?php if (!empty($edit)) { ?>
@@ -188,11 +188,11 @@ $item = $this->response->data[0];
                 <div class="col-md-8 col-md-offset-2">
                     <?php if ( ! empty($this->response->dictionary->about)) {
                         echo "<h4 class=\"text-center\">About</h4><br />";
-                        echo $this->response->dictionary->about;
+                        echo html_entity_decode($this->response->dictionary->about);
                     } ?>
                     <?php if ( ! empty($this->response->dictionary->notes)) {
                         echo "<h4 class=\"text-center\">Notes</h4><br />";
-                        echo $this->response->dictionary->notes;
+                        echo html_entity_decode($this->response->dictionary->notes);
                     } ?>
                 </div>
             </div>
@@ -245,8 +245,8 @@ $item = $this->response->data[0];
                 }
                 ?>
                 <tr>
-                    <td><?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?></td><td><?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?></td><td><?php echo htmlspecialchars( $org->attributes->parent_name, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td style="text-align:center;"><input name="orgs" title="orgs" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>" <?php echo $checked; ?> disabled></td>
+                    <td><?php echo $org->id; ?></td><td><?php echo $org->attributes->name; ?></td><td><?php echo $org->attributes->parent_name; ?></td>
+                    <td style="text-align:center;"><input name="orgs" title="orgs" type="checkbox" value="<?php echo $org->id; ?>" <?php echo $checked; ?> disabled></td>
                 </tr>
         <?php
             }

@@ -71,7 +71,7 @@
                             <?php refine('scripts.edited_date',$item->attributes->edited_date ); ?>
                           <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
                             <?php if ($item->attributes->name !== $item->attributes->based_on) { ?>
-                              <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                              <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                             <?php } else { ?>
                               <td></td>
                             <?php } ?>

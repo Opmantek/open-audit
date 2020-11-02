@@ -35,12 +35,12 @@
  */
 $item = $this->response->data[0];
 ?>
-<form action="<?php echo htmlspecialchars( $this->response->meta->collection, REPLACE_FLAGS, CHARSET); ?>/import" method="post" enctype="multipart/form-data">
-    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+<form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left"><?php echo __('Import ') . htmlspecialchars( $this->response->meta->collection, REPLACE_FLAGS, CHARSET); ?></span>
+                <span class="text-left"><?php echo __('Import ') . $this->response->meta->collection; ?></span>
                 <span class="pull-right"></span>
             </h3>
         </div>
@@ -119,10 +119,10 @@ $item = $this->response->data[0];
                         foreach ($item->attributes->columns as $column) {
                             ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($column->name, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->type, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->default, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->max_length, REPLACE_FLAGS, CHARSET); ?></td>
+                                <td><?php echo $column->name; ?></td>
+                                <td><?php echo $column->type; ?></td>
+                                <td><?php echo $column->default; ?></td>
+                                <td><?php echo $column->max_length; ?></td>
                                 <?php
                                 if (!empty($column->primary_key)) {
                                     echo "<td>true</td>\n";
@@ -132,7 +132,7 @@ $item = $this->response->data[0];
                                 ?>
                                 <?php
                                 if ($column->type == 'enum') {
-                                    echo "<td class=\"wrap\">" . htmlspecialchars($column->values, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                    echo "<td class=\"wrap\">" . $column->values . "</td>\n";
                                 } else {
                                     echo "<td></td>\n";
                                 }

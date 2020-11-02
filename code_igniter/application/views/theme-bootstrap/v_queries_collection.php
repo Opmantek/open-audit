@@ -57,12 +57,12 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <?php if (strlen($item->attributes->description) > 30) { $item->attributes->description = substr($item->attributes->description, 0, 27) . '...'; } ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo $item->links->self; ?>/execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('queries.name', $item->attributes->name); ?>
                     <?php refine('queries.description', $item->attributes->description); ?>
                     <?php if ($this->m_users->get_user_permission('', 'queries', 'd')) { ?>
-                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
                 </tr>
                 <?php endforeach; ?>

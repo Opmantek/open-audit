@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -46,42 +46,42 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <textarea class="form-control" rows="5" id="sql" name="sql" disabled><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?></textarea>
+                            <textarea class="form-control" rows="5" id="sql" name="sql" disabled><?php echo $item->attributes->description; ?></textarea>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="sql" class="col-sm-3 control-label"><?php echo __('AD Group'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo $item->attributes->ad_group; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -90,11 +90,11 @@ $item = $this->response->data[0];
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ if (is_string($item->{'attributes'}->{'permissions'})) {
             </thead>
             <tbody>
             <?php foreach ($endpoints as $endpoint) { ?>
-                <tr><td><strong><?php echo htmlspecialchars( $endpoint, REPLACE_FLAGS, CHARSET) ?></strong></td>
+                <tr><td><strong><?php echo $endpoint; ?></strong></td>
                 <?php
                 foreach ($permissions as $permission) {
                     $checked = '';
@@ -147,7 +147,7 @@ if (is_string($item->{'attributes'}->{'permissions'})) {
                         $checked = '';
                     }
                     ?>
-                    <td style="text-align:center;"><input data-permission="<?php echo htmlspecialchars( $permission, REPLACE_FLAGS, CHARSET); ?>" name="permission.<?php echo $endpoint ?>" type="checkbox" value="<?php echo htmlspecialchars( $permission, REPLACE_FLAGS, CHARSET); ?>" <?php echo $checked ?> disabled></td>
+                    <td style="text-align:center;"><input data-permission="<?php echo $permission; ?>" name="permission.<?php echo $endpoint ?>" type="checkbox" value="<?php echo $permission; ?>" <?php echo $checked ?> disabled></td>
                 <?php } ?>
                 </tr>
             <?php } ?>

@@ -38,7 +38,7 @@ $export_link = $this->response->links->first . '&';
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            <span class="text-left"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', ($this->response->meta->sub_resource))), REPLACE_FLAGS, CHARSET); ?></span>
+            <span class="text-left"><?php echo ucwords(str_replace('_', ' ', ($this->response->meta->sub_resource))); ?></span>
             <div style="padding-left:10px;" class="pull-right btn-group" role="group" aria-label="...">
                 <a href="<?php echo $export_link; ?>format=csv" role="button" class="btn btn-xs btn-default">csv</a>
                 <a href="<?php echo $export_link; ?>format=html" role="button" class="btn btn-xs btn-default">html</a>
@@ -46,7 +46,7 @@ $export_link = $this->response->links->first . '&';
                 <a href="<?php echo $export_link; ?>format=xml" role="button" class="btn btn-xs btn-default">xml</a>
             </div>
             <span class="pull-right">
-                <?php echo intval($this->response->meta->total) . ' of ' . intval($this->response->meta->total) . ' results'; ?>&nbsp;
+                <?php echo $this->response->meta->total . ' of ' . $this->response->meta->total . ' results'; ?>&nbsp;
             </span>
         </div>
     </div>
@@ -78,7 +78,7 @@ $export_link = $this->response->links->first . '&';
             <thead>
                 <tr>
                 <?php foreach ($this->response->data[0]->attributes as $key => $value) { ?>
-                    <th><?php echo htmlspecialchars( $key, REPLACE_FLAGS, CHARSET); ?></th>
+                    <th><?php echo $key; ?></th>
                 <?php } ?>
                 </tr>
             </thead>
@@ -86,7 +86,7 @@ $export_link = $this->response->links->first . '&';
                 <?php foreach ($this->response->data as $item) { ?>
                 <tr>
                     <?php foreach ($item->attributes as $key => $value) { ?>
-                    <td><?php echo htmlspecialchars( $value, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo $value; ?></td>
                     <?php } ?>
                 </tr>
                 <?php } ?>

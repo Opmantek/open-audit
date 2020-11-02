@@ -57,9 +57,9 @@
                     <div class="col-lg-1 text-center"><?php echo __($endpoint->attributes->name) ?><br />
                         <div class="row">
                             <div class="col-lg-10 col-lg-offset-1">
-                                <span class="badge" style="position:absolute; bottom:-8px; right:15%; font-size:1em; font-weight:400;"><?php echo htmlspecialchars( $endpoint->attributes->count, REPLACE_FLAGS, CHARSET) ?></span>
-                                <a href="<?php echo htmlspecialchars( $endpoint->attributes->collection, REPLACE_FLAGS, CHARSET) ?>" class="btn btn-default">
-                                    <i class="fa fa-<?php echo htmlspecialchars( $endpoint->attributes->icon, REPLACE_FLAGS, CHARSET) ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
+                                <span class="badge" style="position:absolute; bottom:-8px; right:15%; font-size:1em; font-weight:400;"><?php echo $endpoint->attributes->count ?></span>
+                                <a href="<?php echo $endpoint->attributes->collection ?>" class="btn btn-default">
+                                    <i class="fa fa-<?php echo $endpoint->attributes->icon ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
                                 </a>
                             </div>
                         </div>
@@ -96,11 +96,11 @@
                 <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                        <td><?php echo ucwords(htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET))?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo $item->links->self; ?>/execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                        <td><?php echo ucwords($item->attributes->name)?></td>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'd')) { ?>
-                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>
                     </tr>
                 <?php endforeach; ?>

@@ -60,7 +60,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                 <tr>
-                    <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?ip.network=<?php echo htmlentities($item->attributes->network); ?>&properties=system.id,system.icon,system.type,system.name,system.domain,ip.ip,system.description,system.manufacturer,system.os_family,system.status"><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?ip.network=<?php echo $item->attributes->network; ?>&properties=system.id,system.icon,system.type,system.name,system.domain,ip.ip,system.description,system.manufacturer,system.os_family,system.status"><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('networks.name', $item->attributes->name); ?>
                     <?php refine('networks.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
@@ -69,7 +69,7 @@
                     <?php refine('networks.edited_by', $item->attributes->edited_by); ?>
                     <?php refine('networks.edited_date', $item->attributes->edited_date); ?>
                     <?php if ($this->m_users->get_user_permission('', 'networks', 'd')) { ?>
-                    <td class="text-center"><a role="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a role="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
                     <?php } ?>
                 </tr>
                 <?php endforeach; ?>

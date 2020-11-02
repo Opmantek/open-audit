@@ -64,18 +64,18 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'u')) { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="discoveries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="discoveries/<?php echo $item->id; ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <?php } ?>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('discoveries.name',$item->attributes->name); ?>
                     <?php refine('discoveries.org_id',$item->attributes->org_id,$item->attributes->{'orgs.name'}); ?>
                     <?php refine('discoveries.type',$item->attributes->type); ?>
                     <?php refine('discoveries.description',$item->attributes->description); ?>
                     <?php refine('discoveries.last_run',$item->attributes->last_run); ?>
                     <?php refine('discoveries.status',$item->attributes->status, '', 'center'); ?>
-                    <td class="text-center"><?php echo intval($item->attributes->ip_responding_count) ?></td>
+                    <td class="text-center"><?php echo $item->attributes->ip_responding_count; ?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
-                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name; ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
                 </tr>
                 <?php endforeach; ?>

@@ -52,9 +52,9 @@
             <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></a></td>
-                    <?php refine('roles.name', htmlspecialchars( $item->attributes->name, REPLACE_FLAGS, CHARSET)); ?>
-                    <td><?php echo htmlspecialchars($item->attributes->description); ?></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></a></td>
+                    <?php refine('roles.name', $item->attributes->name); ?>
+                    <td><?php echo $item->attributes->description; ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

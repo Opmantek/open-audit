@@ -56,21 +56,21 @@ mv /usr/local/nmis8/conf/Nodes.nmis.new /usr/local/nmis8/conf/Nodes.nmis
 "name","host","businessService","group","role","community",uuid","notes","version","privprotocol","privpassword","authprotocol","authpassword","wmiusername","wmipassword"
 <?php if (!empty($this->response->data)) {
                 foreach ($this->response->data as $item):
-                    $line = "\"" . str_replace('"', '\"', htmlspecialchars($item->attributes->name)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->host)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->businessService)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->group)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->role)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->community)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->uuid)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->notes)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->version)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->privprotocol)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->privpassword)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->authprotocol)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->authpassword)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->wmiusername)) . "\"" .
-                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->wmipassword)) . "\"";
+                    $line = "\"" . str_replace('"', '\"', $item->attributes->name) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->host) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->businessService) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->group) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->role) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->community) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->uuid) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->notes) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->version) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->privprotocol) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->privpassword) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->authprotocol) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->authpassword) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->wmiusername) . "\"" .
+                    ",\""  . str_replace('"', '\"', $item->attributes->wmipassword) . "\"";
                     echo $line . "\n";
                 endforeach;
             } ?>

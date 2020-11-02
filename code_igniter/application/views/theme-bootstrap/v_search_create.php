@@ -38,22 +38,10 @@
     <div class="panel-heading">
         <h3 class="panel-title">
         <span class="text-left"><?php echo __('Search'); ?></span>
-        <span class="pull-right" style="padding-right:20px;"><?php echo intval($this->response->meta->total) . ' results'; ?></span>
+        <span class="pull-right" style="padding-right:20px;"><?php echo $this->response->meta->total . ' results'; ?></span>
         </h3>
     </div>
     <div class="panel-body">
-    <!--
-        <div class="panel panel-default pull-right">
-            <div class="panel-body">
-                <div class="btn-group" role="group" aria-label="...">
-                    <a class="btn btn-default" href="<?php echo $this->response->links->first; ?>" role="button"><?php echo __('first'); ?></a>
-                    <a class="btn btn-default" href="<?php echo $this->response->links->prev; ?>" role="button"><?php echo __('prev'); ?></a>
-                    <a class="btn btn-default" href="<?php echo $this->response->links->next; ?>" role="button"><?php echo __('next'); ?></a>
-                    <a class="btn btn-default" href="<?php echo $this->response->links->last; ?>" role="button"><?php echo __('last'); ?></a>
-                </div>
-            </div>
-        </div>
-        -->
 <?php
 if (!empty($this->response->data)) { ?>
     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
@@ -117,22 +105,22 @@ if (!empty($this->response->data)) { ?>
 
             if (!empty($item->attributes->{$property})) {
                 if ($property == 'system.id') {
-                    echo '<td><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
+                    echo '<td><a style="min-width:38px;" href="' . $item->links->self . '" role="button" class="btn btn-sm btn-success">' . $item->id . '</a></td>';
                 } elseif (strrpos($property, 'ip_padded') === strlen($property)-9 or $property == 'ip.ip_padded') {
                     continue;
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
                     if (!empty($item->attributes->{$property . '_padded'})) {
-                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
                     } else {
-                        echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "            <td>" . $item->attributes->$property . "</td>\n";
                     }
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
-                    echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET))).".svg\" style='border-width:0; width:24px; height:24px' title=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\" alt=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\"/></td>\n";
+                    echo "            <td style=\"text-align: center;\"><img src=\"" . str_replace("index.php", "", site_url()) . "device_images/" . strtolower(str_replace(" ", "_", $item->attributes->$property)) . ".svg\" style='border-width:0; width:24px; height:24px' title=\"" . $item->attributes->$property . "\" alt=\"" . $item->attributes->$property . "\"/></td>\n";
                 } else {
                     if (strlen($item->attributes->$property) > 30) {
                         echo "            <td class=\"wrap\">" . substr($item->attributes->$property, 0, 30) . "...</span></td>\n";
                     } else {
-                        echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "            <td>" . $item->attributes->$property . "</td>\n";
                     }
                 }
             } else {
@@ -143,7 +131,7 @@ if (!empty($this->response->data)) { ?>
         }
         if ($this->m_users->get_user_permission('', 'devices', 'u')) {
             if (!empty($item->attributes->{'system.id'})) {
-                echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . intval($item->attributes->{'system.id'}) . "]' value='" . intval($item->attributes->{'system.id'}) . "' name='ids[" . intval($item->attributes->{'system.id'}) . "]' /></td>\n";
+                echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . $item->attributes->{'system.id'} . "]' value='" . $item->attributes->{'system.id'} . "' name='ids[" . $item->attributes->{'system.id'} . "]' /></td>\n";
             }
         }
         echo "          </tr>\n";

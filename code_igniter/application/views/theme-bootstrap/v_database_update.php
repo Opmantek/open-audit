@@ -34,7 +34,7 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<div class="alert alert-success" role="alert"><?php echo htmlspecialchars( $success, REPLACE_FLAGS, CHARSET); ?></div>
+<div class="alert alert-success" role="alert"><?php echo $success; ?></div>
 <?php if (!empty($warning)) { ?>
 <div class="alert alert-warning" role="alert"><?php echo $warning; ?></div>
 <?php } ?>
@@ -74,7 +74,7 @@
                 }
             }
             ?>
-            <pre style="white-space: pre-wrap;"><?php echo htmlspecialchars( $output, REPLACE_FLAGS, CHARSET); ?></pre>
+            <pre style="white-space: pre-wrap;"><?php echo htmlspecialchars($output, REPLACE_FLAGS, CHARSET); ?></pre>
         </div>
     </div>
 </form>

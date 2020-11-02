@@ -68,16 +68,16 @@ if (stripos($this_task->{'attributes'}->{'minute'}, '*/') !== false) {
 		        <div class="panel-body">
 		            <p class="text-center"><br />
 		                <?php if ($every != '') { ?>
-		                    This collector requests tasks every <?php echo htmlentities($every) ?>.<br /><br />
+		                    This collector requests tasks every <?php echo $every ?>.<br /><br />
 		                    <?php if ($this_task->{'attributes'}->{'last_run'} != "2000-01-01 00:00:00") { ?>
-		                        The last time this task was run was <?php echo htmlentities($this_task->{'attributes'}->{'last_run'}); ?>.<br /><br />
+		                        The last time this task was run was <?php echo $this_task->{'attributes'}->{'last_run'}; ?>.<br /><br />
 		                    <?php } else { ?>
 		                        This task has not yet been run.<br /><br />
 		                    <?php } ?>
 		                <?php } else { ?>
 		                <b>This collector is not requesting tasks.</b><br /><br />
 		                <?php } ?>
-		                The number of devices discovered by this collector is <?php echo htmlentities($this->config->config['device_count']); ?>.
+		                The number of devices discovered by this collector is <?php echo $this->config->config['device_count']; ?>.
 		            </p>
 		        </div>
 		    </div>

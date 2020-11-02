@@ -57,12 +57,12 @@
                 <?php if ($item->attributes->name != 'web_internal_version') { ?>
                 <?php if (strlen($item->attributes->value) > 30) { $item->attributes->value = substr($item->attributes->value, 0, 27) . '...'; } ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="configuration/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="configuration/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td><?php echo $item->attributes->name; ?></td>
+                    <td><?php echo $item->attributes->value; ?></td>
+                    <td><?php echo $item->attributes->edited_by; ?></td>
+                    <td><?php echo $item->attributes->edited_date; ?></td>
+                    <td class="wrap"><?php echo $item->attributes->description; ?></td>
                 </tr>
                 <?php } ?>
                 <?php endforeach; ?>

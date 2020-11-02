@@ -60,16 +60,16 @@
                     <?php foreach ($this->response->data as $item):
                         ?>
                         <tr>
-                            <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?system.org_id=<?php echo intval($item->id); ?>"><?php echo intval($item->attributes->device_count) ?></a></td>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?system.org_id=<?php echo $item->id; ?>"><?php echo $item->attributes->device_count; ?></a></td>
                             <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                            <td class="text-center"><?php $item->attributes->device_count?></td>
+                            <td class="text-center"><?php echo $item->attributes->device_count; ?></td>
                             <?php refine('orgs.name', $item->attributes->name); ?>
                             <?php refine('orgs.description', $item->attributes->description); ?>
                             <?php refine('orgs.parent_id', $item->attributes->parent_id, $item->attributes->parent_name); ?>
                             <?php refine('orgs.ad_group', $item->attributes->ad_group); ?>
                             <?php if ($this->m_users->get_user_permission('', 'orgs', 'd')) { ?>
                             <?php if ($item->attributes->id != 0) { ?>
-                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                             <?php } else { ?>
                                 <td></td>
                             <?php } ?>
