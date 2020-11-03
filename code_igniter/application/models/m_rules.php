@@ -742,6 +742,7 @@ class M_rules extends MY_Model
         $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
         $dictionary->marketing = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

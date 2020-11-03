@@ -213,6 +213,7 @@ class M_buildings extends MY_Model
         $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
         $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>Buildings go inside your Locations and contain Floors.</p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

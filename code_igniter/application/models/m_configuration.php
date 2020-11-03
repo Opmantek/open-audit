@@ -533,6 +533,7 @@ class M_configuration extends MY_Model
         $dictionary->sentence = '';
         $dictionary->marketing = '';
         $dictionary->about = '';
+        $dictionary->product = 'community';
         $dictionary->notes = '';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

@@ -246,6 +246,7 @@ class M_collectors extends MY_Model
             $dictionary->about = '<p>The Cloud Collector feature enables you to easily manage many "Cloud Collectors" that perform network discovery. All Cloud Collectors are centrally controlled from the Server. The only required network ports between the Cloud Collector and Open-AudIT.com are 80 and/or 443.<br /><br />This makes managing disparate networks quick, easy and simple. Open-AudIT Cloud licensees get a single collector license included and have the option to buy more as required..<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         }
         $dictionary->marketing = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

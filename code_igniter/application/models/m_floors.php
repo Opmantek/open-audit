@@ -207,6 +207,7 @@ class M_floors extends MY_Model
         $dictionary->sentence = 'Define your floors and assign them to a building of your choosing.';
         $dictionary->marketing = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

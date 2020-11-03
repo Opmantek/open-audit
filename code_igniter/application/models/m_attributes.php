@@ -188,6 +188,7 @@ class M_attributes extends MY_Model
         $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br /><br />If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/images/map_icons<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons<br /><br /></p>';
+        $dictionary->product = 'community';
         $dictionary->notes = '';
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

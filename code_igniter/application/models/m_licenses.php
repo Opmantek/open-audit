@@ -273,6 +273,7 @@ class M_licenses extends MY_Model
         $dictionary->sentence = 'Track your installed software, quickly and easily.';
         $dictionary->marketing = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />To create an entry to track your licenses provide a name, an organization, the number of licenses acquired and the name of the software. Those simple pieces of information are all Open-AudIT needs to track and report on your installed software licenses.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'professional';
         $dictionary->notes = 'You can use the percent % sign as a wildcard in the match_string.';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

@@ -78,6 +78,31 @@ class Help extends MY_Controller
     }
 
     /**
+    * Our features help
+    *
+    * @access public
+    * @return NULL
+    */
+    function features()
+    {
+        $this->response->meta->action = 'read';
+        $this->response->include = 'v_features';
+        if ( ! empty($this->response->meta->sub_resource)) {
+            $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
+            if (in_array($this->response->meta->sub_resource, $collections)) {
+                $this->load->model('m_'.$this->response->meta->sub_resource);
+                $dictionary = $this->{'m_'.$this->response->meta->sub_resource}->dictionary();
+            } else {
+                $table = $this->response->meta->sub_resource;
+                include 'include_dictionary.php';
+            }
+            $this->response->dictionary = $dictionary;
+            #$this->response->include = 'v_features_' . $this->response->meta->sub_resource;
+        }
+        output($this->response);
+    }
+
+    /**
     * Our groups help
     *
     * @access public

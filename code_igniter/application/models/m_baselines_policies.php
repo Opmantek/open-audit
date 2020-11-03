@@ -259,6 +259,7 @@ class M_baselines_policies extends MY_Model
         $dictionary->sentence = 'sentence';
         $dictionary->about = '<p>The About</p>';
         $dictionary->marketing = '<p>Some Marketing</p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>More Notes</p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

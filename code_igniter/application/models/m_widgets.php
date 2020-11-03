@@ -602,6 +602,7 @@ class M_widgets extends MY_Model
         ' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->marketing = '<p>Widgets are the building blocks of Open-AudIT Dashboards.<br /><br />
         ' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = 'The primary and optional secondary items should be fully qualified - ie, system.type or software.name.';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

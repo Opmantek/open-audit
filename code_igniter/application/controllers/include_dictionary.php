@@ -60,7 +60,7 @@ if ($this->db->table_exists($db_table)) {
 
 $link = 'For more detailed information, here is a link to the <em>' . $table . '</em> page on the Open-AudIT Knowledgebase <a href="https://community.opmantek.com/display/OA/' . $table . '">LINK</a>.';
 $link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . $table . '">Knowledge Base</a>.';
-$purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" id="buy_more_licenses" data-toggle="modal" data-target="#myModalLicense">HERE</a>.</strong>';
+$purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" class="buy_more_licenses">here</a>.</strong>';
 $id = 'The internal identifier column in the database (read only).';
 $name = 'The name given to this item. Ideally it should be unique.';
 $org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';

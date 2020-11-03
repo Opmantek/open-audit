@@ -198,6 +198,7 @@ class M_rows extends MY_Model
         $dictionary->sentence = 'Define your rows and assign them to a room of your choosing.';
         $dictionary->marketing = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

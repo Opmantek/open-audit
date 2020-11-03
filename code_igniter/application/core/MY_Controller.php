@@ -157,6 +157,7 @@ class MY_Controller extends CI_Controller
         $this->temp_dictionary = new stdClass();
         $this->temp_dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/$collection">Knowledge Base</a>.';
         $this->temp_dictionary->purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" id="buy_more_licenses" data-toggle="modal" data-target="#myModalLicense">HERE</a>.</strong>';
+        $this->temp_dictionary->purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" class="buy_more_licenses">here</a>.</strong>';
         $this->temp_dictionary->id = 'The internal identifier column in the database (read only).';
         $this->temp_dictionary->name = 'The name given to this item. Ideally it should be unique.';
         $this->temp_dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';

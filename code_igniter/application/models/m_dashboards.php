@@ -275,6 +275,7 @@ class M_dashboards extends MY_Model
         $dictionary->sentence = "Open-AudIT Professional and Enterprises' interactive Dashboard provides a single point of access to audit status and results. The ability to customize and create Dashboards is an Enterprise feature.";
         $dictionary->marketing = "<p>Simple, intuitive, dynamic - just some of the words used to describe Open-AudIT Enterprises' interactive dashboard. The dashboard provides a single point of access to audit status, new software installs, device breakdowns, and fast access to missing devices.<br /><br />" . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '                                <br /><br />
                                     <h4 class="text-center">Layout</h4>
                                     <br />

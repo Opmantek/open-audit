@@ -209,6 +209,7 @@ class M_clusters extends MY_Model
         $dictionary->sentence = 'Open-AudIT enables you to create and record your clusters';
         $dictionary->marketing = '<p>Clusters are stored in Open-AudIT to associate devices with.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'professional';
         $dictionary->notes = "<p>Cluster notes on <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Computer_cluster#Attributes_of_clusters\">wikipedia</a>.<br /><br /> A cluster can be setup in one of several ways (type) for high availability, load balancing, etc.<br /><br /> A cluster is usually dedicated to one particular task (purpose) - we have options for 'application','compute','database','storage','virtualisation','web' and'other' (or you can leave it blank).<br /><br /> And a cluster is usually configured as active/active, active/passive or another variation, see <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/High-availability_cluster#Node_configurations\">Wikipedia</a>.<br /><br /> The environment for your cluster is as per the attributes for device environments. Production, Training, et al.<br /><br /></p>";
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

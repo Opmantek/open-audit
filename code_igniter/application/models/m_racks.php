@@ -209,6 +209,7 @@ class M_racks extends MY_Model
         $dictionary->sentence = 'Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.';
         $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

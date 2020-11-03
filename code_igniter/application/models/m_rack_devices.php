@@ -195,6 +195,7 @@ class M_rack_devices extends MY_Model
         $dictionary->sentence = 'Place your devices into racks.';
         $dictionary->marketing = '<p>These are the devices that live within a rack.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
