@@ -192,18 +192,6 @@ class Help extends MY_Controller
         output($this->response);
     }
 
-    /**
-    * Our opMaps help
-    *
-    * @access public
-    * @return NULL
-    */
-    function enterprise()
-    {
-        $this->response->meta->action = __FUNCTION__;
-        output($this->response);
-    }
-
 }
 // End of file help.php
 // Location: ./controllers/help.php
