@@ -75,7 +75,7 @@ class M_discoveries extends MY_Model
         if (empty($data->type)) {
             $data->type = '';
         }
-        if ($data->type !== 'subnet' && $data->type !== 'active directory') {
+        if ($data->type !== 'subnet' && $data->type !== 'active directory' && $data->type !== 'cloud') {
             $data->type = '';
         }
         if (empty($data->devices_assigned_to_org)) {
