@@ -2248,7 +2248,7 @@ CREATE TABLE `networks` (
   `description` text NOT NULL,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
   `cloud_id` int(10) unsigned DEFAULT NULL,
-  `gateways` text NOT NULL,
+  `gateways` varchar(200) NOT NULL DEFAULT '',
   `network_domain` varchar(200) NOT NULL DEFAULT '',
   `secutity_zone` varchar(200) NOT NULL DEFAULT '',
   `location_id` int(10) unsigned DEFAULT NULL,
