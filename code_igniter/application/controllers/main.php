@@ -170,7 +170,7 @@ class Main extends MY_Controller
             $sql = 'SELECT id AS `system_id`, hostname, ip, os_name AS `man_os_name`, type AS `man_type` FROM system WHERE status = "production"';
         }
         if ($level === 'select') {
-            $sql = 'SELECT id AS `system_id`, hostname, domain, ip, os_group AS `man_os_group`, os_family AS `man_os_family`, os_name AS `man_os_name`, type AS `man_type`, serial AS `man_serial`, model AS `man_model`, manufacturer AS `man_manufacturer`, memory_count AS `pc_memory`, processor_count AS `pc_num_processor`, environment AS `man_environment`, clss AS `man_class` FROM system WHERE status = "production"';
+            $sql = 'SELECT id AS `system_id`, hostname, domain, ip, os_group AS `man_os_group`, os_family AS `man_os_family`, os_name AS `man_os_name`, type AS `man_type`, serial AS `man_serial`, model AS `man_model`, manufacturer AS `man_manufacturer`, memory_count AS `pc_memory`, processor_count AS `pc_num_processor`, environment AS `man_environment`, class AS `man_class` FROM system WHERE status = "production"';
         }
         if ($level === 'max') {
             $sql = 'SELECT * FROM system WHERE status = "production"';
