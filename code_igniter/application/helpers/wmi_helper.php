@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   GIT: Open-AudIT_3.5.1
+ * @version   GIT: Open-AudIT_3.5.2
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
