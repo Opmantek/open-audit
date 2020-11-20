@@ -28,7 +28,7 @@
 **/
 
 /*
-ALTER TABLE `networks` CHANGE `gateways` `gateways` varchar(200) NOT NULL DEFAULT '';
+ALTER TABLE `networks` CHANGE `gateways` `gateways` varchar(200) NOT NULL DEFAULT '' AFTER cloud_id;
 
 UPDATE `configuration` SET `value` = '20201115' WHERE `name` = 'internal_version';
 
@@ -37,7 +37,7 @@ UPDATE `configuration` SET `value` = '3.5.2' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 3.5.2 commenced');
 
-$this->alter_table('networks', 'gateways', "`gateways` varchar(200) NOT NULL DEFAULT ''");
+$this->alter_table('networks', 'gateways', "`gateways` varchar(200) NOT NULL DEFAULT '' AFTER cloud_id");
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20201115' WHERE `name` = 'internal_version'";
