@@ -196,7 +196,10 @@ class Widgets extends MY_Controller
     public function execute()
     {
         $this->response->data = $this->m_widgets->execute($this->response->meta->id);
-        $this->response->meta->format = 'json';
+        $this->response->included = $this->m_widgets->read($this->response->meta->id);
+        if ($this->response->meta->format !== 'json' and $this->response->meta->format !== 'highcharts') {
+            $this->response->meta->format = 'json';
+        }
         output();
         return;
     }

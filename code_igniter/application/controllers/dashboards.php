@@ -117,6 +117,9 @@ class Dashboards extends MY_Controller
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             $this->load->model('m_widgets');
             $this->response->included = array_merge($this->response->included, $this->m_widgets->collection($this->user->id));
+            #foreach ($this->response->data[0]->attributes->options->widgets as $widget) {
+            #    $this->response->included = array_merge($this->response->included, $this->m_widgets->read($widget->widget_id));
+            #}
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {

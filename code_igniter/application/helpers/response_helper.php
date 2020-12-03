@@ -2083,7 +2083,7 @@ if ( ! function_exists('response_valid_formats')) {
      */
     function response_valid_formats()
     {
-        $valid_formats = array('json','json_data','html','screen','xml','csv','sql','table');
+        $valid_formats = array('json','json_data','highcharts','html','screen','xml','csv','sql','table');
         return $valid_formats;
     }
 }

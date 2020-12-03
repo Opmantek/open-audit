@@ -97,14 +97,7 @@ class M_widgets extends MY_Model
      */
     public function read($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         $sql = "SELECT * FROM widgets WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);

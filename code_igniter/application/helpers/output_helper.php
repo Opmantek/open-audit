@@ -184,6 +184,10 @@ if ( ! function_exists('output')) {
                 output_sql($CI->response);
                 break;
 
+            case 'highcharts':
+                output_highcharts($CI->response);
+                break;
+
             case 'html':
                 output_html($CI->response);
                 break;
@@ -391,6 +395,173 @@ if ( ! function_exists('output')) {
         } else if (isset($CI->response->error)) {
             echo json_encode($CI->response->error);
         }
+    }
+
+    function output_highcharts($response)
+    {
+
+        # $CI = & get_instance();
+
+        switch ($response->included[0]->attributes->type) {
+            case 'line':
+                $response = highcharts_line($response);
+                break;
+
+            case 'pie':
+                $response = highcharts_pie($response);
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+        header('Content-Type: application/json');
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        #echo str_replace('"function(event){location.href = this.options.url;}"', 'function(event){ location.href = this.options.url;},', json_encode($output, JSON_PRETTY_PRINT));;
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
+
+    function highcharts_pie($response)
+    {
+        $output = new stdClass();
+
+        $output->title = new stdClass();
+        $output->title->text = $response->included[0]->attributes->name;
+
+        $output->chart = new stdClass();
+        $output->chart->type = $response->included[0]->attributes->type;
+        $output->chart->renderTo = 'widget_' . $response->included[0]->id;
+
+        $output->credits = false;
+
+        $output->exporting = new stdClass();
+        $output->exporting->enabled = false;
+
+        $output->plotOptions = new stdClass();
+
+        $output->plotOptions->pie = new stdClass();
+        $output->plotOptions->pie->allowPointSelect = true;
+        $output->plotOptions->pie->cursor = 'pointer';
+        $output->plotOptions->pie->dataLabels = new stdClass();
+        $output->plotOptions->pie->dataLabels->enabled = false;
+        $output->plotOptions->pie->dataLabels->format = '<b>{point.name}</b>: {point.percentage:.1f} %';
+        $output->plotOptions->pie->showInLegend = true;
+
+        $output->plotOptions->series = new stdClass();
+        $output->plotOptions->series->point = new stdClass();
+        $output->plotOptions->series->point->events = new stdClass();
+        $output->plotOptions->series->point->events->click = "function(event){location.href = this.options.url;}";
+
+        $output->subtitle = new stdClass();
+
+        $output->tooltip = new stdClass();
+        $output->tooltip->useHTML = true;
+        $output->tooltip->headerFormat = '<b>{point.key}</b><br />';
+        $output->tooltip->pointFormat = 'Percent: {point.percentage:.1f}%<br />Count: {point.y}';
+
+        $output->series = array();
+            $item = new stdClass();
+            $item->name = $response->included[0]->attributes->dataset_title;
+            $item->colorByPoint = true;
+            $item->data = array();
+            for($i=0; $i<count($response->data); $i++) {
+                $slice = new stdClass();
+                $slice->name = $response->data[$i]->attributes->name;
+                if (empty($slice->name)) {
+                    $slice->name = 'NoData';
+                }
+                $slice->y = intval($response->data[$i]->attributes->count);
+                $slice->url = '../' . $response->data[$i]->attributes->link;
+                $item->data[] = $slice;
+            }
+        $output->series[] = $item;
+
+        unset($response->data);
+        $response->data = $output;
+        return $response;
+    }
+
+    function highcharts_line($response)
+    {
+        $output = new stdClass();
+        $output->title = new stdClass();
+        $output->title->text = $response->included[0]->attributes->name;
+
+        $output->chart = new stdClass();
+        $output->chart->type = $response->included[0]->attributes->type;
+        $output->chart->renderTo = 'widget_' . $response->included[0]->id;
+
+        $output->credits = false;
+
+        $output->exporting = new stdClass();
+        $output->exporting->enabled = false;
+
+        $output->plotOptions = new stdClass();
+
+        $output->plotOptions->line = new stdClass();
+        $output->plotOptions->line->lineWidth = 2;
+        $output->plotOptions->line->states = new stdClass();
+        $output->plotOptions->line->states->hover = new stdClass();
+        $output->plotOptions->line->states->hover->lineWidth = 3;
+
+        // the dots along the line at each point
+        $output->plotOptions->line->marker = new stdClass();
+        $output->plotOptions->line->marker->enabled = false;
+
+        // the value displayed along the line at each point
+        $output->plotOptions->line->dataLabels = new stdClass();
+        $output->plotOptions->line->dataLabels->enabled = false;
+
+        $output->plotOptions->series = new stdClass();
+        $output->plotOptions->series->point = new stdClass();
+        $output->plotOptions->series->point->events = new stdClass();
+        $output->plotOptions->series->point->events->click = "function(event){location.href = this.options.url;}";
+
+        $output->subtitle = new stdClass();
+
+        $output->tooltip = new stdClass();
+        $output->tooltip->headerFormat = '';
+        $output->tooltip->pointFormat = '{point.tooltip}<br />Count: <b>{point.y}</b>';
+
+        $output->xAxis = new stdCLass();
+        $output->xAxis->labels = new stdClass();
+        $output->xAxis->labels->step = 4;
+        $output->xAxis->categories = array();
+
+        $output->yAxis = new stdCLass();
+        $output->yAxis->title = new stdClass();
+        $output->yAxis->title->text = $response->included[0]->attributes->primary;
+
+        $output->series = array();
+            $dataset = new stdClass();
+            $dataset->name = $response->included[0]->attributes->dataset_title;
+            $dataset->color = '#333333';
+            $dataset->data = array();
+            $sub_title_text = '';
+            for($i=0; $i<count($response->data); $i++) {
+                $item = new stdClass();
+                $item->y = intval($response->data[$i]->attributes->count);
+                $item->url = '../' . str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
+                $item->tooltip = date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y');
+                $dataset->data[] = $item;
+                if ($i === 0) {
+                    $sub_title_text = date_format(date_create($response->data[$i]->attributes->date), 'D, M j') . ' to ';
+                }
+                if ($i === count($response->data)-1) {
+                    $sub_title_text = $sub_title_text . date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y' . '.');
+                }
+                $output->xAxis->categories[] = date_format(date_create($response->data[$i]->attributes->date), 'j M');
+            }
+        $output->series[] = $dataset;
+
+        $output->subtitle->text = $sub_title_text;
+
+        unset($response->data);
+        $response->data = $output;
+        return $response;
     }
 
     function output_screen()
