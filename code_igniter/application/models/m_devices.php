@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -1172,7 +1172,7 @@ class M_devices extends MY_Model
             }
 
             // now check the regular system table fields
-            if ((string)$value === '' && ($key === 'system.id' OR $key === 'id' OR $key === 'system.oae_manage' OR $key === 'oae_manage' OR $key === 'system.status' OR $key === 'status' OR $key === 'system.nmis_manage' OR $key === 'nmis_manage' OR $key === 'system.environment' OR $key === 'environment' OR $key === 'system.location_id' OR $key === 'location_id' OR $key === 'system.org_id' OR $key === 'org_id' OR $key === 'system.type' OR $key === 'type')) {
+            if ((is_string($value) or is_int($value)) && (string)$value === '' && ($key === 'system.id' OR $key === 'id' OR $key === 'system.oae_manage' OR $key === 'oae_manage' OR $key === 'system.status' OR $key === 'status' OR $key === 'system.nmis_manage' OR $key === 'nmis_manage' OR $key === 'system.environment' OR $key === 'environment' OR $key === 'system.location_id' OR $key === 'location_id' OR $key === 'system.org_id' OR $key === 'org_id' OR $key === 'system.type' OR $key === 'type')) {
                 // We cannot set these fields to blank, they MUST contain a value
 
             } else {
@@ -1196,7 +1196,7 @@ class M_devices extends MY_Model
                         }
                         // calculate the weight
                         $weight = intval($this->weight($source));
-                        if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
+                        if ((is_string($value) or is_int($value)) && $weight <= $previous_weight && (string)$value !== (string)$previous_value) {
                             if ($key !== 'id' && $key !== 'last_seen' && $key !== 'last_seen_by' && $key !== 'first_seen') {
                                 // update the system table
                                 $sql = "UPDATE `system` SET `{$key}` = ? WHERE id = ?";
@@ -1417,7 +1417,7 @@ class M_devices extends MY_Model
 
         $sql = 'INSERT INTO system ( ';
         foreach ($details as $key => $value) {
-            if ($key > '') {
+            if ((is_string($value) or is_string($value)) && $key > '') {
                 // need to iterate through available columns and only insert where $key == valid column name
                 foreach ($columns as $column) {
                     if ((string)$key === (string)$column->Field) {
@@ -1429,7 +1429,7 @@ class M_devices extends MY_Model
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
         $sql .= ' ) VALUES ( ';
         foreach ($details as $key => $value) {
-            if ($key > '') {
+            if ((is_string($value) or is_string($value)) && $key != '') {
                 foreach ($columns as $column) {
                     if ((string)$key === (string)$column->Field) {
                         $sql .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
@@ -1451,9 +1451,11 @@ class M_devices extends MY_Model
             if ($key > '') {
                 foreach ($columns as $column) {
                     if ((string)$key === (string)$column->Field) {
-                        $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
-                        $data = array(intval($details->id), "{$details->last_seen_by}", "{$weight}", "{$key}", "{$details->last_seen}", "{$value}", '');
-                        $query = $this->db->query($sql, $data);
+                        if (is_string($value) or is_string($value)) {
+                            $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
+                            $data = array(intval($details->id), "{$details->last_seen_by}", "{$weight}", "{$key}", "{$details->last_seen}", "{$value}", '');
+                            $query = $this->db->query($sql, $data);
+                        }
                     }
                 }
             }
@@ -1823,6 +1825,7 @@ class M_devices extends MY_Model
         $dictionary->sentence = 'Open-AudIT tracks every device on your network. Change a device - see it. Move a device - see it. Remove a device - see it.';
         $dictionary->marketing = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Even add devices that aren\'t connected to your network or those devices your Open-AudIT server cannot reach.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'community';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

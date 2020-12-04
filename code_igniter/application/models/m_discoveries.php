@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -75,7 +75,7 @@ class M_discoveries extends MY_Model
         if (empty($data->type)) {
             $data->type = '';
         }
-        if ($data->type !== 'subnet' && $data->type !== 'active directory') {
+        if ($data->type !== 'subnet' && $data->type !== 'active directory' && $data->type !== 'cloud') {
             $data->type = '';
         }
         if (empty($data->devices_assigned_to_org)) {
@@ -347,7 +347,7 @@ class M_discoveries extends MY_Model
         }
 
         if ($result[0]->status === 'failed') {
-            $sql = '/* m_discoveries::read */ ' . "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
+            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
             $last_logs = $this->run_sql($sql);
             $result[0]->last_logs_for_failed_devices = $last_logs;
         }
@@ -606,6 +606,7 @@ class M_discoveries extends MY_Model
         $dictionary->sentence = 'Open-AudIT Enterprise discovers every device on your network.';
         $dictionary->marketing = '<p>Discoveries are at the very heart of what Open-AudIT does. How else would you know "What is on my network?"<br /><br />Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />Use Open-AudIT Professional and Enterprise to schedule your Discoveries to run automatically whenever you like.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br /><br />How else would you know "What is on my network?"<br /><br />Discoveries are preprepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'community';
         $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br /><b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br /><br />If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.</p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

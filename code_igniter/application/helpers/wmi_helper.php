@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   GIT: Open-AudIT_3.4.1
+ * @version   GIT: Open-AudIT_3.5.2
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -184,34 +184,34 @@ if (! function_exists('execute_windows')) {
 
         if (php_uname('s') === 'Linux') {
             $filepath = $CI->config->config['base_path'] . '/other';
-            $password = str_replace('$', '\$', $credentials->credentials->password);
-            $password = str_replace("'", '', escapeshellarg($password));
-            $username = str_replace("'", '', escapeshellarg($credentials->credentials->username));
+
             $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            $domain = $temp[1];
+            $password = escapeshellarg($credentials->credentials->password);
+            $username = escapeshellarg(str_replace("'", "", $temp[0]));
+            $domain = @$temp[1];
+            if ($domain != '') { $domain .= '/'; }
             unset($temp);
-            if ($domain !== '') {
-                $domain .= '/';
-            }
+
             // test for working 'new' winexe first
-            $command_string = "${filepath}/winexe-static-2 -U \"${domain}${username}%${password}\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" ";
+            $command_string = "timeout 1m ${filepath}/winexe-static-2 -U ${domain}${username}%${password} --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" 2>&1";
             exec($command_string, $output, $return_var);
-            // Log this test.
-            $log->command = "${filepath}/winexe-static-2 -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" ";
+
+            $log->command = "timeout 1m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" 2>&1";
             $log->command_time_to_execute = 1;
-            $log->message = 'Testing winexe-static-2';
+            $log->message = 'Attempting to execute command using winexe-static-2';
             $output[] = intval($return_var);
             $log->command_output = json_encode($output);
             $log->command_status = 'notice';
             discovery_log($log);
+
+
             if (intval($return_var) !== 0) {
                 // Winexe 2 using SMB2 failed.
-                $command_string = "timeout 5m ${filepath}/winexe-static -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
+                $command_string = "timeout 5m ${filepath}/winexe-static -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
                 $log->message = 'Using winexe-static to run audit.';
             } else {
                 // Winexe 2 using SMB2 succeeded
-                $command_string = "timeout 5m ${filepath}/winexe-static-2 -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
+                $command_string = "timeout 5m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
                 $log->message = 'Using winexe-static-2 to run audit.';
             }
             unset($log->command_output);
@@ -221,7 +221,6 @@ if (! function_exists('execute_windows')) {
             $log_id = discovery_log($log);
             $item_start = microtime(true);
             $output = '';
-
             exec($command_string, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->id = $log_id;

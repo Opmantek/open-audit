@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -117,6 +117,9 @@ class Dashboards extends MY_Controller
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             $this->load->model('m_widgets');
             $this->response->included = array_merge($this->response->included, $this->m_widgets->collection($this->user->id));
+            #foreach ($this->response->data[0]->attributes->options->widgets as $widget) {
+            #    $this->response->included = array_merge($this->response->included, $this->m_widgets->read($widget->widget_id));
+            #}
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {

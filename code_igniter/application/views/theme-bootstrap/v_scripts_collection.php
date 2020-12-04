@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 ?>
@@ -62,7 +62,7 @@
                     foreach ($this->response->data as $item): ?>
                     <tr>
                           <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                          <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo$item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
+                          <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo $item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
                             <?php refine('scripts.name',$item->attributes->name); ?>
                             <?php refine('scripts.org_id',$item->attributes->org_id,$item->attributes->{'orgs.name'}); ?>
                             <?php refine('scripts.description',$item->attributes->description); ?>
@@ -71,7 +71,7 @@
                             <?php refine('scripts.edited_date',$item->attributes->edited_date ); ?>
                           <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
                             <?php if ($item->attributes->name !== $item->attributes->based_on) { ?>
-                              <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                              <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                             <?php } else { ?>
                               <td></td>
                             <?php } ?>

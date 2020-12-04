@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -70,6 +70,22 @@ class Util extends CI_Controller
     */
     public function index()
     {
+        return;
+    }
+
+    public function subnet_size()
+    {
+        $command = "nmap -n -sL " . $_POST['subnet'];
+        exec($command, $output, $return_var);
+        $count = 0;
+        if ($return_var === 0) {
+            foreach ($output as $line) {
+                if (stripos($line, 'Nmap scan report for') === 0) {
+                    $count = $count + 1;
+                }
+            }
+        }
+        echo $count;
         return;
     }
 
@@ -180,7 +196,7 @@ class Util extends CI_Controller
         $this->temp_dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
         $this->temp_dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
-        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
+        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
         if (in_array($table, $collections)) {
             $this->load->model('m_'.$table);
             $dictionary = $this->{'m_'.$table}->dictionary();

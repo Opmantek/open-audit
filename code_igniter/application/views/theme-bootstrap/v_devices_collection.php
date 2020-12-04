@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   GIT: Open-AudIT_3.4.1
+ * @version   GIT: Open-AudIT_3.5.2
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -57,7 +57,6 @@ if (!empty($this->response->meta->sub_resource_name)) {
 } else {
     $title = '';
 }
-$title = htmlspecialchars($title, REPLACE_FLAGS, CHARSET);
 
 $export_link = $this->response->links->first;
 if (strpos($this->response->links->first, '?') !== false) {
@@ -92,11 +91,11 @@ if ($this->response->meta->sub_resource !== 'group') {
                 foreach ($this->response->included as $item) {
                     if ($item->type == 'queries') {
                         if (strpos($this->response->links->first, '?') !== false) {
-                            $link = htmlspecialchars($this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id, REPLACE_FLAGS, CHARSET);
+                            $link = $this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id;
                         } else {
-                            $link = htmlspecialchars($this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id, REPLACE_FLAGS, CHARSET);
+                            $link = $this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id;
                         }
-                        echo "<tr><td><a href=\"" . $link . "\">" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</a></td><td>" . htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET) . "</td></tr>";
+                        echo "<tr><td><a href=\"" . $link . "\">" . $item->attributes->name . "</a></td><td>" . $item->attributes->description . "</td></tr>";
                     }
                 }
                 ?>
@@ -112,7 +111,7 @@ if ($this->response->meta->sub_resource !== 'group') {
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
         <div class="panel-title">
-            <div class="pull-left"><?php echo __('Devices'). ' '; ?> <?php echo htmlspecialchars($title, REPLACE_FLAGS, CHARSET) ?></div>
+            <div class="pull-left"><?php echo __('Devices'). ' '; ?> <?php echo $title ?></div>
 
             <div class="nav navbar-nav navbar-center">
                 <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
@@ -120,7 +119,7 @@ if ($this->response->meta->sub_resource !== 'group') {
                         <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or full IP">
                         <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
                         <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]' />
-                        <input type="hidden" id="data[access_token]" name="data[access_token]" value='<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>' />
+                        <input type="hidden" id="data[access_token]" name="data[access_token]" value='<?php echo $this->response->meta->access_token; ?>' />
                     </div>
                     <button type="submit" class="btn btn-default btn-sm"><?php echo __('Submit'); ?></button>
                     <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" data-container="body" data-toggle="popover" data-placement="left" title="Device Search" data-content="Search the following fields: name, hostname, dns_hostname, sysName, domain, dns_domain, ip.">
@@ -168,35 +167,18 @@ if (count($this->response->meta->filter) > 0) {
     echo '<div class="panel panel-default pull-left">';
     echo '<div class="panel-body"><h4>';
     foreach ($this->response->meta->filter as $item) {
-        $query_parameters = $this->response->meta->query_parameters;
         if ($item->operator == '=') {
             $operator = '';
         } else {
             $operator = $item->operator;
         }
-        for ($i=0; $i < count($query_parameters); $i++) {
-            $parameter = $query_parameters[$i];
-            if ($parameter === $item) {
-                array_splice($query_parameters, $i, 1);
-            }
+        $search = $item->name . '=' . $operator . $item->value;
+        $replace = '';
+        $link = '?' . str_replace($search, $replace, $this->response->meta->query_string);
+        if (stripos($link, '?&') === 0) {
+            $link = str_replace('?&', '?', $link);
         }
-        if ($item->name == 'system.status') {
-            $found = false;
-            foreach ($this->response->meta->query_parameters as $parameter) {
-                if ($parameter->name == 'system.status') {
-                    $found = true;
-                }
-            }
-            if (!$found) {
-                $parameter = new stdClass();
-                $parameter->name = 'system.status';
-                $parameter->operator = '!=';
-                $parameter->value = '';
-                $query_parameters[] = $parameter;
-            }
-        }
-        $link = create_url($query_parameters);
-        echo '<span class="label label-info">' . htmlentities($item->name) . ' ' . htmlentities($item->operator) . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
+        echo '<span class="label label-info">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
         unset($query_parameters);
     }
     echo '</h4></div>';
@@ -292,16 +274,16 @@ if (!empty($this->response->data)) { ?>
 
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
                     if (!empty($item->attributes->{$property . '_padded'})) {
-                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
                     } else {
-                        echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "            <td>" . $item->attributes->$property . "</td>\n";
                     }
 
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
-                    echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET))).".svg\" style='border-width:0; width:24px; height:24px' title=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\" alt=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\"/></td>\n";
+                    echo "            <td style=\"text-align: center;\"><img src=\"" . str_replace("index.php", "", site_url()) . "device_images/" . strtolower(str_replace(" ", "_", $item->attributes->$property)) . ".svg\" style='border-width:0; width:24px; height:24px' title=\"" . $item->attributes->$property . "\" alt=\"" . $item->attributes->$property . "\" ></td>\n";
 
                 } elseif ($property == 'system.seen_by') {
-                    echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                    echo "            <td>" . $item->attributes->$property . "</td>\n";
 
                 } else {
                     refine($property, $item->attributes->$property);
@@ -311,8 +293,8 @@ if (!empty($this->response->data)) { ?>
             }
         }
         if ($this->m_users->get_user_permission('', 'devices', 'u')) {
-            if (!empty($system_id)) {
-                echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . intval($system_id) . "]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
+            if ( ! empty($system_id)) {
+                echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . $system_id . "]' value='" . $system_id . "' name='ids[" . $system_id . "]' /></td>\n";
             }
         }
         echo "          </tr>\n";

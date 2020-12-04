@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -172,6 +172,7 @@ class M_fields extends MY_Model
         $dictionary->sentence = 'Open-AudIT is extensible with custom fields. If you have a particular attribute you need to record, easily add it to the database and use it to report or even group devices.';
         $dictionary->marketing = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />Once a Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'community';
         $dictionary->notes = '<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br /><br />Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br /><br />You can edit the value of the Field for each individual device in the group you have assigned the field to. View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

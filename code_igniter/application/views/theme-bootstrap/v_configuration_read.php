@@ -30,12 +30,12 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
     <?php include('include_read_panel_header.php'); ?>
 
@@ -46,14 +46,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name; ?>" disabled>
                         </div>
                     </div>
 
@@ -66,7 +66,7 @@ $item = $this->response->data[0];
                         }
                         if ($item->attributes->name != 'discovery_default_scan_option') {
                             if ($item->attributes->type != 'bool') { ?>
-                                <input type="<?php echo htmlspecialchars( $item->attributes->type , REPLACE_FLAGS, CHARSET) ?>" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                                <input type="<?php echo $item->attributes->type; ?>" class="form-control" id="value" name="value" value="<?php echo $item->attributes->value; ?>" disabled>
                             <?php } else { ?>
                                 <select class="form-control" id="value" name="value" disabled>
                                     <option value="y" <?php if ($item->attributes->value == 'y') { echo "selected"; } ?>>y</option>
@@ -96,14 +96,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -112,11 +112,11 @@ $item = $this->response->data[0];
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>

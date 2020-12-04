@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
@@ -108,6 +108,7 @@ if (!function_exists('audit_convert')) {
         } else {
             $log = $parameters->log;
         }
+        $log->ip = @ip_address_from_db($log->ip);
         $log->file = 'audit_helper';
         $log->function = 'audit_convert';
         $log->command = '';
@@ -269,7 +270,7 @@ if (!function_exists('audit_convert')) {
         }
 
         $log->severity = 7;
-        $log->message = 'audit converted';
+        $log->message = 'Audit converted';
         if ( ! empty($log->discovery_id)) {
             $log->command_status = 'success';
             discovery_log($log);

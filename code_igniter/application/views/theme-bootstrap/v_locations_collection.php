@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 ?>
@@ -44,7 +44,7 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                <th style="text-align:center;"><?php echo __('View')?></th>
+                <th style="text-align:center;"><?php echo __('Devices')?></th>
                 <th style="text-align:center;"><?php echo __('Details')?></th>
                 <th><?php echo __('Name')?></th>
                 <th><?php echo __('Organisation')?></th>
@@ -61,7 +61,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a href="devices?system.location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo $item->attributes->device_count?></a></td>
+                    <td class="text-center"><a href="devices?system.location_id=<?php echo $item->id; ?>" role="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo $item->attributes->device_count; ?></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('locations.name', $item->attributes->name); ?>
                     <?php refine('locations.org_id', $item->attributes->org_id, $item->attributes->{'orgs.name'}); ?>
@@ -72,7 +72,7 @@
                     <?php refine('locations.country', $item->attributes->country); ?>
                     <?php if ($this->m_users->get_user_permission('', 'locations', 'd')) { ?>
                     <?php if ($item->id != 0) { ?>
-                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php $item->id; ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } else { ?>
                     <td></td>
                     <?php } ?>

@@ -30,11 +30,11 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 ?>
-<div class="alert alert-success" role="alert"><?php echo htmlspecialchars( $success, REPLACE_FLAGS, CHARSET); ?></div>
+<div class="alert alert-success" role="alert"><?php echo $success; ?></div>
 <?php if (!empty($warning)) { ?>
 <div class="alert alert-warning" role="alert"><?php echo $warning; ?></div>
 <?php } ?>
@@ -74,7 +74,7 @@
                 }
             }
             ?>
-            <pre style="white-space: pre-wrap;"><?php echo htmlspecialchars( $output, REPLACE_FLAGS, CHARSET); ?></pre>
+            <pre style="white-space: pre-wrap;"><?php echo htmlspecialchars($output, REPLACE_FLAGS, CHARSET); ?></pre>
         </div>
     </div>
 </form>

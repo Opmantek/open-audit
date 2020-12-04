@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -97,14 +97,7 @@ class M_widgets extends MY_Model
      */
     public function read($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         $sql = "SELECT * FROM widgets WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -602,6 +595,7 @@ class M_widgets extends MY_Model
         ' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->marketing = '<p>Widgets are the building blocks of Open-AudIT Dashboards.<br /><br />
         ' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = 'The primary and optional secondary items should be fully qualified - ie, system.type or software.name.';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

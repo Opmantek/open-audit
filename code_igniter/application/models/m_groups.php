@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -266,6 +266,7 @@ class M_groups extends MY_Model
         $dictionary->sentence = 'Easily group together devices for simple reporting. Open-AudIT provides more than a dozen groups out of the box and makes it simple to create more.';
         $dictionary->marketing = "<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id's only. If requested using the web interface, they return the standard column attribute list.<br /><br />" . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = "<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id's only. If requested using the web interface, they return the standard column attribute list.<br /><br />" . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'community';
         $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(system.id)</code>.<br /><br />The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.os_family = \'Debian\'</code><br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

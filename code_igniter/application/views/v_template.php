@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 header("Content-Security-Policy: frame-ancestors 'none'");
@@ -83,9 +83,9 @@ function refine($property, $value, $display = '', $align = 'left')
     unset($query_parameters);
 
     if ( ! empty($value)) {
-        echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . htmlspecialchars($value) . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</span></td>\n";
+        echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . $value . '">' . $display . "</span></td>\n";
     } else {
-        echo '            <td class="text-' . $align . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</td>\n";
+        echo '            <td class="text-' . $align . '">' . $display . "</td>\n";
     }
 }
 

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 
@@ -44,8 +44,8 @@
     </div>
 
   <div class="panel-body">
-    <form action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+    <form action="<?php echo $this->response->links->self; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <fieldset>
         <div class="form-group">
             <div class="row">
@@ -77,7 +77,7 @@
                                 <?php
                                 foreach ($this->response->included as $item) {
                                     if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'type') {
-                                        echo "<option value='" . htmlspecialchars( $item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>".__($item->attributes->name)."</option>\n";
+                                        echo "<option value='" . $item->attributes->value . "'>".__($item->attributes->name)."</option>\n";
                                     }
                                 }
                                 ?>
@@ -174,7 +174,7 @@
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>    <option value="<?php echo intval($item->id); ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'orgs') { ?>    <option value="<?php echo $item->id; ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -186,7 +186,7 @@
                             <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>    <option value="<?php echo intval($item->id); ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'locations') { ?>    <option value="<?php echo $item->id; ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>

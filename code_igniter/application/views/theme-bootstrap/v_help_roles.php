@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 ?>
@@ -49,10 +49,10 @@
             <tbody>
                 <?php foreach ($this->response->data as $item) { ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><?php echo htmlspecialchars($item->ad_group, REPLACE_FLAGS, CHARSET) ?></td>
-                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->sql, REPLACE_FLAGS, CHARSET) ?></pre></td>
+                    <td><?php echo $item->name; ?></td>
+                    <td><?php echo $item->description; ?></td>
+                    <td><?php echo $item->ad_group; ?></td>
+                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo $item->sql; ?></pre></td>
                 </tr>
                 <?php } ?>
             </tbody>

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -123,6 +123,11 @@ if ( ! function_exists('ip_list')) {
 		$log->ip = '127.0.0.1';
 
 		$ip_addresses = array();
+		// Nmap:
+		//   -n     No DNS lookup
+		//   -oG    Output in grappable format
+		//   -      No filename, command line output for above
+		//   -sP    Ping scan only
 		if ($discovery->attributes->other->nmap->ping === 'y') {
 			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
 				$command = 'nmap -n -oG - -sP --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
@@ -508,7 +513,7 @@ if ( ! function_exists('ip_scan')) {
 			$log->message = 'Nmap Command (Custom TCP Ports)';
 			$log->command = "{$command} # Custom TCP Ports";
 			discovery_log($log);
-			echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
+			#echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
 			if ( ! empty($ports)) {
@@ -529,7 +534,7 @@ if ( ! function_exists('ip_scan')) {
 			$log->message = 'Nmap Command (Custom UDP Ports)';
 			$log->command = "{$command} # Custom UDP Ports";
 			discovery_log($log);
-			echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
+			#echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
 			if ( ! empty($ports)) {
@@ -1430,11 +1435,11 @@ if ( ! function_exists('ip_audit')) {
 		$log->severity = 7;
 		$log->command_time_to_execute = '';
 
-		if ($device->os_family === 'DD-WRT' OR $device->os_family === 'LEDE') {
+		if ( ! empty($device->os_family) && ($device->os_family === 'DD-WRT' OR $device->os_family === 'LEDE')) {
 			$log->message = "IP {$device->ip} is running {$device->os_family}, which will not run our audit_linux.sh script, skipping.";
 			discovery_log($log);
 		}
-
+		$temp_audit_script = @$audit_script;
 		// Audit via SSH
 		if ($ip_scan->details->ssh_status === 'true' && $device->os_family !== 'DD-WRT' && $device->os_family !== 'LEDE' && ! empty($credentials_ssh) && ! empty($audit_script)) {
 			$result = '';
@@ -1607,13 +1612,13 @@ if ( ! function_exists('ip_audit')) {
 
 		// Delete the local audit script if it's not a default script
 		// if ( ! empty($audit_script) && strpos($audit_script, 'scripts') !== false) {
-		if ( strpos($parameters->source, 'scripts') !== false) {
+		if ($temp_audit_script) {
 			$log->severity = 7;
 			$log->message = 'Attempt to delete temp audit script succeeded';
 			$log->command_status = 'notice';
-			$log->command = "unlink('" . $parameters->source ."')";
+			$log->command = "unlink('" . $temp_audit_script ."')";
 			try {
-				unlink($parameters->source);
+				unlink($temp_audit_script);
 			} catch (Exception $error) {
 				$log->severity = 4;
 				$log->message = 'Could not delete temp audit script';
@@ -1625,6 +1630,7 @@ if ( ! function_exists('ip_audit')) {
 			$log->message = '';
 			$log->command_status = 'notice';
 			$log->command = '';
+			unset($temp_audit_script);
 		}
 
 		$audit = false;

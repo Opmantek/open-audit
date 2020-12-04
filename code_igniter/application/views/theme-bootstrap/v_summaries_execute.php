@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 ?>
@@ -54,9 +54,9 @@
                     <?php foreach ($this->response->data as $item): ?>
                         <?php if (empty($item->attributes->name)) { $item->attributes->name = '-'; } ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars( $item->attributes->link, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                        <td><?php echo htmlspecialchars(ucwords($item->attributes->name), REPLACE_FLAGS, CHARSET)?></td>
-                        <td class="text-center"><?php echo intval($item->attributes->count); ?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->attributes->link; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                        <td><?php echo ucwords($item->attributes->name); ?></td>
+                        <td class="text-center"><?php echo $item->attributes->count; ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

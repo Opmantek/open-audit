@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -393,9 +393,8 @@ class Discoveries extends MY_Controller
     {
         if (php_uname('s') === 'Linux') {
             $this->load->model('m_help');
-            $this->m_help->support();
-            $server_os = $this->response->data[0]->os->version;
-            if ((stripos($server_os, 'redhat') !== false OR stripos($server_os, 'centos') !== false) && stripos($server_os, 'release 6') !== false) {
+            $system = $this->m_help->get_os();
+            if ( ! empty($system->os_version) && (stripos($system->os_version, 'redhat') !== false OR stripos($system->os_version, 'centos') !== false) && stripos($system->os_version, 'release 6') !== false) {
                 // Do not set an error because this would disable the Execute buttons.
                 $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
 
@@ -439,6 +438,11 @@ class Discoveries extends MY_Controller
             }
             if ($nmap_installed === 'n') {
                 if (file_exists('/usr/local/bin/nmap')) {
+                    $nmap_installed = 'y';
+                }
+            }
+            if ($nmap_installed === 'n') {
+                if (file_exists('/usr/bin/nmap')) {
                     $nmap_installed = 'y';
                 }
             }

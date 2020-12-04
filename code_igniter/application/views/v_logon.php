@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
@@ -64,7 +64,7 @@ if (empty($this->config->config['internal_version'])) {
 ?>
 <div class="row">
     <div class="col-md-8 col-md-offset-2 text-center">
-        <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>No configuration could be retrieved. This indicates no working database.<br />Does your database "<?php echo $this->db->database; ?>" exist and does the user "<?php echo $this->db->username; ?>", have access to it?<br />If so, does the "configuration" table exist within the database "<?php echo $this->db->database; ?>"?<br />You can always start a fresh database using the commands<br /><?php echo $command; ?></div>
+        <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>No configuration could be retrieved. This indicates no working database.<br />Does your database "<?php echo htmlentities($this->db->database); ?>" exist and does the user "<?php echo htmlentities($this->db->username); ?>", have access to it?<br />If so, does the "configuration" table exist within the database "<?php echo htmlentities($this->db->database); ?>"?<br />You can always start a fresh database using the commands<br /><?php echo $command; ?></div>
     </div>
 </div>
 <?php

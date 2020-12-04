@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -259,6 +259,7 @@ class M_baselines_policies extends MY_Model
         $dictionary->sentence = 'sentence';
         $dictionary->about = '<p>The About</p>';
         $dictionary->marketing = '<p>Some Marketing</p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>More Notes</p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

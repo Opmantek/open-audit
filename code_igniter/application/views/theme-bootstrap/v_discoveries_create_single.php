@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 
@@ -85,8 +85,8 @@ if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
 </div>
 <?php } ?>
 
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
-    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -131,7 +131,7 @@ if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
                                 <option value="" label=" "></option>
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo $item->id; ?>"><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -145,7 +145,7 @@ if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
                                 <option value="" label=" "></option>
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo $item->id; ?>"><?php echo $item->attributes->name; ?></option>
                             <?php
                                 }
                             } ?></select>

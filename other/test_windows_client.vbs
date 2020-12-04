@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
 ' 
-' @version   GIT: Open-AudIT_3.4.1
+' @version   GIT: Open-AudIT_3.5.2
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -96,7 +96,7 @@ if (help = "y") then
     wscript.echo ""
     wscript.echo "This script should be copied to the target PC and run via 'cscript test_windows_target.vbs'"
     wscript.echo ""
-    wscript.echo "To run the script and test another user (useful if having a 'normal' user run this on their PC, run the script like 'cscript test_windows_target.vbs user=administrator@your_domain'. NOTE - no need to specificy the complete domain name, the short version should only be supplied. IE - mydomain, not mydomain.com"
+    wscript.echo "To run the script and test another user (useful if having a 'normal' user run this on their PC, run the script like 'cscript test_windows_target.vbs user=administrator@your_domain'. NOTE - no need to specificy the complete domain name, the short version should not be supplied. IE - mydomain, not mydomain.com"
     wscript.echo ""
     wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: user=user@domain)."
     wscript.echo ""
@@ -525,15 +525,19 @@ if (cs_part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
     end if
 end if
 
+wscript.echo
+wscript.echo "------------------------"
+wscript.echo "Connecting to Registry"
+wscript.echo "------------------------"
+temp = ""
+set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
+If Err.Number <> 0 Then ShowError("Cannot connect to local registry.") end if
 
 
 wscript.echo
 wscript.echo "------------------------"
 wscript.echo "Testing UAC blocking inbound requests"
 wscript.echo "------------------------"
-temp = ""
-set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
-If Err.Number <> 0 Then ShowError("Cannot connect to local registry.") end if
 oReg.GetDWORDValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System","EnableLUA", temp
 If Err.Number <> 0 Then ShowError("Cannot read local registry.") end if
 if (isnull(temp) or temp <> "1") then
@@ -555,16 +559,16 @@ dim smb1
 Err.Clear
 oreg.GetDWORDValue HKEY_LOCAL_MACHINE, "SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "SMB1", smb1
 if Err.Number <> 0 then
-    wscript.echo "PASS - SMB1 not present in registry, therefore enabled."
+    wscript.echo "INFO - SMB1 not present in registry, therefore enabled."
 else
     if (smb1 = "" or isnull(smb1)) then
-        wscript.echo "PASS - SMB1 not present in registry, therefore enabled."
+        wscript.echo "INFO - SMB1 not present in registry, therefore enabled."
     elseif (smb1 = "1" or smb1 = "" or isnull(smb1)) then
-        wscript.echo "PASS - SMB1 configured with a value of 1, therefore enabled."
+        wscript.echo "INFO - SMB1 configured with a value of 1, therefore enabled."
     elseif (smb1 = "0") then
-        wscript.echo "FAIL - SMB1 configured with a value of 0, therefore disabled."
+        wscript.echo "INFO - SMB1 configured with a value of 0, therefore disabled."
     elseif (smb1 <> "0" and smb1 <> "1") then
-        wscript.echo "FAIL - SMB1 configured with an invalid value of " & smb1 & ", cannot determine SMB1 status."
+        wscript.echo "WARNING - SMB1 configured with an invalid value of " & smb1 & ", cannot determine SMB1 status."
     else
         wscript.echo "WARNING - Unknown issue detecting SMB1 in registry."
     end if

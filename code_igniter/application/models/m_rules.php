@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 
@@ -742,6 +742,7 @@ class M_rules extends MY_Model
         $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
         $dictionary->marketing = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Rules are used to apply attribute details to a device, depending on it\'s other attributes<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

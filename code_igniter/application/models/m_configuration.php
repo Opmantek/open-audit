@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -262,6 +262,8 @@ class M_configuration extends MY_Model
             $result = $this->run_sql($sql, array());
         }
 
+        $this->load->helper('url');
+
         // set all items to value or ''
         if ( ! empty($result)) {
             foreach ($result as $row) {
@@ -278,30 +280,17 @@ class M_configuration extends MY_Model
                 unset($temp_name);
             }
         }
-        $temp = array();
-        if ( ! empty($_SERVER['REQUEST_URI'])) {
-            $temp = explode('/', $_SERVER['REQUEST_URI']);
-        }
-        $basic_url = '';
-        for ($i = 0; $i<count($temp); $i++) {
-            if ($temp[$i] === 'index.php') {
-                for ($j = 1; $j <= $i; $j++) {
-                    $basic_url .= '/'.$temp[$j];
-                }
-            }
-        }
 
         // ensure we have a trailing slash
         if ( ! empty($this->config->config['discovery_linux_script_directory']) && substr($this->config->config['discovery_linux_script_directory'], -1) !== '/') {
             $this->config->config['discovery_linux_script_directory'] .= '/';
         }
 
-        $this->config->config['oa_web_index'] = $basic_url;
-        $this->config->config['oa_web_folder'] = str_replace('/index.php', '', $basic_url);
-        unset($temp, $basic_url);
+        // set the used URLs
+        $this->config->config['oa_web_index'] = site_url();
+        $this->config->config['oa_web_folder'] = base_url();
 
         // set the timestamp
-        
         if ($this->db->dbdriver === 'mysql' OR $this->db->dbdriver === 'mysqli') {
             $sql = 'SELECT NOW() as `timestamp`';
         } else if ($this->db->dbdriver === 'mssql') {
@@ -309,7 +298,6 @@ class M_configuration extends MY_Model
         }
         $result = $this->run_sql($sql, array());
         $this->config->config['timestamp'] = $result[0]->timestamp;
-
         $sql = "SELECT TIME_FORMAT(TIMEDIFF(NOW(),CONVERT_TZ(NOW(),@@session.time_zone,'+00:00')),'%H%i') AS `tz`";
         $result = $this->run_sql($sql, array());
         $this->config->config['timezone'] = $result[0]->tz;
@@ -545,6 +533,7 @@ class M_configuration extends MY_Model
         $dictionary->sentence = '';
         $dictionary->marketing = '';
         $dictionary->about = '';
+        $dictionary->product = 'community';
         $dictionary->notes = '';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

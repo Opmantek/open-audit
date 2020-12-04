@@ -10,9 +10,9 @@ if (strpos($this->response->links->first, '?') !== false) {
     <div class="pull-left">
         <?php
             if ($this->response->meta->collection == 'summaries' and !empty($this->response->meta->title)) {
-                echo htmlspecialchars($this->response->meta->title, REPLACE_FLAGS, CHARSET);
+                echo $this->response->meta->title;
             } else {
-                echo htmlspecialchars(ucwords(str_replace('_', ' ', ($this->response->meta->collection))), REPLACE_FLAGS, CHARSET);
+                echo ucwords(str_replace('_', ' ', ($this->response->meta->collection)));
             }
         ?>
     </div>
@@ -24,7 +24,7 @@ if (strpos($this->response->links->first, '?') !== false) {
                 <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or full IP">
                 <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
                 <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]' />
-                <input type="hidden" id="data[access_token]" name="data[access_token]" value='<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>' />
+                <input type="hidden" id="data[access_token]" name="data[access_token]" value='<?php echo $this->response->meta->access_token; ?>' />
             </div>
             <button type="submit" class="btn btn-default btn-sm"><?php echo __('Submit'); ?></button>
             <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" data-container="body" data-toggle="popover" data-placement="left" title="Device Search" data-content="Search the following fields: name, hostname, dns_hostname, sysName, domain, dns_domain, ip.">

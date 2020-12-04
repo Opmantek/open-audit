@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -160,9 +160,10 @@ class M_discovery_scan_options extends MY_Model
         $dictionary->attributes->fields = $this->db->list_fields($collection);
         $dictionary->attributes->create = mandatory_fields($collection);
         $dictionary->attributes->update = update_fields($collection);
-        $dictionary->sentence = '';
-        $dictionary->marketing = '';
+        $dictionary->sentence = 'Scanning options allow you to easily apply a set of options to a discovery.';
+        $dictionary->marketing = '<p>Using Enterprise you can choose a set of scanning options, or set configurable discovery options <i>per discovery</i>.<br /><br /></p>';
         $dictionary->about = '<p>Scanning options allow you to easily apply a set of options to a discovery.<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>The attributes of timeout, ssh ports and excluding TCP, UDP & IPs can be set here and overwritten for a specific discovery.<br /><br /></p><p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br /><br /><blockquote><p>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often don\'t realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</p><footer>Gordon \'Fyodor\' Lyon</footer></blockquote><br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

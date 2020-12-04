@@ -34,7 +34,7 @@ if ( ! defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -179,7 +179,7 @@ if ( ! function_exists('response_create')) {
         $instance->user->org_list = response_get_org_list($response->meta->collection, $instance->user);
 
         // depends on version affecting URI, collection - set in URI or POST
-        $response->meta->id = response_get_id($instance->uri->segment(2),
+        $response->meta->id = response_get_id(html_entity_decode(urldecode($instance->uri->segment(2))),
                                               $response->meta->collection,
                                               $instance->user->org_list);
 
@@ -981,6 +981,15 @@ if ( ! function_exists('response_get_id')) {
                     $tables[] = 'devices';
                     if ( ! in_array($id, $tables)) {
                         $id = null;
+                    }
+                } else if ($collection === 'configuration') {
+                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM `configuration` WHERE name = ? ORDER BY id DESC LIMIT 1";
+                    $data = array($id);
+                    $query = $instance->db->query($sql, $data);
+                    $result = $query->result();
+                    if ( ! empty($result)) {
+                        $log->summary = 'ID to Name match in configuration';
+                        $id = intval($result[0]->id);
                     }
                 } else if ($collection === 'devices') {
                     // devices -> system table
@@ -1887,11 +1896,6 @@ if ( ! function_exists('response_get_sub_resource')) {
 
         $sub_resource = '';
 
-        // We only use include for devices.
-        if ($collection !== 'devices') {
-            return $sub_resource;
-        }
-
         if ( ! empty($get)) {
             $sub_resource = $get;
             $log->summary = 'Set sub_resource according to GET.';
@@ -1917,8 +1921,6 @@ if ( ! function_exists('response_get_sub_resource')) {
                 }
                 $sub_resource = implode(',', $temp);
             }
-        } else {
-            $sub_resource = '';
         }
         if ( ! empty($sub_resource)) {
             $log->detail = 'SUB_RESOURCE: ' . $sub_resource;
@@ -2081,7 +2083,7 @@ if ( ! function_exists('response_valid_formats')) {
      */
     function response_valid_formats()
     {
-        $valid_formats = array('json','json_data','html','screen','xml','csv','sql','table');
+        $valid_formats = array('json','json_data','highcharts','html','screen','xml','csv','sql','table');
         return $valid_formats;
     }
 }
@@ -2093,7 +2095,7 @@ if ( ! function_exists('response_valid_includes')) {
      */
     function response_valid_includes()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
     }
 }
 

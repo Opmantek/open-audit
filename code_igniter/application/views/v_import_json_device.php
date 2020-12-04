@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 header("Content-Security-Policy: frame-ancestors 'none'");
@@ -44,7 +44,7 @@ header("X-Frame-Options: DENY");
 <body>
 <?php
 $attributes = array('accept-charset' => 'UTF-8');
-echo form_open_multipart('test/import_json_device', htmlspecialchars( $attributes, REPLACE_FLAGS, CHARSET))."\n";
+echo form_open_multipart('test/import_json_device', $attributes)."\n";
 echo form_fieldset('Paste the JSON')."\n";
 echo '<p>'.form_textarea(array('name' => 'data', 'id' => 'data', 'rows' => '15', 'cols' => '100'))."</p>\n";
 echo form_fieldset_close();

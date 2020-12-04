@@ -15,7 +15,7 @@ if (!empty($this->config->config['servers'])) {
                     <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oac.png">
                 </a>
                 <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
-                    Open-AudIT Community <?php echo htmlspecialchars($this->config->config['display_version'], REPLACE_FLAGS, CHARSET) ?>
+                    Open-AudIT Community <?php echo $this->config->config['display_version']; ?>
                 </a>
             </div>
 
@@ -28,9 +28,9 @@ if (!empty($this->config->config['servers'])) {
                         <?php foreach ($this->response->included as $item) { ?>
                             <?php if ($item->type === 'dashboards') { ?>
                                 <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                <li class="disabled"><a href='#' title="Enable Professional or Enterprise to use this functionality"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                                <li class="disabled"><a href='#' title="Enable Professional or Enterprise to use this functionality"><?php echo $item->attributes->name; ?></a></li>
                             <?php } else { ?>
-                                <li><a href="/omk/open-audit/dashboards/<?php echo $item->id ?>/execute"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                                <li><a href="/omk/open-audit/dashboards/<?php echo $item->id ?>/execute"><?php echo $item->attributes->name; ?></a></li>
                             <?php } ?>
                         <?php } } ?>
                         </ul>
@@ -60,7 +60,7 @@ if (!empty($this->config->config['servers'])) {
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
-                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/clouds'><?php echo __('Learn About Clouds'); ?></a></li>
+                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oa_web_index']; ?>/help/features/clouds'><?php echo __('Learn About Clouds'); ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -97,7 +97,7 @@ if (!empty($this->config->config['servers'])) {
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                                 <li class="disabled"><a href='#'><?php echo __('Configure Discoveries'); ?></a></li>
                                                 <li class="disabled"><a href='#'><?php echo __('Schedule Discoveries'); ?></a></li>
-                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/discoveries'><?php echo __('Learn About Discoveries'); ?></a></li>
+                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oa_web_index']; ?>/help/features/discoveries'><?php echo __('Learn About Discoveries'); ?></a></li>
                                             <?php } else { ?>
                                                 <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration?section=discovery'><?php echo __('Configure Discoveries'); ?></a></li>
                                                 <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'><?php echo __('Schedule Discoveries'); ?></a></li>
@@ -131,7 +131,7 @@ if (!empty($this->config->config['servers'])) {
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
-                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/files'><?php echo __('Learn About Files'); ?></a></li>
+                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oa_web_index']; ?>/help/features/files'><?php echo __('Learn About Files'); ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -178,9 +178,9 @@ if (!empty($this->config->config['servers'])) {
                             ?>
                             <li class="dropdown-submenu">
                                 <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
-                                    <a><?php echo htmlspecialchars($category, REPLACE_FLAGS, CHARSET) ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
+                                    <a><?php echo $category; ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
                                 <?php } else { ?>
-                                    <a><?php echo htmlspecialchars($category, REPLACE_FLAGS, CHARSET) ?></a>
+                                    <a><?php echo $category; ?></a>
                                 <?php } ?>
                                 <ul class="dropdown-menu" style="min-width:250px;">
                                 <?php
@@ -195,11 +195,11 @@ if (!empty($this->config->config['servers'])) {
                                         } else {
                                             $link = '<li><a href="' . $this->config->config['oa_web_index'] . '/' . $item->{'type'} . '/' . $item->{'id'} . '/execute">';
                                         }
-                                        echo $link . htmlspecialchars($item->{'attributes'}->{'name'}, REPLACE_FLAGS, CHARSET) . "</a></li>\n";
+                                        echo $link . $item->{'attributes'}->{'name'} . "</a></li>\n";
                                     }
                                 }
                                 if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') {
-                                    echo "<li><a style=\"color: #337ab7;\" href=\"" . $this->config->config['oae_url'] . "/features/reports\">" . __('Learn About Reports') . "</a></li>\n";
+                                    echo "<li><a style=\"color: #337ab7;\" href=\"" . $this->config->config['oa_web_index'] . "/help/features/reports\">" . __('Learn About Reports') . "</a></li>\n";
                                 } ?>
                                 </ul>
                             </li>
@@ -290,7 +290,7 @@ if (!empty($this->config->config['servers'])) {
 
                                         <!-- LEARN -->
                                         <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections)) { ?>
-                                        <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/<?php echo $collection; ?>'><?php echo __('Learn About').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                        <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oa_web_index']; ?>/help/features/<?php echo $collection; ?>'><?php echo __('Learn About').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } ?>
 
                                     </ul>
@@ -335,7 +335,7 @@ if (!empty($this->config->config['servers'])) {
                                 <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
                             <?php } ?>
                             <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
-                            <li><a href='#' id='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
+                            <li><a href='#' class='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
                             <li><a href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                         </ul>
                     </li>
@@ -409,7 +409,7 @@ if (!empty($this->config->config['servers'])) {
                             <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
                             <li><a href='https://community.opmantek.com/display/OA/Getting+Started'><?php echo __('Getting Started')?></a></li>
                             <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
-                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/features'><?php echo __('Open-AudIT Features')?></a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/features'><?php echo __('Open-AudIT Features')?></a></li>
 
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/support'><?php echo __('Support')?></a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/groups'><?php echo __('Default Group List')?></a></li>

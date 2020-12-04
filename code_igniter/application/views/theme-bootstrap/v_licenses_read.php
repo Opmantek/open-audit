@@ -30,12 +30,12 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -46,14 +46,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo htmlspecialchars($item->attributes->id, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -69,7 +69,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                        <option value="<?php echo $org->id; ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo $org->attributes->name; ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -100,7 +100,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="purchase_count" class="col-sm-3 control-label"><?php echo __('Purchase Count'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" value="<?php echo htmlspecialchars($item->attributes->purchase_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" value="<?php echo $item->attributes->purchase_count; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_purchase_count" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="purchase_count"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -116,14 +116,14 @@ $item = $this->response->data[0];
                     <?php } ?>
                         <label for="used_count" class="col-sm-3 control-label"><?php echo __('Used Count'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="used_count" name="used_count" value="<?php echo htmlspecialchars($item->attributes->used_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="used_count" name="used_count" value="<?php echo $item->attributes->used_count; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo $item->attributes->description; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -135,7 +135,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="match_string" class="col-sm-3 control-label"><?php echo __('Match String'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="match_string" name="match_string" value="<?php echo htmlspecialchars($item->attributes->match_string, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="match_string" name="match_string" value="<?php echo $item->attributes->match_string; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_match_string" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="match_string"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -147,14 +147,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -163,11 +163,11 @@ $item = $this->response->data[0];
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>
@@ -195,10 +195,10 @@ $item = $this->response->data[0];
                         foreach ($this->response->included as $item) {
                             if ($item->type == 'licenses') {
                                 echo "<tr>\n";
-                                echo '    <td class="text-center"><a class="btn btn-sm btn-success" href="../devices/' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '">' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '</a></td>';
-                                echo "    <td>" . htmlspecialchars( $item->{'attributes'}->{'system.name'}, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                echo "    <td>" . htmlspecialchars( $item->{'attributes'}->{'software.name'}, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                echo "    <td>" . htmlspecialchars( $item->{'attributes'}->{'software.version'}, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                echo '    <td class="text-center"><a class="btn btn-sm btn-success" href="../devices/' . $item->id . '">' . $item->id . '</a></td>';
+                                echo "    <td>" . $item->{'attributes'}->{'system.name'} . "</td>\n";
+                                echo "    <td>" . $item->{'attributes'}->{'software.name'} . "</td>\n";
+                                echo "    <td>" . $item->{'attributes'}->{'software.version'} . "</td>\n";
                                 echo "</tr>\n";
                             }
                         }

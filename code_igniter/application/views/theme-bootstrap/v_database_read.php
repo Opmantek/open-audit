@@ -30,12 +30,12 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -45,14 +45,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="count" class="col-sm-3 control-label"><?php echo __('Row Count'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="count" name="count" value="<?php echo htmlspecialchars($item->attributes->count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="count" name="count" value="<?php echo $item->attributes->count; ?>" disabled>
                         </div>
                     </div>
 
@@ -60,10 +60,10 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="current" class="col-sm-3 control-label"><?php echo __('Current Rows'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="current" name="current" value="<?php echo htmlspecialchars($item->attributes->current, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="current" name="current" value="<?php echo $item->attributes->current; ?>" disabled>
                             <?php if ($this->m_users->get_user_permission('', 'database', 'd') and intval($item->attributes->current) > 0) { ?>
                             <span class="input-group-btn">
-                                <button id="delete_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=y"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button id="delete_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo $item->attributes->name; ?>?current=y"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -71,10 +71,10 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="non_current" class="col-sm-3 control-label"><?php echo __('Noncurrent Rows'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="non_current" name="non_current" value="<?php echo htmlspecialchars($item->attributes->non_current, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="non_current" name="non_current" value="<?php echo $item->attributes->non_current; ?>" disabled>
                             <?php if ($this->m_users->get_user_permission('', 'database', 'd') and intval($item->attributes->non_current) > 0) { ?>
                             <span class="input-group-btn">
-                                <button id="delete_non_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=n"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button id="delete_non_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo $item->attributes->name; ?>?current=n"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -83,12 +83,12 @@ $item = $this->response->data[0];
                     <?php if ($item->attributes->name == 'system') { ?>
                         <?php foreach ($item->attributes->status as $status) { ?>
                             <div class="form-group">
-                                <label for="status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __('Device Status: ' . $status->status); ?></label>
+                                <label for="status_<?php echo $status->status; ?>" class="col-sm-3 control-label"><?php echo __('Device Status: ' . $status->status); ?></label>
                                 <div class="col-sm-8 input-group">
-                                    <input type="text" class="form-control" id="status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" name="status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($status->count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                                    <input type="text" class="form-control" id="status_<?php echo $status->status; ?>" name="status_<?php echo $status->status; ?>" value="<?php echo $status->count; ?>" disabled>
                                     <?php if ($this->m_users->get_user_permission('', 'database', 'd') and $status->status != 'production') { ?>
                                     <span class="input-group-btn">
-                                        <button id="delete_status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?status=<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                        <button id="delete_status_<?php echo $status->status; ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo $item->attributes->name; ?>?status=<?php echo $status->status; ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                                     </span>
                                     <?php } ?>
                                 </div>
@@ -100,19 +100,19 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="export_csv" class="col-sm-3 control-label"><?php echo __('Export Data'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=csv&sub_resource=export table"><?php echo __('to CSV'); ?></a>
+                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo $item->id; ?>?action=execute&format=csv&sub_resource=export table"><?php echo __('to CSV'); ?></a>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="export_sql" class="col-sm-3 control-label"><?php echo __('Export Data'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=sql&sub_resource=export table"><?php echo __('to SQL'); ?></a>
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo $item->id; ?>?action=execute&format=sql&sub_resource=export table"><?php echo __('to SQL'); ?></a>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="export_sql" class="col-sm-3 control-label"><?php echo __('Export Data'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=xml&sub_resource=export table"><?php echo __('to XML'); ?></a>
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo $item->id; ?>?action=execute&format=xml&sub_resource=export table"><?php echo __('to XML'); ?></a>
                         </div>
                     </div>
                     <?php $tables = ' audit_log change_log chart credentials discoveries discovery_log edit_log graph networks oa_user_sessions '; ?>
@@ -121,7 +121,7 @@ $item = $this->response->data[0];
                         <div class="form-group">
                             <label for="delete_all" class="col-sm-3 control-label"><?php echo __('Delete All Data'); ?></label>
                             <div class="col-sm-8 input-group">
-                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=all"><?php echo __('Delete'); ?></button>
+                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo $item->attributes->name; ?>?current=all"><?php echo __('Delete'); ?></button>
                             </div>
                         </div>
                         <?php } ?>
@@ -155,10 +155,10 @@ $item = $this->response->data[0];
                         <tbody>
                         <?php foreach ($item->attributes->columns as $column) { ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($column->name, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->type, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->default, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->max_length, REPLACE_FLAGS, CHARSET); ?></td>
+                                <td><?php echo $column->name; ?></td>
+                                <td><?php echo $column->type; ?></td>
+                                <td><?php echo $column->default; ?></td>
+                                <td><?php echo $column->max_length; ?></td>
                                 <?php if ($column->primary_key) {
                                     echo "<td>true</td>\n";
                                 } else {
@@ -166,7 +166,7 @@ $item = $this->response->data[0];
                                 }
                                 ?>
                                 <?php if ($column->type == 'enum') {
-                                    echo "<td class=\"wrap\">" . htmlspecialchars(str_replace(',', ', ', $column->values), REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                    echo "<td class=\"wrap\">" . str_replace(',', ', ', $column->values) . "</td>\n";
                                 } else {
                                     echo "<td></td>\n";
                                 }
@@ -195,7 +195,7 @@ if (!empty($this->data) and is_string($this->data)) {
             <div class="row">
                 <div class="col-md-12">
                     <pre>
-<?php echo htmlspecialchars($this->data, REPLACE_FLAGS, CHARSET); ?>
+<?php echo $this->data; ?>
                     </pre>
                 </div>
             </div>

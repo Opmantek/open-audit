@@ -30,13 +30,13 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
 $types = array('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network');
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -47,14 +47,14 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -66,7 +66,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                     <div class="form-group">
                         <label for="network" class="col-sm-3 control-label"><?php echo __('Network'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="network" name="network" value="<?php echo htmlspecialchars($item->attributes->network, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="network" name="network" value="<?php echo $item->attributes->network; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_network" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -82,7 +82,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                        <option value="<?php echo $org->id; ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo $org->attributes->name; ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -98,7 +98,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo $item->attributes->description; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -130,14 +130,14 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -145,11 +145,11 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                     <div class="col-md-8 col-md-offset-2">
                         <?php if ( ! empty($this->response->dictionary->about)) {
                             echo "<h4 class=\"text-center\">About</h4><br />";
-                            echo $this->response->dictionary->about;
+                            echo html_entity_decode($this->response->dictionary->about);
                         } ?>
                         <?php if ( ! empty($this->response->dictionary->notes)) {
                             echo "<h4 class=\"text-center\">Notes</h4><br />";
-                            echo $this->response->dictionary->notes;
+                            echo html_entity_decode($this->response->dictionary->notes);
                         } ?>
                     </div>
                 </div>

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -74,6 +74,31 @@ class Help extends MY_Controller
     public function index()
     {
         $this->response->meta->action = __FUNCTION__;
+        output($this->response);
+    }
+
+    /**
+    * Our features help
+    *
+    * @access public
+    * @return NULL
+    */
+    function features()
+    {
+        $this->response->meta->action = 'read';
+        $this->response->include = 'v_features';
+        if ( ! empty($this->response->meta->sub_resource)) {
+            $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
+            if (in_array($this->response->meta->sub_resource, $collections)) {
+                $this->load->model('m_'.$this->response->meta->sub_resource);
+                $dictionary = $this->{'m_'.$this->response->meta->sub_resource}->dictionary();
+            } else {
+                $table = $this->response->meta->sub_resource;
+                include 'include_dictionary.php';
+            }
+            $this->response->dictionary = $dictionary;
+            #$this->response->include = 'v_features_' . $this->response->meta->sub_resource;
+        }
         output($this->response);
     }
 
@@ -164,18 +189,6 @@ class Help extends MY_Controller
     {
         $this->response->meta->action = __FUNCTION__;
         $this->m_help->support();
-        output($this->response);
-    }
-
-    /**
-    * Our opMaps help
-    *
-    * @access public
-    * @return NULL
-    */
-    function enterprise()
-    {
-        $this->response->meta->action = __FUNCTION__;
         output($this->response);
     }
 

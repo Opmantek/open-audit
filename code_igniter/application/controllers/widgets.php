@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -196,7 +196,10 @@ class Widgets extends MY_Controller
     public function execute()
     {
         $this->response->data = $this->m_widgets->execute($this->response->meta->id);
-        $this->response->meta->format = 'json';
+        $this->response->included = $this->m_widgets->read($this->response->meta->id);
+        if ($this->response->meta->format !== 'json' and $this->response->meta->format !== 'highcharts') {
+            $this->response->meta->format = 'json';
+        }
         output();
         return;
     }

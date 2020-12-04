@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -113,6 +113,10 @@ class Networks extends MY_Controller
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            }
+            if ($this->response->meta->include === 'all' OR ! empty($this->response->meta->requestor)) {
+                $devices = $this->m_networks->sub_resource($this->response->meta->id);
+                $this->response->included = array_merge($this->response->included, $devices);
             }
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');

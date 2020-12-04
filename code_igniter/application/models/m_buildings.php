@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -213,6 +213,7 @@ class M_buildings extends MY_Model
         $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
         $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>Buildings go inside your Locations and contain Floors.</p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

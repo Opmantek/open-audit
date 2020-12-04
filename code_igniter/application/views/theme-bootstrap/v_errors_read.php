@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -46,42 +46,42 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="code" class="col-sm-3 control-label"><?php echo __('Code'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="code" name="code" value="<?php echo htmlspecialchars($item->attributes->code, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="code" name="code" value="<?php echo $item->attributes->code; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="title" class="col-sm-3 control-label"><?php echo __('Title'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($item->attributes->title, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="title" name="title" value="<?php echo $item->attributes->title; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="status" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="status" name="status" value="<?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="status" name="status" value="<?php echo $item->attributes->status; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="severity" class="col-sm-3 control-label"><?php echo __('Severity'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="severity" name="severity" value="<?php echo htmlspecialchars($item->attributes->severity, REPLACE_FLAGS, CHARSET); ?> (<?php echo htmlspecialchars($item->attributes->severity_text, REPLACE_FLAGS, CHARSET); ?>)" disabled>
+                            <input type="text" class="form-control" id="severity" name="severity" value="<?php echo $item->attributes->severity; ?> (<?php echo $item->attributes->severity_text; ?>)" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="status_code" class="col-sm-3 control-label"><?php echo __('Status Code'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="status_code" name="status_code" value="<?php echo htmlspecialchars($item->attributes->status_code, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="status_code" name="status_code" value="<?php echo $item->attributes->status_code; ?>" disabled>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                 <strong><?php echo __("Detail"); ?></strong>
-                    <p><?php echo htmlspecialchars($item->attributes->detail, REPLACE_FLAGS, CHARSET); ?></p>
+                    <p><?php echo $item->attributes->detail; ?></p>
                 </div>
 
 

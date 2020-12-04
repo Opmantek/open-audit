@@ -30,50 +30,10 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
-
-# check if we have nmap installed
-$nmap_installed = 'n';
-if (php_uname('s') == "Windows NT") {
-    # check the obvious Windows install locations
-    $test_path = 'c:\Program Files\Nmap\Nmap.exe';
-    if ($nmap_installed == 'n' and file_exists($test_path)) {
-        $nmap_installed = 'y';
-    }
-    $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
-    if ($nmap_installed == 'n' and file_exists($test_path)) {
-        $nmap_installed = 'y';
-    }
-    unset($test_path);
-} else {
-    $command_string = "which nmap 2>/dev/null";
-    exec($command_string, $output, $return_var);
-    if (isset($output[0]) and strpos($output[0], 'nmap')) {
-        $nmap_installed = 'y';
-    } else {
-        $output[0] = '';
-    }
-    if ($nmap_installed == 'n') {
-        if (file_exists('/usr/local/bin/nmap')) {
-            $nmap_installed = 'y';
-        }
-    }
-}
-
-$nmap_warning = '';
-if ($nmap_installed == 'n') {
-    if (php_uname('s') == "Windows NT") {
-        $nmap_warning = "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
-    } else {
-        $nmap_warning = "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
-    }
-}
-if ($nmap_warning != '') {
-    echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $nmap_warning . '</div>';
-}
 $discovery_scan_options = new stdClass();
 $discovery_scan_options->attributes = new stdClass();
 $discovery_scan_options->attributes->name = '';
@@ -83,7 +43,7 @@ foreach ($this->response->included as $include) {
     }
 }
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -94,14 +54,14 @@ foreach ($this->response->included as $include) {
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo $item->attributes->id; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $item->attributes->name ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -117,7 +77,7 @@ foreach ($this->response->included as $include) {
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                        <option value="<?php echo $org->id; ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo $org->attributes->name; ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -133,21 +93,21 @@ foreach ($this->response->included as $include) {
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo $item->attributes->description; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="type" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="type" name="type" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="type" name="type" value="<?php echo $item->attributes->type; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="other.nmap.discovery_scan_option_id" class="col-sm-3 control-label"><?php echo __('Discovery Options'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.nmap.discovery_scan_option_id" name="other.nmap.discovery_scan_option_id" value="<?php echo htmlspecialchars($discovery_scan_options->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.nmap.discovery_scan_option_id" name="other.nmap.discovery_scan_option_id" value="<?php echo $discovery_scan_options->attributes->name; ?>" disabled>
                         </div>
                     </div>
 
@@ -156,7 +116,7 @@ foreach ($this->response->included as $include) {
                     <div class="form-group">
                         <label for="other.subnet" class="col-sm-3 control-label"><?php echo __('Subnet'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.subnet" name="other.subnet" value="<?php echo htmlspecialchars($item->attributes->other->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.subnet" name="other.subnet" value="<?php echo $item->attributes->other->subnet; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_other.subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -170,7 +130,7 @@ foreach ($this->response->included as $include) {
                     <div class="form-group">
                         <label for="other.ad_server" class="col-sm-3 control-label"><?php echo __('AD Server'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" value="<?php echo htmlspecialchars($item->attributes->other->ad_server, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" value="<?php echo $item->attributes->other->ad_server; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_other.ad_server" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_server"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -181,7 +141,7 @@ foreach ($this->response->included as $include) {
                     <div class="form-group">
                         <label for="other.ad_domain" class="col-sm-3 control-label"><?php echo __('AD Domain'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" value="<?php echo htmlspecialchars($item->attributes->other->ad_domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" value="<?php echo $item->attributes->other->ad_domain; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_other.ad_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -199,7 +159,7 @@ foreach ($this->response->included as $include) {
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                        <option value="<?php echo $org->id; ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo $org->attributes->name; ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -220,7 +180,7 @@ foreach ($this->response->included as $include) {
                                 <?php
                                 foreach ($this->response->included as $location) {
                                     if ($location->type == 'locations') { ?>
-                                        <option value="<?php echo intval($location->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo htmlspecialchars($location->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                        <option value="<?php echo $location->id; ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo $location->attributes->name; ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -236,45 +196,45 @@ foreach ($this->response->included as $include) {
                     <div class="form-group">
                         <label for="status" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="status" name="status" value="<?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="status" name="status" value="<?php echo $item->attributes->status; ?>" disabled>
                         </div>
                     </div>
                     <br />
                     <div class="form-group">
                         <label for="updated_on" class="col-sm-3 control-label"><?php echo __('Started On'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->last_run, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo $item->attributes->last_run; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="last_finished" class="col-sm-3 control-label"><?php echo __('Completed On'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="last_finished" name="last_finished" value="<?php echo htmlspecialchars($item->attributes->last_finished, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="last_finished" name="last_finished" value="<?php echo $item->attributes->last_finished; ?>" disabled>
                         </div>
                     </div>
                     <br />
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo $item->attributes->edited_by; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo $item->attributes->edited_date; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                            <a class="btn btn-sm btn-primary" id="execute" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute"><?php echo __('Execute'); ?></a>
+                            <a class="btn btn-sm btn-primary" id="execute" href="<?php echo $item->id; ?>?action=execute"><?php echo __('Execute'); ?></a>
                             <?php if ($item->attributes->status == 'running') { ?>
                             &nbsp;
-                            <a class="btn btn-sm btn-success" id="execute" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo __('Refresh to Update Logs'); ?></a>
+                            <a class="btn btn-sm btn-success" id="execute" href="<?php echo $item->id; ?>"><?php echo __('Refresh to Update Logs'); ?></a>
                             <?php } ?>
                         </div>
                     </div>
@@ -325,17 +285,16 @@ foreach ($this->response->included as $include) {
                 <?php foreach ($this->response->included as $item) {
                     if ($item->type == 'discovery_log') { ?>
                 <tr>
-                    <td style="white-space: nowrap;"><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->ip, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?>
+                    <td style="white-space: nowrap;"><?php echo $item->attributes->timestamp; ?></td>
+                    <td class="text-center"><?php echo $item->id; ?></td>
+                    <td class="text-center"><?php echo $item->attributes->ip; ?></td>
+                    <td class="text-center"><?php echo $item->attributes->command_status; ?></td>
+                    <td><?php echo $item->attributes->message; ?>
                     <?php if (!empty($item->attributes->command)) { ?>
-                        <br /><strong><em>Command: </em></strong><code><?php echo htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET)?></code>
+                        <br /><strong><em>Command: </em></strong><code><?php echo $item->attributes->command; ?></code>
                     <?php } ?>
                     <?php if (!empty($item->attributes->command_output)) {
                         $output = $item->attributes->command_output;
-                        $output = str_replace("\",", "\", ", $output);
                         $output = str_replace("\n", "<br />", $output); ?>
                         <br /><strong><em>Output: </em></strong><span class="output"><?php echo $output ?></span>
                     <?php } ?>

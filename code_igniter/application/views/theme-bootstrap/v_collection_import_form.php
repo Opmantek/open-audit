@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -176,8 +176,8 @@ $example = '<p>Below is an example of the required csv format.</p>
 
 
 ?>
-<form action="<?php echo htmlspecialchars( $this->response->meta->collection , REPLACE_FLAGS, CHARSET); ?>/import" method="post" enctype="multipart/form-data">
-    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token , REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
+<form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
@@ -253,10 +253,10 @@ $example = '<p>Below is an example of the required csv format.</p>
                         foreach ($item->attributes->columns as $column) {
                             ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($column->name, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->type, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->default, REPLACE_FLAGS, CHARSET); ?></td>
-                                <td><?php echo htmlspecialchars($column->max_length, REPLACE_FLAGS, CHARSET); ?></td>
+                                <td><?php echo $column->name; ?></td>
+                                <td><?php echo $column->type; ?></td>
+                                <td><?php echo $column->default; ?></td>
+                                <td><?php echo $column->max_length; ?></td>
                                 <?php
                                 if (!empty($column->primary_key)) {
                                     echo "<td>true</td>\n";
@@ -266,7 +266,7 @@ $example = '<p>Below is an example of the required csv format.</p>
                                 ?>
                                 <?php
                                 if ($column->type == 'enum') {
-                                    echo "<td class=\"wrap\">" . htmlspecialchars(str_replace(",", ", ", $column->values), REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                    echo "<td class=\"wrap\">" . str_replace(",", ", ", $column->values) . "</td>\n";
                                 } else {
                                     echo "<td></td>\n";
                                 }

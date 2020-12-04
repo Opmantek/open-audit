@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.4.1
+* @version   GIT: Open-AudIT_3.5.2
 * @link      http://www.open-audit.org
 */
 
@@ -330,6 +330,7 @@ class M_credentials extends MY_Model
         $dictionary->sentence = 'Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.';
         $dictionary->marketing = '<p>Credentials are used to access devices.<br /><br />The only supplied credential is that of SNMP public.<br /><br />Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br /></p>';
         $dictionary->about = '<p>Credentials are used to access devices.<br /><br />The only supplied credential is that of SNMP public.<br /><br />Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->product = 'community';
         $dictionary->notes = '<p>Credentials are encrypted when stored in the database.<br /><br />When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br /><br />SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br /><br />For ease of use, Windows passwords should not contain a \' or ". This is a remote WMI limitation, not an Open-AudIT limitation.<br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;

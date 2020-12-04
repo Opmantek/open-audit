@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   GIT: Open-AudIT_3.4.1
+ * @version   GIT: Open-AudIT_3.5.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -70,8 +70,8 @@ $labels = '[' . $labels . ']';
 <script type="text/javascript" language="javascript">
 $(document).ready(function(){
     new Chartist.Line('.ct-chart', {
-        labels: <?php echo htmlspecialchars( $labels, REPLACE_FLAGS, CHARSET); ?>,
-        series: <?php echo htmlspecialchars( $series, REPLACE_FLAGS, CHARSET); ?>
+        labels: <?php echo htmlspecialchars($labels, REPLACE_FLAGS, CHARSET); ?>,
+        series: <?php echo htmlspecialchars($series, REPLACE_FLAGS, CHARSET); ?>
         }, {
             axisX: {
                 type: Chartist.AutoScaleAxis,
