@@ -24,7 +24,17 @@ $config['microtime'] = microtime(true);
 // $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 
 if (isset($_SERVER['HTTP_HOST'])) {
-    $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? 'https' : 'http';
+	// 
+	$is_secure = false;
+	if( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ) {
+		$is_secure = true;
+	} elseif (!empty($_SERVER['HTTPS_X_FORWARDED_PROTO']) && $_SERVER['HTTPS_X_FORWARDED_PROTO'] === 'https') {
+		$is_secure = true;	
+	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
+		$is_secure = true;
+	}
+	$config['base_url'] = $is_secure ? 'https' : 'http';
+    // $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? 'https' : 'http';
     $config['base_url'] .= '://'.$_SERVER['HTTP_HOST'];
     // $config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
     $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
