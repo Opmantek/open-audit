@@ -336,9 +336,9 @@ class M_integrations extends MY_Model
         // Should we populate our devices from the external source?
         if ($integration->populate_from_remote === 'y') {
             $devices = external_collection($integration);
-            foreach ($devices as $device) {
+            foreach ($devices as $external_device) {
 
-                $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Device inbound started " . @$devices[$i]->name . "', '', '', 0, '')";
+                $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Device inbound started " . @$external_device->name . "', '', '', 0, '')";
                 $data = array($id);
                 $this->db->query($sql, $data);
 
@@ -348,6 +348,7 @@ class M_integrations extends MY_Model
                 $external_device->id = $CI->m_device->match($parameters);
 
                 if ( ! empty($external_device->id)) {
+                    # we have this device - combine and update
                     $internal_device = $this->m_devices->read($external_device->id);
                     $device = $this->combine_devices($internal_device, $external_device, $rules);
                     $this->m_devices->update($device);
@@ -362,6 +363,7 @@ class M_integrations extends MY_Model
                     $data = array($id);
                     $this->db->query($sql, $data);
                 } else {
+                    # we do not have this device - create
                     $this->m_devices->create($device);
                 }
                 $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->id) . ", NOW(), 5, 'notice', 'Device inbound completed " . @$devices[$i]->name . "', '', 0, '')";
