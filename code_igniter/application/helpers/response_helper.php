@@ -695,6 +695,8 @@ if ( ! function_exists('response_get_filter')) {
         $log->status = 'parsing';
         $log->summary = 'get filter';
 
+        $instance = & get_instance();
+
         $reserved_words = response_valid_reserved_words();
         $filter = array();
 
@@ -718,20 +720,23 @@ if ( ! function_exists('response_get_filter')) {
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
                     $query->value = '%' . substr($query->value, 8) . '%';
                     $query->operator = 'not like';
-                    $query->value = str_replace('"', '\"', $query->value);
+                    // $query->value = str_replace('"', '\"', $query->value);
+                    $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 if (strtolower(substr($query->value, 0, 5)) === '!like') {
                     $query->value = '%' . substr($query->value, 5) . '%';
                     $query->operator = 'not like';
-                    $query->value = str_replace('"', '\"', $query->value);
+                    // $query->value = str_replace('"', '\"', $query->value);
+                    $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 $operator = substr($query->value, 0, 4);
                 if (strtolower($operator) === 'like') {
                     $query->value = '%' . substr($query->value, 4) . '%';
                     $query->operator = $operator;
-                    $query->value = str_replace('"', '\"', $query->value);
+                    // $query->value = str_replace('"', '\"', $query->value);
+                    $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value)-1) {
@@ -753,8 +758,9 @@ if ( ! function_exists('response_get_filter')) {
                         foreach ($temp as $value) {
                             $value = trim($value);
                             $value = trim($value, '"\' ');
-                            $value = str_replace('\"', '"', $value);
-                            $value = str_replace('"', '\"', $value);
+                            // $value = str_replace('\"', '"', $value);
+                            // $value = str_replace('"', '\"', $value);
+                            $value = mysqli_real_escape_string($instance->db->conn_id, $value);
                             $query->value .= '"' . $value . '",';
                         }
                         $query->value = trim($query->value, ',');
@@ -772,8 +778,9 @@ if ( ! function_exists('response_get_filter')) {
                         foreach ($temp as $value) {
                             $value = trim($value);
                             $value = trim($value, '"\' ');
-                            $value = str_replace('\"', '"', $value);
-                            $value = str_replace('"', '\"', $value);
+                            // $value = str_replace('\"', '"', $value);
+                            // $value = str_replace('"', '\"', $value);
+                            $value = mysqli_real_escape_string($instance->db->conn_id, $value);
                             $query->value .= '"' . $value . '",';
                         }
                         $query->value = trim($query->value, ',');
@@ -785,14 +792,16 @@ if ( ! function_exists('response_get_filter')) {
                 if ($operator === '!=' OR $operator === '>=' OR $operator === '<=') {
                     $query->value = substr($query->value, 2);
                     $query->operator = $operator;
-                    $query->value = str_replace('"', '\"', $query->value);
+                    // $query->value = str_replace('"', '\"', $query->value);
+                    $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 $operator = substr($query->value, 0, 1);
                 if ($operator === '=' OR $operator === '>' OR $operator === '<') {
                     $query->value = substr($query->value, 1);
                     $query->operator = $operator;
-                    $query->value = str_replace('"', '\"', $query->value);
+                    // $query->value = str_replace('"', '\"', $query->value);
+                    $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
@@ -913,6 +922,8 @@ if ( ! function_exists('response_get_groupby')) {
                     $groupby = '';
                     $log->detail = "Invalid groupby supplied ({$groupby}), removed.";
                     stdlog($log);
+                } else {
+                    $groupby = $temp[0] . '.' . $temp[1];
                 }
             } else {
                 $temp = $collection;
@@ -1777,11 +1788,13 @@ if ( ! function_exists('response_get_properties')) {
                     if ( ! $instance->db->field_exists($temp[1], $temp[0])) {
                         $log->detail = 'Invalid property supplied (' . htmlentities($properties[$i]) . '), removed.';
                         unset($properties[$i]);
+                        stdlog($log);
                     }
                 } else {
                     if ( ! $instance->db->field_exists($properties[$i], $table)) {
                         $log->detail = 'Invalid property supplied (' . htmlentities($properties[$i]) . '), removed.';
                         unset($properties[$i]);
+                        stdlog($log);
                     }
                 }
             }
@@ -1857,7 +1870,7 @@ if ( ! function_exists('response_get_sort')) {
                 }
                 if ( ! $instance->db->field_exists($temp[1], $temp[0])) {
                     $log->severity = 5;
-                    $log->summary = 'Invalid sort attribute supplied (' . $properties[$i] . '), removed.';
+                    $log->summary = 'Invalid sort attribute supplied (' . htmlentities($properties[$i]) . '), removed.';
                     unset($properties[$i]);
                 } else {
                     if (substr($properties[$i], 0, 1) === '-') {
