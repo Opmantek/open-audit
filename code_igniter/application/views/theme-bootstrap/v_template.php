@@ -164,7 +164,7 @@ unset($this->response->meta->sql);
                 $CI =& get_instance();
                 $times = $CI->db->query_times;
                  foreach ($CI->db->queries as $key => $query) {
-                     echo __('Query').": " . str_replace("\n", " ", $query) . "\n";
+                     echo __('Query').": " . htmlentities(str_replace("\n", " ", $query)) . "\n";
                      echo __('Time').": " . $times[$key] . "\n\n";
                  }
             ?>
@@ -251,5 +251,5 @@ function json_format($json)
         }
     }
 
-    return $new_json;
+    return htmlentities($new_json);
 }
