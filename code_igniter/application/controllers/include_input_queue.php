@@ -182,7 +182,7 @@ if ($queue == 'scans' and empty($id)) {
                     # run the script and continue (do not wait for result)
                     if (php_uname('s') != 'Windows NT') {
                         $instance = '';
-                        if ($this->db->database != 'openaudit') {
+                        if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database != 'openaudit') {
                             $instance = '/' . $this->db->database;
                         }
                         $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost' . $instance . '/open-audit/index.php/input/queue/scans/' . $id . ' method=post > /dev/null 2>&1 &';
