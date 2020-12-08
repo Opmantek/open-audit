@@ -139,7 +139,7 @@ class M_queue extends MY_Model
     {
         if (php_uname('s') !== 'Windows NT') {
             $instance = '';
-            if ($this->db->database !== 'openaudit') {
+            if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database !== 'openaudit') {
                 $instance = '/' . $this->db->database;
             }
             $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
