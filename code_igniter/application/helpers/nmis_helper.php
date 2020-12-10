@@ -146,14 +146,30 @@ if (! function_exists('external_collection')) {
 			$this->db->query($sql);
 			return false;
 		}
-		$return = false;
-$return = array();
-$return[0] = new stdClass();
-$return[0]->name = 'new thing';
-$return[0]->ip = '1.2.3.4';
-$return[0]->type = 'router';
-$return[0]->external_identifier = '1234567890';
+
+// $return = array();
+// $return[0] = new stdClass();
+// $return[0]->name = 'new thing';
+// $return[0]->ip = '1.2.3.4';
+// $return[0]->type = 'router';
+// $return[0]->external_identifier = '1234567890';
+// return $return;
+
+
+		$command = '/usr/local/nmis9/node_admin.pl act=export keep_ids=1';
+		$command = 'cat /tmp/nodes.json';
+		exec($command, $output, $return_var);
+		if ($output = json_decode($output)) {
+			# success - a list of nodes
+			$return = $output;
+		} else {
+			# error - something went awry
+			$return = false;
+		}
 		return $return;
+
+
+
 	}
 }
 /* End of file nmis_helper.php */

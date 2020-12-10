@@ -223,11 +223,11 @@ class M_integrations extends MY_Model
             // populate the device list
             // $devices = $this->m_queries->execute(888);
 
-            // retrieve our DevicIDs, then populate their attributes
-            $group = $this->m_groups->read(12);
-            $sql = str_replace('WHERE @filter', 'WHERE system.org_id IN (' . $orgs . ')', $group[0]->attributes->sql);
-            $query = $this->db->query($sql);
-            $device_ids = $query->result();
+// retrieve our DeviceIDs, then populate their attributes
+$group = $this->m_groups->read(12);
+$sql = str_replace('WHERE @filter', 'WHERE system.org_id IN (' . $orgs . ')', $group[0]->attributes->sql);
+$query = $this->db->query($sql);
+$device_ids = $query->result();
             $my_ids = array();
             foreach ($device_ids as $device_id) {
                 $my_ids[] = intval($device_id->id);
@@ -337,6 +337,8 @@ class M_integrations extends MY_Model
         if ($integration->populate_from_remote === 'y') {
             $devices = external_collection($integration);
             foreach ($devices as $external_device) {
+
+                $external_device = format_ext_to_int($external_device);
 
                 $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Device inbound started " . @$external_device->name . "', '', '', 0, '')";
                 $data = array($id);
@@ -467,6 +469,22 @@ class M_integrations extends MY_Model
                     $device->{$rule->local_field} = $this->config->config['timestamp'];
                     break;
 
+                case 'int_to_bool':
+                    if ( ! empty($device->{$rule->local_field})) {
+                        $device->{$rule->local_field} = true;
+                    } else {
+                        $device->{$rule->local_field} = false;
+                    }
+                    break;
+
+                case 'int_to_yn':
+                    if ( ! empty($device->{$rule->local_field})) {
+                        $device->{$rule->local_field} = 'y';
+                    } else {
+                        $device->{$rule->local_field} = 'n';
+                    }
+                    break;
+
                 case 'date':
                     switch ($rule->remote_format) {
                         case 'date_Y-M-D':
@@ -538,6 +556,22 @@ class M_integrations extends MY_Model
 
                 case 'datetime_now':
                     $device->{$rule->remote_field} = $this->config->config['timestamp'];
+                    break;
+
+                case 'int_to_bool':
+                    if ( ! empty($device->{$rule->remote_field})) {
+                        $device->{$rule->remote_field} = true;
+                    } else {
+                        $device->{$rule->remote_field} = false;
+                    }
+                    break;
+
+                case 'int_to_yn':
+                    if ( ! empty($device->{$rule->remote_field})) {
+                        $device->{$rule->remote_field} = 'y';
+                    } else {
+                        $device->{$rule->remote_field} = 'n';
+                    }
                     break;
 
                 case 'date':
@@ -647,6 +681,14 @@ class M_integrations extends MY_Model
         $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->product = 'enterprise';
         $dictionary->notes = '<p>Our default query "Integration Default for NMIS" and custom query selects devices that have a their nmis_manage attribute set to "y". If you prefer to change the custom query, we recommend using the fields as provided in the custom query and changing the WHERE section only. The retrieved fields are required for transforming the attribute data from Open-AudIT to NMIS.';
+
+        $dictionary->system_fields = $CI->db->list_fields('system');
+        $dictionary->system_fields[] = '';
+        sort($dictionary->system_fields);
+        $dictionary->remote_format = array('string', 'int', 'bool', 'date_YMD', 'date_MDY', 'date_DMY');
+        sort($dictionary->remote_format);
+        $dictionary->transform = array('', 'string', 'int', 'bool', 'capitalise', 'lower', 'upper', 'date', 'date_now', 'date_time', 'datetime_now', 'int_to_bool', 'int_to_yn', 'yn_to_int', 'yn_to_bool');
+        sort($dictionary->transform);
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;
