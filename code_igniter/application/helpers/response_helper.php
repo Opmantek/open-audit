@@ -1793,14 +1793,22 @@ if ( ! function_exists('response_get_properties')) {
             for ($i=0; $i < count($properties); $i++) {
                 if (strpos($properties[$i], '.') !== false) {
                     $temp = explode('.', $properties[$i]);
-                    if ( ! $instance->db->field_exists($temp[1], $temp[0])) {
-                        $log->detail = 'Invalid property supplied (' . htmlentities($properties[$i]) . '), removed.';
+                    if ( ! $instance->db->table_exists($temp[0])) {
+                        $log->detail = 'Invalid property supplied (' . htmlentities(mysqli_real_escape_string($instance->db->conn_id, $properties[$i])) . '), removed.';
+                        unset($properties[$i]);
+                        stdlog($log);
+                    } else if ( ! $instance->db->field_exists($temp[1], $temp[0])) {
+                        $log->detail = 'Invalid property supplied (' . htmlentities(mysqli_real_escape_string($instance->db->conn_id, $properties[$i])) . '), removed.';
                         unset($properties[$i]);
                         stdlog($log);
                     }
                 } else {
-                    if ( ! $instance->db->field_exists($properties[$i], $table)) {
-                        $log->detail = 'Invalid property supplied (' . htmlentities($properties[$i]) . '), removed.';
+                    if ( ! $instance->db->table_exists($table)) {
+                        $log->detail = 'Invalid property supplied (' . htmlentities(mysqli_real_escape_string($instance->db->conn_id, $properties[$i])) . '), removed.';
+                        unset($properties[$i]);
+                        stdlog($log);
+                    } else if ( ! $instance->db->field_exists($properties[$i], $table)) {
+                        $log->detail = 'Invalid property supplied (' . htmlentities(mysqli_real_escape_string($instance->db->conn_id, $properties[$i])) . '), removed.';
                         unset($properties[$i]);
                         stdlog($log);
                     }
