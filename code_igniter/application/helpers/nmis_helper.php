@@ -37,6 +37,74 @@ if (!defined('BASEPATH')) {
 * @version   GIT: Open-AudIT_3.4.1
 * @link      http://www.open-audit.org
  */
+
+
+
+if (! function_exists('external_defaults')) {
+	/**
+	 * [external_defaults description]
+	 * @return array An arrary of default items and values.
+	 */
+	function external_defaults_nmis()
+	{
+		$defaults = array();
+
+		$defaults[] = (object) ['local_field' => 'system.manage_in_nmis', 'remote_field' => 'activated.nmis', 'remote_format' => 'int', 'authoritive_source' => 'local', 'transform' => 'yn_to_int', 'empty' => 'use_default', 'default_value' => 1];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.active', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 1];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.authkey', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'credentials.authentication_passphrase', 'remote_field' => 'configuration.authpass', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'credentials.authentication_protocol', 'remote_field' => 'configuration.authprotocol', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'system.nmis_business_service', 'remote_field' => 'configuration.business_service', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.collect', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 1];
+
+		$defaults[] = (object) ['local_field' => 'credentials.community', 'remote_field' => 'configuration.community', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'system.nmis_customer', 'remote_field' => 'configuration.customer', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'system.nmis_group', 'remote_field' => 'configuration.group', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'open-audit'];
+
+		$defaults[] = (object) ['local_field' => 'system.ip', 'remote_field' => 'configuration.host', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => '', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'location.name', 'remote_field' => 'configuration.location', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => '', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.model', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'automatic'];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.netType', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'wan'];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.notes', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.ping', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => '1'];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.port', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => '161'];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.privkey', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'credentials.privacy_passphrase', 'remote_field' => 'configuration.privpass', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'credentials.privacy_protocol', 'remote_field' => 'configuration.privprotocol', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'system.nmis_role', 'remote_field' => 'configuration.roleType', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'core'];
+
+		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.threshold', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => '0'];
+
+		$defaults[] = (object) ['local_field' => 'credentials.security_name', 'remote_field' => 'configuration.username', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'credentials.version', 'remote_field' => 'configuration.version', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'snmpv2'];
+
+		$defaults[] = (object) ['local_field' => 'system.name', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => '', 'default_value' => ''];
+
+		$defaults[] = (object) ['local_field' => 'system.omk_uuid', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => '', 'default_value' => ''];
+
+		return $defaults;
+	}
+}
+
 if (! function_exists('external_search')) {
 	/**
 	 * Search for an external device using $device parameters

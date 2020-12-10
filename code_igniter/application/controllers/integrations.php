@@ -192,6 +192,17 @@ class Integrations extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         $this->load->model('m_queries');
         $this->response->included = array_merge($this->response->included, $this->m_queries->collection($this->user->id));
+
+        $this->response->defaults = new stdClass();
+        $this->load->model('m_attributes');
+        $integrations = $this->m_attributes->collection($this->user->id);
+        foreach ($integrations as $integration) {
+            if ($integration->attributes->resource === 'integrations') {
+                $this->load->helper($integration->attributes->value);
+                $function = 'external_defaults_' . $integration->attributes->value;
+                $this->response->defaults->{$integration->attributes->value} = $function();
+            }
+        }
         output($this->response);
     }
 
