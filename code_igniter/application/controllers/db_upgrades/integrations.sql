@@ -25,6 +25,7 @@ CREATE TABLE `integrations` (
   `populate_from_local` enum('y', 'n') NOT NULL DEFAULT 'y',
   `populate_from_remote` enum('y', 'n') NOT NULL DEFAULT 'n',
   `query_id` int(10) unsigned DEFAULT NULL,
+  `group_id` int(10) unsigned DEFAULT NULL,
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `status` varchar(45) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
