@@ -46,7 +46,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class Integrations extends MY_Controller
+class Integrations_rules extends MY_Controller
 {
     /**
     * Constructor
@@ -93,15 +93,6 @@ class Integrations extends MY_Controller
     public function create()
     {
         $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
-        // create rules
-        $type = $this->response->meta->received_data->attributes->type;
-        if ( ! empty($this->response->meta->received_data->attributes->integrations_rules->{$type})) {
-            foreach ($this->response->meta->received_data->attributes->integrations_rules->{$type} as $rule) {
-                $rule->integrations_id = $this->response->meta->id;
-                $rule->org_id = $this->response->meta->received_data->attributes->org_id;
-                $this->m_integrations_rules->create($rule);
-            }
-        }
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         $this->response->meta->format = 'json';
         output($this->response);
@@ -117,11 +108,15 @@ class Integrations extends MY_Controller
     {
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         if ( ! empty($this->response->data) && is_array($this->response->data)) {
+            if ( ! empty($this->response->data[0]->attributes->local_field)) {
+                $this->response->data[0]->attributes->name = $this->response->data[0]->attributes->local_field;
+            } else if ( ! empty($this->response->data[0]->attributes->remote_field)) {
+                $this->response->data[0]->attributes->name = $this->response->data[0]->attributes->remote_field;
+            }
             $this->response->meta->total = 1;
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            $this->response->included = array_merge($this->response->included, $this->m_integrations->read_sub_resource($this->response->meta->id));
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {
@@ -178,7 +173,7 @@ class Integrations extends MY_Controller
         // }
         $this->m_integrations->execute($this->response->meta->id);
         $this->response->meta->format = 'json';
-        #output($this->response);
+        output($this->response);
     }
 
     /**
@@ -206,8 +201,6 @@ class Integrations extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         $this->load->model('m_queries');
         $this->response->included = array_merge($this->response->included, $this->m_queries->collection($this->user->id));
-        $this->load->model('m_groups');
-        $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
 
         $this->response->defaults = new stdClass();
         $this->load->model('m_attributes');

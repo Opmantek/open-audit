@@ -49,29 +49,29 @@ if (! function_exists('external_defaults')) {
 	{
 		$defaults = array();
 
-		$defaults[] = (object) ['local_field' => 'system.manage_in_nmis', 'remote_field' => 'activated.nmis', 'remote_format' => 'int', 'authoritive_source' => 'local', 'transform' => 'yn_to_int', 'empty' => 'use_default', 'default_value' => 1];
+		$defaults[] = (object) ['local_field' => 'system.nmis_manage', 'remote_field' => 'activated.nmis', 'remote_format' => 'int', 'authoritive_source' => 'local', 'transform' => 'yn_to_int', 'empty' => 'use_default', 'default_value' => 1];
 
 		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.active', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 1];
 
 		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.authkey', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
-		$defaults[] = (object) ['local_field' => 'credentials.authentication_passphrase', 'remote_field' => 'configuration.authpass', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'credentials.snmpv3.authentication_passphrase', 'remote_field' => 'configuration.authpass', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
-		$defaults[] = (object) ['local_field' => 'credentials.authentication_protocol', 'remote_field' => 'configuration.authprotocol', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'credentials.snmpv3.authentication_protocol', 'remote_field' => 'configuration.authprotocol', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => 'system.nmis_business_service', 'remote_field' => 'configuration.business_service', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.collect', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 1];
 
-		$defaults[] = (object) ['local_field' => 'credentials.community', 'remote_field' => 'configuration.community', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'credentials.snmp.community', 'remote_field' => 'configuration.community', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => 'system.nmis_customer', 'remote_field' => 'configuration.customer', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => 'system.nmis_group', 'remote_field' => 'configuration.group', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'open-audit'];
 
-		$defaults[] = (object) ['local_field' => 'system.ip', 'remote_field' => 'configuration.host', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => '', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'system.ip', 'remote_field' => 'configuration.host', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
 
-		$defaults[] = (object) ['local_field' => 'location.name', 'remote_field' => 'configuration.location', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => '', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'locations.name', 'remote_field' => 'configuration.location', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.model', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'automatic'];
 
@@ -85,21 +85,21 @@ if (! function_exists('external_defaults')) {
 
 		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.privkey', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
-		$defaults[] = (object) ['local_field' => 'credentials.privacy_passphrase', 'remote_field' => 'configuration.privpass', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'credentials.snmpv3.privacy_passphrase', 'remote_field' => 'configuration.privpass', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
-		$defaults[] = (object) ['local_field' => 'credentials.privacy_protocol', 'remote_field' => 'configuration.privprotocol', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'credentials.snmpv3.privacy_protocol', 'remote_field' => 'configuration.privprotocol', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => 'system.nmis_role', 'remote_field' => 'configuration.roleType', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'core'];
 
 		$defaults[] = (object) ['local_field' => '', 'remote_field' => 'configuration.threshold', 'remote_format' => 'int', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'use_default', 'default_value' => '0'];
 
-		$defaults[] = (object) ['local_field' => 'credentials.security_name', 'remote_field' => 'configuration.username', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'credentials.snmpv3.security_name', 'remote_field' => 'configuration.username', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'set_to_blank', 'default_value' => ''];
 
 		$defaults[] = (object) ['local_field' => 'credentials.version', 'remote_field' => 'configuration.version', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'use_default', 'default_value' => 'snmpv2'];
 
-		$defaults[] = (object) ['local_field' => 'system.name', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => '', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'system.name', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
 
-		$defaults[] = (object) ['local_field' => 'system.omk_uuid', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => '', 'default_value' => ''];
+		$defaults[] = (object) ['local_field' => 'system.omk_uuid', 'remote_field' => 'uuid', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
 
 		return $defaults;
 	}
@@ -114,11 +114,14 @@ if (! function_exists('external_search')) {
 	 */
 	function external_search($device, $integration)
 	{
-		if (empty($device) OR empty($integration)) {
-			$instance = & get_instance();
-			$sql = "INSERT INTO integrations_log values (null, NOW(), '" . $instance->config->config['microtime'] . "', 'system', 4, 'error', '" . getmypid() . "', '', '" . php_uname('n') . "', '127.0.0.1', 'integrations', 'execute', 'internal error', 'No device &/or integration object passed to nmis_helper::external_search.', '')";
-			$instance->db->query($sql);
+		$timer_start = microtime(true);
+		$instance = & get_instance();
+		if (empty($device) && ! empty($integration)) {
+			$sql = '/* nmis_helper::external_search */ ' . "INSERT INTO integrations_log values (null, ?, 0, NOW(), 3, 'error', 'No device object passed to nmis_helper::external_search.', '', 'fail', 0, '')";
+			$data = array($integration->id);
+			$instance->db->query($sql, $data);
 			return false;
+
 		}
 		$return = false;
 		// if ( ! empty($device->external_identifier)) {
@@ -129,10 +132,24 @@ if (! function_exists('external_search')) {
 		//     search for the device using our known attributes
 		// }
 
-$return = new stdClass();
-$return->name = 'hel';
-$return->ip = '192.168.88.73';
-$return->external_identifier = '12345678901';
+		$return = new stdClass();
+		$return->name = 'router';
+		$return->ip = '192.168.1.1';
+		$return->external_identifier = '12345678901';
+
+		if ( ! empty($return)) {
+			# success - a list of nodes
+			$status = 'success';
+			$details = 'Found device ' . $return->name;
+		} else {
+			# error - something went awry
+			$status = 'fail';
+			$details = 'Could not find device ' . $return->name;
+		}
+		$time_to_execute = (microtime(true) - $timer_start);
+		$sql = '/* nmis_helper::external_search */ ' . "INSERT INTO integrations_log values (null, ?, 0, NOW(), 5, 'notice', ?, 'nmis::external_search', ?, ?, ?)";
+		$data = array($integration->id, $details, $status, $time_to_execute, json_encode($return));
+		$instance->db->query($sql, $data);
 		return $return;
 	}
 }
@@ -146,10 +163,11 @@ if (! function_exists('external_update')) {
 	 */
 	function external_update($device, $integration)
 	{
-		if (empty($device) OR empty($integration)) {
-			$instance = & get_instance();
-			$sql = "INSERT INTO integrations_log values (null, NOW(), '" . $instance->config->config['microtime'] . "', 'system', 4, 'error', '" . getmypid() . "', '', '" . php_uname('n') . "', '127.0.0.1', 'integrations', 'execute', 'internal error', 'No device &/or integration object passed to nmis_helper::external_update.', '')";
-			$instance->db->query($sql);
+		$instance = & get_instance();
+		if (empty($device) && ! empty($integration)) {
+			$sql = '/* nmis_helper::external_update */ ' . "INSERT INTO integrations_log values (null, ?, 0, NOW(), 3, 'error', 'No device object passed to nmis_helper::external_update.', '', 'fail', 0, '')";
+			$data = array($integration->id);
+			$instance->db->query($sql, $data);
 			return false;
 		}
 		$return = false;
@@ -167,10 +185,11 @@ if (! function_exists('external_create')) {
 	 */
 	function external_create($device, $integration)
 	{
-		if (empty($device) OR empty($integration)) {
-			$instance = & get_instance();
-			$sql = "INSERT INTO integrations_log values (null, NOW(), '" . $instance->config->config['microtime'] . "', 'system', 4, 'error', '" . getmypid() . "', '', '" . php_uname('n') . "', '127.0.0.1', 'integrations', 'execute', 'internal error', 'No device &/or integration object passed to nmis_helper::external_delete.', '')";
-			$instance->db->query($sql);
+		$instance = & get_instance();
+		if (empty($device) && ! empty($integration)) {
+			$sql = '/* nmis_helper::external_create */ ' . "INSERT INTO integrations_log values (null, ?, 0, NOW(), 3, 'error', 'No device object passed to nmis_helper::external_create.', '', 'fail', 0, '')";
+			$data = array($integration->id);
+			$instance->db->query($sql, $data);
 			return false;
 		}
 		$return = false;
@@ -188,10 +207,11 @@ if (! function_exists('external_delete')) {
 	 */
 	function external_delete($device, $integration)
 	{
-		if (empty($device) OR empty($integration)) {
-			$instance = & get_instance();
-			$sql = "INSERT INTO integrations_log values (null, NOW(), '" . $instance->config->config['microtime'] . "', 'system', 4, 'error', '" . getmypid() . "', '', '" . php_uname('n') . "', '127.0.0.1', 'integrations', 'execute', 'internal error', 'No integration object passed to nmis_helper::external_delete.', '')";
-			$instance->db->query($sql);
+		$instance = & get_instance();
+		if (empty($device) && ! empty($integration)) {
+			$sql = '/* nmis_helper::external_delete */ ' . "INSERT INTO integrations_log values (null, ?, 0, NOW(), 3, 'error', 'No device object passed to nmis_helper::external_delete.', '', 'fail', 0, '')";
+			$data = array($integration->id);
+			$instance->db->query($sql, $data);
 			return false;
 		}
 		$return = false;
@@ -208,36 +228,30 @@ if (! function_exists('external_collection')) {
 	 */
 	function external_collection($integration)
 	{
+		$instance = & get_instance();
 		if (empty($integration)) {
-			$instance = & get_instance();
-			$sql = "INSERT INTO integrations_log values (null, NOW(), '" . $instance->config->config['microtime'] . "', 'system', 4, 'error', '" . getmypid() . "', '', '" . php_uname('n') . "', '127.0.0.1', 'integrations', 'execute', 'internal error', 'No integration object passed to nmis_helper::external_collection.', '')";
-			$this->db->query($sql);
 			return false;
 		}
-
-// $return = array();
-// $return[0] = new stdClass();
-// $return[0]->name = 'new thing';
-// $return[0]->ip = '1.2.3.4';
-// $return[0]->type = 'router';
-// $return[0]->external_identifier = '1234567890';
-// return $return;
-
-
-		$command = '/usr/local/nmis9/node_admin.pl act=export keep_ids=1';
-		$command = 'cat /tmp/nodes.json';
-		exec($command, $output, $return_var);
+		$command1 = '/usr/local/nmis9/node_admin.pl act=export keep_ids=1';
+		$command = 'cat /usr/local/open-audit/other/nodes.json';
+		exec($command, $output);
+		if (is_array($output)) {
+			$output = implode(' ', $output);
+		}
 		if ($output = json_decode($output)) {
 			# success - a list of nodes
+			$status = 'success';
 			$return = $output;
+			$output = '';
 		} else {
 			# error - something went awry
+			$status = 'fail';
 			$return = false;
 		}
+		$sql = '/* nmis_helper::external_collection */ ' . "INSERT INTO integrations_log values (null, ?, 0, NOW(), 5, 'notice', 'external_collection', ?, ?, 0, ?)";
+		$data = array($integration->id, $command1, $status, $output);
+		$instance->db->query($sql, $data);
 		return $return;
-
-
-
 	}
 }
 /* End of file nmis_helper.php */

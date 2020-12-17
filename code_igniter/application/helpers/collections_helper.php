@@ -195,6 +195,10 @@ if ( ! function_exists('mandatory_fields')) {
                 return(array('name','org_id','options'));
                 break;
 
+            case 'integrations_rules':
+                return(array('remote_field','authoritive_source'));
+                break;
+
             case 'ldap_servers':
                 return(array('name','org_id','lang','host','port','secure','domain','type','version','use_auth','use_roles','refresh'));
                 break;

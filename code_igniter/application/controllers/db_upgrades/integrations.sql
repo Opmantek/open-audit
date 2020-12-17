@@ -54,9 +54,10 @@ CREATE TABLE `integrations_log` (
 CREATE TABLE `integrations_rules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `integrations_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('create', 'update') NOT NULL DEFAULT 'create',
   `authoritive_source` enum('local', 'remote') NOT NULL DEFAULT 'local',
-  `empty` enum('set_to_blank', 'ignore') NOT NULL DEFAULT 'ignore',
+  `empty` enum('set_to_blank', 'ignore', 'use_default') NOT NULL DEFAULT 'ignore',
   `local_field` text NOT NULL,
   `remote_field` text NOT NULL,
   `remote_format` enum('', 'string', 'int', 'bool', 'date_YMD', 'date_MDY', 'date_DMY') NOT NULL DEFAULT 'string',
@@ -68,3 +69,9 @@ CREATE TABLE `integrations_rules` (
   KEY `integration_id` (`integrations_id`),
   CONSTRAINT `integrations_rules_integrations_id` FOREIGN KEY (`integrations_id`) REFERENCES `integrations` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+$sql = 'CREATE INDEX change_log_timestamp ON change_log (`timestamp`)';
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+

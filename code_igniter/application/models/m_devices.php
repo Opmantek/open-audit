@@ -1261,9 +1261,10 @@ class M_devices extends MY_Model
                 break;
 
             case 'cloud':
+            case 'integrations':
+            case 'nmis':
             case 'snmp':
             case 'ssh':
-            case 'nmis':
                 $weight = 3000;
                 break;
 

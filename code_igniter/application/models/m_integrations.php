@@ -68,8 +68,14 @@ class M_integrations extends MY_Model
      */
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->detail = json_encode($data);
+        stdlog($this->log);
+
         if ( ! empty($data->options) && ! is_string($data->options)) {
             $data->options = json_encode($data->options);
+        } else {
+            $data->options = '[]';
         }
         if ($id = $this->insert_collection('integrations', $data)) {
             return intval($id);
@@ -131,6 +137,20 @@ class M_integrations extends MY_Model
     }
 
     /**
+     * Read the associated items from the DB by ID
+     *
+     * @param  int $id The ID of the cloud
+     * @return array The array of cloud_logs associated with this cloud
+     */
+    public function read_sub_resource($id = 0)
+    {
+        $sql = 'SELECT * FROM integrations_rules WHERE integrations_id = ? ORDER BY `id`';
+        $result = $this->run_sql($sql, array($id));
+        $result = $this->format_data($result, 'integrations_rules');
+        return ($result);
+    }
+
+    /**
      * [queue description]
      * @param  int $id The ID of the integration to start
      * @return bool True on success, false on failure
@@ -171,9 +191,11 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
+
         $CI = & get_instance();
 
-        $my_int = $this->read(intval($id));
+        $id = intval($id);
+        $my_int = $this->read($id);
         $integration = $my_int[0]->{'attributes'};
         unset($my_int);
 
@@ -184,15 +206,15 @@ class M_integrations extends MY_Model
         $this->load->helper('security');
 
         // delete any logs
-        $sql = '/* m_integrations::queue */ ' . 'DELETE from integrations_log WHERE integrations_id = ?';
+        $sql = '/* m_integrations::execute */ ' . 'DELETE from integrations_log WHERE integrations_id = ?';
         $data = array($id);
         $this->db->query($sql, $data);
         // set the status and last run
-        $sql = '/* m_integrations::queue */ ' . "UPDATE `integrations` SET `last_run` = NOW(), `status` = 'running' WHERE id = ?";
+        $sql = '/* m_integrations::execute */ ' . "UPDATE `integrations` SET `last_run` = NOW(), `status` = 'running' WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
         // first log entry
-        $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Starting integration', '', '', 0, '')";
+        $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Starting integration', 'm_integrations::execute', '', 0, '')";
         $data = array($id);
         $this->db->query($sql, $data);
         // Get the associated rules
@@ -220,38 +242,46 @@ class M_integrations extends MY_Model
                 $CI->user = new stdClass();
             }
             $CI->user->org_list = $orgs;
-            // populate the device list
-            // $devices = $this->m_queries->execute(888);
 
-// retrieve our DeviceIDs, then populate their attributes
-$group = $this->m_groups->read(12);
-$sql = str_replace('WHERE @filter', 'WHERE system.org_id IN (' . $orgs . ')', $group[0]->attributes->sql);
-$query = $this->db->query($sql);
-$device_ids = $query->result();
             $my_ids = array();
-            foreach ($device_ids as $device_id) {
-                $my_ids[] = intval($device_id->id);
+            // retrieve our DeviceIDs
+            if ( ! empty($orgs)) {
+                $group = $this->m_groups->read($integration->group_id);
+                $sql = str_replace('WHERE @filter', 'WHERE system.org_id IN (' . $orgs . ')', $group[0]->attributes->sql);
+                $query = $this->db->query($sql);
+                $device_ids = $query->result();
+                foreach ($device_ids as $device_id) {
+                    $my_ids[] = intval($device_id->id);
+                }
+                $my_ids = implode(',', $my_ids);
             }
-            $my_ids = implode(',', $my_ids);
-            $fields= array();
-            foreach ($this->db->list_fields('system') as $field) {
-                $fields[] = 'system.' . $field . ' AS `system.' . $field . '`';
+
+
+
+            // Populate our selected devices attributes
+            $devices = array();
+            if ( ! empty($my_ids)) {
+                $fields = array();
+                foreach ($this->db->list_fields('system') as $field) {
+                    $fields[] = 'system.' . $field . ' AS `system.' . $field . '`';
+                }
+                foreach ($this->db->list_fields('orgs') as $field) {
+                    $fields[] = 'orgs.' . $field . ' AS `orgs.' . $field . '`';
+                }
+                foreach ($this->db->list_fields('locations') as $field) {
+                    $fields[] = 'locations.' . $field . ' AS `locations.' . $field . '`';
+                }
+                $fields = implode(', ', $fields);
+                $sql = '/* m_integrations::execute */ ' . "SELECT {$fields} FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id IN (${my_ids})";
+                $query = $this->db->query($sql);
+                $devices = $query->result();
             }
-            foreach ($this->db->list_fields('orgs') as $field) {
-                $fields[] = 'orgs.' . $field . ' AS `orgs.' . $field . '`';
-            }
-            foreach ($this->db->list_fields('locations') as $field) {
-                $fields[] = 'locations.' . $field . ' AS `locations.' . $field . '`';
-            }
-            $fields = implode(', ', $fields);
-            $sql = "SELECT {$fields} FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id IN (${my_ids})";
-            $query = $this->db->query($sql);
-            $devices = $query->result();
 
             // loop through the device list
             for ($i=0; $i < count($devices); $i++) {
-                $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'Device outbound started " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                $data = array($id);
+                $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                $details = 'Device outbound started ' . @$devices[$i]->{'system.name'};
+                $data = array($id, intval($devices[$i]->{'system.id'}), $details);
                 $this->db->query($sql, $data);
 
                 // Format our internal IP
@@ -260,7 +290,7 @@ $device_ids = $query->result();
                 }
 
                 // get any custom fields
-                $sql = 'SELECT field.value, fields.name from field LEFT JOIN fields ON (field.fields_id = fields.id) WHERE field.system_id = ?';
+                $sql = '/* m_integrations::execute */ ' . 'SELECT field.value, fields.name from field LEFT JOIN fields ON (field.fields_id = fields.id) WHERE field.system_id = ?';
                 $data = array($devices[$i]->{'system.id'});
                 $query = $this->db->query($sql, $data);
                 $result = $query->result();
@@ -284,107 +314,119 @@ $device_ids = $query->result();
                     }
                 }
 
-                #echo "<pre>\n" . $this->db->last_query() . "\n" . json_encode($result, JSON_PRETTY_PRINT) . "</pre>\n\n";
-                echo "<pre>\n" . json_encode($devices[$i], JSON_PRETTY_PRINT) . "</pre>\n\n"; exit;
                 $internal_device = $this->format_int_to_ext($devices[$i], $rules);
-                echo "<pre>\n" . json_encode($internal_device, JSON_PRETTY_PRINT) . "</pre>\n\n";
-
                 $external_device = external_search($internal_device, $integration);
 
                 if ($external_device === false) {
-                    $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'External did not find " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                    $data = array($id);
-                    $this->db->query($sql, $data);
                     $external_device = external_create($internal_device, $integration);
                     // NEED TO PASS BACK THE EXTERNAL IDENTIFIER and update local
                     if ($external_device !== false) {
-                        $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'External created " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                        $data = array($id);
+                        $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                        $details = 'External created ' . @$devices[$i]->{'system.name'};
+                        $data = array($id, intval($devices[$i]->{'system.id'}), $details);
                         $this->db->query($sql, $data);
                         // format the external result to an internal properties
-                        $internal_device = $this->format_ext_to_int($external_device);
+                        $internal_device = $this->format_ext_to_int($external_device, $rules);
                         // update our device, in particular the external identifier
-                        $this->m_devices->update($device);
+                        $this->m_devices->update($internal_device);
                     } else {
-                        $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'External could not create " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                        $data = array($id);
+                        $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                        $details = 'External could not create ' . @$devices[$i]->{'system.name'};
+                        $data = array($id, intval($devices[$i]->{'system.id'}), $details);
                         $this->db->query($sql, $data);
                     }
                 } else {
-                    $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'External found " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                    $data = array($id);
-                    $this->db->query($sql, $data);
                     $device = $this->combine_devices($internal_device, $external_device, $rules);
                     $test = external_update($device, $integration);
-                    $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'External could not update " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
+                    $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                    $details = 'External could not update ' . @$devices[$i]->{'system.name'};
                     if ($test) {
-                        $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'External updated " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
+                        $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                        $details = 'External updated ' . @$devices[$i]->{'system.name'};
                     }
-                    $data = array($id);
+                    $data = array($id, intval($devices[$i]->{'system.id'}), $details);
                     $this->db->query($sql, $data);
                     $this->m_devices->update($device);
-                    $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'Internal updated " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                    $data = array($id);
+                    $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                    $details = 'Internal updated ' . @$devices[$i]->{'system.name'};
+                    $data = array($id, intval($devices[$i]->{'system.id'}), $details);
                     $this->db->query($sql, $data);
                 }
-                $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->{'system.id'}) . ", NOW(), 5, 'notice', 'Device outbound completed " . @$devices[$i]->{'system.name'} . "', '', '', 0, '')";
-                $data = array($id);
+                $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, 'm_integrations::execute', '', 0, '')";
+                $details = 'Device outbound completed ' . @$devices[$i]->{'system.name'};
+                $data = array($id, intval($devices[$i]->{'system.id'}), $details);
                 $this->db->query($sql, $data);
             }
         }
 
         // Should we populate our devices from the external source?
         if ($integration->populate_from_remote === 'y') {
+            // Get the devices from the external system
             $devices = external_collection($integration);
+            // Loop through them
             foreach ($devices as $external_device) {
 
-                $external_device = format_ext_to_int($external_device);
-
-                $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Device inbound started " . @$external_device->name . "', '', '', 0, '')";
-                $data = array($id);
-                $this->db->query($sql, $data);
+                $external_device = $this->format_ext_to_int($external_device, $rules);
 
                 $parameters = new stdClass();
                 $parameters->details = $external_device;
                 $parameters->log = new stdClass();
                 $external_device->id = $CI->m_device->match($parameters);
 
+                $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, '', '', 0, '')";
+                $details = 'Device inbound started ' . @$external_device->name;
+                $data = array($id, @$external_device->id, $details);
+                $this->db->query($sql, $data);
+
                 if ( ! empty($external_device->id)) {
                     # we have this device - combine and update
                     $internal_device = $this->m_devices->read($external_device->id);
                     $device = $this->combine_devices($internal_device, $external_device, $rules);
                     $this->m_devices->update($device);
-                    $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->id) . ", NOW(), 5, 'notice', 'Internal updated " . @$devices[$i]->name . "', '', 0, '')";
-                    $data = array($id);
+                    $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, '', '', 0, '')";
+                    $details = 'Internal updated ' . @$devices[$i]->name;
+                    $data = array($id, intval($devices[$i]->id));
                     $this->db->query($sql, $data);
                     $test = external_update($device, $integration);
-                    $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->id) . ", NOW(), 5, 'notice', 'External updated " . @$devices[$i]->name . "', '', 0, '')";
+                    $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, '', '', 0, '')";
+                    $details = 'External updated ' . @$devices[$i]->name;
                     if ( ! $test) {
-                        $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->id) . ", NOW(), 5, 'notice', 'External could not update " . @$devices[$i]->name . "', '', 0, '')";
+                        $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, '', '', 0, '')";
+                        $details = 'External could not update ' . @$devices[$i]->name;
                     }
-                    $data = array($id);
+                    $data = array($id, intval($devices[$i]->id), $details);
                     $this->db->query($sql, $data);
                 } else {
                     # we do not have this device - create
-                    $this->m_devices->create($device);
+                    $external_device->last_seen_by = 'integrations';
+                    $external_device->nmis_manage = 'y';
+                    $external_device->last_seen = $this->config->config['timestamp'];
+
+echo "<pre>CREATE\n"; print_r($external_device); echo "</pre>\n";
+
+                    $external_device->id = $this->m_devices->create($external_device);
                 }
-                $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, " . intval($devices[$i]->id) . ", NOW(), 5, 'notice', 'Device inbound completed " . @$devices[$i]->name . "', '', 0, '')";
-                $data = array($id);
+                $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, ?, NOW(), 5, 'notice', ?, '', '', 0, '')";
+                $details = 'Device inbound completed ' . $external_device->name;
+                $data = array($id, intval($external_device->id), $details);
                 $this->db->query($sql, $data);
             }
         }
 
-        $sql = '/* m_integrations::queue */ ' . "UPDATE `integrations` SET `status` = 'completed' WHERE id = ?";
+        $sql = '/* m_integrations::execute */ ' . "UPDATE `integrations` SET `status` = 'completed' WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
 
-        $sql = '/* m_integrations::queue */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Completed integration', '', '', 0, '')";
+        $sql = '/* m_integrations::execute */ ' . "INSERT INTO `integrations_log` VALUES (null, ?, 0, NOW(), 5, 'notice', 'Completed integration', '', '', 0, '')";
         $data = array($id);
         $this->db->query($sql, $data);
 
     }
 
     public function combine_devices($internal_device, $external_device, $rules) {
+echo "<h2>combine_devices</h2>\n";
+echo "<pre>INTERNAL\n"; print_r($internal_device); echo "</pre>\n";
+echo "<pre>EXTERNAL\n"; print_r($external_device); echo "</pre>\n";
         $device = new stdClass();
         foreach ($rules as $rule) {
             // both fields set, determine preference
@@ -410,17 +452,19 @@ $device_ids = $query->result();
                 $device->{$rule->local_field} = $internal_device->{$rule->remote_field};
                 $device->{$rule->remote_field} = $internal_device->{$rule->remote_field};
             }
-            // local empty and reules->ignore, unset
-            if ((string)$device->{$rule->local_field} === '' && $rule->empty === 'ignore') {
+            // local empty and rules->ignore, unset the attribute
+            if (isset($device->{$rule->local_field}) && (string)$device->{$rule->local_field} === '' && $rule->empty === 'ignore') {
                 unset($device->{$rule->local_field});
             }
-            // remote empty and reules->ignore, unset
-            if ((string)$device->{$rule->remote_field} === '' && $rule->empty === 'ignore') {
+            // remote empty and rules->ignore, unset the attribute
+            if (isset($device->{$rule->remote_field}) && (string)$device->{$rule->remote_field} === '' && $rule->empty === 'ignore') {
                 unset($device->{$rule->remote_field});
             }
         }
         return $device;
     }
+
+
 
     /**
      * [format_ext_to_int description]
@@ -433,81 +477,119 @@ $device_ids = $query->result();
         if (empty($external_device) OR empty($rules)) {
             return false;
         }
+
+echo "<h2>format_ext_to_int</h2>\n";
+echo "<pre>111\n"; print_r($external_device); echo "</pre>\n";
+
         $device = new stdClass();
-        $device->{'system.id'} = $external_device->{'system.id'};
-        $device->{'system.name'} = $external_device->{'system.name'};
+        $device->{'system.id'} = @$external_device->{'system.id'};
+        $device->{'system.name'} = @$external_device->{'system.name'};
         // TODO - add external ID
         foreach ($rules as $rule) {
-            $device->{$rule->remote_field} = $external_device->{$rule->remote_field};
-            $device->{$rule->local_field} = $external_device->{$rule->remote_field};
-            switch ($rule->transform) {
-                case 'string':
-                    $device->{$rule->local_field} = (string)$device->{$rule->local_field};
-                    break;
 
-                case 'int':
-                    $device->{$rule->local_field} = intval($device->{$rule->local_field});
-                    break;
+// if ($rule->local_field === 'system.omk_uuid') {
+//     echo "<pre>\n"; print_r($rule); 
+//     echo "\n" . str_replace('system.', '', $rule->local_field) . "</pre>\n";
+// }
 
-                case 'bool':
-                    $device->{$rule->local_field} = filter_var($device->{$rule->local_field}, FILTER_VALIDATE_BOOLEAN);
-                    break;
-
-                case 'capitalise':
-                    $device->{$rule->local_field} = ucwords($device->{$rule->local_field});
-                    break;
-
-                case 'lower':
-                    $device->{$rule->local_field} = strtolower($device->{$rule->local_field});
-                    break;
-
-                case 'upper':
-                    $device->{$rule->local_field} = strtoupper($device->{$rule->local_field});
-                    break;
-
-                case 'datetime_now':
-                    $device->{$rule->local_field} = $this->config->config['timestamp'];
-                    break;
-
-                case 'int_to_bool':
-                    if ( ! empty($device->{$rule->local_field})) {
-                        $device->{$rule->local_field} = true;
-                    } else {
-                        $device->{$rule->local_field} = false;
+            if ( ! empty($rule->remote_field)) {
+                $attributes = explode('.', $rule->remote_field);
+                if (count($attributes) === 0) {
+                    // bad attribute name or not supplied by external
+                } else if (count($attributes) === 1) {
+                    $device->{$rule->remote_field} = @$external_device->{$rule->remote_field};
+                    $device->{$rule->local_field}  = @$external_device->{$rule->remote_field};
+                    $temp = str_replace('system.', '', $rule->local_field);
+                    $device->{$temp} = @$external_device->{$temp};
+                } else {
+                    if (is_object($external_device->{$attributes[0]})) {
+                        if (count($attributes) == 2) {
+                            $device->{$rule->remote_field} = @$external_device->{$attributes[0]}->{$attributes[1]};
+                            $device->{$rule->local_field}  = @$external_device->{$attributes[0]}->{$attributes[1]};
+                            $temp = str_replace('system.', '', $rule->local_field);
+                            $device->{$temp} = @$external_device->{$attributes[0]}->{$attributes[1]};
+                        }
+                        if (count($attributes) == 3) {
+                            $device->{$rule->remote_field} = @$external_device->{$attributes[0]}->{$attributes[1]}->{$attributes[2]};
+                            $device->{$rule->local_field}  = @$external_device->{$attributes[0]}->{$attributes[1]}->{$attributes[2]};
+                            $temp = str_replace('system.', '', $rule->local_field);
+                            $device->{$temp} = @$external_device->{$attributes[0]}->{$attributes[1]}->{$attributes[2]};
+                        }
                     }
-                    break;
+                }
+            }
 
-                case 'int_to_yn':
-                    if ( ! empty($device->{$rule->local_field})) {
-                        $device->{$rule->local_field} = 'y';
-                    } else {
-                        $device->{$rule->local_field} = 'n';
-                    }
-                    break;
+            if ( ! empty($rule->local_field)) {
+                switch ($rule->transform) {
+                    case 'string':
+                        $device->{$rule->local_field} = (string)$device->{$rule->local_field};
+                        break;
 
-                case 'date':
-                    switch ($rule->remote_format) {
-                        case 'date_Y-M-D':
-                            // nothing, we're in this format
-                            break;
+                    case 'int':
+                        $device->{$rule->local_field} = intval($device->{$rule->local_field});
+                        break;
 
-                        case 'date_M-D-Y':
-                            // from Y-m-d to m-d-Y
-                            $date = date_create_from_format("Y-m-d", $device->{$rule->local_field});
-                            $device->{$rule->local_field} = date_format($date, 'm-d-Y');
-                            break;
+                    case 'bool':
+                        $device->{$rule->local_field} = filter_var($device->{$rule->local_field}, FILTER_VALIDATE_BOOLEAN);
+                        break;
 
-                        default;
-                            // nothing
-                            break;
-                    }
-                    break;
+                    case 'capitalise':
+                        $device->{$rule->local_field} = ucwords($device->{$rule->local_field});
+                        break;
 
-                default:
-                    # code...
-                    break;
+                    case 'lower':
+                        $device->{$rule->local_field} = strtolower($device->{$rule->local_field});
+                        break;
+
+                    case 'upper':
+                        $device->{$rule->local_field} = strtoupper($device->{$rule->local_field});
+                        break;
+
+                    case 'datetime_now':
+                        $device->{$rule->local_field} = $this->config->config['timestamp'];
+                        break;
+
+                    case 'int_to_bool':
+                        if ( ! empty($device->{$rule->local_field})) {
+                            $device->{$rule->local_field} = true;
+                        } else {
+                            $device->{$rule->local_field} = false;
+                        }
+                        break;
+
+                    case 'int_to_yn':
+                        if ( ! empty($device->{$rule->local_field})) {
+                            $device->{$rule->local_field} = 'y';
+                        } else {
+                            $device->{$rule->local_field} = 'n';
+                        }
+                        break;
+
+                    case 'date':
+                        switch ($rule->remote_format) {
+                            case 'date_Y-M-D':
+                                // nothing, we're in this format
+                                break;
+
+                            case 'date_M-D-Y':
+                                // from Y-m-d to m-d-Y
+                                $date = date_create_from_format("Y-m-d", $device->{$rule->local_field});
+                                $device->{$rule->local_field} = date_format($date, 'm-d-Y');
+                                break;
+
+                            default;
+                                // nothing
+                                break;
+                        }
+                        break;
+
+                    default:
+                        # code...
+                        break;
+                }
             }
         }
+echo "<pre>333\n"; print_r($device); echo "</pre>\n";
         return $device;
     }
 
@@ -527,8 +609,12 @@ $device_ids = $query->result();
         $device->{'system.name'} = $internal_device->{'system.name'};
         // TODO - add external ID
         foreach ($rules as $rule) {
-            $device->{$rule->local_field} = $internal_device->{$rule->local_field};
-            $device->{$rule->remote_field} = $internal_device->{$rule->local_field};
+            if (!empty($rule->local_field) && ! empty($internal_device->{$rule->local_field})) {
+                $device->{$rule->local_field} = $internal_device->{$rule->local_field};
+            }
+            if (!empty($rule->remote_field) && ! empty($internal_device->{$rule->local_field})) {
+                $device->{$rule->remote_field} = $internal_device->{$rule->local_field};
+            }
             switch ($rule->transform) {
                 case 'string':
                     $device->{$rule->remote_field} = (string)$device->{$rule->remote_field};
@@ -571,6 +657,14 @@ $device_ids = $query->result();
                         $device->{$rule->remote_field} = 'y';
                     } else {
                         $device->{$rule->remote_field} = 'n';
+                    }
+                    break;
+
+                case 'yn_to_int':
+                    if ($device->{$rule->remote_field} === 'y') {
+                        $device->{$rule->remote_field} = 1;
+                    } else {
+                        $device->{$rule->remote_field} = 0;
                     }
                     break;
 
@@ -694,6 +788,14 @@ $device_ids = $query->result();
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
+        $dictionary->columns->type = 'The type of the integration (usually named after the remote system).';
+        $dictionary->columns->options = '';
+        $dictionary->columns->populate_from_local = 'Should we add devices from the remote service, locally.';
+        $dictionary->columns->populate_from_remote = 'Should we populate the remote system from our local devices.';
+        $dictionary->columns->query_id = '';
+        $dictionary->columns->group_id = 'The group that provides a list of devices for the integration.';
+        $dictionary->columns->last_run = 'The last time this integration was run.';
+        $dictionary->columns->status = 'The ststuas of this integration';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;
