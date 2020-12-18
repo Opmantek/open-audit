@@ -443,12 +443,12 @@ echo "<pre>EXTERNAL\n"; print_r($external_device); echo "</pre>\n";
                 }
             }
             // local set, remote not set - set remote to local
-            if (isset($internal_device->{$rule->local_field}) && ! isset($external_device->{$rule->remote_field})) {
+            if ( ! empty($rule->local_field) && isset($internal_device->{$rule->local_field}) && ! isset($external_device->{$rule->remote_field})) {
                 $device->{$rule->local_field} = $internal_device->{$rule->local_field};
                 $device->{$rule->remote_field} = $internal_device->{$rule->local_field};
             }
             // local not set, remote set - set local to remote
-            if ( ! isset($internal_device->{$rule->local_field}) && isset($external_device->{$rule->remote_field})) {
+            if ( ! empty($rule->local_field) && ! isset($internal_device->{$rule->local_field}) && isset($external_device->{$rule->remote_field})) {
                 $device->{$rule->local_field} = $internal_device->{$rule->remote_field};
                 $device->{$rule->remote_field} = $internal_device->{$rule->remote_field};
             }
@@ -486,21 +486,16 @@ echo "<pre>111\n"; print_r($external_device); echo "</pre>\n";
         $device->{'system.name'} = @$external_device->{'system.name'};
         // TODO - add external ID
         foreach ($rules as $rule) {
-
-// if ($rule->local_field === 'system.omk_uuid') {
-//     echo "<pre>\n"; print_r($rule); 
-//     echo "\n" . str_replace('system.', '', $rule->local_field) . "</pre>\n";
-// }
-
             if ( ! empty($rule->remote_field)) {
                 $attributes = explode('.', $rule->remote_field);
                 if (count($attributes) === 0) {
                     // bad attribute name or not supplied by external
+                    echo "BAD BAD BAD\n";
                 } else if (count($attributes) === 1) {
                     $device->{$rule->remote_field} = @$external_device->{$rule->remote_field};
                     $device->{$rule->local_field}  = @$external_device->{$rule->remote_field};
                     $temp = str_replace('system.', '', $rule->local_field);
-                    $device->{$temp} = @$external_device->{$temp};
+                    $device->{$temp} = @$external_device->{$rule->remote_field};
                 } else {
                     if (is_object($external_device->{$attributes[0]})) {
                         if (count($attributes) == 2) {

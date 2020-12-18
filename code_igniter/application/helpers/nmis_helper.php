@@ -99,6 +99,8 @@ if (! function_exists('external_defaults')) {
 
 		$defaults[] = (object) ['local_field' => 'system.name', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'local', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
 
+		$defaults[] = (object) ['local_field' => 'system.nmis_name', 'remote_field' => 'name', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
+
 		$defaults[] = (object) ['local_field' => 'system.omk_uuid', 'remote_field' => 'uuid', 'remote_format' => 'string', 'authoritive_source' => 'remote', 'transform' => '', 'empty' => 'ignore', 'default_value' => ''];
 
 		return $defaults;
@@ -132,10 +134,10 @@ if (! function_exists('external_search')) {
 		//     search for the device using our known attributes
 		// }
 
-		$return = new stdClass();
-		$return->name = 'router';
-		$return->ip = '192.168.1.1';
-		$return->external_identifier = '12345678901';
+		// $return = new stdClass();
+		// $return->name = 'router';
+		// $return->ip = '192.168.1.1';
+		// $return->external_identifier = '12345678901';
 
 		if ( ! empty($return)) {
 			# success - a list of nodes
