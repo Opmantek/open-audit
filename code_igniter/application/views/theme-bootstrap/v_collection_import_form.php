@@ -176,7 +176,7 @@ $example = '<p>Below is an example of the required csv format.</p>
 
 
 ?>
-<form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
+<form action="import" method="post" enctype="multipart/form-data">
     <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <div class="panel-heading">
