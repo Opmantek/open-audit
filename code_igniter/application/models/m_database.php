@@ -218,7 +218,6 @@ class M_database extends MY_Model
             case 'export table':
                 $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
                 $result = $this->run_sql($sql, array());
-                $count = intval($result[0]->count);
                 if ($format === 'csv') {
                     $this->load->dbutil();
                     $sql = 'SELECT * FROM `' . $table . '`';
@@ -226,49 +225,29 @@ class M_database extends MY_Model
                     $delimiter = ',';
                     $newline = "\r\n";
                     $query = $this->db->query($sql);
-                    if ($count < intval($this->config->config['database_show_row_limit'])) {
-                        $return = $this->dbutil->csv_from_result($query, $delimiter, $newline);
-                        return $return;
-                    } else {
-                        $backup = $this->dbutil->csv_from_result($query, $delimiter, $newline);
-                        $this->load->helper('download');
-                        force_download('open-audit_' . $table . '.csv', $backup);
-                        return;
-                    }
+                    $backup = $this->dbutil->csv_from_result($query, $delimiter, $newline);
+                    $this->load->helper('download');
+                    force_download('open-audit_' . $table . '.csv', $backup);
+                    return;
                 }
                 if ($format === 'json') {
                     $sql = 'SELECT * FROM `' . $table . '`';
                     $query = $this->db->query($sql);
                     $result = $query->result();
-                    // if ($table === 'credentials' && ! empty($result) && $this->config->config['decrypt_credentials'] === 'y') {
-                    //     for ($i=0; $i < count($result); $i++) {
-                    //         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
-                    //     }
-                    // }
-                    if ($count < intval($this->config->config['database_show_row_limit'])) {
-                        $return = json_encode($result);
-                        return $return;
-                    } else {
-                        $backup = json_encode($result);
-                        $this->load->helper('download');
-                        force_download('open-audit_' . $table . '.json', $backup);
-                        return;
-                    }
+                    $backup = json_encode($result);
+                    $this->load->helper('download');
+                    force_download('open-audit_' . $table . '.json', $backup);
+                    return;
                 }
                 if ($format === 'xml') {
                     $this->load->dbutil();
                     $sql = 'SELECT * FROM `' . $table . '`';
                     $query = $this->db->query($sql);
                     $config = array ('root' => 'root', 'element' => 'item', 'newline' => "\n", 'tab' => "\t");
-                    if ($count < intval($this->config->config['database_show_row_limit'])) {
-                        $return = $this->dbutil->xml_from_result($query, $config);
-                        return $return;
-                    } else {
-                        $backup = $this->dbutil->xml_from_result($query, $config);
-                        $this->load->helper('download');
-                        force_download('open-audit_' . $table . '.xml', $backup);
-                        return;
-                    }
+                    $backup = $this->dbutil->xml_from_result($query, $config);
+                    $this->load->helper('download');
+                    force_download('open-audit_' . $table . '.xml', $backup);
+                    return;
                 }
                 if ($format === 'sql') {
                     if (php_uname('s') === 'Windows NT') {
@@ -286,17 +265,11 @@ class M_database extends MY_Model
                         unset($temp);
                     }
                     $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' -h' . $CI->db->hostname . ' ' . $CI->db->database . ' ' . $table;
-                    
-                    if ($count < intval($this->config->config['database_show_row_limit'])) {
-                        exec($command, $return);
-                        return implode("\n", $return);
-                    } else {
-                        exec($command, $backup);
-                        $backup = implode("\n", $backup);
-                        $this->load->helper('download');
-                        force_download('open-audit_' . $table . '.sql', $backup);
-                        return;
-                    }
+                    exec($command, $backup);
+                    $backup = implode("\n", $backup);
+                    $this->load->helper('download');
+                    force_download('open-audit_' . $table . '.sql', $backup);
+                    return;
                 }
                 break;
             
