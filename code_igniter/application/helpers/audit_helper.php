@@ -190,19 +190,18 @@ if (!function_exists('audit_convert')) {
                 $audit->system = new stdClass();
                 if ( ! empty($newxml->sys)) {
                     foreach ($newxml->sys as $key => $value) {
-                        if (@(string)$value !== '') {
+                        if (gettype($value) !== "object" && @(string)$value !== '') {
                             $audit->system->{$key} = @(string)$newxml->sys->{$key};
                         }
                     }
                 }
                 if ( ! empty($newxml->system)) {
                     foreach ($newxml->system as $key => $value) {
-                        if (@(string)$value !== '') {
+                        if (gettype($value) !== "object" && @(string)$value !== '') {
                             $audit->system->{$key} = @(string)$newxml->system->{$key};
                         }
                     }
                 }
-
                 unset($newxml);
                 foreach ($xml as $section => $something) {
                     if ($section !== 'sys') {
