@@ -3757,11 +3757,13 @@ CREATE TABLE `user` (
   `password_expires` varchar(20) NOT NULL DEFAULT '',
   `password_required` varchar(20) NOT NULL DEFAULT '',
   `password_disabled` varchar(20) NOT NULL DEFAULT '',
+  `password_last_changed` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `status` varchar(100) NOT NULL DEFAULT '',
   `keys` text NOT NULL,
   `home` text NOT NULL,
   `shell` text NOT NULL,
   `type` enum('local','domain','database','application','other') NOT NULL DEFAULT 'local',
+  `last_logon` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `user_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
