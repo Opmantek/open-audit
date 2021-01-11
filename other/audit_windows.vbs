@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-' @version   GIT: Open-AudIT_3.5.3
+' @version   GIT: Open-AudIT_3.5.0
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -104,7 +104,7 @@ self_delete = "n"
 debugging = "1"
 
 ' Version - NOTE, special formatted so we match the *nix scripts and can do find/replace
-version="3.5.3"
+version="3.5.0"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
@@ -3474,6 +3474,8 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
     if (not isnull(colItems)) then
         for each objItem in colItems
             user_home = ""
+            user_last_logon = ""
+            user_password_last_changed = ""
             if (cint(windows_build_number) > 6001) then
                 set userItems = objWMIService.ExecQuery ("Select * from Win32_UserProfile Where SID = '" & objItem.SID & "'",,32)
             else
@@ -3484,8 +3486,38 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
                     if (userItem.LocalPath > "") then
                         user_home = userItem.LocalPath
                     end if
+                    if (userItem.LastUseTime > "") then
+                        user_last_logon = CDate(Mid(userItem.LastUseTime, 5, 2) & "/" & Mid(userItem.LastUseTime, 7, 2) & "/" & Left(userItem.LastUseTime, 4) & " " & Mid (userItem.LastUseTime, 9, 2) & ":" & Mid(userItem.LastUseTime, 11, 2) & ":" & Mid(userItem.LastUseTime, 13, 2)) 
+                    end if
                 next
             end if
+
+            strCommand = "net user " & objItem.Name
+            On Error Resume Next
+            set objExecObject = objShell.Exec(strCommand)
+            On Error GoTo 0
+            if IsObject(objExecObject) then
+                do While Not objExecObject.StdOut.AtEndOfStream
+                    strResults = objExecObject.StdOut.ReadAll()
+                Loop
+                MyArray = Split(strResults, vbcrlf)
+                if isArray(MyArray) then
+                    for each line in MyArray
+                        if line > "" then
+                            split_space = split(line)
+                            if (isarray(split_space)) then
+                                if (split_space(0) = "Password" and split_space(1) = "last" and split_space(2) = "set") then
+                                    split_space(0) = ""
+                                    split_space(1) = ""
+                                    split_space(2) = ""
+                                    user_password_last_changed = trim(join(split_space))
+                                end if
+                            end if
+                        end if
+                    next
+                end if
+            end if
+
             result.WriteText "      <item>" & vbcrlf
             result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
             result.WriteText "          <caption>" & escape_xml(objItem.Caption) & "</caption>" & vbcrlf
@@ -3496,8 +3528,10 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
             result.WriteText "          <password_changeable>" & escape_xml(objItem.PasswordChangeable) & "</password_changeable>" & vbcrlf
             result.WriteText "          <password_expires>" & escape_xml(objItem.PasswordExpires) & "</password_expires>" & vbcrlf
             result.WriteText "          <password_required>" & escape_xml(objItem.PasswordRequired) & "</password_required>" & vbcrlf
+            result.WriteText "          <password_last_changed>" & escape_xml(user_password_last_changed) & "</password_last_changed>" & vbcrlf
             result.WriteText "          <status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
             result.WriteText "          <home>" &  escape_xml(user_home) & "</home>" & vbcrlf
+            result.WriteText "          <last_logon>" &  escape_xml(user_last_logon) & "</last_logon>" & vbcrlf
             result.WriteText "          <type>local</type>" & vbcrlf
             result.WriteText "      </item>" & vbcrlf
         next
