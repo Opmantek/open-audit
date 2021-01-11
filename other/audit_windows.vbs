@@ -3487,7 +3487,8 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
                         user_home = userItem.LocalPath
                     end if
                     if (userItem.LastUseTime > "") then
-                        user_last_logon = CDate(Mid(userItem.LastUseTime, 5, 2) & "/" & Mid(userItem.LastUseTime, 7, 2) & "/" & Left(userItem.LastUseTime, 4) & " " & Mid (userItem.LastUseTime, 9, 2) & ":" & Mid(userItem.LastUseTime, 11, 2) & ":" & Mid(userItem.LastUseTime, 13, 2)) 
+                        temp = CDate(Mid(userItem.LastUseTime, 5, 2) & "/" & Mid(userItem.LastUseTime, 7, 2) & "/" & Left(userItem.LastUseTime, 4) & " " & Mid (userItem.LastUseTime, 9, 2) & ":" & Mid(userItem.LastUseTime, 11, 2) & ":" & Mid(userItem.LastUseTime, 13, 2))
+                        user_last_logon = year(temp) & "-" & month(temp) & "-" & day(temp) & " " & hour(temp) & ":" & minute(temp) & ":" & second(temp)
                     end if
                 next
             end if
@@ -3510,7 +3511,8 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
                                     split_space(0) = ""
                                     split_space(1) = ""
                                     split_space(2) = ""
-                                    user_password_last_changed = trim(join(split_space))
+                                    temp = trim(join(split_space))
+                                    user_password_last_changed = year(temp) & "-" & month(temp) & "-" & day(temp) & " " & hour(temp) & ":" & minute(temp) & ":" & second(temp)
                                 end if
                             end if
                         end if
