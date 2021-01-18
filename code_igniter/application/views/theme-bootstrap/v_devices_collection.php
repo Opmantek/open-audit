@@ -178,7 +178,7 @@ if (count($this->response->meta->filter) > 0) {
         if (stripos($link, '?&') === 0) {
             $link = str_replace('?&', '?', $link);
         }
-        echo '<span class="label label-info">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
+        echo '<span class="label label-info">' . $item->name . ' ' . $item->operator . ' ' . $item->value . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
         unset($query_parameters);
     }
     echo '</h4></div>';
