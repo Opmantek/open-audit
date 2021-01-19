@@ -820,6 +820,7 @@ INSERT INTO `configuration` VALUES (NULL,'create_change_log_partition','y','bool
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_policy','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the policy table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_print_queue','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the print_queue table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_processor','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the processor table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_route','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the route table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_san','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the san table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_scsi','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the scsi table.');
@@ -860,6 +861,7 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_partition','n','bool
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_policy','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current policy data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_print_queue','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current print_queue data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_processor','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current processor data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_route','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current route data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_san','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current san data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_scsi','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current scsi data.');
@@ -2862,6 +2864,45 @@ CREATE TABLE `rack_devices` (
 LOCK TABLES `rack_devices` WRITE;
 /*!40000 ALTER TABLE `rack_devices` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rack_devices` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `radio`
+--
+
+DROP TABLE IF EXISTS `radio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `radio` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `net_index` varchar(200) NOT NULL DEFAULT '',
+  `rx_level` varchar(200) NOT NULL DEFAULT '',
+  `rx_profile` varchar(200) NOT NULL DEFAULT '',
+  `rx_freq` varchar(200) NOT NULL DEFAULT '',
+  `rx_power` varchar(200) NOT NULL DEFAULT '',
+  `rx_bitrate` varchar(200) NOT NULL DEFAULT '',
+  `tx_level` varchar(200) NOT NULL DEFAULT '',
+  `tx_profile` varchar(200) NOT NULL DEFAULT '',
+  `tx_freq` varchar(200) NOT NULL DEFAULT '',
+  `tx_power` varchar(200) NOT NULL DEFAULT '',
+  `tx_bitrate` varchar(200) NOT NULL DEFAULT ''
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `radio_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `radio`
+--
+
+LOCK TABLES `radio` WRITE;
+/*!40000 ALTER TABLE `radio` DISABLE KEYS */;
+/*!40000 ALTER TABLE `radio` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
