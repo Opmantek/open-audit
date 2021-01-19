@@ -285,6 +285,9 @@ if (!empty($this->response->data)) { ?>
                 } elseif ($property == 'system.seen_by') {
                     echo "            <td>" . $item->attributes->$property . "</td>\n";
 
+                } elseif ($property == 'link') {
+                    echo "            <td><a href=\"../../" . $item->attributes->$property . "\" target=\"_blank\" role=\"button\" class=\"btn btn-sm btn-primary\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span></a></td>\n";
+
                 } else {
                     refine($property, $item->attributes->$property);
                 }
