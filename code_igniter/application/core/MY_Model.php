@@ -200,7 +200,11 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $timer_start = microtime(true);
-        $query = $this->db->query($sql, $data);
+        if (!empty($data)) {
+            $query = $this->db->query($sql, $data);
+        } else {
+            $query = $this->db->query($sql);
+        }
         $duration = microtime(true) - $timer_start;
         // $temp = explode(';', $sql);
         // if (count($temp) > 1) {
