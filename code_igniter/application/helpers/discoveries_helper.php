@@ -902,6 +902,9 @@ if ( ! function_exists('ip_audit')) {
 			if ( ! empty($temp_array['routes'])) {
 				$routes = $temp_array['routes'];
 			}
+			if ( ! empty($temp_array['radio'])) {
+				$radio = $temp_array['radio'];
+			}
 		}
 
 		// Set these here before testing them below
@@ -1184,6 +1187,19 @@ if ( ! function_exists('ip_audit')) {
 			$parameters->table = 'route';
 			$parameters->details = $device;
 			$parameters->input = $routes;
+			$parameters->discovery_id = $discovery->id;
+			$CI->m_devices_components->process_component($parameters);
+		}
+
+		// insert any found radio's from SNMP
+		if (isset($radio) && is_array($radio) && count($radio) > 0) {
+			$log->command_status = 'notice';
+			$log->message = 'Processing found radios for ' . $device->ip;
+			discovery_log($log);
+			$parameters = new stdClass();
+			$parameters->table = 'radio';
+			$parameters->details = $device;
+			$parameters->input = $radio;
 			$parameters->discovery_id = $discovery->id;
 			$CI->m_devices_components->process_component($parameters);
 		}

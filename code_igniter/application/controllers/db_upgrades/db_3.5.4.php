@@ -60,6 +60,51 @@ $sql = "UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.ic
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+$sql = "DROP TABLE IF EXISTS `radio`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "CREATE TABLE `radio` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `net_index` varchar(200) NOT NULL DEFAULT '',
+  `rx_level` varchar(200) NOT NULL DEFAULT '',
+  `rx_profile` varchar(200) NOT NULL DEFAULT '',
+  `rx_freq` varchar(200) NOT NULL DEFAULT '',
+  `rx_power` varchar(200) NOT NULL DEFAULT '',
+  `rx_bitrate` varchar(200) NOT NULL DEFAULT '',
+  `tx_level` varchar(200) NOT NULL DEFAULT '',
+  `tx_profile` varchar(200) NOT NULL DEFAULT '',
+  `tx_freq` varchar(200) NOT NULL DEFAULT '',
+  `tx_power` varchar(200) NOT NULL DEFAULT '',
+  `tx_bitrate` varchar(200) NOT NULL DEFAULT ''
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `radio_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM `configuration` WHERE name = 'create_change_log_radio'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM `configuration` WHERE name = 'delete_noncurrent_radio'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

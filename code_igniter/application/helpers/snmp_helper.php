@@ -449,6 +449,7 @@ if ( ! function_exists('snmp_audit')) {
         $routes = array();
         $guests = array();
         $modules = array();
+        $radios = array();
 
         $details->ip = (string)$ip;
         $details->manufacturer = '';
@@ -1620,8 +1621,136 @@ if ( ! function_exists('snmp_audit')) {
                 include 'snmp_6876_2_helper.php';
             }
         }
+
+        // Radio's
+        if (is_array($interfaces_filtered) && count($interfaces_filtered) > 0) {
+            foreach ($interfaces_filtered as $interface) {
+                if (strtolower($interface->model) === 'radio') {
+                    // RX Level
+                    $item_start = microtime(true);
+                    $radio_rx_level = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.1.1.2.' . $interface->net_index);
+                    $log->command_time_to_execute = (microtime(true) - $item_start);
+                    $log->message = 'Radio RX Level retrieval for interface ' . $interface->net_index . ' for ' . $ip;
+                    $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.1.1.2.' . $interface->net_index;
+                    $log->command_output = $radio_rx_level;
+                    $log->command_status = 'notice';
+                    discovery_log($log);
+                    unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                    // If we have RX Level's present, walk the details
+                    if (! empty($radio_rx_level)) {
+                        $radio = new stdClass();
+                        $radio->name = $interface->net_index;
+                        $radio->net_index = $interface->net_index;
+                        $radio->rx_level = $radio_rx_level;
+
+                        // RX Profile
+                        $item_start = microtime(true);
+                        $radio->rx_profile = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.7.4.1.1.9.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio RX Profile retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.7.4.1.1.9.' . $interface->net_index;
+                        $log->command_output = $radio->rx_profile;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // RX Frequency
+                        $item_start = microtime(true);
+                        $radio->rx_freq = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.2.1.4.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio RX Frequency retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.2.1.4.' . $interface->net_index;
+                        $log->command_output = $radio->rx_freq;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // RX Power
+                        $item_start = microtime(true);
+                        $radio->rx_power = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.1.1.34.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio RX Power retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.1.1.34.' . $interface->net_index;
+                        $log->command_output = $radio->rx_power;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // RX Bitrate
+                        $item_start = microtime(true);
+                        $radio->rx_bitrate = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.7.4.1.1.11.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio RX Bitrate retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.7.4.1.1.11.' . $interface->net_index;
+                        $log->command_output = $radio->rx_bitrate;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // TX Level
+                        $item_start = microtime(true);
+                        $radio->tx_level = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.1.1.3.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio TX Level retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.1.1.3.' . $interface->net_index;
+                        $log->command_output = $radio->tx_level;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // TX Profile
+                        $item_start = microtime(true);
+                        $radio->tx_profile = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.7.4.1.1.5.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio TX Profile retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.7.4.1.1.5.' . $interface->net_index;
+                        $log->command_output = $radio->tx_profile;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // TX Frequency
+                        $item_start = microtime(true);
+                        $radio->tx_freq = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.2.1.3.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio TX Frequency retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.2.1.3.' . $interface->net_index;
+                        $log->command_output = $radio->rx_freq;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // TX Power
+                        $item_start = microtime(true);
+                        $radio->tx_power = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.2.1.2.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio TX Power retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.2.1.2.' . $interface->net_index;
+                        $log->command_output = $radio->rx_power;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        // TX Bitrate
+                        $item_start = microtime(true);
+                        $radio->tx_bitrate = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.7.4.1.1.7.' . $interface->net_index);
+                        $log->command_time_to_execute = (microtime(true) - $item_start);
+                        $log->message = 'Radio TX Bitrate retrieval for '.$ip;
+                        $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.7.4.1.1.7.' . $interface->net_index;
+                        $log->command_output = $radio->rx_bitrate;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                        $radios[] = $radio;
+                    }
+                }
+            }
+        }
+
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->command_status);
-        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes);
+        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes, 'radio' => $radios);
         return($return_array);
     }
 }

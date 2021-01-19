@@ -240,6 +240,9 @@ class M_devices_components extends MY_Model
         if ($table === 'processor') {
                 $match_columns = array('description');
         }
+        if ($table === 'radio') {
+                $match_columns = array('name');
+        }
         if ($table === 'route') {
                 $match_columns = array('destination', 'next_hop');
         }
