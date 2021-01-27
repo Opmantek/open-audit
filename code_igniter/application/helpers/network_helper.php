@@ -60,6 +60,20 @@ if (! function_exists('is_ssl')) {
     }
 }
 
+if (! function_exists('is_private_ip')) {
+    function is_private_ip($ip)
+    {
+        $ip = ip_address_to_db($ip);
+        $private = false;
+        if (($ip >= '010.000.000.000' AND $ip <= '010.255.255.255') ||
+            ($ip >= '172.016.000.000' AND $ip <= '172.031.255.255') ||
+            ($ip >= '192.168.000.000' AND $ip <= '192.168.255.255')) {
+            $private = true;
+        }
+        return $private;
+    }
+}
+
 if (! function_exists('server_ip')) {
     # return a comman string of system ip addresses
     function server_ip()

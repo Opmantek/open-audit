@@ -1538,6 +1538,7 @@ if ( ! function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
             $my_ips = array();
+            $log->command_output = '';
             if (is_array($table)) {
                 foreach ($table as $key => $value) {
                     $my_ips[] = $value;
@@ -1545,24 +1546,24 @@ if ( ! function_exists('snmp_audit')) {
                 $log->command_output .= ' ' . json_encode($my_ips);
             }
             $table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.21');
-            foreach ($my_ips as $ip) {
+            foreach ($my_ips as $route_ip) {
                 $route = new stdClass();
-                $route->destination = $ip;
+                $route->destination = $route_ip;
                 foreach ($table as $key => $value) {
-                    if ($key === '.1.3.6.1.2.1.4.21.1.3.' . $ip) {
+                    if ($key === '.1.3.6.1.2.1.4.21.1.3.' . $route_ip) {
                         $route->metric = $value;
                     }
-                    if ($key === '.1.3.6.1.2.1.4.21.1.7.' . $ip) {
+                    if ($key === '.1.3.6.1.2.1.4.21.1.7.' . $route_ip) {
                         $route->next_hop = $value;
                     }
-                    if ($key === '.1.3.6.1.2.1.4.21.1.8.' . $ip) {
+                    if ($key === '.1.3.6.1.2.1.4.21.1.8.' . $route_ip) {
                         if (intval($value) === 1) { $value = 'other'; }
                         if (intval($value) === 2) { $value = 'invalid'; }
                         if (intval($value) === 3) { $value = 'direct'; }
                         if (intval($value) === 4) { $value = 'indirect'; }
                         $route->type = $value;
                     }
-                    if ($key === '.1.3.6.1.2.1.4.21.1.9.' . $ip) {
+                    if ($key === '.1.3.6.1.2.1.4.21.1.9.' . $route_ip) {
                         if (intval($value) === 1) { $value = 'other'; }
                         if (intval($value) === 2) { $value = 'local'; }
                         if (intval($value) === 3) { $value = 'netmgmt'; }
@@ -1579,7 +1580,7 @@ if ( ! function_exists('snmp_audit')) {
                         if (intval($value) === 14) { $value = 'bgp'; }
                         $route->protocol = $value;
                     }
-                    if ($key === '.1.3.6.1.2.1.4.21.1.11.' . $ip) {
+                    if ($key === '.1.3.6.1.2.1.4.21.1.11.' . $route_ip) {
                         $route->mask = $value;
                     }
                 }
@@ -1625,14 +1626,21 @@ if ( ! function_exists('snmp_audit')) {
         // Radio's
         if (is_array($interfaces_filtered) && count($interfaces_filtered) > 0) {
             foreach ($interfaces_filtered as $interface) {
-                if (strtolower($interface->model) === 'radio') {
+                // radio = Cambium
+                // wlan = LEDE / OpenWRT
+                // vwire = ubiquiti
+                if (strtolower($interface->model) === 'radio' or stripos($interface->model, 'wlan') !== false or stripos($interface->model, 'vwire') !== false) {
                     // RX Level
                     $item_start = microtime(true);
                     $radio_rx_level = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.2281.10.5.1.1.2.' . $interface->net_index);
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     $log->message = 'Radio RX Level retrieval for interface ' . $interface->net_index . ' for ' . $ip;
                     $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.1.1.2.' . $interface->net_index;
-                    $log->command_output = $radio_rx_level;
+
+                    $log->command_output = 'Failed (likely not supported)';
+                    if ( ! empty($radio_rx_level)) {
+                        $log->command_output = $radio_rx_level;
+                    }
                     $log->command_status = 'notice';
                     discovery_log($log);
                     unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1749,8 +1757,107 @@ if ( ! function_exists('snmp_audit')) {
             }
         }
 
+        // Linked IPs in the ARP table, etc
+        $ips_found = array();
+
+        // ipNetToMediaPhysAddress
+        $item_start = microtime(true);
+        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.22.1.2');
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        if ( ! empty($temp)) {
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Detecting IPs at ipNetToMediaPhysAddress for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.22.1.2';
+            $log->command_output = count($temp);
+            $log->command_status = 'notice';
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
+            if (count($temp) > 0) {
+                foreach ($temp as $key => $value) {
+                    if ( ! empty($value)) {
+                        $explode = explode('.', $key);
+                        $found_ip = implode('.', array_splice($explode, -4));
+                        $explode = explode(' ', $value);
+                        $found_mac = strtolower($explode[1]);
+                        // pad the MAC
+                        $explode = explode(':', $found_mac);
+                        foreach ($explode as &$explode_mac) {
+                            $explode_mac = substr('00' . $explode_mac, -2);
+                        }
+                        $found_mac = implode(':', $explode);
+                        $ips_found[$found_mac] = $found_ip;
+                    }
+                }
+            }
+        }
+        // ipNetToPhysicalPhysAddress
+        $item_start = microtime(true);
+        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.35.1.4.3.1.4');
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        if ( ! empty($temp)) {
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Detecting IPs at ipNetToPhysicalPhysAddress for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.35.1.4.3.1.4';
+            $log->command_output = count($temp);
+            $log->command_status = 'notice';
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
+            if (count($temp) > 0) {
+                foreach ($temp as $key => $value) {
+                    if ( ! empty($value)) {
+                        $explode = explode('.', $key);
+                        $found_ip = implode('.', array_splice($explode, -4));
+                        $explode = explode(' ', $value);
+                        if ( ! empty($explode[1])) {
+                            $found_mac = strtolower($explode[1]);
+                            // pad the MAC
+                            $explode = explode(':', $found_mac);
+                            foreach ($explode as &$explode_mac) {
+                                $explode_mac = substr('00' . $explode_mac, -2);
+                            }
+                            $found_mac = implode(':', $explode);
+                            $ips_found[$found_mac] = $found_ip;
+                        }
+                    }
+                }
+            }
+        }
+        // atPhysAddress
+        $item_start = microtime(true);
+        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.3.1.1.2');
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        if ( ! empty($temp)) {
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Detecting IPs at atPhysAddress for '.$ip;
+            $log->command = 'snmpwalk 1.3.6.1.2.1.3.1.1.2';
+            $log->command_output = count($temp);
+            $log->command_status = 'notice';
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
+            if (count($temp) > 0) {
+                foreach ($temp as $key => $value) {
+                    if ( ! empty($value)) {
+                        $explode = explode('.', $key);
+                        $found_ip = implode('.', array_splice($explode, -4));
+                        $explode = explode(' ', $value);
+                        $found_mac = strtolower(implode(':', array_splice($explode, -6)));
+                        // pad the MAC
+                        $explode = explode(':', $found_mac);
+                        foreach ($explode as &$explode_mac) {
+                            $explode_mac = substr('00' . $explode_mac, -2);
+                        }
+                        $found_mac = implode(':', $explode);
+                        $ips_found[$found_mac] = $found_ip;
+                    }
+                }
+            }
+        }
+
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->command_status);
-        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes, 'radio' => $radios);
+        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes, 'radio' => $radios, 'ips_found' => $ips_found);
         return($return_array);
     }
 }

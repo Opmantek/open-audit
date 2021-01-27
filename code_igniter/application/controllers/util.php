@@ -409,6 +409,7 @@ class Util extends CI_Controller
         $this->load->model('m_discoveries');
         $this->load->model('m_networks');
         $this->load->model('m_orgs');
+        $this->load->model('m_queue');
         $this->load->model('m_rules');
         $this->load->model('m_scripts');
 
@@ -477,6 +478,10 @@ class Util extends CI_Controller
             }
 
             if ($item->type === 'subnet') {
+                discover_subnet($details);
+            }
+
+            if ($item->type === 'seed') {
                 discover_subnet($details);
             }
 
