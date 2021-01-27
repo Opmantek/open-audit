@@ -1117,6 +1117,9 @@ CREATE TABLE `discoveries` (
   `last_finished` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `duration` time NOT NULL DEFAULT '00:00:00',
   `status` varchar(20) NOT NULL DEFAULT '',
+  `seed_ip` varchar(45) NOT NULL DEFAULT '',
+  `seed_restrict_to_subnet` enum('y','n') NOT NULL DEFAULT 'y',
+  `seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y',
   `ip_all_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_responding_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT '0',
@@ -2890,7 +2893,7 @@ CREATE TABLE `radio` (
   `tx_profile` varchar(200) NOT NULL DEFAULT '',
   `tx_freq` varchar(200) NOT NULL DEFAULT '',
   `tx_power` varchar(200) NOT NULL DEFAULT '',
-  `tx_bitrate` varchar(200) NOT NULL DEFAULT ''
+  `tx_bitrate` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `radio_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
