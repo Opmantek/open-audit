@@ -839,7 +839,9 @@ if ( !  function_exists('ssh_audit')) {
             'synology_os_minor' => 'grep version_minor /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
             'synology_os_build' => 'grep version_build /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
 
-            'which_sudo' => 'which sudo 2>/dev/null'
+            'which_sudo' => 'which sudo 2>/dev/null',
+
+            'arp' => 'arp -an 2>/dev/null'
         );
 
         foreach ($commands as $item => $command) {
@@ -888,6 +890,36 @@ if ( !  function_exists('ssh_audit')) {
                 discovery_log($log);
             }
         }
+
+        // ARP for other devices
+        $device->ips_found = array();
+        if ( ! empty($device->arp)) {
+            foreach ($device->arp as $line) {
+                $item = array();
+
+                $explode = explode('(', $line);
+                $explode_2 = explode(')', $explode[1]);
+                $item_ip = $explode_2[0];
+
+                $item_mac = '';
+                $explode = explode(' ', $line);
+                if ( ! empty($explode[3])) {
+                    $item_mac = strtolower($explode[3]);
+                }
+                if ($item_mac !== '<incomplete>' and
+                    stripos($item_mac, ':') !== false and
+                    $item_mac !== 'ff:ff:ff:ff:ff:ff' and
+                    ! empty($item_ip) and
+                    $item_ip !== '255.255.255.255') {
+                    $device->ips_found[$item_mac] = $item_ip;
+                }
+                #$device->ips_found[$item_mac] = $item_ip;
+            }
+        }
+        $log->message = 'ARP 2';
+        $log->command_output = json_encode($device->ips_found);
+        discovery_log($log);
+        unset($device->arp);
 
         // Set some items that may have multiple results
         if ( ! empty($device->hostname)) {
@@ -991,7 +1023,6 @@ if ( !  function_exists('ssh_audit')) {
             $log->command_status = 'success';
             $log->command_output = $device->os_name;
             discovery_log($log);
-
 
             $item_start = microtime(true);
             $command = "esxcli hardware platform get | grep 'Vendor Name' | cut -d: -f2 2>/dev/null";
@@ -1137,8 +1168,6 @@ if ( !  function_exists('ssh_audit')) {
 
         $device->use_sudo = false;
         $command = '';
-
-
 
         if (empty($device->which_sudo) and ! empty($CI->config->config['discovery_sudo_path'])) {
             $sudo_paths = explode(',', $CI->config->config['discovery_sudo_path']);
