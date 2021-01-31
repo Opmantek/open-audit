@@ -627,6 +627,9 @@ class M_discoveries extends MY_Model
         $dictionary->columns->device_count = 'The number of devices found by this discovery.';
         $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
         $dictionary->columns->discard = 'Used internally when discovering a single device.';
+        $dictionary->columns->seed_ip = 'The IP of the device to start a seed discovery with.';
+        $dictionary->columns->seed_restrict_to_subnet = 'For a seed discovery, should I only discover IPs on the ralted subnet.';
+        $dictionary->columns->seed_restrict_to_private = 'For a seed discovery, should I only discover IPs in the private IP address space.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
 
