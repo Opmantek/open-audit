@@ -1856,6 +1856,23 @@ if ( ! function_exists('snmp_audit')) {
             }
         }
 
+        if ( ! empty($routes) && ! empty($ips_found)) {
+            foreach ($routes as $route) {
+                if ($route->next_hop === '0.0.0.0' or empty($route->next_hop)) {
+                    break;
+                }
+                $add = true;
+                foreach ($ips_found as $key => $value) {
+                    if ($value === $route->next_hop) {
+                        $add = false;
+                    }
+                }
+                if ($add === true) {
+                    $ips_found[] = $route->next_hop;
+                }
+            }
+        }
+
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->command_status);
         $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes, 'radio' => $radios, 'ips_found' => $ips_found);
         return($return_array);
