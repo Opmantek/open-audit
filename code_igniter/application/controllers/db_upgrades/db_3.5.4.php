@@ -66,17 +66,17 @@ CREATE TABLE `radio` (
 
 DELETE FROM `configuration` WHERE name = 'create_change_log_radio';
 
-INSERT INTO `configuration` VALUES (NULL,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.')
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.');
 
-DELETE FROM `configuration` WHERE name = 'delete_noncurrent_radio'
+DELETE FROM `configuration` WHERE name = 'delete_noncurrent_radio';
 
-INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.')
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
 
 ALTER TABLE discoveries ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER status;
 
 ALTER TABLE discoveries ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip;
 
-ALTER TABLE discoveries ADD seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet;
+ALTER TABLE discoveries ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet;
 
 UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version';
 
@@ -159,7 +159,7 @@ $this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL D
 
 $this->alter_table('discoveries', 'seed_restrict_to_subnet', "ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip", 'add');
 
-$this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
+$this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version'";
