@@ -906,19 +906,11 @@ if ( !  function_exists('ssh_audit')) {
                 if ( ! empty($explode[3])) {
                     $item_mac = strtolower($explode[3]);
                 }
-                if ($item_mac !== '<incomplete>' and
-                    stripos($item_mac, ':') !== false and
-                    $item_mac !== 'ff:ff:ff:ff:ff:ff' and
-                    ! empty($item_ip) and
-                    $item_ip !== '255.255.255.255') {
+                if ( ! empty($item->mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' && ! empty($item_ip) && $item_ip !== '255.255.255.255') {
                     $device->ips_found[$item_mac] = $item_ip;
                 }
-                #$device->ips_found[$item_mac] = $item_ip;
             }
         }
-        $log->message = 'ARP 2';
-        $log->command_output = json_encode($device->ips_found);
-        discovery_log($log);
         unset($device->arp);
 
         // Set some items that may have multiple results
@@ -948,6 +940,7 @@ if ( !  function_exists('ssh_audit')) {
 
         if ( ! empty($device->ubiquiti_os)) {
             #$device->os_family = 'Ubiquiti';
+            $device->os_group = '';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
         }
         unset($device->ubiquiti_os);
@@ -1135,7 +1128,7 @@ if ( !  function_exists('ssh_audit')) {
         }
 
         // Type based on os_group = Linux (set to computer)
-        if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type)) {
+        if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type) && $device->manufacturer !== 'Ubiquiti Networks Inc.') {
             $device->type = 'computer';
         }
         if ( ! empty($device->os_group) && stripos($device->os_group, 'BSD') !== false) {
