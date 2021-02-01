@@ -713,32 +713,29 @@ class San extends CI_Controller
             // // print_r($network);
             print_r($disk);
             // exit();
+            $log_details = new stdClass();
+            $log_details->severity = 7;
+            $log_details->file = 'system';
 
             if ($details->id == '') {
                 // insert a new system
                 $details->first_seen = $details->last_seen;
                 $details->id = $this->m_device->insert($details);
-                $log_details = new stdClass();
-                $log_details->severity = 7;
-                $log_details->file = 'system';
                 $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
                 stdlog($log_details);
-                unset($log_details);
                 $details->original_last_seen = "";
                 echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
             } else {
                 // update an existing system
-                $log_details = new stdClass();
-                $log_details->severity = 7;
-                $log_details->file = 'system';
                 $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
                 stdlog($log_details);
-                unset($log_details);
                 $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
                 $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
                 $this->m_device->update($details);
                 echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
             }
+
+            $log_details->message = '';
             $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
             $temp_user = '';
             if (isset($this->user->full_name)) {
