@@ -1207,6 +1207,9 @@ CREATE TABLE `discovery_scan_options` (
   `exclude_ip` text NOT NULL,
   `ssh_ports` text NOT NULL,
   `options` text NOT NULL,
+  `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n',
+  `ports_stop_after` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `ports_to_scripts` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1219,14 +1222,44 @@ CREATE TABLE `discovery_scan_options` (
 
 LOCK TABLES `discovery_scan_options` WRITE;
 /*!40000 ALTER TABLE `discovery_scan_options` DISABLE KEYS */;
-INSERT INTO `discovery_scan_options` VALUES (1,'UltraFast',1,'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,0,0,'22,135,62078','161','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (2,'SuperFast',1,'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,10,10,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (3,'Fast',1,'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,100,100,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (4,'Medium (Classic)',1,'Approximately 90 seconds per target. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An open|filtered port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.','n','n','y','y',0,4,1000,0,'62078','161','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 seconds per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y','y',0,3,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y','y',0,2,1000,1000,'62078','','','','','22','','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (1,'UltraFast',1,'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,0,0,'22,135,62078','161','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (2,'SuperFast',1,'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,10,10,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (3,'Fast',1,'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,100,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (4,'Medium (Classic)',1,'Approximately 90 seconds per target. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An open|filtered port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.','n','n','y','y',0,4,1000,0,'62078','161','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 seconds per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,1000,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y','y',0,3,1000,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y','y',0,2,1000,1000,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `discovery_scan_options` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `discovery_script_options`
+--
+
+DROP TABLE IF EXISTS `discovery_script_options`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `discovery_script_options` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `script` varchar(100) NOT NULL DEFAULT '',
+  `script_options` varchar(200) NOT NULL DEFAULT '',
+  `function` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `discovery_script_options`
+--
+
+LOCK TABLES `discovery_script_options` WRITE;
+/*!40000 ALTER TABLE `discovery_script_options` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discovery_script_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2305,6 +2338,39 @@ CREATE TABLE `nmap` (
 LOCK TABLES `nmap` WRITE;
 /*!40000 ALTER TABLE `nmap` DISABLE KEYS */;
 /*!40000 ALTER TABLE `nmap` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `nmap_script`
+--
+
+DROP TABLE IF EXISTS `nmap_script`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `nmap_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `port` int(5) NOT NULL DEFAULT '0',
+  `script` varchar(200) NOT NULL DEFAULT '',
+  `result` text NOT NULL,
+  `result_formatted` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `nmap_script_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nmap_script`
+--
+
+LOCK TABLES `nmap_script` WRITE;
+/*!40000 ALTER TABLE `nmap_script` DISABLE KEYS */;
+/*!40000 ALTER TABLE `nmap_script` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
