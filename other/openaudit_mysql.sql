@@ -1209,7 +1209,6 @@ CREATE TABLE `discovery_scan_options` (
   `options` text NOT NULL,
   `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n',
   `ports_stop_after` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ports_to_scripts` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1233,33 +1232,61 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
 UNLOCK TABLES;
 
 --
--- Table structure for table `discovery_script_options`
+-- Table structure for table `discovery_scan_to_script`
 --
 
-DROP TABLE IF EXISTS `discovery_script_options`;
+DROP TABLE IF EXISTS `discovery_scan_to_script`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `discovery_script_options` (
+CREATE TABLE `discovery_scan_to_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `discovery_scan_options_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `discovery_scripts_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '',
+  `weight` tinyint(3) unsigned NOT NULL DEFAULT '100',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `discovery_scan_to_script_discovery_scan_options_id` FOREIGN KEY (`discovery_scan_options_id`) REFERENCES `discovery_scan_options` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `discovery_scan_to_script`
+--
+
+LOCK TABLES `discovery_scan_to_script` WRITE;
+/*!40000 ALTER TABLE `discovery_scan_to_script` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discovery_scan_to_script` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `discovery_scripts`
+--
+
+DROP TABLE IF EXISTS `discovery_scripts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `discovery_scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(100) NOT NULL DEFAULT '',
+  `script` varchar(200) NOT NULL DEFAULT '',
   `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` text NOT NULL,
+  `function` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `discovery_script_options`
+-- Dumping data for table `discovery_scripts`
 --
 
-LOCK TABLES `discovery_script_options` WRITE;
-/*!40000 ALTER TABLE `discovery_script_options` DISABLE KEYS */;
-/*!40000 ALTER TABLE `discovery_script_options` ENABLE KEYS */;
+LOCK TABLES `discovery_scripts` WRITE;
+/*!40000 ALTER TABLE `discovery_scripts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discovery_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
