@@ -374,7 +374,7 @@ class M_devices extends MY_Model
             $sql = 'SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?';
             $data = array($id);
         } else if ($sub_resource === 'discovery_log') {
-            $sql = 'SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? ' . $limit;
+            $sql = 'SELECT discovery_log.id, discovery_log.discovery_id, discoveries.name AS `discoveries.name`, discovery_log.timestamp, discovery_log.file, discovery_log.function, discovery_log.message, discovery_log.command_status, discovery_log.command_output, discovery_log.command_time_to_execute, discovery_log.command FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) WHERE discovery_log.system_id = ? ' . $limit;
             $data = array($id);
         } else if ($sub_resource === 'edit_log') {
             $sql = 'SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? ' . $limit;
