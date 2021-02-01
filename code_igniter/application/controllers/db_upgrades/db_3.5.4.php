@@ -78,6 +78,46 @@ ALTER TABLE discoveries ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAU
 
 ALTER TABLE discoveries ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet;
 
+ALTER TABLE discovery_scan_options ADD `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n' after options;
+
+ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint unsigned NOT NULL DEFAULT 0 after ports_in_order;
+
+ALTER TABLE discovery_scan_options ADD `ports_to_scripts` text NOT NULL after ports_stop_after;
+
+DROP TABLE IF EXISTS discovery_script_options;
+
+CREATE TABLE `discovery_script_options` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `script` varchar(100) NOT NULL DEFAULT '',
+  `script_options` varchar(200) NOT NULL DEFAULT '',
+  `function` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS nmap_script;
+
+CREATE TABLE `nmap_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `port` int(5) NOT NULL DEFAULT '0',
+  `script` varchar(200) NOT NULL DEFAULT '',
+  `result` text NOT NULL,
+  `result_formatted` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '3.5.4' WHERE `name` = 'display_version';
@@ -160,6 +200,53 @@ $this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL D
 $this->alter_table('discoveries', 'seed_restrict_to_subnet', "ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip", 'add');
 
 $this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
+
+$this->alter_table('discovery_scan_options', 'ports_in_order', "ADD ports_in_order enum('','y','n') NOT NULL DEFAULT 'n' AFTER options", 'add');
+
+$this->alter_table('discovery_scan_options', 'ports_stop_after', "ADD ports_stop_after tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ports_in_order", 'add');
+
+$this->alter_table('discovery_scan_options', 'ports_to_scripts', "ADD ports_to_scripts text NOT NULL AFTER ports_stop_after", 'add');
+
+$sql = "DROP TABLE IF EXISTS discovery_script_options";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "CREATE TABLE `discovery_script_options` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `script` varchar(100) NOT NULL DEFAULT '',
+  `script_options` varchar(200) NOT NULL DEFAULT '',
+  `function` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DROP TABLE IF EXISTS nmap_script";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "CREATE TABLE `nmap_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `port` int(5) NOT NULL DEFAULT '0',
+  `script` varchar(200) NOT NULL DEFAULT '',
+  `result` text NOT NULL,
+  `result_formatted` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `nmap_script_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version'";
