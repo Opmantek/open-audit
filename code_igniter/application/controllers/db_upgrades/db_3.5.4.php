@@ -82,19 +82,29 @@ ALTER TABLE discovery_scan_options ADD `ports_in_order` enum('','y','n') NOT NUL
 
 ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint unsigned NOT NULL DEFAULT 0 after ports_in_order;
 
-ALTER TABLE discovery_scan_options ADD `ports_to_scripts` text NOT NULL after ports_stop_after;
+DROP TABLE IF EXISTS discovery_scan_to_script;
 
-DROP TABLE IF EXISTS discovery_script_options;
+CREATE TABLE `discovery_scan_to_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `discovery_scan_options_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `discovery_scripts_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `weight` tinyint(3) unsigned NOT NULL DEFAULT '100',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `discovery_scan_to_script_discovery_scan_options_id` FOREIGN KEY (`discovery_scan_options_id`) REFERENCES `discovery_scan_options` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `discovery_script_options` (
+DROP TABLE IF EXISTS discovery_scripts;
+
+CREATE TABLE `discovery_scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(100) NOT NULL DEFAULT '',
+  `script` varchar(200) NOT NULL DEFAULT '',
   `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` text NOT NULL,
+  `function` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -205,21 +215,35 @@ $this->alter_table('discovery_scan_options', 'ports_in_order', "ADD ports_in_ord
 
 $this->alter_table('discovery_scan_options', 'ports_stop_after', "ADD ports_stop_after tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ports_in_order", 'add');
 
-$this->alter_table('discovery_scan_options', 'ports_to_scripts', "ADD ports_to_scripts text NOT NULL AFTER ports_stop_after", 'add');
-
-$sql = "DROP TABLE IF EXISTS discovery_script_options";
+$sql = "DROP TABLE IF EXISTS discovery_scan_to_script";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "CREATE TABLE `discovery_script_options` (
+$sql = "CREATE TABLE `discovery_scan_to_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `discovery_scan_options_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `discovery_scripts_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `port` int(10) unsigned NOT NULL DEFAULT '0',
+  `weight` tinyint(3) unsigned NOT NULL DEFAULT '100',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `discovery_scan_to_script_discovery_scan_options_id` FOREIGN KEY (`discovery_scan_options_id`) REFERENCES `discovery_scan_options` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DROP TABLE IF EXISTS discovery_scripts";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "CREATE TABLE `discovery_scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(100) NOT NULL DEFAULT '',
+  `script` varchar(200) NOT NULL DEFAULT '',
   `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` text NOT NULL,
+  `function` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
