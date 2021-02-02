@@ -418,6 +418,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0045']->title = 'Invalid value supplied for attribute';
         $error_array['ERR-0045']->detail = 'The value as passed cannot be used for this attribute.';
 
+        $error_array['ERR-0046'] = new stdClass();
+        $error_array['ERR-0046']->code = 'ERR-0046';
+        $error_array['ERR-0046']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0046']->severity = 5;
+        $error_array['ERR-0046']->title = 'Invalid value supplied for ID';
+        $error_array['ERR-0046']->detail = 'The value as passed is not an integer, assuming a name, but not found.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);

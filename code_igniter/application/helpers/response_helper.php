@@ -1001,6 +1001,9 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! empty($result)) {
                         $log->summary = 'ID to Name match in configuration';
                         $id = intval($result[0]->id);
+                    } else {
+                        $log->summary = 'No ID to Name match in configuration';
+                        $id = null;
                     }
                 } else if ($collection === 'devices') {
                     // devices -> system table
@@ -1011,6 +1014,9 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! empty($result)) {
                         $log->summary = 'ID to Name match in devices';
                         $id = intval($result[0]->id);
+                    } else {
+                        $log->summary = 'No ID to Name match in devices';
+                        $id = null;
                     }
                 } else if ($collection === 'users') {
                     // Special case the username as we may be given user.name@domain.com for LDAP user, but we only use user.name in users.name
@@ -1023,6 +1029,9 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! empty($result)) {
                         $log->summary = 'ID to Name match in users';
                         $id = intval($result[0]->id);
+                    } else {
+                        $log->summary = 'No ID to Name match in users';
+                        $id = null;
                     }
                 } else if ($collection === 'orgs') {
                     // orgs.id, not *.org_id
@@ -1033,6 +1042,9 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! empty($result)) {
                         $log->summary = 'ID to Name match in orgs';
                         $id = intval($result[0]->id);
+                    } else {
+                        $log->summary = 'No ID to Name match in orgs';
+                        $id = null;
                     }
                 } else if ($collection === 'baselines_policies') {
                     // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
@@ -1043,6 +1055,9 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! empty($result)) {
                         $log->summary = 'ID to Name match in baselines_policies';
                         $id = intval($result[0]->id);
+                    } else {
+                        $log->summary = 'No ID to Name match in baselines_policies';
+                        $id = null;
                     }
                 } else if (in_array($collection, $no_org_id)) {
                     $id = 1;
@@ -1054,11 +1069,15 @@ if ( ! function_exists('response_get_id')) {
                     if ( ! empty($result)) {
                         $log->summary = 'ID to Name match in ' . $collection;
                         $id = intval($result[0]->id);
+                    } else {
+                        $log->summary = 'No ID to Name match in ' . $collection;
+                        $id = null;
                     }
                 }
-                if ( ! empty($id)) {
-                    $log->detail = 'ID: ' . $id;
-                    stdlog($log);
+                $log->detail = 'ID: ' . @$id;
+                stdlog($log);
+                if (empty($id)) {
+                    log_error('ERR-0046');
                 }
                 return $id;
             }
