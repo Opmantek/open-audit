@@ -44,7 +44,7 @@
 </div>
 
 
-<script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/chartist.min.js"></script>
+<script src="<?php echo $this->config->config['oa_web_folder']; ?>js/chartist.min.js"></script>
 
 <?php
 $series = '';

@@ -11,10 +11,10 @@ if (!empty($this->config->config['servers'])) {
 
             <!-- The left side 'header' of the navbar -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
-                    <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oac.png">
+                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>index.php">
+                    <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>images/oac.png">
                 </a>
-                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
+                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>index.php">
                     Open-AudIT Community <?php echo $this->config->config['display_version']; ?>
                 </a>
             </div>
@@ -420,7 +420,7 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <li>
-                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" alt=""/></a>
+                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-opmaps.png" alt=""/></a>
                     </li>
 
                     <?php
@@ -431,11 +431,11 @@ if (!empty($this->config->config['servers'])) {
                     }
                     ?>
                     <li>
-                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" alt=""/></a>
+                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-nmis.png" alt=""/></a>
                     </li>
 
                     <li>
-                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oae_sml.png" alt=""/></a>
+                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/oae_sml.png" alt=""/></a>
                     </li>
 
                     <li class="dropdown">

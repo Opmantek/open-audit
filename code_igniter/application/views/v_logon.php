@@ -43,13 +43,13 @@ header("X-Frame-Options: DENY");
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta http-equiv="refresh" content="300" />
-    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>favicon.png" type="image/x-icon" />
     <title>Open-AudIT</title>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/font-awesome.min.css">
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/jquery.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap.min.js"></script>
 </head>
 <body onload="document.form.username.focus();">
 <br />
@@ -86,7 +86,7 @@ if (!empty($this->config->config['internal_version']) and $this->config->config[
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-sm-12 text-center">
-                        <img src='<?php echo $this->config->config['oa_web_folder'] ?>/images/logo.png' alt='logo' border='0' /><br /><br />
+                        <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo.png' alt='logo' border='0' /><br /><br />
                     </div>
 
                     <div class="form-group text-center">
@@ -157,15 +157,15 @@ if (!empty($temp)) {
     {
         var testWin = navigator.userAgent.match(/Windows NT/i);
         if (testWin) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/windows";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>index.php/util/audit_my_pc/windows";
         }
         var testLin = navigator.userAgent.match(/Linux /i);
         if (testLin) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/linux";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>index.php/util/audit_my_pc/linux";
         }
         var testOsx = navigator.userAgent.match(/Mac OS X/i);
         if (testOsx) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/osx";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>index.php/util/audit_my_pc/osx";
         }
     }
 
