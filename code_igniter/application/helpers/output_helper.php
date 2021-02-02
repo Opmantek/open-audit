@@ -790,7 +790,7 @@ if ( ! function_exists('output')) {
                 $item = filter_response($item);
             }
         } else if (is_string($response)) {
-            $response = htmlentities($response, ENT_QUOTES);
+            $response = htmlentities($response, ENT_QUOTES, 'UTF-8');
             return $response;
         } else {
             return $response;
