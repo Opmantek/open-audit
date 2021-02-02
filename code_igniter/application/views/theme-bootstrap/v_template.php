@@ -64,14 +64,14 @@ if (!empty($this->response->meta->collection) and $this->response->meta->collect
     <!-- Open-AudIT specific items -->
     <script>
 <?php
-if (isset($this->response->meta->id) and !is_null($this->response->meta->id)) {
-    echo "        var id = '" . $this->response->meta->id . "';\n";
+if (isset($meta->id) and !is_null($meta->id)) {
+    echo "        var id = '" . $meta->id . "';\n";
 }
-if (!empty($this->response->meta->collection)) {
-    echo "        var collection = '" . $this->response->meta->collection . "';\n";
+if (!empty($meta->collection)) {
+    echo "        var collection = '" . $meta->collection . "';\n";
 }
-if (!empty($this->response->meta->baseurl)) {
-    echo "        var baseurl = '" . $this->response->meta->baseurl . "';\n";
+if (!empty($meta->baseurl)) {
+    echo "        var baseurl = '" . $meta->baseurl . "';\n";
 } else {
     echo "        var baseurl = '';\n";
 }
