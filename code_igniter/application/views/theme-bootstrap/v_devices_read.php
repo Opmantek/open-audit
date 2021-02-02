@@ -129,42 +129,42 @@ if (empty($data['mount_point'])) {
           <div class="panel-body">
               <ul class="list-group">
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Cellular Details'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Cellular Details'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom_fields"><?php echo __('Custom Fields'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/custom.svg"/><a href="#" data-menuitem="custom_fields"><?php echo __('Custom Fields'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/discovery_log.svg"/><a href="#" data-menuitem="discovery_log"><?php echo __('Discovery Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/discovery_log.svg"/><a href="#" data-menuitem="discovery_log"><?php echo __('Discovery Log'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="edit_log"><?php echo __('Edit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/edit_log.svg"/><a href="#" data-menuitem="edit_log"><?php echo __('Edit Log'); ?></a></li>
 
                 <?php if (!empty($data['ip'])) { ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/ip_address.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/ip_address.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
                 <?php } ?>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
 
                 <?php if ($data['system']->type != 'computer' and !empty($data['network'])) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/network.svg"/><a href="#" data-menuitem="network"><?php echo __('Network'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/network.svg"/><a href="#" data-menuitem="network"><?php echo __('Network'); ?></a></li>
                 <?php } ?>
 
                 <?php if (isset($data['nmap'])) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
                 <?php } ?>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
 
                 <?php if (isset($data['windows'])) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
                 <?php } ?>
 
               </ul>
@@ -197,7 +197,7 @@ if (empty($data['mount_point'])) {
                 foreach ($hardware as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }
@@ -234,27 +234,27 @@ if (empty($data['mount_point'])) {
                 <ul class="list-group">
                 <?php
                 if (!empty($data['software'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software.svg"/><a href="#" data-menuitem="software"><?php echo __('Software'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software.svg"/><a href="#" data-menuitem="software"><?php echo __('Software'); ?></a></li>
                 <?php
                 }
                 if (!empty($software_odbc)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver"><?php echo __('Software ODBC Driver'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver"><?php echo __('Software ODBC Driver'); ?></a></li>
                 <?php
                 }
                 if (!empty($software_update)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update"><?php echo __('Software Update'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software_update.svg"/><a href="#" data-menuitem="software_update"><?php echo __('Software Update'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['software_key'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_key.svg"/><a href="#" data-menuitem="software_key"><?php echo __('Software Key'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software_key.svg"/><a href="#" data-menuitem="software_key"><?php echo __('Software Key'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['service'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="service"><?php echo __('Service'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/service.svg"/><a href="#" data-menuitem="service"><?php echo __('Service'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['server'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/server.svg"/><a href="#" data-menuitem="server"><?php echo __('Server'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/server.svg"/><a href="#" data-menuitem="server"><?php echo __('Server'); ?></a></li>
                 <?php
                 }
                 ?>
@@ -292,7 +292,7 @@ if (empty($data['mount_point'])) {
                 foreach ($software as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }

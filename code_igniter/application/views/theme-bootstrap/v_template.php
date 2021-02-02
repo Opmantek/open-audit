@@ -39,16 +39,15 @@ include 'v_lang.php';
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <!-- <meta http-equiv="refresh" content="300" /> -->
-    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>favicon.png" type="image/x-icon" />
     <title>Open-AudIT</title>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-table.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-dropdown.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-dropdown.css">
 <?php if (!empty($this->response->meta->action) and $this->response->meta->action == 'read_partition_graph') { ?>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/chartist.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/chartist.min.css">
 <?php } ?>
 
 
@@ -57,11 +56,11 @@ if (!empty($this->response->meta->collection) and $this->response->meta->collect
         <script src="//maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>
     <?php
 } ?>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-table.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.tablesorter.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-filestyle.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/jquery.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap-table.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/jquery.tablesorter.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap-filestyle.min.js"></script>
     <!-- Open-AudIT specific items -->
     <script>
 <?php
@@ -85,8 +84,8 @@ if (!empty($this->response->meta->baseurl)) {
         }
 
     </script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/open-audit.js"></script>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/open-audit.css">
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/open-audit.js"></script>
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/open-audit.css">
 </head>
 <body>
 
