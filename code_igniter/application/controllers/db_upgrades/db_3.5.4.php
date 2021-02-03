@@ -72,13 +72,23 @@ DELETE FROM `configuration` WHERE name = 'delete_noncurrent_radio';
 
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
 
+ALTER TABLE discoveries DROP IF EXISTS seed_ip;
+
 ALTER TABLE discoveries ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER status;
+
+ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_subnet;
 
 ALTER TABLE discoveries ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip;
 
+ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_private;
+
 ALTER TABLE discoveries ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet;
 
+ALTER TABLE discovery_scan_options DROP IF EXISTS ports_in_order;
+
 ALTER TABLE discovery_scan_options ADD `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n' after options;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS ports_stop_after;
 
 ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint unsigned NOT NULL DEFAULT 0 after ports_in_order;
 
@@ -127,6 +137,10 @@ CREATE TABLE `nmap_script` (
   KEY `system_id` (`system_id`),
   CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE system DROP IF EXISTS os_arch;
+
+ALTER TABLE system ADD `os_arch` varchar(50) NOT NULL DEFAULT '' AFTER os_bit;
 
 UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version';
 
@@ -204,14 +218,33 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+$sql = "ALTER TABLE discoveries DROP IF EXISTS seed_ip";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER status", 'add');
 
+$sql = "ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_subnet";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 $this->alter_table('discoveries', 'seed_restrict_to_subnet', "ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip", 'add');
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_private";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
 
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ports_in_order";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 $this->alter_table('discovery_scan_options', 'ports_in_order', "ADD ports_in_order enum('','y','n') NOT NULL DEFAULT 'n' AFTER options", 'add');
+
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ports_stop_after";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discovery_scan_options', 'ports_stop_after', "ADD ports_stop_after tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ports_in_order", 'add');
 
@@ -271,6 +304,12 @@ $sql = "CREATE TABLE `nmap_script` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
+
+$sql = "ALTER TABLE system DROP IF EXISTS os_arch";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('system', 'os_arch', "ADD os_arch varchar(50) NOT NULL DEFAULT '' AFTER os_bit", 'add');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version'";

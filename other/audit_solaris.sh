@@ -406,6 +406,7 @@ system_pc_os_bit=`isainfo -kv | awk '{print $1}'`
 if [ -z $system_pc_os_bit ]; then
         system_pc_os_bit=32
 fi
+system_pc_os_arch=`uname -m 2>/dev/null`
 
 # Get the System Memory
 system_pc_memory=`prtconf -v | head -3 | grep Mem | cut -d" " -f3,6 2>/dev/null`
@@ -450,6 +451,7 @@ echo "          <manufacturer>"$(escape_xml "$system_manufacturer")"</manufactur
 #echo "          <uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
 echo "          <form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
 echo "          <os_bit>"$(escape_xml "$system_pc_os_bit")"</os_bit>" >> $xml_file
+echo "          <os_arch>"$(escape_xml "$system_pc_os_arch")"</os_arch>" >> $xml_file
 echo "          <memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
 echo "          <processor_count>"$(escape_xml "$processor_physical_count")"</processor_count>" >> $xml_file
 echo "          <os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file

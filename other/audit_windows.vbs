@@ -981,6 +981,7 @@ for each objItem in colItems
     system_os_family = os_family(objItem.Caption)
     system_os_name = objItem.Caption
     system_os_name = replace(system_os_name, "(R)", "")
+    system_os_arch = objItem.OSArchitecture;
     system_description = objItem.Description
     if details_to_lower = "y" then system_description = lcase(system_description) end if
     OSInstall = objItem.InstallDate
@@ -1338,6 +1339,7 @@ result.WriteText "      <manufacturer>" & escape_xml(system_manufacturer) & "</m
 result.WriteText "      <uptime>" & escape_xml(system_uptime) & "</uptime>" & vbcrlf
 result.WriteText "      <form_factor>" & escape_xml(system_form_factor) & "</form_factor>" & vbcrlf
 result.WriteText "      <os_bit>" & escape_xml(address_width) & "</os_bit>" & vbcrlf
+result.WriteText "      <os_arch>" & escape_xml(system_os_arch) & "</os_arch>" & vbcrlf
 result.WriteText "      <memory_count>" & escape_xml(system_pc_memory) & "</memory_count>" & vbcrlf
 result.WriteText "      <processor_count>" & escape_xml(system_pc_num_processor) & "</processor_count>" & vbcrlf
 result.WriteText "      <os_installation_date>" & escape_xml(system_pc_date_os_installation) & "</os_installation_date>" & vbcrlf
