@@ -3678,6 +3678,7 @@ CREATE TABLE `system` (
   `uptime` varchar(50) NOT NULL DEFAULT '',
   `form_factor` varchar(50) NOT NULL DEFAULT '',
   `os_bit` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `os_arch` varchar(50) NOT NULL DEFAULT '',
   `memory_count` bigint(20) unsigned NOT NULL DEFAULT '0',
   `processor_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `storage_count` int(10) unsigned NOT NULL DEFAULT '0',

@@ -154,6 +154,7 @@ system_model=$(system_profiler SPHardwareDataType | grep 'Model Identifier:' | c
 system_uptime=""
 system_form_factor=""
 system_pc_os_bit="64"
+system_pc_os_arch=$(uname -m 2>/dev/null)
 system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d':' -f2 | sed 's/^ *//g' | cut -d' ' -f1)
 system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
 processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
@@ -182,6 +183,7 @@ echo  "     <manufacturer_code>$manufacturer_code</manufacturer_code>" >> $xml_f
 echo  "     <uptime>$system_uptime</uptime>" >> $xml_file
 echo  "     <form_factor></form_factor>" >> $xml_file
 echo  "     <os_bit>$system_pc_os_bit</os_bit>" >> $xml_file
+echo  "     <os_arch>$system_pc_os_arch</os_arch>" >> $xml_file
 echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
 echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
 echo  "     <os_installation_date>$system_pc_date_os_installation</os_installation_date>" >> $xml_file
