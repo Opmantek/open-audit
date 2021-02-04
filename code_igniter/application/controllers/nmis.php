@@ -577,6 +577,8 @@ class Nmis extends MY_Controller
     */
     public function collection()
     {
+        redirect('devices');
+        exit;
         $this->load->model('m_devices');
         $this->response->meta->internal->join = '';
         $this->response->meta->internal->properties = 'system.id, system.name, system.ip, system.nmis_manage, system.type, system.nmis_name, system.omk_uuid, system.nmis_notes, system.nmis_role, system.nmis_business_service, system.nmis_group';
