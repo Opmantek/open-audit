@@ -270,7 +270,7 @@ if (!empty($this->config->config['servers'])) {
                                                     <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Import Devices from Audit Script Result'); ?></a></li>
                                                     <li><a href='<?php echo $link; ?>/nmis/create'><?php echo __('Import Devices from NMIS'); ?></a></li>
                                                     <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'><?php echo __('Export Devices to CSV'); ?></a></li>
-                                                    <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li>
+                                                    <!-- <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li> -->
                                                 <?php } else { ?>
                                                     <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Create').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                                     <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'><?php echo __('Import').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
