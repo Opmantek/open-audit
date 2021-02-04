@@ -263,7 +263,7 @@ if (!function_exists('audit_convert')) {
             if ( ! empty($audit->system->id)) {
                 $log->system_id = intval($audit->system->id);
             }
-            if ( ! empty($audit->system->ip)) {
+            if ( ! empty($audit->system->ip) && empty($log->ip)) {
                 $log->ip = $audit->system->ip;
             }
         }
