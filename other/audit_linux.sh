@@ -686,8 +686,8 @@ if [ "$system_os_family" == "\"amzn\"" ]; then
 	system_os_family="Amazon"
 fi
 
-if [ "$system_os_family" == "debian" ]; then
-	system_os_family="Debian GNU/Linux"
+if [ "$system_os_family" == "debian" ] || [ "$system_os_family" == "Debian GNU/Linux" ]; then
+	system_os_family="Debian"
 fi
 
 if [ "$system_os_family" == "ubuntu" ]; then
