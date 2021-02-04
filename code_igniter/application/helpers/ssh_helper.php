@@ -170,7 +170,7 @@ if ( !  function_exists('scp')) {
         }
 
         $status = true;
-        $log->command = 'sftp ' . $source . ' to ' . $ip . ':' . $destination;
+        $log->command = 'sftp ' . $source . ' to ' . @$username . '@' . $ip . ':' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file to ' . $ip;
         if ($ssh->put($destination, $source, NET_SFTP_LOCAL_FILE) === false) {
@@ -298,7 +298,7 @@ if ( !  function_exists('scp_get')) {
             return false;
         }
 
-        $log->command = 'sftp ' . $source . ' to ' . $destination;
+        $log->command = 'sftp ' . @$username . '@' . @$ip . ':' . @$source . ' to ' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file from ' . $ip;
         try {
@@ -474,9 +474,6 @@ if ( !  function_exists('ssh_command')) {
         }
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_output = @json_encode($result);
-        if (stripos($command, 'audit_') !== false && stripos($command, 'submit_online') !== false and intval($CI->config->config['log_level']) < 7) {
-            $log->command_output = 'Audit console output removed.';
-        }
         $log->command_status = 'success';
         discovery_log($log);
         unset($log);
