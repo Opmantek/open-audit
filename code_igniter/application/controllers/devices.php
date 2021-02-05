@@ -394,7 +394,7 @@ class Devices extends MY_Controller
         if (empty($this->response->meta->ids)) {
             $this->response->meta->ids = '0';
         }
-        $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in ({$this->response->meta->ids})";
+        $sql = "SELECT system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status, orgs.name FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . $this->response->meta->internal->filter . " AND system.id IN (" . $this->response->meta->ids . ")";
         $query = $this->db->query($sql);
         // TODO - change the below to use this->response->included
         $this->response->devices = $query->result();
