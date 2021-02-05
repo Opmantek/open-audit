@@ -60,7 +60,7 @@ if ( ! function_exists('response_create')) {
         $instance->roles = $instance->m_roles->collection(1);
         $instance->load->model('m_users');
 
-        // Define our constans for use in htmlspecialchars
+        // Define our constants for use in htmlspecialchars
         if ( ! defined('CHARSET')) {
             define('CHARSET', 'UTF-8');
             if (phpversion() >= 5.4) {
@@ -135,7 +135,7 @@ if ( ! function_exists('response_create')) {
         $response->meta->received_data = array();
         $response->meta->sql = array();
 
-        // Need to set vesrion FIRST because it may impact routes
+        // Need to set version FIRST because it may impact routes
         $response->meta->version = response_get_version($instance->uri->segments,
                                                         $instance->input->get_request_header('Accept'));
 
@@ -205,11 +205,10 @@ if ( ! function_exists('response_create')) {
                                                                   $response->meta->collection,
                                                                   $response->meta->format);
 
-        // depends on version affecting URI, sub_resource
-        $temp = response_get_sub_resource_id($response->meta->sub_resource,
-                                            intval((string)urldecode($instance->uri->segment(4, ''))),
-                                            $instance->input->get('ids'),
-                                            $instance->input->post('ids'));
+        // depends on version affecting URI
+        $temp = response_get_sub_resource_id(intval((string)urldecode($instance->uri->segment(4, ''))),
+                                            $instance->input->get('id'),
+                                            $instance->input->post('id'));
         if ( ! empty($temp)) {
             $response->meta->sub_resource_id = $temp;
         }
@@ -256,7 +255,7 @@ if ( ! function_exists('response_create')) {
                                                         $response->meta->format);
 
         // depends on version affecting URI, collection
-        $response->meta->sort = response_get_sort($response->meta->collection);
+        $response->meta->sort = response_get_sort($response->meta->collection, $instance->input->get('sort'), $instance->input->post('sort'));
         $response->meta->internal->sort = '';
         if ($response->meta->sort !== '') {
             $response->meta->internal->sort = 'ORDER BY ' . $response->meta->sort;
@@ -272,7 +271,7 @@ if ( ! function_exists('response_create')) {
         }
 
         // no dependencies - set in GET or POST
-        $response->meta->offset = response_get_offset();
+        $response->meta->offset = response_get_offset($instance->input->get('offset'), $instance->input->post('offset'));
 
         // depends on format - set in GET or POST
         $response->meta->limit = response_get_limit($instance->input->get('limit'),
@@ -287,7 +286,11 @@ if ( ! function_exists('response_create')) {
         }
 
         // depends on collection
-        $response->meta->properties = response_get_properties($response->meta->collection, $response->meta->action, $response->meta->sub_resource);
+        $response->meta->properties = response_get_properties($response->meta->collection,
+                                                                $response->meta->action,
+                                                                $response->meta->sub_resource,
+                                                                $instance->input->get('properties'),
+                                                                $instance->input->post('properties'));
 
         // depends on properties, collection, sub_resource
         $response->meta->internal->properties = response_get_internal_properties($response->meta->properties, $response->meta->collection, $response->meta->sub_resource);
@@ -353,7 +356,7 @@ if ( ! function_exists('response_get_action')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_action';
         $log->status = 'parsing';
-        $log->summary = 'get action';
+        $log->summary = '';
 
         $instance = & get_instance();
         $collection = $response->meta->collection;
@@ -365,10 +368,9 @@ if ( ! function_exists('response_get_action')) {
         $sub_resource = $response->meta->sub_resource;
         // NOTE - sub_resource_id may or may not be set. We only test for ! empty, so @ is fine.
         $sub_resource_id = @$response->meta->sub_resource_id;
-
         $action = '';
-
         $valid_actions = response_valid_actions();
+
         if (in_array($instance->uri->segment(2), $valid_actions)) {
             $action = $instance->uri->segment(2);
         }
@@ -510,9 +512,10 @@ if ( ! function_exists('response_get_collection')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_collection';
         $log->status = 'parsing';
-        $log->summary = 'get data';
+        $log->summary = '';
 
         $collections = response_valid_collections();
+
         if ( ! empty($collection)) {
             if (in_array($collection, $collections)) {
                 $log->summary = 'Set collection according to GET.';
@@ -537,7 +540,7 @@ if ( ! function_exists('response_get_collection')) {
 
 if ( ! function_exists('response_get_current')) {
     /**
-     * Return the current ettribute derived from the HEADERS or URL (get) or BODY (post)
+     * Return the current attribute derived from the URL (get) or BODY (post)
      * @return string The response format requested
      */
     function response_get_current($get = '', $post = '')
@@ -548,10 +551,12 @@ if ( ! function_exists('response_get_current')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_current';
         $log->status = 'parsing';
-        $log->summary = 'get current';
+        $log->summary = '';
 
         $current = 'y';
+        $valid_current = response_valid_current();
         $log->summary = 'Set current to default.';
+
         if ( ! empty($get)) {
             $current = $get;
             $log->summary = 'Set current according to GET.';
@@ -560,7 +565,6 @@ if ( ! function_exists('response_get_current')) {
             $current = $post;
             $log->summary = 'Set current according to POST.';
         }
-        $valid_current = response_valid_current();
         if ( ! in_array($current, $valid_current)) {
             $log->summary = 'Set current to y, because unknown current: ' . $current;
             $log->status = 'warning';
@@ -586,7 +590,7 @@ if ( ! function_exists('response_get_data')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_data';
         $log->status = 'parsing';
-        $log->summary = 'get data';
+        $log->summary = '';
 
         $data_supplied_by = '';
         $received_data = array();
@@ -607,7 +611,6 @@ if ( ! function_exists('response_get_data')) {
                 $data_supplied_by = 'json';
             }
         }
-
         if ($request_method === 'PATCH') {
             $data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
             $data_object = json_decode($data_json);
@@ -648,7 +651,7 @@ if ( ! function_exists('response_get_debug')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_debug';
         $log->status = 'parsing';
-        $log->summary = 'get debug';
+        $log->summary = '';
 
         $instance = & get_instance();
         $debug = false;
@@ -658,6 +661,7 @@ if ( ! function_exists('response_get_debug')) {
             $log->summary = 'Set debug according to GET.';
             $log->detail = 'DEBUG: true';
             $instance->output->enable_profiler(true);
+            $instance->config->config['log_level'] = 7;
             $debug = true;
             stdlog($log);
         }
@@ -665,6 +669,7 @@ if ( ! function_exists('response_get_debug')) {
             $log->summary = 'Set debug according to POST.';
             $log->detail = 'DEBUG: true';
             $instance->output->enable_profiler(true);
+            $instance->config->config['log_level'] = 7;
             $debug = true;
             stdlog($log);
         }
@@ -672,6 +677,7 @@ if ( ! function_exists('response_get_debug')) {
             $log->summary = 'Set debug according to HEADER.';
             $log->detail = 'DEBUG: true';
             $instance->output->enable_profiler(true);
+            $instance->config->config['log_level'] = 7;
             $debug = true;
             stdlog($log);
         }
@@ -679,7 +685,7 @@ if ( ! function_exists('response_get_debug')) {
     }
 }
 
-if ( ! function_exists('response_get_filter')) {
+if ( ! function_exists('response_get_query_filter')) {
     /**
      * [response_get_filter description]
      * @param  [type] $query_string [description]
@@ -693,10 +699,9 @@ if ( ! function_exists('response_get_filter')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_filter';
         $log->status = 'parsing';
-        $log->summary = 'get filter';
+        $log->summary = '';
 
         $instance = & get_instance();
-
         $reserved_words = response_valid_reserved_words();
         $filter = array();
 
@@ -856,7 +861,7 @@ if ( ! function_exists('response_get_format')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_format';
         $log->status = 'parsing';
-        $log->summary = 'get version';
+        $log->summary = '';
 
         $format = 'json';
 
@@ -902,7 +907,7 @@ if ( ! function_exists('response_get_groupby')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_groupby';
         $log->status = 'parsing';
-        $log->summary = 'get action';
+        $log->summary = '';
 
         $instance = & get_instance();
         $groupby = '';
@@ -963,7 +968,7 @@ if ( ! function_exists('response_get_id')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_id';
         $log->status = 'parsing';
-        $log->summary = 'get id';
+        $log->summary = '';
 
         $instance = & get_instance();
 
@@ -990,7 +995,9 @@ if ( ! function_exists('response_get_id')) {
                     $tables = $instance->db->list_tables();
                     // add an entry for devices collection <-> system table
                     $tables[] = 'devices';
+                    $log->summary = 'ID to Name match in database';
                     if ( ! in_array($id, $tables)) {
+                        $log->summary = 'No ID to Name match in database';
                         $id = null;
                     }
                 } else if ($collection === 'configuration') {
@@ -1060,6 +1067,7 @@ if ( ! function_exists('response_get_id')) {
                         $id = null;
                     }
                 } else if (in_array($collection, $no_org_id)) {
+                    $log->summary = 'No ID required for ' . $collection;
                     $id = 1;
                 } else if (in_array($collection, $collections)) {
                     $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
@@ -1098,7 +1106,7 @@ if ( ! function_exists('response_get_ids')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_ids';
         $log->status = 'parsing';
-        $log->summary = 'get ids';
+        $log->summary = '';
 
         $device_ids = '';
 
@@ -1145,9 +1153,10 @@ if ( ! function_exists('response_get_include')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_include';
         $log->status = 'parsing';
-        $log->summary = 'get include';
+        $log->summary = '';
 
         $include = '';
+        $valid_includes = response_valid_includes();
 
         // We only use include for devices.
         if ($collection !== 'devices') {
@@ -1162,7 +1171,6 @@ if ( ! function_exists('response_get_include')) {
             $include = $post;
             $log->sumary = 'Set include according to POST. ';
         }
-        $valid_includes = response_valid_includes();
         if (($format === 'screen' && empty($include)) OR $include === '*' OR $include === 'all') {
             $include = implode(',', $valid_includes);
         } else {
@@ -1199,7 +1207,7 @@ if ( ! function_exists('response_get_internal_filter')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_internal_filter';
         $log->status = 'parsing';
-        $log->summary = 'get internal filter';
+        $log->summary = '';
 
         $instance = & get_instance();
         $reserved_words = response_valid_reserved_words();
@@ -1262,9 +1270,10 @@ if ( ! function_exists('response_get_internal_join')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_internal_join';
         $log->status = 'parsing';
-        $log->summary = 'get internal_properties';
+        $log->summary = '';
 
         $join = '';
+
         if ($collection === 'devices') {
             $valid_sub_resources = response_valid_sub_resources();
             $used_sub_resources = array();
@@ -1304,7 +1313,7 @@ if ( ! function_exists('response_get_internal_properties')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_internal_properties';
         $log->status = 'parsing';
-        $log->summary = 'get internal_properties';
+        $log->summary = '';
 
         $internal_properties = '';
 
@@ -1332,7 +1341,7 @@ if ( ! function_exists('response_get_internal_properties')) {
 
             // Uncomment the below to enable fully qualified column names.
             // NOTE - this would break the current HTML templates and change the API response.
-            // Maybe enable for v4 (if ever)
+            // Maybe enable for v2 (if ever)
             // $fields = $instance->db->list_fields($temp);
             // for ($i=0; $i < count($fields); $i++) {
             //     $fields[$i] = $temp . '.' . $fields[$i] . ' AS `' . $temp . '.' . $fields[$i] . '`';
@@ -1363,9 +1372,8 @@ if ( ! function_exists('response_get_limit')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_limit';
         $log->status = 'parsing';
-        $log->summary = 'get action';
+        $log->summary = '';
 
-        $instance = & get_instance();
         $limit = 0;
 
         if ( ! empty($get)) {
@@ -1403,10 +1411,8 @@ if ( ! function_exists('response_get_links')) {
      */
     function response_get_links($collection = '', $id = '', $sub_resource = '', $sub_resource_id = '')
     {
-
         $instance = & get_instance();
         $links = new stdClass();
-
         $links->self = $instance->config->config['base_url'] . 'index.php/' . $collection;
         if ( ! is_null($id)) {
             $links->self .= '/' . $id;
@@ -1421,7 +1427,6 @@ if ( ! function_exists('response_get_links')) {
         $links->last = null;
         $links->next = null;
         $links->prev = null;
-
         return $links;
     }
 }
@@ -1431,7 +1436,7 @@ if ( ! function_exists('response_get_offset')) {
      * Determine the requested offset
      * @return [type] [description]
      */
-    function response_get_offset()
+    function response_get_offset($get = '', $post = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1439,17 +1444,17 @@ if ( ! function_exists('response_get_offset')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_offset';
         $log->status = 'parsing';
-        $log->summary = 'get action';
+        $log->summary = '';
 
         $offset = 0;
 
-        if (isset($_GET['offset'])) {
-            $offset = intval($_GET['offset']);
+        if ( ! empty($get)) {
+            $offset = intval($get);
             $log->summary = 'Set offset according to GET.';
             stdlog($log);
         }
-        if (isset($_POST['offset'])) {
-            $offset = intval($_POST['offset']);
+        if ( ! empty($post)) {
+            $offset = intval($post);
             $log->summary = 'Set offset according to POST.';
             stdlog($log);
         }
@@ -1476,7 +1481,10 @@ if ( ! function_exists('response_get_org_list')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_org_list';
         $log->status = 'parsing';
-        $log->summary = 'get org list';
+        $log->summary = '';
+
+        $instance = & get_instance();
+        $org_list = array();
 
         if ($collection === '' OR $user === null) {
             $log->severity = 5;
@@ -1484,10 +1492,6 @@ if ( ! function_exists('response_get_org_list')) {
             stdlog($log);
             return;
         }
-
-        $instance = & get_instance();
-
-        $org_list = array();
         switch ($collection) {
             case 'agents':
             case 'applications':
@@ -1560,7 +1564,6 @@ if ( ! function_exists('response_get_org_list')) {
                 break;
         }
         $org_list = implode(',', $org_list);
-
         $log->detail = 'ORG LIST: ' . json_encode($org_list);
         stdlog($log);
         return $org_list;
@@ -1585,10 +1588,10 @@ if ( ! function_exists('response_get_permission_ca')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_permission_ca';
         $log->status = 'parsing';
-        $log->summary = 'get permission for collection / action';
+        $log->summary = '';
 
         $instance = & get_instance();
-
+        $permissions = response_valid_permissions($collection);
         $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action;
 
         if (empty($instance->roles) && intval($instance->config->config['internal_version']) >= 20160904) {
@@ -1607,8 +1610,6 @@ if ( ! function_exists('response_get_permission_ca')) {
             stdlog($log);
             return false;
         }
-
-        $permissions = response_valid_permissions($collection);
 
         if ($collection === 'users' && intval($user->id) === intval($id) && $action === 'read' ) {
             // Always allow a user to READ their own object
@@ -1677,11 +1678,10 @@ if ( ! function_exists('response_get_permission_id')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_permission_id';
         $log->status = 'parsing';
-        $log->summary = 'get permission for collection / action / ID';
-
-        $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action . ' ID: ' . @$id;
+        $log->summary = '';
 
         $instance = & get_instance();
+        $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action . ' ID: ' . @$id;
         $collections = array('charts', 'configuration', 'database', 'errors', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
 
         if ( empty($id) OR intval($id) === 888888888888 OR in_array($collection, $collections)) {
@@ -1747,7 +1747,7 @@ if ( ! function_exists('response_get_properties')) {
      * @param  string $sub_resource The request sub_resource (if exists)
      * @return string               A comma separeted list of properties
      */
-    function response_get_properties($collection = '', $action = '', $sub_resource = '')
+    function response_get_properties($collection = '', $action = '', $sub_resource = '', $get = '', $post = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1755,7 +1755,7 @@ if ( ! function_exists('response_get_properties')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_properties';
         $log->status = 'parsing';
-        $log->summary = 'get properties';
+        $log->summary = '';
 
         $instance = & get_instance();
         $properties = '';
@@ -1769,8 +1769,8 @@ if ( ! function_exists('response_get_properties')) {
             $table = 'system';
         }
 
-        if ( ! empty($_GET['properties'])) {
-            $properties = $_GET['properties'];
+        if ( ! empty($get)) {
+            $properties = $get;
             $log->summary = 'Set properties according to GET.';
             // Allow for format of properties=["id", "name", "status"]
             if ($temp = json_decode($properties)) {
@@ -1778,8 +1778,8 @@ if ( ! function_exists('response_get_properties')) {
                 $log->summary = 'Set properties according to GET JSON.';
             }
         }
-        if ( ! empty($_POST['properties'])) {
-            $properties = $_POST['properties'];
+        if ( ! empty($post)) {
+            $properties = $post;
             $log->summary = 'Set properties according to POST.';
             // Allow for format of properties=["id", "name", "status"]
             if ($temp = json_decode($properties)) {
@@ -1845,6 +1845,7 @@ if ( ! function_exists('response_get_properties')) {
             $properties = implode(',', $properties);
         }
         $temp = $properties;
+        // ONLY allow letters, numbers, dot, underscore, command and *.
         $properties = preg_replace('/[^A-Za-z0-9\.\_\,\*]/', '', $properties);
         if ($temp !== $properties) {
             // something was filtered
@@ -1864,7 +1865,7 @@ if ( ! function_exists('response_get_sort')) {
      * @param  string $collection The request collection
      * @return string             [description]
      */
-    function response_get_sort($collection = '')
+    function response_get_sort($collection = '', $get = '', $post = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1872,17 +1873,17 @@ if ( ! function_exists('response_get_sort')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_sort';
         $log->status = 'parsing';
-        $log->summary = 'get sub_resource';
+        $log->summary = '';
 
         $instance = & get_instance();
         $sort = '';
 
-        if (isset($_GET['sort'])) {
-            $sort = $_GET['sort'];
+        if ( ! empty($get)) {
+            $sort = $get;
             $log->summary = 'Set sort according to GET.';
         }
-        if (isset($_POST['sort'])) {
-            $sort = $_POST['sort'];
+        if (! empty($post)) {
+            $sort = $post;
             $log->summary = 'Set sort according to POST.';
         }
         $sort = str_replace('+', '', $sort);
@@ -1940,7 +1941,7 @@ if ( ! function_exists('response_get_sub_resource')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_sub_resource';
         $log->status = 'parsing';
-        $log->summary = 'get sub_resource';
+        $log->summary = '';
 
         $sub_resource = '';
 
@@ -1949,7 +1950,7 @@ if ( ! function_exists('response_get_sub_resource')) {
             $log->summary = 'Set sub_resource according to GET.';
         }
         if ( ! empty($post)) {
-            $sub_resource = $_POST['sub_resource'];
+            $sub_resource = $post;
             $log->summary = 'Set sub_resource according to POST.';
         }
         if ( ! empty($uri)) {
@@ -1984,7 +1985,7 @@ if ( ! function_exists('response_get_sub_resource_id')) {
      * @param  string $sub_resource From $response->meta
      * @return int                  The requested resource ID
      */
-    function response_get_sub_resource_id($sub_resource = '')
+    function response_get_sub_resource_id($uri = '', $get = '', $post = '')
     {
         $log = new stdClass();
         $log->severity = 7;
@@ -1992,21 +1993,20 @@ if ( ! function_exists('response_get_sub_resource_id')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_sub_resource_id';
         $log->status = 'parsing';
-        $log->summary = 'get sub_resource_id';
+        $log->summary = '';
 
-        $instance = & get_instance();
         $sub_resource_id = '';
 
-        if ( ! empty($sub_resource)) {
-            $sub_resource_id = intval((string)urldecode($instance->uri->segment(4, '')));
+        if ( ! empty($uri)) {
+            $sub_resource_id = intval((string)urldecode($uri));
             $log->summary = 'Set sub_resource_id according to URI.';
         }
-        if (isset($_GET['sub_resource_id'])) {
-            $sub_resource_id = intval($_GET['sub_resource_id']);
+        if ( ! empty($get)) {
+            $sub_resource_id = intval($get);
             $log->summary = 'Set sub_resource_id according to GET.';
         }
-        if (isset($_POST['sub_resource_id'])) {
-            $sub_resource_id = intval($_POST['sub_resource_id']);
+        if ( ! empty($post)) {
+            $sub_resource_id = intval($post);
             $log->summary = 'Set sub_resource_id according to POST.';
         }
         if ( ! empty($sub_resource_id)) {
@@ -2019,11 +2019,13 @@ if ( ! function_exists('response_get_sub_resource_id')) {
 
 if ( ! function_exists('response_get_version')) {
     /**
-     * Determine if the user specifically requested a version. If so, adjust the URI.
+     * Determine if the user specifically requested an API version. If so, adjust the URI.
      * @return int The version number, defaults to 1
      */
     function response_get_version($uri_segments = null, $accept_header = '')
     {
+        // FUNCTION NOT USED
+        // Only version 1 is available
         return 1;
 
         $log = new stdClass();
@@ -2032,16 +2034,16 @@ if ( ! function_exists('response_get_version')) {
         $log->object = 'response_helper';
         $log->function = 'response_helper::response_get_version';
         $log->status = 'parsing';
-        $log->summary = 'Set version per default.';
+        $log->summary = '';
+
+        $instance = & get_instance();
+        $version = 1;
 
         if (empty($uri_segments) or ! is_array($uri_segments)) {
             $log->summary = 'Bad segments array passed to function';
             stdlog($log);
             return 1;
         }
-
-        $instance = & get_instance();
-        $version = 1;
 
         if ( ! empty($uri_segments[1]) && ($uri_segments[1] === 'api' OR $uri_segments[1] === 'v1' OR $uri_segments[1] === 'v2')) {
             if ($uri_segments[1] === 'api') {
@@ -2143,7 +2145,7 @@ if ( ! function_exists('response_valid_includes')) {
      */
     function response_valid_includes()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        return array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
     }
 }
 
