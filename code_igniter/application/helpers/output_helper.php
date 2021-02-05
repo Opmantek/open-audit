@@ -1007,6 +1007,7 @@ if ( ! function_exists('output')) {
     function output_html()
     {
         $CI = & get_instance();
+        $CI->response = filter_response($CI->response);
         $table = "<table><thead><tr>";
         // Our Headers
         foreach ($CI->response->data[0]->attributes as $key => $value) {
@@ -1019,7 +1020,7 @@ if ( ! function_exists('output')) {
             $table .= "<tr>";
             foreach ($item->attributes as $key => $value) {
                 if (stripos($key, '_padded') === false) {
-                    $table .= "<td>" . @htmlspecialchars($value) . "</td>";
+                    $table .= "<td>" . @$value . "</td>";
                 }
             }
             $table .= "</tr>";
@@ -1036,6 +1037,7 @@ if ( ! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
+        $CI->response = filter_response($CI->response);
         $table = "<table><thead><tr>";
         // Our Headers
         foreach ($CI->response->data[0]->attributes as $key => $value) {
@@ -1048,7 +1050,7 @@ if ( ! function_exists('output')) {
             $table .= "<tr>";
             foreach ($item->attributes as $key => $value) {
                 if (stripos($key, '_padded') === false) {
-                    $table .= "<td>" . htmlspecialchars($value) . "</td>";
+                    $table .= "<td>" . @$value . "</td>";
                 }
             }
             $table .= "</tr>";
