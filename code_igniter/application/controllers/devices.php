@@ -451,7 +451,7 @@ class Devices extends MY_Controller
             $this->response->meta->sub_resource_id = 0;
         }
 
-        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current);
+        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current, '');
         $this->response->meta->total = 0;
         if (is_array($this->response->data)) {
             $this->response->meta->total = count($this->response->data);
@@ -684,14 +684,14 @@ class Devices extends MY_Controller
         if (empty($this->response->meta->sub_resource_id)) {
             $this->response->meta->sub_resource_id = 0;
         }
-        $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
+        $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, '*', '', '', '');
         $this->load->helper('file');
         if (php_uname('s') === 'Windows NT') {
-            $i = explode('\\', $attachment[0]->attributes->filename);
+            $temp = explode('\\', $attachment[0]->attributes->filename);
         } else {
-            $i = explode('/', $attachment[0]->attributes->filename);
+            $temp = explode('/', $attachment[0]->attributes->filename);
         }
-        $filename = $i[count($i)-1];
+        $filename = $temp[count($temp)-1];
         $filename = preg_replace('/'.$this->response->meta->id.'_/', '', $filename, 1);
         header('Content-Type: '.get_mime_by_extension($attachment[0]->attributes->filename));
         header('Content-Disposition: attachment;filename="'.$filename.'"');
