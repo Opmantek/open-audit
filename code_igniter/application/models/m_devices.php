@@ -132,7 +132,7 @@ class M_devices extends MY_Model
             return false;
         }
         $return = array();
-        $tables = array('audit_log', 'bios', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'policy', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('audit_log', 'bios', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $sql = "SELECT COUNT(*) AS `count` FROM `{$table}` WHERE system_id = " . intval($id);
             $result = $this->run_sql($sql, array());
@@ -186,7 +186,7 @@ class M_devices extends MY_Model
 
             $result = $this->format_data($result, 'devices');
 
-            // format our uptime from unixtime to humane readable
+            // format our uptime from unixtime to human readable
             $result[0]->attributes->uptime_formatted = '';
             if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
@@ -297,7 +297,7 @@ class M_devices extends MY_Model
 
     /**
      * [read_sub_resource description]
-     * @param  string $id              [description]
+     * @param  string $id              system.id
      * @param  string $sub_resource    [description]
      * @param  string $sub_resource_id [description]
      * @param  string $properties      [description]
@@ -313,32 +313,16 @@ class M_devices extends MY_Model
         $log->file = 'system';
         $log->level = 7;
 
-        if ($id === '') {
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         if (empty($id)) {
             $log->message = 'No ID, returning false';
             stdlog($log);
             return false;
         }
-
-        if ($sub_resource === '') {
-            $sub_resource = $CI->response->meta->sub_resource;
-        }
         if (empty($sub_resource)) {
             $log->message = 'No sub_resource, returning false';
             stdlog($log);
             return false;
-        }
-
-        if (empty($sub_resource_id)) {
-            if ( ! empty($CI->response->meta->sub_resource_id)) {
-                $sub_resource_id = intval($CI->response->meta->sub_resource_id);
-            }
-        } else {
-            $sub_resource_id = intval($sub_resource_id);
         }
         if (empty($sub_resource_id)) {
             $sub_resource_id = '';
@@ -346,21 +330,9 @@ class M_devices extends MY_Model
             $sub_resource_id = ' AND `' . $sub_resource . '`.id = ' . intval($sub_resource_id);
             $current = '';
         }
-
-        // if ($properties == '') {
-        //     $properties = @$CI->response->meta->properties;
-        // }
         if (empty($properties) OR $properties === '*') {
             $properties = '`' . $sub_resource . '`.*';
         }
-
-        if ($sort === '') {
-            $sort = @$CI->response->meta->sort;
-        }
-        if (empty($sort)) {
-            $sort = '';
-        }
-
         if ( ! empty($limit)) {
             $limit = ' LIMIT ' . intval($limit);
         }
