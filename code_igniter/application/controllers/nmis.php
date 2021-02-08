@@ -622,7 +622,7 @@ class Nmis extends MY_Controller
                     $this_device->attributes->host = $device->attributes->hostname;
                 }
                 $this_device->attributes->community = '';
-                $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
+                $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y', '');
                 if (!empty($credentials)) {
                     foreach ($credentials as $credential) {
                         if ($credential->attributes->type == 'snmp') {
