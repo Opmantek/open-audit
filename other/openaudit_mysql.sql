@@ -1242,36 +1242,6 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
 UNLOCK TABLES;
 
 --
--- Table structure for table `discovery_scripts`
---
-
-DROP TABLE IF EXISTS `discovery_scripts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `discovery_scripts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` varchar(200) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `discovery_scripts`
---
-
-LOCK TABLES `discovery_scripts` WRITE;
-/*!40000 ALTER TABLE `discovery_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `discovery_scripts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `disk`
 --
 
@@ -2347,39 +2317,6 @@ CREATE TABLE `nmap` (
 LOCK TABLES `nmap` WRITE;
 /*!40000 ALTER TABLE `nmap` DISABLE KEYS */;
 /*!40000 ALTER TABLE `nmap` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
---
--- Table structure for table `nmap_script`
---
-
-DROP TABLE IF EXISTS `nmap_script`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `nmap_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `port` int(5) NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `result` text NOT NULL,
-  `result_formatted` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `nmap_script_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `nmap_script`
---
-
-LOCK TABLES `nmap_script` WRITE;
-/*!40000 ALTER TABLE `nmap_script` DISABLE KEYS */;
-/*!40000 ALTER TABLE `nmap_script` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
