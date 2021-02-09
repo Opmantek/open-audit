@@ -1892,7 +1892,7 @@ class M_device extends MY_Model
             $details->timestamp = $details->last_seen;
         }
 
-        $sql = '/* m_device::update */ ' . "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column, weight, value, previous_value, source";
+        $sql = '/* m_device::update */ ' . "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
         $sql = $this->clean_sql($sql);
         $data = array($details->id);
         $query = $this->db->query($sql, $data);
@@ -1910,7 +1910,7 @@ class M_device extends MY_Model
                     $previous_weight = 10000;
                     for ($i=0; $i < count($edit_log); $i++) {
                         if ($edit_log[$i]->db_column === $key) {
-                            $previous_weight = $edit_log[$i]->weight;
+                            $previous_weight = intval($edit_log[$i]->weight);
                         }
                     }
                     // calculate the weight
