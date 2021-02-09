@@ -267,7 +267,9 @@ if ( ! function_exists('output')) {
 
         if ($CI->response->meta->collection === 'discoveries') {
             for ($i=0; $i < count($CI->response->data); $i++) {
-                $CI->response->data[$i]->attributes->other = json_encode($CI->response->data[$i]->attributes->other);
+                $CI->response->data[$i]->attributes->scan_options = json_encode($CI->response->data[$i]->attributes->scan_options);
+                $CI->response->data[$i]->attributes->match_options = json_encode($CI->response->data[$i]->attributes->match_options);
+                $CI->response->data[$i]->attributes->command_options = json_encode($CI->response->data[$i]->attributes->command_options);
             }
         }
 
@@ -337,6 +339,7 @@ if ( ! function_exists('output')) {
                 unset($line_array);
             }
         }
+
         if ((string) $CI->config->config['download_reports'] === 'y') {
             echo $output_csv;
             header('Content-Type: text/csv');
