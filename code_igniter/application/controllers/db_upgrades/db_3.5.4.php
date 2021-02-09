@@ -269,6 +269,7 @@ $this->log_db($this->db->last_query() . ';');
 $result = $query->result();
 
 foreach ($result as $item) {
+	$id = $item->id;
 	$json = json_decode($item->other);
 	$subnet = @$json->subnet;
 	$ad_server = @$json->ad_server;
@@ -281,9 +282,8 @@ foreach ($result as $item) {
 	$scan_options = json_encode($scan_options);
 	$match_options = $json->match;
 	$match_options = json_encode($match_options);
-	$id = $item->id;
-	$sql = 'UPDATE discoveries SET subnet = ?, ad_server = ?, ad_domain = ?, scan_options = ?, match_options = ?, exclude_ip = ?, ssh_ports = ? WHERE id = ?';
-	$data = array($subnet, $ad_server, $ad_domain, $scan_options, $match_options, $exclude_ip, $ssh_ports, $id);
+	$sql = 'UPDATE discoveries SET subnet = ?, ad_server = ?, ad_domain = ?, scan_options = ?, match_options = ? WHERE id = ?';
+	$data = array($subnet, $ad_server, $ad_domain, $scan_options, $match_options, $id);
 	$this->db->query($sql, $data);
 	$this->log_db($this->db->last_query() . ';');
 }
@@ -328,52 +328,6 @@ $this->log_db($this->db->last_query() . ';');
 
 
 
-
-
-
-
-
-
-$sql = "DROP TABLE IF EXISTS discovery_scripts";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$sql = "CREATE TABLE `discovery_scripts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` varchar(200) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$sql = "DROP TABLE IF EXISTS nmap_script";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$sql = "CREATE TABLE `nmap_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `port` int(5) NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `result` text NOT NULL,
-  `result_formatted` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `nmap_script_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
 $sql = "ALTER TABLE system DROP IF EXISTS os_arch";
 $this->db->query($sql);

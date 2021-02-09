@@ -69,7 +69,10 @@ class M_discoveries extends MY_Model
     public function create($data = null)
     {
         // Validate Main
-        // $data->name = 'a strng';
+
+        if (empty($this->config->config['discovery_default_scan_option'])) {
+            $this->config->config['discovery_default_scan_option'] = 1;
+        }
         $data->org_id = intval($data->org_id);
         $CI = & get_instance();
         if (empty($data->type)) {
@@ -97,120 +100,183 @@ class M_discoveries extends MY_Model
                 unset($data->discard);
             }
         }
-
-
-        // Validate Other
-        if ( ! empty($data->other) && is_string($data->other)) {
-            $data->other = json_decode($data->other);
-        }
-        if (empty($data->other)) {
-            $data->other = new stdClass();
-        }
-        if ( ! empty($data->other->subnet)) {
-            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
-                $data->other->subnet = '';
+        if ( ! empty($data->subnet)) {
+            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
+                $data->subnet = '';
             }
         }
-        if (empty($data->other->match)) {
-            $data->other->match = new stdClass();
+
+        if (empty($data->match_options)) {
+            $data->match_options = new stdClass();
         }
-        if (empty($data->other->nmap)) {
-            $data->other->nmap = new stdClass();
-            if (empty($this->config->config['discovery_default_scan_option'])) {
-                $this->config->config['discovery_default_scan_option'] = 1;
+        if (is_string($data->match_options)) {
+            $data->match_options = json_decode($data->match_options);
+        }
+        $match_options = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+        foreach ($match_options as $match_option) {
+            if ( ! isset($data->match_options->{$match_option})) {
+                $data->match_options->{$match_option} = '';
             }
-            $sql = "SELECT `id` AS 'discovery_scan_option_id', ping, service_version, filtered, timeout, timing, nmap_tcp_ports, nmap_udp_ports, tcp_ports, udp_ports, exclude_tcp_ports, exclude_udp_ports, exclude_ip, ssh_ports FROM discovery_scan_options WHERE id = " . intval($this->config->config['discovery_default_scan_option']);
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if ( ! empty($result[0])) {
-                $data->other->nmap = $result[0];
+            if ($data->match_options->{$match_option} !== 'y' && $data->match_options->{$match_option} !== 'n') {
+                $data->match_options->{$match_option} = '';
+            }
+        }
+
+        if ( ! empty($data->scan_options) && is_string($data->scan_options)) {
+            $data->scan_options = json_decode($data->scan_options);
+        }
+        if (empty($data->scan_options)) {
+            $data->scan_options = new stdClass();
+            $data->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
+        }
+        if ( ! isset($data->scan_options->id)) {
+            $data->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
+        }
+        if (isset($data->scan_options->ping)) {
+            if ($data->scan_options->ping !== 'y' && $data->scan_options->ping !== 'n') {
+                $data->scan_options->ping = '';
+            }
+        } else {
+            $data->scan_options->ping = '';
+        }
+        if (isset($data->scan_options->service_version)) {
+            if ($data->scan_options->service_version !== 'y' && $data->scan_options->service_version !== 'n') {
+                $data->scan_options->service_version = '';
+            }
+        } else {
+            $data->scan_options->service_version = '';
+        }
+        if (isset($data->scan_options->{'open|filtered'})) {
+            if ($data->scan_options->{'open|filtered'} !== 'y' && $data->scan_options->{'open|filtered'} !== 'n') {
+                $data->scan_options->{'open|filtered'} = '';
+            }
+        } else {
+            $data->scan_options->{'open|filtered'} = '';
+        }
+        if (isset($data->scan_options->filtered)) {
+            if ($data->scan_options->filtered !== 'y' && $data->scan_options->filtered !== 'n') {
+                $data->scan_options->filtered = '';
+            }
+        } else {
+            $data->scan_options->filtered = '';
+        }
+        if (isset($data->scan_options->timeout)) {
+            if (is_int($data->scan_options->timeout) OR is_numeric($data->scan_options->timeout)) {
+                $data->scan_options->timeout = intval($data->scan_options->timeout);
             } else {
-                // $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","discovery_scan_option_id":"0","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161","ssh_ports":"22"}';
-                // $data->other->nmap = json_decode($json);
-                $json = new stdClass();
-                $json->ping = 'y';
-                $json->service_version = 'n';
-                $json->{'open|filtered'} = 'n';
-                $json->filtered = 'n';
-                $json->timeout = 0;
-                $json->timing = 4;
-                $json->nmap_tcp_ports = '';
-                $json->nmap_udp_ports = '';
-                $json->tcp_ports = '';
-                $json->udp_ports = '';
-                $json->exclude_tcp_ports = 0;
-                $json->exclude_udp_ports = 0;
-                $json->exclude_ip = '';
-                $json->ssh_ports = '';
-                $json->options = '';
-                $data->other->nmap = $json;
+                $data->scan_options->timeout = '';
             }
-        }
-        if ( ! empty($data->other->nmap->ping)) {
-            if ($data->other->nmap->ping !== 'y' && $data->other->nmap->ping !== 'n') {
-                $data->other->nmap->ping = 'y';
-            }
-        }
-        if ( ! empty($data->other->nmap->service_version)) {
-            if ($data->other->nmap->service_version !== 'y' && $data->other->nmap->service_version !== 'n') {
-                $data->other->nmap->service_version = 'n';
-            }
-        }
-        if ( ! empty($data->other->nmap->{'open|filtered'})) {
-            if ($data->other->nmap->{'open|filtered'} !== 'y' && $data->other->nmap->{'open|filtered'} !== 'n') {
-                $data->other->nmap->{'open|filtered'} = 'n';
-            }
-        }
-        if ( ! empty($data->other->nmap->filtered)) {
-            if ($data->other->nmap->filtered !== 'y' && $data->other->nmap->filtered !== 'n') {
-                $data->other->nmap->filtered = 'n';
-            }
-        }
-        if ( isset($data->other->nmap->timeout)) {
-            $data->other->nmap->timeout = intval($data->other->nmap->timeout);
         } else {
-            $data->other->nmap->timeout = 0;
+            $data->scan_options->timeout = '';
         }
-        if ( isset($data->other->nmap->timing)) {
-            $data->other->nmap->timing = intval($data->other->nmap->timing);
-        } else {
-            $data->other->nmap->timing = 4;
-        }
-        if ( isset($data->other->nmap->nmap_tcp_ports)) {
-            $data->other->nmap->nmap_tcp_ports = intval($data->other->nmap->nmap_tcp_ports);
-        } else {
-            $data->other->nmap->nmap_tcp_ports = 0;
-        }
-        if ( isset($data->other->nmap->nmap_udp_ports)) {
-            $data->other->nmap->nmap_udp_ports = intval($data->other->nmap->nmap_udp_ports);
-        } else {
-            $data->other->nmap->nmap_udp_ports = 0;
-        }
-        if ( ! empty($data->other->nmap->tcp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->tcp_ports)) {
-            $data->other->nmap->tcp_ports = '';
-        }
-        if ( ! empty($data->other->nmap->udp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->udp_ports)) {
-            $data->other->nmap->udp_ports = '';
-        }
-        if ( ! empty($data->other->nmap->exclude_tcp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->exclude_tcp_ports)) {
-            $data->other->nmap->exclude_tcp_ports = '';
-        }
-        if ( ! empty($data->other->nmap->exclude_udp_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->exclude_udp_ports)) {
-            $data->other->nmap->exclude_udp_ports = '';
-        }
-        if ( ! empty($data->other->nmap->exclude_ip)) {
-            $data->other->nmap->exclude_ip = str_replace(' ', ',', $data->other->nmap->exclude_ip);
-            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->other->nmap->exclude_ip)) {
-                $data->other->nmap->exclude_ip = '';
+        if (isset($data->scan_options->timing)) {
+            if (is_int($data->scan_options->timing) OR is_numeric($data->scan_options->timing)) {
+                $data->scan_options->timing = intval($data->scan_options->timing);
+            } else {
+                $data->scan_options->timing = '';
             }
+        } else {
+            $data->scan_options->timing = '';
         }
-        if ( ! empty($data->other->nmap->ssh_ports) && ! preg_match('/^[\d,\/,-]*$/', $data->other->nmap->ssh_ports)) {
-            $data->other->nmap->ssh_ports = '';
+        if (isset($data->scan_options->nmap_tcp_ports)) {
+            if (is_int($data->scan_options->nmap_tcp_ports) OR is_numeric($data->scan_options->nmap_tcp_ports)) {
+                $data->scan_options->nmap_tcp_ports = intval($data->scan_options->nmap_tcp_ports);
+            } else {
+                $data->scan_options->nmap_tcp_ports = '';
+            }
+        } else {
+            $data->scan_options->nmap_tcp_ports = '';
+        }
+        if (isset($data->scan_options->nmap_udp_ports)) {
+            if (is_int($data->scan_options->nmap_udp_ports) OR is_numeric($data->scan_options->nmap_udp_ports)) {
+                $data->scan_options->nmap_udp_ports = intval($data->scan_options->nmap_udp_ports);
+            } else {
+                $data->scan_options->nmap_udp_ports = '';
+            }
+        } else {
+            $data->scan_options->nmap_udp_ports = '';
+        }
+        if (isset($data->scan_options->tcp_ports)) {
+            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->tcp_ports)) {
+                $data->scan_options->tcp_ports = '';
+            }
+        } else {
+            $data->scan_options->tcp_ports = '';
+        }
+        if (isset($data->scan_options->udp_ports)) {
+            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->udp_ports)) {
+                $data->scan_options->udp_ports = '';
+            }
+        } else {
+            $data->scan_options->udp_ports = '';
+        }
+        if (isset($data->scan_options->exclude_tcp_ports)) {
+            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->exclude_tcp_ports)) {
+                $data->scan_options->exclude_tcp_ports = '';
+            }
+        } else {
+            $data->scan_options->exclude_tcp_ports = '';
+        }
+        if (isset($data->scan_options->exclude_udp_ports)) {
+            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->exclude_udp_ports)) {
+                $data->scan_options->exclude_udp_ports = '';
+            }
+        } else {
+            $data->scan_options->exclude_udp_ports = '';
+        }
+        if (isset($data->scan_options->exclude_ip)) {
+            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->scan_options->exclude_ip)) {
+                $data->scan_options->exclude_ip = '';
+            }
+        } else {
+            $data->scan_options->exclude_ip = '';
+        }
+        if (isset($data->scan_options->ssh_ports)) {
+            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->ssh_ports)) {
+                $data->scan_options->ssh_ports = '';
+            }
+        } else {
+            $data->scan_options->ssh_ports = '';
+        }
+        if (isset($data->scan_options->script_timeout)) {
+            if (is_int($data->scan_options->script_timeout) OR is_numeric($data->scan_options->script_timeout)) {
+                $data->scan_options->script_timeout = intval($data->scan_options->script_timeout);
+            } else {
+                $data->scan_options->script_timeout = '';
+            }
+        } else {
+            $data->scan_options->script_timeout = '';
+        }
+        if (isset($data->scan_options->snmp_timeout)) {
+            if (is_int($data->scan_options->snmp_timeout) OR is_numeric($data->scan_options->snmp_timeout)) {
+                $data->scan_options->snmp_timeout = intval($data->scan_options->snmp_timeout);
+            } else {
+                $data->scan_options->snmp_timeout = '';
+            }
+        } else {
+            $data->scan_options->snmp_timeout = '';
+        }
+        if (isset($data->scan_options->ssh_timeout)) {
+            if (is_int($data->scan_options->ssh_timeout) OR is_numeric($data->scan_options->ssh_timeout)) {
+                $data->scan_options->ssh_timeout = intval($data->scan_options->ssh_timeout);
+            } else {
+                $data->scan_options->ssh_timeout = '';
+            }
+        } else {
+            $data->scan_options->ssh_timeout = '';
+        }
+        if (isset($data->scan_options->wmi_timeout)) {
+            if (is_int($data->scan_options->wmi_timeout) OR is_numeric($data->scan_options->wmi_timeout)) {
+                $data->scan_options->wmi_timeout = intval($data->scan_options->wmi_timeout);
+            } else {
+                $data->scan_options->wmi_timeout = '';
+            }
+        } else {
+            $data->scan_options->wmi_timeout = '';
         }
 
         if ( ! empty($data->type) && $data->type === 'subnet') {
-            if (empty($data->other->subnet)) {
+            if (empty($data->subnet)) {
                 log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing or invalid field: subnet');
                 if ($CI->response->meta->format === 'screen') {
                     redirect('/discoveries');
@@ -219,19 +285,37 @@ class M_discoveries extends MY_Model
                     exit();
                 }
             } else {
-                $data->description = 'Subnet - ' . $data->other->subnet;
+                $data->description = 'Subnet - ' . $data->subnet;
             }
         } elseif ( ! empty($data->type) && $data->type === 'active directory') {
-            if (empty($data->other->ad_server) OR empty($data->other->ad_domain)) {
+            if (empty($data->ad_server) OR empty($data->ad_domain)) {
                 $temp = 'Active Directory Domain';
-                if (empty($data->other->ad_server)) {
+                if (empty($data->ad_server)) {
                     $temp = 'Active Directory Server';
                 }
                 log_error('ERR-0024', 'm_discoveries::create (ad discoveries)');
                 $this->session->set_flashdata('error', 'Object in discoveries could not be created - no ' . $temp . ' supplied.');
             } else {
-                $data->description = 'Active Directory - ' . $data->other->ad_domain;
+                $data->description = 'Active Directory - ' . $data->ad_domain;
             }
+        } elseif ( ! empty($data->type) && $data->type === 'seed') {
+            if (empty($data->seed_ip)) {
+                log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing or invalid field: seed_ip');
+                if ($CI->response->meta->format === 'screen') {
+                    redirect('/discoveries');
+                } else {
+                    output($CI->response);
+                    exit();
+                }
+            }
+            if (empty($data->seed_restrict_to_subnet)) {
+                $data->seed_restrict_to_subnet = 'y';
+            }
+            if (empty($data->seed_restrict_to_private)) {
+                $data->seed_restrict_to_private = 'y';
+            }
+        } else if ($data->type === 'cloud') {
+            // TODO
         } else if (empty($data->type)) {
             log_error('ERR-0024', 'm_discoveries::create, no type supplied');
             $this->session->set_flashdata('error', 'Object in discoveries could not be created - no "type" supplied.');
@@ -240,15 +324,15 @@ class M_discoveries extends MY_Model
         }
         $this->load->model('m_networks');
         $this->load->helper('network');
-        if ($data->type === 'subnet' && ! empty($data->other->subnet) && stripos($data->other->subnet, '-') === false && filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
+        if ($data->type === 'subnet' && ! empty($data->subnet) && stripos($data->subnet, '-') === false && filter_var($data->subnet, FILTER_VALIDATE_IP) !== false) {
             // We have a single IP - ie 192.168.1.1
             // TODO - we should pass the OrgID
-            $data->description = 'IP - ' . $data->other->subnet;
-            $test = $this->m_networks->check_ip($data->other->subnet);
+            $data->description = 'IP - ' . $data->subnet;
+            $test = $this->m_networks->check_ip($data->subnet);
             if ( ! $test) {
                 // This IP is not in any existing subnets - insert a /30
                 // TODO - account for Org ID in existing as check_ip returns only true/false, and does not acount for orgs
-                $temp = network_details($data->other->subnet.'/30');
+                $temp = network_details($data->subnet.'/30');
                 $network = new stdClass();
                 $network->name = $temp->network.'/'.$temp->network_slash;
                 $network->network = $temp->network.'/'.$temp->network_slash;
@@ -258,9 +342,9 @@ class M_discoveries extends MY_Model
             }
         }
 
-        if ($data->type === 'subnet' && ! empty($data->other->subnet) && stripos($data->other->subnet, '-') === false && strpos($data->other->subnet, '/') !== false) {
+        if ($data->type === 'subnet' && ! empty($data->subnet) && stripos($data->subnet, '-') === false && strpos($data->subnet, '/') !== false) {
             // We have a regular subnet - ie 192.168.1.0/24
-            $temp = network_details($data->other->subnet);
+            $temp = network_details($data->subnet);
             if ( ! empty($temp->error)) {
                 $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
                 log_error('ERR-0010', 'm_discoveries::create (networks) invalid subnet supplied');
@@ -274,7 +358,7 @@ class M_discoveries extends MY_Model
             $this->m_networks->upsert($network);
         }
 
-        if ($data->type === 'subnet' && stripos($data->other->subnet, '-') !== false) {
+        if ($data->type === 'subnet' && stripos($data->subnet, '-') !== false) {
             // We have a range and cannot insert a network
             $warning = 'IP range, instead of subnet supplied. No network entry created.';
             if ($this->config->config['blessed_subnets_use'] !== 'n') {
@@ -282,7 +366,8 @@ class M_discoveries extends MY_Model
             }
             $this->session->set_flashdata('warning', $warning);
         }
-        $data->other = json_encode($data->other);
+        $data->scan_options = json_encode($data->scan_options);
+        $data->match_options = json_encode($data->match_options);
 
         if ($id = $this->insert_collection('discoveries', $data)) {
             return intval($id);
@@ -310,40 +395,27 @@ class M_discoveries extends MY_Model
         if (empty($result)) {
             return false;
         }
-        if ( ! empty($result[0]->other)) {
-            $result[0]->other = json_decode($result[0]->other);
+        if (empty($result[0]->scan_options)) {
+            $result[0]->scan_options = new stdClass();
         }
-        // Ensure we have some defaults
-        if (empty($result[0]->other->nmap)) {
-            $result[0]->other->nmap = new stdClass();
+        if (is_string($result[0]->scan_options)) {
+            $result[0]->scan_options = json_decode($result[0]->scan_options);
         }
-        if ( ! isset($result[0]->other->nmap->discovery_scan_option_id) OR ! is_numeric($result[0]->other->nmap->discovery_scan_option_id)) {
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = new stdClass();
+        }
+        if (is_string($result[0]->match_options)) {
+            $result[0]->match_options = json_decode($result[0]->match_options);
+        }
+        if ( ! isset($result[0]->scan_options->id) OR ! is_numeric($result[0]->scan_options->id)) {
             if ( ! empty($this->config->config['discovery_default_scan_option'])) {
-                $result[0]->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
+                $result[0]->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
             } else {
-                $result[0]->other->nmap->discovery_scan_option_id = 1;
+                $result[0]->scan_options->id = 1;
             }
         }
-        // Do not check if 0 because 0 is for custom scans
-        if ( ! empty($result[0]->other->nmap->discovery_scan_option_id)) {
-            $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
-            $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
-            $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
-            $data = array(intval($result[0]->other->nmap->discovery_scan_option_id));
-            $discovery_scan_option = $this->run_sql($sql, $data);
-            if ( ! empty($discovery_scan_option[0])) {
-                foreach ($discovery_scan_option[0] as $key => $value) {
-                    if ( ! in_array($key, $do_not_use)) {
-                        if (in_array($key, $prefer_individual)) {
-                            if ( ! empty($value) && empty($result[0]->other->nmap->{$key})) {
-                                $result[0]->other->nmap->{$key} = $value;
-                            }
-                        } else {
-                            $result[0]->other->nmap->{$key} = $value;
-                        }
-                    }
-                }
-            }
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = '{}';
         }
 
         if ($result[0]->status === 'failed') {
