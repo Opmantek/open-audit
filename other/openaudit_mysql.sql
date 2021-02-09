@@ -1205,8 +1205,8 @@ CREATE TABLE `discovery_scan_options` (
   `snmp_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `ssh_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `wmi_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `timing` int(1) unsigned NOT NULL DEFAULT '4',
   `script_timeout` tinyint(5) unsigned NOT NULL DEFAULT '0',
+  `timing` int(1) unsigned NOT NULL DEFAULT '4',
   `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT '0',
   `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT '0',
   `tcp_ports` text NOT NULL,
@@ -2910,6 +2910,7 @@ CREATE TABLE `radio` (
   KEY `system_id` (`system_id`),
   CONSTRAINT `radio_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `radio`
