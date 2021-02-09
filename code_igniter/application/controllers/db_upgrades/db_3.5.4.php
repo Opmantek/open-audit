@@ -28,7 +28,6 @@
 **/
 
 /*
-
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'file\'' WHERE name = 'Files';
 
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\')' WHERE `name` = 'Hardware';
@@ -73,7 +72,6 @@ DELETE FROM `configuration` WHERE name = 'delete_noncurrent_radio';
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
 
 
-
 ALTER TABLE discoveries DROP IF EXISTS subnet;
 
 ALTER TABLE discoveries ADD subnet VARCHAR(45) NOT NULL DEFAULT '' AFTER type;
@@ -98,9 +96,11 @@ ALTER TABLE discoveries DROP IF EXISTS ad_server;
 
 ALTER TABLE discoveries ADD ad_server varchar(45) NOT NULL DEFAULT '' AFTER ad_domain;
 
+ALTER TABLE discoveries DROP IF EXISTS options;
+
 ALTER TABLE discoveries DROP IF EXISTS scan_options;
 
-ALTER TABLE discoveries ADD scan_options text NOT NULL AFTER options;
+ALTER TABLE discoveries ADD scan_options text NOT NULL AFTER other;
 
 ALTER TABLE discoveries DROP IF EXISTS match_options;
 
@@ -111,18 +111,37 @@ ALTER TABLE discoveries DROP IF EXISTS command_options;
 ALTER TABLE discoveries ADD command_options text NOT NULL AFTER match_options;
 
 
-
-
 ALTER TABLE discovery_scan_options DROP IF EXISTS ports_in_order;
 
 ALTER TABLE discovery_scan_options ADD `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n' after options;
 
 ALTER TABLE discovery_scan_options DROP IF EXISTS ports_stop_after;
 
-ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint unsigned NOT NULL DEFAULT 0 after ports_in_order;
+ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint(3) unsigned NOT NULL DEFAULT 0 after ports_in_order;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS command_options;
+
+ALTER TABLE discovery_scan_options ADD command_options text NOT NULL AFTER ports_stop_after;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS snmp_timeout;
+
+ALTER TABLE discovery_scan_options ADD snmp_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER timeout;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS ssh_timeout;
+
+ALTER TABLE discovery_scan_options ADD ssh_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER snmp_timeout;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS wmi_timeout;
+
+ALTER TABLE discovery_scan_options ADD wmi_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ssh_timeout;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout;
+
+ALTER TABLE discovery_scan_options ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout;
 
 
 ALTER TABLE system DROP IF EXISTS os_arch;
+
 
 ALTER TABLE system ADD `os_arch` varchar(50) NOT NULL DEFAULT '' AFTER os_bit;
 
@@ -304,6 +323,12 @@ $sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS snmp_timeout";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS command_options";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discovery_scan_options', 'command_options', "ADD command_options text NOT NULL AFTER ports_stop_after", 'add');
+
 $this->alter_table('discovery_scan_options', 'snmp_timeout', "ADD snmp_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER timeout", 'add');
 
 $sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ssh_timeout";
@@ -323,12 +348,6 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
-
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS command_options";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$this->alter_table('discovery_scan_options', 'command_options', "ADD command_options text NOT NULL AFTER ports_stop_after", 'add');
 
 $sql = "ALTER TABLE system DROP IF EXISTS os_arch";
 $this->db->query($sql);
