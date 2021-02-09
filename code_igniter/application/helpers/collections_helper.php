@@ -168,7 +168,7 @@ if ( ! function_exists('mandatory_fields')) {
                 break;
 
             case 'discoveries':
-                return(array('name','org_id','type','other'));
+                return(array('name','org_id','type'));
                 break;
 
             case 'discovery_scan_options':
