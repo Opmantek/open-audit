@@ -38,7 +38,7 @@ $discovery_scan_options = new stdClass();
 $discovery_scan_options->attributes = new stdClass();
 $discovery_scan_options->attributes->name = '';
 foreach ($this->response->included as $include) {
-    if ($include->type === 'discovery_scan_options' && intval($include->id) === intval($item->attributes->other->nmap->discovery_scan_option_id)) {
+    if ($include->type === 'discovery_scan_options' && intval($include->id) === intval($item->attributes->scan_options->id)) {
         $discovery_scan_options = $include;
     }
 }
@@ -114,12 +114,12 @@ foreach ($this->response->included as $include) {
                     <?php
                     if ($item->attributes->type == 'subnet') { ?>
                     <div class="form-group">
-                        <label for="other.subnet" class="col-sm-3 control-label"><?php echo __('Subnet'); ?></label>
+                        <label for="subnet" class="col-sm-3 control-label"><?php echo __('Subnet'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.subnet" name="other.subnet" value="<?php echo $item->attributes->other->subnet; ?>" disabled>
+                            <input type="text" class="form-control" id="subnet" name="subnet" value="<?php echo $item->attributes->subnet; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_other.subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -128,23 +128,23 @@ foreach ($this->response->included as $include) {
                     }
                     if ($item->attributes->type == 'active directory') { ?>
                     <div class="form-group">
-                        <label for="other.ad_server" class="col-sm-3 control-label"><?php echo __('AD Server'); ?></label>
+                        <label for="ad_server" class="col-sm-3 control-label"><?php echo __('AD Server'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" value="<?php echo $item->attributes->other->ad_server; ?>" disabled>
+                            <input type="text" class="form-control" id="ad_server" name="ad_server" value="<?php echo $item->attributes->ad_server; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_other.ad_server" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_server"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_ad_server" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ad_server"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="other.ad_domain" class="col-sm-3 control-label"><?php echo __('AD Domain'); ?></label>
+                        <label for="ad_domain" class="col-sm-3 control-label"><?php echo __('AD Domain'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" value="<?php echo $item->attributes->other->ad_domain; ?>" disabled>
+                            <input type="text" class="form-control" id="ad_domain" name="ad_domain" value="<?php echo $item->attributes->ad_domain; ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_other.ad_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_ad_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ad_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>

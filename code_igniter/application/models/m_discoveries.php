@@ -377,6 +377,104 @@ class M_discoveries extends MY_Model
     }
 
     /**
+     * Read an individual item from the database, by ID and populate scan_options and match_options with upstream defaults
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
+    public function read_for_discovery($id = 0)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $CI = & get_instance();
+        $id = intval($id);
+        $sql = 'SELECT * FROM discoveries WHERE id = ? LIMIT 1';
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        if (empty($result)) {
+            return false;
+        }
+        if (empty($result[0]->scan_options)) {
+            $result[0]->scan_options = new stdClass();
+        }
+        if (is_string($result[0]->scan_options)) {
+            $result[0]->scan_options = json_decode($result[0]->scan_options);
+        }
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = new stdClass();
+        }
+        if (is_string($result[0]->match_options)) {
+            $result[0]->match_options = json_decode($result[0]->match_options);
+        }
+        if ( ! isset($result[0]->scan_options->id) OR ! is_numeric($result[0]->scan_options->id)) {
+            if ( ! empty($this->config->config['discovery_default_scan_option'])) {
+                $result[0]->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
+            } else {
+                $result[0]->scan_options->id = 1;
+            }
+        }
+        $sql = "SELECT * FROM discovery_scan_options WHERE id = ?";
+        $data = array($result[0]->scan_options->id);
+        $options = $this->run_sql($sql, $data);
+        $discovery_scan_options = $options[0];
+        unset($discovery_scan_options->id);
+        unset($discovery_scan_options->name);
+        unset($discovery_scan_options->org_id);
+        unset($discovery_scan_options->description);
+        unset($discovery_scan_options->options);
+        unset($discovery_scan_options->edited_by);
+        unset($discovery_scan_options->edited_date);
+        if (empty($discovery_scan_options->command_options)) {
+            $discovery_scan_options->command_options = new stdClass();
+        }
+        if (is_string($discovery_scan_options->command_options)) {
+            $discovery_scan_options->command_options = json_decode($discovery_scan_options->command_options);
+        }
+        unset($discovery_scan_options->command_options);
+        foreach ($discovery_scan_options as $key => $value) {
+            if (empty($result[0]->scan_options->{$key}) && isset($discovery_scan_options->{$key})) {
+                $result[0]->scan_options->{$key} = $discovery_scan_options->{$key};
+            }
+        }
+
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = '{}';
+        }
+        if (is_string($result[0]->match_options)) {
+            $result[0]->match_options =json_decode($result[0]->match_options);
+        }
+        foreach ($CI->config->config as $key => $value) {
+            if (strpos($key, 'match_') !== false) {
+                if (empty($result[0]->match_options->{$key}) && ! empty($CI->config->config->{$key})) {
+                    $result[0]->match_options->{$key} = $CI->config->config->{$key};
+                }
+            }
+        }
+        if ( ! empty($CI->config->config['discovery_ip_exclude'])) {
+            // Account for users adding multiple spaces which would be converted to multiple comma's.
+            $exclude_ip = preg_replace('!\s+!', ' ', $CI->config->config['discovery_ip_exclude']);
+            // Convert spaces to comma's
+            $exclude_ip = str_replace(' ', ',', $exclude_ip);
+            if ( ! empty($result[0]->scan_options->exclude_ip)) {
+                $result[0]->scan_options->exclude_ip .= ',' . $exclude_ip;
+            } else {
+                $result[0]->scan_options->exclude_ip = $exclude_ip;
+            }
+        }
+        // Ensure we only have valid characters of digit, dot, slash, dash and comma in attribute
+        if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $result[0]->scan_options->exclude_ip)) {
+            $result[0]->scan_options->exclude_ip = '';
+        }
+
+        if ($result[0]->status === 'failed') {
+            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
+            $last_logs = $this->run_sql($sql);
+            $result[0]->last_logs_for_failed_devices = $last_logs;
+        }
+        $result = $this->format_data($result, 'discoveries');
+        return ($result);
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
@@ -691,7 +789,9 @@ class M_discoveries extends MY_Model
         $dictionary->columns->network_address = 'The URL the audit_* scripts should submit their result to.';
         $dictionary->columns->last_run = 'A calculated field that is updated each time the discovery has been executed.';
         $dictionary->columns->complete = 'A internal field that indicates if the discovery has completed.';
-        $dictionary->columns->other = 'A JSON document containing the required attributes depending on the <code>discoveries.type</code>.';
+        # $dictionary->columns->other = 'A JSON document containing the required attributes depending on the <code>discoveries.type</code>.';
+        $dictionary->columns->scan_options = 'A JSON document containing the required attributes overriding the chosen discovery_scan_options.';
+        $dictionary->columns->match_options = 'A JSON document containing the required attributes overriding the default device match options.';
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
         $dictionary->columns->ad_server = 'The Active Directory server to retrieve a list of subnets from.';
         $dictionary->columns->ad_domain = 'The Active Directory domain to retrieve a list of subnets from.';
@@ -700,7 +800,7 @@ class M_discoveries extends MY_Model
         $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
         $dictionary->columns->discard = 'Used internally when discovering a single device.';
         $dictionary->columns->seed_ip = 'The IP of the device to start a seed discovery with.';
-        $dictionary->columns->seed_restrict_to_subnet = 'For a seed discovery, should I only discover IPs on the ralted subnet.';
+        $dictionary->columns->seed_restrict_to_subnet = 'For a seed discovery, should I only discover IPs on the chosen subnet.';
         $dictionary->columns->seed_restrict_to_private = 'For a seed discovery, should I only discover IPs in the private IP address space.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;

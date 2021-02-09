@@ -72,10 +72,10 @@ if ( ! function_exists('all_ip_list')) {
 		$log->ip = '127.0.0.1';
 
 		$ip_addresses = array();
-		if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
-			$command = 'nmap -n -sL --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
+		if ( ! empty($discovery->attributes->scan_options->exclude_ip)) {
+			$command = 'nmap -n -sL --exclude ' . $discovery->attributes->scan_options->exclude_ip . ' ' . $discovery->attributes->subnet;
 		} else {
-			$command = 'nmap -n -sL ' . $discovery->attributes->other->subnet;
+			$command = 'nmap -n -sL ' . $discovery->attributes->subnet;
 		}
 
 		if (php_uname('s') === 'Darwin') {
@@ -128,11 +128,11 @@ if ( ! function_exists('ip_list')) {
 		//   -oG    Output in grappable format
 		//   -      No filename, command line output for above
 		//   -sP    Ping scan only
-		if ($discovery->attributes->other->nmap->ping === 'y') {
-			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
-				$command = 'nmap -n -oG - -sP --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
+		if ($discovery->attributes->scan_options->ping === 'y') {
+			if ( ! empty($discovery->attributes->scan_options->exclude_ip)) {
+				$command = 'nmap -n -oG - -sP --exclude ' . $discovery->attributes->scan_options->exclude_ip . ' ' . $discovery->attributes->subnet;
 			} else {
-				$command = 'nmap -n -oG - -sP ' . $discovery->attributes->other->subnet;
+				$command = 'nmap -n -oG - -sP ' . $discovery->attributes->subnet;
 			}
 			if (php_uname('s') === 'Darwin') {
 				$command = '/usr/local/bin/' . $command;
@@ -151,10 +151,10 @@ if ( ! function_exists('ip_list')) {
 				return false;
 			}
 		} else {
-			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
-				$command = 'nmap -n -sL --exclude ' . $discovery->attributes->other->nmap->exclude_ip . ' ' . $discovery->attributes->other->subnet;
+			if ( ! empty($discovery->attributes->scan_options->exclude_ip)) {
+				$command = 'nmap -n -sL --exclude ' . $discovery->attributes->scan_options->exclude_ip . ' ' . $discovery->attributes->subnet;
 			} else {
-				$command = 'nmap -n -sL ' . $discovery->attributes->other->subnet;
+				$command = 'nmap -n -sL ' . $discovery->attributes->subnet;
 			}
 			if (php_uname('s') === 'Darwin') {
 				$command = '/usr/local/bin/' . $command;
@@ -265,8 +265,11 @@ if ( ! function_exists('discover_subnet')) {
 
 		$discovery_id = $queue_item->discovery_id;
 
-		$item = $CI->m_discoveries->read($discovery_id);
-		$discovery = $item[0];
+		#$item = $CI->m_discoveries->read($discovery_id);
+		// $item = $CI->m_discoveries->read_for_discovery($discovery_id);
+		// $discovery = $item[0];
+		$discovery = $CI->m_discoveries->read_for_discovery($discovery_id);
+		$discovery = $discovery[0];
 
 		$log = new stdClass();
 		$log->discovery_id = $discovery_id;
@@ -282,58 +285,42 @@ if ( ! function_exists('discover_subnet')) {
 		$data = array($discovery_id);
 		$CI->db->query($sql, $data);
 
-		if ( ! preg_match('/^[\d,\.,\/,\-]*$/', $discovery->attributes->other->subnet)) {
-			$log->message = 'Invalid subnet value supplied of ' . htmlentities($discovery->attributes->other->subnet);
+		if ( ! preg_match('/^[\d,\.,\/,\-]*$/', $discovery->attributes->subnet)) {
+			$log->message = 'Invalid subnet value supplied of ' . htmlentities($discovery->attributes->subnet);
 			$log->severity = 5;
 			discovery_log($log);
 			return;
 		}
 
-		if ( ! empty($CI->config->config['discovery_ip_exclude'])) {
-			// Account for users adding multiple spaces which would be converted to multiple comma's.
-			$exclude_ip = preg_replace('!\s+!', ' ', $CI->config->config['discovery_ip_exclude']);
-			// Convert spaces to comma's
-			$exclude_ip = str_replace(' ', ',', $exclude_ip);
-			if ( ! empty($discovery->attributes->other->nmap->exclude_ip)) {
-				$discovery->attributes->other->nmap->exclude_ip .= ',' . $exclude_ip;
-			} else {
-				$discovery->attributes->other->nmap->exclude_ip = $exclude_ip;
-			}
-		}
-		// Ensure we only have valid characters of digit, dot, slash, dash and comma in attribute
-		if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $discovery->attributes->other->nmap->exclude_ip)) {
-			$discovery->attributes->other->nmap->exclude_ip = '';
-			$log->message = 'Invalid characters supplied in exclude_ip, setting to blank.';
-			$log->severity = 5;
-			discovery_log($log);
-		}
-
 		if ($discovery->attributes->type === 'seed') {
-			$temp_subnet = $discovery->attributes->other->subnet;
-			$discovery->attributes->other->subnet = $discovery->attributes->seed_ip;
+			$temp_subnet = $discovery->attributes->subnet;
+			$discovery->attributes->subnet = $discovery->attributes->seed_ip;
 		}
 
 		$all_ip_list = all_ip_list($discovery);
 
 		if ($discovery->attributes->type === 'seed') {
-			$discovery->attributes->other->subnet = $temp_subnet;
+			$discovery->attributes->subnet = $temp_subnet;
 		}
 
 		$count = @count($all_ip_list);
 
 		$log->command_status = 'notice';
-		if ($discovery->attributes->other->nmap->ping === 'n') {
+		if ($discovery->attributes->scan_options->ping === 'n') {
 			$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
 			if ($discovery->attributes->type === 'seed') {
 				$log->message = 'Ping response not required, seeding from ' . $discovery->attributes->seed_ip . '.';
 			}
 		}
-		if ($discovery->attributes->other->nmap->ping === 'y') {
+		if ($discovery->attributes->scan_options->ping === 'y') {
 			$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
+			if ($discovery->attributes->type === 'seed') {
+				$log->message = 'Pinging subnet before, seeding.';
+			}
 		}
 		discovery_log($log);
 
-		// the responding_ip_list function handles (using $discovery->attributes->other->nmap->ping) whether to
+		// the responding_ip_list function handles (using $discovery->attributes->scan_options->ping) whether to
 		// actually use Nmap to ping scan the subnet, or to just list all IPs (if set to 'n')
 		$responding_ip_list = responding_ip_list($discovery);
 		$log->command_time_to_execute = microtime(true) - $start;
@@ -407,7 +394,8 @@ if ( ! function_exists('ip_scan')) {
 		$start = microtime(true);
 		$CI = get_instance();
 		$ip = $details->ip;
-		$item = $CI->m_discoveries->read($details->discovery_id);
+		#$item = $CI->m_discoveries->read($details->discovery_id);
+		$item = $CI->m_discoveries->read_for_discovery($details->discovery_id);
 		if (empty($item)) {
 			return false;
 		}
@@ -425,7 +413,7 @@ if ( ! function_exists('ip_scan')) {
 		$log->ip = $ip;
 		discovery_log($log);
 
-		$nmap = $discovery->other->nmap;
+		$nmap = $discovery->scan_options;
 		$device = array();
 		$sql = 'SELECT NOW() AS `timestamp`';
 		$query = $CI->db->query($sql);
@@ -493,7 +481,7 @@ if ( ! function_exists('ip_scan')) {
 			$exclude_udp_ports = '--exclude-ports U:' . $nmap->exclude_udp_ports;
 		}
 
-		if ( ! empty($discovery->other->nmap->nmap_tcp_ports)) {
+		if ( ! empty($discovery->scan_options->nmap_tcp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sS {$service_version} {$exclude_ip} {$exclude_tcp_ports} {$nmap_tcp_ports} {$timeout} {$ip}";
 			if (php_uname('s') === 'Darwin') {
@@ -509,7 +497,7 @@ if ( ! function_exists('ip_scan')) {
 			unset($output);
 		}
 
-		if ( ! empty($discovery->other->nmap->nmap_udp_ports)) {
+		if ( ! empty($discovery->scan_options->nmap_udp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sU {$service_version} {$exclude_ip} {$exclude_udp_ports} {$nmap_udp_ports} {$timeout} {$ip}";
 			if (php_uname('s') === 'Darwin') {
@@ -530,7 +518,7 @@ if ( ! function_exists('ip_scan')) {
 			unset($ports);
 		}
 
-		if ( ! empty($discovery->other->nmap->tcp_ports)) {
+		if ( ! empty($discovery->scan_options->tcp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sS {$service_version} {$exclude_ip} {$exclude_tcp_ports} {$tcp_ports} {$timeout} {$ip}";
 			if (php_uname('s') === 'Darwin') {
@@ -551,7 +539,7 @@ if ( ! function_exists('ip_scan')) {
 			unset($ports);
 		}
 
-		if ( ! empty($discovery->other->nmap->udp_ports)) {
+		if ( ! empty($discovery->scan_options->udp_ports)) {
 			$item_start = microtime(true);
 			$command = "nmap -n {$timing} {$ping} -sU {$service_version} {$exclude_ip} {$exclude_udp_ports} {$udp_ports} {$timeout} {$ip}";
 			if (php_uname('s') === 'Darwin') {
@@ -609,30 +597,30 @@ if ( ! function_exists('check_nmap_output')) {
 		$device = array();
 
 		// Some defaults, see https://nmap.org/book/man-port-scanning-basics.html
-		if (empty($discovery->other->nmap->{'open'})) {
-			$discovery->other->nmap->{'open'} = 'y';
+		if (empty($discovery->scan_options->{'open'})) {
+			$discovery->scan_options->{'open'} = 'y';
 		}
-		if (empty($discovery->other->nmap->{'closed'})) {
-			$discovery->other->nmap->{'closed'} = 'n';
+		if (empty($discovery->scan_options->{'closed'})) {
+			$discovery->scan_options->{'closed'} = 'n';
 		}
-		if (empty($discovery->other->nmap->{'filtered'})) {
-			$discovery->other->nmap->{'filtered'} = 'n';
+		if (empty($discovery->scan_options->{'filtered'})) {
+			$discovery->scan_options->{'filtered'} = 'n';
 		}
-		if (empty($discovery->other->nmap->{'unfiltered'})) {
-			$discovery->other->nmap->{'unfiltered'} = 'n';
+		if (empty($discovery->scan_options->{'unfiltered'})) {
+			$discovery->scan_options->{'unfiltered'} = 'n';
 		}
-		if (empty($discovery->other->nmap->{'open|filtered'})) {
-			$discovery->other->nmap->{'open|filtered'} = 'y';
+		if (empty($discovery->scan_options->{'open|filtered'})) {
+			$discovery->scan_options->{'open|filtered'} = 'y';
 		}
-		if (empty($discovery->other->nmap->{'closed|filtered'})) {
-			$discovery->other->nmap->{'closed|filtered'} = 'n';
+		if (empty($discovery->scan_options->{'closed|filtered'})) {
+			$discovery->scan_options->{'closed|filtered'} = 'n';
 		}
 
 		foreach ($output as $line) {
 			$keywords = preg_split('/[\s,]+/', $line);
 			foreach ($values as $status) {
 				if ( ! empty($keywords[1])) {
-					if ( ! empty($discovery->other->nmap->{$status}) && $discovery->other->nmap->{$status} === 'y') {
+					if ( ! empty($discovery->scan_options->{$status}) && $discovery->scan_options->{$status} === 'y') {
 						if ($keywords[1] === $status) {
 							$device['host_is_up'] = 'true';
 							$device['status'] = $status;
@@ -654,7 +642,7 @@ if ( ! function_exists('check_nmap_output')) {
 							if ($keywords[0] === '161/udp') {
 								$device['snmp_status'] = 'true';
 							}
-							$ssh_ports = explode(',', $discovery->other->nmap->ssh_ports);
+							$ssh_ports = explode(',', $discovery->scan_options->ssh_ports);
 							foreach ($ssh_ports as $ssh_port) {
 								if ($keywords[0] === $ssh_port.'/tcp') {
 									$device['ssh_status'] = 'true';
@@ -686,7 +674,7 @@ if ( ! function_exists('check_nmap_output')) {
 				$log->command_output = $line;
 				discovery_log($log);
 			}
-			if (stripos($line, 'due to host timeout') !== false && $discovery->other->nmap->ping === 'y') {
+			if (stripos($line, 'due to host timeout') !== false && $discovery->scan_options->ping === 'y') {
 				$device['host_is_up'] = 'true';
 				$log->message = "Host {$ip} timed out. Exceeded timeout seconds.";
 				$log->command_output = $line;
@@ -721,7 +709,8 @@ if ( ! function_exists('ip_audit')) {
 		}
 		$start = microtime(true);
 		$CI = get_instance();
-		$item = $CI->m_discoveries->read($ip_scan->discovery_id);
+		#$item = $CI->m_discoveries->read($ip_scan->discovery_id);
+		$item = $CI->m_discoveries->read_for_discovery($ip_scan->discovery_id);
 		$discovery = @$item[0]->attributes;
 		if (empty($discovery)) {
 			$mylog = new stdClass();
@@ -816,7 +805,7 @@ if ( ! function_exists('ip_audit')) {
 		$parameters = new stdCLass();
 		$parameters->details = $device;
 		$parameters->discovery_id = $discovery->id;
-		$parameters->match = @$discovery->other->match;
+		$parameters->match = $discovery->match_options;
 		if (empty($device->id)) {
 			// This may have been set on the discovery itself - a single device discovery, if not run the match code
 			$device->id = $CI->m_device->match($parameters);
@@ -852,8 +841,8 @@ if ( ! function_exists('ip_audit')) {
 
 		// output to log file and DEBUG the status of the three main services
 		$ip_scan->details->ssh_port = '22';
-		if ( ! empty($discovery->other->nmap->ssh_ports) && intval($discovery->other->nmap->ssh_ports) !== 22) {
-			$nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
+		if ( ! empty($discovery->scan_options->ssh_ports) && intval($discovery->scan_options->ssh_ports) !== 22) {
+			$nmap_ports = explode(',', $discovery->scan_options->ssh_ports);
 			foreach (explode(',', $ip_scan->details->nmap_ports) as $port) {
 				$temp = explode('/', $port);
 				$port = intval($temp[0]);
@@ -1064,7 +1053,7 @@ if ( ! function_exists('ip_audit')) {
 			$parameters = new stdCLass();
 			$parameters->details = $device;
 			$parameters->discovery_id = $discovery->id;
-			$parameters->match = $discovery->other->match;
+			$parameters->match = $discovery->match_options;
 			$device->id = $CI->m_device->match($parameters);
 			if ( ! empty($device->id)) {
 				$log->system_id = $device->id;
@@ -1171,11 +1160,11 @@ if ( ! function_exists('ip_audit')) {
 			if ( ! empty($device->mac_address)) {
 				$item->mac = (string)strtolower($device->mac_address);
 			}
-			if ( ! empty($discovery->other->subnet) && strpos($discovery->other->subnet, '/') !== false) {
-				$network_details = network_details($discovery->other->subnet);
+			if ( ! empty($discovery->subnet) && strpos($discovery->subnet, '/') !== false) {
+				$network_details = network_details($discovery->subnet);
 				$item->netmask = $network_details->netmask;
 				$item->cidr = $network_details->network_slash;
-				$item->network = $discovery->other->subnet;
+				$item->network = $discovery->subnet;
 			} else {
 				$network_details = explode('.', $device->ip);
 				$item->netmask = '255.255.255.0';
@@ -1786,7 +1775,7 @@ if ( ! function_exists('ip_audit')) {
 			$parameters = new stdCLass();
 			$parameters->details = $audit->system;
 			$parameters->discovery_id = $discovery->id;
-			$parameters->match = $discovery->other->match;
+			$parameters->match = $discovery->match_options;
 			$audit_device = $CI->m_device->match($parameters);
 			$audit->system->discovery_id = $discovery->id;
 			if ( ! empty($audit->system->id)) {
@@ -2010,7 +1999,7 @@ if ( ! function_exists('ip_audit')) {
 		// Add IPs to scan if we are of type 'seed'
 		if ($discovery->type === 'seed' && ! empty($ips_found)) {
 			// define our subnet
-			$discovery_network = network_details($discovery->other->subnet);
+			$discovery_network = network_details($discovery->subnet);
 			$discovery_network->host_min = ip_address_to_db($discovery_network->host_min);
 			$discovery_network->host_max = ip_address_to_db($discovery_network->host_max);
 			$sql = "SELECT `ip` FROM `ip` WHERE `system_id` = ? AND `current` = 'y'";
@@ -2125,7 +2114,8 @@ if ( ! function_exists('discover_ad')) {
 		$start = microtime(true);
 		$CI = get_instance();
 		$discovery_id = $queue_item->discovery_id;
-		$item = $CI->m_discoveries->read($discovery_id);
+		#$item = $CI->m_discoveries->read($discovery_id);
+		$item = $CI->m_discoveries->read_for_discovery($discovery_id);
 		$discovery = $item[0];
 		unset($item);
 		$log = new stdClass();
@@ -2150,7 +2140,7 @@ if ( ! function_exists('discover_ad')) {
 		$credentials = $CI->m_credentials->collection($orgs);
 		// get the list of subnets from AD
 		// TODO - make the below able to use LDAPS as well as LDAP
-		$ldapuri = 'ldap://' . $discovery->attributes->other->ad_server;
+		$ldapuri = 'ldap://' . $discovery->attributes->ad_server;
 		$error_reporting = error_reporting();
 		error_reporting(0);
 		$ldapconn = @ldap_connect($ldapuri);
@@ -2159,7 +2149,7 @@ if ( ! function_exists('discover_ad')) {
 		if ( ! $ldapconn) {
 			// log the failed attempt to connect to AD
 			$log->severity = 4;
-			$log->details = 'Could not connect to AD ' . $discovery->attributes->other->ad_domain . ' at ' . $discovery->attributes->other->ad_server;
+			$log->details = 'Could not connect to AD ' . $discovery->attributes->ad_domain . ' at ' . $discovery->attributes->ad_server;
 			$log->command_status = 'fail';
 			discovery_log($log);
 			return false;
@@ -2175,20 +2165,20 @@ if ( ! function_exists('discover_ad')) {
 					$log->message = 'Successful bind to AD using ' . $credential->attributes->name;
 					$log->command_status = 'success';
 					discovery_log($log);
-					$base_dn = 'CN=Subnets,CN=Sites,CN=Configuration,dc=' . implode(', dc=', explode('.', $discovery->attributes->other->ad_domain));
+					$base_dn = 'CN=Subnets,CN=Sites,CN=Configuration,dc=' . implode(', dc=', explode('.', $discovery->attributes->ad_domain));
 					$filter = '(&(objectclass=*))';
 					$justthese = array('distinguishedName', 'name', 'siteobject');
 					$search_result = ldap_search($ldapconn, $base_dn, $filter, $justthese);
 					$info = ldap_get_entries($ldapconn, $search_result);
 					if (empty($info)) {
-						$log->message = 'Could not Retrieve subnets from ' . $discovery->attributes->other->ad_domain . ' on ' . $discovery->attributes->other->ad_server . ' using ' . $credential->attributes->name;
+						$log->message = 'Could not Retrieve subnets from ' . $discovery->attributes->ad_domain . ' on ' . $discovery->attributes->ad_server . ' using ' . $credential->attributes->name;
 						$log->severity = 6;
 						$log->command_output = '';
 						$log->command_status = 'fail';
 						discovery_log($log);
 					} else {
 						$log->severity = 7;
-						$log->message = 'Retrieved subnets from ' . $discovery->attributes->other->ad_domain . ' on ' . $discovery->attributes->other->ad_server;
+						$log->message = 'Retrieved subnets from ' . $discovery->attributes->ad_domain . ' on ' . $discovery->attributes->ad_server;
 						$log->command_status = 'success';
 						discovery_log($log);
 						break;
@@ -2205,7 +2195,7 @@ if ( ! function_exists('discover_ad')) {
 		if ( $bind === false OR empty($info)) {
 			$log->severity = 5;
 			$log->command_status = 'fail';
-			$log->message = 'Could not bind to AD ' . $discovery->attributes->other->ad_domain . ' at ' . $discovery->attributes->other->ad_server;
+			$log->message = 'Could not bind to AD ' . $discovery->attributes->ad_domain . ' at ' . $discovery->attributes->ad_server;
 			discovery_log($log);
 			return false;
 		}
@@ -2238,15 +2228,9 @@ if ( ! function_exists('discover_ad')) {
 				$ad_discovery->type = 'subnet';
 				$ad_discovery->devices_assigned_to_org = $discovery->attributes->devices_assigned_to_org;
 				$ad_discovery->devices_assigned_to_location = $discovery->attributes->devices_assigned_to_location;
-				if (gettype($discovery->attributes->other) === 'string') {
-					$ad_discovery->other = json_decode($discovery->attributes->other);
-				} else {
-					$ad_discovery->other = $discovery->attributes->other;
-				}
-				unset($ad_discovery->other->ad_server);
-				unset($ad_discovery->other->ad_comain);
-				$ad_discovery->other->match = new stdClass();
-				$ad_discovery->other->subnet = $subnet['name'][0];
+				$ad_discovery->scan_options = $discovery->attributes->scan_options;
+				$ad_discovery->match_options = $discovery->attributes->match_options;
+				$ad_discovery->subnet = $subnet['name'][0];
 
 				$sql = '/* discoveries_helper::discover_ad */ ' . "SELECT * FROM discoveries WHERE name = ? AND org_id = ? and description = 'Subnet - " . $subnet['name'][0] . "'";
 				$query = $CI->db->query($sql, array($ad_discovery->name, intval($discovery->attributes->org_id)));
