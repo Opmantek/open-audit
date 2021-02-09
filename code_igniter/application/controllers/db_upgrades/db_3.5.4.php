@@ -323,11 +323,12 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
+
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS command_options";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-
-
+$this->alter_table('discovery_scan_options', 'command_options', "ADD command_options text NOT NULL AFTER ports_stop_after", 'add');
 
 $sql = "ALTER TABLE system DROP IF EXISTS os_arch";
 $this->db->query($sql);
