@@ -58,7 +58,8 @@ if ( !  function_exists('scp')) {
      */
     function scp($parameters)
     {
-
+        $item_start = microtime(true);
+        $CI = & get_instance();
         $message = '';
         if (empty($parameters->ip)) {
             $message = 'No IP supplied to scp function.';
@@ -82,6 +83,14 @@ if ( !  function_exists('scp')) {
         }
         if ( ! empty($parameters->discovery_id)) {
             $log->discovery_id = $parameters->discovery_id;
+        }
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
         }
         $log->severity = 7;
         $log->file = 'ssh_helper';
@@ -107,9 +116,6 @@ if ( !  function_exists('scp')) {
             $ssh_port = '22';
         }
 
-        $item_start = microtime(true);
-        $CI = & get_instance();
-
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
@@ -124,8 +130,8 @@ if ( !  function_exists('scp')) {
             $log->severity = 7;
             return false;
         }
-        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        if ($timeout > 0) {
+            $ssh->setTimeout($timeout);
         }
         $key = new Crypt_RSA();
         if ($credentials->type === 'ssh_key') {
@@ -197,6 +203,8 @@ if ( !  function_exists('scp_get')) {
      */
     function scp_get($parameters)
     {
+        $item_start = microtime(true);
+        $CI = & get_instance();
         $message = '';
         if (empty($parameters->ip)) {
             $message = 'No IP supplied to scp_get function.';
@@ -244,9 +252,15 @@ if ( !  function_exists('scp_get')) {
         if ( ! empty($parameters->ssh_port)) {
             $ssh_port = intval($parameters->ssh_port);
         }
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
+        }
 
-        $CI = & get_instance();
-        $item_start = microtime(true);
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
@@ -261,8 +275,8 @@ if ( !  function_exists('scp_get')) {
             $log->severity = 7;
             return false;
         }
-        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        if ($timeout > 0) {
+            $ssh->setTimeout($timeout);
         }
         $key = new Crypt_RSA();
         if ($credentials->type === 'ssh_key') {
@@ -328,6 +342,8 @@ if ( !  function_exists('ssh_command')) {
      */
     function ssh_command($parameters)
     {
+        $item_start = microtime(true);
+        $CI = & get_instance();
         if (empty($parameters) OR empty($parameters->ip) OR empty($parameters->credentials) OR empty($parameters->command)) {
             $mylog = new stdClass();
             $mylog->message = 'Function ssh_command called without params object';
@@ -338,7 +354,6 @@ if ( !  function_exists('ssh_command')) {
             stdlog($mylog);
             return;
         }
-
         if (empty($parameters->log)) {
             $log = new stdClass();
             if ( ! empty($parameters->discovery_id)) {
@@ -360,10 +375,14 @@ if ( !  function_exists('ssh_command')) {
         if (empty($ssh_port)) {
             $ssh_port = '22';
         }
-
-        $item_start = microtime(true);
-        $CI = & get_instance();
-
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
+        }
         if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'Invalid IP supplied to ssh_command function.';
             $log->severity = 5;
@@ -441,7 +460,7 @@ if ( !  function_exists('ssh_command')) {
         $log->message = 'Executing SSH command';
         $item_start = microtime(true);
         if (strpos($command, 'sudo') === false) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+            $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
             $result = $ssh->exec($command);
             $result = explode("\n", $result);
@@ -461,7 +480,7 @@ if ( !  function_exists('ssh_command')) {
                 if (stripos($output, 'Audit Completed') !== false) {
                     break;
                 }
-                if ((microtime(true) - $item_start) > intval($CI->config->config['discovery_ssh_timeout'])) {
+                if ((microtime(true) - $item_start) > $timeout) {
                     break;
                 }
             }
@@ -489,7 +508,7 @@ if ( !  function_exists('ssh_audit')) {
      */
     function ssh_audit($parameters)
     {
-
+        $CI = & get_instance();
         if (empty($parameters) OR empty($parameters->credentials) OR empty($parameters->ip)) {
             $mylog = new stdClass();
             $mylog->severity = 4;
@@ -500,7 +519,6 @@ if ( !  function_exists('ssh_audit')) {
             stdlog($mylog);
             return;
         }
-
         if (empty($parameters->log)) {
             $log = new stdClass();
             if ( ! empty($parameters->discovery_id)) {
@@ -547,8 +565,14 @@ if ( !  function_exists('ssh_audit')) {
         if (empty($ssh_port)) {
             $ssh_port = '22';
         }
-
-        $CI = & get_instance();
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
+        }
 
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         include_once('Crypt/RSA.php');
@@ -559,8 +583,7 @@ if ( !  function_exists('ssh_audit')) {
 
         foreach ($credentials as $credential) {
             $ssh = new Net_SSH2($ip, $ssh_port);
-            // This is only for login. If the target cannot respond within 10
-            // seconds, give up
+            // This is only for login. If the target cannot respond within 10 seconds, give up
             $ssh->setTimeout(10);
             if ($credential->type === 'ssh_key') {
                 $key = new Crypt_RSA();
