@@ -207,8 +207,8 @@ class Discoveries extends MY_Controller
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
-            if ( ! empty($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id)) {
-                $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->read($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id));
+            if ( ! empty($this->response->data[0]->attributes->scan_options->id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->read($this->response->data[0]->attributes->scan_options->id));
             }
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
