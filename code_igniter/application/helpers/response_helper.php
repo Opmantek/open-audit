@@ -1649,7 +1649,7 @@ if ( ! function_exists('response_get_permission_ca')) {
         }
         if ( ! $instance->m_users->get_user_permission($user->id, $perm_collection, $permissions[$action]) and $instance->config->config['internal_version'] >= '20160904') {
             log_error('ERR-0015', $collection . ':' . $permissions[$action]);
-            $log->details = 'User not permittied to perform ' . $action . ' on ' . $collection;
+            $log->details = 'User not permitted to perform ' . $action . ' on ' . $collection;
             $log->severity = 5;
             stdlog($log);
             return false;
@@ -1685,7 +1685,7 @@ if ( ! function_exists('response_get_permission_id')) {
         $collections = array('charts', 'configuration', 'database', 'errors', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
 
         if ( empty($id) OR intval($id) === 888888888888 OR in_array($collection, $collections)) {
-            $log->summary = 'User permittied to access ' . $collection;
+            $log->summary = 'User permitted to access ' . $collection;
             stdlog($log);
             return true;
         }
@@ -1727,12 +1727,12 @@ if ( ! function_exists('response_get_permission_id')) {
                 if ( ! $allowed) {
                     log_error('ERR-0018', $collection . ':' . $action);
                     $log->severity = 5;
-                    $log->summary = 'User not ermittied to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
+                    $log->summary = 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
                     stdlog($log);
                     return false;
                 }
             }
-            $log->summary = 'User permittied to perform ' . $action . ' on OrgID ' . @$received_data->org_id;
+            $log->summary = 'User permitted to perform ' . $action . ' on OrgID ' . @$received_data->org_id;
         }
         stdlog($log);
         return true;
