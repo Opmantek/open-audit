@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label for="data[attributes][subnet]" class="col-sm-3 control-label"><?php echo __('Subnet'); ?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="data[attributes][other][subnet]" name="data[attributes][other][subnet]" placeholder="192.168.1.0/24">
+                                <input type="text" class="form-control" id="data[attributes][subnet]" name="data[attributes][subnet]" placeholder="192.168.1.0/24">
                             </div>
                         </div>
                     </span>
@@ -83,9 +83,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][other][nmap][discovery_scan_option_id]" class="col-sm-3 control-label"><?php echo __('Discovery Options'); ?></label>
+                        <label for="data[attributes][scan_options][id]" class="col-sm-3 control-label"><?php echo __('Discovery Options'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][other][nmap][discovery_scan_option_id]" name="data[attributes][other][nmap][discovery_scan_option_id]" required disabled>
+                            <select class="form-control" id="data[attributes][scan_options][id]" name="data[attributes][scan_options][id]" required disabled>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'discovery_scan_options') {
@@ -179,19 +179,19 @@ $(document).ready(function(){
     var $subnet_text = "                                <div class=\"form-group\">\
                                 <label for=\"data[attributes][subnet]\" class=\"col-sm-3 control-label\"><?php echo __('Subnet'); ?></label>\
                                 <div class=\"col-sm-8 input-group\">\
-                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][subnet]\" name=\"data[attributes][other][subnet]\" placeholder=\"192.168.1.0/24\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][subnet]\" name=\"data[attributes][subnet]\" placeholder=\"192.168.1.0/24\">\
                                 </div>\
                             </div>";
     var $active_directory_text = "                            <div class=\"form-group\">\
-                                <label for=\"data[attributes][other][ad_server]\" class=\"col-sm-3 control-label\"><?php echo __('Active Directory Server'); ?></label>\
+                                <label for=\"data[attributes][ad_server]\" class=\"col-sm-3 control-label\"><?php echo __('Active Directory Server'); ?></label>\
                                 <div class=\"col-sm-8 input-group\">\
-                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_server]\" name=\"data[attributes][other][ad_server]\" placeholder=\"192.168.1.20\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][ad_server]\" name=\"data[attributes][ad_server]\" placeholder=\"192.168.1.20\">\
                                 </div>\
                             </div>\
                             <div class=\"form-group\">\
-                                <label for=\"data[attributes][other][ad_domain]\" class=\"col-sm-3 control-label\"><?php echo __('Active Directory Domain'); ?></label>\
+                                <label for=\"data[attributes][ad_domain]\" class=\"col-sm-3 control-label\"><?php echo __('Active Directory Domain'); ?></label>\
                                 <div class=\"col-sm-8 input-group\">\
-                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_domain]\" name=\"data[attributes][other][ad_domain]\" placeholder=\"open-audit.local\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][ad_domain]\" name=\"data[attributes][ad_domain]\" placeholder=\"open-audit.local\">\
                                 </div>\
                             </div>";
     $("#options").html($subnet_text);
@@ -214,32 +214,5 @@ $(document).ready(function(){
     $('#div_system_id').remove();
     $('#div_device_count').remove();
     $('#div_discard').remove();
-
-    $('#network_address_select').change(function() {
-        var $value = $(this).val();
-        if ($value == 'other') {
-            $("#network_address_other_div").css('display', 'block');
-        } else {
-            $("#network_address_other_div").css('display', 'none');
-        }
-    });
-
-    $("form").submit(function(e){
-        if ($("#network_address_select").val() == '') {
-            alert("Please provde a network address.");
-            e.preventDefault();
-        } else if ($("#network_address_select").val() == 'other') {
-            var other = $('#network_address_other').val();
-            if (other != "") {
-                $("#data\\[attributes\\]\\[network_address\\]").val(other);
-            } else {
-                alert("Please provde a network address.");
-                e.preventDefault();
-            }
-        } else {
-            var other = $('#network_address_select').val();
-            $("#data\\[attributes\\]\\[network_address\\]").val(other);
-        }
-    });
 });
 </script>

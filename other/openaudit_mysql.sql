@@ -1106,20 +1106,25 @@ CREATE TABLE `discoveries` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
+  `subnet` varchar(45) NOT NULL DEFAULT '',
+  `seed_ip` varchar(45) NOT NULL DEFAULT '',
+  `seed_restrict_to_subnet` enum('y','n') NOT NULL DEFAULT 'y',
+  `seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y',
+  `ad_domain` varchar(200) NOT NULL DEFAULT '',
+  `ad_server` varchar(45) NOT NULL DEFAULT '',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
   `other` text NOT NULL,
-  `options` text NOT NULL,
+  `scan_options` text NOT NULL,
+  `match_options` text NOT NULL,
+  `command_options` text NOT NULL,
   `discard` enum('y','n') NOT NULL DEFAULT 'n',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_finished` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `duration` time NOT NULL DEFAULT '00:00:00',
   `status` varchar(20) NOT NULL DEFAULT '',
-  `seed_ip` varchar(45) NOT NULL DEFAULT '',
-  `seed_restrict_to_subnet` enum('y','n') NOT NULL DEFAULT 'y',
-  `seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y',
   `ip_all_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_responding_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1197,6 +1202,10 @@ CREATE TABLE `discovery_scan_options` (
   `open|filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `timeout` int(10) unsigned NOT NULL DEFAULT '0',
+  `snmp_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `ssh_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `wmi_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `script_timeout` tinyint(5) unsigned NOT NULL DEFAULT '0',
   `timing` int(1) unsigned NOT NULL DEFAULT '4',
   `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT '0',
   `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1209,6 +1218,7 @@ CREATE TABLE `discovery_scan_options` (
   `options` text NOT NULL,
   `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n',
   `ports_stop_after` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `command_options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1229,64 +1239,6 @@ INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 sec
 INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y','y',0,3,1000,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
 INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y','y',0,2,1000,1000,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `discovery_scan_options` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `discovery_scan_to_script`
---
-
-DROP TABLE IF EXISTS `discovery_scan_to_script`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `discovery_scan_to_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `discovery_scan_options_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `discovery_scripts_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '',
-  `weight` tinyint(3) unsigned NOT NULL DEFAULT '100',
-  PRIMARY KEY (`id`),
-  CONSTRAINT `discovery_scan_to_script_discovery_scan_options_id` FOREIGN KEY (`discovery_scan_options_id`) REFERENCES `discovery_scan_options` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `discovery_scan_to_script`
---
-
-LOCK TABLES `discovery_scan_to_script` WRITE;
-/*!40000 ALTER TABLE `discovery_scan_to_script` DISABLE KEYS */;
-/*!40000 ALTER TABLE `discovery_scan_to_script` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
---
--- Table structure for table `discovery_scripts`
---
-
-DROP TABLE IF EXISTS `discovery_scripts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `discovery_scripts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` varchar(200) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `discovery_scripts`
---
-
-LOCK TABLES `discovery_scripts` WRITE;
-/*!40000 ALTER TABLE `discovery_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `discovery_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2367,39 +2319,6 @@ LOCK TABLES `nmap` WRITE;
 /*!40000 ALTER TABLE `nmap` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
---
--- Table structure for table `nmap_script`
---
-
-DROP TABLE IF EXISTS `nmap_script`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `nmap_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `port` int(5) NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `result` text NOT NULL,
-  `result_formatted` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `nmap_script_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `nmap_script`
---
-
-LOCK TABLES `nmap_script` WRITE;
-/*!40000 ALTER TABLE `nmap_script` DISABLE KEYS */;
-/*!40000 ALTER TABLE `nmap_script` ENABLE KEYS */;
-UNLOCK TABLES;
-
 --
 -- Table structure for table `notes`
 --
@@ -2991,6 +2910,7 @@ CREATE TABLE `radio` (
   KEY `system_id` (`system_id`),
   CONSTRAINT `radio_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `radio`

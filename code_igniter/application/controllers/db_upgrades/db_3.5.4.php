@@ -28,7 +28,6 @@
 **/
 
 /*
-
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'file\'' WHERE name = 'Files';
 
 UPDATE `queries` SET `sql` = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\')' WHERE `name` = 'Hardware';
@@ -72,9 +71,14 @@ DELETE FROM `configuration` WHERE name = 'delete_noncurrent_radio';
 
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
 
+
+ALTER TABLE discoveries DROP IF EXISTS subnet;
+
+ALTER TABLE discoveries ADD subnet VARCHAR(45) NOT NULL DEFAULT '' AFTER type;
+
 ALTER TABLE discoveries DROP IF EXISTS seed_ip;
 
-ALTER TABLE discoveries ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER status;
+ALTER TABLE discoveries ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER subnet;
 
 ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_subnet;
 
@@ -84,61 +88,60 @@ ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_private;
 
 ALTER TABLE discoveries ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet;
 
+ALTER TABLE discoveries DROP IF EXISTS ad_domain;
+
+ALTER TABLE discoveries ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_restrict_to_subnet;
+
+ALTER TABLE discoveries DROP IF EXISTS ad_server;
+
+ALTER TABLE discoveries ADD ad_server varchar(45) NOT NULL DEFAULT '' AFTER ad_domain;
+
+ALTER TABLE discoveries DROP IF EXISTS options;
+
+ALTER TABLE discoveries DROP IF EXISTS scan_options;
+
+ALTER TABLE discoveries ADD scan_options text NOT NULL AFTER other;
+
+ALTER TABLE discoveries DROP IF EXISTS match_options;
+
+ALTER TABLE discoveries ADD match_options text NOT NULL AFTER scan_options;
+
+ALTER TABLE discoveries DROP IF EXISTS command_options;
+
+ALTER TABLE discoveries ADD command_options text NOT NULL AFTER match_options;
+
+
 ALTER TABLE discovery_scan_options DROP IF EXISTS ports_in_order;
 
 ALTER TABLE discovery_scan_options ADD `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n' after options;
 
 ALTER TABLE discovery_scan_options DROP IF EXISTS ports_stop_after;
 
-ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint unsigned NOT NULL DEFAULT 0 after ports_in_order;
+ALTER TABLE discovery_scan_options ADD `ports_stop_after` tinyint(3) unsigned NOT NULL DEFAULT 0 after ports_in_order;
 
-DROP TABLE IF EXISTS discovery_scan_to_script;
+ALTER TABLE discovery_scan_options DROP IF EXISTS command_options;
 
-CREATE TABLE `discovery_scan_to_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `discovery_scan_options_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `discovery_scripts_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `weight` tinyint(3) unsigned NOT NULL DEFAULT '100',
-  PRIMARY KEY (`id`),
-  CONSTRAINT `discovery_scan_to_script_discovery_scan_options_id` FOREIGN KEY (`discovery_scan_options_id`) REFERENCES `discovery_scan_options` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE discovery_scan_options ADD command_options text NOT NULL AFTER ports_stop_after;
 
-DROP TABLE IF EXISTS discovery_scripts;
+ALTER TABLE discovery_scan_options DROP IF EXISTS snmp_timeout;
 
-CREATE TABLE `discovery_scripts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` varchar(200) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE discovery_scan_options ADD snmp_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER timeout;
 
+ALTER TABLE discovery_scan_options DROP IF EXISTS ssh_timeout;
 
-DROP TABLE IF EXISTS nmap_script;
+ALTER TABLE discovery_scan_options ADD ssh_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER snmp_timeout;
 
-CREATE TABLE `nmap_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `port` int(5) NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `result` text NOT NULL,
-  `result_formatted` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE discovery_scan_options DROP IF EXISTS wmi_timeout;
+
+ALTER TABLE discovery_scan_options ADD wmi_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ssh_timeout;
+
+ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout;
+
+ALTER TABLE discovery_scan_options ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout;
+
 
 ALTER TABLE system DROP IF EXISTS os_arch;
+
 
 ALTER TABLE system ADD `os_arch` varchar(50) NOT NULL DEFAULT '' AFTER os_bit;
 
@@ -218,11 +221,19 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS subnet";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discoveries', 'subnet', "ADD subnet varchar(45) NOT NULL DEFAULT '' AFTER type", 'add');
+
 $sql = "ALTER TABLE discoveries DROP IF EXISTS seed_ip";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER status", 'add');
+$this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER subnet", 'add');
 
 $sql = "ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_subnet";
 $this->db->query($sql);
@@ -236,6 +247,66 @@ $this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
 
+$sql = "ALTER TABLE discoveries DROP IF EXISTS ad_domain";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discoveries', 'ad_domain', "ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_restrict_to_private", 'add');
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS ad_server";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discoveries', 'ad_server', "ADD ad_server varchar(45) NOT NULL DEFAULT '' AFTER ad_domain", 'add');
+
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS options";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS scan_options";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discoveries', 'scan_options', "ADD scan_options text NOT NULL AFTER other", 'add');
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS match_options";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discoveries', 'match_options', "ADD match_options text NOT NULL AFTER scan_options", 'add');
+
+$sql = "ALTER TABLE discoveries DROP IF EXISTS command_options";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('discoveries', 'command_options', "ADD command_options text NOT NULL AFTER match_options", 'add');
+
+$sql = "SELECT * FROM discoveries";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+$result = $query->result();
+
+foreach ($result as $item) {
+	$id = $item->id;
+	$json = json_decode($item->other);
+	$subnet = @$json->subnet;
+	$ad_server = @$json->ad_server;
+	$ad_domain = @$json->ad_domain;
+    if (isset($json->nmap->discovery_scan_option_id)) {
+        $json->nmap->id = intval($json->nmap->discovery_scan_option_id);
+        unset($json->nmap->discovery_scan_option_id);
+    }
+	$scan_options = $json->nmap;
+	$scan_options = json_encode($scan_options);
+	$match_options = $json->match;
+	$match_options = json_encode($match_options);
+	$sql = 'UPDATE discoveries SET subnet = ?, ad_server = ?, ad_domain = ?, scan_options = ?, match_options = ? WHERE id = ?';
+	$data = array($subnet, $ad_server, $ad_domain, $scan_options, $match_options, $id);
+	$this->db->query($sql, $data);
+	$this->log_db($this->db->last_query() . ';');
+}
+
 $sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ports_in_order";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
@@ -248,62 +319,35 @@ $this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('discovery_scan_options', 'ports_stop_after', "ADD ports_stop_after tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ports_in_order", 'add');
 
-$sql = "DROP TABLE IF EXISTS discovery_scan_to_script";
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS snmp_timeout";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "CREATE TABLE `discovery_scan_to_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `discovery_scan_options_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `discovery_scripts_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `weight` tinyint(3) unsigned NOT NULL DEFAULT '100',
-  PRIMARY KEY (`id`),
-  CONSTRAINT `discovery_scan_to_script_discovery_scan_options_id` FOREIGN KEY (`discovery_scan_options_id`) REFERENCES `discovery_scan_options` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS command_options";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "DROP TABLE IF EXISTS discovery_scripts";
+$this->alter_table('discovery_scan_options', 'command_options', "ADD command_options text NOT NULL AFTER ports_stop_after", 'add');
+
+$this->alter_table('discovery_scan_options', 'snmp_timeout', "ADD snmp_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER timeout", 'add');
+
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ssh_timeout";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "CREATE TABLE `discovery_scripts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `port` int(10) unsigned NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `script_options` varchar(200) NOT NULL DEFAULT '',
-  `function` varchar(200) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->alter_table('discovery_scan_options', 'ssh_timeout', "ADD ssh_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER snmp_timeout", 'add');
+
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS wmi_timeout";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "DROP TABLE IF EXISTS nmap_script";
+$this->alter_table('discovery_scan_options', 'wmi_timeout', "ADD wmi_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ssh_timeout", 'add');
+
+$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "CREATE TABLE `nmap_script` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `port` int(5) NOT NULL DEFAULT '0',
-  `script` varchar(200) NOT NULL DEFAULT '',
-  `result` text NOT NULL,
-  `result_formatted` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `nmap_script_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
+$this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
 
 $sql = "ALTER TABLE system DROP IF EXISTS os_arch";
 $this->db->query($sql);
