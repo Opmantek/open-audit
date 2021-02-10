@@ -564,28 +564,28 @@ class Devices extends MY_Controller
                     $data->type = 'subnet';
                     $data->network_address = $this->config->config['default_network_address'];
                     $data->other = new stdClass();
-                    $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
-                    $data->other->nmap = new stdClass();
-                    $data->other->match = new stdClass();
+                    $data->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
+                    $data->scan_options = new stdClass();
+                    $data->match_options = new stdClass();
                     if ( ! empty($this->response->data[0]->attributes->discovery_id)) {
                         $discovery = $this->m_discoveries->read($this->response->data[0]->attributes->discovery_id);
-                        if ( ! empty($discovery[0]->attributes->other->nmap)) {
-                            $data->other->nmap = $discovery[0]->attributes->other->nmap;
+                        if ( ! empty($discovery[0]->attributes->scan_options)) {
+                            $data->scan_options = $discovery[0]->attributes->scan_options;
                         } else {
                             $this->response->data[0]->attributes->discovery_id = 0;
                         }
-                        if ( ! empty($discovery[0]->attributes->other->match)) {
-                            $data->other->match = $discovery[0]->attributes->other->match;
+                        if ( ! empty($discovery[0]->attributes->match_options)) {
+                            $data->match_options = $discovery[0]->attributes->match_options;
                         }
                     }
                     if (empty($this->response->data[0]->attributes->discovery_id)) {
-                        $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
+                        $do_not_use = array('name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
                         $discovery_scan_options = $this->m_discovery_scan_options->read($this->config->config['discovery_default_scan_option']);
                         if ( ! empty($discovery_scan_options->data)) {
                             foreach ($discovery_scan_options->data as $item) {
                                 foreach ($item as $key => $value) {
                                     if ( ! in_array($key, $do_not_use)) {
-                                        $data->other->nmap->{$key} = $value;
+                                        $data->scan_options->{$key} = $value;
                                     }
                                 }
                             }
@@ -595,7 +595,7 @@ class Devices extends MY_Controller
                         // use the defaults
                         $match_rules = array('match_dbus', 'match_dns_fqdn', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
                         foreach ($match_rules as $item) {
-                            $data->other->match->{$item} = @$this->config->config[$item];
+                            $data->match_options->{$item} = @$this->config->config[$item];
                         }
                     }
                     $discovery_id = $this->m_discoveries->create($data);
