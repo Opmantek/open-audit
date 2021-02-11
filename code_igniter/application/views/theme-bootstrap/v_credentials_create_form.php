@@ -207,8 +207,8 @@ $(document).ready(function(){
              </div>';
 
     var $windows_text = '        <div class="form-group">\
-            <label for="data[attributes][credentials][username]" class="col-sm-4 control-label"><?php echo __('Username'); ?></label>\
-            <div class="col-sm-7 input-group">\
+            <label for="data[attributes][credentials][username]" class="col-sm-3 control-label"><?php echo __('Username'); ?></label>\
+            <div class="col-sm-8 input-group">\
                 <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="username@domain" value="">\
             </div>\
         </div>\
