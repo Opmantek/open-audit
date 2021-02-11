@@ -243,7 +243,7 @@ if (empty($i)) {
     $query = $this->db->query($sql, $data);
     $details->original_last_seen = '';
     if ($this->response->meta->format === 'screen') {
-        // echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        // echo "SystemID (new): <a href='" . $this->config->config['oa_web_folder'] . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 } else {
     // update an existing system
@@ -255,7 +255,7 @@ if (empty($i)) {
     // $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
     $this->m_device->update($details);
     if ($this->response->meta->format === 'screen') {
-        // echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        // echo "SystemID (updated): <a href='" . $this->config->config['oa_web_folder'] . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 }
 

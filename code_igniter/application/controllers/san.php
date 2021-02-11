@@ -724,7 +724,7 @@ class San extends CI_Controller
                 $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
                 stdlog($log_details);
                 $details->original_last_seen = "";
-                echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+                echo "SystemID (new): <a href='" . $this->config->config['oa_web_folder'] . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
             } else {
                 // update an existing system
                 $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
@@ -732,7 +732,7 @@ class San extends CI_Controller
                 $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
                 $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
                 $this->m_device->update($details);
-                echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+                echo "SystemID (updated): <a href='" . $this->config->config['oa_web_folder'] . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
             }
 
             $log_details->message = '';
