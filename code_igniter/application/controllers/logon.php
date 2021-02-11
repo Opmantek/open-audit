@@ -283,37 +283,22 @@ class Logon extends CI_Controller
             if (!empty($this->config->config['oae_url'])) {
                 $oae_url = $this->config->config['oae_url'];
             }
-            $oae_url = str_replace('/omk/oae', '/omk/open-audit', $oae_url);
-            if ($oae_url == '') {
-                $oae_url = '/omk/open-audit/';
+            if (substr($oae_url, 0, 1) === '/') {
+                $oae_url = 'http://localhost' . $oae_url;
+            } else {
+                $temp = explode('/', $oae_url);
+                unset($temp[0], $temp[1], $temp[2]);
+                $oae_url = 'http://localhost' . implode('/', $temp);
             }
-            # Add a trailing slash if not already present
-            if (substr($oae_url, -1, 1) != '/') {
-                $oae_url = $oae_url.'/';
+            if (substr($oae_url, 1, -1) !== '/') {
+                $oae_url .= '/';
             }
-            // if we already have http... in the oae_url variable, no need to do anything.
-            if (strpos(strtolower($oae_url), 'http') === false) {
-                // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
-                // Make sure we have a leading /
-                if (substr($oae_url, 0, 1) != '/') {
-                    $oae_url = '/'.$oae_url;
-                }
-                // need to create a link to OAE on port 8042 to check the license
-                // we cannot detect and use the browser http[s] as it may being used in the client browser,
-                //     but stripped by a https offload or proxy
-                $oae_license_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url.'license';
-                // we create a link for the browser using the same address + the path & file in oae_url
-                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                    $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
-                } else {
-                    $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
-                }
-            }
+            $oae_license_url = $oae_url.'license';
+
             ini_set('default_socket_timeout', 3);
 
             // Get the license type and set our logo
             $license = '';
-            $oae_license_url = $oae_url.'license';
 
             // get the license status from the OAE API
             // license status are: none, free, commercial
