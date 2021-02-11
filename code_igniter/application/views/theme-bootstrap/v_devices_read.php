@@ -806,10 +806,10 @@ if (empty($data['mount_point'])) {
                         $icon_path = $this->config->config['base_path'] . '\\..\\htdocs\\open-audit\\device_images\\';
                     }
                     if (file_exists($icon_path.$data['system']->icon.'.svg')) { ?>
-                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/<?php echo $data['system']->icon; ?>.svg" />
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo $this->config->config['oa_web_folder'] ?>device_images/<?php echo $data['system']->icon; ?>.svg" />
                     <?php
                     } else { ?>
-                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/network_device.svg" />
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo $this->config->config['oa_web_folder'] ?>device_images/network_device.svg" />
                     <?php
                     } ?>
                         <br /><br />
@@ -1695,13 +1695,13 @@ foreach ($list as $item) {
                                         }
                                     } elseif ($item == 'vm'and $key == 'guest_system_id') {
                                         if (!empty($value)) {
-                                            echo "                            <td class=\"text-center\"><a href=\"" . base_url() . "index.php/devices/" . $value . "\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
+                                            echo "                            <td class=\"text-center\"><a href=\"" . $this->config->config['oa_web_folder'] . "index.php/devices/" . $value . "\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
                                         } else {
                                             echo "                            <td></td>\n";
                                         }
                                     } elseif ($item == 'vm'and $key == 'icon') {
                                         if (!empty($value)) {
-                                            echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . base_url() . "device_images/" . $value . ".svg\" /></td>\n";
+                                            echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . $this->config->config['oa_web_folder'] . "device_images/" . $value . ".svg\" /></td>\n";
                                         } else {
                                             echo "                            <td class=\"text-center\"></td>\n";
                                         }
@@ -1869,7 +1869,7 @@ if ($data['system']->type == 'computer') {
                                                 <?php
                                                 foreach ($sub_row as $sub_key => $sub_value) {
                                                     if ($sub_item == 'partition' and $sub_key == 'id') {
-                                                        echo '<td><a href="' . base_url() . 'index.php/devices/' . $data['system']->id . '/partition_graph/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
+                                                        echo '<td><a href="' . $this->config->config['oa_web_folder'] . 'index.php/devices/' . $data['system']->id . '/partition_graph/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
                                                     }
                                                     if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded' and $sub_key != 'system.name' and $sub_key != 'system.id') {
                                                         if (is_int($sub_value)) {

@@ -803,7 +803,7 @@ foreach ($xml->children() as $input) {
 
     // $device->id is now set
     if (!empty($display) and $display == 'y') {
-        echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
+        echo '<pre>DEBUG - System ID <a href="' . $this->config->config['oa_web_folder'] . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
     }
 
     // process and store the Nmap data
