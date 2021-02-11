@@ -34,23 +34,6 @@
 * @link      http://www.open-audit.org
  */
 
-// $proto = 'http://';
-// if ($this->config->config['is_ssl'] === true) {
-//     $proto = 'https://';
-// }
-// $network_address = '';
-// $network_address_array = array();
-// if ($this->config->config['default_network_address'] != '') {
-//     $network_address = "<option selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>";
-//     $network_address_array[] =  $network_address;
-// }
-// $address_array = explode(",", $this->config->config['ip']);
-// foreach ($address_array as $key => $value) {
-//     if ($value != $this->config->config['default_network_address']) {
-//         $network_address = "<option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
-//         $network_address_array[] = $network_address;
-//     }
-// }
 $network_address_array = array();
 if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
     $selected = '';
