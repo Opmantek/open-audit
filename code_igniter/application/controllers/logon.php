@@ -280,8 +280,10 @@ class Logon extends CI_Controller
     {
         if ( empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             $oae_url = '';
-            if (!empty($this->config->config['oae_url'])) {
+            if ( ! empty($this->config->config['oae_url'])) {
                 $oae_url = $this->config->config['oae_url'];
+            } else {
+                $oae_url = '/omk/open-audit';
             }
             if (substr($oae_url, 0, 1) === '/') {
                 $oae_url = 'http://localhost' . $oae_url;
