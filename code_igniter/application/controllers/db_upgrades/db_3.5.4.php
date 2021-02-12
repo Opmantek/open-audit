@@ -221,65 +221,62 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-
-
-$sql = "ALTER TABLE discoveries DROP IF EXISTS subnet";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
+if ($this->db->field_exists('subnet', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `subnet`", 'drop');
+}
 $this->alter_table('discoveries', 'subnet', "ADD subnet varchar(45) NOT NULL DEFAULT '' AFTER type", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS seed_ip";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('seed_ip', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `seed_ip`", 'drop');
+}
 $this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER subnet", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_subnet";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('seed_restrict_to_subnet', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `seed_restrict_to_subnet`", 'drop');
+}
 $this->alter_table('discoveries', 'seed_restrict_to_subnet', "ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_private";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('seed_restrict_to_private', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `seed_restrict_to_private`", 'drop');
+}
 $this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS ad_domain";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('ad_domain', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `ad_domain`", 'drop');
+}
 $this->alter_table('discoveries', 'ad_domain', "ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_restrict_to_private", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS ad_server";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('ad_server', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `ad_server`", 'drop');
+}
 $this->alter_table('discoveries', 'ad_server', "ADD ad_server varchar(45) NOT NULL DEFAULT '' AFTER ad_domain", 'add');
 
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS options";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
+if ($this->db->field_exists('options', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `options`", 'drop');
+}
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS scan_options";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('scan_options', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `scan_options`", 'drop');
+}
 $this->alter_table('discoveries', 'scan_options', "ADD scan_options text NOT NULL AFTER other", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS match_options";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('match_options', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `match_options`", 'drop');
+}
 $this->alter_table('discoveries', 'match_options', "ADD match_options text NOT NULL AFTER scan_options", 'add');
 
-$sql = "ALTER TABLE discoveries DROP IF EXISTS command_options";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('command_options', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `command_options`", 'drop');
+}
 $this->alter_table('discoveries', 'command_options', "ADD command_options text NOT NULL AFTER match_options", 'add');
 
 $sql = "SELECT * FROM discoveries";
@@ -307,52 +304,51 @@ foreach ($result as $item) {
 	$this->log_db($this->db->last_query() . ';');
 }
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ports_in_order";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
+if ($this->db->field_exists('ports_in_order', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `ports_in_order`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'ports_in_order', "ADD ports_in_order enum('','y','n') NOT NULL DEFAULT 'n' AFTER options", 'add');
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ports_stop_after";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('ports_stop_after', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `ports_stop_after`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'ports_stop_after', "ADD ports_stop_after tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ports_in_order", 'add');
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS snmp_timeout";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS command_options";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
+if ($this->db->field_exists('command_options', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `command_options`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'command_options', "ADD command_options text NOT NULL AFTER ports_stop_after", 'add');
 
+
+if ($this->db->field_exists('snmp_timeout', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `snmp_timeout`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'snmp_timeout', "ADD snmp_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER timeout", 'add');
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS ssh_timeout";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('ssh_timeout', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `ssh_timeout`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'ssh_timeout', "ADD ssh_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER snmp_timeout", 'add');
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS wmi_timeout";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('wmi_timeout', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `wmi_timeout`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'wmi_timeout', "ADD wmi_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ssh_timeout", 'add');
 
-$sql = "ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('script_timeout', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `script_timeout`", 'drop');
+}
 $this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
 
-$sql = "ALTER TABLE system DROP IF EXISTS os_arch";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('os_arch', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `os_arch`", 'drop');
+}
 $this->alter_table('system', 'os_arch', "ADD os_arch varchar(50) NOT NULL DEFAULT '' AFTER os_bit", 'add');
 
 // set our versions
