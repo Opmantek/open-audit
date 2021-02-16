@@ -332,7 +332,7 @@ if (!empty($this->config->config['servers'])) {
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Licenses')?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
+                                <li><a href='/omk/open-audit/license_free'><?php echo __('Activate Free License')?></a></li>
                             <?php } ?>
                             <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
                             <li><a href='#' class='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
