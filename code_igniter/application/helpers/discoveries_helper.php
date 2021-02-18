@@ -359,7 +359,7 @@ if ( ! function_exists('discover_subnet')) {
 		discovery_log($log);
 
 		// This will increment discoveries.ip_responding_count using the log helper (think Collector / Server)
-		$log->message = 'Responsive IPs count: ' . $ip_responding_count;
+		$log->message = 'Responding IPs count: ' . $ip_responding_count;
 		$log->command_time_to_execute = $time_to_execute;
 		discovery_log($log);
 
@@ -1040,6 +1040,16 @@ if ( ! function_exists('ip_audit')) {
 					}
 				}
 			}
+			if ($discovery->type === 'seed') {
+				$temp = windows_ips_found($device->ip, $credentials_windows, $discovery->id);
+				if ( ! empty($temp)) {
+					$ips_found = array_merge($ips_found, $temp);
+					$log->message = 'Adding detected ARP ip addresses from ' . $device->ip;
+					$log->command_output = json_encode($ips_found);
+					discovery_log($log);
+				}
+			}
+			$log->command_output = '';
 		}
 
 		// Set our device->credentials to a JSON array of working interger credentials.id
