@@ -981,7 +981,7 @@ for each objItem in colItems
     system_os_family = os_family(objItem.Caption)
     system_os_name = objItem.Caption
     system_os_name = replace(system_os_name, "(R)", "")
-    system_os_arch = objItem.OSArchitecture;
+    system_os_arch = objItem.OSArchitecture
     system_description = objItem.Description
     if details_to_lower = "y" then system_description = lcase(system_description) end if
     OSInstall = objItem.InstallDate
