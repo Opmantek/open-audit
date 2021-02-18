@@ -837,7 +837,7 @@ if ( !  function_exists('ssh_audit')) {
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}" 2>/dev/null',
             'esx_uuid' => 'vim-cmd hostsvc/hostsummary 2>/dev/null | sed -n "/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p" | grep uuid | cut -d= -f2 | sed s/,//g | sed s/\"//g',
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
-            'lshal_uuid' => 'lshal 2>/dev/null | grep \'system.hardware.uuid\'',
+            'lshal_uuid' => 'lshal 2>/dev/null | grep "system.hardware.uuid"',
 
             'bsd_manufacturer' => 'kenv 2>/dev/null | grep smbios.chassis.maker | cut -d\" -f2',
             'bsd_model' => 'kenv 2>/dev/null | grep smbios.planar.product | cut -d\" -f2',
@@ -861,7 +861,8 @@ if ( !  function_exists('ssh_audit')) {
 
             'which_sudo' => 'which sudo 2>/dev/null',
 
-            'arp' => 'arp -an 2>/dev/null'
+            'arp' => 'arp -an 2>/dev/null',
+            'route' => 'netstat -rn -f inet | grep "^[1-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"'
         );
 
         foreach ($commands as $item => $command) {
@@ -926,12 +927,19 @@ if ( !  function_exists('ssh_audit')) {
                 if ( ! empty($explode[3])) {
                     $item_mac = strtolower($explode[3]);
                 }
-                if ( ! empty($item->mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' && ! empty($item_ip) && $item_ip !== '255.255.255.255') {
+                if ( ! empty($item_mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' &&
+                        ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255') {
                     $device->ips_found[$item_mac] = $item_ip;
                 }
             }
         }
         unset($device->arp);
+        if ( ! empty($device->route)) {
+            foreach ($device->route as $ip) {
+                $device->ips_found[] = $ip;
+            }
+        }
+        unset($device->route);
 
         // Set some items that may have multiple results
         if ( ! empty($device->hostname)) {
