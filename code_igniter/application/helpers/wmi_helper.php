@@ -208,11 +208,11 @@ if (! function_exists('execute_windows')) {
             if (intval($return_var) !== 0) {
                 // Winexe 2 using SMB2 failed.
                 $command_string = "timeout 5m ${filepath}/winexe-static -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
-                $log->message = 'Using winexe-static to run audit.';
+                $log->message = 'Using winexe-static to run command.';
             } else {
                 // Winexe 2 using SMB2 succeeded
                 $command_string = "timeout 5m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
-                $log->message = 'Using winexe-static-2 to run audit.';
+                $log->message = 'Using winexe-static-2 to run command.';
             }
             unset($log->command_output);
             $log->command = $command_string;
@@ -234,7 +234,7 @@ if (! function_exists('execute_windows')) {
             $command_string  = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
             $log->command    = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
             exec($command_string, $output, $return_var);
-            $log->message = 'Running audit script on ' . $ip;
+            $log->message = 'Running command script on ' . $ip;
             $log->command_output = json_encode($output);
             $log->command_status = 'fail';
             foreach ($output as $line) {
@@ -1186,6 +1186,60 @@ if (! function_exists('wmi_command')) {
         return($return);
     }
 }
+
+
+if ( ! function_exists('windows_ips_found')) {
+    /**
+     * [wmi_audit description]
+     * @param  string $ip           [description]
+     * @param  [type] $credentials  [description]
+     * @param  [type] $log          [description]
+     * @param  [type] $discovery_id [description]
+     * @return [type]               [description]
+     */
+    function windows_ips_found($ip = '', $credentials, $discovery_id = null)
+    {
+        $log = new stdClass();
+        $log->discovery_id = $discovery_id;
+        $log->file = 'wmi_helper';
+        $log->function = 'windows_ips_found';
+        $log->severity = 7;
+        $log->command_status = 'notice';
+        $log->message = 'Retrieving arp table from Windows';
+        $log->ip = @$ip;
+        discovery_log($log);
+
+        if (empty($ip)) {
+            $log->message = 'No IP supplied to wmi_helper::windows_ips_found.';
+            discovery_log($log);
+            return false;
+        }
+
+        if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'No valid IP supplied to wmi_helper::windows_ips_found.';
+            discovery_log($log);
+            return false;
+        }
+
+        if ( ! is_object($credentials)) {
+            $log->message = 'No credentials supplied to wmi_helper::windows_ips_found.';
+            discovery_log($log);
+            return false;
+        }
+        $temp = execute_windows($ip, $credentials, 'arp -a', $log);
+        $ips_found = array();
+        foreach ($temp as $line) {
+            if (strpos($line, 'dynamic') === false) {
+                continue;
+            }
+            $line = trim(preg_replace("/ {2,}/", " ", $line));
+            $line_array = explode(' ', $line);
+            $ips_found[strtolower(str_replace('-', ':', $line_array[1]))] = $line_array[0];
+        }
+        return $ips_found;
+    }
+}
+
 
 
 

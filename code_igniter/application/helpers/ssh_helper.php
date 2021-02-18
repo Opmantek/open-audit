@@ -862,7 +862,7 @@ if ( !  function_exists('ssh_audit')) {
             'which_sudo' => 'which sudo 2>/dev/null',
 
             'arp' => 'arp -an 2>/dev/null',
-            'route' => 'netstat -rn -f inet | grep "^[1-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"'
+            'route' => 'netstat -rn 2>/dev/null | grep "^[0-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"'
         );
 
         foreach ($commands as $item => $command) {
@@ -928,7 +928,7 @@ if ( !  function_exists('ssh_audit')) {
                     $item_mac = strtolower($explode[3]);
                 }
                 if ( ! empty($item_mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' &&
-                        ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255') {
+                        ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255' && filter_var($item_ip, FILTER_VALIDATE_IP)) {
                     $device->ips_found[$item_mac] = $item_ip;
                 }
             }
@@ -936,7 +936,9 @@ if ( !  function_exists('ssh_audit')) {
         unset($device->arp);
         if ( ! empty($device->route)) {
             foreach ($device->route as $ip) {
-                $device->ips_found[] = $ip;
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    $device->ips_found[] = $ip;
+                }
             }
         }
         unset($device->route);
