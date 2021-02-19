@@ -219,7 +219,7 @@ if ( ! function_exists('response_create')) {
         // If we're creating data (POST), we should have an access token (configuration depending)
         if ( ! empty($response->meta->received_data)) {
             if ($response->meta->request_method === 'POST' && ! empty($instance->config->config['access_token_enable']) && $instance->config->config['access_token_enable'] === 'y') {
-                if (empty($instance->response->meta->received_data->access_token)) {
+                if (empty($response->meta->received_data->access_token)) {
                     log_error('ERR-0034', $response->meta->collection . ':' . $response->meta->action);
                     $instance->session->set_flashdata('error', $response->errors[0]->detail);
                     if ($response->meta->format !== 'screen') {
