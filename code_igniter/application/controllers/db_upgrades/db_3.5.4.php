@@ -88,9 +88,13 @@ ALTER TABLE discoveries DROP IF EXISTS seed_restrict_to_private;
 
 ALTER TABLE discoveries ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet;
 
+ALTER TABLE discoveries DROP IF EXISTS seed_ping;
+
+ALTER TABLE discoveries ADD seed_ping enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_private;
+
 ALTER TABLE discoveries DROP IF EXISTS ad_domain;
 
-ALTER TABLE discoveries ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_restrict_to_subnet;
+ALTER TABLE discoveries ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_ping;
 
 ALTER TABLE discoveries DROP IF EXISTS ad_server;
 
@@ -243,6 +247,12 @@ if ($this->db->field_exists('seed_restrict_to_private', 'discoveries')) {
     $this->alter_table('discoveries', 'subnet', "DROP `seed_restrict_to_private`", 'drop');
 }
 $this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
+
+
+if ($this->db->field_exists('seed_ping', 'discoveries')) {
+    $this->alter_table('discoveries', 'subnet', "DROP `seed_ping`", 'drop');
+}
+$this->alter_table('discoveries', 'seed_ping', "ADD seed_ping enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_private", 'add');
 
 
 if ($this->db->field_exists('ad_domain', 'discoveries')) {

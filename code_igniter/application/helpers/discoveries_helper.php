@@ -119,10 +119,7 @@ if ( ! function_exists('responding_ip_list')) {
 		$log->file = 'discoveries_helper';
 		$log->function = 'responding_ip_list';
 		$log->command_status = 'notice';
-		$log->message = 'Testing for IPs that respond to ping';
-		if ($discovery->type === 'seed') {
-			$log->message = 'Pinging subnet';
-		}
+		$log->message = 'Sending ping';
 		$log->ip = '127.0.0.1';
 
 		$ip_addresses = array();
@@ -295,51 +292,43 @@ if ( ! function_exists('discover_subnet')) {
 			return;
 		}
 
-		if ($discovery->type === 'seed') {
-			$temp_subnet = $discovery->subnet;
-			$discovery->subnet = $discovery->seed_ip;
-		}
-
-		$all_ip_list = all_ip_list($discovery);
-
-		if ($discovery->type === 'seed') {
-			$discovery->subnet = $temp_subnet;
-		}
-
-		$count = @count($all_ip_list);
-
 		$log->command_status = 'notice';
-		if ($discovery->scan_options->ping === 'n') {
-			$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
-			if ($discovery->type === 'seed') {
-				$log->message = 'Ping response not required, seeding from ' . $discovery->seed_ip . '.';
-			}
-		}
-		if ($discovery->scan_options->ping === 'y') {
-			$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
-			if ($discovery->type === 'seed') {
-				$log->message = 'Pinging subnet before running seed discovery.';
-			}
-		}
-		discovery_log($log);
-
-		// the responding_ip_list function handles (using $discovery->scan_options->ping) whether to
-		// actually use Nmap to ping scan the subnet, or to just list all IPs (if set to 'n')
-		$responding_ip_list = responding_ip_list($discovery);
-		$log->command_time_to_execute = microtime(true) - $start;
-
 		if ($discovery->type === 'seed') {
+			$all_ip_list = array($discovery->seed_ip);
 			$responding_ip_list = array($discovery->seed_ip);
-		}
-
-		if ($discovery->type !== 'seed') {
-			$log->message = 'Nmap response scanning completed.';
+			$count = 1;
+			if ($discovery->seed_ping === 'y') {
+				$log->message = 'Pinging subnet before running seed discovery.';
+				discovery_log($log);
+				$ping_temp = $discovery->scan_options->ping;
+				$discovery->scan_options->ping = 'y';
+				responding_ip_list($discovery);
+				$discovery->scan_options->ping = $ping_temp;
+				unset($ping_temp);
+			} else {
+				$log->message = 'Ping subnet not requested, seeding from ' . $discovery->seed_ip . '.';
+				discovery_log($log);
+			}
+			$log->message = 'Assuming ' . $discovery->seed_ip . ' is responding.';
+			discovery_log($log);
 		} else {
-			$log->message = 'Nmap ping of subnet completed.';
+			$all_ip_list = all_ip_list($discovery);
+			$count = @count($all_ip_list);
+			$log->command_status = 'notice';
+			if ($discovery->scan_options->ping === 'n') {
+				$log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
+			} else {
+				$log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
+			}
+			$start = microtime(true);
+			$responding_ip_list = responding_ip_list($discovery);
+			$log->command_time_to_execute = microtime(true) - $start;
+			$log->message = 'Nmap response scanning completed.';
+			discovery_log($log);
+			update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
 		}
-		discovery_log($log);
 
-		update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
+		// update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
 		queue_responding($discovery->id, $responding_ip_list);
 
 		$ip_all_count = 0;
@@ -380,9 +369,6 @@ if ( ! function_exists('discover_subnet')) {
 	}
 }
 
-
-
-
 if ( ! function_exists('ip_scan')) {
 	/**
 	 * Scan an individual IP address according to our discovery settings
@@ -420,6 +406,32 @@ if ( ! function_exists('ip_scan')) {
 		$query = $CI->db->query($sql);
 		$result = $query->result();
 		$device['timestamp'] = $result[0]->timestamp;
+
+		if ($discovery->type === 'seed' and $discovery->scan_options->ping === 'y') {
+			// We may need to test for a ping response
+			$temp_subnet = $discovery->subnet;
+			$discovery->subnet = $ip;
+			$temp_responding = responding_ip_list($discovery);
+			$discovery->subnet = $temp_subnet;
+			if (empty($temp_responding)) {
+				$log->message = $ip . ' is non-responsive to ping, ignoring.';
+				discovery_log($log);
+				// Log end of audit for this IP
+				$log->command = 'Peak Memory';
+				$log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB';
+				$log->command_status = 'device complete';
+				$log->command_time_to_execute = microtime(true)  - $start;
+				$log->message = 'IP scan finish on device ' . ip_address_from_db($ip);
+				$log->ip = ip_address_from_db($ip);
+				discovery_log($log);
+				// and check if the discovery is now finished
+				discovery_check_finished($discovery->id);
+				return false;
+			} else {
+				$log->message = $ip . ' is responsive to ping, continuing.';
+				discovery_log($log);
+			}
+		}
 
 		$timing = '-T4';
 		if (isset($nmap->timing) && (is_int($nmap->timing) OR is_numeric($nmap->timing)) && (intval($nmap->timing) > 0 && intval($nmap->timing) < 6)) {
@@ -685,9 +697,6 @@ if ( ! function_exists('check_nmap_output')) {
 		return $device;
 	}
 }
-
-
-
 
 if ( ! function_exists('ip_audit')) {
 	/**
@@ -2012,6 +2021,13 @@ if ( ! function_exists('ip_audit')) {
 
 		// Add IPs to scan if we are of type 'seed'
 		if ($discovery->type === 'seed' && ! empty($ips_found)) {
+
+			$log->severity = 7;
+			$log->message = 'IPs checked.';
+			$log->command_output = json_encode($ips_found);
+			$log->function = 'ip_audit';
+			discovery_log($log);
+
 			// define our subnet
 			$discovery_network = network_details($discovery->subnet);
 			$discovery_network->host_min = ip_address_to_db($discovery_network->host_min);
@@ -2032,7 +2048,7 @@ if ( ! function_exists('ip_audit')) {
 						// NOTE - we store the IPs in the DB padded
 						if ($device_ip->ip === $testip) {
 							$log->severity = 7;
-							$log->message = 'IP ' . $value . ' detected, but not adding to device list as this an IP on this device.';
+							$log->message = 'IP ' . $value . ' detected on device, but not adding to device list as this an IP on this device.';
 							$log->command_output = 'IP ' . $value . ' found on device ' . $device->ip;
 							$log->function = 'ip_audit';
 							discovery_log($log);
@@ -2084,13 +2100,38 @@ if ( ! function_exists('ip_audit')) {
 			}
 		}
 
+		discovery_check_finished($discovery->id);
+	}
+}
+
+if ( ! function_exists('discovery_check_finished')) {
+	/**
+	 * [discover_ad description]
+	 * @param  object $queue_item [description]
+	 * @return bool             [description]
+	 */
+	function discovery_check_finished($id)
+	{
+		$log = new stdClass();
+		$log->command_status = 'notice';
+		$log->discovery_id = $id;
+		$log->file = 'discoveries_helper';
+		$log->function = 'discovery_check_finished';
+		$log->ip = '127.0.0.1';
+		$log->message = 'Checking if discovery is finished.';
+		$log->command = 'checking sql';
+		$log->command_status = 'yes';
+		$log->pid = getmypid();
+		$log->severity = 7;
+
 		// Check if this discovery is complete and set status if so
-		$sql = '/* discoveries_helper::ip_audit */ ' . 'SELECT COUNT(*) AS `count` FROM `discovery_log` WHERE `discovery_id` = ' . intval($discovery->id) . " AND `command_status` = 'device complete'";
+		$CI = get_instance();
+		$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT COUNT(*) AS `count` FROM `discovery_log` WHERE `discovery_id` = ' . intval($id) . " AND `command_status` = 'device complete'";
 		$query = $CI->db->query($sql);
 		$result = $query->result();
 		if ( ! empty($result[0]->count)) {
 			$count = intval($result[0]->count);
-			$sql = '/* discoveries_helper::ip_audit */ ' . 'SELECT `ip_responding_count` AS `count` FROM `discoveries` WHERE `id` = ' . intval($discovery->id);
+			$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT `ip_responding_count` AS `count` FROM `discoveries` WHERE `id` = ' . intval($id);
 			$query = $CI->db->query($sql);
 			$result = $query->result();
 			$device_count = intval($result[0]->count);
@@ -2105,14 +2146,9 @@ if ( ! function_exists('ip_audit')) {
 				discovery_log($log);
 			}
 		}
+		return;
 	}
 }
-
-
-
-
-
-
 
 if ( ! function_exists('discover_ad')) {
 	/**

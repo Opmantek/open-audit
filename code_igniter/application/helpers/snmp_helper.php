@@ -1769,17 +1769,24 @@ if ( ! function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Detecting IPs at ipNetToMediaPhysAddress for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.4.22.1.2';
-            $log->command_output = count($temp);
+            $log->command_output = 'Count: ' . count($temp);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
             if (count($temp) > 0) {
                 foreach ($temp as $key => $value) {
                     if ( ! empty($value)) {
+                        // the IP
                         $explode = explode('.', $key);
                         $found_ip = implode('.', array_splice($explode, -4));
+                        // the MAC
                         $explode = explode(' ', $value);
-                        $found_mac = strtolower($explode[1]);
+                        if (substr_count($value, ' ') > 1) {
+                            unset($explode[0]);
+                            $found_mac = trim(implode(':', $explode));
+                        } else {
+                            $found_mac = $explode[1];
+                        }
                         // pad the MAC
                         $explode = explode(':', $found_mac);
                         foreach ($explode as &$explode_mac) {
@@ -1800,7 +1807,7 @@ if ( ! function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Detecting IPs at ipNetToPhysicalPhysAddress for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.4.35.1.4.3.1.4';
-            $log->command_output = count($temp);
+            $log->command_output = 'Count: ' . count($temp);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
@@ -1833,7 +1840,7 @@ if ( ! function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Detecting IPs at atPhysAddress for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.3.1.1.2';
-            $log->command_output = count($temp);
+            $log->command_output = 'Count: ' . count($temp);
             $log->command_status = 'notice';
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);

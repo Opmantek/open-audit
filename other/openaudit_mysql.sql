@@ -1110,6 +1110,7 @@ CREATE TABLE `discoveries` (
   `seed_ip` varchar(45) NOT NULL DEFAULT '',
   `seed_restrict_to_subnet` enum('y','n') NOT NULL DEFAULT 'y',
   `seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y',
+  `seed_ping` enum('y','n') NOT NULL DEFAULT 'y',
   `ad_domain` varchar(200) NOT NULL DEFAULT '',
   `ad_server` varchar(45) NOT NULL DEFAULT '',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
