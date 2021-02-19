@@ -207,11 +207,11 @@ if (! function_exists('execute_windows')) {
 
             if (intval($return_var) !== 0) {
                 // Winexe 2 using SMB2 failed.
-                $command_string = "timeout 5m ${filepath}/winexe-static -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
+                $command_string = "timeout 15m ${filepath}/winexe-static -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
                 $log->message = 'Using winexe-static to run command.';
             } else {
                 // Winexe 2 using SMB2 succeeded
-                $command_string = "timeout 5m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
+                $command_string = "timeout 15m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
                 $log->message = 'Using winexe-static-2 to run command.';
             }
             unset($log->command_output);
