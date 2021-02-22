@@ -99,7 +99,11 @@ class Database extends MY_Controller
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
             // TODO - A dictionary for each database table
-            // $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            $models_with_dictionary = response_valid_collections();
+            if (in_array($this->response->meta->id, $models_with_dictionary)) {
+                $this->load->model('m_' . $this->response->meta->id);
+                $this->response->dictionary = @$this->{'m_'.$this->response->meta->id}->dictionary();
+            }
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
