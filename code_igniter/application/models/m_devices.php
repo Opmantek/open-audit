@@ -674,8 +674,11 @@ class M_devices extends MY_Model
                 } else {
                     $mime_type = '';
                 }
-                $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
-                $extensions = array('jpg', 'jpeg', 'png', 'svg');
+                // $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
+                // $extensions = array('jpg', 'jpeg', 'png', 'svg');
+                // disabled SVG for now because of XSS issues when requesting the direct image
+                $filetypes = array('image/png', 'image/jpeg', '');
+                $extensions = array('jpg', 'jpeg', 'png');
                 $temp = explode('.', $filename);
                 $extension = strtolower($temp[count($temp)-1]);
                 if ( ! in_array($mime_type, $filetypes) OR ! in_array($extension, $extensions)) {
