@@ -5787,73 +5787,66 @@ end if
 ' http://www.open-audit.org/phpBB3/viewtopic.php?f=20&t=5993
 
 if objFSO.FileExists("sqlite3.Exe") then
-
     if (strComputer = ".") then
-    if objFSO.FileExists ("c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-    dbfile = "c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
-    db_present = 1
-    elseif objFSO.FileExists ("c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-    dbfile = "c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
-    db_present = 1
-    end if
+        if objFSO.FileExists ("c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+            dbfile = "c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
+            db_present = 1
+        elseif objFSO.FileExists ("c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+            dbfile = "c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
+            db_present = 1
+        end if
     else
-    if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-    dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
-    db_present = 1
-    elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-    dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
-    db_present = 1
+        if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+            dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
+            db_present = 1
+        elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+            dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
+            db_present = 1
+        end if
     end if
-    end if
-
     if db_present then
-
-    cmd = chr(34) & "sqlite3.exe" & chr(34) & " "   & chr(34) & dbfile & chr(34) & " " & chr(34) & "select T1.key,T2.value from domain_data AS T1 JOIN domain_data AS T2 on T1.Subdomain=T2.subdomain where T1.value='licensed' and (T2.Key='EPIC_SERIAL' OR T2.KEY='SN' OR T2.KEY='SERIAL')" & chr(34)
-
-    set rexec= objShell.exec(cmd)
-    do while not rexec.StdOut.AtEndofStream
-    strtext = rexec.stdout.readline()
-    'get rid of any line breaks and cr, then trim off any spaces
-    strtext = replace(strtext,vbCr,"")
-    strtext = replace(strtext,vbLf,"")
-    strtext = trim(strtext)
-    ArryTxt = split(strtext,"|")
-
-    if (IsArray(ArryTxt)) then
-    Product = ArryTxt(0)
-    key_text = get_adobe(ArryTxt(1))
+        cmd = chr(34) & "sqlite3.exe" & chr(34) & " "   & chr(34) & dbfile & chr(34) & " " & chr(34) & "select T1.key,T2.value from domain_data AS T1 JOIN domain_data AS T2 on T1.Subdomain=T2.subdomain where T1.value='licensed' and (T2.Key='EPIC_SERIAL' OR T2.KEY='SN' OR T2.KEY='SERIAL')" & chr(34)
+        set rexec = objShell.exec(cmd)
+        do while not rexec.StdOut.AtEndofStream
+            strtext = rexec.stdout.readline()
+            'get rid of any line breaks and cr, then trim off any spaces
+            strtext = replace(strtext,vbCr,"")
+            strtext = replace(strtext,vbLf,"")
+            strtext = trim(strtext)
+            ArryTxt = split(strtext,"|")
+            if (IsArray(ArryTxt)) then
+                Product = ArryTxt(0)
+                key_text = get_adobe(ArryTxt(1))
+            else
+                if (strtext > "") then
+                    Product = strtext
+                    key_text = get_adobe(strtext)
+                else
+                    Product = ""
+                    key_text = ""
+                end if
+            end if
+            ' we dont necessarily get Adobe as part of the name so add it if it is not there
+            if (instr(1,Product,"ADOBE",1) = 0) then
+                Product = "Adobe_" & Product
+            end if
+            key_name = replace(Product,"_"," ")
+            key_release = ""
+            key_edition = "Licensed"
+            if (key_name > "" and key_name <> "Adobe " and key_text > "") then
+                result.WriteText "  <item>" & vbcrlf
+                result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+                result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+                result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+                result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+                result.WriteText "  </item>" & vbcrlf
+            end if
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        loop
     else
-    if (strtext > "") then
-    Product = strtext
-    key_text = get_adobe(strtext)
-    else
-    Product = ""
-    key_text = ""
-    end if
-    end if
-
-    ' we dont necessarily get Adobe as part of the name so add it if it is not there
-    if (instr(1,Product,"ADOBE",1) = 0) then
-    Product = "Adobe_" & Product
-    end if
-
-    key_name = replace(Product,"_"," ")
-    key_release = ""
-    key_edition = "Licensed"
-    if (key_name > "" and key_name <> "Adobe " and key_text > "") then
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    end if
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    loop
-    else
-    if debugging > "1" then wscript.echo "No Adobe license database found" end if
+        if debugging > "1" then wscript.echo "No Adobe license database found" end if
     end if
 else
     if debugging > "1" then wscript.echo "sqlite3.exe not found" end if
