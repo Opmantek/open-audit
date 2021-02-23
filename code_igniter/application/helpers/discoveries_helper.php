@@ -2036,6 +2036,11 @@ if ( ! function_exists('ip_audit')) {
 			$log->function = 'ip_audit';
 			discovery_log($log);
 
+			// Lower case all MAC addresses
+			$ips_found = array_change_key_case($ips_found, CASE_LOWER);
+			// Only need one unique IP
+			$ips_found = array_unique($ips_found);
+
 			// define our subnet
 			$discovery_network = network_details($discovery->subnet);
 			$discovery_network->host_min = ip_address_to_db($discovery_network->host_min);

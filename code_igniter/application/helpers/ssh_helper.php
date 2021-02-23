@@ -943,6 +943,20 @@ if ( !  function_exists('ssh_audit')) {
         }
         unset($device->route);
 
+        // Lower case all MAC addresses
+        $device->ips_found = array_change_key_case($device->ips_found, CASE_LOWER);
+        // Only need one unique IP
+        $device->ips_found = array_unique($device->ips_found);
+
+        $log->command_time_to_execute = '';
+        $log->message = 'Seed. All IPs detected using SSH.';
+        $log->command = 'Combined SSH arp and route.';
+        $log->command_status = 'notice';
+        $log->command_output = json_encode($device->ips_found);
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute);
+
+
         // Set some items that may have multiple results
         if ( ! empty($device->hostname)) {
             $device->hostname = strtolower($device->hostname);
