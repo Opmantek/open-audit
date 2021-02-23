@@ -241,9 +241,13 @@ if ( ! function_exists('queue_responding')) {
 			$details = json_encode($item);
 			unset ($item);
 			$CI->m_queue->create('ip_scan', $details);
+			$temp_system_id = @$log->system_id;
+			$log->system_id = '';
 			$log->ip = $ip;
 			$log->message = "IP {$ip} responding, adding to device list.";
 			discovery_log($log);
+			$log->system_id = $temp_system_id;
+			unset($temp_system_id);
 		}
 	}
 }
@@ -424,6 +428,10 @@ if ( ! function_exists('ip_scan')) {
 				$log->message = 'IP scan finish on device ' . ip_address_from_db($ip);
 				$log->ip = ip_address_from_db($ip);
 				discovery_log($log);
+				// Update the log line to avoid confusion in the GUI
+				$sql = '/* discoveries_helper::ip_scan */ ' .  "UPDATE discovery_log SET message = 'IP " . $log->ip . " responding, adding to device list. Device detected via seed discovery, but not responding to ping, ignoring.' WHERE message = 'IP " . $log->ip . " responding, adding to device list.' AND discovery_id = ?";
+				$data = array($discovery->id);
+				$query = $CI->db->query($sql, $data);
 				// and check if the discovery is now finished
 				discovery_check_finished($discovery->id);
 				return false;
@@ -2071,11 +2079,15 @@ if ( ! function_exists('ip_audit')) {
 							$log->function = 'ip_audit';
 							discovery_log($log);
 						} else {
+							$temp_system_id = @$log->system_id;
+							$log->system_id = '';
 							$log->ip = $value;
 							$log->message = "IP {$value} responding, adding to device list.";
 							$log->command_output = 'IP ' . $value . ' found on device ' . $device->ip;
 							$log->function = 'update_responding';
 							discovery_log($log);
+							$log->system_id = $temp_system_id;
+							unset($temp_system_id);
 							// Update our discoveries entry
 							$sql = "UPDATE discoveries SET `ip_all_count` = `ip_all_count` + 1, `ip_responding_count` = `ip_responding_count` + 1 WHERE id = ?";
 							$data = array($discovery->id);
