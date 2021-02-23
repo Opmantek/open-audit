@@ -512,7 +512,9 @@ if ( ! function_exists('ip_scan')) {
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Top TCP Ports)';
 			$log->command = "{$command} # Top TCP Ports";
+			$log->command_output = json_encode($output);
 			discovery_log($log);
+			$command_output = '';
 			echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
 			unset($output);
@@ -528,7 +530,9 @@ if ( ! function_exists('ip_scan')) {
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Top UDP Ports)';
 			$log->command = "{$command} # Top UDP Ports";
+			$log->command_output = json_encode($output);
 			discovery_log($log);
+			$command_output = '';
 			echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
@@ -549,7 +553,9 @@ if ( ! function_exists('ip_scan')) {
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Custom TCP Ports)';
 			$log->command = "{$command} # Custom TCP Ports";
+			$log->command_output = json_encode($output);
 			discovery_log($log);
+			$command_output = '';
 			#echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
@@ -570,7 +576,9 @@ if ( ! function_exists('ip_scan')) {
 			$log->command_time_to_execute = (microtime(true) - $item_start);
 			$log->message = 'Nmap Command (Custom UDP Ports)';
 			$log->command = "{$command} # Custom UDP Ports";
+			$log->command_output = json_encode($output);
 			discovery_log($log);
+			$command_output = '';
 			#echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
 			$ports = @$device['nmap_ports'];
 			$device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));

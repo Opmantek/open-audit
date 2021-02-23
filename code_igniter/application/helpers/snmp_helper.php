@@ -1847,7 +1847,7 @@ if ( ! function_exists('snmp_audit')) {
         snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
         if ( ! empty($temp)) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Seed. Detecting IPs at ipNetToPhysicalPhysAddress for '.$ip;
+            $log->message = 'Seed. Detecting IPs at atPhysAddress for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.3.1.1.2';
             $log->command_output = 'Count: ' . count($temp);
             $log->command_status = 'notice';
@@ -1912,7 +1912,7 @@ if ( ! function_exists('snmp_audit')) {
 
         $log->command_time_to_execute = '';
         $log->message = 'Seed. All IPs detected using SNMP.';
-        $log->command = 'Combined SNMP for ipNetToMediaPhysAddress, ipNetToPhysicalPhysAddress, ipNetToPhysicalPhysAddress and ipRouteDest.';
+        $log->command = 'Combined SNMP for ipNetToMediaPhysAddress, ipNetToPhysicalPhysAddress, atPhysAddress and ipRouteDest.';
         $log->command_status = 'notice';
         $log->command_output = json_encode($ips_found);
         discovery_log($log);
