@@ -316,7 +316,7 @@ if ( ! function_exists('discovery_log')) {
         }
 
         // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
-        if ($log->message === 'Discovery has finished.' && ! empty($log->discovery_id)) {
+        if (stripos($log->message, 'Discovery has finished') !== false && ! empty($log->discovery_id)) {
             $sql = '/* log_helper::discovery_log */ ' . "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
             $data = array($log->discovery_id);
             $query = $CI->db->query($sql, $data);
