@@ -145,9 +145,24 @@ ALTER TABLE discovery_scan_options ADD script_timeout tinyint(5) unsigned NOT NU
 
 
 ALTER TABLE system DROP IF EXISTS os_arch;
-
-
 ALTER TABLE system ADD `os_arch` varchar(50) NOT NULL DEFAULT '' AFTER os_bit;
+
+ALTER TABLE system DROP IF EXISTS os_license;
+ALTER TABLE system ADD `os_license` varchar(250) NOT NULL DEFAULT '' AFTER os_arch;
+
+ALTER TABLE system DROP IF EXISTS os_license_code;
+ALTER TABLE system ADD `os_license_code` varchar(250) NOT NULL DEFAULT '' AFTER os_license;
+
+ALTER TABLE system DROP IF EXISTS os_license_mode;
+ALTER TABLE system ADD `os_license_mode` varchar(250) NOT NULL DEFAULT '' AFTER os_license_code;
+
+ALTER TABLE system DROP IF EXISTS os_license_type;
+ALTER TABLE system ADD `os_license_type` varchar(250) NOT NULL DEFAULT '' AFTER os_license_mode;
+
+ALTER TABLE system DROP IF EXISTS os_licence_expiry;
+ADD os_licence_expiry date NOT NULL DEFAULT '2000-01-01' AFTER os_license_type;
+
+UPDATE `roles` SET permissions = \'{"collectors":"crud","configuration":"r","credentials":"crud","dashboards":"r","devices":"crud","discoveries":"crud","discovery_scan_options":"crud","locations":"crud","networks":"crud","orgs":"crud","sessions":"crud","tasks":"crud","users":"r","widgets":"r"}\' WHERE name = "collector";
 
 UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version';
 
@@ -356,10 +371,40 @@ if ($this->db->field_exists('script_timeout', 'discoveries')) {
 $this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
 
 
-if ($this->db->field_exists('os_arch', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `os_arch`", 'drop');
+if ($this->db->field_exists('os_arch', 'system')) {
+    $this->alter_table('system', 'os_arch', "DROP `os_arch`", 'drop');
 }
 $this->alter_table('system', 'os_arch', "ADD os_arch varchar(50) NOT NULL DEFAULT '' AFTER os_bit", 'add');
+
+if ($this->db->field_exists('os_license', 'system')) {
+    $this->alter_table('system', 'os_license', "DROP `os_license`", 'drop');
+}
+$this->alter_table('system', 'os_license', "ADD os_license varchar(250) NOT NULL DEFAULT '' AFTER os_arch", 'add');
+
+if ($this->db->field_exists('os_license_code', 'system')) {
+    $this->alter_table('system', 'os_license_code', "DROP `os_license_code`", 'drop');
+}
+$this->alter_table('system', 'os_license_code', "ADD os_license_code varchar(250) NOT NULL DEFAULT '' AFTER os_license", 'add');
+
+if ($this->db->field_exists('os_license_mode', 'system')) {
+    $this->alter_table('system', 'os_license_mode', "DROP `os_license_mode`", 'drop');
+}
+$this->alter_table('system', 'os_license_mode', "ADD os_license_mode varchar(250) NOT NULL DEFAULT '' AFTER os_license_code", 'add');
+
+if ($this->db->field_exists('os_license_type', 'system')) {
+    $this->alter_table('system', 'os_license_type', "DROP `os_license_type`", 'drop');
+}
+$this->alter_table('system', 'os_license_type', "ADD os_license_type varchar(250) NOT NULL DEFAULT '' AFTER os_license_mode", 'add');
+
+if ($this->db->field_exists('os_licence_expiry', 'system')) {
+    $this->alter_table('system', 'os_licence_expiry', "DROP `os_licence_expiry`", 'drop');
+}
+$this->alter_table('system', 'os_licence_expiry', "ADD os_licence_expiry date NOT NULL DEFAULT '2000-01-01' AFTER os_license_type", 'add');
+
+// Update permissions for the Collector role
+$sql = 'UPDATE `roles` SET permissions = \'{"collectors":"crud","configuration":"r","credentials":"crud","dashboards":"r","devices":"crud","discoveries":"crud","discovery_scan_options":"crud","locations":"crud","networks":"crud","orgs":"crud","sessions":"crud","tasks":"crud","users":"r","widgets":"r"}\' WHERE name = "collector"';
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210126' WHERE `name` = 'internal_version'";
