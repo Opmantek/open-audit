@@ -1654,7 +1654,7 @@ if ( ! function_exists('response_get_permission_ca')) {
             stdlog($log);
             return false;
         }
-        $log->summary = 'User permittied to perform ' . $action . ' on ' . $collection;
+        $log->summary = 'User permitted to perform ' . $action . ' on ' . $collection;
         stdlog($log);
         return true;
     }
@@ -1693,7 +1693,7 @@ if ( ! function_exists('response_get_permission_id')) {
         if ( ! $instance->m_users->get_user_collection_org_permission($collection, $id)) {
             log_error('ERR-0018', $collection . ':' . $action);
             $log->severity = 5;
-            $log->summary = 'User not permittied to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
+            $log->summary = 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
             stdlog($log);
             return false;
         }
@@ -1711,7 +1711,7 @@ if ( ! function_exists('response_get_permission_id')) {
                 if ( ! $allowed) {
                     log_error('ERR-0018', $collection . ':' . $action);
                     $log->severity = 5;
-                    $log->summary = 'User not permittied to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
+                    $log->summary = 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
                     stdlog($log);
                     return false;
                 }
