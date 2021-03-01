@@ -332,7 +332,6 @@ if ( ! function_exists('discover_subnet')) {
 			update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
 		}
 
-		// update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
 		queue_responding($discovery->id, $responding_ip_list);
 
 		$ip_all_count = 0;
