@@ -81,6 +81,9 @@ class M_devices_components extends MY_Model
             unset($filter);
             $filter = '';
         }
+        if (empty($properties)) {
+            $properties = '*';
+        }
 
         if ($current === 'delta' OR $current === 'full') {
             $sql = "SELECT first_seen FROM `{$table}` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
