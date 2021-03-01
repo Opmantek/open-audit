@@ -4829,6 +4829,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.9.1.204': $device->model = 'Cisco 7576'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.205': $device->model = 'Cisco 3660'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.206': $device->model = 'Cisco 1401'; $device->type = 'router'; break;
+			case '1.3.6.1.4.1.9.1.2066': $device->model = 'Cisco Catalyst 9500 series'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.9.1.2068': $device->model = 'Cisco ISR 4300 series'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.207': $device->model = 'Cisco Catalyst 8500'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.9.1.208': $device->model = 'Cisco 2620'; $device->type = 'router'; break;
