@@ -315,6 +315,10 @@ if ( ! function_exists('response_create')) {
         $permission = response_get_permission_ca($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
         if ( ! $permission) {
             if ($response->meta->format === 'json') {
+                $response->meta->header = 'HTTP/1.1 403 Forbidden';
+                $response->errors = array();
+                $response->errors[] = getError('ERR-0007', 'response_helper');
+                header($response->meta->header);
                 echo json_encode($response);
                 exit;
             } else {
@@ -327,6 +331,10 @@ if ( ! function_exists('response_create')) {
         $permission = response_get_permission_id($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
         if ( ! $permission) {
             if ($response->meta->format === 'json') {
+                $response->meta->header = 'HTTP/1.1 403 Forbidden';
+                $response->errors = array();
+                $response->errors[] = getError('ERR-0007', 'response_helper');
+                header($response->meta->header);
                 echo json_encode($response);
                 exit;
             } else {
