@@ -477,7 +477,8 @@ if ( ! function_exists('output')) {
                     $slice->name = 'NoData';
                 }
                 $slice->y = intval($response->data[$i]->attributes->count);
-                $slice->url = '../' . $response->data[$i]->attributes->link;
+                # $slice->url = '../' . $response->data[$i]->attributes->link;
+                $slice->url = $response->data[$i]->attributes->link;
                 $item->data[] = $slice;
             }
         $output->series[] = $item;
@@ -547,7 +548,8 @@ if ( ! function_exists('output')) {
             for($i=0; $i<count($response->data); $i++) {
                 $item = new stdClass();
                 $item->y = intval($response->data[$i]->attributes->count);
-                $item->url = '../' . str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
+                # $item->url = '../' . str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
+                $item->url = str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
                 $item->tooltip = date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y');
                 $dataset->data[] = $item;
                 if ($i === 0) {
