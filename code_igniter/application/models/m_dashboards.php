@@ -243,8 +243,10 @@ class M_dashboards extends MY_Model
                     $CI->response->meta->internal->sort . ' ' . 
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            for ($i=0; $i < count($result); $i++) {
-                $result[$i]->options = json_decode($result[$i]->options);
+            if ( ! empty($result)) {
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->options = json_decode($result[$i]->options);
+                }
             }
             $CI->response->data = $this->format_data($result, 'dashboards');
             $CI->response->meta->filtered = count($CI->response->data);
