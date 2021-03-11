@@ -143,6 +143,7 @@ ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout;
 
 ALTER TABLE discovery_scan_options ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout;
 
+ALTER TABLE networks ADD `admin_status` enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated' AFTER security_zone;
 
 ALTER TABLE system DROP IF EXISTS os_arch;
 ALTER TABLE system ADD `os_arch` varchar(50) NOT NULL DEFAULT '' AFTER os_bit;
@@ -369,6 +370,12 @@ if ($this->db->field_exists('script_timeout', 'discoveries')) {
     $this->alter_table('discoveries', 'subnet', "DROP `script_timeout`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
+
+
+if ($this->db->field_exists('admin_status', 'networks')) {
+    $this->alter_table('networks', 'admin_status', "DROP `admin_status`", 'drop');
+}
+$this->alter_table('networks', 'admin_status', "ADD admin_status enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'Allocated' AFTER security_zone", 'add');
 
 
 if ($this->db->field_exists('os_arch', 'system')) {
