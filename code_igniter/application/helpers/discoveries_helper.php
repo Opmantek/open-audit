@@ -387,11 +387,15 @@ if ( ! function_exists('ip_scan')) {
 		$CI = get_instance();
 		$ip = $details->ip;
 
+		$mac_address = '';
+		if ( ! empty($details->mac_address)) {
+			$mac_address = $details->mac_address;
+		}
+
 		$discovery_id = $details->discovery_id;
 		$temp = $CI->m_discoveries->read_for_discovery($discovery_id);
 		$discovery = $temp[0]->attributes;
 		unset($temp);
-		unset($details);
 
 		$log = new stdClass();
 		$log->discovery_id = $discovery->id;
@@ -401,7 +405,11 @@ if ( ! function_exists('ip_scan')) {
 		$log->command_status = 'notice';
 		$log->message = 'IP scan start on device ' . $ip;
 		$log->ip = $ip;
+		$log->command_output = json_encode($details);
+		$log->command = 'IP details as supplied';
 		discovery_log($log);
+
+		unset($details);
 
 		$nmap = $discovery->scan_options;
 		$device = array();
@@ -588,9 +596,13 @@ if ( ! function_exists('ip_scan')) {
 			unset($ports);
 		}
 
+		if (empty($device['mac_address']) and ! empty($mac_address)) {
+			$device['mac_address'] = $mac_address;
+		}
+
 		$log->message = 'IP scan finish on device ' . $ip;
-		$log->command = '';
-		$log->command_output = '';
+		$log->command = 'Device details returned';
+		$log->command_output = json_encode($device);
 		$log->command_time_to_execute = microtime(true) - $start;
 		discovery_log($log);
 		$sql = '/* discoveries_helper::ip_scan */ ' .  "UPDATE discovery_log SET command_time_to_execute = ? WHERE message = 'IP " . $log->ip . " responding, adding to device list.' AND discovery_id = ?";
@@ -782,7 +794,12 @@ if ( ! function_exists('ip_audit')) {
 		$log->message = 'IP Audit start on device ' . $ip_scan->ip;
 		$log->pid = getmypid();
 		$log->severity = 7;
+		$log->command_output = json_encode($ip_scan);
+		$log->command = 'Device scan as supplied.';
 		discovery_log($log);
+
+		$log->command_output = '';
+		$log->command = '';
 
 		if (php_uname('s') !== 'Windows NT') {
 			$filepath = $CI->config->config['base_path'] . '/other';
@@ -2108,7 +2125,7 @@ if ( ! function_exists('ip_audit')) {
 							$item = new stdClass();
 							$item->ip = $value;
 							$item->discovery_id = $discovery->id;
-							$item->mac = $key;
+							$item->mac_address = @$key;
 							$details = json_encode($item);
 							unset ($item);
 							$CI->m_queue->create('ip_scan', $details);
