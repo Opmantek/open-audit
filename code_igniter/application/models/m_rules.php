@@ -749,8 +749,8 @@ class M_rules extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->weight = 'A lower number means it will have a lower preference for being applied, versus other rules.';
-        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->weight = 'A lower number means it will be applied before other rules.';
+        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match (normal weight is 100).';
         $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
