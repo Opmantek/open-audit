@@ -372,6 +372,38 @@ if ( ! function_exists('discover_subnet')) {
 	}
 }
 
+if ( ! function_exists('get_nmap_version')) {
+	/**
+	 * Return the integer major Nmap version
+	 * @return int The Major version of nmap
+	 */
+	function get_nmap_version()
+	{
+		$output = '';
+		$nmap_version = 0;
+		if (php_uname('s') === 'Windows NT') {
+			$command_string = 'nmap --version';
+			exec($command_string, $output, $return_var);
+			$output = @$output[0];
+		}
+		if (php_uname('s') === 'Darwin') {
+			$command_string = 'nmap --version';
+			exec($command_string, $output, $return_var);
+			$output = @$output[0];
+		}
+		if (php_uname('s') === 'Linux') {
+			$command_string = 'nmap --version';
+			exec($command_string, $output, $return_var);
+			$output = @$output[1];
+		}
+		if ( ! empty($output)) {
+			$lines = explode(' ', $output);
+			$nmap_version = intval($lines[2]);
+		}
+		return $nmap_version;
+	}
+}
+
 if ( ! function_exists('ip_scan')) {
 	/**
 	 * Scan an individual IP address according to our discovery settings
@@ -417,6 +449,8 @@ if ( ! function_exists('ip_scan')) {
 		$query = $CI->db->query($sql);
 		$result = $query->result();
 		$device['timestamp'] = $result[0]->timestamp;
+
+		$nmap_version = get_nmap_version();
 
 		if ($discovery->type === 'seed' and $discovery->scan_options->ping === 'y') {
 			// We may need to test for a ping response
@@ -498,13 +532,13 @@ if ( ! function_exists('ip_scan')) {
 		}
 
 		$exclude_tcp_ports = '';
-		if ( ! empty($nmap->exclude_tcp_ports)) {
+		if ( ! empty($nmap->exclude_tcp_ports) and $nmap_version > 6) {
 			$nmap->exclude_tcp_ports = str_replace(' ', '', $nmap->exclude_tcp_ports);
 			$exclude_tcp_ports = '--exclude-ports T:' . $nmap->exclude_tcp_ports;
 		}
 
 		$exclude_udp_ports = '';
-		if ( ! empty($nmap->exclude_udp_ports)) {
+		if ( ! empty($nmap->exclude_udp_ports) and $nmap_version > 6) {
 			$nmap->exclude_udp_ports = str_replace(' ', '', $nmap->exclude_udp_ports);
 			$exclude_udp_ports = '--exclude-ports U:' . $nmap->exclude_udp_ports;
 		}

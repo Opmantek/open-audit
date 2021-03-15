@@ -235,6 +235,8 @@ class Discoveries extends MY_Controller
                 redirect($this->response->meta->collection);
             }
         }
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
@@ -308,6 +310,8 @@ class Discoveries extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
         $this->load->model('m_discovery_scan_options');
         $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->collection($this->user->id));
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
@@ -434,6 +438,9 @@ class Discoveries extends MY_Controller
             $command_string = 'which nmap 2>/dev/null';
             exec($command_string, $output);
             if (isset($output[0]) && strpos($output[0], 'nmap')) {
+                $nmap_installed = 'y';
+            }
+            if (isset($output[1]) && strpos($output[1], 'nmap')) {
                 $nmap_installed = 'y';
             }
             if ($nmap_installed === 'n') {

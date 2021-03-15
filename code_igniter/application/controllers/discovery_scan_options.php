@@ -123,6 +123,8 @@ class Discovery_scan_options extends MY_Controller
                 redirect($this->response->meta->collection);
             }
         }
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
@@ -171,6 +173,8 @@ class Discovery_scan_options extends MY_Controller
         $this->response->dictionary = $this->m_discovery_scan_options->dictionary();
         $this->load->model('m_orgs');
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
