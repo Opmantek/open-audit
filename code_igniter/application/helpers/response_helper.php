@@ -727,7 +727,7 @@ if ( ! function_exists('response_get_query_filter')) {
             foreach (explode('&', $query_string) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
-                $query->operator = '=';
+                $query->operator = '';
                 $query->value = str_replace($query->name.'=', '', $item);
 
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
@@ -817,6 +817,11 @@ if ( ! function_exists('response_get_query_filter')) {
                     $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
+                if (empty($query->operator)) {
+                    $query->operator = '=';
+                    $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
+                }
+
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
 
                 if ($query->value === false) {
@@ -833,10 +838,6 @@ if ( ! function_exists('response_get_query_filter')) {
                     if ($query->operator === 'like' OR $query->operator === 'not like') {
                         $query->value = '%' . $query->value . '%';
                     }
-                }
-
-                if (empty($query->operator)) {
-                    $query->operator = '=';
                 }
 
                 if ( ! empty($query->name) && ! in_array($query->name, $reserved_words) && $type === 'filter') {
