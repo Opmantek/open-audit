@@ -36,8 +36,8 @@
 if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
     header("Location: /omk/open-audit");
 }
-header("Content-Security-Policy: frame-ancestors 'none'");
-header("X-Frame-Options: DENY");
+header("Content-Security-Policy: object-src 'none'; frame-ancestors 'none'; form-action 'self';");
+header('X-Frame-Options: DENY');
 ?><!DOCTYPE html>
 <html lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
