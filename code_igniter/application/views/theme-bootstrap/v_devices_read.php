@@ -1608,15 +1608,7 @@ if (!empty($data['policy'])) { ?>
                         echo "                        <td>" . $row->type . "</td>\n";
                         echo "                        <td>" . $row->name . "</td>\n";
                         echo "                        <td>" . $row->value . "</td>\n";
-                        echo "                          <td>";
-                        echo "<table class=\"table table-striped\"><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>";
-                        $options = json_decode($row->options);
-                        foreach ($options as $key => $value) {
-                            echo "<tr><td>" . $key . "</td><td>" . $value . "</td></tr>\n";
-                        }
-                        echo "</tbody></table>\n";
-                        echo "                          </td>";
-
+                        echo "                          <td>" . $row->options . "</td>";
                         echo "                      </tr>\n";
                     } ?>
                     </tbody>
@@ -1624,6 +1616,8 @@ if (!empty($data['policy'])) { ?>
             </div>
         </div>
     </div>
+
+
 <?php } ?>
 
 
