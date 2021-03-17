@@ -33,8 +33,9 @@
 * @version   GIT: Open-AudIT_3.5.3
 * @link      http://www.open-audit.org
  */
-header("Content-Security-Policy: frame-ancestors 'none'");
+header("Content-Security-Policy: object-src 'none'; frame-ancestors 'none'; form-action 'self';");
 header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
 
 if (intval($this->config->config['internal_version']) < intval($this->config->config['web_internal_version']) && $this->response->include !== 'v_database_update' && $this->response->include !== 'v_database_update_form') {
     redirect('database?action=update');
