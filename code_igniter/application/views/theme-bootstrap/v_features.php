@@ -43,7 +43,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <?php if (strtolower($this->response->dictionary->product) === 'enterprise') { ?>
+                <?php if (strtolower(@$this->response->dictionary->product) === 'enterprise') { ?>
                  <div class="row">
                     <div class="col-md-12 text-center">
                         <h4><i>Enterprise Only</i></h4>
@@ -51,7 +51,7 @@
                 </div>
                 <?php } ?>
 
-                <?php if (strtolower($this->response->dictionary->product) === 'professional') { ?>
+                <?php if (strtolower(@$this->response->dictionary->product) === 'professional') { ?>
                  <div class="row">
                     <div class="col-md-12 text-center">
                         <h4><i>Professional and Enterprise Only</i></h4>
@@ -70,10 +70,10 @@
                     <div class="col-md-8 col-md-offset-2 text-center">
                         <p><?php echo $this->response->dictionary->sentence; ?></p><br />
                         <?php echo html_entity_decode($this->response->dictionary->marketing); ?>
-                        <?php if (strtolower($this->response->dictionary->product) === 'enterprise') { ?>
+                        <?php if (strtolower(@$this->response->dictionary->product) === 'enterprise') { ?>
                             <strong>To upgrade to an Enterprise License, click <a href="#" class="buy_more_licenses">here</a>.</strong><br /><br />
                         <?php } ?>
-                        <?php if (strtolower($this->response->dictionary->product) === 'professional') { ?>
+                        <?php if (strtolower(@$this->response->dictionary->product) === 'professional') { ?>
                             <strong>To upgrade to a Professional License, click <a href="#" class="buy_more_licenses">here</a>.</strong><br /><br />
                         <?php } ?>
                     </div>
