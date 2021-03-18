@@ -5,6 +5,7 @@
 *.sublime-workspace
 .DS_Store
 ._.DS_Store
+.Trash-1000
 other/open-audit.log
 other/log_access.log
 other/log_debug.log
