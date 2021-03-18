@@ -33,7 +33,7 @@
 * @version   GIT: Open-AudIT_3.5.3
 * @link      http://www.open-audit.org
  */
-header("Content-Security-Policy: object-src 'none'; frame-ancestors 'none'; form-action 'self';");
+header("Content-Security-Policy: object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' maps.google.com; script-src-elem 'self'; script-src-attr 'self'; style-src 'self'; style-src-elem 'self'; style-src-attr 'self'; img-src 'self'; connect-src 'self'; frame-src 'self'; font-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self';");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 
