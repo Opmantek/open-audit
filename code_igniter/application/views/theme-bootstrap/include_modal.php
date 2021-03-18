@@ -1,46 +1,13 @@
 <script>
-
-    <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
-    // Wait until the DOM has loaded before querying the document
-    $(document).ready(function(){
-        // get from opmantek.com
-        $.get('https://opmantek.com/product_data/open-audit.json', function(data){
-            modal.open({content: data, source: "online"});
-        })
-        .fail(function() {
-            // get from OAE
-                $.get('/omk/data/open-audit.json', function(data){
-                modal.open({content: data, source: "offline"});
-            })
-        });
-    });
-    <?php } ?>
-
     // Menu click response
     $(document).ready(function(){
-    $('a.buy_more_licenses').click(function(e){
-    // $('.buy_licenses').click(function(e){
-        // get from opmantek.com
-        // $.get('/omk/data/open-audit.json', function(data){
-        $.get('https://opmantek.com/product_data/open-audit.json', function(data){
-            //console.log(data.version);
-            modal.open({content: data, source: "online"});
-        })
-        .fail(function() {
-            // get from OAC
-            $.get('/omk/data/open-audit.json', function(data){
-            modal.open({content: data, source: "offline"});
-            })
-        });
-    });
-
-    var modal = (function(){
-        var
-        method = {},
-        $overlay,
-        $content,
-        $data,
-        $close;
+        var modal = (function(){
+            var
+            method = {},
+            $overlay,
+            $content,
+            $data,
+            $close;
 
         // Center the modal in the viewport
         method.center = function () {
@@ -241,12 +208,27 @@ output += "<div class=\"row market-row\">\
 
         return method;
     }());
-    });
 
-    <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
-    // Wait until the DOM has loaded before querying the document
-    $(document).ready(function(){
-        // get from opmantek.com
+        $('a.buy_more_licenses').click(function(e){
+            // $('.buy_licenses').click(function(e){
+            // get from opmantek.com
+            // $.get('/omk/data/open-audit.json', function(data){
+            $.get('https://opmantek.com/product_data/open-audit.json', function(data){
+                //console.log(data.version);
+                modal.open({content: data, source: "online"});
+            })
+            .fail(function() {
+                // get from OAC
+                $.get('/omk/data/open-audit.json', function(data){
+                modal.open({content: data, source: "offline"});
+                })
+            });
+        });
+
+
+<?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] !== 'commercial')) { ?>
+        // Wait until the DOM has loaded before querying the document
+        // get from opmantek.com this is a test
         $.get('https://opmantek.com/product_data/open-audit.json', function(data){
             modal.open({content: data, source: "online"});
         })
@@ -256,8 +238,11 @@ output += "<div class=\"row market-row\">\
                 modal.open({content: data, source: "offline"});
             })
         });
+        <?php } ?>
+
     });
-    <?php } ?>
+
+
 
     // add a keydown even for the escape key to close the modal
     $(document).keydown(function(e) {
