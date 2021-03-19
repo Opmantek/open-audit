@@ -219,16 +219,39 @@ class M_database extends MY_Model
                 $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
                 $result = $this->run_sql($sql, array());
                 if ($format === 'csv') {
-                    $this->load->dbutil();
                     $sql = 'SELECT * FROM `' . $table . '`';
-                    $return = 'array';
-                    $delimiter = ',';
-                    $newline = "\r\n";
                     $query = $this->db->query($sql);
-                    $backup = $this->dbutil->csv_from_result($query, $delimiter, $newline);
-                    $this->load->helper('download');
-                    force_download('open-audit_' . $table . '.csv', $backup);
-                    return;
+                    $result = $query->result();
+                    if ( ! empty($result) and is_array($result) and $table === 'credentials') {
+                        for ($i=0; $i < count($result); $i++) {
+                            $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                        }
+                    }
+                    if ( ! empty($result) and is_array($result) and $table === 'clouds') {
+                        for ($i=0; $i < count($result); $i++) {
+                            $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                        }
+                    }
+                    if ($table === 'dashboards') {
+                        for ($i=0; $i < count($result); $i++) {
+                            $result[$i]->options = json_encode($result[$i]->options);
+                        }
+                    }
+                    if ($table === 'discoveries') {
+                        for ($i=0; $i < count($result); $i++) {
+                            $result[$i]->scan_options = json_encode($result[$i]->scan_options);
+                            $result[$i]->match_options = json_encode($result[$i]->match_options);
+                            $result[$i]->command_options = json_encode($result[$i]->command_options);
+                            $result[$i]->other = '';
+                        }
+                    }
+                    if ($table === 'tasks') {
+                        for ($i=0; $i < count($result); $i++) {
+                            $result[$i]->options = json_encode($result[$i]->options);
+                        }
+                    }
+                    $result = $this->format_data($result, 'database');
+                    return $result;
                 }
                 if ($format === 'json') {
                     $sql = 'SELECT * FROM `' . $table . '`';

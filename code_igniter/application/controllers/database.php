@@ -160,6 +160,12 @@ class Database extends MY_Controller
     */
     public function execute()
     {
+        if ($this->response->meta->format === 'csv') {
+            $this->response->meta->collection = $this->response->meta->id;
+            $this->response->data = $this->m_database->execute($this->response->meta->id, 'export table', $this->response->meta->format);
+            output($this->response);
+            exit;
+        }
         $this->data = $this->m_database->execute($this->response->meta->id, 'export table', $this->response->meta->format);
         $this->response->meta->action = 'read';
         $this->response->meta->format = 'screen';
@@ -176,7 +182,7 @@ class Database extends MY_Controller
                 $this->load->model('m_orgs');
                 if ($this->response->meta->format === 'screen') {
                     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
-                } else {
+                } else if ($this->response->meta->format === 'json') {
                     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
                 }
             }
