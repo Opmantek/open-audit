@@ -33,7 +33,26 @@
 * @version   GIT: Open-AudIT_3.5.3
 * @link      http://www.open-audit.org
  */
-header("Content-Security-Policy: object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.google.com; script-src-elem 'self' 'unsafe-inline'; script-src-attr 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self'; style-src-attr 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' opmantek.com community.opmantek.com; frame-src 'self'; font-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self';");
+$header = "
+    connect-src 'self' opmantek.com community.opmantek.com;
+    font-src 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    frame-src 'self';
+    img-src 'self' data:;
+    manifest-src 'self';
+    media-src 'self';
+    object-src 'none';
+    script-src 'self' maps.googleapis.com maps.google.com;
+    script-src-attr 'self';
+    script-src-elem 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
+    style-src 'self' 'unsafe-inline';
+    style-src-attr 'self' 'unsafe-inline';
+    style-src-elem 'self';
+    worker-src 'self';
+    ";
+$header = str_replace("\n", "", $header);
+header("Content-Security-Policy: {$header}");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 
