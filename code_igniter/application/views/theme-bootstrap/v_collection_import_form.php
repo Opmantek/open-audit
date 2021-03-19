@@ -72,10 +72,10 @@ switch ($this->response->meta->collection) {
         break;
 
     case "discoveries":
-        $values = "'name','org_id','type','network_address' and 'other.subnet'";
-        $sample = '<tr><td>"name","org_id","type","network_address","other.subnet","other.nmap.discovery_scan_option_id"</td></tr>
-                   <tr><td>"My Test Discovery","1","subnet","http://SERVER/open-audit/","192.168.1.1","1"</td></tr>';
-        $extra = "The field 'other' is stored as a JSON object. You should use the field names of 'other.attribute name'. For an example, subnet would be 'other.subnet'.</p><p>For an example, use the web interface to create a discovery and then go to menu -> Admin -> Database and click on Discoveries. Then export to CSV.</p><p>Valid 'other' attributes are subnet, ad_domain and ad_server.";
+        $values = "'name','org_id','type' and 'subnet'";
+        $sample = '<tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"name","org_id","type","subnet","scan_options.id","match_options.match_dbus","match_options.match_fqdn","match_options.match_hostname","match_options.match_hostname_dbus","match_options.match_hostname_serial","match_options.match_ip","match_options.match_mac","match_options.match_mac_vmware","match_options.match_serial","match_options.match_serial_type","match_options.match_uuid","scan_options.exclude_ip","scan_options.exclude_tcp_ports","scan_options.exclude_udp_ports","scan_options.filtered","scan_options.nmap_tcp_ports","scan_options.nmap_udp_ports","scan_options.ping","scan_options.service_version","scan_options.tcp_ports","scan_options.timing","scan_options.udp_ports"</td></tr>
+                   <tr><td>"My Test Discovery","1","subnet","192.168.1.0/24","1","n","y","y","y","y","n","n","n","y","y","y","","","","n","0","0","y","n","22,135,62078","4","161"</td></tr>';
+        $extra = "The fields 'scan_options' and 'match_options' are stored as a JSON object. You should use the field names of 'scan_options.attribute_name'. For an example, ping would be 'scan_options.ping'.</p><p>For an example, use the web interface to create a discovery and then go to menu -> Admin -> Database and click on Discoveries. Then export to CSV.</p><p>";
         break;
 
     case "fields":
