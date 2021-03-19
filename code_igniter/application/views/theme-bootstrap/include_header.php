@@ -335,7 +335,7 @@ if (!empty($this->config->config['servers'])) {
                                 <li><a href='/omk/open-audit/license_free'><?php echo __('Activate Free License')?></a></li>
                             <?php } ?>
                             <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
-                            <li><a href='#' class='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
+                            <li><a href='#' id='buy_more_licenses' class='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
                             <li><a href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                         </ul>
                     </li>
