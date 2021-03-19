@@ -253,19 +253,25 @@ if ( ! function_exists('output')) {
 
         $output_csv = '';
 
-        if ($CI->response->meta->collection === 'credentials') {
+        if ($CI->response->meta->collection === 'clouds' and ! empty($CI->response->data)) {
             for ($i=0; $i < count($CI->response->data); $i++) {
                 $CI->response->data[$i]->attributes->credentials = json_encode($CI->response->data[$i]->attributes->credentials);
             }
         }
 
-        if ($CI->response->meta->collection === 'dashboards') {
+        if ($CI->response->meta->collection === 'credentials' and ! empty($CI->response->data)) {
+            for ($i=0; $i < count($CI->response->data); $i++) {
+                $CI->response->data[$i]->attributes->credentials = json_encode($CI->response->data[$i]->attributes->credentials);
+            }
+        }
+
+        if ($CI->response->meta->collection === 'dashboards' and ! empty($CI->response->data)) {
             for ($i=0; $i < count($CI->response->data); $i++) {
                 $CI->response->data[$i]->attributes->options = json_encode($CI->response->data[$i]->attributes->options);
             }
         }
 
-        if ($CI->response->meta->collection === 'discoveries') {
+        if ($CI->response->meta->collection === 'discoveries' and ! empty($CI->response->data)) {
             for ($i=0; $i < count($CI->response->data); $i++) {
                 $CI->response->data[$i]->attributes->scan_options = json_encode($CI->response->data[$i]->attributes->scan_options);
                 $CI->response->data[$i]->attributes->match_options = json_encode($CI->response->data[$i]->attributes->match_options);
@@ -273,7 +279,7 @@ if ( ! function_exists('output')) {
             }
         }
 
-        if ($CI->response->meta->collection === 'tasks') {
+        if ($CI->response->meta->collection === 'tasks' and ! empty($CI->response->data)) {
             for ($i=0; $i < count($CI->response->data); $i++) {
                 $CI->response->data[$i]->attributes->options = json_encode($CI->response->data[$i]->attributes->options);
             }
@@ -346,7 +352,6 @@ if ( ! function_exists('output')) {
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
             header('Cache-Control: max-age=0');
         } else {
-            echo "<pre>\n";
             echo $output_csv;
         }
     }
