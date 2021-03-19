@@ -194,7 +194,7 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="buttons" class="col-sm-3 control-label"> </label>
                     <div class="col-sm-8 input-group">
-                        <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary"><?php echo __('Create'); ?></button>
+                        <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary"><?php echo __('Create GeoCode'); ?></button>
                         &nbsp;
                         <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-primary"><?php echo __('Get Lat/Long'); ?></button>
                     </div>
