@@ -34,7 +34,7 @@
 * @link      http://www.open-audit.org
  */
 $header = "
-    connect-src 'self' opmantek.com community.opmantek.com;
+    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
     font-src 'self';
     form-action 'self';
     frame-ancestors 'none';
@@ -43,6 +43,7 @@ $header = "
     manifest-src 'none';
     media-src 'none';
     object-src 'none';
+    prefetch-src: 'self';
     script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
     style-src 'self' 'unsafe-inline';
     worker-src 'self';
