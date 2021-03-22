@@ -36,7 +36,23 @@
 if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
     header("Location: /omk/open-audit");
 }
-header("Content-Security-Policy: object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.google.com; script-src-elem 'self'; script-src-attr 'self'; style-src 'self'; style-src-elem 'self'; style-src-attr 'self'; img-src 'self'; connect-src 'self'; frame-src 'self'; font-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self';");
+$header = "
+    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
+    font-src 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    frame-src 'none';
+    img-src 'self' data:;
+    manifest-src 'none';
+    media-src 'none';
+    object-src 'none';
+    prefetch-src: 'self';
+    script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
+    style-src 'self' 'unsafe-inline';
+    worker-src 'self';
+    ";
+$header = str_replace("\n", "", $header);
+header("Content-Security-Policy: {$header}");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 ?><!DOCTYPE html>
