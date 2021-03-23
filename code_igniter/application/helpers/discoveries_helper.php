@@ -1047,9 +1047,9 @@ if ( ! function_exists('ip_audit')) {
 			if ( ! empty($device->id)) {
 				$parameters->system_id = $device->id;
 			}
-			$parameters->discovery_id = $discovery->id;
 			$parameters->credentials = $credentials;
 			$parameters->ssh_port = $ip_scan->details->ssh_port;
+			$parameters->type = $discovery->type;
 			$ssh_details = ssh_audit($parameters);
 			if ( ! empty($ssh_details)) {
 				if ( ! empty($ssh_details->credentials)) {
