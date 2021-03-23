@@ -384,19 +384,22 @@ if ( ! function_exists('get_nmap_version')) {
 		if (php_uname('s') === 'Windows NT') {
 			$command_string = 'nmap --version';
 			exec($command_string, $output, $return_var);
-			$output = @$output[0];
 		}
 		if (php_uname('s') === 'Darwin') {
 			$command_string = 'nmap --version';
 			exec($command_string, $output, $return_var);
-			$output = @$output[0];
 		}
 		if (php_uname('s') === 'Linux') {
 			$command_string = 'nmap --version';
 			exec($command_string, $output, $return_var);
-			$output = @$output[1];
 		}
 		if ( ! empty($output)) {
+			foreach ($output as $line) {
+				if (stripos($line, 'Nmap version') !== false) {
+					$output = $line;
+					break;
+				}
+			}
 			$lines = explode(' ', $output);
 			$nmap_version = intval($lines[2]);
 		}
