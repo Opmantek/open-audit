@@ -143,6 +143,8 @@ ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout;
 
 ALTER TABLE discovery_scan_options ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout;
 
+ALTER TABLE `networks` CHANGE `secutity_zone` `security_zone` varchar(200) NOT NULL DEFAULT '';
+
 ALTER TABLE networks ADD `admin_status` enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated' AFTER security_zone;
 
 UPDATE rules SET weight = 90 WHERE name like 'Form Factor based on Manufacturer (like %';
@@ -250,60 +252,59 @@ $this->alter_table('discoveries', 'subnet', "ADD subnet varchar(45) NOT NULL DEF
 
 
 if ($this->db->field_exists('seed_ip', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `seed_ip`", 'drop');
+    $this->alter_table('discoveries', 'seed_ip', "DROP `seed_ip`", 'drop');
 }
 $this->alter_table('discoveries', 'seed_ip', "ADD seed_ip varchar(45) NOT NULL DEFAULT '' AFTER subnet", 'add');
 
 
 if ($this->db->field_exists('seed_restrict_to_subnet', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `seed_restrict_to_subnet`", 'drop');
+    $this->alter_table('discoveries', 'seed_restrict_to_subnet', "DROP `seed_restrict_to_subnet`", 'drop');
 }
 $this->alter_table('discoveries', 'seed_restrict_to_subnet', "ADD seed_restrict_to_subnet enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_ip", 'add');
 
 
 if ($this->db->field_exists('seed_restrict_to_private', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `seed_restrict_to_private`", 'drop');
+    $this->alter_table('discoveries', 'seed_restrict_to_private', "DROP `seed_restrict_to_private`", 'drop');
 }
 $this->alter_table('discoveries', 'seed_restrict_to_private', "ADD seed_restrict_to_private enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_subnet", 'add');
 
 
 if ($this->db->field_exists('seed_ping', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `seed_ping`", 'drop');
+    $this->alter_table('discoveries', 'seed_ping', "DROP `seed_ping`", 'drop');
 }
 $this->alter_table('discoveries', 'seed_ping', "ADD seed_ping enum('y','n') NOT NULL DEFAULT 'y' AFTER seed_restrict_to_private", 'add');
 
 
 if ($this->db->field_exists('ad_domain', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `ad_domain`", 'drop');
+    $this->alter_table('discoveries', 'ad_domain', "DROP `ad_domain`", 'drop');
 }
 $this->alter_table('discoveries', 'ad_domain', "ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_restrict_to_private", 'add');
 
 
 if ($this->db->field_exists('ad_server', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `ad_server`", 'drop');
+    $this->alter_table('discoveries', 'ad_server', "DROP `ad_server`", 'drop');
 }
 $this->alter_table('discoveries', 'ad_server', "ADD ad_server varchar(45) NOT NULL DEFAULT '' AFTER ad_domain", 'add');
 
 
 if ($this->db->field_exists('options', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `options`", 'drop');
+    $this->alter_table('discoveries', 'options', "DROP `options`", 'drop');
 }
 
-
 if ($this->db->field_exists('scan_options', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `scan_options`", 'drop');
+    $this->alter_table('discoveries', 'scan_options', "DROP `scan_options`", 'drop');
 }
 $this->alter_table('discoveries', 'scan_options', "ADD scan_options text NOT NULL AFTER other", 'add');
 
 
 if ($this->db->field_exists('match_options', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `match_options`", 'drop');
+    $this->alter_table('discoveries', 'match_options', "DROP `match_options`", 'drop');
 }
 $this->alter_table('discoveries', 'match_options', "ADD match_options text NOT NULL AFTER scan_options", 'add');
 
 
 if ($this->db->field_exists('command_options', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `command_options`", 'drop');
+    $this->alter_table('discoveries', 'command_options', "DROP `command_options`", 'drop');
 }
 $this->alter_table('discoveries', 'command_options', "ADD command_options text NOT NULL AFTER match_options", 'add');
 
@@ -332,52 +333,53 @@ foreach ($result as $item) {
 	$this->log_db($this->db->last_query() . ';');
 }
 
-if ($this->db->field_exists('ports_in_order', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `ports_in_order`", 'drop');
+if ($this->db->field_exists('ports_in_order', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'ports_in_order', "DROP `ports_in_order`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'ports_in_order', "ADD ports_in_order enum('','y','n') NOT NULL DEFAULT 'n' AFTER options", 'add');
 
 
-if ($this->db->field_exists('ports_stop_after', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `ports_stop_after`", 'drop');
+if ($this->db->field_exists('ports_stop_after', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'ports_stop_after', "DROP `ports_stop_after`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'ports_stop_after', "ADD ports_stop_after tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ports_in_order", 'add');
 
 
-if ($this->db->field_exists('command_options', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `command_options`", 'drop');
+if ($this->db->field_exists('command_options', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'command_options', "DROP `command_options`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'command_options', "ADD command_options text NOT NULL AFTER ports_stop_after", 'add');
 
 
-if ($this->db->field_exists('snmp_timeout', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `snmp_timeout`", 'drop');
+if ($this->db->field_exists('snmp_timeout', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'snmp_timeout', "DROP `snmp_timeout`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'snmp_timeout', "ADD snmp_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER timeout", 'add');
 
 
-if ($this->db->field_exists('ssh_timeout', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `ssh_timeout`", 'drop');
+if ($this->db->field_exists('ssh_timeout', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'ssh_timeout', "DROP `ssh_timeout`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'ssh_timeout', "ADD ssh_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER snmp_timeout", 'add');
 
 
-if ($this->db->field_exists('wmi_timeout', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `wmi_timeout`", 'drop');
+if ($this->db->field_exists('wmi_timeout', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'wmi_timeout', "DROP `wmi_timeout`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'wmi_timeout', "ADD wmi_timeout tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER ssh_timeout", 'add');
 
 
-if ($this->db->field_exists('script_timeout', 'discoveries')) {
-    $this->alter_table('discoveries', 'subnet', "DROP `script_timeout`", 'drop');
+if ($this->db->field_exists('script_timeout', 'discovery_scan_options')) {
+    $this->alter_table('discovery_scan_options', 'script_timeout', "DROP `script_timeout`", 'drop');
 }
 $this->alter_table('discovery_scan_options', 'script_timeout', "ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout", 'add');
 
+$this->alter_table('networks', 'secutity_zone', "security_zone varchar(200) NOT NULL DEFAULT ''", 'change');
 
 if ($this->db->field_exists('admin_status', 'networks')) {
     $this->alter_table('networks', 'admin_status', "DROP `admin_status`", 'drop');
 }
-$this->alter_table('networks', 'admin_status', "ADD admin_status enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'Allocated' AFTER security_zone", 'add');
+$this->alter_table('networks', 'admin_status', "ADD admin_status enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated' AFTER security_zone", 'add');
 
 $sql = "UPDATE rules SET weight = 90 WHERE name like 'Form Factor based on Manufacturer (like %'";
 $this->db->query($sql);
