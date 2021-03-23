@@ -773,6 +773,8 @@ class M_users extends MY_Model
         $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>.';
         $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
         $dictionary->columns->type = "Can be 'user' or 'collector'.";
+        $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.';
+        $dictionary->columns->access_token = 'Internal JSON array of valid access tokens for this user.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

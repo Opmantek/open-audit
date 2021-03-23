@@ -608,10 +608,12 @@ class M_widgets extends MY_Model
         $dictionary->columns->ternary = 'The optional third column.';
         $dictionary->columns->where = 'Any required filter.';
         $dictionary->columns->limit = 'Limit the query to the first X items.';
+        $dictionary->columns->options = 'unused';
         $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
         $dictionary->columns->type = "Can be 'line' or 'pie'.";
         $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';
         $dictionary->columns->sql = "For advanced entry of a raw SQL query. As per Queries, you must include 'WHERE @filter AND' in your SQL.";
+        $dictionary->columns->link = 'The template for the link to be generated per result line.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
 

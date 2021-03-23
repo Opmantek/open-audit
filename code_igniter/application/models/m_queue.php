@@ -278,4 +278,47 @@ class M_queue extends MY_Model
     //         return false;
     //     }
     // }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'networks';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'An internal table used for queuing discovery items.';
+        $dictionary->marketing = '';
+        $dictionary->about = '';
+        $dictionary->product = 'community';
+        $dictionary->notes = '';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->type = '';
+        $dictionary->columns->pid = '';
+        $dictionary->columns->status = '';
+        $dictionary->columns->details = '';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
+
+
+
+
 }
