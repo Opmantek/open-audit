@@ -278,7 +278,7 @@ $this->alter_table('discoveries', 'seed_ping', "ADD seed_ping enum('y','n') NOT 
 if ($this->db->field_exists('ad_domain', 'discoveries')) {
     $this->alter_table('discoveries', 'ad_domain', "DROP `ad_domain`", 'drop');
 }
-$this->alter_table('discoveries', 'ad_domain', "ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_restrict_to_private", 'add');
+$this->alter_table('discoveries', 'ad_domain', "ADD ad_domain varchar(200) NOT NULL DEFAULT '' AFTER seed_ping", 'add');
 
 
 if ($this->db->field_exists('ad_server', 'discoveries')) {
