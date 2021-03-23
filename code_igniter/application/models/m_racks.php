@@ -225,7 +225,7 @@ class M_racks extends MY_Model
         $dictionary->columns->weight_empty = 'The physical weight (in KGs) of the rack when empty.';
         $dictionary->columns->weight_current = 'The physical weight (in KGs) of the rack at present.';
         $dictionary->columns->weight_max = 'The maximum physical weight (in KGs) this rack can hold.';
-        $dictionary->columns->ru_start = 'TBD';
+        $dictionary->columns->ru_start = 'The starting RU number this device occupies.';
         $dictionary->columns->ru_height = 'How many rack units in height is this rack.';
         $dictionary->columns->type = 'The type of rack (compute, power, network, etc).';
         $dictionary->columns->purpose = 'What is the purpose of this rack.';
