@@ -539,6 +539,11 @@ if ( !  function_exists('ssh_audit')) {
         }
 
         discovery_log($log);
+        if ( ! empty($parameters->type)) {
+            $type = $parameters->type;
+        } else {
+            $type = 'subnet';
+        }
 
         if (is_array($parameters->credentials)) {
             $credentials = $parameters->credentials;
@@ -861,9 +866,12 @@ if ( !  function_exists('ssh_audit')) {
 
             'which_sudo' => 'which sudo 2>/dev/null',
 
-            'arp' => 'arp -an 2>/dev/null',
-            'route' => 'netstat -rn 2>/dev/null | grep "^[0-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"'
         );
+
+        if ($type === 'seed') {
+            $commands['arp'] = 'arp -an 2>/dev/null';
+            $commands['route'] = 'netstat -rn 2>/dev/null | grep "^[0-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"';
+        }
 
         foreach ($commands as $item => $command) {
             if (strpos($device->shell, 'bash') === false && $device->bash !== '') {
@@ -914,47 +922,50 @@ if ( !  function_exists('ssh_audit')) {
 
         // ARP for other devices
         $device->ips_found = array();
-        if ( ! empty($device->arp)) {
-            foreach ($device->arp as $line) {
-                $item = array();
 
-                $explode = explode('(', $line);
-                $explode_2 = explode(')', $explode[1]);
-                $item_ip = $explode_2[0];
+        if ($type === 'seed') {
+            if ( ! empty($device->arp)) {
+                foreach ($device->arp as $line) {
+                    $item = array();
 
-                $item_mac = '';
-                $explode = explode(' ', $line);
-                if ( ! empty($explode[3])) {
-                    $item_mac = strtolower($explode[3]);
-                }
-                if ( ! empty($item_mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' &&
-                        ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255' && filter_var($item_ip, FILTER_VALIDATE_IP)) {
-                    $device->ips_found[$item_mac] = $item_ip;
-                }
-            }
-        }
-        unset($device->arp);
-        if ( ! empty($device->route)) {
-            foreach ($device->route as $ip) {
-                if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                    $device->ips_found[] = $ip;
+                    $explode = explode('(', $line);
+                    $explode_2 = explode(')', $explode[1]);
+                    $item_ip = $explode_2[0];
+
+                    $item_mac = '';
+                    $explode = explode(' ', $line);
+                    if ( ! empty($explode[3])) {
+                        $item_mac = strtolower($explode[3]);
+                    }
+                    if ( ! empty($item_mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' &&
+                            ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255' && filter_var($item_ip, FILTER_VALIDATE_IP)) {
+                        $device->ips_found[$item_mac] = $item_ip;
+                    }
                 }
             }
+            unset($device->arp);
+            if ( ! empty($device->route)) {
+                foreach ($device->route as $ip) {
+                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                        $device->ips_found[] = $ip;
+                    }
+                }
+            }
+            unset($device->route);
+
+            // Lower case all MAC addresses
+            $device->ips_found = array_change_key_case($device->ips_found, CASE_LOWER);
+            // Only need one unique IP
+            $device->ips_found = array_unique($device->ips_found);
+
+            $log->command_time_to_execute = '';
+            $log->message = 'Seed. All IPs detected using SSH.';
+            $log->command = 'Combined SSH arp and route.';
+            $log->command_status = 'notice';
+            $log->command_output = json_encode($device->ips_found);
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
         }
-        unset($device->route);
-
-        // Lower case all MAC addresses
-        $device->ips_found = array_change_key_case($device->ips_found, CASE_LOWER);
-        // Only need one unique IP
-        $device->ips_found = array_unique($device->ips_found);
-
-        $log->command_time_to_execute = '';
-        $log->message = 'Seed. All IPs detected using SSH.';
-        $log->command = 'Combined SSH arp and route.';
-        $log->command_status = 'notice';
-        $log->command_output = json_encode($device->ips_found);
-        discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute);
 
 
         // Set some items that may have multiple results
