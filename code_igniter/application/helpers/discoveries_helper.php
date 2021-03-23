@@ -976,7 +976,7 @@ if ( ! function_exists('ip_audit')) {
 					$device->snmp_version .= 'c';
 				}
 			}
-			$temp_array = snmp_audit($device->ip, $credentials_snmp, null, $discovery->id);
+			$temp_array = snmp_audit($device->ip, $credentials_snmp, null, $discovery->id, $discovery->type);
 			if ( ! empty($temp_array['details'])) {
 				foreach ($temp_array['details'] as $key => $value) {
 					if ( ! empty($value)) {
