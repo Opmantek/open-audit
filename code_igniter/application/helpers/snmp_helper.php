@@ -394,7 +394,7 @@ if ( ! function_exists('snmp_audit')) {
      * @param  [type] $discovery_id [description]
      * @return [type]               [description]
      */
-    function snmp_audit($ip, $credentials, $log = null, $discovery_id = null)
+    function snmp_audit($ip, $credentials, $log = null, $discovery_id = null, $type = 'subnet')
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -1760,18 +1760,103 @@ if ( ! function_exists('snmp_audit')) {
         // Linked IPs in the ARP table, etc
         $ips_found = array();
 
-        // ipNetToMediaPhysAddress
-        $item_start = microtime(true);
-        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-        $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.22.1.2');
-        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-        if ( ! empty($temp)) {
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Seed. Detecting IPs at ipNetToMediaPhysAddress for ' . $ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.4.22.1.2';
-            $log->command_output = 'Count: ' . count($temp);
-            $log->command_status = 'notice';
+        if ($type === 'seed') {
+            // ipNetToMediaPhysAddress
+            $item_start = microtime(true);
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.22.1.2');
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
             if ( ! empty($temp)) {
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Seed. Detecting IPs at ipNetToMediaPhysAddress for ' . $ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.4.22.1.2';
+                $log->command_output = 'Count: ' . count($temp);
+                $log->command_status = 'notice';
+                if ( ! empty($temp)) {
+                    foreach ($temp as $key => $value) {
+                        if ( ! empty($value)) {
+                            // the IP
+                            $explode = explode('.', $key);
+                            $found_ip = implode('.', array_splice($explode, -4));
+                            // the MAC
+                            $explode = explode(' ', $value);
+                            if (substr_count($value, ' ') > 1) {
+                                unset($explode[0]);
+                                $found_mac = trim(implode(':', $explode));
+                            } else {
+                                $found_mac = $explode[1];
+                            }
+                            // pad the MAC
+                            $explode = explode(':', $found_mac);
+                            foreach ($explode as &$explode_mac) {
+                                $explode_mac = substr('00' . $explode_mac, -2);
+                            }
+                            $found_mac = implode(':', $explode);
+                            $ips_found[$found_mac] = $found_ip;
+                        }
+                    }
+                }
+                $log->command_output = json_encode($temp);
+                discovery_log($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
+            }
+        }
+
+        if ($type === 'seed') {
+            // ipNetToPhysicalPhysAddress
+            $item_start = microtime(true);
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.35.1.4.3.1.4');
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            if ( ! empty($temp)) {
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Seed. Detecting IPs at ipNetToPhysicalPhysAddress for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.4.35.1.4.3.1.4';
+                $log->command_output = 'Count: ' . count($temp);
+                $log->command_status = 'notice';
+                if ( ! empty($temp)) {
+                    foreach ($temp as $key => $value) {
+                        if ( ! empty($value)) {
+                            // the IP
+                            $explode = explode('.', $key);
+                            $found_ip = implode('.', array_splice($explode, -4));
+                            // the MAC
+                            $explode = explode(' ', $value);
+                            if (substr_count($value, ' ') > 1) {
+                                unset($explode[0]);
+                                $found_mac = trim(implode(':', $explode));
+                            } else {
+                                $found_mac = $explode[1];
+                            }
+                            // pad the MAC
+                            $explode = explode(':', $found_mac);
+                            foreach ($explode as &$explode_mac) {
+                                $explode_mac = substr('00' . $explode_mac, -2);
+                            }
+                            $found_mac = implode(':', $explode);
+                            $ips_found[$found_mac] = $found_ip;
+                        }
+                    }
+                }
+                $log->command_output = json_encode($temp);
+                discovery_log($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
+            }
+        }
+
+
+        if ($type === 'seed') {
+            // atPhysAddress
+            $item_start = microtime(true);
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.3.1.1.2');
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            if ( ! empty($temp)) {
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Seed. Detecting IPs at atPhysAddress for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.3.1.1.2';
+                $log->command_output = 'Count: ' . count($temp);
+                $log->command_status = 'notice';
                 foreach ($temp as $key => $value) {
                     if ( ! empty($value)) {
                         // the IP
@@ -1794,129 +1879,54 @@ if ( ! function_exists('snmp_audit')) {
                         $ips_found[$found_mac] = $found_ip;
                     }
                 }
+                $log->command_output = json_encode($temp);
+                discovery_log($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
             }
-            $log->command_output = json_encode($temp);
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
         }
 
-        // ipNetToPhysicalPhysAddress
-        $item_start = microtime(true);
-        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-        $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.35.1.4.3.1.4');
-        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-        if ( ! empty($temp)) {
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Seed. Detecting IPs at ipNetToPhysicalPhysAddress for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.4.35.1.4.3.1.4';
-            $log->command_output = 'Count: ' . count($temp);
-            $log->command_status = 'notice';
-            if ( ! empty($temp)) {
-                foreach ($temp as $key => $value) {
-                    if ( ! empty($value)) {
-                        // the IP
-                        $explode = explode('.', $key);
-                        $found_ip = implode('.', array_splice($explode, -4));
-                        // the MAC
-                        $explode = explode(' ', $value);
-                        if (substr_count($value, ' ') > 1) {
-                            unset($explode[0]);
-                            $found_mac = trim(implode(':', $explode));
-                        } else {
-                            $found_mac = $explode[1];
+
+        if ($type === 'seed') {
+            $temp = array();
+            if ( ! empty($routes) && ! empty($ips_found)) {
+                foreach ($routes as $route) {
+                    if ($route->next_hop === '0.0.0.0' or empty($route->next_hop)) {
+                        break;
+                    }
+                    $add = true;
+                    foreach ($ips_found as $key => $value) {
+                        if ($value === $route->next_hop) {
+                            $add = false;
                         }
-                        // pad the MAC
-                        $explode = explode(':', $found_mac);
-                        foreach ($explode as &$explode_mac) {
-                            $explode_mac = substr('00' . $explode_mac, -2);
-                        }
-                        $found_mac = implode(':', $explode);
-                        $ips_found[$found_mac] = $found_ip;
+                    }
+                    if ($add === true) {
+                        $ips_found[] = $route->next_hop;
+                        $temp[] = $route->next_hop;
                     }
                 }
             }
-            $log->command_output = json_encode($temp);
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
-        }
 
-        // atPhysAddress
-        $item_start = microtime(true);
-        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-        $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.3.1.1.2');
-        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-        if ( ! empty($temp)) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Seed. Detecting IPs at atPhysAddress for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.3.1.1.2';
-            $log->command_output = 'Count: ' . count($temp);
+            $log->message = 'Seed. Detecting IPs from routes.';
+            $log->command = 'snmpwalk 1.3.6.1.2.1.4.21.1.1';
             $log->command_status = 'notice';
-            foreach ($temp as $key => $value) {
-                if ( ! empty($value)) {
-                    // the IP
-                    $explode = explode('.', $key);
-                    $found_ip = implode('.', array_splice($explode, -4));
-                    // the MAC
-                    $explode = explode(' ', $value);
-                    if (substr_count($value, ' ') > 1) {
-                        unset($explode[0]);
-                        $found_mac = trim(implode(':', $explode));
-                    } else {
-                        $found_mac = $explode[1];
-                    }
-                    // pad the MAC
-                    $explode = explode(':', $found_mac);
-                    foreach ($explode as &$explode_mac) {
-                        $explode_mac = substr('00' . $explode_mac, -2);
-                    }
-                    $found_mac = implode(':', $explode);
-                    $ips_found[$found_mac] = $found_ip;
-                }
-            }
             $log->command_output = json_encode($temp);
+            discovery_log($log);
+            unset($temp, $log->id, $log->command, $log->command_time_to_execute);
+
+            // Lower case all MAC addresses
+            $ips_found = array_change_key_case($ips_found, CASE_LOWER);
+            // Only need one unique IP
+            $ips_found = array_unique($ips_found);
+
+            $log->command_time_to_execute = '';
+            $log->message = 'Seed. All IPs detected using SNMP.';
+            $log->command = 'Combined SNMP for ipNetToMediaPhysAddress, ipNetToPhysicalPhysAddress, atPhysAddress and ipRouteDest.';
+            $log->command_status = 'notice';
+            $log->command_output = json_encode($ips_found);
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
-
-        $temp = array();
-        if ( ! empty($routes) && ! empty($ips_found)) {
-            foreach ($routes as $route) {
-                if ($route->next_hop === '0.0.0.0' or empty($route->next_hop)) {
-                    break;
-                }
-                $add = true;
-                foreach ($ips_found as $key => $value) {
-                    if ($value === $route->next_hop) {
-                        $add = false;
-                    }
-                }
-                if ($add === true) {
-                    $ips_found[] = $route->next_hop;
-                    $temp[] = $route->next_hop;
-                }
-            }
-        }
-
-        $log->command_time_to_execute = (microtime(true) - $item_start);
-        $log->message = 'Seed. Detecting IPs from routes.';
-        $log->command = 'snmpwalk 1.3.6.1.2.1.4.21.1.1';
-        $log->command_status = 'notice';
-        $log->command_output = json_encode($temp);
-        discovery_log($log);
-        unset($temp, $log->id, $log->command, $log->command_time_to_execute);
-
-        // Lower case all MAC addresses
-        $ips_found = array_change_key_case($ips_found, CASE_LOWER);
-        // Only need one unique IP
-        $ips_found = array_unique($ips_found);
-
-        $log->command_time_to_execute = '';
-        $log->message = 'Seed. All IPs detected using SNMP.';
-        $log->command = 'Combined SNMP for ipNetToMediaPhysAddress, ipNetToPhysicalPhysAddress, atPhysAddress and ipRouteDest.';
-        $log->command_status = 'notice';
-        $log->command_output = json_encode($ips_found);
-        discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute);
 
 
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->command_status);
