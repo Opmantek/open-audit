@@ -281,9 +281,8 @@ class M_clouds extends MY_Model
         $dictionary->columns->type = 'At the moment, only Amazon AWS is supported.';
         $dictionary->columns->key = 'Your API key.';
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your API key.';
-        $dictionary->columns->ssh = 'Should we use SSH to discover these devices.';
-        $dictionary->columns->wmi = 'Should we use WMI to discover these devices.';
-        $dictionary->columns->snmp = 'Should we use SNMP to discover these devices.';
+        $dictionary->columns->status = 'The current status of the Cloud Discovery.';
+        $dictionary->columns->options = 'Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;
