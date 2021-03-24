@@ -1624,7 +1624,7 @@ if ( ! function_exists('snmp_audit')) {
         }
 
         // Radio's
-        if (is_array($interfaces_filtered) && count($interfaces_filtered) > 0) {
+        if (is_array($interfaces_filtered) && count($interfaces_filtered) > 0 && ($details->snmp_enterprise_id === 2281 or $details->snmp_enterprise_id === 17713)) {
             foreach ($interfaces_filtered as $interface) {
                 // radio = Cambium
                 // wlan = LEDE / OpenWRT
