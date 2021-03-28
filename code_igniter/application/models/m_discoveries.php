@@ -324,6 +324,14 @@ class M_discoveries extends MY_Model
         }
         $this->load->model('m_networks');
         $this->load->helper('network');
+        $network_org = intval($data->org_id);
+        if ( ! empty($data->devices_assigned_to_org)) {
+            $network_org = intval($data->devices_assigned_to_org);
+        }
+        $network_location = 1;
+        if ( ! empty($data->devices_assigned_to_location)) {
+            $network_location = intval($data->devices_assigned_to_location);
+        }
         if ($data->type === 'subnet' && ! empty($data->subnet) && stripos($data->subnet, '-') === false && filter_var($data->subnet, FILTER_VALIDATE_IP) !== false) {
             // We have a single IP - ie 192.168.1.1
             // TODO - we should pass the OrgID
@@ -336,7 +344,8 @@ class M_discoveries extends MY_Model
                 $network = new stdClass();
                 $network->name = $temp->network.'/'.$temp->network_slash;
                 $network->network = $temp->network.'/'.$temp->network_slash;
-                $network->org_id = $data->org_id;
+                $network->org_id = $network_org;
+                $network->location_id = $network_location;
                 $network->description = $data->name;
                 $this->m_networks->upsert($network);
             }
@@ -353,7 +362,8 @@ class M_discoveries extends MY_Model
             $network = new stdClass();
             $network->name = $temp->network.'/'.$temp->network_slash;
             $network->network = $temp->network.'/'.$temp->network_slash;
-            $network->org_id = $data->org_id;
+            $network->org_id = $network_org;
+            $network->location_id = $network_location;
             $network->description = $data->name;
             $this->m_networks->upsert($network);
         }
