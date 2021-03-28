@@ -2333,6 +2333,14 @@ if ( ! function_exists('discover_ad')) {
 			if ( ! empty($subnet['name'][0]) && $subnet['name'][0] !== 'Subnets') {
 				unset($network);
 				$network = new stdClass();
+				$network->org_id = intval($discovery->org_id);
+				if ( ! empty($discovery->devices_assigned_to_org)) {
+					$network->org_id = intval($discovery->devices_assigned_to_org);
+				}
+				$network->location_id = 1;
+				if ( ! empty($discovery->devices_assigned_to_location)) {
+					$network->location_id = intval($discovery->devices_assigned_to_location);
+				}
 				if ( ! empty($subnet['siteobject'][0])) {
 					$temp = explode(',', $subnet['siteobject'][0]);
 					$temp_name = explode('=', $temp[0]);
@@ -2342,7 +2350,6 @@ if ( ! function_exists('discover_ad')) {
 				}
 				$network->name = $name . $subnet['name'][0];
 				$network->network = $subnet['name'][0];
-				$network->org_id = $discovery->org_id;
 				$network->description = @$subnet['description'][0];
 				if ( ! empty($subnet['location'][0])) {
 					$network->description .= ' (' . $subnet['location'][0] . ')';

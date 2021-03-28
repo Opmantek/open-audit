@@ -2270,6 +2270,7 @@ CREATE TABLE `networks` (
   `network_domain` varchar(200) NOT NULL DEFAULT '',
   `security_zone` varchar(200) NOT NULL DEFAULT '',
   `admin_status` enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated',
+  `environment` varchar(100) NOT NULL DEFAULT 'Production',
   `location_id` int(10) unsigned DEFAULT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',

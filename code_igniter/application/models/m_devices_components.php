@@ -614,10 +614,13 @@ class M_devices_components extends MY_Model
                 if ( ! empty($input[$i]->network)) {
                     $network = new stdClass();
                     $network->name = $input[$i]->network;
+                    $network->org_id = 1;
                     if ( ! empty($details->org_id)) {
                         $network->org_id = intval($details->org_id);
-                    } else {
-                        $network->org_id = 1;
+                    }
+                    $network->location_id = 1;
+                    if ( ! empty($details->location_id)) {
+                        $network->location_id = intval($details->location_id);
                     }
                     $network->description = 'Inserted from audit result.';
                     $this->m_networks->upsert($network);

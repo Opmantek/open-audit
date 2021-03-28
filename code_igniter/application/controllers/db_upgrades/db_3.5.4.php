@@ -143,9 +143,11 @@ ALTER TABLE discovery_scan_options DROP IF EXISTS script_timeout;
 
 ALTER TABLE discovery_scan_options ADD script_timeout tinyint(5) unsigned NOT NULL DEFAULT '0' AFTER wmi_timeout;
 
-ALTER TABLE `networks` CHANGE `secutity_zone` `security_zone` varchar(200) NOT NULL DEFAULT '';
+ALTER TABLE networks CHANGE `secutity_zone` `security_zone` varchar(200) NOT NULL DEFAULT '';
 
 ALTER TABLE networks ADD `admin_status` enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated' AFTER security_zone;
+
+ALTER TABLE networks ADD `environment` varchar(100) NOT NULL DEFAULT 'Production' AFTER admin_status;
 
 UPDATE rules SET weight = 90 WHERE name like 'Form Factor based on Manufacturer (like %';
 
@@ -380,6 +382,11 @@ if ($this->db->field_exists('admin_status', 'networks')) {
     $this->alter_table('networks', 'admin_status', "DROP `admin_status`", 'drop');
 }
 $this->alter_table('networks', 'admin_status', "ADD admin_status enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated' AFTER security_zone", 'add');
+
+if ($this->db->field_exists('environment', 'networks')) {
+    $this->alter_table('networks', 'environment', "DROP `environment`", 'drop');
+}
+$this->alter_table('networks', 'environment', "ADD `environment` varchar(100) NOT NULL DEFAULT 'Production' AFTER admin_status", 'add');
 
 $sql = "UPDATE rules SET weight = 90 WHERE name like 'Form Factor based on Manufacturer (like %'";
 $this->db->query($sql);

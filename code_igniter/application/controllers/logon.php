@@ -418,7 +418,8 @@ class Logon extends CI_Controller
                 $network = new stdClass();
                 $network->name = $subnet;
                 $network->network = $subnet;
-                $network->org_id = 0;
+                $network->org_id = 1;
+                $network->location_id = 1;
                 $network->description = 'Auto inserted local server subnet';
                 $this->m_networks->upsert($network);
                 unset($network);
