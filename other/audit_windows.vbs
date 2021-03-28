@@ -2835,39 +2835,27 @@ for each objItem in colItems
     result_users = ""
     share_users = ""
     folder_size = ""
-    if ((objItem.Path > "") AND _
-    not isnull(objItem.Path) AND _
-    objItem.Path <> "C:\WINNT" AND _
-    objItem.Path <> "C:\WINDOWS" AND _
-    objItem.Path <> "C:\" AND _
-    right(objItem.Path, 1) <> "\" AND _
-    len(objItem.Path) > 3 AND _
-    audit_location = "local" ) then
-    on error resume next
-    Set objFolder = objFSO.GetFolder(objItem.Path)
-    folder_size = int(objFolder.size/1024/1024)
-    On Error Goto 0
-    ' note - removed the below line from the conditions above
-    ' right(objItem.Name, 1) <> "$" AND _
+    if ((objItem.Path > "") AND not isnull(objItem.Path) AND objItem.Path <> "C:\WINNT" AND objItem.Path <> "C:\WINDOWS" AND objItem.Path <> "C:\" AND _
+    right(objItem.Path, 1) <> "\" AND len(objItem.Path) > 3 AND audit_location = "local" ) then
+        on error resume next
+            Set objFolder = objFSO.GetFolder(objItem.Path)
+            folder_size = int(objFolder.size/1024/1024)
+        On Error Goto 0
+        ' note - removed the below line from the conditions above
+        ' right(objItem.Name, 1) <> "$" AND _
     else
-    folder_size = ""
+        folder_size = ""
     end if
 
-    if ((objItem.Path > "") AND _
-    not isnull(objItem.Path) AND _
-    objItem.Path <> "C:\WINNT" AND _
-    objItem.Path <> "C:\WINDOWS" AND _
-    objItem.Path <> "C:\" AND _
-    right(objItem.Path, 1) <> "\" AND _
-    len(objItem.Path) > 3 AND _
-    audit_location = "remote" ) then
-    on error resume next
-    ' disabled - causing timeout issues
-    remote_share = "\\" & system_hostname & "\" & objItem.Name
-    'Set objFolder = objFSO.GetFolder(remote_share)
-    'folder_size = int(objFolder.size/1024/1024)
-    folder_size = 0
-    On Error Goto 0
+    if ((objItem.Path > "") AND not isnull(objItem.Path) AND objItem.Path <> "C:\WINNT" AND objItem.Path <> "C:\WINDOWS" AND objItem.Path <> "C:\" AND _
+    right(objItem.Path, 1) <> "\" AND len(objItem.Path) > 3 AND audit_location = "remote" ) then
+        on error resume next
+            ' disabled - causing timeout issues
+            remote_share = "\\" & system_hostname & "\" & objItem.Name
+            'Set objFolder = objFSO.GetFolder(remote_share)
+            'folder_size = int(objFolder.size/1024/1024)
+            folder_size = 0
+        On Error Goto 0
     end if
 
     result_share = result_share & "     <item>" & vbcrlf
@@ -2877,35 +2865,36 @@ for each objItem in colItems
     result_share = result_share & "         <size>" & escape_xml(folder_size) & "</size>" & vbcrlf
 
     if file_exists = True then
-    strCommand = "c:\RMTSHARE.EXE \\" & system_hostname & "\""" & objItem.Name & """ "
-    set objExecObject = objShell.Exec(strCommand)
-    do While Not objExecObject.StdOut.AtEndOfStream
-    strResults = objExecObject.StdOut.ReadAll()
-    Loop
-    MyArray = Split(strResults, vbcrlf)
-    flag = False
-    for each line in MyArray
-    if line = "The command completed successfully." then
-    flag = False
-    end if
-    if flag = True then
-    newArray = split(line, ":")
-    if (left(ltrim(newArray(0)),1) = "\") then
-    newArray(0) = mid(trim(newArray(0)), 2)
-    end if
-    share_users = share_users & trim(newArray(0)) & "(" & trim(newArray(1)) & "), "
-    end if
-    if line = "Permissions:" then
-    flag = True
-    end if
-    next
-    if share_users > "" then
-    share_users = left(share_users, len(share_users)-2)
-    result_share = result_share & "         <users>" & escape_xml(share_users) & "</users>" & vbcrlf
-    end if
+        strCommand = "c:\RMTSHARE.EXE \\" & system_hostname & "\""" & objItem.Name & """ "
+        set objExecObject = objShell.Exec(strCommand)
+        do While Not objExecObject.StdOut.AtEndOfStream
+            strResults = objExecObject.StdOut.ReadAll()
+        Loop
+        MyArray = Split(strResults, vbcrlf)
+        flag = False
+        for each line in MyArray
+            if line = "The command completed successfully." then
+                flag = False
+            end if
+            if flag = True then
+                newArray = split(line, ":")
+                if (left(ltrim(newArray(0)),1) = "\") then
+                    newArray(0) = mid(trim(newArray(0)), 2)
+                end if
+                share_users = share_users & trim(newArray(0)) & "(" & trim(newArray(1)) & "), "
+            end if
+            if line = "Permissions:" then
+                flag = True
+            end if
+        next
+        if share_users > "" then
+            share_users = left(share_users, len(share_users)-2)
+            result_share = result_share & "         <users>" & escape_xml(share_users) & "</users>" & vbcrlf
+        end if
     end if
     result_share = result_share & "     </item>" & vbcrlf
 next
+
 if result_share > "" then
     result.WriteText "  <share>" & vbcrlf
     result.WriteText    result_share
