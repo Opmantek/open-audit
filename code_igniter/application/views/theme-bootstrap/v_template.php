@@ -94,7 +94,12 @@ if (!empty($meta->baseurl)) {
 include "include_header.php";
 if (!empty($this->response->errors) and is_array($this->response->errors)) {
     foreach ($this->response->errors as $error) {
-        echo '<div class="alert alert-danger" role="alert"><strong>' . $error->title . "</strong><br />" . $error->detail . "</div>\n";
+        echo '<div class="alert alert-danger" role="alert"><strong>' . $error->title . "</strong><br />";
+        if ( ! empty($error->code)) {
+            echo html_entity_decode($error->detail) . "</div>\n";
+        } else {
+            echo $error->detail . "</div>\n";
+        }
     }
 }
 $temp = @$this->session->flashdata('error');

@@ -48,7 +48,7 @@ $header = "
     style-src 'self' 'unsafe-inline';
     worker-src 'self';
     ";
-$header = str_replace("\n", "", $header);
+$header = str_replace(PHP_EOL, "", $header);
 header("Content-Security-Policy: {$header}");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
