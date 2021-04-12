@@ -497,6 +497,8 @@ class M_discoveries extends MY_Model
         if (empty($id)) {
             $id = intval($CI->response->meta->id);
         }
+        $this->load->helper('discoveries');
+        discovery_check_finished($id);
         $sql = 'SELECT * FROM discoveries WHERE id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -578,6 +580,13 @@ class M_discoveries extends MY_Model
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
+        $this->load->helper('discoveries');
+        $sql = "SELECT id FROM discoveries WHERE status != 'complete'";
+        $query = $CI->db->query($sql);
+        $result = $this->run_sql($sql, array());
+        foreach ($result as $discovery) {
+            discovery_check_finished(intval($discovery->id));
+        }
         if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
             $sql = 'SELECT * FROM discoveries WHERE org_id IN (' . implode(',', $org_list) . ')';

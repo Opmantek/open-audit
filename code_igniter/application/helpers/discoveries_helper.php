@@ -2185,8 +2185,7 @@ if ( ! function_exists('ip_audit')) {
 if ( ! function_exists('discovery_check_finished')) {
 	/**
 	 * [discover_ad description]
-	 * @param  object $queue_item [description]
-	 * @return bool             [description]
+	 * @param  int $id the discovery ID
 	 */
 	function discovery_check_finished($id)
 	{
@@ -2201,27 +2200,45 @@ if ( ! function_exists('discovery_check_finished')) {
 		$log->command_status = 'yes';
 		$log->pid = getmypid();
 		$log->severity = 7;
-
-		// Check if this discovery is complete and set status if so
 		$CI = get_instance();
-		$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT COUNT(*) AS `count` FROM `discovery_log` WHERE `discovery_id` = ' . intval($id) . " AND `command_status` = 'device complete'";
-		$query = $CI->db->query($sql);
-		$result = $query->result();
-		if ( ! empty($result[0]->count)) {
-			$count = intval($result[0]->count);
-			$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT `ip_responding_count` AS `count` FROM `discoveries` WHERE `id` = ' . intval($id);
+		if ( ! empty($id)) {
+			// Check if this discovery is complete and set status if so
+			$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT COUNT(*) AS `count` FROM `discovery_log` WHERE `discovery_id` = ' . intval($id) . " AND `command_status` = 'device complete'";
 			$query = $CI->db->query($sql);
 			$result = $query->result();
-			$device_count = intval($result[0]->count);
-			if ($count === $device_count) {
-				// NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
-				$log->message = 'Discovery has finished.';
-				$log->command = '';
-				$log->command_output = '';
-				$log->command_status = 'finished';
-				$log->ip = '127.0.0.1';
-				unset($log->system_id);
-				discovery_log($log);
+			if ( ! empty($result[0]->count)) {
+				$count = intval($result[0]->count);
+				$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT `ip_responding_count` AS `count` FROM `discoveries` WHERE `id` = ' . intval($id);
+				$query = $CI->db->query($sql);
+				$result = $query->result();
+				$device_count = intval($result[0]->count);
+				if ($count === $device_count) {
+					// NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
+					$log->message = 'Discovery has finished.';
+					$log->command = '';
+					$log->command_output = '';
+					$log->command_status = 'finished';
+					$log->ip = '127.0.0.1';
+					unset($log->system_id);
+					discovery_log($log);
+				}
+			}
+		} else {
+			$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT discoveries.id, discoveries.ip_responding_count, discoveries.status, COUNT(discovery_log.id) AS `count` FROM `discoveries` LEFT JOIN `discovery_log` ON discoveries.id = discovery_log.discovery_id WHERE `command_status` = "device complete" GROUP BY discoveries.id';
+			$query = $CI->db->query($sql);
+			$result = $query->result();
+			foreach ($result as $discovery) {
+				if (intval($discovery->ip_responding_count) === intval($discovery->count) && $discovery->status !== 'complete') {
+					// NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
+					$log->discovery_id = intval($discovery->id);
+					$log->message = 'Discovery has finished.';
+					$log->command = '';
+					$log->command_output = '';
+					$log->command_status = 'finished';
+					$log->ip = '127.0.0.1';
+					unset($log->system_id);
+					discovery_log($log);
+				}
 			}
 		}
 		return;
