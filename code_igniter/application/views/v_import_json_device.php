@@ -33,8 +33,25 @@
 * @version   GIT: Open-AudIT_3.5.3
 * @link      http://www.open-audit.org
  */
-header("Content-Security-Policy: frame-ancestors 'none'");
-header("X-Frame-Options: DENY");
+$header = "
+    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
+    font-src 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    frame-src 'none';
+    img-src 'self' data:;
+    manifest-src 'none';
+    media-src 'none';
+    object-src 'none';
+    prefetch-src: 'self';
+    script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
+    style-src 'self' 'unsafe-inline';
+    worker-src 'self';
+    ";
+$header = str_replace(PHP_EOL, "", $header);
+header("Content-Security-Policy: {$header}");
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,7 +65,7 @@ echo form_open_multipart('test/import_json_device', $attributes)."\n";
 echo form_fieldset('Paste the JSON')."\n";
 echo '<p>'.form_textarea(array('name' => 'data', 'id' => 'data', 'rows' => '15', 'cols' => '100'))."</p>\n";
 echo form_fieldset_close();
-echo '<p>'.form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit' )."</p>\n";
+echo '<p>'.form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit')."</p>\n";
 echo form_close();
 ?>
 </body>
