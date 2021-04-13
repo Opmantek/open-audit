@@ -2208,11 +2208,12 @@ if ( ! function_exists('discovery_check_finished')) {
 			$result = $query->result();
 			if ( ! empty($result[0]->count)) {
 				$count = intval($result[0]->count);
-				$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT `ip_responding_count` AS `count` FROM `discoveries` WHERE `id` = ' . intval($id);
+				$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT `ip_responding_count, status FROM `discoveries` WHERE `id` = ' . intval($id);
 				$query = $CI->db->query($sql);
 				$result = $query->result();
-				$device_count = intval($result[0]->count);
-				if ($count === $device_count) {
+				$device_count = intval($result[0]->ip_responding_count);
+				$status = $result[0]->status;
+				if ($count === $device_count && $status !== 'complete') {
 					// NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
 					$log->message = 'Discovery has finished.';
 					$log->command = '';
