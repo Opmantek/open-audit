@@ -2208,7 +2208,7 @@ if ( ! function_exists('discovery_check_finished')) {
 			$result = $query->result();
 			if ( ! empty($result[0]->count)) {
 				$count = intval($result[0]->count);
-				$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT `ip_responding_count, status FROM `discoveries` WHERE `id` = ' . intval($id);
+				$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT ip_responding_count, status FROM `discoveries` WHERE `id` = ' . intval($id);
 				$query = $CI->db->query($sql);
 				$result = $query->result();
 				$device_count = intval($result[0]->ip_responding_count);
