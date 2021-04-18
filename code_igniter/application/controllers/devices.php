@@ -137,7 +137,7 @@ class Devices extends MY_Controller
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format === 'screen' && $this->response->meta->include === '') OR $this->response->meta->include === '*' OR $this->response->meta->include === 'all') {
-            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,field,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource !== '') {
             if (empty($this->response->meta->sub_resource_id)) {
@@ -162,7 +162,7 @@ class Devices extends MY_Controller
             if ( ! empty($this->response->meta->include) && ! empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
-                    if ($table !== 'fields' && $table !== 'application' && $table !== 'rack_devices') {
+                    if ($table !== 'field' && $table !== 'application' && $table !== 'rack_devices') {
                         $result = false;
                         $result = $this->m_devices->read_sub_resource(
                             $this->response->meta->id,
@@ -176,7 +176,7 @@ class Devices extends MY_Controller
                         if ($result !== false) {
                             $this->response->included = array_merge($this->response->included, $result);
                         }
-                    } else if ($table === 'fields') {
+                    } else if ($table === 'field') {
                         $result = false;
                         $result = $this->m_devices->get_device_fields($this->response->meta->id);
                         $this->response->included = array_merge($this->response->included, $result);
