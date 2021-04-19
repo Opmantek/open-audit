@@ -209,7 +209,7 @@ if ( ! function_exists('update_non_responding')) {
 			}
 		}
 		$log->command_time_to_execute = microtime(true) - $start;
-		$sql = "UPDATE discovery_log SET command_time_to_execute = '" . $log->command_time_to_execute . "' WHERE id = ?";
+		$sql = '/* discoveries_helper::update_non_responding */ ' . "UPDATE discovery_log SET command_time_to_execute = '" . $log->command_time_to_execute . "' WHERE id = ?";
 		$data = array($id);
 		$CI->db->query($sql, $data);
 	}
@@ -448,7 +448,7 @@ if ( ! function_exists('ip_scan')) {
 
 		$nmap = $discovery->scan_options;
 		$device = array();
-		$sql = 'SELECT NOW() AS `timestamp`';
+		$sql = '/* discoveries_helper::ip_scan */ ' . 'SELECT NOW() AS `timestamp`';
 		$query = $CI->db->query($sql);
 		$result = $query->result();
 		$device['timestamp'] = $result[0]->timestamp;
@@ -855,7 +855,7 @@ if ( ! function_exists('ip_audit')) {
 		}
 		$device->ip = $ip_scan->ip;
 
-		$sql = 'SELECT NOW() AS `timestamp`';
+		$sql = '/* discoveries_helper::ip_audit */ ' . 'SELECT NOW() AS `timestamp`';
 		$query = $CI->db->query($sql);
 		$result = $query->result();
 		$device->last_seen = $result[0]->timestamp;
@@ -2106,13 +2106,13 @@ if ( ! function_exists('ip_audit')) {
 			$discovery_network = network_details($discovery->subnet);
 			$discovery_network->host_min = ip_address_to_db($discovery_network->host_min);
 			$discovery_network->host_max = ip_address_to_db($discovery_network->host_max);
-			$sql = "SELECT `ip` FROM `ip` WHERE `system_id` = ? AND `current` = 'y'";
+			$sql = '/* discoveries_helper::ip_audit */ ' . "SELECT `ip` FROM `ip` WHERE `system_id` = ? AND `current` = 'y'";
 			$data = array($device->id);
 			$query = $CI->db->query($sql, $data);
 			$device_ips = $query->result();
 			foreach ($ips_found as $key => $value) {
 				$testip = ip_address_to_db($value);
-				$sql = "SELECT count(*) AS `count` FROM discovery_log WHERE discovery_id = ? and ip = ?";
+				$sql = '/* discoveries_helper::ip_audit */ ' . "SELECT count(*) AS `count` FROM discovery_log WHERE discovery_id = ? and ip = ?";
 				$data = array($discovery->id, $value);
 				$query = $CI->db->query($sql, $data);
 				$result = $query->result();
@@ -2155,7 +2155,7 @@ if ( ! function_exists('ip_audit')) {
 							$log->system_id = $temp_system_id;
 							unset($temp_system_id);
 							// Update our discoveries entry
-							$sql = "UPDATE discoveries SET `ip_all_count` = `ip_all_count` + 1, `ip_responding_count` = `ip_responding_count` + 1 WHERE id = ?";
+							$sql = '/* discoveries_helper::ip_audit */ ' . "UPDATE discoveries SET `ip_all_count` = `ip_all_count` + 1, `ip_responding_count` = `ip_responding_count` + 1 WHERE id = ?";
 							$data = array($discovery->id);
 							$query = $CI->db->query($sql, $data);
 							// create our new queue item
