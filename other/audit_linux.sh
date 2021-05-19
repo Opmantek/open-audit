@@ -2468,6 +2468,21 @@ echo "			<name>$(escape_xml $system_os_name)</name>" >> "$xml_file"
 echo "			<version>$(escape_xml $system_os_version)</version>" >> "$xml_file"
 echo "			<description>Operating System</description>" >> "$xml_file"
 echo "		</item>" >> "$xml_file"
+# Detect Opmantek applications
+if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
+	for package in $(/usr/local/omk/bin/show_versions.pl 2>/dev/null); do
+		name=$(echo "$package" | cut -d" " -f1)
+		version=$(echo "$package" | cut -d" " -f2)
+		echo "		<item>" >> "$xml_file"
+		echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
+		echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+		echo "			<description></description>" >> "$xml_file"
+		echo "			<url>https://opmantek.com</url>" >> "$xml_file"
+		echo "			<publisher>Opmantek</publisher>" >> "$xml_file"
+		echo "			<location>/usr/local/omk</location>" >> "$xml_file"
+		echo "		</item>" >> "$xml_file"
+	done
+fi
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
