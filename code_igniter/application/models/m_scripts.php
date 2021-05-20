@@ -344,7 +344,13 @@ class M_scripts extends MY_Model
 
         // TODO - enable the below for a per script list of files
         // if (!$files and $data->based_on == $data->name) {
-            $sql = 'SELECT * FROM files';
+
+            // Unix style paths
+            $sql = "SELECT * FROM files WHERE `path` LIKE '/%'";
+            if ($data->based_on === 'audit_windows.vbs') {
+                // Windows style paths
+                $sql = "SELECT * FROM files WHERE `path` NOT LIKE '/%'";
+            }
             $result = $this->run_sql($sql, array());
             $options = new stdClass();
             $options->files = array();
@@ -379,7 +385,7 @@ class M_scripts extends MY_Model
         // Unix audit scripts with Windows line endings do not work (bash for one, chokes)
         $file = str_replace("\r\n", "\n", $file);
         $file = str_replace("\r", "\n", $file);
-        
+
         return $file;
     }
 
