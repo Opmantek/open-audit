@@ -373,6 +373,13 @@ class M_scripts extends MY_Model
                 }
             }
         // }
+
+        // Force all line endings to be Unix style
+        // Windows audit scripts with Unix line endings work
+        // Unix audit scripts with Windows line endings do not work (bash for one, chokes)
+        $file = str_replace("\r\n", "\n", $file);
+        $file = str_replace("\r", "\n", $file);
+
         return $file;
     }
 
