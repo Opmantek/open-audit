@@ -92,7 +92,7 @@ if (!empty($this->config->config['servers'])) {
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'><?php echo __('List Discoveries'); ?></a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'><?php echo __('Create Discovery'); ?></a></li>
-                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'><?php echo __('Discover a single device'); ?></a></li>
+                                            <!-- <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'><?php echo __('Discover a single device'); ?></a></li> -->
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/import'><?php echo __('Import Discoveries from CSV'); ?></a></li>
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                                 <li class="disabled"><a href='#'><?php echo __('Configure Discoveries'); ?></a></li>
