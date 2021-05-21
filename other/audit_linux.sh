@@ -2473,6 +2473,38 @@ if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 	for package in $(/usr/local/omk/bin/show_versions.pl 2>/dev/null); do
 		name=$(echo "$package" | cut -d" " -f1)
 		version=$(echo "$package" | cut -d" " -f2)
+		# Determine the modified date
+		installed_on=""
+		if [[ "$name" == *"NMIS"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/nmis8/lib/NMIS.pm 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"NMIS"* ]] && [[ "$installed_on" == "" ]]; then
+			installed_on=$(env stat --format=%y /usr/local/nmis9/lib/NMISNG.pm 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"Open-AudIT"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/OaeController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opAddress"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/AddressController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opCharts"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/ChartsController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opConfig"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/ConfigController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opEvents"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/EventsController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opFlow"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/FlowController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opHA"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/HighAvailabilityController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opReports"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/ReportsController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
 		echo "		<item>" >> "$xml_file"
 		echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 		echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
@@ -2480,6 +2512,7 @@ if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		echo "			<url>https://opmantek.com</url>" >> "$xml_file"
 		echo "			<publisher>Opmantek</publisher>" >> "$xml_file"
 		echo "			<location>/usr/local/omk</location>" >> "$xml_file"
+		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
 	done
 fi
