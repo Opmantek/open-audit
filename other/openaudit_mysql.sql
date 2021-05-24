@@ -388,6 +388,7 @@ CREATE TABLE `audit_log` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `audit_log_system_id_type` (`system_id`,`type`),
+  KEY `audit_log_system_id_timestamp` (`system_id`,`timestamp`),
   CONSTRAINT `audit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
