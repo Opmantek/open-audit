@@ -33,6 +33,10 @@ DROP INDEX `audit_log_system_id_timestamp` ON `audit_log`;
 
 CREATE INDEX `audit_log_system_id_timestamp` ON audit_log (`system_id`,`timestamp`)
 
+DELETE FROM queries WHERE name = 'opAddress';
+
+INSERT INTO `queries` VALUES(NULL,1,'opAddress','Other','y','The default query for integration with opAddress.','SELECT system.id AS `system.id`, system.ip AS `system.ip`, system.hostname AS `system.hostname`, system.sysName AS `system.sysName`, system.fqdn AS `system.fqdn`, system.dns_fqdn AS `system.dns_fqdn`, system.last_seen AS `system.last_seen`, network.speed AS `network.speed`, network.connection AS `network.connection`, ip.ip AS `ip.ip`, ip.mac AS `ip.mac`,ip.netmask AS `ip.netmask`, ip.network AS `ip.network`, ip.version AS `ip.version`, locations.name AS `locations.name` FROM ip LEFT JOIN system ON (ip.system_id = system.id AND ip.current = \'y\') LEFT JOIN network ON (ip.net_index = network.net_index AND ip.mac = network.mac) LEFT JOIN locations ON (system.location_id = locations.id) WHERE @filter','','system','2000-01-01 00:00:00');
+
 UPDATE `configuration` SET `value` = '20210512' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '4.1.1' WHERE `name` = 'display_version';
@@ -43,6 +47,14 @@ $this->log_db('Upgrade database to 4.1.1 commenced');
 $this->drop_key('audit_log', 'audit_log_system_id_timestamp');
 
 $sql = 'CREATE INDEX `audit_log_system_id_timestamp` ON audit_log (`system_id`,`timestamp`)';
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM queries WHERE name = 'opAddress'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `queries` VALUES(NULL,1,'opAddress','Other','y','The default query for integration with opAddress.','SELECT system.id AS `system.id`, system.ip AS `system.ip`, system.hostname AS `system.hostname`, system.sysName AS `system.sysName`, system.fqdn AS `system.fqdn`, system.dns_fqdn AS `system.dns_fqdn`, system.last_seen AS `system.last_seen`, network.speed AS `network.speed`, network.connection AS `network.connection`, ip.ip AS `ip.ip`, ip.mac AS `ip.mac`,ip.netmask AS `ip.netmask`, ip.network AS `ip.network`, ip.version AS `ip.version`, locations.name AS `locations.name` FROM ip LEFT JOIN system ON (ip.system_id = system.id AND ip.current = \'y\') LEFT JOIN network ON (ip.net_index = network.net_index AND ip.mac = network.mac) LEFT JOIN locations ON (system.location_id = locations.id) WHERE @filter','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
