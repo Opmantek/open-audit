@@ -71,6 +71,7 @@ $config['index_page'] = "index.php";
 |
 */
 $config['uri_protocol']    = "REQUEST_URI";
+$config['uri_protocol']    = "AUTO";
 
 /*
 |--------------------------------------------------------------------------
