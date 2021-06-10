@@ -327,7 +327,7 @@ class M_help extends MY_Model
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             $data->prereq->nmap = @$output[1];
-
+            unset($output);
             $prereqs = array('screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
             foreach ($prereqs as $prereq) {
                 $command_string = 'which ' . $prereq . ' 2>/dev/null';
@@ -336,7 +336,6 @@ class M_help extends MY_Model
                 unset($output);
                 unset($command_string);
             }
-
             // Samba Client
             $command_string = 'which smbclient 2>/dev/null';
             exec($command_string, $output, $return_var);
