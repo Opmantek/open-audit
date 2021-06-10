@@ -296,10 +296,12 @@ class M_help extends MY_Model
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             $data->prereq->nmap = @$output[0];
+            unset($output);
 
             $command_string = 'tzutil /g';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
+            unset($output);
         }
 
         if (php_uname('s') === 'Darwin') {
@@ -307,10 +309,12 @@ class M_help extends MY_Model
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             $data->prereq->nmap = @$output[0];
+            unset($output);
 
             $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
+            unset($output);
         }
 
         if (php_uname('s') === 'Linux') {
