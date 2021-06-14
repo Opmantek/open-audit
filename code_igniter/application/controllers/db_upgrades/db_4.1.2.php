@@ -46,13 +46,13 @@ $this->log_db('Upgrade database to 4.1.2 commenced');
 if ($this->db->field_exists('cloud_id', 'discoveries')) {
     $this->alter_table('discoveries', 'cloud_id', "DROP `cloud_id`", 'drop');
 }
-$this->alter_table('discoveries', 'cloud_id', "cloud_id int(10) unsigned NOT NULL DEFAULT '1' AFTER ip_audited_count", 'add');
+$this->alter_table('discoveries', 'cloud_id', "ADD cloud_id int(10) unsigned NOT NULL DEFAULT '1' AFTER ip_audited_count", 'add');
 
 
 if ($this->db->field_exists('cloud_name', 'discoveries')) {
     $this->alter_table('discoveries', 'cloud_name', "DROP `cloud_name`", 'drop');
 }
-$this->alter_table('discoveries', 'cloud_name', "cloud_name varchar(200) NOT NULL DEFAULT '' AFTER cloud_id", 'add');
+$this->alter_table('discoveries', 'cloud_name', "ADD cloud_name varchar(200) NOT NULL DEFAULT '' AFTER cloud_id", 'add');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210620' WHERE `name` = 'internal_version'";
