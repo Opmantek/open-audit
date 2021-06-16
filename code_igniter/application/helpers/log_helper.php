@@ -507,7 +507,7 @@ if ( ! function_exists('stdlog')) {
             $log['summary'] = $log_details->summary;
         }
 
-        if (intval($CI->config->config['internal_version']) <= 20160820) {
+        if (!empty($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) <= 20160820) {
             $sql = "SHOW TABLES LIKE 'logs'";
             $query = $CI->db->query($sql);
             $count = count($query->result());
