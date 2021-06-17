@@ -192,7 +192,7 @@ if ( ! function_exists('mandatory_fields')) {
                 break;
 
             case 'integrations':
-                return(array('name','org_id','options'));
+                return(array('name','org_id','attributes','fields'));
                 break;
 
             case 'integrations_rules':

@@ -173,7 +173,6 @@ if (! function_exists('external_update')) {
 			return false;
 		}
 		$return = false;
-$return = true;
 		return $return;
 	}
 }
@@ -195,7 +194,6 @@ if (! function_exists('external_create')) {
 			return false;
 		}
 		$return = false;
-$return = true;
 		return $return;
 	}
 }
@@ -217,7 +215,6 @@ if (! function_exists('external_delete')) {
 			return false;
 		}
 		$return = false;
-$return = true;
 		return $return;
 	}
 }

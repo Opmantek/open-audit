@@ -163,7 +163,7 @@ class Integrations extends MY_Controller
      * [execute description]
      * @return [type] [description]
      */
-    public function execute()
+    public function execute_orig()
     {
         // $this->m_integrations->queue($this->response->meta->id);
         // $this->load->model('m_queue');
@@ -179,6 +179,18 @@ class Integrations extends MY_Controller
         $this->m_integrations->execute($this->response->meta->id);
         $this->response->meta->format = 'json';
         #output($this->response);
+    }
+
+    /**
+    * Execute this integration
+    *
+    * @access public
+    * @return NULL
+    */
+    public function execute()
+    {
+        $this->{'m_'.$this->response->meta->collection}->execute($this->response->meta->id);
+        output($this->response);
     }
 
     /**

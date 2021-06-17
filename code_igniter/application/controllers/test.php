@@ -78,6 +78,7 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+
     public function integrations()
     {
         $this->load->model('m_configuration');
@@ -94,6 +95,376 @@ class Test extends CI_Controller
         echo "<pre>\n";
         print_r($result);
     }
+
+
+    public function integrate()
+    {
+        $username = 'admin';
+        $password = 'password';
+        $url = 'http://dev.local/omk';
+
+
+        $fields = array();
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = '';
+        $field->priority = '';
+        $field->default_value_for_create = '';
+        #$fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_business_service';
+        $field->external_field_name = 'configuration.businessService';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_customer';
+        $field->external_field_name = 'configuration.customer';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.name';
+        $field->external_field_name = 'name';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_name';
+        $field->external_field_name = 'name';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.name';
+        $field->external_field_name = 'configuration.display_name';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_group';
+        $field->external_field_name = 'configuration.group';
+        $field->priority = 'internal';
+        $field->default_value_for_create = 'Open-AudIT';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.ip';
+        $field->external_field_name = 'configuration.host';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.omk_uuid';
+        $field->external_field_name = 'uuid';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_role';
+        $field->external_field_name = 'configuration.roleType';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_poller_uuid';
+        $field->external_field_name = 'cluster_id';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_poller';
+        $field->external_field_name = 'server_name';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_notes';
+        $field->external_field_name = 'configuration.notes';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_manage';
+        $field->external_field_name = '';
+        $field->priority = 'internal';
+        $field->default_value_for_create = 'y';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.sysDescr';
+        $field->external_field_name = 'configuration.sysDescr';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'locations.name';
+        $field->external_field_name = 'configuration.location';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.username';
+        $field->external_field_name = 'configuration.wmipassword';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.password';
+        $field->external_field_name = 'configuration.wmiusername';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.version';
+        $field->external_field_name = 'configuration.version';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.community';
+        $field->external_field_name = 'configuration.community';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.security_name';
+        $field->external_field_name = 'configuration.username';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.authentication_passphrase';
+        $field->external_field_name = 'configuration.authpassword';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.authentication_protocol';
+        $field->external_field_name = 'configuration.authprotocol';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.privacy_passphrase';
+        $field->external_field_name = 'configuration.privpassword';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.privacy_protocol';
+        $field->external_field_name = 'configuration.privprotocol';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.active';
+        $field->priority = 'external';
+        $field->default_value_for_create = '1';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.collect';
+        $field->priority = 'external';
+        $field->default_value_for_create = '1';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.model';
+        $field->priority = 'external';
+        $field->default_value_for_create = 'automatic';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.netType';
+        $field->priority = 'external';
+        $field->default_value_for_create = 'wan';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.ping';
+        $field->priority = 'external';
+        $field->default_value_for_create = 'true';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.port';
+        $field->priority = 'external';
+        $field->default_value_for_create = '161';
+        $fields[] = $field;
+        unset($field);
+
+        echo "<pre>" . json_encode($fields);
+
+
+        // Create temp file to store cookies
+        $ckfile = tempnam("/tmp", "CURLCOOKIE");
+
+        $form_fields = array(
+            'username' => $username,
+            'password' => $password,
+        );
+
+        // Post login form and follow redirects
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        $output = curl_exec($ch);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        $external_devices = json_decode($output);
+
+        $external_devices[2]->configuration->host = 'switch';
+
+
+
+        echo "<pre>\n";
+
+        $internal_devices = array();
+        foreach ($external_devices as $device) {
+            $newdevice = new stdClass();            
+            foreach ($fields as $field) {
+                if (empty($field->internal_field_name)) {
+                    $temp = explode('.', $field->external_field_name);
+                    $field->internal_field_name = 'fields.nmis_' . $temp[count($temp)-1];
+                }
+
+                if (!empty($field->internal_field_name)) {
+                    $int = explode('.', $field->internal_field_name);
+                    if (empty($newdevice->{$int[0]})) {
+                        $newdevice->{$int[0]} = new stdClass();
+                    }
+                    if (empty($newdevice->{$int[0]}->{$int[1]})) {
+
+                        $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) { return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null; }, $device);
+
+                        if (is_null($newdevice->{$int[0]}->{$int[1]})) {
+                            unset($newdevice->{$int[0]}->{$int[1]});
+                        }
+                    }
+                }
+            }
+            $internal_devices[] = $newdevice;
+        }
+
+        # Ensure we have an IP in system.ip
+        foreach ($internal_devices as $device) {
+            if (isset($device->system->ip) and !empty($device->system->ip)) {
+                if (!filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
+                    if (strpos('.', $device->system->ip) !== false) {
+                        $device->system->dns_fqdn = $device->system->ip;
+                    } else {
+                        $device->system->dns_hostname = $device->system->ip;
+                    }
+                    $device->system->ip = gethostbyname($device->system->ip);
+                }
+                $fqdn = gethostbyaddr($device->system->ip);
+                if (empty($device->system->dns_fqdn) and strpos($fqdn, '.') !== false) {
+                    $device->system->dns_fqdn = $fqdn;
+                }
+            }
+        }
+
+        print_r($internal_devices);
+        exit;
+
+        $sql = "SELECT * FROM system WHERE id = 1";
+        $query = $this->db->query($sql);
+        $internal_devices = $query->result();
+
+
+    }
+
+
+    public function convert($instance , $str) 
+    {
+        $params = explode('.', $str);
+        if($params == 1) {
+            return $instance;
+        } else {
+            $obj = $instance;
+            foreach($params as $key => $param) {
+                if(!$key) {
+                    continue;
+                }
+                $obj = $obj->{$param};
+            }
+        }
+        return $obj;
+    }
+
 
     /**
      * [response description]

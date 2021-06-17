@@ -726,7 +726,7 @@ class M_collection extends MY_Model
             $result = $query->result();
             $existing = new stdClass();
             if ( ! empty($result[0]->options)) {
-                $original = json_decode($result[0]->options);
+                $original = @json_decode($result[0]->options);
             }
             $submitted = $data->options;
             $merged = $this->deep_merge($original, $submitted);

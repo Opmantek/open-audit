@@ -1220,6 +1220,7 @@ class M_devices extends MY_Model
 
         switch ($set_by) {
             case 'user':
+            case 'integrations':
                 $weight = 1000;
                 break;
 

@@ -1638,17 +1638,40 @@ DROP TABLE IF EXISTS `integrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `integrations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL DEFAULT '',
+  `org_id` INT(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
-  `type` varchar(45) NOT NULL DEFAULT 'nmis',
+  `type` VARCHAR(45) NOT NULL DEFAULT 'nmis',
   `options` longtext NOT NULL,
-  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_use_wmi` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_use_ssh` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_use_snmp` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_id` INT(10) unsigned DEFAULT NULL,
+  `devices_inbound_count` INT(10) unsigned NOT NULL DEFAULT '0',
+  `devices_outbound_count` INT(10) unsigned NOT NULL DEFAULT '0',
+  `create_local_from_external` enum('y','n') NOT NULL DEFAULT 'n',
+  `update_local_from_external` enum('y','n') NOT NULL DEFAULT 'n',
+  `create_external_from_local` enum('y','n') NOT NULL DEFAULT 'n',
+  `update_external_from_local` enum('y','n') NOT NULL DEFAULT 'n',
+  `select_local_type` enum('', 'none', 'attribute', 'group', 'query') DEFAULT 'attribute',
+  `select_local_attribute` VARCHAR(200) NOT NULL DEFAULT '',
+  `select_local_value` VARCHAR(200) NOT NULL DEFAULT '',
+  `select_external_type` enum('', 'all', 'none', 'attribute') DEFAULT 'all',
+  `select_external_attribute` VARCHAR(200) NOT NULL DEFAULT '',
+  `select_external_value` VARCHAR(200) NOT NULL DEFAULT '',
+  `attributes` longtext NOT NULL,
+  `fields` longtext NOT NULL,
+  `days_to_keep_raw_data` INT(10) unsigned NOT NULL DEFAULT '10',
+  `items_to_retrieve` longtext NOT NULL,
+  `items_list` longtext NOT NULL,
+  `items_count` longtext NOT NULL,
+  `last_run` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `edited_by` VARCHAR(200) NOT NULL DEFAULT '',
+  `edited_date` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1658,6 +1681,34 @@ CREATE TABLE `integrations` (
 LOCK TABLES `integrations` WRITE;
 /*!40000 ALTER TABLE `integrations` DISABLE KEYS */;
 /*!40000 ALTER TABLE `integrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `integrations_log`
+--
+
+DROP TABLE IF EXISTS `integrations_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `integrations_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `integrations_id` int(10) unsigned DEFAULT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `microtime` decimal(16, 6) NULL,
+  `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
+  `message` text NOT NULL,
+  `result` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `integrations_log`
+--
+
+LOCK TABLES `integrations_log` WRITE;
+/*!40000 ALTER TABLE `integrations_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `integrations_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
