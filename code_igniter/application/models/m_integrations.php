@@ -241,8 +241,23 @@ class M_integrations extends MY_Model
         }
         $CI = & get_instance();
 
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 5;
+        $log->user = 'system';
+        $log->collection = 'integrations';
+        $log->action = 'create device';
+        $log->status = '';
+        $log->summary = '';
+        $log->detail = '';
+
         $this->load->model('m_devices');
         $this->load->model('m_device');
+        $this->load->model('m_devices');
+        $this->load->model('m_device');
+        $this->load->model('m_edit_log');
+        $this->load->model('m_rules');
+        $this->load->helper('audit');
 
         $sql = "DELETE from integrations_log WHERE integrations_id = {$id}";
         $query = $this->db->query($sql);
@@ -254,8 +269,288 @@ class M_integrations extends MY_Model
         $integration = $this->read($id);
         $integration = $integration[0];
         $this->load->helper('integrations_' . $integration->attributes->type);
-        integrations_execute($integration);
+
+        // Pre - Run before integration
+        integrations_pre($integration);
+
+        // Collection - read all devices from a remote system
+        $external_devices = integrations_collection($integration);
+
+        $external_formatted_devices = $this->external_to_internal($integration, $external_devices);
+
+        // Match any retrieved devices
+        foreach ($external_formatted_devices as $device) {
+            $device->system->last_seen_by = 'integrations';
+            $device->system->org_id = $integration->attributes->org_id;
+            $parameters = new stdClass();
+            $parameters->details = $device->system;
+            $parameters->log = $log;
+            $parameters->match = new stdClass();
+            $parameters->match->ip = 'y';
+            $id = $this->m_device->match($parameters);
+            if (!empty($id)) {
+                // We matched an existing device
+                $message = 'Device match found, ID: ' . $id . ' for ' . $device->system->name;
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+                $device->system->id = $id;
+            } else {
+                // No existing device
+                $message = 'No device match found for ' . $device->system->name;
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+            }
+        }
+
+        // Create new or update devices retrieved
+        if ($integration->attributes->create_local_from_external === 'y' or $integration->attributes->update_local_from_external === 'y') {
+            foreach ($external_formatted_devices as $device) {
+                if (!empty($device->system->id)) {
+                    // Update
+                    $temp_device = new stdClass();
+                    $temp_device->id = $device->system->id;
+                    $temp_device->last_seen_by = 'integrations';
+                    foreach ($integration->attributes->fields as $field) {
+                        if ($field->priority === 'external' and strpos($field->internal_field_name, 'system.') !== false) {
+                            // a regular field in Open-AudIT that we should update
+                            $system_field = str_replace('system.', '', $field->internal_field_name);
+                            if (!empty($device->system->{$system_field})) { # TODO - something better than not empty
+                                $temp_device->{$system_field} = $device->system->{$system_field};
+                            }
+                        }
+                    }
+                    $message = 'Updating device ID: ' . $id . ' for ' . $device->system->name;
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                    $data = array($integration->id, microtime(true), $message);
+                    $query = $this->db->query($sql, $data);
+                    $this->m_device->update($temp_device);
+                } else {
+                    // insert
+                    $device->system->id = $this->m_device->insert($device->system);
+                    if (!empty($device->system->id)) {
+                        $message = 'Device Created locally ID: ' . $device->system->id . ', ' . $device->system->name;
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                        $data = array($integration->id, microtime(true), $message);
+                        $query = $this->db->query($sql, $data);
+                    } else {
+                        $message = 'Could not create device ' . $device->system->name;
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?, 'success')";
+                        $data = array($integration->id, microtime(true), $message);
+                        $query = $this->db->query($sql, $data);
+                    }
+                }
+            }
+        }
+
+        // Custom fields
+        if ($integration->attributes->create_local_from_external === 'y' or $integration->attributes->update_local_from_external === 'y') {
+            $sql = "SELECT * FROM fields";
+            $query = $this->db->query($sql);
+            $all_fields = $query->result();
+            foreach ($external_formatted_devices as $device) {
+                $sql = "SELECT * FROM field WHERE system_id = ?";
+                $data = array($device->system->id);
+                $query = $this->db->query($sql, $data);
+                $device_fields = $query->result();
+                foreach ($integration->attributes->fields as $field) {
+                    if ($field->priority === 'external' and (strpos($field->internal_field_name, 'fields.') !== false or $field->internal_field_name === '')) {
+                        // a custom field in Open-AudIT that we should update
+                        $field_name = str_replace('fields.', '', $field->internal_field_name);
+                        if (empty($custom_field_name)) {
+                            $external_field = explode('.', $field->external_field_name);
+                            $field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
+                        }
+                        $id = 0;
+                        foreach ($all_fields as $temp_field) {
+                            if ($field_name === $temp_field->name) {
+                                $id = $temp_field->id;
+                            }
+                        }
+                        if (!$id) {
+                            // TODO Throw an error as we should always have a field already created
+                        }
+                        $device_field_id = 0;
+                        $value = '';
+                        foreach ($device_fields as $device_field) {
+                            if ($id === $device_field->fields_id) {
+                                $device_field_id = $device_field->id;
+                                $value = $device_field->value;
+                            }
+                        }
+                        if (!$device_field_id) {
+                            // Insert a new field
+                            $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
+                            $data = array($device->system->id, $id, $device->fields->{$field_name});
+                            $query = $this->db->query($sql, $data);
+                            // Insert an edit log
+                            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was created', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
+                            $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
+                            $this->db->query($sql, $data);
+                        } else {
+                            // We already have the field associated to the device, check if the value has changed befofe updating
+                            if ((string)$value !== (string)$device->fields->{$field_name}) {
+                                // It IS different - update it
+                                $sql = "UPDATE field SET value = ? WHERE id = ?";
+                                $data = array($device->fields->{$field_name}, $device_field_id);
+                                $query = $this->db->query($sql, $data);
+                                // Insert an edit log
+                                $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was updated', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
+                                $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
+                                $this->db->query($sql, $data);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Rules
+        if ($integration->attributes->create_local_from_external === 'y' or $integration->attributes->update_local_from_external === 'y') {
+            foreach ($external_formatted_devices as $device) {
+                $parameters = new stdClass();
+                $parameters->id = intval($device->system->id);
+                $parameters->discovery_id = '';
+                $parameters->action = 'update';
+                $this->m_rules->execute($parameters);
+            }
+        }
+
+        // Get local devices
+        $local_devices = $this->get_local_devices($integration);
+        foreach ($local_devices as $loc_device) {
+            $loc_device->ip = ip_from_db($loc_device->ip);
+            foreach ($external_formatted_devices as $ext_device) {
+                if ($loc_device->ip === $ext_device->system->ip) {
+                    // Update this device in the external system
+                } else {
+                    // Create this device in the external system
+                }
+            }
+        }
+
+
+
+        /**
+        Create - create a single device on the remote system
+        Delete - delete a single device from the remote system
+        Read - read a single device from remote system
+        Update - update a single device on the remote system
+        Post - Run after integration
+        */
+
+        $sql = "SELECT * FROM integrations_log WHERE integrations_id = ?";
+        $data = array($integration->attributes->id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $table = "<table width=\"100%\"><thead><tr><th>id</th><th>IntID</th><th>timestamp</th><th>microtime</th><th>severity</th><th>message</th><th>result</th></tr></thead><tbody>";
+        foreach ($result as $row) {
+            $table .= "<tr><td>" . $row->id . "</td><td>" . $row->integrations_id . "</td><td>" . $row->timestamp . "</td><td>" . $row->microtime . "</td><td>" . $row->severity_text . "</td><td>" . $row->message . "</td><td>" . $row->result . "</td><td></tr>";
+        }
+
+        echo $table;
+        echo "<pre>";
+        #echo json_encode($external_formatted_devices);
+        echo "</pre>";
+        exit;
     }
+
+    public function get_local_devices($integration)
+    {
+        $devices = array();
+        if (empty($integration)) {
+            return $devices;
+        }
+        $orgs = $this->m_orgs->get_descendants($integration->attributes->org_id);
+        $orgs[] = $integration->attributes->org_id;
+
+        if ($integration->attributes->select_local_type === 'attribute') {
+            $sql = "SELECT * FROM system WHERE `" . $integration->attributes->select_local_attribute . "` = ? and org_id IN (" . implode(',', $orgs) . ")";
+            $data = array($integration->attributes->select_local_value);
+            $query = $this->db->query($sql, $data);
+            $devices = $query->result();
+        }
+
+        if ($integration->attributes->select_local_type === 'group') {
+            $this->load->model('m_orgs');
+            $CI = & get_instance();
+            if (empty($CI->user)) {
+                $CI->user = new stdClass();
+            }
+            if (empty($CI->user->org_list)) {
+                $CI->user->org_list = $orgs;
+            }
+            $this->load->model('m_groups');
+            $device_ids = $this->m_groups->execute($integration->attributes->select_local_value, '');
+            #$device_ids = implode(',', $device_ids);
+            #echo "<pre>"; print_r($device_ids); exit;
+            $dev_ids = array();
+            foreach ($device_ids as $device) {
+                $dev_ids[] = $device->attributes->{'system.id'};
+            }
+            $dev_ids = implode(',', $dev_ids);
+            $sql = "SELECT * FROM system WHERE id in (" . $dev_ids . ")";
+            $query = $this->db->query($sql);
+            $devices = $query->result();
+        }
+
+        return $devices;
+    }
+
+    public function external_to_internal($integration, $external_devices)
+    {
+        // Take the external data and make an internal structure
+        $external_formatted_devices = array();
+
+        foreach ($external_devices as $device) {
+            $newdevice = new stdClass();            
+            foreach ($integration->attributes->fields as $field) {
+                if (empty($field->internal_field_name)) {
+                    $temp = explode('.', $field->external_field_name);
+                    $field->internal_field_name = 'fields.nmis_' . $temp[count($temp)-1];
+                }
+
+                if (!empty($field->internal_field_name)) {
+                    $int = explode('.', $field->internal_field_name);
+                    if (empty($newdevice->{$int[0]})) {
+                        $newdevice->{$int[0]} = new stdClass();
+                    }
+                    if (empty($newdevice->{$int[0]}->{$int[1]})) {
+
+                        $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) { return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null; }, $device);
+
+                        if (is_null($newdevice->{$int[0]}->{$int[1]})) {
+                            unset($newdevice->{$int[0]}->{$int[1]});
+                        }
+                    }
+                }
+            }
+            $external_formatted_devices[] = $newdevice;
+        }
+
+        # Ensure we have an IP in system.ip
+        foreach ($external_formatted_devices as $device) {
+            if (isset($device->system->ip) and !empty($device->system->ip)) {
+                if (!filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
+                    if (strpos('.', $device->system->ip) !== false) {
+                        $device->system->dns_fqdn = $device->system->ip;
+                    } else {
+                        $device->system->dns_hostname = $device->system->ip;
+                    }
+                    $device->system->ip = gethostbyname($device->system->ip);
+                }
+                $fqdn = gethostbyaddr($device->system->ip);
+                if (empty($device->system->dns_fqdn) and strpos($fqdn, '.') !== false) {
+                    $device->system->dns_fqdn = $fqdn;
+                }
+            }
+        }
+        return $external_formatted_devices;
+    }
+
+
 
     /**
      * Count the number of rows a user is allowed to see

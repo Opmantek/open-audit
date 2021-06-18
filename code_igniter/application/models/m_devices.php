@@ -1237,7 +1237,6 @@ class M_devices extends MY_Model
                 break;
 
             case 'cloud':
-            case 'integrations':
             case 'nmis':
             case 'snmp':
             case 'ssh':

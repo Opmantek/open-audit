@@ -121,7 +121,6 @@ class Integrations extends MY_Controller
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
-            $this->response->included = array_merge($this->response->included, $this->m_integrations->read_sub_resource($this->response->meta->id));
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {
