@@ -104,8 +104,6 @@ class Nmis extends MY_Controller
         $this->load->model('m_attributes');
         $attributes = $this->m_attributes->collection(1);
 
-        // $nodes = array($nodes[0]);
-
         foreach ($nodes as $node) {
             $device = new stdClass();
             $device->name = strtolower(@$node['name']);
@@ -126,7 +124,7 @@ class Nmis extends MY_Controller
                     $device->hostname =  $node['configuration']['host'];
                 }
             }
-            $serviceStatus = $node['configuration']['serviceStatus'];
+            $serviceStatus = @$node['configuration']['serviceStatus'];
             foreach ($attributes as $attribute) {
                 if ($attribute->attributes->type === 'environment') {
                     if (strtolower($serviceStatus) === strtolower($attribute->attributes->value) OR strtolower($serviceStatus) === strtolower($attribute->attributes->name)) {
@@ -204,14 +202,12 @@ class Nmis extends MY_Controller
             $parameters->log = $log;
             $parameters->match = $match;
 
-            // echo "<pre>"; print_r($device); echo "</pre>";
             // Remove any empty entries
             foreach ($device as $key => $value) {
                 if (empty($value)) {
                     unset($device->$key);
                 }
             }
-            // echo "<pre>"; print_r($device); echo "</pre>"; exit;
 
             // Need to manually remove any discovery logs.
             $sql = '/* nmis::_from_nmis_9 */ ' . 'DELETE FROM discovery_log WHERE ip = ?';
@@ -514,18 +510,20 @@ class Nmis extends MY_Controller
 
         // Use nmis9 node admin tool
         if ($this->response->meta->received_data->attributes->source === 'nmis9' && file_exists('/usr/local/nmis9/admin/node_admin.pl')) {
-            $command = '/usr/local/nmis9/admin/node_admin.pl act=export format=json keep_ids=1 2>&1';
+            $command = '/usr/local/nmis9/admin/node_admin.pl act=export format=json keep_ids=1 2>/dev/null';
             exec($command, $string, $return_var);
             if ($return_var !== 0) {
                 echo "<pre>\n";
                 print_r($string);
                 exit;
             }
+            if (is_array($string)) {
+                $string = implode('', $string);
+            }
             $nodes = json_decode($string, true);
             unset($string);
             unset($command);
             unset($return_var);
-            $nodes = json_decode($string, true);
             for ($i=0; $i < count($nodes); $i++) { 
                 $nodes[$i]['org_id'] = @intval(@$this->response->meta->received_data->attributes->org_id);
                 $nodes[$i]['location_id'] = @intval(@$this->response->meta->received_data->attributes->location_id);
