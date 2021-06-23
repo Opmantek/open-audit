@@ -89,6 +89,11 @@ class M_integrations extends MY_Model
                 }
                 $new_fields[] = $item;
             }
+            foreach ($new_fields as $field) {
+                if (empty($field->internal_field_name) and !empty($field->external_field_name)) {
+                    $field->internal_field_name = 'fields.' . $this->internal_field_from_empty($data->type, $field->external_field_name);
+                }
+            }
             $data->fields = json_encode($new_fields);
         }
 
@@ -120,8 +125,9 @@ class M_integrations extends MY_Model
                 if (strpos($field->internal_field_name, 'fields.') === 0) {
                     $field_name = str_replace('fields.', '', $field->internal_field_name);
                 } else {
-                    $external_field = explode('.', $field->external_field_name);
-                    $field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
+                    #$external_field = explode('.', $field->external_field_name);
+                    #$field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
+                    $field_name = $this->internal_field_from_empty($data->type, $field->external_field_name);
                 }
                 $sql = "SELECT * FROM fields WHERE name = ? AND org_id = ?";
                 $data = array($field_name, $integration->attributes->org_id);
@@ -304,8 +310,8 @@ class M_integrations extends MY_Model
             }
         }
 
-        // Create new or update devices retrieved
-        if ($integration->attributes->create_local_from_external === 'y' or $integration->attributes->update_local_from_external === 'y') {
+        // Create or update devices retrieved
+        if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
             foreach ($external_formatted_devices as $device) {
                 if (!empty($device->system->id)) {
                     // Update
@@ -321,7 +327,7 @@ class M_integrations extends MY_Model
                             }
                         }
                     }
-                    $message = 'Updating device ID: ' . $id . ' for ' . $device->system->name;
+                    $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name;
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $this->db->query($sql, $data);
@@ -330,7 +336,7 @@ class M_integrations extends MY_Model
                     // insert
                     $device->system->id = $this->m_device->insert($device->system);
                     if (!empty($device->system->id)) {
-                        $message = 'Device Created locally ID: ' . $device->system->id . ', ' . $device->system->name;
+                        $message = 'Device Created internally ID: ' . $device->system->id . ', ' . $device->system->name;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                         $data = array($integration->id, microtime(true), $message);
                         $query = $this->db->query($sql, $data);
@@ -345,7 +351,7 @@ class M_integrations extends MY_Model
         }
 
         // Custom fields
-        if ($integration->attributes->create_local_from_external === 'y' or $integration->attributes->update_local_from_external === 'y') {
+        if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
             $sql = "SELECT * FROM fields";
             $query = $this->db->query($sql);
             $all_fields = $query->result();
@@ -408,7 +414,7 @@ class M_integrations extends MY_Model
         }
 
         // Rules
-        if ($integration->attributes->create_local_from_external === 'y' or $integration->attributes->update_local_from_external === 'y') {
+        if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
             foreach ($external_formatted_devices as $device) {
                 $parameters = new stdClass();
                 $parameters->id = intval($device->system->id);
@@ -420,18 +426,67 @@ class M_integrations extends MY_Model
 
         // Get local devices
         $local_devices = $this->get_local_devices($integration);
-        foreach ($local_devices as $loc_device) {
-            $loc_device->ip = ip_from_db($loc_device->ip);
-            foreach ($external_formatted_devices as $ext_device) {
-                if ($loc_device->ip === $ext_device->system->ip) {
-                    // Update this device in the external system
-                } else {
-                    // Create this device in the external system
-                }
+        $local_formatted_devices = $this->internal_to_external($integration, $local_devices);
+
+        # TODO - add this field to fields array items
+        foreach ($integration->attributes->fields as $field) {
+            if ($field->internal_field_name === 'system.ip') {
+                $field->matching_attribute = 'y';
+            } else {
+                $field->matching_attribute = 'n';
             }
         }
 
-
+        // take our list of devices from OA and if any are already in the list of externally retrieved devices, remove them
+        // leave only the devices from OA that are not in the external list - create those
+        if ($integration->attributes->create_external_from_internal === 'y') {
+            $new_external_devices = $local_formatted_devices;
+            foreach ($new_external_devices as $key => $local_device) {
+                foreach ($external_devices as $external_device) {
+                    foreach ($integration->attributes->fields as $field) {
+                        if ($field->matching_attribute === 'y' and $field->external_field_name !== '') {
+                            if ($this->get_value($local_device, $field->external_field_name) == $this->get_value($external_device, $field->external_field_name)) {
+                                unset($new_external_devices[$key]);
+                            }
+                        }
+                    }
+                }
+            }
+            $message = count($new_external_devices) . ' devices to be created externally.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+            // create these new devices externally
+            $created_devices = integrations_create($integration, $new_external_devices);
+            // update the internal devices with the external attributes set by the external system
+            $external_created_devices = $this->external_to_internal($integration, $created_devices);
+            foreach ($external_created_devices as $device) {
+                $parameters = new stdClass();
+                $parameters->details = $device->system;
+                $parameters->log = $log;
+                $parameters->match = new stdClass();
+                $parameters->match->ip = 'y';
+                $device->system->id = $this->m_device->match($parameters);
+                $temp_device = new stdClass();
+                $temp_device->id = $device->system->id;
+                $temp_device->last_seen_by = 'integrations';
+                foreach ($integration->attributes->fields as $field) {
+                    if ($field->priority === 'external' and strpos($field->internal_field_name, 'system.') !== false) {
+                        // a regular field in Open-AudIT that we should update
+                        $system_field = str_replace('system.', '', $field->internal_field_name);
+                        if (!empty($device->system->{$system_field})) { # TODO - something better than not empty
+                            $temp_device->{$system_field} = $device->system->{$system_field};
+                        }
+                    }
+                }
+                $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name;
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+                $this->m_device->update($temp_device);
+                echo "<pre>" . json_encode($temp_device) . "</pre>";
+            }
+        }
 
         /**
         Create - create a single device on the remote system
@@ -440,6 +495,61 @@ class M_integrations extends MY_Model
         Update - update a single device on the remote system
         Post - Run after integration
         */
+
+        if ($integration->attributes->update_external_from_internal === 'y') {
+            $update_external_devices = array();
+
+            foreach ($local_formatted_devices as $key => $local_device) {
+                foreach ($external_devices as $external_device) {
+                    foreach ($integration->attributes->fields as $field) {
+                        if ($field->matching_attribute === 'y' and $field->external_field_name !== '') {
+                            if ($this->get_value($local_device, $field->external_field_name) == $this->get_value($external_device, $field->external_field_name)) {
+                                $update_external_devices[] = $external_device;
+                            }
+                        }
+                    }
+                }
+            }
+            $message = count($update_external_devices) . ' devices to be updated externally.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
+            $matching_fields = array();
+            foreach ($integration->attributes->fields as $field) {
+                if ($field->matching_attribute === 'y') {
+                    $matching_fields[] = $field->external_field_name;
+                }
+            }
+
+            foreach ($update_external_devices as $key => $device) {
+                // find the external device
+                foreach ($local_formatted_devices as $external_device) {
+                    foreach ($matching_fields as $match_field) {
+                        if ($this->get_value($device, $match_field) == $this->get_value($external_device, $match_field)) {
+                            $ex_device = $external_device;
+                            break;
+                        }
+                    }
+                    if (!empty($ex_device)) {
+                        break;
+                    }
+                }
+
+                foreach ($integration->attributes->fields as $field) {
+                    if ($field->priority === 'internal' and ! empty($field->external_field_name)) {
+                        $device = $this->set_value($device, $field->external_field_name, $this->get_value($ex_device, $field->external_field_name));
+                    }
+                }
+                unset($ex_device);
+            }
+        }
+
+        integrations_update($integration, $update_external_devices);
+
+        // Pre - Run after integration
+        integrations_post($integration);
+
 
         $sql = "SELECT * FROM integrations_log WHERE integrations_id = ?";
         $data = array($integration->attributes->id);
@@ -457,6 +567,24 @@ class M_integrations extends MY_Model
         exit;
     }
 
+    public function get_value($device, $field) {
+        #print_r($device);
+        $value = array_reduce(explode('.', $field), function ($previous, $current) { return isset($previous->$current) && !empty($previous->$current) ? $previous->$current: null; }, $device);
+        return $value;
+    }
+
+    public function set_value($device, $field, $value) {
+        $explode = explode('.', $field);
+        if (count($explode) === 1) {
+            $device->{$field} = $value;
+        }
+        if (count($explode) === 2) {
+            $device->{$explode[0]}->{$explode[1]} = $value;
+        }
+        return $device;
+    }
+
+
     public function get_local_devices($integration)
     {
         $devices = array();
@@ -466,14 +594,15 @@ class M_integrations extends MY_Model
         $orgs = $this->m_orgs->get_descendants($integration->attributes->org_id);
         $orgs[] = $integration->attributes->org_id;
 
-        if ($integration->attributes->select_local_type === 'attribute') {
-            $sql = "SELECT * FROM system WHERE `" . $integration->attributes->select_local_attribute . "` = ? and org_id IN (" . implode(',', $orgs) . ")";
-            $data = array($integration->attributes->select_local_value);
+        // Selct by Attribute
+        if ($integration->attributes->select_internal_type === 'attribute') {
+            $sql = "SELECT system.*, locations.name AS `locations_name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE `" . $integration->attributes->select_internal_attribute . "` = ? and system.org_id IN (" . implode(',', $orgs) . ") AND status = 'production'";
+            $data = array($integration->attributes->select_internal_value);
             $query = $this->db->query($sql, $data);
             $devices = $query->result();
         }
-
-        if ($integration->attributes->select_local_type === 'group') {
+        // Select by Group
+        if ($integration->attributes->select_internal_type === 'group') {
             $this->load->model('m_orgs');
             $CI = & get_instance();
             if (empty($CI->user)) {
@@ -483,20 +612,154 @@ class M_integrations extends MY_Model
                 $CI->user->org_list = $orgs;
             }
             $this->load->model('m_groups');
-            $device_ids = $this->m_groups->execute($integration->attributes->select_local_value, '');
-            #$device_ids = implode(',', $device_ids);
-            #echo "<pre>"; print_r($device_ids); exit;
+            $device_ids = $this->m_groups->execute($integration->attributes->select_internal_value, '');
             $dev_ids = array();
             foreach ($device_ids as $device) {
                 $dev_ids[] = $device->attributes->{'system.id'};
             }
             $dev_ids = implode(',', $dev_ids);
-            $sql = "SELECT * FROM system WHERE id in (" . $dev_ids . ")";
+            $sql = "SELECT system.*, locations.name AS `locations_name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id in (" . $dev_ids . ")";
             $query = $this->db->query($sql);
             $devices = $query->result();
         }
+        // Select by Query
+        if ($integration->attributes->select_internal_type === 'query') {
+            $this->load->model('m_orgs');
+            $CI = & get_instance();
+            if (empty($CI->user)) {
+                $CI->user = new stdClass();
+            }
+            if (empty($CI->user->org_list)) {
+                $CI->user->org_list = $orgs;
+            }
+            $this->load->model('m_queries');
+            $devices = $this->m_queries->execute($integration->attributes->select_internal_value, '');
+            $dev_ids = array();
+            foreach ($devices as $device) {
+                if (!empty($device->attributes->{'system.id'})) {
+                    $dev_ids[] = intval($device->attributes->{'system.id'});
+                } else if (!empty($device->attributes->{'id'})) {
+                    $dev_ids[] = intval($device->attributes->{'id'});
+                }
+            }
+            $dev_ids = implode(',', $dev_ids);
+            if (!empty($dev_ids)) {
+                $sql = "SELECT system.*, locations.name AS `locations_name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id in (" . $dev_ids . ")";
+                $query = $this->db->query($sql);
+                $devices = $query->result();
+            }
+        }
+        // Format IP
+        $device_ids = array();
+        foreach ($devices as $device) {
+            $device->ip = $this->ip_address_from_db($device->ip);
+            $device_ids[] = intval($device->id);
+        }
+        // Default field population
+        foreach ($devices as $device) {
+            foreach ($integration->attributes->fields as $field) {
+                if (strpos($field->internal_field_name, 'system.') !== false) {
+                    $name = str_replace('system.', '', $field->internal_field_name);
+                    if (!isset($device->{$name})) {
+                        $device->{$name} = '';
+                    }
+                    if ($device->{$name} === '' and (string)$field->default_value !== '') {
+                        $device->{$name} = $field->default_value;
+                    }
+                }
+            }
+        }
 
+        // OA Fields
+        $sql = "SELECT field.*, fields.name FROM field left join fields on (field.fields_id = fields.id) WHERE system_id in (" . implode(',', $device_ids) . ")";
+        $query = $this->db->query($sql);
+        $fields = $query->result();
+
+        // build a new array of fields that contains the actual internal_field_name (not an empty string)
+        // use this array so we can iterate over it, but not affect the actual integration
+        // TODO - maybe be able to actually use the integration, overwriting blank field names
+        $custom_fields = array();
+        foreach ($integration->attributes->fields as $integration_field) {
+            if ($integration_field->internal_field_name === '' or strpos($integration_field->internal_field_name, 'fields.') !== false) {
+                $newfield = new stdClass();
+                $newfield = clone $integration_field;
+                $newfield->internal_field_name = str_replace('fields.', '', $integration_field->internal_field_name);
+                if ($newfield->internal_field_name === '') {
+                    $newfield->internal_field_name = internal_field_from_empty($integration->attributes->type, $integration_field->external_field_name);
+                }
+                $custom_fields[] = $newfield;
+            }
+        }
+
+        foreach ($devices as $device) {
+            $device->fields = new stdClass();
+            foreach ($custom_fields as $custom_field) {
+                foreach ($fields as $field) {
+                    if ($field->name === $custom_field->internal_field_name and intval($field->system_id) === intval($device->id)) {
+                        $device->fields->{$custom_field->internal_field_name} = $field->value;
+                    }
+                }
+                if (empty($device->fields->{$custom_field->internal_field_name})) {
+                    // set the default value
+                    $device->fields->{$custom_field->internal_field_name} = $custom_field->default_value;
+                }
+            }
+        }
+        // Global credentials
+        $sql = "SELECT * FROM credentials";
+        $query = $this->db->query($sql);
+        $credentials = $query->result();
+        if (is_array($credentials)) {
+            foreach ($devices as $device) {
+                $retrieved_credentials = @json_decode($device->credentials);
+                $device->credentials = new stdClass();
+                foreach ($credentials as $credential) {
+                    if (is_array($retrieved_credentials)) {
+                        foreach ($retrieved_credentials as $key => $value) {
+                            if (intval($value) === intval($credential->id)) {
+                                $credential->credentials = json_decode(simpleDecrypt($credential->credentials));
+                                #$device->credentials[] = $credential;
+                                foreach ($credential->credentials as $key => $value) {
+                                    $device->credentials->{$credential->type . '_' . $key} = $value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Device specific credentials
+        $sql = "SELECT * FROM credential";
+        $query = $this->db->query($sql);
+        $credentials = $query->result();
+        if (is_array($credentials)) {
+            foreach ($devices as $device) {
+                foreach ($credentials as $credential) {
+                    if (intval($credential->system_id) === intval($device->id)) {
+                        $credential->credentials = json_decode(simpleDecrypt($credential->credentials));
+                        #$device->credentials[] = $credential;
+                        foreach ($credential->credentials as $key => $value) {
+                            $device->credentials->{$credential->type . '_' . $key} = $value;
+                        }
+                    }
+                }
+            }
+        }
         return $devices;
+    }
+
+    public function internal_field_from_empty($type, $field_name) {
+        // $return_field_name = '';
+        // foreach ($integration->fields as $integration_field) {
+        //     if ($integration_field->external_field === $field_name) {
+        //         $return_field_name = $integration->type . '_' . $integration_field[count($integration_field)-1];
+        //     }
+        // }
+        // return $return_field_name;
+        $return_field_name = '';
+        $explode = explode('.', $field_name);
+        $return_field_name = $type . '_' . $explode[count($explode)-1];
+        return $return_field_name;
     }
 
     public function external_to_internal($integration, $external_devices)
@@ -550,6 +813,91 @@ class M_integrations extends MY_Model
         return $external_formatted_devices;
     }
 
+    public function internal_to_external($integration, $internal_devices)
+    {
+        // Take the local data and make an external structure
+        $internal_formatted_devices = array();
+
+        foreach ($internal_devices as $device) {
+            $newdevice = new stdClass();
+            foreach ($integration->attributes->fields as $field) {
+                if (strpos($field->internal_field_name, 'system.') !== false) {
+                    $field_name = str_replace('system.', '', $field->internal_field_name);
+                    if (strpos($field->external_field_name, '.') !== false) {
+                        $ext_fields = explode('.', $field->external_field_name);
+                        for ($i=0; $i < count($ext_fields)-1; $i++) {
+                            if ( ! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
+                                $newdevice->{$ext_fields[$i]} = new stdClass();
+                            }
+                        }
+                        if (count($ext_fields) === 2 and empty($newdevice->{$ext_fields[0]}->{$ext_fields[1]})) {
+                            $newdevice->{$ext_fields[0]}->{$ext_fields[1]} = $device->{$field_name};
+                            #echo "<pre>\$newdevice->{" . $ext_fields[0] . "}->{" . $ext_fields[1] . "} = " . $device->{$field_name} . "</pre>\n";
+                        }
+                    } else {
+                        if ($field->external_field_name !== '' and empty($newdevice->{$field->external_field_name})) {
+                            $newdevice->{$field->external_field_name} = $device->{$field_name};
+                            #echo "<pre>\newdevice->{" . $field->external_field_name . "} = " . $device->{$field_name} . "</pre>\n";
+                        }
+                    }
+                } else if (strpos($field->internal_field_name, 'credentials.') !== false) {
+                    $int_field = str_replace('credentials.', '', $field->internal_field_name);
+                    if (strpos($field->external_field_name, '.') !== false) {
+                        $ext_fields = explode('.', $field->external_field_name);
+                        for ($i=0; $i < count($ext_fields)-1; $i++) {
+                            if ( ! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
+                                $newdevice->{$ext_fields[$i]} = new stdClass();
+                            }
+                        }
+                        if (count($ext_fields) === 2) {
+                            foreach ($device->credentials as $key => $value) {
+                                if ($int_field === $key) {
+                                    $newdevice->{$ext_fields[0]}->{$ext_fields[1]} = $value;
+                                }
+                            }
+                        }
+                    }
+                } else if (strpos($field->internal_field_name, 'fields.') !== false) {
+                    $int_field = str_replace('fields.', '', $field->internal_field_name);
+                    $value = '';
+                    foreach ($device->fields as $key => $dev_value) {
+                        if ($key === $int_field) {
+                            $value = $dev_value;
+                        }
+                    }
+                    if (strpos($field->external_field_name, '.') !== false) {
+                        $ext_fields = explode('.', $field->external_field_name);
+                        for ($i=0; $i < count($ext_fields)-1; $i++) {
+                            if ( ! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
+                                $newdevice->{$ext_fields[$i]} = new stdClass();
+                            }
+                        }
+                        if (count($ext_fields) === 2) {
+
+                            if (!empty($value)) {
+                                $newdevice->{$ext_fields[0]}->{$ext_fields[1]} = $value;
+                            } else if (!empty($field->default_value)) {
+                                $newdevice->{$ext_fields[0]}->{$ext_fields[1]} = $field->default_value;
+                            } else {
+                                $newdevice->{$ext_fields[0]}->{$ext_fields[1]} = '';
+                            }
+                        }
+                    } else {
+                        if (!empty($value)) {
+                            $newdevice->{$field->external_field_name} = $value;
+                        } else if (!empty($field->default_value)) {
+                            $newdevice->{$field->external_field_name} = $field->default_value;
+                        } else {
+                            $newdevice->{$field->external_field_name} = '';
+                        }
+                    }
+
+                }
+            }
+            $internal_formatted_devices[] = $newdevice;
+        }
+        return $internal_formatted_devices;
+    }
 
 
     /**
