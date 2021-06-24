@@ -89,6 +89,7 @@ class Nmis extends MY_Controller
     {
         $this->load->model('m_devices');
         $this->load->model('m_device');
+        $this->load->helper('network');
         $log = new stdClass();
         $log->type = 'system';
         $log->severity = 7;
@@ -99,6 +100,8 @@ class Nmis extends MY_Controller
 
         $match = new stdClass();
         $match->match_ip = 'y';
+        $match->match_dns_fqdn = 'y';
+        $match->match_dns_hostname = 'y';
         
         $devices = array();
         $this->load->model('m_attributes');
@@ -112,6 +115,7 @@ class Nmis extends MY_Controller
             $device->fqdn = '';
             if (filter_var($node['configuration']['host'], FILTER_VALIDATE_IP) !== false) {
                 $device->ip = $node['configuration']['host'];
+                $device = dns_validate($device);
             } else {
                 if (strpos($node['configuration']['host'], '.') !== false) {
                     $device->fqdn =  $node['configuration']['host'];
@@ -120,8 +124,10 @@ class Nmis extends MY_Controller
                     unset($temp[0]);
                     $device->domain = implode('.', $temp);
                     unset($temp);
+                    $device->ip = gethostbyname($device->fqdn);
                 } else {
                     $device->hostname =  $node['configuration']['host'];
+                    $device->ip = gethostbyname($device->hostname);
                 }
             }
             $serviceStatus = @$node['configuration']['serviceStatus'];
@@ -211,11 +217,11 @@ class Nmis extends MY_Controller
 
             // Need to manually remove any discovery logs.
             $sql = '/* nmis::_from_nmis_9 */ ' . 'DELETE FROM discovery_log WHERE ip = ?';
-            $data = array(ip_address_from_db($device->ip));
+            $data = array(ip_address_from_db(@$device->ip));
             $this->db->query($sql, $data);
 
             $device->id = $this->m_device->match($parameters);
-            $device->ip = ip_address_to_db($device->ip);
+            $device->ip = ip_address_to_db(@$device->ip);
             $log->command_output = '';
 
             $credentials = $device->credentials;
@@ -237,7 +243,7 @@ class Nmis extends MY_Controller
                 $inserted++;
                 // need to update the discovery log with our system.id
                 $sql = '/* nmis::_from_nmis_9 */ ' . 'UPDATE discovery_log SET system_id = ? WHERE ip = ?';
-                $data = array($device->id, ip_address_from_db($device->ip));
+                $data = array($device->id, ip_address_from_db(@$device->ip));
                 $this->db->query($sql, $data);
             }
             $this->m_devices->sub_resource_create($device->id, 'credential', $credentials);
@@ -251,7 +257,7 @@ class Nmis extends MY_Controller
             $data->attributes->id = $device->id;
             $data->attributes->name = $device->name;
             $data->attributes->hostname = @$device->hostname;
-            $data->attributes->ip = ip_address_from_db($device->ip);
+            $data->attributes->ip = ip_address_from_db(@$device->ip);
             $this->response->data[] = $data;
         }
         $ids = implode(',', $ids);
