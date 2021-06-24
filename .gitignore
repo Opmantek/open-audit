@@ -19,5 +19,5 @@ www/open-audit/custom_images/*
 code_igniter/application/config/config.json
 !code_igniter/application/attachments/
 code_igniter/application/attachments/*
-
+*.fuse_hidden*
 
