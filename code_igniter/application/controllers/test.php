@@ -117,6 +117,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_business_service';
         $field->external_field_name = 'configuration.businessService';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -125,6 +127,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_customer';
         $field->external_field_name = 'configuration.customer';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -133,6 +137,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.name';
         $field->external_field_name = 'name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -141,6 +147,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_name';
         $field->external_field_name = 'name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -149,6 +157,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.name';
         $field->external_field_name = 'configuration.display_name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -157,6 +167,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_group';
         $field->external_field_name = 'configuration.group';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = 'Open-AudIT';
         $fields[] = $field;
@@ -165,6 +177,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.ip';
         $field->external_field_name = 'configuration.host';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'y';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -173,6 +187,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.omk_uuid';
         $field->external_field_name = 'uuid';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'y';
         $field->priority = 'external';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -181,6 +197,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_role';
         $field->external_field_name = 'configuration.roleType';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -189,6 +207,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_poller_uuid';
         $field->external_field_name = 'cluster_id';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -197,6 +217,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_poller';
         $field->external_field_name = 'server_name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -205,6 +227,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_notes';
         $field->external_field_name = 'configuration.notes';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -213,6 +237,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.nmis_manage';
         $field->external_field_name = '';
+        $field->external_field_type = '';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = 'y';
         $fields[] = $field;
@@ -221,6 +247,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'system.sysDescr';
         $field->external_field_name = 'configuration.sysDescr';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -229,6 +257,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'locations.name';
         $field->external_field_name = 'configuration.location';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -237,6 +267,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.username';
         $field->external_field_name = 'configuration.wmipassword';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -245,6 +277,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.password';
         $field->external_field_name = 'configuration.wmiusername';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -253,6 +287,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.version';
         $field->external_field_name = 'configuration.version';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -261,6 +297,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.community';
         $field->external_field_name = 'configuration.community';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -269,6 +307,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.security_name';
         $field->external_field_name = 'configuration.username';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -277,6 +317,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.authentication_passphrase';
         $field->external_field_name = 'configuration.authpassword';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -285,6 +327,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.authentication_protocol';
         $field->external_field_name = 'configuration.authprotocol';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -293,6 +337,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.privacy_passphrase';
         $field->external_field_name = 'configuration.privpassword';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -301,6 +347,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = 'credentials.privacy_protocol';
         $field->external_field_name = 'configuration.privprotocol';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'internal';
         $field->default_value_for_create = '';
         $fields[] = $field;
@@ -309,6 +357,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = '';
         $field->external_field_name = 'configuration.active';
+        $field->external_field_type = 'bool_one_zero';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '1';
         $fields[] = $field;
@@ -317,6 +367,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = '';
         $field->external_field_name = 'configuration.collect';
+        $field->external_field_type = 'bool_one_zero';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '1';
         $fields[] = $field;
@@ -325,6 +377,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = '';
         $field->external_field_name = 'configuration.model';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = 'automatic';
         $fields[] = $field;
@@ -333,6 +387,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = '';
         $field->external_field_name = 'configuration.netType';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = 'wan';
         $fields[] = $field;
@@ -341,6 +397,8 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = '';
         $field->external_field_name = 'configuration.ping';
+        $field->external_field_type = 'bool';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = 'true';
         $fields[] = $field;
@@ -349,13 +407,15 @@ class Test extends CI_Controller
         $field = new stdClass();
         $field->internal_field_name = '';
         $field->external_field_name = 'configuration.port';
+        $field->external_field_type = 'number';
+        $field->matching_attribute = 'n';
         $field->priority = 'external';
         $field->default_value_for_create = '161';
         $fields[] = $field;
         unset($field);
 
         echo "<pre>" . json_encode($fields);
-
+exit;
 
         // Create temp file to store cookies
         $ckfile = tempnam("/tmp", "CURLCOOKIE");

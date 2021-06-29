@@ -1667,6 +1667,15 @@ CREATE TABLE `integrations` (
   `items_to_retrieve` longtext NOT NULL,
   `items_list` longtext NOT NULL,
   `items_count` longtext NOT NULL,
+
+  `select_internal_count` INT(10) unsigned DEFAULT NULL,
+  `create_internal_count` INT(10) unsigned DEFAULT NULL,
+  `update_internal_count` INT(10) unsigned DEFAULT NULL,
+  `select_external_count` INT(10) unsigned DEFAULT NULL,
+  `create_external_count` INT(10) unsigned DEFAULT NULL,
+  `update_external_count` INT(10) unsigned DEFAULT NULL,
+
+
   `last_run` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
   `edited_by` VARCHAR(200) NOT NULL DEFAULT '',
   `edited_date` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
