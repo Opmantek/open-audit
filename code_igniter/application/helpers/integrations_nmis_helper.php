@@ -130,7 +130,7 @@ if (!function_exists('integrations_collection')) {
             return array();
         } else {
             $count = count($external_devices);
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$count devices returned from NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '$count devices returned from NMIS.', 'notice')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -142,7 +142,7 @@ if (!function_exists('integrations_collection')) {
                 }
             }
             $count = count($external_devices);
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$count devices filtered from NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '$count devices filtered from NMIS.', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -245,14 +245,6 @@ if (!function_exists('integrations_update')) {
     }
 }
 
-
-
-
-
-
-
-
-
 if (!function_exists('integrations_create')) {
     function integrations_create($integration, $devices)
     {
@@ -324,7 +316,7 @@ if (!function_exists('integrations_create')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could create device in NMIS.', 'fail')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not create device in NMIS.', 'fail')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();

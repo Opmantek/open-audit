@@ -720,17 +720,30 @@ class M_collection extends MY_Model
             }
         }
 
-        if ($collection === 'integrations' && ! empty($data->options)) {
+        if ($collection === 'integrations' && ! empty($data->attributes)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
             $result = $query->result();
             $existing = new stdClass();
-            if ( ! empty($result[0]->options)) {
-                $original = @json_decode($result[0]->options);
+            if ( ! empty($result[0]->attributes)) {
+                $original = @json_decode($result[0]->attributes);
             }
-            $submitted = $data->options;
+            $submitted = $data->attributes;
             $merged = $this->deep_merge($original, $submitted);
-            $data->options = (string)json_encode($merged);
+            $data->attributes = (string)json_encode($merged);
+        }
+
+        if ($collection === 'integrations' && ! empty($data->fields)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            $existing = new stdClass();
+            if ( ! empty($result[0]->fields)) {
+                $original = @json_decode($result[0]->fields);
+            }
+            $submitted = $data->fields;
+            $merged = $this->deep_merge($original, $submitted);
+            $data->fields = (string)json_encode($merged);
         }
 
         if ($collection === 'ldap_servers') {
