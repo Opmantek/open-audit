@@ -407,6 +407,7 @@ class Util extends CI_Controller
         $this->load->model('m_devices');
         $this->load->model('m_devices_components');
         $this->load->model('m_discoveries');
+        $this->load->model('m_integrations');
         $this->load->model('m_networks');
         $this->load->model('m_orgs');
         $this->load->model('m_queue');
@@ -435,7 +436,7 @@ class Util extends CI_Controller
             exit;
         }
         // Increase the queue count in the config table
-        $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
+        $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
         $this->db->query($sql);
         // POP an item off the queue
         $this->load->model('m_queue');
@@ -506,7 +507,7 @@ class Util extends CI_Controller
             }
 
             if ($item->type === 'integrations') {
-                $this->m_integrations->execute($details);
+                $this->m_integrations->execute($details->integrations_id);
             }
         }
     }
