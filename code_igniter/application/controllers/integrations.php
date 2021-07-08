@@ -163,22 +163,22 @@ class Integrations extends MY_Controller
      * [execute description]
      * @return [type] [description]
      */
-    public function execute_orig()
+    public function execute()
     {
-        // $this->m_integrations->queue($this->response->meta->id);
-        // $this->load->model('m_queue');
-        // $this->m_queue->start();
-        // sleep(2);
-        // if ($this->response->meta->format === 'json') {
-        //     $this->response->meta->format = 'json';
-        //     $this->response->data = $this->m_integrations->read($this->response->meta->id);
-        //     output($this->response);
-        // } else {
-        //     redirect('integrations/'.$this->response->meta->id);
-        // }
-        $this->m_integrations->execute($this->response->meta->id);
         $this->response->meta->format = 'json';
-        #output($this->response);
+        $this->m_integrations->queue($this->response->meta->id);
+        $this->load->model('m_queue');
+        $this->m_queue->start();
+        sleep(2);
+        if ($this->response->meta->format === 'json') {
+            $this->response->meta->format = 'json';
+            $this->response->data = $this->m_integrations->read($this->response->meta->id);
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            $this->response->included = array_merge($this->response->included, $this->m_integrations->read_sub_resource($this->response->meta->id));
+            output($this->response);
+        } else {
+            redirect('integrations/'.$this->response->meta->id);
+        }
     }
 
     /**
@@ -187,7 +187,7 @@ class Integrations extends MY_Controller
     * @access public
     * @return NULL
     */
-    public function execute()
+    public function execute_now()
     {
         $this->{'m_'.$this->response->meta->collection}->execute($this->response->meta->id);
         output($this->response);
