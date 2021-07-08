@@ -247,7 +247,7 @@ class M_integrations extends MY_Model
         if (empty($integration)) {
             return false;
         }
-        $sql = '/* m_integrations::queue */ ' . 'DELETE from integration_log WHERE integrations_id = ?';
+        $sql = '/* m_integrations::queue */ ' . 'DELETE from integrations_log WHERE integrations_id = ?';
         $data = array($id);
         $this->db->query($sql, $data);
         $sql = '/* m_integrations::queue */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0 WHERE id = ?";
@@ -293,6 +293,17 @@ class M_integrations extends MY_Model
         $this->load->model('m_rules');
         $this->load->helper('audit');
 
+        /**
+         * The specific integration helper should implement the below functions
+        integrations_pre        - Run before integration
+        integrations_collection - read all devices from a remote system
+        integrations_create     - create a single device on the remote system
+        integrations_update     - update a single device on the remote system
+        integrations_post       - Run after integration
+        integrations_delete     - delete a single device from the remote system
+        integrations_read       - read a single device from remote system
+        */
+
         $sql = '/* m_integrations::execute */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0 WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
@@ -313,9 +324,7 @@ class M_integrations extends MY_Model
 
         // Collection - read all devices from a remote system
         $external_devices = integrations_collection($integration);
-
         $external_formatted_devices = $this->external_to_internal($integration, $external_devices);
-
         $sql = "UPDATE integrations SET select_external_count = ? WHERE id = ?";
         $data = array(count($external_formatted_devices), $integration->id);
         $query = $this->db->query($sql, $data);
@@ -343,6 +352,32 @@ class M_integrations extends MY_Model
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
+            }
+        }
+
+        $locations_parse = false;
+        foreach ($integration->attributes->fields as $field) {
+            if ($field->internal_field_name === 'locations.name') {
+                $locations_parse = true;
+            }
+        }
+        if ($locations_parse) {
+            // loop through the devices and assign a location_id
+            // REQUIRES that the collection_pre has been run and created locations as required
+            $org_list = $CI->m_orgs->get_descendants($integration->attributes->org_id);
+            $org_list[] = $integration->attributes->org_id;
+            $sql = "SELECT id, name FROM locations WHERE org_id IN (" . implode(',', $org_list) . ")";
+
+            $query = $CI->db->query($sql);
+            $locations = $query->result();
+
+            foreach ($external_formatted_devices as $device) {
+                foreach ($locations as $location) {
+                    if (!empty($device->locations->name) && $device->locations->name === $location->name) {
+                        $device->system->location_id = $location->id;
+                        break;
+                    }
+                }
             }
         }
 
@@ -484,7 +519,7 @@ class M_integrations extends MY_Model
         $query = $this->db->query($sql, $data);
 
         $message = count($local_formatted_devices) . ' devices returned from Open-AudIT.';
-        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?, 'success')";
+        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
         $data = array($integration->id, microtime(true), $message);
         $query = $this->db->query($sql, $data);
 
@@ -507,7 +542,6 @@ class M_integrations extends MY_Model
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
-
             // create these new devices externally
             $created_devices = integrations_create($integration, $new_external_devices);
             // update the internal devices with the external attributes set by the external system
@@ -542,14 +576,6 @@ class M_integrations extends MY_Model
             $data = array(count($new_external_devices), $integration->id);
             $query = $this->db->query($sql, $data);
         }
-
-        /**
-        Create - create a single device on the remote system
-        Delete - delete a single device from the remote system
-        Read - read a single device from remote system
-        Update - update a single device on the remote system
-        Post - Run after integration
-        */
 
         if ($integration->attributes->update_external_from_internal === 'y') {
             $update_external_devices = array();
@@ -594,7 +620,7 @@ class M_integrations extends MY_Model
 
 
         // Pre - Run after integration
-        integrations_post($integration);
+        integrations_post($integration, $external_devices);
 
         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Completed integration.', 'success')";
         $data = array($integration->id, microtime(true));
@@ -614,13 +640,7 @@ class M_integrations extends MY_Model
             $table .= "<tr><td>" . $row->id . "</td><td>" . $row->integrations_id . "</td><td>" . $row->timestamp . "</td><td>" . $row->microtime . "</td><td>" . $row->severity_text . "</td><td>" . $row->message . "</td><td>" . $row->result . "</td><td></tr>";
         }
 
-        echo $table;
-        // echo "<pre>";
-        // echo json_encode($integration);
-        // echo "</pre>";
-
-
-
+        # echo $table;
 
         exit;
     }
@@ -1047,7 +1067,6 @@ class M_integrations extends MY_Model
     {
         // Take the local data and make an external structure
         $internal_formatted_devices = array();
-
         foreach ($internal_devices as $device) {
             $newdevice = new stdClass();
             foreach ($integration->attributes->fields as $field) {
