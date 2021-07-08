@@ -1651,6 +1651,7 @@ CREATE TABLE `integrations` (
   `create_internal_count` INT(10) unsigned DEFAULT NULL,
   `create_internal_from_external` enum('y','n') NOT NULL DEFAULT 'n',
   `devices` longtext NOT NULL,
+  `locations` longtext NOT NULL,
   `discovery_id` INT(10) unsigned DEFAULT NULL,
   `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n',
   `discovery_use_snmp` enum('y','n') NOT NULL DEFAULT 'n',
