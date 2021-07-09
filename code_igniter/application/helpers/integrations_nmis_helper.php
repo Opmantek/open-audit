@@ -207,7 +207,7 @@ if (!function_exists('integrations_pre')) {
             return true;
         } else {
             $message = count($pollers) . " pollers returned from NMIS.";
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -544,6 +544,97 @@ if (!function_exists('integrations_create')) {
         }
         curl_close($ch);
         return $external_devices;
+    }
+}
+
+
+if (!function_exists('integrations_delete')) {
+    function integrations_delete($integration, $devices)
+    {
+        error_reporting(E_ALL);
+        $CI = & get_instance();
+
+        if (empty($devices)) {
+            return array();
+        }
+
+        // Create our connection
+        $url = $integration->attributes->attributes->url;
+
+        // Create temp file to store cookies
+        $ckfile = tempnam("/tmp", "CURLCOOKIE");
+
+        $form_fields = array(
+            'username' => $integration->attributes->attributes->username,
+            'password' => $integration->attributes->attributes->password,
+        );
+
+        // Post login form and follow redirects
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        $output = curl_exec($ch);
+        if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            // bad credentials
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check Username and Password.', 'fail')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            return false;
+        }
+        if (strpos($output, 'redirect_url=') !== false) {
+            // Likely a bad URL
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check URL.', 'fail')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            return false;
+        }
+        if (strpos($output, 'Set-Cookie') !== false) {
+            // Success
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS.', 'success')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+        // loop over our devices and send them to be deleted
+        foreach ($devices as $device) {
+            curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes/' . $device->uuid);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
+            $output = curl_exec($ch);
+            if (!is_string($output) || !strlen($output)) {
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could delete device in NMIS.', 'fail')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return array();
+            }
+            if (empty($output)) {
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'No result from NMIS.', 'fail')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return array();
+            } else {
+                $message = 'Device ' . $device->configuration->host . ' deleted in NMIS.';
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $CI->db->query($sql, $data);
+            }
+        }
+        curl_close($ch);
     }
 }
 
