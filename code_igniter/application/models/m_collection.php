@@ -746,6 +746,32 @@ class M_collection extends MY_Model
             $data->fields = (string)json_encode($merged);
         }
 
+        if ($collection === 'integrations' && ! empty($data->discovery_run_on_create)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            if ($data->discovery_run_on_create === 'n') {
+                // Delete any existing discovery
+                if ( ! empty($result[0]->discovery_id)) {
+                    $select = "DELETE FROM discoveries WHERE id = " . @intval($result[0]->discovery_id);
+                    $query = $this->db->query($select);
+                }
+                $data->discovery_id = null;
+            } else {
+                // Make a new discovery
+                $CI->load->model('m_discoveries');
+                $discovery = new stdClass();
+                $discovery->type = 'integration';
+                $discovery->name = 'Discovery for ' . $result[0]->name . ' integration';
+                $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
+                $discovery->org_id = $result[0]->org_id;
+                $discovery->discard = 'n';
+                $discovery->complete = 'n';
+                $discovery->subnet = '';
+                $data->discovery_id = @intval($CI->m_discoveries->create($discovery));
+            }
+        }
+
         if ($collection === 'ldap_servers') {
             if ( ! empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);

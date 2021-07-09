@@ -115,7 +115,9 @@ class M_integrations extends MY_Model
             $discovery->discard = 'n';
             $discovery->complete = 'n';
             $discovery->subnet = '';
-            $CI->m_discoveries->create($discovery);
+            $discovery_id = intval($CI->m_discoveries->create($discovery));
+            $sql = "UPDATE integrations SET discovery_id = ? WHERE id = ?";
+            $query = $this->db->query($sql, array(intval($discovery_id), intval($integration->id)));
         }
 
         # Any custom fields
@@ -163,7 +165,7 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
-        $sql = 'SELECT * FROM `integrations` WHERE `id` = ?';
+        $sql = 'SELECT integrations.*, discoveries.name AS `discoveries.name` FROM integrations LEFT JOIN discoveries ON (integrations.discovery_id = discoveries.id) WHERE integrations.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'integrations');
