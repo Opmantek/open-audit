@@ -1248,12 +1248,13 @@ class M_integrations extends MY_Model
         $dictionary->columns->create_internal_from_external = 'When integrating devices from the external system, if the device doesn\'t exist in Open-AudIT should we create it?';
         $dictionary->columns->update_internal_from_external = 'When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?';
         $dictionary->columns->discovery_run_on_create = 'When we create a device within Open-AudIT, should we run discovery upon it?';
-        $dictionary->columns->select_internal_type = 'Which devices should Open-AudIT send to the remote system (if any).';
+        $dictionary->columns->select_internal_type = 'How should we select devices to be integrated.';
         $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'system\' table).';
         $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected.';
 
-        $dictionary->columns->create_external_from_internal = 'If a local device is not on the external system, should we create it.';
-        $dictionary->columns->update_external_from_internal = 'If a local device has been changed, should we update the external system.';
+        $dictionary->columns->create_external_from_internal = 'If an Open-AudIT device is not on the external system, should we create it.';
+        $dictionary->columns->update_external_from_internal = 'If an Open-AudIT device has been changed, should we update the external system.';
+        $dictionary->columns->delete_external_from_internal = 'If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the remote system.';
         $dictionary->columns->select_external_type = 'Which devices should Open-AudIT create from the remote system (if any).';
         $dictionary->columns->select_external_attribute = 'The attribute to test (must match an external field name from below).';
         $dictionary->columns->select_external_value = 'This item must match the value of the attribute selected.';
