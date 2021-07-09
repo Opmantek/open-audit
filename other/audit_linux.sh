@@ -2581,8 +2581,9 @@ if hash systemctl 2>/dev/null; then
 	if [ "$debugging" -gt "1" ]; then
 		echo "    systemd services"
 	fi
-	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
-	for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
+	# systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
+	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }' | cut -d. -f1)
+	for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }'); do
 		description=$(systemctl show "$name" -p Description | cut -d= -f2)
 		description="$description (using systemd)"
 		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
