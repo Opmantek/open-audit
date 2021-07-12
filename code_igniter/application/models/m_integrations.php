@@ -1109,9 +1109,11 @@ class M_integrations extends MY_Model
                     foreach ($credentials as $credential) {
                         if (is_array($retrieved_credentials)) {
                             foreach ($retrieved_credentials as $key => $value) {
-                                if (intval($value) === intval($credential->id)) {
-                                    $credential->credentials = json_decode(simpleDecrypt($credential->credentials));
-                                    #$device->credentials[] = $credential;
+                                if (intval($value) === intval($credential->id) && ! empty($credential->credentials)) {
+                                    if (is_string($credential->credentials)) {
+                                        $credential->credentials = simpleDecrypt($credential->credentials);
+                                        $credential->credentials = json_decode($credential->credentials);
+                                    }
                                     foreach ($credential->credentials as $key => $value) {
                                         $device->credentials->{$credential->type . '_' . $key} = $value;
                                     }
