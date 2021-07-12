@@ -295,7 +295,7 @@ class Test extends CI_Controller
         unset($field);
 
         $field = new stdClass();
-        $field->internal_field_name = 'credentials.community';
+        $field->internal_field_name = 'credentials.snmp_community';
         $field->external_field_name = 'configuration.community';
         $field->external_field_type = 'text';
         $field->matching_attribute = 'n';
