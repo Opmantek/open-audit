@@ -554,7 +554,7 @@ class M_integrations extends MY_Model
         }
 
         // Discoveries
-        if ($integration->attributes->create_internal_from_external === 'y' && is_array($discover_devices) && count($discover_devices) > 0) {
+        if ($integration->attributes->discovery_run_on_create === 'y' && is_array($discover_devices) && count($discover_devices) > 0) {
             // Reset discovery stats and logs
 
             $message = 'Reset discovery stats and logs.';
@@ -619,7 +619,6 @@ class M_integrations extends MY_Model
             }
         }
 
-
         // Get local devices
         $local_devices = $this->get_local_devices($integration);
         $local_formatted_devices = $this->internal_to_external($integration, $local_devices);
@@ -653,6 +652,7 @@ class M_integrations extends MY_Model
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
             // create these new devices externally
+
             $created_devices = integrations_create($integration, $new_external_devices);
             // update the internal devices with the external attributes set by the external system
             $external_created_devices = $this->external_to_internal($integration, $created_devices);
