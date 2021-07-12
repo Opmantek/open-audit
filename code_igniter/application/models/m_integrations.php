@@ -328,6 +328,44 @@ class M_integrations extends MY_Model
         // Collection - read all devices from a remote system
         $external_devices = integrations_collection($integration);
         $external_formatted_devices = $this->external_to_internal($integration, $external_devices);
+
+        // Check retrieved devices for 'localhost' or '127.0.0.1' which may or may not be this Open-AudIT server
+        foreach ($external_formatted_devices as $device) {
+            if ($device->system->ip === '127.0.0.1' or $device->system->ip === 'localhost') {
+                // The (possibly) remote system has itself as a device, see if we can determine an actual IP
+                if (stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or stripos($integration->attributes->attributes->url, 'localhost') !== false) {
+                    // We're talking to ourselves
+                    $ip = explode(',', $this->config->config['ip']);
+                    if (!empty($ip[0])) {
+                        $device->system->ip = $ip[0];
+                    }
+                    unset($ip);
+                } else {
+                    // remote system or resolvable name
+                    $exploded_url = explode('/', $integration->attributes->attributes->url);
+                    $host = $exploded_url[2];
+                    $exploded_host = explode(':', $host);
+                    $host = $exploded_host[0];
+                    if (filter_var($host, FILTER_VALIDATE_IP) === false) {
+                        // we have a name that must be DNS resolvable
+                        $device->system->ip = gethostbyname($host);
+                    } else {
+                        $device->system->ip = $host;
+                    }
+                    unset($host);
+                    unset($exploded_host);
+                    unset($exploded_url);
+                }
+                if ($device->system->ip === '127.0.0.1' or $device->system->ip === '127.0.1.1') {
+                    $ip = explode(',', $this->config->config['ip']);
+                    if (!empty($ip[0])) {
+                        $device->system->ip = $ip[0];
+                    }
+                    unset($ip);
+                }
+            }
+        }
+
         $sql = "UPDATE integrations SET select_external_count = ? WHERE id = ?";
         $data = array(count($external_formatted_devices), $integration->id);
         $query = $this->db->query($sql, $data);
