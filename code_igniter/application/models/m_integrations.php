@@ -331,7 +331,7 @@ class M_integrations extends MY_Model
 
         // Check retrieved devices for 'localhost' or '127.0.0.1' which may or may not be this Open-AudIT server
         foreach ($external_formatted_devices as $device) {
-            if ($device->system->ip === '127.0.0.1' or $device->system->ip === 'localhost') {
+            if ($device->system->ip === '127.0.0.1' or $device->system->ip === '127.0.1.1' or $device->system->ip === 'localhost') {
                 // The (possibly) remote system has itself as a device, see if we can determine an actual IP
                 if (stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or stripos($integration->attributes->attributes->url, 'localhost') !== false) {
                     // We're talking to ourselves
