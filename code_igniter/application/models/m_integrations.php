@@ -292,6 +292,7 @@ class M_integrations extends MY_Model
         $this->load->model('m_devices');
         $this->load->model('m_device');
         $this->load->model('m_edit_log');
+        $this->load->model('m_queue');
         $this->load->model('m_rules');
         $this->load->helper('audit');
 
@@ -388,6 +389,7 @@ class M_integrations extends MY_Model
             $update = 0;
             $create = 0;
             $device_ids = array();
+            $discover_devices = array();
             foreach ($external_formatted_devices as $device) {
                 if (!empty($device->system->id)) {
                     // Update
@@ -420,6 +422,7 @@ class M_integrations extends MY_Model
                         $query = $this->db->query($sql, $data);
                         $create++;
                         $device_ids[] = intval($device->system->id);
+                        $discover_devices[] = $device;
                     } else {
                         $message = 'Could not create device ' . $device->system->name;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?, 'success')";
@@ -511,6 +514,73 @@ class M_integrations extends MY_Model
                 $this->m_rules->execute($parameters);
             }
         }
+
+        // Discoveries
+        if ($integration->attributes->create_internal_from_external === 'y' && is_array($discover_devices) && count($discover_devices) > 0) {
+            // Reset discovery stats and logs
+
+            $message = 'Reset discovery stats and logs.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
+            $sql = '/* m_integrations::execute */ ' . "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = " . intval($integration->attributes->discovery_id);
+            $query = $this->db->query($sql);
+
+            $sql = '/* m_integrations::execute */ ' . "DELETE FROM discovery_log WHERE discovery_id = " . intval($integration->attributes->discovery_id);
+            $query = $this->db->query($sql);
+
+            $sql = '/* m_integrations::execute */ ' . "INSERT INTO discovery_log VALUES (null, " . intval($integration->attributes->discovery_id) . ", null, '" . $CI->config->config['timestamp'] . "', 6, 'notice', '', '127.0.0.1', 'm_integrations', 'execute', 'Starting discovery for " . $integration->attributes->name . "', '', 'notice', 0, '')";
+            $query = $this->db->query($sql);
+
+            // put each device in the queue
+            foreach ($discover_devices as $device) {
+
+                $message = 'Add ' . $device->system->name . ' to discovery queue.';
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+
+                $item = new stdClass();
+                $item->ip = ip_address_from_db($device->system->ip);
+                $item->discovery_id = intval($integration->attributes->discovery_id);
+                $details = json_encode($item);
+                unset ($item);
+                $CI->m_queue->create('ip_scan', $details);
+            }
+
+            $message = 'Added ' . count($discover_devices) . ' devices to discovery list.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
+            $sql = "UPDATE discoveries SET status = 'running', ip_all_count = ?, ip_responding_count = ?, ip_scanned_count = ?, ip_discovered_count = 0, ip_audited_count = 0 WHERE id = ?";
+            $data = array(count($discover_devices), count($discover_devices), count($discover_devices), intval($integration->attributes->discovery_id));
+            $query = $this->db->query($sql, $data);
+
+            $message = 'Starting discovery.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
+            if (php_uname('s') !== 'Windows NT') {
+                // TODO - not cloud compatible because no 'instance' on the command line
+                $instance = '';
+                if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database !== 'openaudit') {
+                    $instance = '/' . $this->db->database;
+                } else {
+                    $command = 'php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+                    if (php_uname('s') === 'Linux') {
+                        $command = 'nohup ' . $command;
+                    }
+                    @exec($command);
+                }
+            } else {
+                $command = "%comspec% /c start c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php util queue";
+                pclose(popen($command, 'r'));
+            }
+        }
+
 
         // Get local devices
         $local_devices = $this->get_local_devices($integration);
