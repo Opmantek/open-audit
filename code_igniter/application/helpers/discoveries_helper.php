@@ -420,7 +420,7 @@ if ( ! function_exists('ip_scan')) {
 		}
 		$start = microtime(true);
 		$CI = get_instance();
-		$ip = $details->ip;
+		$ip = ip_address_from_db($details->ip);
 
 		$mac_address = '';
 		if ( ! empty($details->mac_address)) {
@@ -469,8 +469,8 @@ if ( ! function_exists('ip_scan')) {
 				$log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB';
 				$log->command_status = 'device complete';
 				$log->command_time_to_execute = microtime(true)  - $start;
-				$log->message = 'IP scan finish on device ' . ip_address_from_db($ip);
-				$log->ip = ip_address_from_db($ip);
+				$log->message = 'IP scan finish on device ' . $ip;
+				$log->ip = $ip;
 				discovery_log($log);
 				// Update the log line to avoid confusion in the GUI
 				$sql = '/* discoveries_helper::ip_scan */ ' .  "UPDATE discovery_log SET message = 'IP " . $log->ip . " responding, adding to device list. Device detected via seed discovery, but not responding to ping, ignoring.' WHERE message = 'IP " . $log->ip . " responding, adding to device list.' AND discovery_id = ?";
