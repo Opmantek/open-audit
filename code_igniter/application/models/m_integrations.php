@@ -241,6 +241,12 @@ class M_integrations extends MY_Model
         $data = array($discovery_id);
         $result = $this->run_sql($sql, $data);
 
+        // Delete any associated tasks
+        $sql = "DELETE FROM tasks WHERE sub_resource_id = ? and type = 'integrations'";
+        $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
+
+        // Delete the integration itself
         $sql = 'DELETE FROM `integrations` WHERE `id` = ?';
         $data = array(intval($id));
         $this->run_sql($sql, $data);
