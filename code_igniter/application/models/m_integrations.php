@@ -231,9 +231,20 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
+        // Select and delete the associated discovery
+        $sql = "SELECT discovery_id FROM integrations WHERE id = ?";
+        $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
+        $discovery_id = intval($result[0]->discovery_id);
+
+        $sql = "DELETE FROM discoveries WHERE id = ?";
+        $data = array($discovery_id);
+        $result = $this->run_sql($sql, $data);
+
         $sql = 'DELETE FROM `integrations` WHERE `id` = ?';
         $data = array(intval($id));
         $this->run_sql($sql, $data);
+
         return true;
     }
 
