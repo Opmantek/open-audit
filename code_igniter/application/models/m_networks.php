@@ -155,7 +155,7 @@ class M_networks extends MY_Model
     {
         $data = array(intval($id));
         $sql = 'DELETE FROM `networks` WHERE id = ?';
-        test = $this->run_sql($sql, $data);
+        $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
         } else {
