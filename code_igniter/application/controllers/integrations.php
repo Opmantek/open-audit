@@ -57,7 +57,6 @@ class Integrations extends MY_Controller
     {
         parent::__construct();
         $this->load->model('m_integrations');
-        $this->load->model('m_integrations_rules');
         // inputRead();
         $this->response = response_create();
         $this->output->url = $this->config->config['oa_web_index'];
@@ -93,15 +92,6 @@ class Integrations extends MY_Controller
     public function create()
     {
         $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
-        // create rules
-        $type = $this->response->meta->received_data->attributes->type;
-        if ( ! empty($this->response->meta->received_data->attributes->integrations_rules->{$type})) {
-            foreach ($this->response->meta->received_data->attributes->integrations_rules->{$type} as $rule) {
-                $rule->integrations_id = $this->response->meta->id;
-                $rule->org_id = $this->response->meta->received_data->attributes->org_id;
-                $this->m_integrations_rules->create($rule);
-            }
-        }
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         $this->response->meta->format = 'json';
         output($this->response);
