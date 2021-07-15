@@ -84,8 +84,8 @@ class M_discovery_log extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
         $sql = 'DELETE FROM `discovery_log` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

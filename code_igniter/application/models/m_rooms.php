@@ -108,9 +108,8 @@ class M_rooms extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
+        $data = array(intval($id));
         $sql = 'DELETE FROM `rooms` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

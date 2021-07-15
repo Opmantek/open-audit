@@ -95,8 +95,8 @@ class M_collectors extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
         $sql = 'DELETE FROM `collectors` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

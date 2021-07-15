@@ -156,20 +156,10 @@ class M_tasks extends MY_Model
      */
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if ($id !== 0) {
-            $CI = & get_instance();
-            $sql = 'DELETE FROM `tasks` WHERE `id` = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `tasks` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
             return false;

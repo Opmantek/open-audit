@@ -99,9 +99,8 @@ class M_racks extends MY_Model
      */
     public function delete($id = '')
     {
-        $id = intval($id);
+        $data = array(intval($id));
         $sql = 'DELETE FROM `racks` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

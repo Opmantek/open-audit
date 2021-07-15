@@ -102,16 +102,19 @@ class M_orgs extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
+        $data = array(intval($id));
         if ($id === 1) {
             // never allowed to delete the default org
             log_error('ERR-0013', 'm_orgs::delete');
             return false;
         }
         $sql = 'DELETE FROM `orgs` WHERE id = ?';
-        $data = array($id);
-        $this->run_sql($sql, $data);
-        return true;
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

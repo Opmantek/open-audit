@@ -164,31 +164,23 @@ class M_dashboards extends MY_Model
      */
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
+        $data = array(intval($id));
+        // do NOT allow deleting the default roles
+        $sql = 'SELECT type FROM dashboards WHERE id = ?';
+        $result = $this->run_sql($sql, $data);
+        if ($result[0]->type === 'default') {
+            log_error('ERR-0013', 'm_dashboards::delete');
+            return false;
         }
-        if ($id !== 0) {
-            // do NOT allow deleting the default roles
-            $sql = 'SELECT type FROM dashboards WHERE id = ?';
-            $data = array($id);
-            $result = $this->run_sql($sql, $data);
-            if ($result[0]->type === 'default') {
-                log_error('ERR-0013', 'm_dashboards::delete');
-                return false;
-            }
-            // attempt to delete the item
-            $sql = 'DELETE FROM `dashboards` WHERE id = ?';
-            $data = array($id);
-            $this->run_sql($sql, $data);
+        // Update any users default dashboard
+        $sql = "UPDATE users SET dashboard_id = 1 WHERE dashboard_id = ?";
+        $test = $this->run_sql($sql, $data);
+        // attempt to delete the item
+        $sql = 'DELETE FROM `dashboards` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            log_error('ERR-0013', 'm_dashboards::delete');
             return false;
         }
     }

@@ -133,31 +133,13 @@ class M_roles extends MY_Model
 
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if ($id != 0) {
-            // do NOT allow deleting the default roles
-            $sql = "SELECT name FROM roles WHERE id = ?";
-            $data = array($id);
-            $result = $this->run_sql($sql, $data);
-            if ($result[0]->name == 'admin' or $result[0]->name == 'org_admin' or $result[0]->name == 'reporter' or $result[0]->name == 'user') {
-                log_error('ERR-0013', 'm_roles::delete');
-                return false;
-            }
-            // attempt to delete the item
-            $sql = "DELETE FROM `roles` WHERE id = ?";
-            $data = array($id);
-            $this->run_sql($sql, $data);
+        $data = array(intval($id));
+        // Delete the role, only if not in default list
+        $sql = "DELETE FROM `roles` WHERE id = ? AND name NOT IN ('admin', 'org_admin', 'reporter', 'user', 'collector')";
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            log_error('ERR-0013', 'm_roles::delete');
             return false;
         }
     }

@@ -129,14 +129,8 @@ class M_users extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
-        if ($id === 1) {
-            // never allowed to delete the default user
-            log_error('ERR-0013', 'm_users::delete');
-            return false;
-        }
-        $sql = 'DELETE FROM `users` WHERE id = ?';
-        $data = array($id);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `users` WHERE id = ? AND id > 1';
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

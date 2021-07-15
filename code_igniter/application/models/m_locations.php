@@ -127,14 +127,13 @@ class M_locations extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
+        $data = array(intval($id));
         if ($id === 1) {
             // never allowed to delete the default location
             log_error('ERR-0013', 'm_locations::delete');
             return false;
         }
         $sql = 'DELETE FROM `locations` WHERE id = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

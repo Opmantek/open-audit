@@ -187,22 +187,14 @@ class M_credentials extends MY_Model
      */
     public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if (empty($id)) {
-            $id = @intval($CI->response->meta->id);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `credentials` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
         } else {
-            $id = intval($id);
-        }
-        if (empty($id)) {
             return false;
         }
-        $CI = & get_instance();
-        $sql = 'DELETE FROM `credentials` WHERE id = ?';
-        $data = array($id);
-        $this->run_sql($sql, $data);
-        return true;
     }
 
     /**
