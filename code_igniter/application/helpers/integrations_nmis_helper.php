@@ -96,7 +96,7 @@ if (!function_exists('integrations_pre')) {
         $ch = curl_init();
 
         // Using token auth for local NMIS
-        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
             $token = generate_token();
             $login_url = $url . '/login/' . $token;
         } else {
@@ -328,7 +328,7 @@ if (!function_exists('integrations_collection')) {
         $ch = curl_init();
 
         // Using token auth for local NMIS
-        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
             $token = generate_token();
             $login_url = $url . '/login/' . $token;
         } else {
@@ -443,7 +443,7 @@ if (!function_exists('integrations_update')) {
         $ch = curl_init();
 
         // Using token auth for local NMIS
-        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
             $token = generate_token();
             $login_url = $url . '/login/' . $token;
         } else {
@@ -550,7 +550,7 @@ if (!function_exists('integrations_create')) {
         $ch = curl_init();
 
         // Using token auth for local NMIS
-        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
             $token = generate_token();
             $login_url = $url . '/login/' . $token;
         } else {
@@ -676,7 +676,7 @@ if (!function_exists('integrations_delete')) {
         $ch = curl_init();
 
         // Using token auth for local NMIS
-        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
             $token = generate_token();
             $login_url = $url . '/login/' . $token;
         } else {
