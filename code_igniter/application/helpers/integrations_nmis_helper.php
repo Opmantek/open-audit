@@ -38,6 +38,44 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+if (!function_exists('generate_token')) {
+    function generate_token() {
+        $command = '';
+        // Load and parse opConfig.json
+        $files = array ('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                $json = file_get_contents($file);
+                break;
+            }
+        }
+        if (empty($json)) {
+            return false;
+        }
+        $json = json_decode($json);
+        $bin = $json->{'directories'}->{'<omk_base>'} . '/bin/';
+        $token = $json->{'authentication'}->{'auth_token_key'}[0];
+        if (empty($token)) {
+            return false;
+        }
+        $files = array($bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                $command = $file;
+                break;
+            }
+        }
+        if (!empty($command)) {
+            $command .= " '" . $token . "' admin";
+            exec($command, $output, $return_var);
+            if (!empty($output)) {
+                $token = trim($output[0]);
+            }
+        }
+        return $token;
+    }
+}
+
 if (!function_exists('integrations_pre')) {
     function integrations_pre($integration)
     {
@@ -46,21 +84,33 @@ if (!function_exists('integrations_pre')) {
 
         // Get our devices
         $url = $integration->attributes->attributes->url;
+        if (strpos($url, '/') !== strlen($url)) {
+            $url .= '/';
+        }
+        $url .= 'admin';
 
         // Create temp file to store cookies
         $ckfile = tempnam("/tmp", "CURLCOOKIE");
 
-        $form_fields = array(
-            'username' => $integration->attributes->attributes->username,
-            'password' => $integration->attributes->attributes->password,
-        );
-
         // Post login form and follow redirects
         $ch = curl_init();
+
+        // Using token auth for local NMIS
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+            $token = generate_token();
+            $login_url = $url . '/login/' . $token;
+        } else {
+            $form_fields = array(
+                'username' => $integration->attributes->attributes->username,
+                'password' => $integration->attributes->attributes->password,
+            );
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+            $login_url = $url . '/login';
+        }
+
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_URL, $login_url);
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -69,29 +119,28 @@ if (!function_exists('integrations_pre')) {
         $output = curl_exec($ch);
         if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
             // bad credentials
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check Username and Password.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check Username and Password.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'redirect_url=') !== false) {
             // Likely a bad URL
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check URL.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (pre).', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
-
         # Location List
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/locations.json');
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/locations.json');
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -191,7 +240,7 @@ if (!function_exists('integrations_pre')) {
         // Store any pollers
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/pollers.json');
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/pollers.json');
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -227,6 +276,9 @@ if (!function_exists('integrations_post')) {
     {
         $CI = & get_instance();
         $groups = array();
+        if (empty($devices)) {
+            return true;
+        }
         foreach ($devices as $device) {
             if (!empty($device->configuration->group)) {
                 $groups[] = $device->configuration->group;
@@ -264,21 +316,35 @@ if (!function_exists('integrations_collection')) {
 
         // Get our devices
         $url = $integration->attributes->attributes->url;
+        if (strpos($url, '/') !== strlen($url)) {
+            $url .= '/';
+        }
+        $url .= 'admin';
 
         // Create temp file to store cookies
         $ckfile = tempnam("/tmp", "CURLCOOKIE");
 
-        $form_fields = array(
-            'username' => $integration->attributes->attributes->username,
-            'password' => $integration->attributes->attributes->password,
-        );
+        // Post login form and follow redirects
+        $ch = curl_init();
+
+        // Using token auth for local NMIS
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+            $token = generate_token();
+            $login_url = $url . '/login/' . $token;
+        } else {
+            $form_fields = array(
+                'username' => $integration->attributes->attributes->username,
+                'password' => $integration->attributes->attributes->password,
+            );
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+            $login_url = $url . '/login';
+        }
 
         // Post login form and follow redirects
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_URL, $login_url);
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -287,28 +353,28 @@ if (!function_exists('integrations_collection')) {
         $output = curl_exec($ch);
         if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
             // bad credentials
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check Username and Password.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check Username and Password.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'redirect_url=') !== false) {
             // Likely a bad URL
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check URL.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check URL.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (collection).', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
         // Get the external devices list
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes.json');
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/nodes.json');
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -365,21 +431,35 @@ if (!function_exists('integrations_update')) {
 
         // Create our devices
         $url = $integration->attributes->attributes->url;
+        if (strpos($url, '/') !== strlen($url)) {
+            $url .= '/';
+        }
+        $url .= 'admin';
 
         // Create temp file to store cookies
         $ckfile = tempnam("/tmp", "CURLCOOKIE");
 
-        $form_fields = array(
-            'username' => $integration->attributes->attributes->username,
-            'password' => $integration->attributes->attributes->password,
-        );
+        // Post login form and follow redirects
+        $ch = curl_init();
+
+        // Using token auth for local NMIS
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+            $token = generate_token();
+            $login_url = $url . '/login/' . $token;
+        } else {
+            $form_fields = array(
+                'username' => $integration->attributes->attributes->username,
+                'password' => $integration->attributes->attributes->password,
+            );
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+            $login_url = $url . '/login';
+        }
 
         // Post login form and follow redirects
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_URL, $login_url);
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -388,21 +468,21 @@ if (!function_exists('integrations_update')) {
         $output = curl_exec($ch);
         if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
             // bad credentials
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check Username and Password.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check Username and Password.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'redirect_url=') !== false) {
             // Likely a bad URL
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check URL.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (update).', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -418,7 +498,7 @@ if (!function_exists('integrations_update')) {
 
         // loop over our devices and send them to be created
         foreach ($devices as $device) {
-            curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes/' . $device->uuid);
+            curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/nodes/' . $device->uuid);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
@@ -458,21 +538,35 @@ if (!function_exists('integrations_create')) {
 
         // Create our devices
         $url = $integration->attributes->attributes->url;
+        if (strpos($url, '/') !== strlen($url)) {
+            $url .= '/';
+        }
+        $url .= 'admin';
 
         // Create temp file to store cookies
         $ckfile = tempnam("/tmp", "CURLCOOKIE");
 
-        $form_fields = array(
-            'username' => $integration->attributes->attributes->username,
-            'password' => $integration->attributes->attributes->password,
-        );
+        // Post login form and follow redirects
+        $ch = curl_init();
+
+        // Using token auth for local NMIS
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+            $token = generate_token();
+            $login_url = $url . '/login/' . $token;
+        } else {
+            $form_fields = array(
+                'username' => $integration->attributes->attributes->username,
+                'password' => $integration->attributes->attributes->password,
+            );
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+            $login_url = $url . '/login';
+        }
 
         // Post login form and follow redirects
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_URL, $login_url);
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -481,28 +575,28 @@ if (!function_exists('integrations_create')) {
         $output = curl_exec($ch);
         if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
             // bad credentials
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check Username and Password.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check Username and Password.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'redirect_url=') !== false) {
             // Likely a bad URL
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check URL.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (create).', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes.json');
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/nodes.json');
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -570,21 +664,35 @@ if (!function_exists('integrations_delete')) {
 
         // Create our connection
         $url = $integration->attributes->attributes->url;
+        if (strpos($url, '/') !== strlen($url)) {
+            $url .= '/';
+        }
+        $url .= 'admin';
 
         // Create temp file to store cookies
         $ckfile = tempnam("/tmp", "CURLCOOKIE");
 
-        $form_fields = array(
-            'username' => $integration->attributes->attributes->username,
-            'password' => $integration->attributes->attributes->password,
-        );
+        // Post login form and follow redirects
+        $ch = curl_init();
+
+        // Using token auth for local NMIS
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password)) {
+            $token = generate_token();
+            $login_url = $url . '/login/' . $token;
+        } else {
+            $form_fields = array(
+                'username' => $integration->attributes->attributes->username,
+                'password' => $integration->attributes->attributes->password,
+            );
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+            $login_url = $url . '/login';
+        }
 
         // Post login form and follow redirects
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_URL, $login_url);
         curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -593,21 +701,21 @@ if (!function_exists('integrations_delete')) {
         $output = curl_exec($ch);
         if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
             // bad credentials
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check Username and Password.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check Username and Password.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'redirect_url=') !== false) {
             // Likely a bad URL
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not logon to NMIS, check URL.', 'fail')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.', 'fail')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return false;
         }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS.', 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (delete).', 'success')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -623,7 +731,7 @@ if (!function_exists('integrations_delete')) {
 
         // loop over our devices and send them to be deleted
         foreach ($devices as $device) {
-            curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes/' . $device->uuid);
+            curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/nodes/' . $device->uuid);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
