@@ -212,14 +212,10 @@ class Integrations extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
 
         $this->response->defaults = new stdClass();
-        $this->load->model('m_attributes');
-        $integrations = $this->m_attributes->collection($this->user->id);
-        foreach ($integrations as $integration) {
-            if ($integration->attributes->resource === 'integrations') {
-                $this->load->helper($integration->attributes->value);
-                $function = 'external_defaults_' . $integration->attributes->value;
-                $this->response->defaults->{$integration->attributes->value} = $function();
-            }
+        $this->response->defaults->name = 'NMIS Integration';
+        $count = $this->m_integrations->count();
+        if (!empty($count)) {
+            $this->response->defaults->name = 'NMIS Integration ' . ($count + 1);
         }
         output($this->response);
     }
