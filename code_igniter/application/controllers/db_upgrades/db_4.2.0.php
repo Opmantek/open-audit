@@ -85,6 +85,8 @@ ALTER TABLE system DROP IF EXISTS nmis_poller_uuid;
 
 ALTER TABLE system ADD `nmis_poller_uuid` varchar(45) NOT NULL DEFAULT '' AFTER nmis_poller;
 
+INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"ne\",\"table\":\"system\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"system\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+
 UPDATE `configuration` SET `value` = '20210810' WHERE `name` = 'internal_version';
 
 UPDATE `configuration` SET `value` = '4.2.0' WHERE `name` = 'display_version';
@@ -164,6 +166,14 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
 $this->alter_table('system', 'nmis_poller_uuid', "ADD `nmis_poller_uuid` varchar(45) NOT NULL DEFAULT '' AFTER `nmis_poller`", 'add');
+
+$sql = "DELETE FROM rules WHERE name = 'NMIS Manage for SNMP devices'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"ne\",\"table\":\"system\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"system\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210810' WHERE `name` = 'internal_version'";
