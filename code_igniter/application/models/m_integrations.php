@@ -80,6 +80,10 @@ class M_integrations extends MY_Model
             $data->attributes = json_encode($data->attributes);
         }
 
+        if (empty($data->type)) {
+            $data->type = '';
+        }
+
         if (is_array($data->fields) OR is_object($data->fields)) {
             $new_fields = array();
             foreach ($data->fields as $field) {
