@@ -146,6 +146,10 @@ $this->alter_table('integrations', 'delete_external_from_internal', "ADD `delete
 
 $this->alter_table('integrations', 'duration', "ADD `duration` int(10) unsigned DEFAULT NULL AFTER `last_run`", 'add');
 
+$sql = "DROP TABLE IF EXISTS `integrations_log`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 $sq= "CREATE TABLE `integrations_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `integrations_id` int(10) unsigned DEFAULT NULL,
