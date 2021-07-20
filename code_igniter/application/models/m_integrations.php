@@ -318,14 +318,26 @@ class M_integrations extends MY_Model
         $this->load->helper('audit');
 
         /**
-         * The specific integration helper should implement the below functions
+        The specific integration helper should implement the below (integrations_*) functions
+        The order of what we do.
+
         integrations_pre        - Run before integration
-        integrations_collection - read all devices from a remote system
-        integrations_create     - create a single device on the remote system
-        integrations_update     - update a single device on the remote system
+        integrations_collection - Read all devices from a remote system
+        local                   - Check retrieved devices for 'localhost' or '127.0.0.1' which may or may not be this Open-AudIT server
+        local                   - Match any retrieved devices
+        local                   - Update device with location (created by integrations_pre)
+        local                   - Create or update devices retrieved
+        local                   - Create or update custom fields
+        local                   - Create or update credentials
+        local                   - Run Rules
+        local                   - Insert into queue for discoveries
+        local                   - Get local devices
+        local                   - Filter remote devices from local list
+        integrations_create     - Create new devices externally
+        local                   - Update local attributes from created devices
+        integrations_update     - Update external devices where required
+        integrations_delete     - Delete devices from the remote system if required
         integrations_post       - Run after integration
-        integrations_delete     - delete a single device from the remote system
-        integrations_read       - read a single device from remote system
         */
 
         $sql = '/* m_integrations::execute */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0 WHERE id = ?";
@@ -343,10 +355,10 @@ class M_integrations extends MY_Model
         $integration = $integration[0];
         $this->load->helper('integrations_' . $integration->attributes->type);
 
-        // Pre - Run before integration
+        // Run before integration
         integrations_pre($integration);
 
-        // Collection - read all devices from a remote system
+        // Read all devices from a remote system
         $external_devices = integrations_collection($integration);
         $external_formatted_devices = $this->external_to_internal($integration, $external_devices);
 
@@ -417,6 +429,7 @@ class M_integrations extends MY_Model
             }
         }
 
+        // Update device with location (created by integrations_pre)
         $locations_parse = false;
         foreach ($integration->attributes->fields as $field) {
             if ($field->internal_field_name === 'locations.name') {
@@ -500,7 +513,7 @@ class M_integrations extends MY_Model
             unset($devices);
         }
 
-        // Custom fields
+        // Create or update custom fields
         if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
             $sql = "SELECT * FROM fields";
             $query = $this->db->query($sql);
@@ -574,7 +587,7 @@ class M_integrations extends MY_Model
             }
         }
 
-        // Discoveries
+        // Insert into queue for discoveries
         if ($integration->attributes->discovery_run_on_create === 'y' && is_array($discover_devices) && count($discover_devices) > 0) {
             // Reset discovery stats and logs
 
@@ -656,6 +669,7 @@ class M_integrations extends MY_Model
         // take our list of devices from OA and if any are already in the list of externally retrieved devices, remove them
         // leave only the devices from OA that are not in the external list - create those
         if ($integration->attributes->create_external_from_internal === 'y') {
+            // Filter remote devices from local list
             $new_external_devices = $local_formatted_devices;
             foreach ($new_external_devices as $key => $local_device) {
                 foreach ($external_devices as $external_device) {
@@ -672,10 +686,9 @@ class M_integrations extends MY_Model
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
-            // create these new devices externally
-
+            // Create new devices externally
             $created_devices = integrations_create($integration, $new_external_devices);
-            // update the internal devices with the external attributes set by the external system
+            // Update local attributes from created devices
             $external_created_devices = $this->external_to_internal($integration, $created_devices);
             foreach ($external_created_devices as $device) {
                 $parameters = new stdClass();
@@ -708,6 +721,7 @@ class M_integrations extends MY_Model
             $query = $this->db->query($sql, $data);
         }
 
+        // Update external devices where required
         if ($integration->attributes->update_external_from_internal === 'y') {
             $update_external_devices = array();
             // Build a new list of devices where we have a match in both
@@ -749,6 +763,7 @@ class M_integrations extends MY_Model
             integrations_update($integration, $update_external_devices);
         }
 
+        // Delete devices from the remote system if required
         if ($integration->attributes->delete_external_from_internal === 'y') {
             if (count($external_devices) > count($local_formatted_devices)) {
                 $message = count($external_devices) . ' external devices and ' . count($local_formatted_devices) . ' local devices';
@@ -787,7 +802,7 @@ class M_integrations extends MY_Model
             }
         }
 
-        // Post - Run after integration
+        // Run after integration
         integrations_post($integration, $external_devices);
 
         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Completed integration.', 'success')";
