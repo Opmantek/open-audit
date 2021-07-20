@@ -113,7 +113,7 @@ class M_integrations extends MY_Model
         if ($integration->attributes->discovery_run_on_create === 'y') {
             $discovery = new stdClass();
             $discovery->type = 'integration';
-            $discovery->name = 'Discovery for ' . $integration->attributes->name . ' integration';
+            $discovery->name = 'Discovery for ' . $integration->attributes->name;
             $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
             $discovery->org_id = $integration->attributes->org_id;
             $discovery->discard = 'n';
