@@ -425,6 +425,21 @@ class Logon extends CI_Controller
                 unset($network);
             }
         }
+
+        # Add a default discovery if we don't already have one
+        $sql = "SELECT id, name, subnet FROM discoveries WHERE name = 'Default Discovery' AND subnet = ? AND `type` = 'subnet'";
+        $ips = $this->config->config['server_ip'];
+        $ips = explode(',', $ips);
+        $ip = trim($ips[0]);
+        $data = array($ip.'/24', $ip);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (empty($result)) {
+            $sql = 'INSERT INTO discoveries (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null, "Default Discovery", 1, "Automatically created default discovery.", "subnet", "' . $ip . '/24", NOW(), "system")';
+            $query = $this->db->query($sql);
+        }
+
+
     }
 }
 // End of file logon.php
