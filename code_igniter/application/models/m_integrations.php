@@ -405,14 +405,20 @@ class M_integrations extends MY_Model
         $query = $this->db->query($sql, $data);
 
         // Match any retrieved devices
+        $parameters = new stdClass();
+        $parameters->log = $log;
+        $parameters->match = new stdClass();
+        foreach ($integration->attributes->fields as $field) {
+            if ($field->matching_attribute === 'y') {
+                $field_name = str_replace('system.', '', $field->internal_field_name);
+                $parameters->match->{$field_name} = 'y';
+            }
+        }
+
         foreach ($external_formatted_devices as $device) {
             $device->system->last_seen_by = 'integrations';
             $device->system->org_id = $integration->attributes->org_id;
-            $parameters = new stdClass();
             $parameters->details = $device->system;
-            $parameters->log = $log;
-            $parameters->match = new stdClass();
-            $parameters->match->ip = 'y';
             $id = $this->m_device->match($parameters);
             if (!empty($id)) {
                 // We matched an existing device
@@ -829,12 +835,19 @@ class M_integrations extends MY_Model
             $created_devices = integrations_create($integration, $new_external_devices);
             // Update local attributes from created devices
             $external_created_devices = $this->external_to_internal($integration, $created_devices);
+
+            $parameters = new stdClass();
+            $parameters->log = $log;
+            $parameters->match = new stdClass();
+            foreach ($integration->attributes->fields as $field) {
+                if ($field->matching_attribute === 'y') {
+                    $field_name = str_replace('system.', '', $field->internal_field_name);
+                    $parameters->match->{$field_name} = 'y';
+                }
+            }
+
             foreach ($external_created_devices as $device) {
-                $parameters = new stdClass();
                 $parameters->details = $device->system;
-                $parameters->log = $log;
-                $parameters->match = new stdClass();
-                $parameters->match->ip = 'y';
                 $device->system->id = $this->m_device->match($parameters);
                 $temp_device = new stdClass();
                 $temp_device->id = $device->system->id;
