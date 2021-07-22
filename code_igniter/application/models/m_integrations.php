@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Model
 * @package   Integrations
 * @author    Mark Unwin <marku@opmantek.com>
@@ -70,13 +70,13 @@ class M_integrations extends MY_Model
     {
 
         $CI = & get_instance();
-        if ( ! empty($data->options) && ! is_string($data->options)) {
+        if (!empty($data->options) && ! is_string($data->options)) {
             $data->options = json_encode($data->options);
         } else {
             $data->options = '[]';
         }
 
-        if ( ! empty($data->attributes) && ! is_string($data->attributes)) {
+        if (!empty($data->attributes) && ! is_string($data->attributes)) {
             $data->attributes = json_encode($data->attributes);
         }
 
@@ -84,7 +84,7 @@ class M_integrations extends MY_Model
             $data->type = '';
         }
 
-        if (is_array($data->fields) OR is_object($data->fields)) {
+        if (is_array($data->fields) or is_object($data->fields)) {
             $new_fields = array();
             foreach ($data->fields as $field) {
                 $item = new stdClass();
@@ -173,15 +173,15 @@ class M_integrations extends MY_Model
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'integrations');
-        if ( ! empty($result)) {
+        if (! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                if ( ! empty($result[$i]->{'attributes'}->{'options'})) {
+                if (! empty($result[$i]->{'attributes'}->{'options'})) {
                     $result[$i]->{'attributes'}->{'options'} = json_decode($result[$i]->{'attributes'}->{'options'});
                 }
-                if ( ! empty($result[$i]->{'attributes'}->{'attributes'})) {
+                if (! empty($result[$i]->{'attributes'}->{'attributes'})) {
                     $result[$i]->{'attributes'}->{'attributes'} = json_decode($result[$i]->{'attributes'}->{'attributes'});
                 }
-                if ( ! empty($result[$i]->{'attributes'}->{'fields'})) {
+                if (! empty($result[$i]->{'attributes'}->{'fields'})) {
                     $result[$i]->{'attributes'}->{'fields'} = json_decode($result[$i]->{'attributes'}->{'fields'});
                 }
             }
@@ -282,7 +282,7 @@ class M_integrations extends MY_Model
         $queue_item->org_id = $integration->attributes->org_id;
         $queue_item->integrations_id = $id;
         $temp = $this->m_queue->create('integrations', $queue_item);
-        if ( ! empty($temp)) {
+        if (! empty($temp)) {
             return true;
         } else {
             return false;
@@ -584,7 +584,6 @@ class M_integrations extends MY_Model
                                 $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was updated', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
                                 $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
                                 $this->db->query($sql, $data);
-
                             }
                         }
                     }
@@ -724,7 +723,6 @@ class M_integrations extends MY_Model
                         }
                     }
                 }
-
             }
         }
 
@@ -987,12 +985,16 @@ class M_integrations extends MY_Model
         // exit;
     }
 
-    public function get_value($device, $field) {
-        $value = array_reduce(explode('.', $field), function ($previous, $current) { return isset($previous->$current) && !empty($previous->$current) ? $previous->$current: null; }, $device);
+    public function get_value($device, $field)
+    {
+        $value = array_reduce(explode('.', $field), function ($previous, $current) {
+            return isset($previous->$current) && !empty($previous->$current) ? $previous->$current: null;
+        }, $device);
         return $value;
     }
 
-    public function set_value($device, $field, $value) {
+    public function set_value($device, $field, $value)
+    {
         $explode = explode('.', $field);
         if (count($explode) === 1) {
             $device->{$field} = $value;
@@ -1011,7 +1013,7 @@ class M_integrations extends MY_Model
      */
     public function format_int_to_ext($integration, $internal_device)
     {
-        if (empty($internal_device) OR empty($rules)) {
+        if (empty($internal_device) or empty($rules)) {
             return false;
         }
         $device = new stdClass();
@@ -1124,7 +1126,7 @@ class M_integrations extends MY_Model
                             // } else { if (count($explode === 2)) {
                             //     $device->{$explode[0]}->{$explode[1]} = date_format($date, 'Y-m-d H:i:s');
                             // }
-                        break;
+                            break;
 
                         case 'date_now':
                             $date = date_create_from_format("Y-m-d", $this->config->config['timestamp']);
@@ -1163,11 +1165,11 @@ class M_integrations extends MY_Model
                             # code...
                             break;
                     }
+                }
             }
         }
+        return $device;
     }
-    return $device;
-}
 
     public function get_local_devices($integration)
     {
@@ -1256,27 +1258,27 @@ class M_integrations extends MY_Model
             }
         }
 
-        if ( ! empty($device_ids)) {
-                // OA Fields
-                $sql = "SELECT field.*, fields.name FROM field left join fields on (field.fields_id = fields.id) WHERE system_id in (" . implode(',', $device_ids) . ")";
-                $query = $this->db->query($sql);
-                $fields = $query->result();
+        if (! empty($device_ids)) {
+            // OA Fields
+            $sql = "SELECT field.*, fields.name FROM field left join fields on (field.fields_id = fields.id) WHERE system_id in (" . implode(',', $device_ids) . ")";
+            $query = $this->db->query($sql);
+            $fields = $query->result();
 
-                // build a new array of fields that contains the actual internal_field_name (not an empty string)
-                // use this array so we can iterate over it, but not affect the actual integration
-                // TODO - maybe be able to actually use the integration, overwriting blank field names
-                $custom_fields = array();
-                foreach ($integration->attributes->fields as $integration_field) {
-                    if ($integration_field->internal_field_name === '' or strpos($integration_field->internal_field_name, 'fields.') !== false) {
-                        $newfield = new stdClass();
-                        $newfield = clone $integration_field;
-                        $newfield->internal_field_name = str_replace('fields.', '', $integration_field->internal_field_name);
-                        if ($newfield->internal_field_name === '') {
-                            $newfield->internal_field_name = internal_field_from_empty($integration->attributes->type, $integration_field->external_field_name);
-                        }
-                        $custom_fields[] = $newfield;
+            // build a new array of fields that contains the actual internal_field_name (not an empty string)
+            // use this array so we can iterate over it, but not affect the actual integration
+            // TODO - maybe be able to actually use the integration, overwriting blank field names
+            $custom_fields = array();
+            foreach ($integration->attributes->fields as $integration_field) {
+                if ($integration_field->internal_field_name === '' or strpos($integration_field->internal_field_name, 'fields.') !== false) {
+                    $newfield = new stdClass();
+                    $newfield = clone $integration_field;
+                    $newfield->internal_field_name = str_replace('fields.', '', $integration_field->internal_field_name);
+                    if ($newfield->internal_field_name === '') {
+                        $newfield->internal_field_name = internal_field_from_empty($integration->attributes->type, $integration_field->external_field_name);
                     }
+                    $custom_fields[] = $newfield;
                 }
+            }
 
             foreach ($devices as $device) {
                 $device->fields = new stdClass();
@@ -1340,7 +1342,8 @@ class M_integrations extends MY_Model
         return $devices;
     }
 
-    public function internal_field_from_empty($type, $field_name) {
+    public function internal_field_from_empty($type, $field_name)
+    {
         // $return_field_name = '';
         // foreach ($integration->fields as $integration_field) {
         //     if ($integration_field->external_field === $field_name) {
@@ -1360,7 +1363,7 @@ class M_integrations extends MY_Model
         $external_formatted_devices = array();
 
         foreach ($external_devices as $device) {
-            $newdevice = new stdClass();            
+            $newdevice = new stdClass();
             foreach ($integration->attributes->fields as $field) {
                 if (empty($field->internal_field_name)) {
                     $temp = explode('.', $field->external_field_name);
@@ -1374,7 +1377,9 @@ class M_integrations extends MY_Model
                     }
                     if (empty($newdevice->{$int[0]}->{$int[1]})) {
                         #$newdevice->{$int[0]}->{$int[1]} = '';
-                        $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) { return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null; }, $device);
+                        $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) {
+                            return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null;
+                        }, $device);
                         if (empty($newdevice->{$int[0]}->{$int[1]}) and $field->default_value === '') {
                             unset($newdevice->{$int[0]}->{$int[1]});
                         }
@@ -1419,7 +1424,7 @@ class M_integrations extends MY_Model
                     if (strpos($field->external_field_name, '.') !== false) {
                         $ext_fields = explode('.', $field->external_field_name);
                         for ($i=0; $i < count($ext_fields)-1; $i++) {
-                            if ( ! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
+                            if (! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
                                 $newdevice->{$ext_fields[$i]} = new stdClass();
                             }
                         }
@@ -1436,7 +1441,7 @@ class M_integrations extends MY_Model
                     if (strpos($field->external_field_name, '.') !== false) {
                         $ext_fields = explode('.', $field->external_field_name);
                         for ($i=0; $i < count($ext_fields)-1; $i++) {
-                            if ( ! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
+                            if (! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
                                 $newdevice->{$ext_fields[$i]} = new stdClass();
                             }
                         }
@@ -1459,12 +1464,11 @@ class M_integrations extends MY_Model
                     if (strpos($field->external_field_name, '.') !== false) {
                         $ext_fields = explode('.', $field->external_field_name);
                         for ($i=0; $i < count($ext_fields)-1; $i++) {
-                            if ( ! isset($newdevice->{$ext_fields[$i]}) or ! is_object($newdevice->{$ext_fields[$i]})) {
+                            if (! isset($newdevice->{$ext_fields[$i]}) or !is_object($newdevice->{$ext_fields[$i]})) {
                                 $newdevice->{$ext_fields[$i]} = new stdClass();
                             }
                         }
                         if (count($ext_fields) === 2) {
-
                             if (!empty($value)) {
                                 $newdevice->{$ext_fields[0]}->{$ext_fields[1]} = $value;
                             } else if (!empty($field->default_value)) {
@@ -1482,7 +1486,6 @@ class M_integrations extends MY_Model
                             $newdevice->{$field->external_field_name} = '';
                         }
                     }
-
                 }
             }
             $internal_formatted_devices[] = $newdevice;
@@ -1514,19 +1517,19 @@ class M_integrations extends MY_Model
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if ( ! empty($user_id)) {
+        if (! empty($user_id)) {
             $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
             $sql = "SELECT * FROM integrations WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'integrations');
             return $result;
         }
-        if ( ! empty($response)) {
+        if (! empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM integrations LEFT JOIN orgs ON (integrations.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->filter . ' ' . 
-                    $CI->response->meta->internal->groupby . ' ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM integrations LEFT JOIN orgs ON (integrations.org_id = orgs.id) " .
+                    $CI->response->meta->internal->filter . ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             foreach ($result as $key => $value) {
