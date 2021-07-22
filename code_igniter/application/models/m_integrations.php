@@ -355,6 +355,11 @@ class M_integrations extends MY_Model
 
         $integration = $this->read($id);
         $integration = $integration[0];
+
+        if (substr($integration->attributes->url, -1) !== '/') {
+            $integration->attributes->url .= '/';
+        }
+
         $this->load->helper('integrations_' . $integration->attributes->type);
 
         // Run before integration
