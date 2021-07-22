@@ -762,28 +762,36 @@ class M_integrations extends MY_Model
             $query = $this->db->query($sql);
 
             // put each device in the queue
+            $count = 0;
             foreach ($discover_devices as $device) {
+                if (filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
+                    $message = 'Add ' . $device->system->name . ' to discovery queue.';
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                    $data = array($integration->id, microtime(true), $message);
+                    $query = $this->db->query($sql, $data);
 
-                $message = 'Add ' . $device->system->name . ' to discovery queue.';
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
-                $data = array($integration->id, microtime(true), $message);
-                $query = $this->db->query($sql, $data);
-
-                $item = new stdClass();
-                $item->ip = ip_address_from_db($device->system->ip);
-                $item->discovery_id = intval($integration->attributes->discovery_id);
-                $details = json_encode($item);
-                unset ($item);
-                $CI->m_queue->create('ip_scan', $details);
+                    $item = new stdClass();
+                    $item->ip = ip_address_from_db($device->system->ip);
+                    $item->discovery_id = intval($integration->attributes->discovery_id);
+                    $details = json_encode($item);
+                    unset($item);
+                    $CI->m_queue->create('ip_scan', $details);
+                    $count = $count + 1;
+                } else {
+                    $message = 'Not adding ' . $device->system->name . ' to discovery queue - no IP.';
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?, 'warning')";
+                    $data = array($integration->id, microtime(true), $message);
+                    $query = $this->db->query($sql, $data);
+                }
             }
 
-            $message = 'Added ' . count($discover_devices) . ' devices to discovery queue.';
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $message = 'Added ' . count($count) . ' devices to discovery queue.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
             $sql = "UPDATE discoveries SET status = 'running', ip_all_count = ?, ip_responding_count = ?, ip_scanned_count = ?, ip_discovered_count = 0, ip_audited_count = 0 WHERE id = ?";
-            $data = array(count($discover_devices), count($discover_devices), count($discover_devices), intval($integration->attributes->discovery_id));
+            $data = array(count($count), count($count), count($count), intval($integration->attributes->discovery_id));
             $query = $this->db->query($sql, $data);
 
             $message = 'Starting discovery.';
