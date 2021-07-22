@@ -477,8 +477,15 @@ class M_integrations extends MY_Model
                     $temp_device = new stdClass();
                     $temp_device->id = $device->system->id;
                     $temp_device->last_seen_by = 'integrations';
+                    // If this is the FIRST time we have integrated this device
+                    // IE, the existing device we have matched in the database doesn't have an omk_uuid
+                    // then we should use all external attributes, disregarding the priority
+                    $sql = "SELECT omk_uuid FROM system WHERE id = ?";
+                    $data = intval($device->system->id);
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
                     foreach ($integration->attributes->fields as $field) {
-                        if ($field->priority === 'external' and strpos($field->internal_field_name, 'system.') !== false) {
+                        if (($field->priority === 'external' or (empty($result[0]->uuid) and $integration->attributes->type === 'nmis')) and strpos($field->internal_field_name, 'system.') !== false) {
                             // a regular field in Open-AudIT that we should update
                             $system_field = str_replace('system.', '', $field->internal_field_name);
                             if (!empty($device->system->{$system_field})) { # TODO - something better than not empty
