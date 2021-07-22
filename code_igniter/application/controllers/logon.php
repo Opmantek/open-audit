@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Logon
 * @author    Mark Unwin <marku@opmantek.com>
@@ -70,7 +70,7 @@ class Logon extends CI_Controller
         $log->file = 'system';
         $log->message = '';
 
-        # get the output format
+        // get the output format
         $format = '';
         $http_accept = @$_SERVER['HTTP_ACCEPT'];
         $log->function = 'logon';
@@ -278,9 +278,9 @@ class Logon extends CI_Controller
      */
     public function check_defaults()
     {
-        if ( empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+        if (empty($this->config->config['oae_product']) or $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             $oae_url = '';
-            if ( ! empty($this->config->config['oae_url'])) {
+            if (! empty($this->config->config['oae_url'])) {
                 $oae_url = $this->config->config['oae_url'];
             } else {
                 $oae_url = '/omk/open-audit';
@@ -344,7 +344,7 @@ class Logon extends CI_Controller
         $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 
         // If the default_network_address has not been altered by the user, update it.
-        if ((empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') && $this->db->table_exists('configuration')) {
+        if ((empty($this->config->config['oae_product']) or $this->config->config['oae_product'] !== 'Open-AudIT Cloud') && $this->db->table_exists('configuration')) {
             $sql = '/* logon::check_defaults */ ' . "SELECT * FROM configuration WHERE name = 'default_network_address'";
             $query = $this->db->query($sql);
             $result = $query->result();
@@ -390,8 +390,8 @@ class Logon extends CI_Controller
             $query = $this->db->query($sql);
         }
 
-        if (empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
-            # Get the installed application list from Enterprise
+        // Get the installed application list from Enterprise
+        if (empty($this->config->config['oae_product']) or $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             $url = str_replace('open-audit/', '', $oae_url);
             $installed = @json_decode(@file_get_contents($url . '.json'));
             # get the available application list from file
@@ -411,8 +411,8 @@ class Logon extends CI_Controller
             }
         }
 
+        // Upsert the local server subnet into the /networks
         if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
-            // Upsert the local server subnet into the /networks
             foreach ($this->m_configuration->read_subnet() as $subnet) {
                 $this->load->model('m_networks');
                 $network = new stdClass();
@@ -439,7 +439,31 @@ class Logon extends CI_Controller
             $query = $this->db->query($sql);
         }
 
+        // Set a default integration
+        if (php_uname('s') === 'Linux') {
+            if (file_exists('/usr/local/omk/conf/opCommon.json')) {
+                $json = file_get_contents('/usr/local/omk/conf/opCommon.json');
+            }
+            if (file_exists('/usr/local/opmojo/conf/opCommon.json')) {
+                $json = file_get_contents('/usr/local/opmojo/conf/opCommon.json');
+            }
+            $json = @json_decode($json);
 
+            if (($json->authentication->auth_method_1 === 'token' or $json->authentication->auth_method_2 === 'token' or $json->authentication->auth_method_3 === 'token') and !empty($json->authentication->auth_token_key[0])) {
+                $sql = "SELECT COUNT(*) AS `count` FROM integrations WHERE name = 'Default NMIS Integration'";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if (intval($result[0]->count) === 0) {
+                    // Add the discovery first
+                    $sql = "INSERT INTO `discoveries` VALUES (NULL,'Discovery for Default NMIS Integration',1,'','integration','','','y','y','y','','',NULL,NULL,'http://127.0.0.1/open-audit/index.php/input/discoveries',0,'','{\"id\":1,\"ping\":\"\",\"service_version\":\"\",\"open|filtered\":\"\",\"filtered\":\"\",\"timeout\":\"\",\"timing\":\"\",\"nmap_tcp_ports\":\"\",\"nmap_udp_ports\":\"\",\"tcp_ports\":\"\",\"udp_ports\":\"\",\"exclude_tcp_ports\":\"\",\"exclude_udp_ports\":\"\",\"exclude_ip\":\"\",\"ssh_ports\":\"\",\"script_timeout\":\"\",\"snmp_timeout\":\"\",\"ssh_timeout\":\"\",\"wmi_timeout\":\"\"}','{\"match_dbus\":\"\",\"match_fqdn\":\"\",\"match_dns_fqdn\":\"\",\"match_dns_hostname\":\"\",\"match_hostname\":\"\",\"match_hostname_dbus\":\"\",\"match_hostname_serial\":\"\",\"match_hostname_uuid\":\"\",\"match_ip\":\"\",\"match_ip_no_data\":\"\",\"match_mac\":\"\",\"match_mac_vmware\":\"\",\"match_serial\":\"\",\"match_serial_type\":\"\",\"match_sysname\":\"\",\"match_sysname_serial\":\"\",\"match_uuid\":\"\"}','','n','2000-01-01 00:00:00','2000-01-01 00:00:00','00:00:00','complete',0,0,0,0,0,0,'','system',NOW())";
+                    $query = $this->db->query($sql);
+                    $id = intval($this->db->insert_id());
+                    // Now add the Integration, using the discovery ID just created
+                    $sql = "INSERT INTO `integrations` VALUES (NULL,'Default NMIS Integration',1,'','nmis','[]','{\"pollers\":[],\"groups\":[]}','{\"password\":\"\",\"url\":\"http:\\/\\/localhost\\/omk\\/\",\"username\":\"\"}',0,'y',0,'y','[]','[]'," . $id . ",'y','n','n','n','[{\"default_value\":\"\",\"external_field_name\":\"configuration.businessService\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_business_service\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"server_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_poller\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.notes\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_notes\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"y\",\"external_field_name\":\"\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_manage\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.sysDescr\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.sysDescr\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"Default Location\",\"external_field_name\":\"configuration.location\",\"external_field_type\":\"text\",\"internal_field_name\":\"locations.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmiusername\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_username\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmipassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_password\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.version\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.version\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.community\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_community\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.username\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.security_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.customer\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_customer\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.authentication_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authprotocol\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.authentication_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.privacy_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privprotocol\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.privacy_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.active\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_active\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.collect\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_collect\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"automatic\",\"external_field_name\":\"configuration.model\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_model\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"wan\",\"external_field_name\":\"configuration.netType\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_netType\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"true\",\"external_field_name\":\"configuration.ping\",\"external_field_type\":\"bool\",\"internal_field_name\":\"fields.nmis_ping\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"161\",\"external_field_name\":\"configuration.port\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_port\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.display_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"Open-AudIT\",\"external_field_name\":\"configuration.group\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_group\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.host\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.ip\",\"matching_attribute\":\"y\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"uuid\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.omk_uuid\",\"matching_attribute\":\"y\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.roleType\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_role\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.serviceStatus\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.environment\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"cluster_id\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_poller_uuid\",\"matching_attribute\":\"n\",\"priority\":\"external\"}]','',0,'all','','nmis_manage',0,'attribute','y',0,'y',0,'y','n','2000-01-01 00:00:00',0,'system',NOW())";
+                    $query = $this->db->query($sql);
+                }
+            }
+        }
     }
 }
 // End of file logon.php
