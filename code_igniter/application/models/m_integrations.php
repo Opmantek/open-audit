@@ -119,6 +119,7 @@ class M_integrations extends MY_Model
             $discovery->discard = 'n';
             $discovery->complete = 'n';
             $discovery->subnet = '';
+            $discovery->match_options = '{"match_ip":"y"}';
             $discovery_id = intval($CI->m_discoveries->create($discovery));
             $sql = "UPDATE integrations SET discovery_id = ? WHERE id = ?";
             $query = $this->db->query($sql, array(intval($discovery_id), intval($integration->id)));
