@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -1236,13 +1236,14 @@ class M_devices extends MY_Model
                 break;
 
             case 'cloud':
+            case 'nmis':
             case 'snmp':
             case 'ssh':
-            case 'nmis':
                 $weight = 3000;
                 break;
 
             case 'ipmi':
+            case 'integrations':
                 $weight = 4000;
                 break;
 

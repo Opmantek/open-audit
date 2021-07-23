@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Model
 * @package   Discoveries
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -78,7 +78,7 @@ class M_discoveries extends MY_Model
         if (empty($data->type)) {
             $data->type = '';
         }
-        if ($data->type !== 'subnet' && $data->type !== 'active directory' && $data->type !== 'cloud' && $data->type !== 'seed') {
+        if ($data->type !== 'subnet' && $data->type !== 'active directory' && $data->type !== 'cloud' && $data->type !== 'integration' && $data->type !== 'seed') {
             $data->type = '';
         }
         if (empty($data->devices_assigned_to_org)) {
@@ -95,13 +95,13 @@ class M_discoveries extends MY_Model
         if (isset($data->system_id)) {
             $data->system_id = intval($data->system_id);
         }
-        if ( ! empty($data->discard)) {
+        if (! empty($data->discard)) {
             if ($data->discard !== 'n' && $data->discard !== 'y') {
                 unset($data->discard);
             }
         }
-        if ( ! empty($data->subnet)) {
-            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
+        if (! empty($data->subnet)) {
+            if (! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
                 $data->subnet = '';
             }
         }
@@ -114,7 +114,7 @@ class M_discoveries extends MY_Model
         }
         $match_options = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
         foreach ($match_options as $match_option) {
-            if ( ! isset($data->match_options->{$match_option})) {
+            if (! isset($data->match_options->{$match_option})) {
                 $data->match_options->{$match_option} = '';
             }
             if ($data->match_options->{$match_option} !== 'y' && $data->match_options->{$match_option} !== 'n') {
@@ -122,14 +122,14 @@ class M_discoveries extends MY_Model
             }
         }
 
-        if ( ! empty($data->scan_options) && is_string($data->scan_options)) {
+        if (! empty($data->scan_options) && is_string($data->scan_options)) {
             $data->scan_options = json_decode($data->scan_options);
         }
         if (empty($data->scan_options)) {
             $data->scan_options = new stdClass();
             $data->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
         }
-        if ( ! isset($data->scan_options->id)) {
+        if (! isset($data->scan_options->id)) {
             $data->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
         }
         if (isset($data->scan_options->ping)) {
@@ -161,7 +161,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->filtered = '';
         }
         if (isset($data->scan_options->timeout)) {
-            if (is_int($data->scan_options->timeout) OR is_numeric($data->scan_options->timeout)) {
+            if (is_int($data->scan_options->timeout) or is_numeric($data->scan_options->timeout)) {
                 $data->scan_options->timeout = intval($data->scan_options->timeout);
             } else {
                 $data->scan_options->timeout = '';
@@ -170,7 +170,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->timeout = '';
         }
         if (isset($data->scan_options->timing)) {
-            if (is_int($data->scan_options->timing) OR is_numeric($data->scan_options->timing)) {
+            if (is_int($data->scan_options->timing) or is_numeric($data->scan_options->timing)) {
                 $data->scan_options->timing = intval($data->scan_options->timing);
             } else {
                 $data->scan_options->timing = '';
@@ -179,7 +179,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->timing = '';
         }
         if (isset($data->scan_options->nmap_tcp_ports)) {
-            if (is_int($data->scan_options->nmap_tcp_ports) OR is_numeric($data->scan_options->nmap_tcp_ports)) {
+            if (is_int($data->scan_options->nmap_tcp_ports) or is_numeric($data->scan_options->nmap_tcp_ports)) {
                 $data->scan_options->nmap_tcp_ports = intval($data->scan_options->nmap_tcp_ports);
             } else {
                 $data->scan_options->nmap_tcp_ports = '';
@@ -188,7 +188,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->nmap_tcp_ports = '';
         }
         if (isset($data->scan_options->nmap_udp_ports)) {
-            if (is_int($data->scan_options->nmap_udp_ports) OR is_numeric($data->scan_options->nmap_udp_ports)) {
+            if (is_int($data->scan_options->nmap_udp_ports) or is_numeric($data->scan_options->nmap_udp_ports)) {
                 $data->scan_options->nmap_udp_ports = intval($data->scan_options->nmap_udp_ports);
             } else {
                 $data->scan_options->nmap_udp_ports = '';
@@ -197,49 +197,49 @@ class M_discoveries extends MY_Model
             $data->scan_options->nmap_udp_ports = '';
         }
         if (isset($data->scan_options->tcp_ports)) {
-            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->tcp_ports)) {
+            if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->tcp_ports)) {
                 $data->scan_options->tcp_ports = '';
             }
         } else {
             $data->scan_options->tcp_ports = '';
         }
         if (isset($data->scan_options->udp_ports)) {
-            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->udp_ports)) {
+            if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->udp_ports)) {
                 $data->scan_options->udp_ports = '';
             }
         } else {
             $data->scan_options->udp_ports = '';
         }
         if (isset($data->scan_options->exclude_tcp_ports)) {
-            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->exclude_tcp_ports)) {
+            if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->exclude_tcp_ports)) {
                 $data->scan_options->exclude_tcp_ports = '';
             }
         } else {
             $data->scan_options->exclude_tcp_ports = '';
         }
         if (isset($data->scan_options->exclude_udp_ports)) {
-            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->exclude_udp_ports)) {
+            if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->exclude_udp_ports)) {
                 $data->scan_options->exclude_udp_ports = '';
             }
         } else {
             $data->scan_options->exclude_udp_ports = '';
         }
         if (isset($data->scan_options->exclude_ip)) {
-            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->scan_options->exclude_ip)) {
+            if (! preg_match('/^[\d,\.,\/,-]*$/', $data->scan_options->exclude_ip)) {
                 $data->scan_options->exclude_ip = '';
             }
         } else {
             $data->scan_options->exclude_ip = '';
         }
         if (isset($data->scan_options->ssh_ports)) {
-            if ( ! preg_match('/^[\d,\/,-]*$/', $data->scan_options->ssh_ports)) {
+            if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->ssh_ports)) {
                 $data->scan_options->ssh_ports = '';
             }
         } else {
             $data->scan_options->ssh_ports = '';
         }
         if (isset($data->scan_options->script_timeout)) {
-            if (is_int($data->scan_options->script_timeout) OR is_numeric($data->scan_options->script_timeout)) {
+            if (is_int($data->scan_options->script_timeout) or is_numeric($data->scan_options->script_timeout)) {
                 $data->scan_options->script_timeout = intval($data->scan_options->script_timeout);
             } else {
                 $data->scan_options->script_timeout = '';
@@ -248,7 +248,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->script_timeout = '';
         }
         if (isset($data->scan_options->snmp_timeout)) {
-            if (is_int($data->scan_options->snmp_timeout) OR is_numeric($data->scan_options->snmp_timeout)) {
+            if (is_int($data->scan_options->snmp_timeout) or is_numeric($data->scan_options->snmp_timeout)) {
                 $data->scan_options->snmp_timeout = intval($data->scan_options->snmp_timeout);
             } else {
                 $data->scan_options->snmp_timeout = '';
@@ -257,7 +257,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->snmp_timeout = '';
         }
         if (isset($data->scan_options->ssh_timeout)) {
-            if (is_int($data->scan_options->ssh_timeout) OR is_numeric($data->scan_options->ssh_timeout)) {
+            if (is_int($data->scan_options->ssh_timeout) or is_numeric($data->scan_options->ssh_timeout)) {
                 $data->scan_options->ssh_timeout = intval($data->scan_options->ssh_timeout);
             } else {
                 $data->scan_options->ssh_timeout = '';
@@ -266,7 +266,7 @@ class M_discoveries extends MY_Model
             $data->scan_options->ssh_timeout = '';
         }
         if (isset($data->scan_options->wmi_timeout)) {
-            if (is_int($data->scan_options->wmi_timeout) OR is_numeric($data->scan_options->wmi_timeout)) {
+            if (is_int($data->scan_options->wmi_timeout) or is_numeric($data->scan_options->wmi_timeout)) {
                 $data->scan_options->wmi_timeout = intval($data->scan_options->wmi_timeout);
             } else {
                 $data->scan_options->wmi_timeout = '';
@@ -274,8 +274,7 @@ class M_discoveries extends MY_Model
         } else {
             $data->scan_options->wmi_timeout = '';
         }
-
-        if ( ! empty($data->type) && $data->type === 'subnet') {
+        if (! empty($data->type) && $data->type === 'subnet') {
             if (empty($data->subnet)) {
                 log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing or invalid field: subnet');
                 if ($CI->response->meta->format === 'screen') {
@@ -286,9 +285,8 @@ class M_discoveries extends MY_Model
                 }
             } else {
                 $data->description = 'Subnet - ' . $data->subnet;
-            }
-        } elseif ( ! empty($data->type) && $data->type === 'active directory') {
-            if (empty($data->ad_server) OR empty($data->ad_domain)) {
+        } elseif (! empty($data->type) && $data->type === 'active directory') {
+            if (empty($data->ad_server) or empty($data->ad_domain)) {
                 $temp = 'Active Directory Domain';
                 if (empty($data->ad_server)) {
                     $temp = 'Active Directory Server';
@@ -298,7 +296,7 @@ class M_discoveries extends MY_Model
             } else {
                 $data->description = 'Active Directory - ' . $data->ad_domain;
             }
-        } elseif ( ! empty($data->type) && $data->type === 'seed') {
+        } elseif (! empty($data->type) && $data->type === 'seed') {
             if (empty($data->seed_ip)) {
                 log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing or invalid field: seed_ip');
                 if ($CI->response->meta->format === 'screen') {
@@ -325,11 +323,11 @@ class M_discoveries extends MY_Model
         $this->load->model('m_networks');
         $this->load->helper('network');
         $network_org = intval($data->org_id);
-        if ( ! empty($data->devices_assigned_to_org)) {
+        if (! empty($data->devices_assigned_to_org)) {
             $network_org = intval($data->devices_assigned_to_org);
         }
         $network_location = 1;
-        if ( ! empty($data->devices_assigned_to_location)) {
+        if (! empty($data->devices_assigned_to_location)) {
             $network_location = intval($data->devices_assigned_to_location);
         }
         if ($data->type === 'subnet' && ! empty($data->subnet) && stripos($data->subnet, '-') === false && filter_var($data->subnet, FILTER_VALIDATE_IP) !== false) {
@@ -337,7 +335,7 @@ class M_discoveries extends MY_Model
             // TODO - we should pass the OrgID
             $data->description = 'IP - ' . $data->subnet;
             $test = $this->m_networks->check_ip($data->subnet);
-            if ( ! $test) {
+            if (! $test) {
                 // This IP is not in any existing subnets - insert a /30
                 // TODO - account for Org ID in existing as check_ip returns only true/false, and does not acount for orgs
                 $temp = network_details($data->subnet.'/30');
@@ -354,7 +352,7 @@ class M_discoveries extends MY_Model
         if ($data->type === 'subnet' && ! empty($data->subnet) && stripos($data->subnet, '-') === false && strpos($data->subnet, '/') !== false) {
             // We have a regular subnet - ie 192.168.1.0/24
             $temp = network_details($data->subnet);
-            if ( ! empty($temp->error)) {
+            if (! empty($temp->error)) {
                 $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
                 log_error('ERR-0010', 'm_discoveries::create (networks) invalid subnet supplied');
                 return;
@@ -403,6 +401,18 @@ class M_discoveries extends MY_Model
         if (empty($result)) {
             return false;
         }
+        if (empty($result[0]->subnet) and $result[0]->type === 'subnet' and $result[0]->name === 'Default Discovery') {
+            $ips = $this->config->config['server_ip'];
+            $ips = explode(',', $ips);
+            $ip = trim($ips[0]);
+            $ip = explode('.', $ip);
+            $ip[3] = 0;
+            $ip = implode('.', $ip);
+            $subnet = $ip . '/24';
+            $sql = "UPDATE discoveries SET subnet = '$subnet', description = 'Automatically created default discovery for $subnet.' WHERE id = $id";
+            $result = $this->run_sql($sql);
+            $result[0]->subnet = $subnet;
+        }
         if (empty($result[0]->scan_options)) {
             $result[0]->scan_options = new stdClass();
         }
@@ -415,8 +425,8 @@ class M_discoveries extends MY_Model
         if (is_string($result[0]->match_options)) {
             $result[0]->match_options = json_decode($result[0]->match_options);
         }
-        if ( ! isset($result[0]->scan_options->id) OR ! is_numeric($result[0]->scan_options->id)) {
-            if ( ! empty($this->config->config['discovery_default_scan_option'])) {
+        if (! isset($result[0]->scan_options->id) or ! is_numeric($result[0]->scan_options->id)) {
+            if (! empty($this->config->config['discovery_default_scan_option'])) {
                 $result[0]->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
             } else {
                 $result[0]->scan_options->id = 1;
@@ -459,24 +469,24 @@ class M_discoveries extends MY_Model
                 }
             }
         }
-        if ( ! empty($CI->config->config['discovery_ip_exclude'])) {
+        if (! empty($CI->config->config['discovery_ip_exclude'])) {
             // Account for users adding multiple spaces which would be converted to multiple comma's.
             $exclude_ip = preg_replace('!\s+!', ' ', $CI->config->config['discovery_ip_exclude']);
             // Convert spaces to comma's
             $exclude_ip = str_replace(' ', ',', $exclude_ip);
-            if ( ! empty($result[0]->scan_options->exclude_ip)) {
+            if (! empty($result[0]->scan_options->exclude_ip)) {
                 $result[0]->scan_options->exclude_ip .= ',' . $exclude_ip;
             } else {
                 $result[0]->scan_options->exclude_ip = $exclude_ip;
             }
         }
         // Ensure we only have valid characters of digit, dot, slash, dash and comma in attribute
-        if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $result[0]->scan_options->exclude_ip)) {
+        if (! preg_match('/^[\d,\.,\/,\-,\,]*$/', $result[0]->scan_options->exclude_ip)) {
             $result[0]->scan_options->exclude_ip = '';
         }
 
         if ($result[0]->status === 'failed') {
-            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
+            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' or `message` LIKE 'IP % not responding, ignoring.' or `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
             $last_logs = $this->run_sql($sql);
             $result[0]->last_logs_for_failed_devices = $last_logs;
         }
@@ -505,6 +515,18 @@ class M_discoveries extends MY_Model
         if (empty($result)) {
             return false;
         }
+        if (empty($result[0]->subnet) and $result[0]->type === 'subnet' and $result[0]->name === 'Default Discovery') {
+            $ips = $CI->config->config['ip'];
+            $ips = explode(',', $ips);
+            $ip = trim($ips[0]);
+            $ip = explode('.', $ip);
+            $ip[3] = 0;
+            $ip = implode('.', $ip);
+            $subnet = $ip . '/24';
+            $sql = "UPDATE discoveries SET subnet = '$subnet', description = 'Automatically created default discovery for $subnet.' WHERE id = $id";
+            $this->run_sql($sql);
+            $result[0]->subnet = $subnet;
+        }
         if (empty($result[0]->scan_options)) {
             $result[0]->scan_options = new stdClass();
         }
@@ -517,8 +539,8 @@ class M_discoveries extends MY_Model
         if (is_string($result[0]->match_options)) {
             $result[0]->match_options = json_decode($result[0]->match_options);
         }
-        if ( ! isset($result[0]->scan_options->id) OR ! is_numeric($result[0]->scan_options->id)) {
-            if ( ! empty($this->config->config['discovery_default_scan_option'])) {
+        if (! isset($result[0]->scan_options->id) or ! is_numeric($result[0]->scan_options->id)) {
+            if (! empty($this->config->config['discovery_default_scan_option'])) {
                 $result[0]->scan_options->id = intval($this->config->config['discovery_default_scan_option']);
             } else {
                 $result[0]->scan_options->id = 1;
@@ -529,7 +551,7 @@ class M_discoveries extends MY_Model
         }
 
         if ($result[0]->status === 'failed') {
-            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' OR `message` LIKE 'IP % not responding, ignoring.' OR `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
+            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' or `message` LIKE 'IP % not responding, ignoring.' or `ip` = '127.0.0.1') AND discovery_id = " . $id . ') AND discovery_id = ' . $id . ' GROUP BY `ip`) AND discovery_id = ' . $id;
             $last_logs = $this->run_sql($sql);
             $result[0]->last_logs_for_failed_devices = $last_logs;
         }
@@ -546,11 +568,16 @@ class M_discoveries extends MY_Model
     public function delete($id = 0)
     {
         $data = array($id);
+        // Delete any associated tasks
+        $sql = "DELETE FROM tasks WHERE sub_resource_id = ? AND type = 'discoveries'";
+        $test = $this->run_sql($sql, $data);
+        // Delete any discovery log entries
         $sql = 'DELETE FROM `discovery_log` WHERE discovery_id = ?';
-        $this->run_sql($sql, $data);
+        $test = $this->run_sql($sql, $data);
+        // Delete the discovery
         $sql = 'DELETE FROM `discoveries` WHERE `id` = ?';
         $test = $this->run_sql($sql, $data);
-        if ( ! empty($test)) {
+        if (! empty($test)) {
             return true;
         } else {
             return false;
@@ -587,12 +614,12 @@ class M_discoveries extends MY_Model
         foreach ($result as $discovery) {
             discovery_check_finished(intval($discovery->id));
         }
-        if ( ! empty($user_id)) {
+        if (! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
             $sql = 'SELECT * FROM discoveries WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             for ($i=0; $i < count($result); $i++) {
-                if ( ! empty($result[$i]->other)) {
+                if (! empty($result[$i]->other)) {
                     $result[$i]->other = json_decode($result[$i]->other);
                     foreach ($result[$i]->other as $key => $value) {
                         $result[$i]->{'other.'.$key} = $value;
@@ -602,17 +629,17 @@ class M_discoveries extends MY_Model
             $result = $this->format_data($result, 'discoveries');
             return $result;
         }
-        if ( ! empty($response)) {
+        if (! empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM discoveries LEFT JOIN orgs ON (discoveries.org_id = orgs.id) ' . 
-                    $CI->response->meta->internal->filter . ' ' . 
-                    $CI->response->meta->internal->groupby . ' ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM discoveries LEFT JOIN orgs ON (discoveries.org_id = orgs.id) ' .
+                    $CI->response->meta->internal->filter . ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            if ( ! empty($result) && is_array($result)) {
+            if (! empty($result) && is_array($result)) {
                 for ($i=0; $i < count($result); $i++) {
-                    if ( ! empty($result[$i]->other)) {
+                    if (! empty($result[$i]->other)) {
                         $result[$i]->other = json_decode($result[$i]->other);
                     }
                 }
@@ -659,7 +686,7 @@ class M_discoveries extends MY_Model
         $queue_item->org_id = $discovery->attributes->org_id;
         $queue_item->discovery_id = $id;
         $temp = $this->m_queue->create($discovery->attributes->type, $queue_item);
-        if ( ! empty($temp)) {
+        if (! empty($temp)) {
             return true;
         } else {
             return false;
@@ -703,7 +730,7 @@ class M_discoveries extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         $org_id = 1;
-        if ( ! empty($result[0]->org_id)) {
+        if (! empty($result[0]->org_id)) {
             $org_id = intval($result[0]->org_id);
         }
         // Device specific credentials
@@ -711,7 +738,7 @@ class M_discoveries extends MY_Model
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        if ( ! empty($result)) {
+        if (! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
             }
@@ -724,14 +751,14 @@ class M_discoveries extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         // $result[0]->credentials is a string. A JSON encoded array of integers referring to credentials.id
-        if ( ! empty($result[0]->credentials)) {
+        if (! empty($result[0]->credentials)) {
             $temp = @json_decode($result[0]->credentials);
-            if ( ! empty($temp)) {
+            if (! empty($temp)) {
                 $id_list = implode(', ', $temp);
                 $sql = '/* m_device::get_device_discovery_credentials */ ' . "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE id IN (" . $id_list . ')';
                 $query = $this->db->query($sql);
                 $result = $query->result();
-                if ( ! empty($result)) {
+                if (! empty($result)) {
                     for ($i=0; $i < count($result); $i++) {
                         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                     }
@@ -752,7 +779,7 @@ class M_discoveries extends MY_Model
         $sql = '/* m_device::get_device_discovery_credentials */ ' . "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ')';
         $query = $this->db->query($sql);
         $result = $query->result();
-        if ( ! empty($result)) {
+        if (! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
             }

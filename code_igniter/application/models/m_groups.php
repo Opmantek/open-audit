@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -113,16 +113,19 @@ class M_groups extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
+        $data = array(intval($id));
         if ($id === 1) {
             // never allowed to delete the default group
             log_error('ERR-0013', 'm_groups::delete');
             return false;
         }
         $sql = 'DELETE FROM `groups` WHERE id = ?';
-        $data = array($id);
-        $this->run_sql($sql, $data);
-        return true;
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function execute_count($id = 0)

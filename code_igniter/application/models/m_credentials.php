@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -187,22 +187,14 @@ class M_credentials extends MY_Model
      */
     public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if (empty($id)) {
-            $id = @intval($CI->response->meta->id);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `credentials` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
         } else {
-            $id = intval($id);
-        }
-        if (empty($id)) {
             return false;
         }
-        $CI = & get_instance();
-        $sql = 'DELETE FROM `credentials` WHERE id = ?';
-        $data = array($id);
-        $this->run_sql($sql, $data);
-        return true;
     }
 
     /**

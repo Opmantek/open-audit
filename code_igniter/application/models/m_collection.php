@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -720,17 +720,56 @@ class M_collection extends MY_Model
             }
         }
 
-        if ($collection === 'integrations' && ! empty($data->options)) {
+        if ($collection === 'integrations' && ! empty($data->attributes)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
             $result = $query->result();
             $existing = new stdClass();
-            if ( ! empty($result[0]->options)) {
-                $original = json_decode($result[0]->options);
+            if ( ! empty($result[0]->attributes)) {
+                $original = @json_decode($result[0]->attributes);
             }
-            $submitted = $data->options;
+            $submitted = $data->attributes;
             $merged = $this->deep_merge($original, $submitted);
-            $data->options = (string)json_encode($merged);
+            $data->attributes = (string)json_encode($merged);
+        }
+
+        if ($collection === 'integrations' && ! empty($data->fields)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            $existing = new stdClass();
+            if ( ! empty($result[0]->fields)) {
+                $original = @json_decode($result[0]->fields);
+            }
+            $submitted = $data->fields;
+            $merged = $this->deep_merge($original, $submitted);
+            $data->fields = (string)json_encode($merged);
+        }
+
+        if ($collection === 'integrations' && ! empty($data->discovery_run_on_create)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            if ($data->discovery_run_on_create === 'n') {
+                // Delete any existing discovery
+                if ( ! empty($result[0]->discovery_id)) {
+                    $select = "DELETE FROM discoveries WHERE id = " . @intval($result[0]->discovery_id);
+                    $query = $this->db->query($select);
+                }
+                $data->discovery_id = null;
+            } else {
+                // Make a new discovery
+                $CI->load->model('m_discoveries');
+                $discovery = new stdClass();
+                $discovery->type = 'integration';
+                $discovery->name = 'Discovery for ' . $result[0]->name . ' integration';
+                $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
+                $discovery->org_id = $result[0]->org_id;
+                $discovery->discard = 'n';
+                $discovery->complete = 'n';
+                $discovery->subnet = '';
+                $data->discovery_id = @intval($CI->m_discoveries->create($discovery));
+            }
         }
 
         if ($collection === 'ldap_servers') {

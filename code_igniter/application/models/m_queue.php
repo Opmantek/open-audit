@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -180,19 +180,12 @@ class M_queue extends MY_Model
     # Return TRUE on success or FALSE on failure
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->action = 'delete';
-        $this->log->summary = intval($id);
-        $sql = "/* m_queue::delete */ " . "DELETE FROM `queue` WHERE `id` = ?";
         $data = array(intval($id));
-        $this->db->query($sql, $data);
-        $affected_rows = $this->db->affected_rows();
-        if (!empty($affected_rows)) {
-            stdlog($this->log);
+        $sql = 'DELETE FROM `queue` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            $this->log->status = 'fail';
-            stdlog($this->log);
             return false;
         }
     }

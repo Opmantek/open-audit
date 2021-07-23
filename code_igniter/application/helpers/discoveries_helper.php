@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -420,7 +420,7 @@ if ( ! function_exists('ip_scan')) {
 		}
 		$start = microtime(true);
 		$CI = get_instance();
-		$ip = $details->ip;
+		$ip = ip_address_from_db($details->ip);
 
 		$mac_address = '';
 		if ( ! empty($details->mac_address)) {

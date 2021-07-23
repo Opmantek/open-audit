@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Integrations
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -93,7 +93,7 @@ class Integrations extends MY_Controller
     {
         $this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create($this->response->meta->received_data->attributes);
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
-        $this->response->include = 'v_'.$this->response->meta->collection.'_read';
+        $this->response->meta->format = 'json';
         output($this->response);
     }
 
@@ -116,6 +116,7 @@ class Integrations extends MY_Controller
             } else {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
             }
+            $this->response->included = array_merge($this->response->included, $this->m_integrations->read_sub_resource($this->response->meta->id));
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
@@ -149,6 +150,40 @@ class Integrations extends MY_Controller
     }
 
     /**
+     * [execute description]
+     * @return [type] [description]
+     */
+    public function execute()
+    {
+        $this->response->meta->format = 'json';
+        $this->m_integrations->queue($this->response->meta->id);
+        $this->load->model('m_queue');
+        $this->m_queue->start();
+        sleep(2);
+        if ($this->response->meta->format === 'json') {
+            $this->response->meta->format = 'json';
+            $this->response->data = $this->m_integrations->read($this->response->meta->id);
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            $this->response->included = array_merge($this->response->included, $this->m_integrations->read_sub_resource($this->response->meta->id));
+            output($this->response);
+        } else {
+            redirect('integrations/'.$this->response->meta->id);
+        }
+    }
+
+    /**
+    * Execute this integration
+    *
+    * @access public
+    * @return NULL
+    */
+    public function execute_now()
+    {
+        $this->{'m_'.$this->response->meta->collection}->execute($this->response->meta->id);
+        output($this->response);
+    }
+
+    /**
     * Collection of objects
     *
     * @access public
@@ -173,12 +208,20 @@ class Integrations extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
         $this->load->model('m_queries');
         $this->response->included = array_merge($this->response->included, $this->m_queries->collection($this->user->id));
+        $this->load->model('m_groups');
+        $this->response->included = array_merge($this->response->included, $this->m_groups->collection($this->user->id));
+
+        $this->response->defaults = new stdClass();
+        $this->response->defaults->name = 'NMIS Integration';
+        $count = $this->m_integrations->count();
+        if (!empty($count)) {
+            $this->response->defaults->name = 'NMIS Integration ' . ($count + 1);
+        }
         output($this->response);
     }
 
     /**
     * The requested table will have optimize run upon it and it's autoincrement reset to 1
-
     *
     * @access public
     * @return NULL

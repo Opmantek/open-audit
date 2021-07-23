@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -193,8 +193,15 @@ class M_clouds extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
+        // Delete any associated tasks
+        $sql = "DELETE FROM tasks WHERE sub_resource_id = ? AND type = 'clouds'";
+        $test = $this->run_sql($sql, $data);
+        // Delete any cloud log entries
+        $sql = 'DELETE FROM `cloud_log` WHERE cloud_id = ?';
+        $test = $this->run_sql($sql, $data);
+        // Delete the cloud
         $sql = 'DELETE FROM `clouds` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

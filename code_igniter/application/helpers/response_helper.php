@@ -34,7 +34,7 @@ if ( ! defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -531,12 +531,12 @@ if ( ! function_exists('response_get_collection')) {
                 $log->summary = 'Set collection according to GET.';
             } else {
                 $log->summary = 'Collection set to summaries as invalid collection supplied.';
-                $log->summary = 5;
+                $log->severity = 5;
                 $collection = 'summaries';
             }
         } else {
             $log->summary = 'Collection set to summaries as no collection supplied.';
-            $log->summary = 5;
+            $log->severity = 5;
             $collection = 'summaries';
         }
         if ( ! empty($collection)) {
@@ -1519,6 +1519,8 @@ if ( ! function_exists('response_get_org_list')) {
             case 'discovery_log':
             case 'floors':
             case 'integrations':
+            case 'integrations_log':
+            case 'integrations_rules':
             case 'ldap_servers':
             case 'licenses':
             case 'locations':
@@ -1649,6 +1651,12 @@ if ( ! function_exists('response_get_permission_ca')) {
         $perm_collection = $collection;
         if ($collection === 'baselines_policies') {
             $perm_collection = 'baselines';
+        }
+        if ($collection === 'integrations_log') {
+            $perm_collection = 'integrations';
+        }
+        if ($collection === 'integrations_rules') {
+            $perm_collection = 'integrations';
         }
         if ( ! $instance->m_users->get_user_permission($user->id, $perm_collection, $permissions[$action]) and $instance->config->config['internal_version'] >= '20160904') {
             log_error('ERR-0015', $collection . ':' . $permissions[$action]);
@@ -2114,7 +2122,7 @@ if ( ! function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('agents','applications','attributes','baselines','baselines_policies','buildings','chart','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','groups','help','integrations','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+        return array('agents','applications','attributes','baselines','baselines_policies','buildings','chart','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
     }
 }
 

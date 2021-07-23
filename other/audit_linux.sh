@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   GIT: Open-AudIT_4.1.2
+# @version   GIT: Open-AudIT_4.2.0
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="4.1.2"
+version="4.2.0"
 
 # Display help
 help="n"
@@ -2581,8 +2581,9 @@ if hash systemctl 2>/dev/null; then
 	if [ "$debugging" -gt "1" ]; then
 		echo "    systemd services"
 	fi
-	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
-	for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
+	# systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
+	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }' | cut -d. -f1)
+	for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }'); do
 		description=$(systemctl show "$name" -p Description | cut -d= -f2)
 		description="$description (using systemd)"
 		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)

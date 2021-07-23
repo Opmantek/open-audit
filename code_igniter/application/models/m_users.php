@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -129,14 +129,8 @@ class M_users extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
-        if ($id === 1) {
-            // never allowed to delete the default user
-            log_error('ERR-0013', 'm_users::delete');
-            return false;
-        }
-        $sql = 'DELETE FROM `users` WHERE id = ?';
-        $data = array($id);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `users` WHERE id = ? AND id > 1';
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

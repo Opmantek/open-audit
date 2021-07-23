@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.1.2
+* @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
 */
 
@@ -196,7 +196,7 @@ class Util extends CI_Controller
         $this->temp_dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
         $this->temp_dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
-        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
+        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'integrations_rules', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
         if (in_array($table, $collections)) {
             $this->load->model('m_'.$table);
             $dictionary = $this->{'m_'.$table}->dictionary();
@@ -407,6 +407,7 @@ class Util extends CI_Controller
         $this->load->model('m_devices');
         $this->load->model('m_devices_components');
         $this->load->model('m_discoveries');
+        $this->load->model('m_integrations');
         $this->load->model('m_networks');
         $this->load->model('m_orgs');
         $this->load->model('m_queue');
@@ -435,7 +436,7 @@ class Util extends CI_Controller
             exit;
         }
         // Increase the queue count in the config table
-        $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
+        $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
         $this->db->query($sql);
         // POP an item off the queue
         $this->load->model('m_queue');
@@ -503,6 +504,10 @@ class Util extends CI_Controller
 
             if ($item->type === 'ip_audit') {
                 $result = ip_audit($details);
+            }
+
+            if ($item->type === 'integrations') {
+                $this->m_integrations->execute($details->integrations_id);
             }
         }
     }
