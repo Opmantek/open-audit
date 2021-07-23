@@ -189,7 +189,7 @@ $ip[3] = 0;
 $ip = implode('.', $ip);
 $subnet = $ip . '/24';
 
-$sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.',subnet','$subnet',NOW(),'system')";
+$sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.','subnet','$subnet',NOW(),'system')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
