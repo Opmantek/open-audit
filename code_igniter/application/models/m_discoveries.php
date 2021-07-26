@@ -285,7 +285,8 @@ class M_discoveries extends MY_Model
                 }
             } else {
                 $data->description = 'Subnet - ' . $data->subnet;
-        } elseif (! empty($data->type) && $data->type === 'active directory') {
+            }
+        } else if (! empty($data->type) && $data->type === 'active directory') {
             if (empty($data->ad_server) or empty($data->ad_domain)) {
                 $temp = 'Active Directory Domain';
                 if (empty($data->ad_server)) {
@@ -296,7 +297,7 @@ class M_discoveries extends MY_Model
             } else {
                 $data->description = 'Active Directory - ' . $data->ad_domain;
             }
-        } elseif (! empty($data->type) && $data->type === 'seed') {
+        } else if (! empty($data->type) && $data->type === 'seed') {
             if (empty($data->seed_ip)) {
                 log_error('ERR-0024', 'm_discoveries::create (discoveries)', 'Missing or invalid field: seed_ip');
                 if ($CI->response->meta->format === 'screen') {

@@ -158,7 +158,7 @@ $sql = "DROP TABLE IF EXISTS `integrations_log`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sq= "CREATE TABLE `integrations_log` (
+$sql = "CREATE TABLE `integrations_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `integrations_id` int(10) unsigned DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
