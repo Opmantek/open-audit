@@ -785,7 +785,7 @@ class M_integrations extends MY_Model
                 }
             }
 
-            $message = 'Added ' . count($count) . ' devices to discovery queue.';
+            $message = 'Added ' . $count . ' devices to discovery queue.';
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
