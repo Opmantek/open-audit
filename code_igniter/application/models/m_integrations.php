@@ -905,8 +905,11 @@ class M_integrations extends MY_Model
                                 $hit = false;
                                 // Update fields if the priority is internal and the values are different
                                 foreach ($integration->attributes->fields as $ifield) {
-                                    if ($ifield->priority === 'internal' and !empty($ifield->external_field_name) and !empty($this->get_value($local_device, $ifield->external_field_name))) {
-                                        if ((string)$this->get_value($local_device, $ifield->external_field_name) !== (string)$this->get_value($external_device, $ifield->external_field_name)) {
+                                    $test = $this->get_value($local_device, $ifield->external_field_name);
+                                    if ($ifield->priority === 'internal' and !empty($ifield->external_field_name) and !empty($test)) {
+                                        $test1 = $this->get_value($local_device, $ifield->external_field_name);
+                                        $test2 = $this->get_value($external_device, $ifield->external_field_name);
+                                        if ((string)$test1 !== (string)$test2) {
                                             $external_device = $this->set_value($external_device, $ifield->external_field_name, $this->get_value($local_device, $ifield->external_field_name));
                                             $hit = true;
                                         }
