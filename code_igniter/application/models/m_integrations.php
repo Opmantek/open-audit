@@ -505,6 +505,7 @@ class M_integrations extends MY_Model
                     $query = $this->db->query($sql, $data);
                     $this->m_device->update($temp_device);
                     $update++;
+                    $device->system->ip = ip_address_from_db($device->system->ip);
                     $discover_devices[] = $device;
                 } else {
                     // insert
@@ -516,6 +517,7 @@ class M_integrations extends MY_Model
                         $query = $this->db->query($sql, $data);
                         $create++;
                         $device_ids[] = intval($device->system->id);
+                        $device->system->ip = ip_address_from_db($device->system->ip);
                         $discover_devices[] = $device;
                     } else {
                         $message = 'Could not create device ' . $device->system->name;
@@ -766,7 +768,7 @@ class M_integrations extends MY_Model
             foreach ($discover_devices as $device) {
                 if (filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
                     $message = 'Add ' . $device->system->name . ' to discovery queue.';
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $this->db->query($sql, $data);
 
@@ -777,25 +779,29 @@ class M_integrations extends MY_Model
                     unset($item);
                     $CI->m_queue->create('ip_scan', $details);
                     $count = $count + 1;
+                    $message = "IP {$device->system->ip} responding, adding to device list.";
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO discovery_log VALUES (null, ?, ?, NOW(), 7, 'debug', ?, ?, 'm_integrations', 'execute', ?, '', 'notice', 0, '')";
+                    $data = array($integration->attributes->discovery_id, $device->system->id, getmypid(), $device->system->ip, $message);
+                    $query = $this->db->query($sql, $data);
                 } else {
                     $message = 'Not adding ' . $device->system->name . ' to discovery queue - no IP.';
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?, 'warning')";
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?, 'warning')";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $this->db->query($sql, $data);
                 }
             }
 
             $message = 'Added ' . $count . ' devices to discovery queue.';
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
-            $sql = "UPDATE discoveries SET status = 'running', ip_all_count = ?, ip_responding_count = ?, ip_scanned_count = ?, ip_discovered_count = 0, ip_audited_count = 0 WHERE id = ?";
-            $data = array(count($count), count($count), count($count), intval($integration->attributes->discovery_id));
+            $sql = "/* m_integrations::execute */ " . "UPDATE discoveries SET status = 'running', ip_all_count = ?, ip_responding_count = ?, ip_scanned_count = ?, ip_discovered_count = 0, ip_audited_count = 0 WHERE id = ?";
+            $data = array($count, $count, $count, intval($integration->attributes->discovery_id));
             $query = $this->db->query($sql, $data);
 
             $message = 'Starting discovery.';
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
@@ -821,12 +827,12 @@ class M_integrations extends MY_Model
         $local_devices = $this->get_local_devices($integration);
         $local_formatted_devices = $this->internal_to_external($integration, $local_devices);
 
-        $sql = "UPDATE integrations SET select_internal_count = ? WHERE id = ?";
+        $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET select_internal_count = ? WHERE id = ?";
         $data = array(count($local_formatted_devices), $integration->id);
         $query = $this->db->query($sql, $data);
 
         $message = count($local_formatted_devices) . ' devices returned from Open-AudIT.';
-        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
         $data = array($integration->id, microtime(true), $message);
         $query = $this->db->query($sql, $data);
 
@@ -849,7 +855,7 @@ class M_integrations extends MY_Model
                 }
             }
             $message = count($new_external_devices) . ' devices require creating in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
             // Create new devices externally
@@ -883,13 +889,13 @@ class M_integrations extends MY_Model
                     }
                 }
                 $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name;
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 $this->m_device->update($temp_device);
             }
 
-            $sql = "UPDATE integrations SET create_external_count = ? WHERE id = ?";
+            $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET create_external_count = ? WHERE id = ?";
             $data = array(count($new_external_devices), $integration->id);
             $query = $this->db->query($sql, $data);
         }
@@ -930,11 +936,11 @@ class M_integrations extends MY_Model
             }
             // Now we have a new list with devices to be updated with changed values
             $message = count($update_external_devices) . ' devices require updating in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
-            $sql = "UPDATE integrations SET update_external_count = ? WHERE id = ?";
+            $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET update_external_count = ? WHERE id = ?";
             $data = array(count($update_external_devices), $integration->id);
             $query = $this->db->query($sql, $data);
 
@@ -945,7 +951,7 @@ class M_integrations extends MY_Model
         if ($integration->attributes->delete_external_from_internal === 'y') {
             if (count($external_devices) > count($local_formatted_devices)) {
                 $message = count($external_devices) . ' external devices and ' . count($local_formatted_devices) . ' local devices';
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 // Select all devices retrieved from external, compare to internal list - any NOT in the internal list, delete
@@ -958,7 +964,7 @@ class M_integrations extends MY_Model
                                 $test2 = $this->get_value($external_device, $field->external_field_name);
                                 if ($test1 == $test2) {
                                     $message = 'Removing ' . $external_device->name . ' delete from list.';
-                                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                                     $data = array($integration->id, microtime(true), $message);
                                     $query = $this->db->query($sql, $data);
                                     unset($delete_external_devices[$ekey]);
@@ -970,13 +976,13 @@ class M_integrations extends MY_Model
                 }
                 $delete_external_devices = array_values($delete_external_devices);
                 $message = count($delete_external_devices) . ' devices require deleting in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 integrations_delete($integration, $delete_external_devices);
             } else {
                 $message = '0 devices require deleting in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
             }
@@ -985,12 +991,12 @@ class M_integrations extends MY_Model
         // Run after integration
         integrations_post($integration, $external_devices);
 
-        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Completed integration.', 'success')";
+        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Completed integration.', 'success')";
         $data = array($integration->id, microtime(true));
         $query = $this->db->query($sql, $data);
 
         $duration = (microtime(true) - $timer_start);
-        $sql = "UPDATE integrations SET duration = ? WHERE id = ?";
+        $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET duration = ? WHERE id = ?";
         $data = array(intval($duration), $integration->id);
         $query = $this->db->query($sql, $data);
 
