@@ -170,7 +170,7 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
-        $sql = 'SELECT integrations.*, discoveries.name AS `discoveries.name` FROM integrations LEFT JOIN discoveries ON (integrations.discovery_id = discoveries.id) WHERE integrations.id = ?';
+        $sql = "/* m_integrations::read */ " . 'SELECT integrations.*, discoveries.name AS `discoveries.name` FROM integrations LEFT JOIN discoveries ON (integrations.discovery_id = discoveries.id) WHERE integrations.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'integrations');

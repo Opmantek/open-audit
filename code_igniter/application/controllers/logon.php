@@ -425,6 +425,33 @@ class Logon extends CI_Controller
                 unset($network);
             }
         }
+
+        // Run an integration for Linux default only to populate the locations, pollers and groups
+        if ($this->db->table_exists('integrations') and $this->db->table_exists('integrations_log')) {
+            $sql = "SELECT id FROM integrations WHERE name = 'Default NMIS Integration'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result[0]->id)) {
+                $this->load->model('m_integrations');
+                $this->load->model('m_orgs');
+                $integration = $this->m_integrations->read($result[0]->id);
+                $integration = $integration[0];
+                if ((stripos($integration->attributes->attributes->url, 'localhost') !== false or
+                    stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or
+                    stripos($integration->attributes->attributes->url, '127.0.1.1') !== false) and
+                        empty($integration->attributes->attributes->username) and
+                        empty($integration->attributes->attributes->password) and
+                        php_uname('s') !== 'Windows NT' and
+                        empty($integration->attributes->locations)) {
+                    // We should be able to run the integration, assuming config auth_token set
+                    $this->load->helper('integrations_nmis');
+                    // Remove any existing logs
+                    $sql = "DELETE FROM integrations_log WHERE integrations_id = ?";
+                    $query = $this->db->query($sql, $integration->id);
+                    integrations_pre($integration);
+                }
+            }
+        }
     }
 }
 // End of file logon.php
