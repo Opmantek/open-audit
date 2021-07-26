@@ -839,7 +839,9 @@ class M_integrations extends MY_Model
                 foreach ($external_devices as $external_device) {
                     foreach ($integration->attributes->fields as $field) {
                         if ($field->matching_attribute === 'y' and $field->external_field_name !== '') {
-                            if ($this->get_value($local_device, $field->external_field_name) == $this->get_value($external_device, $field->external_field_name)) {
+                            $test1 = $this->get_value($local_device, $field->external_field_name);
+                            $test2 = $this->get_value($external_device, $field->external_field_name);
+                            if ($test1 == $test2) {
                                 unset($new_external_devices[$key]);
                             }
                         }
@@ -900,7 +902,9 @@ class M_integrations extends MY_Model
                 foreach ($external_devices as $external_device) {
                     foreach ($integration->attributes->fields as $field) {
                         if ($field->matching_attribute === 'y' and $field->external_field_name !== '') {
-                            if ($this->get_value($local_device, $field->external_field_name) == $this->get_value($external_device, $field->external_field_name)) {
+                            $test1 = $this->get_value($local_device, $field->external_field_name);
+                            $test2 = $this->get_value($external_device, $field->external_field_name);
+                            if ($test1 == $test2) {
                                 // Our internal and external devices match
                                 $hit = false;
                                 // Update fields if the priority is internal and the values are different
@@ -950,7 +954,9 @@ class M_integrations extends MY_Model
                     foreach ($delete_external_devices as $ekey => $external_device) {
                         foreach ($integration->attributes->fields as $field) {
                             if ($field->matching_attribute === 'y' and $field->external_field_name !== '') {
-                                if ($this->get_value($local_device, $field->external_field_name) == $this->get_value($external_device, $field->external_field_name)) {
+                                $test1 = $this->get_value($local_device, $field->external_field_name);
+                                $test2 = $this->get_value($external_device, $field->external_field_name);
+                                if ($test1 == $test2) {
                                     $message = 'Removing ' . $external_device->name . ' delete from list.';
                                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
                                     $data = array($integration->id, microtime(true), $message);
