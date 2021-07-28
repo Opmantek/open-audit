@@ -106,7 +106,7 @@ class Integrations extends MY_Controller
     public function read()
     {
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
-        if ( ! empty($this->response->data) && is_array($this->response->data)) {
+        if (! empty($this->response->data) && is_array($this->response->data)) {
             $this->response->meta->total = 1;
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
@@ -217,6 +217,26 @@ class Integrations extends MY_Controller
         if (!empty($count)) {
             $this->response->defaults->name = 'NMIS Integration ' . ($count + 1);
         }
+        output($this->response);
+    }
+
+    /**
+     * Delete a field
+     * @return [type] [description]
+     */
+    public function sub_resource_delete()
+    {
+        $subresource = new stdClass();
+        foreach ($this->response->meta->query_parameters as $parameter) {
+            if ($parameter->name === 'internal_field_name') {
+                $subresource->internal_field_name = $parameter->value;
+            }
+            if ($parameter->name === 'external_field_name') {
+                $subresource->external_field_name = $parameter->value;
+            }
+        }
+        $this->m_integrations->sub_resource_delete($this->response->meta->id, $subresource);
+        $this->response->meta->format = 'json';
         output($this->response);
     }
 

@@ -147,7 +147,7 @@ class M_integrations extends MY_Model
                     $field->name = $field_name;
                     $field->org_id = $integration->attributes->org_id;
                     $field->type = 'varchar';
-                    $field->values = $field->default_value;
+                    $field->values = @$field->default_value;
                     $field->group_id = 1;
                     $field->placement = 'system';
                     $CI->m_fields->create($field);
@@ -223,6 +223,35 @@ class M_integrations extends MY_Model
     }
 
     /**
+     * Delete a field
+     *
+     * @param int    $id          The integration ID
+     * @param object $subresource The field containing internal_field_name and external_field_name
+     * @return bool True = success, False = fail
+     */
+    public function sub_resource_delete($id, $subresource)
+    {
+        if (empty($id) or empty($subresource)) {
+            return false;
+        }
+        $integration = $this->read($id);
+        $integration = $integration[0];
+        $newfields = array();
+        for ($i=0; $i < count($integration->attributes->fields); $i++) {
+            if ($integration->attributes->fields[$i]->internal_field_name === $subresource->internal_field_name and
+                $integration->attributes->fields[$i]->external_field_name === $subresource->external_field_name) {
+                // do not add this to the array of new fields
+            } else {
+                $newfields[] = $integration->attributes->fields[$i];
+            }
+        }
+        $sql = "UPDATE integrations SET fields = ? WHERE id = ?";
+        $data = array(json_encode($newfields), $id);
+        $query = $this->db->query($sql, $data);
+        return true;
+    }
+
+    /**
      * Delete an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
@@ -248,6 +277,11 @@ class M_integrations extends MY_Model
 
         // Delete any associated tasks
         $sql = "DELETE FROM tasks WHERE sub_resource_id = ? and type = 'integrations'";
+        $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
+
+        // Delete the log
+        $sql = "DELETE FROM integrations_log WHERE integrations_id = ?";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
 
