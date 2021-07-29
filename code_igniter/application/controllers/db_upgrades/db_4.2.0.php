@@ -61,6 +61,7 @@ CREATE TABLE `integrations` (
   `update_internal_count` int(10) unsigned DEFAULT NULL,
   `update_internal_from_external` enum('y','n') NOT NULL DEFAULT 'y',
   `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
+  `status` varchar(200) NOT NULL DEFAULT '',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `duration` int(10) unsigned DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -77,7 +78,6 @@ CREATE TABLE `integrations_log` (
   `microtime` decimal(16,6) DEFAULT NULL,
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `message` text NOT NULL,
-  `result` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -152,6 +152,8 @@ $this->alter_table('integrations', 'update_internal_from_external', "ADD `update
 
 $this->alter_table('integrations', 'delete_external_from_internal', "ADD `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n' AFTER `update_internal_from_external`", 'add');
 
+$this->alter_table('integrations', 'status', "ADD `status` varchar(200) NOT NULL DEFAULT '' AFTER `delete_external_from_internal`", 'add');
+
 $this->alter_table('integrations', 'duration', "ADD `duration` int(10) unsigned DEFAULT NULL AFTER `last_run`", 'add');
 
 $sql = "DROP TABLE IF EXISTS `integrations_log`";
@@ -165,7 +167,6 @@ $sql = "CREATE TABLE `integrations_log` (
   `microtime` decimal(16,6) DEFAULT NULL,
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `message` text NOT NULL,
-  `result` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
