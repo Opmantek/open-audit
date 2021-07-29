@@ -308,7 +308,7 @@ class M_integrations extends MY_Model
         $sql = '/* m_integrations::queue */ ' . 'DELETE from integrations_log WHERE integrations_id = ?';
         $data = array($id);
         $this->db->query($sql, $data);
-        $sql = '/* m_integrations::queue */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0 WHERE id = ?";
+        $sql = '/* m_integrations::queue */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0, status = 'queued' WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
         $this->load->model('m_queue');
@@ -376,14 +376,14 @@ class M_integrations extends MY_Model
         integrations_post       - Run after integration
         */
 
-        $sql = '/* m_integrations::execute */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0 WHERE id = ?";
+        $sql = '/* m_integrations::execute */ ' . "UPDATE `integrations` SET `last_run` = NOW(), select_external_count = 0, update_external_count = 0, create_external_count = 0, select_internal_count = 0, update_internal_count = 0, create_internal_count = 0, status = 'running' WHERE id = ?";
         $data = array($id);
         $this->db->query($sql, $data);
 
         $sql = "DELETE from integrations_log WHERE integrations_id = {$id}";
         $query = $this->db->query($sql);
 
-        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Starting integration.', 'success')";
+        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Starting integration.')";
         $data = array($id, microtime(true));
         $query = $this->db->query($sql, $data);
 
@@ -401,6 +401,12 @@ class M_integrations extends MY_Model
 
         // Read all devices from a remote system
         $external_devices = integrations_collection($integration);
+
+        // $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '" . json_encode($external_devices) . "')";
+        // $data = array($id, microtime(true));
+        // $query = $this->db->query($sql, $data);
+
+
         $external_formatted_devices = $this->external_to_internal($integration, $external_devices);
 
         // Check retrieved devices for 'localhost' or '127.0.0.1' which may or may not be this Open-AudIT server
@@ -463,14 +469,14 @@ class M_integrations extends MY_Model
             if (!empty($id)) {
                 // We matched an existing device
                 $message = 'Device match found, ID: ' . $id . ' for ' . $device->system->name;
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 $device->system->id = $id;
             } else {
                 // No existing device
                 $message = 'No device match found for ' . $device->system->name;
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
             }
@@ -534,7 +540,7 @@ class M_integrations extends MY_Model
                         }
                     }
                     $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name . ' in Open-AudIT.';
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $this->db->query($sql, $data);
                     $this->m_device->update($temp_device);
@@ -546,7 +552,7 @@ class M_integrations extends MY_Model
                     $device->system->id = $this->m_device->insert($device->system);
                     if (!empty($device->system->id)) {
                         $message = 'Device Created internally ID: ' . $device->system->id . ', ' . $device->system->name;
-                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                         $data = array($integration->id, microtime(true), $message);
                         $query = $this->db->query($sql, $data);
                         $create++;
@@ -555,7 +561,7 @@ class M_integrations extends MY_Model
                         $discover_devices[] = $device;
                     } else {
                         $message = 'Could not create device ' . $device->system->name;
-                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?, 'success')";
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                         $data = array($integration->id, microtime(true), $message);
                         $query = $this->db->query($sql, $data);
                     }
@@ -784,7 +790,7 @@ class M_integrations extends MY_Model
             // Reset discovery stats and logs
 
             $message = 'Reset discovery stats and logs.';
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
@@ -802,7 +808,7 @@ class M_integrations extends MY_Model
             foreach ($discover_devices as $device) {
                 if (filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
                     $message = 'Add ' . $device->system->name . ' to discovery queue.';
-                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $this->db->query($sql, $data);
 
@@ -819,14 +825,14 @@ class M_integrations extends MY_Model
                     $query = $this->db->query($sql, $data);
                 } else {
                     $message = 'Not adding ' . $device->system->name . ' to discovery queue - no IP.';
-                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?, 'warning')";
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $this->db->query($sql, $data);
                 }
             }
 
             $message = 'Added ' . $count . ' devices to discovery queue.';
-            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', ?)";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
@@ -835,7 +841,7 @@ class M_integrations extends MY_Model
             $query = $this->db->query($sql, $data);
 
             $message = 'Starting discovery.';
-            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
@@ -866,7 +872,7 @@ class M_integrations extends MY_Model
         $query = $this->db->query($sql, $data);
 
         $message = count($local_formatted_devices) . ' devices returned from Open-AudIT.';
-        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
         $data = array($integration->id, microtime(true), $message);
         $query = $this->db->query($sql, $data);
 
@@ -889,7 +895,7 @@ class M_integrations extends MY_Model
                 }
             }
             $message = count($new_external_devices) . ' devices require creating in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
             // Create new devices externally
@@ -923,7 +929,7 @@ class M_integrations extends MY_Model
                     }
                 }
                 $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name;
-                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 $this->m_device->update($temp_device);
@@ -970,7 +976,7 @@ class M_integrations extends MY_Model
             }
             // Now we have a new list with devices to be updated with changed values
             $message = count($update_external_devices) . ' devices require updating in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
 
@@ -978,6 +984,13 @@ class M_integrations extends MY_Model
             $data = array(count($update_external_devices), $integration->id);
             $query = $this->db->query($sql, $data);
 
+            // foreach ($update_external_devices as &$internal_device) {
+                // $message = json_encode($internal_device);
+                // $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                // $data = array($integration->id, microtime(true), $message);
+                // $query = $this->db->query($sql, $data);
+                // $internal_device = $this->format_int_to_ext($integration, $internal_device);
+            // }
             integrations_update($integration, $update_external_devices);
         }
 
@@ -985,7 +998,7 @@ class M_integrations extends MY_Model
         if ($integration->attributes->delete_external_from_internal === 'y') {
             if (count($external_devices) > count($local_formatted_devices)) {
                 $message = count($external_devices) . ' external devices and ' . count($local_formatted_devices) . ' local devices';
-                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 // Select all devices retrieved from external, compare to internal list - any NOT in the internal list, delete
@@ -998,7 +1011,7 @@ class M_integrations extends MY_Model
                                 $test2 = $this->get_value($external_device, $field->external_field_name);
                                 if ($test1 == $test2) {
                                     $message = 'Removing ' . $external_device->name . ' delete from list.';
-                                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?, 'success')";
+                                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                                     $data = array($integration->id, microtime(true), $message);
                                     $query = $this->db->query($sql, $data);
                                     unset($delete_external_devices[$ekey]);
@@ -1010,13 +1023,13 @@ class M_integrations extends MY_Model
                 }
                 $delete_external_devices = array_values($delete_external_devices);
                 $message = count($delete_external_devices) . ' devices require deleting in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
                 integrations_delete($integration, $delete_external_devices);
             } else {
                 $message = '0 devices require deleting in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?, 'success')";
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $this->db->query($sql, $data);
             }
@@ -1025,27 +1038,14 @@ class M_integrations extends MY_Model
         // Run after integration
         integrations_post($integration, $external_devices);
 
-        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Completed integration.', 'success')";
+        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', 'Completed integration.')";
         $data = array($integration->id, microtime(true));
         $query = $this->db->query($sql, $data);
 
         $duration = (microtime(true) - $timer_start);
-        $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET duration = ? WHERE id = ?";
+        $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET duration = ?, status = 'complete' WHERE id = ?";
         $data = array(intval($duration), $integration->id);
         $query = $this->db->query($sql, $data);
-
-        // $sql = "SELECT * FROM integrations_log WHERE integrations_id = ?";
-        // $data = array($integration->attributes->id);
-        // $query = $this->db->query($sql, $data);
-        // $result = $query->result();
-        // $table = "<table width=\"100%\"><thead><tr><th>id</th><th>IntID</th><th>timestamp</th><th>microtime</th><th>severity</th><th>message</th><th>result</th></tr></thead><tbody>";
-        // foreach ($result as $row) {
-        //     $table .= "<tr><td>" . $row->id . "</td><td>" . $row->integrations_id . "</td><td>" . $row->timestamp . "</td><td>" . $row->microtime . "</td><td>" . $row->severity_text . "</td><td>" . $row->message . "</td><td>" . $row->result . "</td><td></tr>";
-        // }
-
-        // echo $table;
-
-        // exit;
     }
 
     public function get_value($device, $field)
@@ -1058,6 +1058,12 @@ class M_integrations extends MY_Model
 
     public function set_value($device, $field, $value)
     {
+
+        // if ($field === 'configuration.roleType') {
+        //     $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, 1, ?, 'notice', 'Setting configuration.roleType as " . gettype($value) . "')";
+        //     $data = array(microtime(true));
+        //     $query = $this->db->query($sql, $data);
+        // }
         $explode = explode('.', $field);
         if (count($explode) === 1) {
             $device->{$field} = $value;
@@ -1070,115 +1076,84 @@ class M_integrations extends MY_Model
 
     /**
      * Take our internal device build external properties and transform if required
-     * @param  [type] $device [description]
-     * @param  [type] $rules  [description]
+     * @param  [type] $integration [description]
+     * @param  [type] $internal_device  [description]
      * @return [type]         [description]
      */
     public function format_int_to_ext($integration, $internal_device)
     {
-        if (empty($internal_device) or empty($rules)) {
+        if (empty($integration->attributes->fields) or empty($internal_device)) {
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', 'No int or dev provided.')";
+            $data = array($integration->id, microtime(true));
+            $query = $this->db->query($sql, $data);
             return false;
         }
-        $device = new stdClass();
-        // TODO - add external ID
-        foreach ($integration->fields as $field) {
+        foreach ($integration->attributes->fields as $field) {
             if (! empty($field->external_field_name)) {
                 if (empty($field->internal_field_name)) {
                     // Not an Open-AudIT field, populate the default
-                    $device = $this->set_val($device, $field->external_field_name, $field->default_value);
+                    $value = $this->get_value($internal_device, $field->external_field_name);
+                    if (empty($value)) {
+                        $internal_device = $this->set_value($internal_device, $field->external_field_name, $field->default_value);
+                    }
                 } else {
-                    // Populate with the internal value
-                    $value = $this->get_val($internal_device, $field);
-                    $device = $this->set_val($device, $field->external_field_name, $value);
-                    $explode = explode('.', $field->external_field_name);
+                    if ($field->priority === 'internal') {
+                        $value = $this->get_value($internal_device, $field->internal_field_name);
+                        $w = 'internal using' . $field->internal_field_name;
+                    } else {
+                        $value = $this->get_value($internal_device, $field->external_field_name);
+                        $w = 'external using ' . $field->external_field_name;
+                    }
 
-                    switch ($rule->external_field_type) {
+                    // $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', 'Value: {$value} from $w')";
+                    // $data = array($integration->id, microtime(true));
+                    // $query = $this->db->query($sql, $data);
+
+                    switch ($field->external_field_type) {
                         case 'text':
-                            if (count($explode) === 1) {
-                                $device->{$field} = (string)$value;
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = (string)$value;
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, (string)$value);
                             break;
 
                         case 'integer':
-                            if (count($explode) === 1) {
-                                $device->{$field} = intval($value);
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = intval($value);
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, intval($value));
                             break;
 
                         case 'bool':
-                            if (count($explode) === 1) {
-                                $device->{$field} = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, filter_var($value, FILTER_VALIDATE_BOOLEAN));
                             break;
 
                         case 'bool_one_zero':
-                            if (count($explode) === 1) {
-                                if ($value === 'y' or $value === 1 or $value === true) {
-                                    $device->{$field} = 1;
-                                } else {
-                                    $device->{$field} = 0;
-                                }
-                            } else if (count($explode) === 2) {
-                                if ($value === 'y' or $value === 1 or $value === true) {
-                                    $device->{$explode[0]}->{$explode[1]} = 1;
-                                } else {
-                                    $device->{$explode[0]}->{$explode[1]} = 0;
-                                }
+                            if ($value === 'y' or $value === '1' or $value === 1 or $value === true) {
+                                $value = 1;
+                            } else {
+                                $value = 0;
                             }
+                            $internal_device = $this->set_value($internal_device, $field, $value);
                             break;
 
                         case 'bool_y_n':
-                            if (count($explode) === 1) {
-                                if ($value === 'y' or $value === 1 or $value === true) {
-                                    $device->{$field} = 'y';
-                                } else {
-                                    $device->{$field} = 'n';
-                                }
-                            } else if (count($explode) === 2) {
-                                if ($value === 'y' or $value === 1 or $value === true) {
-                                    $device->{$explode[0]}->{$explode[1]} = 'y';
-                                } else {
-                                    $device->{$explode[0]}->{$explode[1]} = 'n';
-                                }
+                            if ($value === 'y' or $value === '1' or $value === 1 or $value === true) {
+                                $value = 'y';
+                            } else {
+                                $value = 'n';
                             }
+                            $internal_device = $this->set_value($internal_device, $field, $value);
                             break;
 
                         case 'capitalise':
-                            if (count($explode) === 1) {
-                                $device->{$field} = ucwords($value);
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = ucwords($value);
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, ucwords($value));
                             break;
 
                         case 'lower':
-                            if (count($explode) === 1) {
-                                $device->{$field} = strtolower($value);
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = strtolower($value);
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, strtolower($value));
                             break;
 
                         case 'upper':
-                            if (count($explode) === 1) {
-                                $device->{$field} = strtoupper($value);
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = strtoupper($value);
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, strtoupper($value));
                             break;
 
                         case 'datetime_now':
-                            if (count($explode) === 1) {
-                                $device->{$field} = $this->config->config['timestamp'];
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = $this->config->config['timestamp'];
-                            }
+                            $internal_device = $this->set_value($internal_device, $field, $this->config->config['timestamp']);
                             break;
 
                         case 'datetime_Y-m-d H:i:s':
@@ -1192,36 +1167,25 @@ class M_integrations extends MY_Model
                             break;
 
                         case 'date_now':
-                            $date = date_create_from_format("Y-m-d", $this->config->config['timestamp']);
-                            if (count($explode) === 1) {
-                                $device->{$field} = $date;
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = $date;
-                            }
+                            $value = date_create_from_format("Y-m-d", $this->config->config['timestamp']);
+                            $internal_device = $this->set_value($internal_device, $field, $value);
                             break;
 
                         case 'date_Y-m-d':
-                            // nothing, we're in this format in Open-AudIT
+                            $value = date_create_from_format("Y-m-d", $value);
+                            $internal_device = $this->set_value($internal_device, $field, $value);
                             break;
 
                         case 'date_m-d-Y':
                             // from Y-m-d to m-d-Y
-                            $date = date_create_from_format("Y-m-d", $value);
-                            if (count($explode) === 1) {
-                                $device->{$field} = date_format($date, 'm-d-Y');
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = date_format($date, 'm-d-Y');
-                            }
+                            $value = date_create_from_format("Y-m-d", $value);
+                            $internal_device = $this->set_value($internal_device, $field, date_format($value, 'm-d-Y'));
                             break;
 
                         case 'date_d-m-Y':
                             // from Y-m-d to m-d-Y
-                            $date = date_create_from_format("Y-m-d", $value);
-                            if (count($explode) === 1) {
-                                $device->{$field} = date_format($date, 'd-m-Y');
-                            } else if (count($explode) === 2) {
-                                $device->{$explode[0]}->{$explode[1]} = date_format($date, 'd-m-Y');
-                            }
+                            $value = date_create_from_format("Y-m-d", $value);
+                            $internal_device = $this->set_value($internal_device, $field, date_format($value, 'd-m-Y'));
                             break;
 
                         default:
@@ -1231,7 +1195,13 @@ class M_integrations extends MY_Model
                 }
             }
         }
-        return $device;
+
+        // $message = json_encode($internal_device);
+        // $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+        // $data = array($integration->id, microtime(true), $message);
+        // $query = $this->db->query($sql, $data);
+
+        return $internal_device;
     }
 
     public function get_local_devices($integration)
@@ -1541,12 +1511,14 @@ class M_integrations extends MY_Model
                             }
                         }
                     } else {
-                        if (!empty($value)) {
-                            $newdevice->{$field->external_field_name} = $value;
-                        } else if (!empty($field->default_value)) {
-                            $newdevice->{$field->external_field_name} = $field->default_value;
-                        } else {
-                            $newdevice->{$field->external_field_name} = '';
+                        if (!empty($field->external_field_name)) {
+                            if (!empty($value)) {
+                                $newdevice->{$field->external_field_name} = $value;
+                            } else if (!empty($field->default_value)) {
+                                $newdevice->{$field->external_field_name} = $field->default_value;
+                            } else {
+                                $newdevice->{$field->external_field_name} = '';
+                            }
                         }
                     }
                 }
