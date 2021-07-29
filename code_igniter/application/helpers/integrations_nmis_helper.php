@@ -117,7 +117,7 @@ if (!function_exists('integrations_pre')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (pre).')";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         } else {
@@ -160,11 +160,11 @@ if (!function_exists('integrations_pre')) {
         $external_locations = @json_decode($output);
 
         if (empty($external_locations)) {
-            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', 'No locations returned from NMIS, output: " . (string)$output . ".')";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No locations returned from NMIS, output: " . (string)$output . ".')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         } else {
-            $message = count($external_locations) . " locations returned from NMIS.";
+            $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
             $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
@@ -237,7 +237,7 @@ if (!function_exists('integrations_pre')) {
                 $query = $CI->db->query($sql);
                 $location_ids[] = $CI->db->insert_id();
 
-                $message = 'Created new location: ' . $external_location->_id;
+                $message = "[integrations_pre] " . 'Created new location: ' . $external_location->_id;
                 $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
@@ -261,12 +261,12 @@ if (!function_exists('integrations_pre')) {
         $pollers = @json_decode($output);
 
         if (empty($pollers)) {
-            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', 'No pollers returned from NMIS.')";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No pollers returned from NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return true;
         } else {
-            $message = count($pollers) . " pollers returned from NMIS.";
+            $message = "[integrations_pre]  " . count($pollers) . " pollers returned from NMIS.";
             $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
@@ -328,7 +328,7 @@ if (!function_exists('integrations_collection')) {
 
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (collection).')";
+            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_collection] Logged on to NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         } else {
@@ -371,20 +371,20 @@ if (!function_exists('integrations_collection')) {
         curl_close($ch);
 
         if (!is_string($output) || !strlen($output)) {
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not retrieve devices from NMIS, output: " . (string)$output . ".')";
+            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not retrieve devices from NMIS, output: " . (string)$output . ".')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return array();
         }
         $external_devices = json_decode($output);
         if (empty($external_devices)) {
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'No devices returned from NMIS.')";
+            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] No devices returned from NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
             return array();
         } else {
             $count = count($external_devices);
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$count devices returned from NMIS.')";
+            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '[integrations_collection] $count devices returned from NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -398,7 +398,7 @@ if (!function_exists('integrations_collection')) {
                 }
             }
             $count = count($external_devices);
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '$count devices filtered from NMIS.')";
+            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '[integrations_collection] $count devices filtered from NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
         }
@@ -456,25 +456,37 @@ if (!function_exists('integrations_update')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
-            // bad credentials
-            $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check Username and Password.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
-            return false;
-        }
-        if (strpos($output, 'redirect_url=') !== false) {
-            // Likely a bad URL
-            $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
-            return false;
-        }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (update).')";
+            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_update] Logged on to NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
+        } else {
+            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+                // bad credentials
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check Username and Password.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+                // bad URL
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'redirect_url=') !== false) {
+                // Likely a bad URL
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else {
+                // Something went awry
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, output: " . (string)$output . ".')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            }
         }
 
         $ch = curl_init();
@@ -492,18 +504,18 @@ if (!function_exists('integrations_update')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
-                $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could update device in NMIS.')";
+                $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could update device in NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();
             }
             if (empty($output)) {
-                $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'No result from NMIS.')";
+                $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] No result from NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();
             } else {
-                $message = 'Device ' . $device->configuration->host . ' updated in NMIS.';
+                $message = '[integrations_update] Device ' . $device->configuration->host . ' updated in NMIS.';
                 $count = count($external_devices);
                 $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $data = array($integration->id, microtime(true), $message);
@@ -558,25 +570,37 @@ if (!function_exists('integrations_create')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
-            // bad credentials
-            $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check Username and Password.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
-            return false;
-        }
-        if (strpos($output, 'redirect_url=') !== false) {
-            // Likely a bad URL
-            $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
-            return false;
-        }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (create).')";
+            $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_create] Logged on to NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
+        } else {
+            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+                // bad credentials
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check Username and Password.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+                // bad URL
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'redirect_url=') !== false) {
+                // Likely a bad URL
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else {
+                // Something went awry
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, output: " . (string)$output . ".')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            }
         }
 
         $ch = curl_init();
@@ -604,27 +628,27 @@ if (!function_exists('integrations_create')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
-                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could not create device in NMIS.')";
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not create device in NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();
             }
             $external_device = @json_decode($output);
             if (empty($external_device)) {
-                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'No JSON in result from NMIS.')";
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] No JSON in result from NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();
             } else {
                 if (empty($external_device->error)) {
                     $external_devices[] = $external_device;
-                    $message = 'Device ' . $device->configuration->host . ' created in NMIS.';
+                    $message = '[integrations_create] Device ' . $device->configuration->host . ' created in NMIS.';
                     $count = count($external_devices);
                     $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $CI->db->query($sql, $data);
                 } else {
-                    $message = 'Error: ' . $external_device->error;
+                    $message = '[integrations_create] Error: ' . $external_device->error;
                     $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $CI->db->query($sql, $data);
@@ -678,25 +702,37 @@ if (!function_exists('integrations_delete')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
-            // bad credentials
-            $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check Username and Password.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
-            return false;
-        }
-        if (strpos($output, 'redirect_url=') !== false) {
-            // Likely a bad URL
-            $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
-            return false;
-        }
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'Logged on to NMIS (delete).')";
+            $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_delete] Logged on to NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
+        } else {
+            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+                // bad credentials
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check Username and Password.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+                // bad URL
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'redirect_url=') !== false) {
+                // Likely a bad URL
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else {
+                // Something went awry
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, output: " . (string)$output . ".')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            }
         }
 
         $ch = curl_init();
@@ -714,18 +750,18 @@ if (!function_exists('integrations_delete')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
-                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'Could delete device in NMIS.')";
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could delete device in NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();
             }
             if (empty($output)) {
-                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', 'No result from NMIS.')";
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] No result from NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 return array();
             } else {
-                $message = 'Device ' . $device->configuration->host . ' deleted in NMIS.';
+                $message = '[integrations_delete] Device ' . $device->configuration->host . ' deleted in NMIS.';
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
