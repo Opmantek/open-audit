@@ -239,7 +239,11 @@ class M_integrations extends MY_Model
         $newfields = array();
         for ($i=0; $i < count($integration->attributes->fields); $i++) {
             if ($integration->attributes->fields[$i]->internal_field_name === $subresource->internal_field_name and
-                $integration->attributes->fields[$i]->external_field_name === $subresource->external_field_name) {
+                $integration->attributes->fields[$i]->external_field_name === $subresource->external_field_name and
+                $integration->attributes->fields[$i]->external_field_type === $subresource->external_field_type and
+                $integration->attributes->fields[$i]->default_value === $subresource->default_value and
+                $integration->attributes->fields[$i]->priority === $subresource->priority and
+                $integration->attributes->fields[$i]->matching_attribute === $subresource->matching_attribute) {
                 // do not add this to the array of new fields
             } else {
                 $newfields[] = $integration->attributes->fields[$i];
