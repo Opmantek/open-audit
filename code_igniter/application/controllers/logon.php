@@ -436,13 +436,13 @@ class Logon extends CI_Controller
                 $this->load->model('m_orgs');
                 $integration = $this->m_integrations->read($result[0]->id);
                 $integration = $integration[0];
+#echo json_encode($integration); exit;
                 if ((stripos($integration->attributes->attributes->url, 'localhost') !== false or
                     stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or
                     stripos($integration->attributes->attributes->url, '127.0.1.1') !== false) and
                         empty($integration->attributes->attributes->username) and
                         empty($integration->attributes->attributes->password) and
-                        php_uname('s') !== 'Windows NT' and
-                        empty($integration->attributes->locations)) {
+                        php_uname('s') !== 'Windows NT') {
                     // We should be able to run the integration, assuming config auth_token set
                     $this->load->helper('integrations_nmis');
                     // Remove any existing logs
