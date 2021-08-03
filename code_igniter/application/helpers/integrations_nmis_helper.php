@@ -264,7 +264,8 @@ if (!function_exists('integrations_pre')) {
             $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No pollers returned from NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
-            return true;
+            $pollers = array();
+            #return true;
         } else {
             $message = "[integrations_pre]  " . count($pollers) . " pollers returned from NMIS.";
             $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
@@ -272,9 +273,117 @@ if (!function_exists('integrations_pre')) {
             $query = $CI->db->query($sql, $data);
         }
 
+        // Store any groups
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/groups.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $groups = @json_decode($output);
+
+        if (empty($groups)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No groups returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            $groups = array();
+            #return true;
+        } else {
+            $message = "[integrations_pre]  " . count($groups) . " groups returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        // Store any roles
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/roles.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $roles = @json_decode($output);
+
+        if (empty($roles)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No roles returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            $roles = array();
+            #return true;
+        } else {
+            $message = "[integrations_pre]  " . count($roles) . " roles returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        // Store any customers
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/customers.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $customers_retrieved = @json_decode($output);
+        $customers = array();
+
+        if (empty($customers_retrieved)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No customers returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        } else {
+            $message = "[integrations_pre]  " . count($customers_retrieved) . " customers returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            foreach ($customers_retrieved as $customer) {
+                $customers[] = $customer->customer;
+            }
+        }
+
+        // Store any business services
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/businessservices.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $business_services_retrieved = @json_decode($output);
+        $business_services = array();
+
+        if (empty($business_services_retrieved)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No business_services returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        } else {
+            $message = "[integrations_pre]  " . count($business_services_retrieved) . " business_services returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            foreach ($business_services_retrieved as $business_service) {
+                $business_services[] = $business_service->businessService;
+            }
+        }
+
         $sql = "/* integrations_nmis_helper::pre */ " . 'UPDATE integrations SET additional_items = ? WHERE id = ?';
         $additional_items = new stdClass();
         $additional_items->pollers = $pollers;
+        $additional_items->groups = $groups;
+        $additional_items->roles = $roles;
+        $additional_items->customers = $customers;
+        $additional_items->business_services = $business_services;
         $data = array(json_encode($additional_items), $integration->id);
         $query = $CI->db->query($sql, $data);
 
@@ -774,31 +883,6 @@ if (!function_exists('integrations_delete')) {
 if (!function_exists('integrations_post')) {
     function integrations_post($integration, $devices)
     {
-        $CI = & get_instance();
-        $groups = array();
-        if (empty($devices)) {
-            return true;
-        }
-        foreach ($devices as $device) {
-            if (!empty($device->configuration->group)) {
-                $groups[] = $device->configuration->group;
-            }
-        }
-        $groups = array_unique($groups);
-        $groups = array_values($groups);
-        if (!empty($groups)) {
-            $sql = "/* integrations_nmis_helper::post */ " . "SELECT additional_items FROM integrations WHERE id = ?";
-            $data = array($integration->id);
-            $query = $CI->db->query($sql, $data);
-            $result = $query->result();
-            $additional_items = new stdClass();
-            $additional_items = @json_decode($result[0]->additional_items);
-            $additional_items->groups = $groups;
-
-            $sql = "/* integrations_nmis_helper::post */ " . 'UPDATE integrations SET additional_items = ? WHERE id = ?';
-            $data = array(json_encode($additional_items), $integration->id);
-            $query = $CI->db->query($sql, $data);
-        }
         return true;
     }
 }
