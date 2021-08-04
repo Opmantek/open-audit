@@ -883,6 +883,316 @@ if (!function_exists('integrations_delete')) {
 if (!function_exists('integrations_post')) {
     function integrations_post($integration, $devices)
     {
+        // NOTE - This function is an exact copy of integrations_pre
+        //        We need to run again as some items may have been created (EG: nmis_group) during the integration
+        //        and not running this again to update affects the 'list' items on the devices read template.
+        error_reporting(E_ALL);
+        $CI = & get_instance();
+
+        // Get our devices
+        $url = $integration->attributes->attributes->url;
+        $url .= 'admin';
+
+        // Create temp file to store cookies
+        $ckfile = tempnam("/tmp", "CURLCOOKIE");
+
+        // Post login form and follow redirects
+        $ch = curl_init();
+
+        // Using token auth for local NMIS
+        if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
+            $token = generate_token();
+            $login_url = $url . '/login/' . $token;
+        } else {
+            $form_fields = array(
+                'username' => $integration->attributes->attributes->username,
+                'password' => $integration->attributes->attributes->password,
+            );
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+            $login_url = $url . '/login';
+        }
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_URL, $login_url);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        $output = curl_exec($ch);
+        if (strpos($output, 'Set-Cookie') !== false) {
+            // Success
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        } else {
+            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+                // bad credentials
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check Username and Password.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+                // bad URL
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else if (strpos($output, 'redirect_url=') !== false) {
+                // Likely a bad URL
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            } else {
+                // Something went awry
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, output: " . (string)$output . ".')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                return false;
+            }
+        }
+        # Location List
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/locations.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $external_locations = @json_decode($output);
+
+        if (empty($external_locations)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No locations returned from NMIS, output: " . (string)$output . ".')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        } else {
+            $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        $location_ids = array();
+        $org_list = $CI->m_orgs->get_descendants($integration->attributes->org_id);
+        $org_list[] = $integration->attributes->org_id;
+
+        $sql = "/* integrations_nmis_helper::pre */ " . "SELECT * FROM locations WHERE org_id IN (" . implode(',', $org_list) . ")";
+        $query = $CI->db->query($sql);
+        $locations = $query->result();
+        foreach ($external_locations as $external_location) {
+            $exists = false;
+            unset($ext_location);
+            foreach ($locations as $location) {
+                if ($external_location->_id === 'default') {
+                    $external_location->_id = 'Default Location';
+                }
+                if ($external_location->_id === $location->name) {
+                    // Matching location exists
+                    $exists = true;
+                    $location_ids[] = intval($location->id);
+                    break;
+                }
+            }
+            if (!$exists) {
+                // Need to create a new location
+                $address = $external_location->Address1;
+                if ($external_location->Address2) {
+                    $address .= ' ' . $external_location->Address2;
+                }
+                $type = 'Office';
+                if ($external_location->_id === 'Cloud') {
+                    $type = 'Cloud';
+                }
+                if ($external_location->_id === 'DataCenter') {
+                    $type = 'Data Center';
+                }
+
+                $data = array(  'id' => null,
+                                'name' => $external_location->_id,
+                                'org_id' => intval($integration->attributes->org_id),
+                                'description' => 'Imported from NMIS',
+                                'type' => $type,
+                                'room' => $external_location->Room,
+                                'level' => $external_location->Floor,
+                                'address' => $address,
+                                'suburb' => $external_location->Suburb,
+                                'city' => $external_location->City,
+                                'district' => '',
+                                'region' => '',
+                                'area' => '',
+                                'state' => $external_location->State,
+                                'postcode' => $external_location->Postcode,
+                                'country' => $external_location->Country,
+                                'tags' => '',
+                                'phone' => '',
+                                'picture' => '',
+                                'external_ident' => '',
+                                'options' => '',
+                                'latitude' => $external_location->Latitude,
+                                'longitude' => $external_location->Longitude,
+                                'geo' => $external_location->Geocode,
+                                'cloud_id' => '',
+                                'edited_by' => 'system',
+                                'edited_date' => $CI->config->config['timestamp']
+                            );
+                $sql = $CI->db->insert_string('locations', $data);
+                $query = $CI->db->query($sql);
+                $location_ids[] = $CI->db->insert_id();
+
+                $message = "[integrations_pre] " . 'Created new location: ' . $external_location->_id;
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $CI->db->query($sql, $data);
+            }
+        }
+
+        $sql = "/* integrations_nmis_helper::pre */ " . "UPDATE integrations set locations = ? WHERE id = ?";
+        $data = array(json_encode($location_ids), $integration->id);
+        $query = $CI->db->query($sql, $data);
+
+        // Store any pollers
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/pollers.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $pollers = @json_decode($output);
+
+        if (empty($pollers)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No pollers returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            $pollers = array();
+            #return true;
+        } else {
+            $message = "[integrations_pre]  " . count($pollers) . " pollers returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        // Store any groups
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/groups.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $groups = @json_decode($output);
+
+        if (empty($groups)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No groups returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            $groups = array();
+            #return true;
+        } else {
+            $message = "[integrations_pre]  " . count($groups) . " groups returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        // Store any roles
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/roles.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $roles = @json_decode($output);
+
+        if (empty($roles)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No roles returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            $roles = array();
+            #return true;
+        } else {
+            $message = "[integrations_pre]  " . count($roles) . " roles returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        }
+
+        // Store any customers
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/customers.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $customers_retrieved = @json_decode($output);
+        $customers = array();
+
+        if (empty($customers_retrieved)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No customers returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        } else {
+            $message = "[integrations_pre]  " . count($customers_retrieved) . " customers returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            foreach ($customers_retrieved as $customer) {
+                $customers[] = $customer->customer;
+            }
+        }
+
+        // Store any business services
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/api/v2/businessservices.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $business_services_retrieved = @json_decode($output);
+        $business_services = array();
+
+        if (empty($business_services_retrieved)) {
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No business_services returned from NMIS.')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+        } else {
+            $message = "[integrations_pre]  " . count($business_services_retrieved) . " business_services returned from NMIS.";
+            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+            $data = array($integration->id, microtime(true));
+            $query = $CI->db->query($sql, $data);
+            foreach ($business_services_retrieved as $business_service) {
+                $business_services[] = $business_service->businessService;
+            }
+        }
+
+        $sql = "/* integrations_nmis_helper::pre */ " . 'UPDATE integrations SET additional_items = ? WHERE id = ?';
+        $additional_items = new stdClass();
+        $additional_items->pollers = $pollers;
+        $additional_items->groups = $groups;
+        $additional_items->roles = $roles;
+        $additional_items->customers = $customers;
+        $additional_items->business_services = $business_services;
+        $data = array(json_encode($additional_items), $integration->id);
+        $query = $CI->db->query($sql, $data);
+
         return true;
     }
 }
