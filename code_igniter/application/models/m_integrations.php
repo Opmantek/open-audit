@@ -70,14 +70,20 @@ class M_integrations extends MY_Model
     {
 
         $CI = & get_instance();
-        if (!empty($data->options) && ! is_string($data->options)) {
-            $data->options = json_encode($data->options);
+        if (!empty($data->options)) {
+            if (!is_string($data->options)) {
+                $data->options = json_encode($data->options);
+            }
         } else {
             $data->options = '[]';
         }
 
-        if (!empty($data->attributes) && ! is_string($data->attributes)) {
-            $data->attributes = json_encode($data->attributes);
+        if (!empty($data->attributes)) {
+            if (!is_string($data->attributes)) {
+                $data->attributes = json_encode($data->attributes);
+            }
+        } else {
+            $data->attributes = '[]';
         }
 
         if (empty($data->type)) {
@@ -393,8 +399,7 @@ class M_integrations extends MY_Model
 
         $integration = $this->read($id);
         $integration = $integration[0];
-
-
+        $integration->debug = false;
 
         if (substr($integration->attributes->attributes->url, -1) !== '/') {
             $integration->attributes->attributes->url .= '/';
@@ -408,10 +413,11 @@ class M_integrations extends MY_Model
         // Read all devices from a remote system
         $external_devices = integrations_collection($integration);
 
-        // $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '" . json_encode($external_devices) . "')";
-        // $data = array($id, microtime(true));
-        // $query = $this->db->query($sql, $data);
-
+        if ($integration->debug === true) {
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'notice', '" . json_encode($external_devices) . "')";
+            $data = array($id, microtime(true));
+            $query = $this->db->query($sql, $data);
+        }
 
         $external_formatted_devices = $this->external_to_internal($integration, $external_devices);
 
@@ -904,6 +910,12 @@ class M_integrations extends MY_Model
             $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
             // Create new devices externally
+            if ($integration->debug === true and count($new_external_devices) > 0) {
+                $message = json_encode($new_external_devices);
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+            }
             $created_devices = integrations_create($integration, $new_external_devices);
             // Update local attributes from created devices
             $external_created_devices = $this->external_to_internal($integration, $created_devices);
@@ -966,6 +978,12 @@ class M_integrations extends MY_Model
                                         if ((string)$test !== (string)$test2) {
                                             $external_device = $this->set_value($external_device, $ifield->external_field_name, $test);
                                             $hit = true;
+                                            if ($integration->debug === true) {
+                                                $message = "Updating {$local_device->system->ip} because {$ifield->external_field_name} == $test";
+                                                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                                                $data = array($integration->id, microtime(true), $message);
+                                                $query = $this->db->query($sql, $data);
+                                            }
                                         }
                                     }
                                 }
@@ -987,6 +1005,13 @@ class M_integrations extends MY_Model
             $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET update_external_count = ? WHERE id = ?";
             $data = array(count($update_external_devices), $integration->id);
             $query = $this->db->query($sql, $data);
+
+            if ($integration->debug === true and count($update_external_devices) > 0) {
+                $message = json_encode($update_external_devices);
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+            }
 
             integrations_update($integration, $update_external_devices);
         }
