@@ -1412,6 +1412,12 @@ CREATE TABLE `fields` (
 
 LOCK TABLES `fields` WRITE;
 /*!40000 ALTER TABLE `fields` DISABLE KEYS */;
+INSERT INTO `fields` VALUES (NULL,'nmis_active',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_collect',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_model',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_netType',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_ping',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_port',1,1,'varchar','','system','Administrator',NOW());
 /*!40000 ALTER TABLE `fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
