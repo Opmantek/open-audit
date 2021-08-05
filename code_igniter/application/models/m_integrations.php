@@ -468,7 +468,7 @@ class M_integrations extends MY_Model
         $parameters->match = new stdClass();
         foreach ($integration->attributes->fields as $field) {
             if ($field->matching_attribute === 'y') {
-                $field_name = str_replace('system.', '', $field->internal_field_name);
+                $field_name = str_replace('system.', 'match_', $field->internal_field_name);
                 $parameters->match->{$field_name} = 'y';
             }
         }
@@ -925,9 +925,16 @@ class M_integrations extends MY_Model
             $parameters->match = new stdClass();
             foreach ($integration->attributes->fields as $field) {
                 if ($field->matching_attribute === 'y') {
-                    $field_name = str_replace('system.', '', $field->internal_field_name);
+                    $field_name = str_replace('system.', 'match_', $field->internal_field_name);
                     $parameters->match->{$field_name} = 'y';
                 }
+            }
+
+            if ($integration->debug) {
+                $message = 'PARAMETERS MATCH - ' . json_encode($parameters->match);
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
             }
 
             foreach ($external_created_devices as $device) {
