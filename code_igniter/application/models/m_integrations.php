@@ -591,199 +591,12 @@ class M_integrations extends MY_Model
 
         // Create or update custom fields
         if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
-            $sql = "SELECT * FROM fields";
-            $query = $this->db->query($sql);
-            $all_fields = $query->result();
-            foreach ($external_formatted_devices as $device) {
-                $sql = "SELECT * FROM field WHERE system_id = ?";
-                $data = array($device->system->id);
-                $query = $this->db->query($sql, $data);
-                $device_fields = $query->result();
-                foreach ($integration->attributes->fields as $field) {
-                    if ($field->priority === 'external' and (strpos($field->internal_field_name, 'fields.') !== false or $field->internal_field_name === '')) {
-                        // a custom field in Open-AudIT that we should update
-                        $field_name = str_replace('fields.', '', $field->internal_field_name);
-                        if (empty($custom_field_name)) {
-                            $external_field = explode('.', $field->external_field_name);
-                            $field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
-                        }
-                        $id = 0;
-                        foreach ($all_fields as $temp_field) {
-                            if ($field_name === $temp_field->name) {
-                                $id = $temp_field->id;
-                            }
-                        }
-                        if (!$id) {
-                            // TODO Throw an error as we should always have a field already created
-                        }
-                        $device_field_id = 0;
-                        $value = '';
-                        foreach ($device_fields as $device_field) {
-                            if ($id === $device_field->fields_id) {
-                                $device_field_id = $device_field->id;
-                                $value = $device_field->value;
-                            }
-                        }
-                        if (!$device_field_id) {
-                            // Insert a new field
-                            $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
-                            $data = array($device->system->id, $id, $device->fields->{$field_name});
-                            $query = $this->db->query($sql, $data);
-                            // Insert an edit log
-                            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was created', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
-                            $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
-                            $this->db->query($sql, $data);
-                        } else {
-                            // We already have the field associated to the device, check if the value has changed befofe updating
-                            if ((string)$value !== (string)$device->fields->{$field_name}) {
-                                // It IS different - update it
-                                $sql = "UPDATE field SET value = ? WHERE id = ?";
-                                $data = array($device->fields->{$field_name}, $device_field_id);
-                                $query = $this->db->query($sql, $data);
-                                // Insert an edit log
-                                $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was updated', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
-                                $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
-                                $this->db->query($sql, $data);
-                            }
-                        }
-                    }
-                }
-            }
+            $this->upsert_custom_fields($integration, $external_formatted_devices);
         }
 
         // Create or update credentials
         if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
-            $cred_fields = new stdClass();
-            foreach ($integration->attributes->fields as $field) {
-                // check if we need to update various fields
-                if (strpos($field->internal_field_name, 'credentials.') !== false) {
-                    $field_name = str_replace('credentials.', '', $field->internal_field_name);
-                    $cred_fields->{$field_name} = $field->priority;
-                }
-            }
-
-            foreach ($external_formatted_devices as $device) {
-                if (!empty($device->credentials->snmp_community)) {
-                    // If we have no SNMP credentials for a device in Open-AudIT but we
-                    // do have credentials from externally, insert those - regardless of priority
-                    // If we have priority for the external, delete any existing and insert external creds
-                    $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'snmp'";
-                    $data = array(intval($device->system->id));
-                    $query = $this->db->query($sql, $data);
-                    $result = $query->result();
-
-                    $credentials = new stdClass();
-                    $credentials->community = $device->credentials->snmp_community;
-                    $credentials = (string)simpleEncrypt(json_encode($credentials));
-
-                    if (intval($result[0]->count) === 0) {
-                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                        $data = array($device->system->id, 'SNMP from ' . $integration->attributes->type, '', $credentials);
-                        $this->db->query($sql, $data);
-                    } else {
-                        if ($cred_fields->snmp_community === 'external') {
-                            $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'snmp'";
-                            $data = array(intval($device->system->id));
-                            $this->db->query($sql, $data);
-                            $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                            $data = array($device->system->id, 'SNMP from ' . $integration->attributes->type, '', $credentials);
-                            $this->db->query($sql, $data);
-                        }
-                    }
-                }
-
-                if (!empty($device->credentials->windows_username)) {
-                    $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'windows'";
-                    $data = array(intval($device->system->id));
-                    $query = $this->db->query($sql, $data);
-                    $result = $query->result();
-
-                    $credentials = new stdClass();
-                    $credentials->username = $device->credentials->windows_username;
-                    $credentials->password = $device->credentials->windows_password;
-                    $credentials = (string)simpleEncrypt(json_encode($credentials));
-
-                    if (intval($result[0]->count) === 0) {
-                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                        $data = array($device->system->id, 'Windows from ' . $integration->attributes->type, '', $credentials);
-                        $this->db->query($sql, $data);
-                    } else {
-                        if ($cred_fields->windows_username === 'external' or $cred_fields->windows_password === 'external') {
-                            $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'windows'";
-                            $data = array(intval($device->system->id));
-                            $this->db->query($sql, $data);
-                            $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                            $data = array($device->system->id, 'Windows from ' . $integration->attributes->type, '', $credentials);
-                            $this->db->query($sql, $data);
-                        }
-                    }
-                }
-
-                if (!empty($device->credentials->authentication_passphrase) or !empty($device->credentials->privacy_passphrase)) {
-                    $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'snmp_v3'";
-                    $data = array(intval($device->system->id));
-                    $query = $this->db->query($sql, $data);
-                    $result = $query->result();
-
-                    $credentials = new stdClass();
-                    $credentials->authentication_passphrase = $device->credentials->authentication_passphrase;
-                    $credentials->authentication_protocol = $device->credentials->authentication_protocol;
-                    $credentials->privacy_passphrase = $device->credentials->privacy_passphrase;
-                    $credentials->privacy_protocol = $device->credentials->privacy_protocol;
-                    $credentials->security_name = $device->credentials->security_name;
-                    $credentials->security_level = $device->credentials->security_level = 'noAuthNoPriv';
-                    if (!empty($credentials->authentication_passphrase)) {
-                        $device->credentials->security_level = 'AuthNoPriv';
-                    }
-                    if (!empty($credentials->privacy_passphrase)) {
-                        $device->credentials->security_level = 'authPriv';
-                    }
-                    $credentials = (string)simpleEncrypt(json_encode($credentials));
-
-                    if (intval($result[0]->count) === 0) {
-                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
-                        $data = array($device->system->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials);
-                        $this->db->query($sql, $data);
-                    } else {
-                        if ($cred_fields->authentication_passphrase === 'external' or $cred_fields->security_name === 'external') {
-                            $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'snmp_v3'";
-                            $data = array(intval($device->system->id));
-                            $this->db->query($sql, $data);
-                            $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
-                            $data = array($device->system->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials);
-                            $this->db->query($sql, $data);
-                        }
-                    }
-                }
-
-
-                if (!empty($device->credentials->ssh_username)) {
-                    $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'ssh'";
-                    $data = array(intval($device->system->id));
-                    $query = $this->db->query($sql, $data);
-                    $result = $query->result();
-
-                    $credentials = new stdClass();
-                    $credentials->username = $device->credentials->ssh_username;
-                    $credentials->password = $device->credentials->ssh_password;
-                    $credentials = (string)simpleEncrypt(json_encode($credentials));
-
-                    if (intval($result[0]->count) === 0) {
-                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
-                        $data = array($device->system->id, 'SSH from ' . $integration->attributes->type, '', $credentials);
-                        $this->db->query($sql, $data);
-                    } else {
-                        if ($cred_fields->windows_username === 'external' or $cred_fields->windows_password === 'external') {
-                            $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'ssh'";
-                            $data = array(intval($device->system->id));
-                            $this->db->query($sql, $data);
-                            $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
-                            $data = array($device->system->id, 'SSH from ' . $integration->attributes->type, '', $credentials);
-                            $this->db->query($sql, $data);
-                        }
-                    }
-                }
-            }
+            $this->upsert_credentials($integration, $external_formatted_devices);
         }
 
         // Run Rules
@@ -1445,6 +1258,201 @@ class M_integrations extends MY_Model
         return $newdevices;
     }
 
+    public function upsert_custom_fields($integration, $devices)
+    {
+        $sql = "SELECT * FROM fields";
+        $query = $this->db->query($sql);
+        $all_fields = $query->result();
+        foreach ($devices as $device) {
+            $sql = "SELECT * FROM field WHERE system_id = ?";
+            $data = array($device->system->id);
+            $query = $this->db->query($sql, $data);
+            $device_fields = $query->result();
+            foreach ($integration->attributes->fields as $field) {
+                if ($field->priority === 'external' and (strpos($field->internal_field_name, 'fields.') !== false or $field->internal_field_name === '')) {
+                    // a custom field in Open-AudIT that we should update
+                    $field_name = str_replace('fields.', '', $field->internal_field_name);
+                    if (empty($custom_field_name)) {
+                        $external_field = explode('.', $field->external_field_name);
+                        $field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
+                    }
+                    $id = 0;
+                    foreach ($all_fields as $temp_field) {
+                        if ($field_name === $temp_field->name) {
+                            $id = $temp_field->id;
+                        }
+                    }
+                    if (!$id) {
+                        // TODO Throw an error as we should always have a field already created
+                    }
+                    $device_field_id = 0;
+                    $value = '';
+                    foreach ($device_fields as $device_field) {
+                        if ($id === $device_field->fields_id) {
+                            $device_field_id = $device_field->id;
+                            $value = $device_field->value;
+                        }
+                    }
+                    if (!$device_field_id) {
+                        // Insert a new field
+                        $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
+                        $data = array($device->system->id, $id, $device->fields->{$field_name});
+                        $query = $this->db->query($sql, $data);
+                        // Insert an edit log
+                        $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was created', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
+                        $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
+                        $this->db->query($sql, $data);
+                    } else {
+                        // We already have the field associated to the device, check if the value has changed befofe updating
+                        if ((string)$value !== (string)$device->fields->{$field_name}) {
+                            // It IS different - update it
+                            $sql = "UPDATE field SET value = ? WHERE id = ?";
+                            $data = array($device->fields->{$field_name}, $device_field_id);
+                            $query = $this->db->query($sql, $data);
+                            // Insert an edit log
+                            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was updated', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
+                            $data = array($device->system->id, $field_name, $device->fields->{$field_name}, $value);
+                            $this->db->query($sql, $data);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function upsert_credentials($integration, $devices)
+    {
+        $cred_fields = new stdClass();
+        foreach ($integration->attributes->fields as $field) {
+            // check if we need to update various fields
+            if (strpos($field->internal_field_name, 'credentials.') !== false) {
+                $field_name = str_replace('credentials.', '', $field->internal_field_name);
+                $cred_fields->{$field_name} = $field->priority;
+            }
+        }
+
+        foreach ($devices as $device) {
+            if (!empty($device->credentials->snmp_community)) {
+                // If we have no SNMP credentials for a device in Open-AudIT but we
+                // do have credentials from externally, insert those - regardless of priority
+                // If we have priority for the external, delete any existing and insert external creds
+                $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'snmp'";
+                $data = array(intval($device->system->id));
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+
+                $credentials = new stdClass();
+                $credentials->community = $device->credentials->snmp_community;
+                $credentials = (string)simpleEncrypt(json_encode($credentials));
+
+                if (intval($result[0]->count) === 0) {
+                    $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
+                    $data = array($device->system->id, 'SNMP from ' . $integration->attributes->type, '', $credentials);
+                    $this->db->query($sql, $data);
+                } else {
+                    if ($cred_fields->snmp_community === 'external') {
+                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'snmp'";
+                        $data = array(intval($device->system->id));
+                        $this->db->query($sql, $data);
+                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
+                        $data = array($device->system->id, 'SNMP from ' . $integration->attributes->type, '', $credentials);
+                        $this->db->query($sql, $data);
+                    }
+                }
+            }
+
+            if (!empty($device->credentials->windows_username)) {
+                $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'windows'";
+                $data = array(intval($device->system->id));
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+
+                $credentials = new stdClass();
+                $credentials->username = $device->credentials->windows_username;
+                $credentials->password = $device->credentials->windows_password;
+                $credentials = (string)simpleEncrypt(json_encode($credentials));
+
+                if (intval($result[0]->count) === 0) {
+                    $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
+                    $data = array($device->system->id, 'Windows from ' . $integration->attributes->type, '', $credentials);
+                    $this->db->query($sql, $data);
+                } else {
+                    if ($cred_fields->windows_username === 'external' or $cred_fields->windows_password === 'external') {
+                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'windows'";
+                        $data = array(intval($device->system->id));
+                        $this->db->query($sql, $data);
+                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
+                        $data = array($device->system->id, 'Windows from ' . $integration->attributes->type, '', $credentials);
+                        $this->db->query($sql, $data);
+                    }
+                }
+            }
+
+            if (!empty($device->credentials->authentication_passphrase) or !empty($device->credentials->privacy_passphrase)) {
+                $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'snmp_v3'";
+                $data = array(intval($device->system->id));
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+
+                $credentials = new stdClass();
+                $credentials->authentication_passphrase = $device->credentials->authentication_passphrase;
+                $credentials->authentication_protocol = $device->credentials->authentication_protocol;
+                $credentials->privacy_passphrase = $device->credentials->privacy_passphrase;
+                $credentials->privacy_protocol = $device->credentials->privacy_protocol;
+                $credentials->security_name = $device->credentials->security_name;
+                $credentials->security_level = $device->credentials->security_level = 'noAuthNoPriv';
+                if (!empty($credentials->authentication_passphrase)) {
+                    $device->credentials->security_level = 'AuthNoPriv';
+                }
+                if (!empty($credentials->privacy_passphrase)) {
+                    $device->credentials->security_level = 'authPriv';
+                }
+                $credentials = (string)simpleEncrypt(json_encode($credentials));
+
+                if (intval($result[0]->count) === 0) {
+                    $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
+                    $data = array($device->system->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials);
+                    $this->db->query($sql, $data);
+                } else {
+                    if ($cred_fields->authentication_passphrase === 'external' or $cred_fields->security_name === 'external') {
+                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'snmp_v3'";
+                        $data = array(intval($device->system->id));
+                        $this->db->query($sql, $data);
+                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
+                        $data = array($device->system->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials);
+                        $this->db->query($sql, $data);
+                    }
+                }
+            }
+
+            if (!empty($device->credentials->ssh_username)) {
+                $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE system_id = ? AND type = 'ssh'";
+                $data = array(intval($device->system->id));
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+
+                $credentials = new stdClass();
+                $credentials->username = $device->credentials->ssh_username;
+                $credentials->password = $device->credentials->ssh_password;
+                $credentials = (string)simpleEncrypt(json_encode($credentials));
+
+                if (intval($result[0]->count) === 0) {
+                    $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
+                    $data = array($device->system->id, 'SSH from ' . $integration->attributes->type, '', $credentials);
+                    $this->db->query($sql, $data);
+                } else {
+                    if ($cred_fields->windows_username === 'external' or $cred_fields->windows_password === 'external') {
+                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'ssh'";
+                        $data = array(intval($device->system->id));
+                        $this->db->query($sql, $data);
+                        $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
+                        $data = array($device->system->id, 'SSH from ' . $integration->attributes->type, '', $credentials);
+                        $this->db->query($sql, $data);
+                    }
+                }
+            }
+        }
+    }
 
 
     /**
