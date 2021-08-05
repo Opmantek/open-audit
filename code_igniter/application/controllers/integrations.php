@@ -180,7 +180,11 @@ class Integrations extends MY_Controller
     public function execute_now()
     {
         $this->{'m_'.$this->response->meta->collection}->execute($this->response->meta->id);
-        output($this->response);
+        $sql = "SELECT * FROM integrations_log WHERE integrations_id = " . intval($this->response->meta->id);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        echo json_encode($result, JSON_PRETTY_PRINT);
+        exit;
     }
 
     /**
