@@ -36,7 +36,6 @@ CREATE TABLE `integrations` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'nmis',
-  `options` longtext NOT NULL,
   `additional_items` longtext NOT NULL,
   `attributes` longtext NOT NULL,
   `create_external_count` int(10) unsigned DEFAULT NULL,
@@ -108,63 +107,50 @@ UPDATE `configuration` SET `value` = '4.2.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 4.2.0 commenced');
 
-$sql = "DROP TABLE IF EXISTS integrations_log";
+$sql = "DROP TABLE IF EXISTS integrations";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->alter_table('integrations', 'additional_items', "ADD `additional_items` longtext NOT NULL AFTER `options`", 'add');
-
-$this->alter_table('integrations', 'attributes', "ADD `attributes` longtext NOT NULL AFTER `additional_items`", 'add');
-
-$this->alter_table('integrations', 'create_external_count', "ADD `create_external_count` int(10) unsigned DEFAULT NULL AFTER `attributes`", 'add');
-
-$this->alter_table('integrations', 'create_external_from_internal', "ADD `create_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n' AFTER `create_external_count`", 'add');
-
-$this->alter_table('integrations', 'create_internal_count', "ADD `create_internal_count` int(10) unsigned DEFAULT NULL AFTER `create_external_from_internal`", 'add');
-
-$this->alter_table('integrations', 'create_internal_from_external', "ADD `create_internal_from_external` enum('y','n') NOT NULL DEFAULT 'n' AFTER `create_internal_count`", 'add');
-
-$this->alter_table('integrations', 'devices', "ADD `devices` longtext NOT NULL AFTER `create_internal_from_external`", 'add');
-
-$this->alter_table('integrations', 'locations', "ADD `locations` longtext NOT NULL AFTER `devices`", 'add');
-
-$this->alter_table('integrations', 'debug', "ADD `debug` enum('y','n') NOT NULL DEFAULT 'n' AFTER `locations`", 'add');
-
-$this->alter_table('integrations', 'discovery_id', "ADD `discovery_id` int(10) unsigned DEFAULT NULL AFTER `debug`", 'add');
-
-$this->alter_table('integrations', 'discovery_run', "ADD `discovery_run` enum('y','n') NOT NULL DEFAULT 'n' AFTER `discovery_id`", 'add');
-
-$this->alter_table('integrations', 'fields', "ADD `fields` longtext NOT NULL AFTER `discovery_run`", 'add');
-
-$this->alter_table('integrations', 'select_external_attribute', "ADD `select_external_attribute` varchar(200) NOT NULL DEFAULT '' AFTER `fields`", 'add');
-
-$this->alter_table('integrations', 'select_external_count', "ADD `select_external_count` int(10) unsigned DEFAULT NULL AFTER `select_external_attribute`", 'add');
-
-$this->alter_table('integrations', 'select_external_type', "ADD `select_external_type` enum('','all','none','attribute') DEFAULT 'all' AFTER `select_external_count`", 'add');
-
-$this->alter_table('integrations', 'select_external_value', "ADD `select_external_value` varchar(200) NOT NULL DEFAULT '' AFTER `select_external_type`", 'add');
-
-$this->alter_table('integrations', 'select_internal_attribute', "ADD `select_internal_attribute` varchar(200) NOT NULL DEFAULT '' AFTER `select_external_value`", 'add');
-
-$this->alter_table('integrations', 'select_internal_count', "ADD `select_internal_count` int(10) unsigned DEFAULT NULL AFTER `select_internal_attribute`", 'add');
-
-$this->alter_table('integrations', 'select_internal_type', "ADD `select_internal_type` enum('','none','attribute','group','query') DEFAULT 'attribute' AFTER `select_internal_count`", 'add');
-
-$this->alter_table('integrations', 'select_internal_value', "ADD `select_internal_value` varchar(200) NOT NULL DEFAULT '' AFTER `select_internal_type`", 'add');
-
-$this->alter_table('integrations', 'update_external_count', "ADD `update_external_count` int(10) unsigned DEFAULT NULL AFTER `select_internal_value`", 'add');
-
-$this->alter_table('integrations', 'update_external_from_internal', "ADD `update_external_from_internal` enum('y','n') NOT NULL DEFAULT 'y' AFTER `update_external_count`", 'add');
-
-$this->alter_table('integrations', 'update_internal_count', "ADD `update_internal_count` int(10) unsigned DEFAULT NULL AFTER `update_external_from_internal`", 'add');
-
-$this->alter_table('integrations', 'update_internal_from_external', "ADD `update_internal_from_external` enum('y','n') NOT NULL DEFAULT 'y' AFTER `update_internal_count`", 'add');
-
-$this->alter_table('integrations', 'delete_external_from_internal', "ADD `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n' AFTER `update_internal_from_external`", 'add');
-
-$this->alter_table('integrations', 'status', "ADD `status` varchar(200) NOT NULL DEFAULT '' AFTER `delete_external_from_internal`", 'add');
-
-$this->alter_table('integrations', 'duration', "ADD `duration` int(10) unsigned DEFAULT NULL AFTER `last_run`", 'add');
+$sql = "CREATE TABLE `integrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `type` varchar(45) NOT NULL DEFAULT 'nmis',
+  `additional_items` longtext NOT NULL,
+  `attributes` longtext NOT NULL,
+  `create_external_count` int(10) unsigned DEFAULT NULL,
+  `create_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
+  `create_internal_count` int(10) unsigned DEFAULT NULL,
+  `create_internal_from_external` enum('y','n') NOT NULL DEFAULT 'n',
+  `devices` longtext NOT NULL,
+  `locations` longtext NOT NULL,
+  `debug` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_id` int(10) unsigned DEFAULT NULL,
+  `discovery_run` enum('y','n') NOT NULL DEFAULT 'n',
+  `fields` longtext NOT NULL,
+  `select_external_attribute` varchar(200) NOT NULL DEFAULT '',
+  `select_external_count` int(10) unsigned DEFAULT NULL,
+  `select_external_type` enum('','all','none','attribute') DEFAULT 'all',
+  `select_external_value` varchar(200) NOT NULL DEFAULT '',
+  `select_internal_attribute` varchar(200) NOT NULL DEFAULT '',
+  `select_internal_count` int(10) unsigned DEFAULT NULL,
+  `select_internal_type` enum('','none','attribute','group','query') DEFAULT 'attribute',
+  `select_internal_value` varchar(200) NOT NULL DEFAULT '',
+  `update_external_count` int(10) unsigned DEFAULT NULL,
+  `update_external_from_internal` enum('y','n') NOT NULL DEFAULT 'y',
+  `update_internal_count` int(10) unsigned DEFAULT NULL,
+  `update_internal_from_external` enum('y','n') NOT NULL DEFAULT 'y',
+  `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
+  `status` varchar(200) NOT NULL DEFAULT '',
+  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `duration` int(10) unsigned DEFAULT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "DROP TABLE IF EXISTS `integrations_log`";
 $this->db->query($sql);
@@ -179,28 +165,6 @@ $sql = "CREATE TABLE `integrations_log` (
   `message` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$this->alter_table('system', 'nmis_poller_uuid', "ADD `nmis_poller_uuid` varchar(45) NOT NULL DEFAULT '' AFTER `nmis_poller`", 'add');
-
-$sql = "DELETE FROM rules WHERE name = 'NMIS Manage for SNMP devices'";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$sql = "INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"system\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"system\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
-
-$ips = $this->config->config['server_ip'];
-$ips = explode(',', $ips);
-$ip = trim($ips[0]);
-$ip = explode('.', $ip);
-$ip[3] = 0;
-$ip = implode('.', $ip);
-$subnet = $ip . '/24';
-
-$sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.','subnet','$subnet',NOW(),'system')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
@@ -474,6 +438,32 @@ $integration->fields = '[{
 $integration->fields = str_replace("\n", "", $integration->fields);
 $this->load->model('m_integrations');
 $this->m_integrations->create($integration);
+
+$sql = 'UPDATE tasks set sub_resource_id = 1 WHERE type = "integrations"';
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('system', 'nmis_poller_uuid', "ADD `nmis_poller_uuid` varchar(45) NOT NULL DEFAULT '' AFTER `nmis_poller`", 'add');
+
+$sql = "DELETE FROM rules WHERE name = 'NMIS Manage for SNMP devices'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"system\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"system\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$ips = $this->config->config['server_ip'];
+$ips = explode(',', $ips);
+$ip = trim($ips[0]);
+$ip = explode('.', $ip);
+$ip[3] = 0;
+$ip = implode('.', $ip);
+$subnet = $ip . '/24';
+
+$sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.','subnet','$subnet',NOW(),'system')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210810' WHERE `name` = 'internal_version'";

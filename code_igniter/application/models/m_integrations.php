@@ -70,14 +70,6 @@ class M_integrations extends MY_Model
     {
 
         $CI = & get_instance();
-        if (!empty($data->options)) {
-            if (!is_string($data->options)) {
-                $data->options = json_encode($data->options);
-            }
-        } else {
-            $data->options = '[]';
-        }
-
         if (!empty($data->attributes)) {
             if (!is_string($data->attributes)) {
                 $data->attributes = json_encode($data->attributes);
@@ -182,9 +174,6 @@ class M_integrations extends MY_Model
         $result = $this->format_data($result, 'integrations');
         if (! empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                if (! empty($result[$i]->{'attributes'}->{'options'})) {
-                    $result[$i]->{'attributes'}->{'options'} = json_decode($result[$i]->{'attributes'}->{'options'});
-                }
                 if (! empty($result[$i]->{'attributes'}->{'attributes'})) {
                     $result[$i]->{'attributes'}->{'attributes'} = json_decode($result[$i]->{'attributes'}->{'attributes'});
                 }
@@ -1569,7 +1558,6 @@ class M_integrations extends MY_Model
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             foreach ($result as $key => $value) {
-                $result[$key]->options = @json_decode($result[$key]->options);
                 $result[$key]->attributes = @json_decode($result[$key]->attributes);
                 $result[$key]->fields = @json_decode($result[$key]->fields);
             }
@@ -1618,7 +1606,6 @@ class M_integrations extends MY_Model
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->type = 'The type of the integration (usually named after the remote system).';
-        $dictionary->columns->options = '';
         $dictionary->columns->populate_from_local = 'Should we add devices from the remote service, locally.';
         $dictionary->columns->populate_from_remote = 'Should we populate the remote system from our local devices.';
         $dictionary->columns->query_id = '';

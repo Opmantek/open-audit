@@ -1651,7 +1651,6 @@ CREATE TABLE `integrations` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'nmis',
-  `options` longtext NOT NULL,
   `additional_items` longtext NOT NULL,
   `attributes` longtext NOT NULL,
   `create_external_count` int(10) unsigned DEFAULT NULL,
