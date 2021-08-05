@@ -1660,6 +1660,7 @@ CREATE TABLE `integrations` (
   `create_internal_from_external` enum('y','n') NOT NULL DEFAULT 'n',
   `devices` longtext NOT NULL,
   `locations` longtext NOT NULL,
+  `debug` enum('y','n') NOT NULL DEFAULT 'n',
   `discovery_id` int(10) unsigned DEFAULT NULL,
   `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n',
   `fields` longtext NOT NULL,

@@ -117,9 +117,11 @@ if (!function_exists('integrations_pre')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
+            if ($integration->debug) {
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+            }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials
@@ -437,9 +439,11 @@ if (!function_exists('integrations_collection')) {
 
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_collection] Logged on to NMIS.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
+            if ($integration->debug) {
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_collection] Logged on to NMIS.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+            }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials
@@ -567,9 +571,11 @@ if (!function_exists('integrations_update')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_update] Logged on to NMIS.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
+            if ($integration->debug) {
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_update] Logged on to NMIS.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+            }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials
@@ -626,7 +632,7 @@ if (!function_exists('integrations_update')) {
             } else {
                 $message = '[integrations_update] Device ' . $device->configuration->host . ' updated in NMIS.';
                 $count = count($external_devices);
-                $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
             }
@@ -681,9 +687,11 @@ if (!function_exists('integrations_create')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_create] Logged on to NMIS.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
+            if ($integration->debug) {
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_create] Logged on to NMIS.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+            }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials
@@ -753,12 +761,12 @@ if (!function_exists('integrations_create')) {
                     $external_devices[] = $external_device;
                     $message = '[integrations_create] Device ' . $device->configuration->host . ' created in NMIS.';
                     $count = count($external_devices);
-                    $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $CI->db->query($sql, $data);
                 } else {
                     $message = '[integrations_create] Error: ' . $external_device->error;
-                    $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                     $data = array($integration->id, microtime(true), $message);
                     $query = $CI->db->query($sql, $data);
                 }
@@ -813,9 +821,11 @@ if (!function_exists('integrations_delete')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_delete] Logged on to NMIS.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
+            if ($integration->debug) {
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_delete] Logged on to NMIS.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+            }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials
@@ -871,7 +881,7 @@ if (!function_exists('integrations_delete')) {
                 return array();
             } else {
                 $message = '[integrations_delete] Device ' . $device->configuration->host . ' deleted in NMIS.';
-                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
             }
@@ -923,9 +933,11 @@ if (!function_exists('integrations_post')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
-            $data = array($integration->id, microtime(true));
-            $query = $CI->db->query($sql, $data);
+            if ($integration->debug) {
+                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+            }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials

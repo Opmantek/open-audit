@@ -45,6 +45,7 @@ CREATE TABLE `integrations` (
   `create_internal_from_external` enum('y','n') NOT NULL DEFAULT 'n',
   `devices` longtext NOT NULL,
   `locations` longtext NOT NULL,
+  `debug` enum('y','n') NOT NULL DEFAULT 'n',
   `discovery_id` int(10) unsigned DEFAULT NULL,
   `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n',
   `fields` longtext NOT NULL,
@@ -127,7 +128,9 @@ $this->alter_table('integrations', 'devices', "ADD `devices` longtext NOT NULL A
 
 $this->alter_table('integrations', 'locations', "ADD `locations` longtext NOT NULL AFTER `devices`", 'add');
 
-$this->alter_table('integrations', 'discovery_id', "ADD `discovery_id` int(10) unsigned DEFAULT NULL AFTER `locations`", 'add');
+$this->alter_table('integrations', 'debug', "ADD `debug` enum('y','n') NOT NULL DEFAULT 'n' AFTER `locations`", 'add');
+
+$this->alter_table('integrations', 'discovery_id', "ADD `discovery_id` int(10) unsigned DEFAULT NULL AFTER `debug`", 'add');
 
 $this->alter_table('integrations', 'discovery_run_on_create', "ADD `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n' AFTER `discovery_id`", 'add');
 
