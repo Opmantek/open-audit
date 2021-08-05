@@ -749,11 +749,11 @@ class M_collection extends MY_Model
             $data->fields = json_encode($data->fields);
         }
 
-        if ($collection === 'integrations' && ! empty($data->discovery_run_on_create)) {
+        if ($collection === 'integrations' && ! empty($data->discovery_run)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
             $result = $query->result();
-            if ($data->discovery_run_on_create === 'n') {
+            if ($data->discovery_run === 'n') {
                 // Delete any existing discovery
                 if (! empty($result[0]->discovery_id)) {
                     $select = "DELETE FROM discoveries WHERE id = " . @intval($result[0]->discovery_id);

@@ -116,7 +116,7 @@ class M_integrations extends MY_Model
 
         # The discovery if requested
         $CI->load->model('m_discoveries');
-        if ($integration->attributes->discovery_run_on_create === 'y') {
+        if ($integration->attributes->discovery_run === 'y') {
             $discovery = new stdClass();
             $discovery->type = 'integration';
             $discovery->name = 'Discovery for ' . $integration->attributes->name;
@@ -614,7 +614,7 @@ class M_integrations extends MY_Model
         }
 
         // Insert into queue for discoveries
-        if ($integration->attributes->discovery_run_on_create === 'y' && is_array($discover_devices) && count($discover_devices) > 0) {
+        if ($integration->attributes->discovery_run === 'y' && is_array($discover_devices) && count($discover_devices) > 0) {
             // Reset discovery stats and logs
 
             $message = 'Reset discovery stats and logs.';
@@ -1635,7 +1635,7 @@ class M_integrations extends MY_Model
 
         $dictionary->columns->create_internal_from_external = 'When integrating devices from the external system, if the device doesn\'t exist in Open-AudIT should we create it?';
         $dictionary->columns->update_internal_from_external = 'When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?';
-        $dictionary->columns->discovery_run_on_create = 'When we create a device within Open-AudIT, should we run discovery upon it?';
+        $dictionary->columns->discovery_run = 'When retrieve an external device, should we run discovery upon it?';
         $dictionary->columns->select_internal_type = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';
         $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'system\' table).';
         $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected.';

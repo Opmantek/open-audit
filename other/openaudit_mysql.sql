@@ -1662,7 +1662,7 @@ CREATE TABLE `integrations` (
   `locations` longtext NOT NULL,
   `debug` enum('y','n') NOT NULL DEFAULT 'n',
   `discovery_id` int(10) unsigned DEFAULT NULL,
-  `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_run` enum('y','n') NOT NULL DEFAULT 'n',
   `fields` longtext NOT NULL,
   `select_external_attribute` varchar(200) NOT NULL DEFAULT '',
   `select_external_count` int(10) unsigned DEFAULT NULL,

@@ -47,7 +47,7 @@ CREATE TABLE `integrations` (
   `locations` longtext NOT NULL,
   `debug` enum('y','n') NOT NULL DEFAULT 'n',
   `discovery_id` int(10) unsigned DEFAULT NULL,
-  `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_run` enum('y','n') NOT NULL DEFAULT 'n',
   `fields` longtext NOT NULL,
   `select_external_attribute` varchar(200) NOT NULL DEFAULT '',
   `select_external_count` int(10) unsigned DEFAULT NULL,
@@ -132,9 +132,9 @@ $this->alter_table('integrations', 'debug', "ADD `debug` enum('y','n') NOT NULL 
 
 $this->alter_table('integrations', 'discovery_id', "ADD `discovery_id` int(10) unsigned DEFAULT NULL AFTER `debug`", 'add');
 
-$this->alter_table('integrations', 'discovery_run_on_create', "ADD `discovery_run_on_create` enum('y','n') NOT NULL DEFAULT 'n' AFTER `discovery_id`", 'add');
+$this->alter_table('integrations', 'discovery_run', "ADD `discovery_run` enum('y','n') NOT NULL DEFAULT 'n' AFTER `discovery_id`", 'add');
 
-$this->alter_table('integrations', 'fields', "ADD `fields` longtext NOT NULL AFTER `discovery_run_on_create`", 'add');
+$this->alter_table('integrations', 'fields', "ADD `fields` longtext NOT NULL AFTER `discovery_run`", 'add');
 
 $this->alter_table('integrations', 'select_external_attribute', "ADD `select_external_attribute` varchar(200) NOT NULL DEFAULT '' AFTER `fields`", 'add');
 
@@ -210,7 +210,7 @@ $integration->create_external_from_internal = "y";
 $integration->create_internal_from_external = "y";
 $integration->delete_external_from_internal = "n";
 $integration->description = "";
-$integration->discovery_run_on_create = "y";
+$integration->discovery_run = "y";
 $integration->name = "Default NMIS Integration";
 $integration->org_id = 1;
 $integration->select_external_attribute = "";
