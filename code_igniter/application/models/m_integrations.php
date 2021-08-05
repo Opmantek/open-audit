@@ -713,6 +713,27 @@ class M_integrations extends MY_Model
         $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
         $data = array($integration->id, microtime(true), $message);
         $query = $this->db->query($sql, $data);
+
+        // Update integrations->devices array
+        $newdev = array();
+        foreach ($local_devices as $ldev) {
+            $newdev[] = intval($ldev->id);
+        }
+        $sql = "SELECT devices FROM integrations WHERE id = ?";
+        $data = array($integration->id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $devices_array = json_decode($result[0]->devices);
+        $devices_array = array_merge($devices_array, $newdev);
+        $devices_array = array_unique($devices_array);
+        $devices_array = array_values($devices_array);
+        $devices_array = json_encode($devices_array);
+        $sql = "UPDATE integrations SET devices = ? WHERE id = ?";
+        $data = array($devices_array, $integration->id);
+        $query = $this->db->query($sql, $data);
+        unset($newdev);
+        unset($devices_array);
+
         // take our list of devices from OA and if any are already in the list of externally retrieved devices, remove them
         // leave only the devices from OA that are not in the external list - create those
         if ($integration->attributes->create_external_from_internal === 'y') {
