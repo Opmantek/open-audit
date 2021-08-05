@@ -468,6 +468,7 @@ $integration->fields = '[{
      "internal_field_name" : "system.nmis_poller_uuid"
   }
 ]';
+$integration->fields = str_replace("\n", "", $integration->fields);
 $this->load->model('m_integrations');
 $this->m_integrations->create($integration);
 
