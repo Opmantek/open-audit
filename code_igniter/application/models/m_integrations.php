@@ -690,7 +690,20 @@ class M_integrations extends MY_Model
 
         // Get local devices
         $local_devices = $this->get_local_devices($integration);
+        if ($integration->debug) {
+            $message = 'LOCAL DEVICES - ' . json_encode($local_devices);
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+        }
+
         $local_formatted_devices = $this->internal_to_external($integration, $local_devices);
+        if ($integration->debug) {
+            $message = 'LOCAL FORMATTED DEVICES - ' . json_encode($local_formatted_devices);
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+        }
 
         $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET select_internal_count = ? WHERE id = ?";
         $data = array(count($local_formatted_devices), $integration->id);
@@ -730,9 +743,20 @@ class M_integrations extends MY_Model
                 $query = $this->db->query($sql, $data);
             }
             $created_devices = integrations_create($integration, $new_external_devices);
+            if ($integration->debug) {
+                $message = 'CREATED DEVICES - ' . json_encode($created_devices);
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+            }
             // Update local attributes from created devices
             $external_created_devices = $this->external_to_internal($integration, $created_devices);
-
+            if ($integration->debug) {
+                $message = 'EXTERNAL CREATED DEVICES - ' . json_encode($external_created_devices);
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $data = array($integration->id, microtime(true), $message);
+                $query = $this->db->query($sql, $data);
+            }
             $parameters = new stdClass();
             $parameters->log = $log;
             $parameters->match = new stdClass();
