@@ -798,24 +798,47 @@ class M_integrations extends MY_Model
             foreach ($external_created_devices as $device) {
                 $parameters->details = $device->system;
                 $device->system->id = $this->m_device->match($parameters);
-                $temp_device = new stdClass();
-                $temp_device->id = $device->system->id;
-                $temp_device->last_seen_by = 'integrations';
-                foreach ($integration->attributes->fields as $field) {
-                    if ($field->priority === 'external' and strpos($field->internal_field_name, 'system.') !== false) {
-                        // a regular field in Open-AudIT that we should update
-                        $system_field = str_replace('system.', '', $field->internal_field_name);
-                        if (!empty($device->system->{$system_field})) { # TODO - something better than not empty
-                            $temp_device->{$system_field} = $device->system->{$system_field};
-                        }
+                if ($integration->debug) {
+                    if (!empty($device->system->id)) {
+                        $message = 'Found device with ID: ' . $device->system->id . ' for ' . $device->system->name;
+                        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                        $data = array($integration->id, microtime(true), $message);
+                        $query = $this->db->query($sql, $data);
+                    } else {
+                        $message = 'No match found for - ' . json_encode($device->system);
+                        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
+                        $data = array($integration->id, microtime(true), $message);
+                        $query = $this->db->query($sql, $data);
                     }
                 }
-                $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name;
-                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-                $data = array($integration->id, microtime(true), $message);
-                $query = $this->db->query($sql, $data);
-                $this->m_device->update($temp_device);
+                $temp_device = $device->system;
+                $temp_device->last_seen_by = 'integrations';
+                if (!empty($temp_device->id)) {
+                    $message = 'Updating internal device ID: ' . $device->system->id . ' for ' . $device->system->name;
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $data = array($integration->id, microtime(true), $message);
+                    $query = $this->db->query($sql, $data);
+                    if ($integration->debug) {
+                        $message = "DEVICE - " . json_encode($device);
+                        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                        $data = array($integration->id, microtime(true), $message);
+                        $query = $this->db->query($sql, $data);
+
+                        $message = "TEMP DEVICE - " . json_encode($temp_device);
+                        $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                        $data = array($integration->id, microtime(true), $message);
+                        $query = $this->db->query($sql, $data);
+                    }
+                    $this->m_device->update($temp_device);
+                } else {
+                    $message = 'No internal device ID returned for ' . $device->system->name . ', not updating internal device.';
+                    $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
+                    $data = array($integration->id, microtime(true), $message);
+                    $query = $this->db->query($sql, $data);
+                }
             }
+
+            $this->upsert_custom_fields($integration, $external_created_devices);
 
             $sql = "/* m_integrations::execute */ " . "UPDATE integrations SET create_external_count = ? WHERE id = ?";
             $data = array(count($new_external_devices), $integration->id);
