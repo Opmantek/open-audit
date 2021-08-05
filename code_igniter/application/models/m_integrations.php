@@ -1242,81 +1242,83 @@ class M_integrations extends MY_Model
                         if (empty($value) and (string)$field->default_value !== '') {
                             $value = $field->default_value;
                         }
-                        switch ($field->external_field_type) {
-                            case 'text':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, (string)$value);
-                                break;
+                        if (!empty($value)) {
+                            switch ($field->external_field_type) {
+                                case 'text':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, (string)$value);
+                                    break;
 
-                            case 'integer':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, intval($value));
-                                break;
+                                case 'integer':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, intval($value));
+                                    break;
 
-                            case 'bool':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, filter_var($value, FILTER_VALIDATE_BOOLEAN));
-                                break;
+                                case 'bool':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, filter_var($value, FILTER_VALIDATE_BOOLEAN));
+                                    break;
 
-                            case 'bool_one_zero':
-                                $value = 0;
-                                if ($value === 'y' or $value === 'Y' or $value === '1' or $value === 1 or $value === true) {
-                                    $value = 1;
-                                }
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
-                                break;
+                                case 'bool_one_zero':
+                                    $value = 0;
+                                    if ($value === 'y' or $value === 'Y' or $value === '1' or $value === 1 or $value === true) {
+                                        $value = 1;
+                                    }
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
+                                    break;
 
-                            case 'bool_y_n':
-                                $value = 'n';
-                                if ($value === 'y' or $value === 'Y' or $value === '1' or $value === 1 or $value === true) {
-                                    $value = 'y';
-                                }
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
-                                break;
+                                case 'bool_y_n':
+                                    $value = 'n';
+                                    if ($value === 'y' or $value === 'Y' or $value === '1' or $value === 1 or $value === true) {
+                                        $value = 'y';
+                                    }
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
+                                    break;
 
-                            case 'capitalise':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, ucwords($value));
-                                break;
+                                case 'capitalise':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, ucwords($value));
+                                    break;
 
-                            case 'lower':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, strtolower($value));
-                                break;
+                                case 'lower':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, strtolower($value));
+                                    break;
 
-                            case 'upper':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, strtoupper($value));
-                                break;
+                                case 'upper':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, strtoupper($value));
+                                    break;
 
-                            case 'datetime_now':
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, $this->config->config['timestamp']);
-                                break;
+                                case 'datetime_now':
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, $this->config->config['timestamp']);
+                                    break;
 
-                            case 'datetime_Y-m-d H:i:s':
-                                $value = date_create_from_format("Y-m-d H:i:s", $value);
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
-                                break;
+                                case 'datetime_Y-m-d H:i:s':
+                                    $value = date_create_from_format("Y-m-d H:i:s", $value);
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
+                                    break;
 
-                            case 'date_now':
-                                $value = date_create_from_format("Y-m-d", $this->config->config['timestamp']);
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
-                                break;
+                                case 'date_now':
+                                    $value = date_create_from_format("Y-m-d", $this->config->config['timestamp']);
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
+                                    break;
 
-                            case 'date_Y-m-d':
-                                $value = date_create_from_format("Y-m-d", $value);
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
-                                break;
+                                case 'date_Y-m-d':
+                                    $value = date_create_from_format("Y-m-d", $value);
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
+                                    break;
 
-                            case 'date_m-d-Y':
-                                // from Y-m-d to m-d-Y
-                                $value = date_create_from_format("Y-m-d", $value);
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, date_format($value, 'm-d-Y'));
-                                break;
+                                case 'date_m-d-Y':
+                                    // from Y-m-d to m-d-Y
+                                    $value = date_create_from_format("Y-m-d", $value);
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, date_format($value, 'm-d-Y'));
+                                    break;
 
-                            case 'date_d-m-Y':
-                                // from Y-m-d to m-d-Y
-                                $value = date_create_from_format("Y-m-d", $value);
-                                $newdevice = $this->set_value($newdevice, $field->external_field_name, date_format($value, 'd-m-Y'));
-                                break;
+                                case 'date_d-m-Y':
+                                    // from Y-m-d to m-d-Y
+                                    $value = date_create_from_format("Y-m-d", $value);
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, date_format($value, 'd-m-Y'));
+                                    break;
 
-                            default:
-                                # code...
-                                break;
+                                default:
+                                    $newdevice = $this->set_value($newdevice, $field->external_field_name, (string)$value);
+                                    break;
+                            }
                         }
                     }
                 }
