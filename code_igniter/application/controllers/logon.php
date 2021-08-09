@@ -436,7 +436,7 @@ class Logon extends CI_Controller
                 $this->load->model('m_orgs');
                 $integration = $this->m_integrations->read($result[0]->id);
                 $integration = $integration[0];
-#echo json_encode($integration); exit;
+                $integration->debug = false;
                 if ((stripos($integration->attributes->attributes->url, 'localhost') !== false or
                     stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or
                     stripos($integration->attributes->attributes->url, '127.0.1.1') !== false) and
