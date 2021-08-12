@@ -3495,14 +3495,8 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
                 if isArray(MyArray) then
                     for each line in MyArray
                         if line > "" then
-                            split_space = split(line)
-                            if (isarray(split_space)) then
-                                if (split_space(0) = "Password" and split_space(1) = "last" and split_space(2) = "set") then
-                                    split_space(0) = ""
-                                    split_space(1) = ""
-                                    split_space(2) = ""
-                                    user_password_last_changed = trim(join(split_space))
-                                end if
+                            if InStr(line, "Password last set") then
+                                user_password_last_changed = trim(replace(line, "Password last set", ""))
                             end if
                         end if
                     next
