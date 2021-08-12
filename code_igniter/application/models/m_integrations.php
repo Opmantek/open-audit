@@ -406,8 +406,9 @@ class M_integrations extends MY_Model
         $external_devices = integrations_collection($integration);
 
         if ($integration->debug) {
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', 'EXTERNAL DEVICES - " . json_encode($external_devices) . "')";
-            $data = array($id, microtime(true));
+            $message = 'EXTERNAL DEVICES - ' . json_encode($external_devices);
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            $data = array($integration->id, microtime(true), $message);
             $query = $this->db->query($sql, $data);
         }
 
