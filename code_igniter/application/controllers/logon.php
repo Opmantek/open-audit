@@ -427,7 +427,10 @@ class Logon extends CI_Controller
         }
 
         // Run an integration for Linux default only to populate the locations, pollers and groups
-        if ($this->db->table_exists('integrations') and $this->db->table_exists('integrations_log')) {
+        if ($this->db->table_exists('integrations') and
+            $this->db->table_exists('integrations_log') and
+            php_uname('s') !== 'Windows NT' and
+            file_exists('/usr/local/nmis9/conf/Config.nmis')) {
             $sql = "SELECT id FROM integrations WHERE name = 'Default NMIS Integration' ORDER BY id LIMIT 1";
             $query = $this->db->query($sql);
             $result = $query->result();
@@ -437,18 +440,15 @@ class Logon extends CI_Controller
                 $integration = $this->m_integrations->read($result[0]->id);
                 $integration = $integration[0];
                 $integration->debug = false;
+                $integration->log = false;
                 if (!empty($integration->attributes->attributes->url) and
                     (stripos($integration->attributes->attributes->url, 'localhost') !== false or
                     stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or
                     stripos($integration->attributes->attributes->url, '127.0.1.1') !== false) and
                         empty($integration->attributes->attributes->username) and
-                        empty($integration->attributes->attributes->password) and
-                        php_uname('s') !== 'Windows NT') {
+                        empty($integration->attributes->attributes->password)) {
                     // We should be able to run the integration, assuming config auth_token set
                     $this->load->helper('integrations_nmis');
-                    // Remove any existing logs
-                    $sql = "DELETE FROM integrations_log WHERE integrations_id = ?";
-                    $query = $this->db->query($sql, $integration->id);
                     integrations_pre($integration);
                 }
             }
