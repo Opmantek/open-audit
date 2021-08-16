@@ -7342,6 +7342,8 @@ function os_family(os)
     if InStr(os, "2012")       then os_family="Windows 2012"
     if InStr(os, "Windows 10") then os_family="Windows 10"
     if InStr(os, "2016")       then os_family="Windows 2016"
+    if InStr(os, "2019")       then os_family="Windows 2019"
+ 
 end function
 
 
@@ -7350,6 +7352,7 @@ function WMIDateStringToDate(dtmDate)
     Mid(dtmDate, 7, 2) & "/" & Left(dtmDate, 4) _
     & " " & Mid (dtmDate, 9, 2) & ":" & Mid(dtmDate, 11, 2) & ":" & Mid(dtmDate,13, 2))
 end function
+
 
 
 function WMINetConnectorStatus(status)
