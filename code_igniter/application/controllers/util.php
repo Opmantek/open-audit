@@ -130,22 +130,16 @@ class Util extends CI_Controller
 
         if ($client == 'aix') {
             $filename = 'audit_aix.sh';
-
         } elseif ($client == 'esxi') {
             $filename = 'audit_esxi.sh';
-
         } elseif ($client == 'hpux') {
             $filename = 'audit_hpux.sh';
-
         } elseif ($client == 'linux') {
             $filename = 'audit_linux.sh';
-
         } elseif ($client == 'osx') {
             $filename = 'audit_osx.sh';
-
         } elseif ($client == 'solaris') {
             $filename = 'audit_solaris.sh';
-
         } elseif ($client == 'windows') {
             $filename = 'audit_windows.vbs';
         }
@@ -153,7 +147,7 @@ class Util extends CI_Controller
         $sql = "SELECT `id` AS `id` FROM `scripts` WHERE `name` = '$filename' ORDER BY id LIMIT 1";
         $query = $this->db->query($sql);
 
-        foreach($query->result_array() as $row) {
+        foreach ($query->result_array() as $row) {
             $id = $row['id'];
         }
 
@@ -440,9 +434,9 @@ class Util extends CI_Controller
         $this->db->query($sql);
         // POP an item off the queue
         $this->load->model('m_queue');
-        while ( true ) {
+        while (true) {
             $item = $this->m_queue->pop();
-            if ( ! empty($item->details) && is_string($item->details)) {
+            if (!empty($item->details) && is_string($item->details)) {
                 $details = @json_decode($item->details);
             }
 
@@ -493,7 +487,7 @@ class Util extends CI_Controller
             if ($item->type === 'ip_scan') {
                 $result = ip_scan($details);
                 $result = json_encode($result);
-                if ( ! empty($result)) {
+                if (!empty($result)) {
                     $queue_item = new stdClass();
                     $queue_item->ip = $details->ip;
                     $queue_item->discovery_id = $details->discovery_id;

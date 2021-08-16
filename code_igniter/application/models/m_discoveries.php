@@ -403,15 +403,20 @@ class M_discoveries extends MY_Model
             return false;
         }
         if (empty($result[0]->subnet) and $result[0]->type === 'subnet' and $result[0]->name === 'Default Discovery') {
-            $ips = $this->config->config['server_ip'];
+            $ips = server_ip();
             $ips = explode(',', $ips);
-            $ip = trim($ips[0]);
-            $ip = explode('.', $ip);
-            $ip[3] = 0;
-            $ip = implode('.', $ip);
-            $subnet = $ip . '/24';
+            $subnet = '';
+            foreach ($ips as $ip) {
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) and !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+                    $ip = explode('.', $ip);
+                    $ip[3] = 0;
+                    $ip = implode('.', $ip);
+                    $subnet = $ip . '/24';
+                    break;
+                }
+            }
             $sql = "UPDATE discoveries SET subnet = '$subnet', description = 'Automatically created default discovery for $subnet.' WHERE id = $id";
-            $result = $this->run_sql($sql);
+            $this->run_sql($sql);
             $result[0]->subnet = $subnet;
         }
         if (empty($result[0]->scan_options)) {
@@ -517,13 +522,18 @@ class M_discoveries extends MY_Model
             return false;
         }
         if (empty($result[0]->subnet) and $result[0]->type === 'subnet' and $result[0]->name === 'Default Discovery') {
-            $ips = $CI->config->config['ip'];
+            $ips = server_ip();
             $ips = explode(',', $ips);
-            $ip = trim($ips[0]);
-            $ip = explode('.', $ip);
-            $ip[3] = 0;
-            $ip = implode('.', $ip);
-            $subnet = $ip . '/24';
+            $subnet = '';
+            foreach ($ips as $ip) {
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) and !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+                    $ip = explode('.', $ip);
+                    $ip[3] = 0;
+                    $ip = implode('.', $ip);
+                    $subnet = $ip . '/24';
+                    break;
+                }
+            }
             $sql = "UPDATE discoveries SET subnet = '$subnet', description = 'Automatically created default discovery for $subnet.' WHERE id = $id";
             $this->run_sql($sql);
             $result[0]->subnet = $subnet;

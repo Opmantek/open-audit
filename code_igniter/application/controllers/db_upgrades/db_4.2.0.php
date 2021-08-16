@@ -453,17 +453,26 @@ $sql = "INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set n
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$ips = $this->config->config['server_ip'];
+$ips = server_ip();
 $ips = explode(',', $ips);
-$ip = trim($ips[0]);
-$ip = explode('.', $ip);
-$ip[3] = 0;
-$ip = implode('.', $ip);
-$subnet = $ip . '/24';
+$subnet = '';
+foreach ($ips as $ip) {
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) and !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+        $ip = explode('.', $ip);
+        $ip[3] = 0;
+        $ip = implode('.', $ip);
+        $subnet = $ip . '/24';
+        break;
+    }
+}
 
-$sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.','subnet','$subnet',NOW(),'system')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query() . ';');
+if ($subnet !== '') {
+    $sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.','subnet','$subnet',NOW(),'system')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query() . ';');
+} else {
+    $this->log_db('WARNING - Could not determine a private IP for server, no default discovery created.');
+}
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20210810' WHERE `name` = 'internal_version'";
