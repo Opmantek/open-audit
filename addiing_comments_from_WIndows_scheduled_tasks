@@ -1,0 +1,15 @@
+You need to alter the Database first:
+ALTER TABLE task ADD COLUM comment LONGTEXT AFTER task;
+
+Now you need to add a new line into audit_windows.vbs
+
+Line 3386
+                item = item & "         <comment><![CDATA[" & safeArraySubscript(sTask, 10, "") & "]]></comment>" & vbcrlf
+                
+now run the audit_windows.vbs
+
+and add a query like this into openaudit:
+(german location Aktiviert means active)
+SELECT system.id AS `system.id`, system.name AS `system.name` ,task.name ,runas, comment FROM task LEFT JOIN system ON (system.id = task.system_id) WHERE @filter AND task.name NOT LIKE '%%Start Menu%%' AND task.name NOT LIKE '%Microsoft%%' AND state = 'Aktiviert';
+
+Now all your comments in your scheduled taks are in your active documetation ;-)
