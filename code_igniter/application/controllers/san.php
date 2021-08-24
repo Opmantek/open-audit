@@ -395,7 +395,7 @@ class San extends CI_Controller
                     }
                     # get the details
                     for ($i=$key; $i < $key+20; $i++) {
-                        if (trim($input[$i]) == '') {
+                        if (empty($input[$i]) or trim($input[$i]) == '') {
                             # we hit an empty line, break from this loop
                             break;
                         }
