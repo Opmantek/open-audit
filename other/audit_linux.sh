@@ -463,14 +463,12 @@ if pidof -x -o $$ "$script_name" >/dev/null 2>&1; then
 	exit 0
 fi
 
-
-
 #========================
 #  SAN INFO             #
 #========================
 if [ "$san_audit" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
-		san_url=$(echo "$san_url" | sed 's/input\/devices/san\/add_san/g')
+		san_url=$(echo "$url" | sed 's/input\/devices/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
