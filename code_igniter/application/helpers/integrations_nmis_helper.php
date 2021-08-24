@@ -42,6 +42,7 @@ if (!function_exists('generate_token')) {
     function generate_token()
     {
         $command = '';
+        $user_token = '';
         // Load and parse opConfig.json
         $files = array ('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
         foreach ($files as $file) {
@@ -70,10 +71,10 @@ if (!function_exists('generate_token')) {
             $command .= " '" . $token . "' admin";
             exec($command, $output, $return_var);
             if (!empty($output)) {
-                $token = trim($output[0]);
+                $user_token = trim($output[0]);
             }
         }
-        return $token;
+        return $user_token;
     }
 }
 
