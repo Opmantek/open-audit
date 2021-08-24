@@ -158,8 +158,9 @@ if (!function_exists('integrations_pre')) {
             } else {
                 // Something went awry
                 if ($integration->log) {
-                    $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, output: " . (string)$output . ".')";
-                    $data = array($integration->id, microtime(true));
+                    $message = '[integrations_pre] Could not logon to NMIS, output: ' . (string)$output . '.';
+                    $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                    $data = array($integration->id, microtime(true), $message);
                     $query = $CI->db->query($sql, $data);
                 }
                 return false;
@@ -504,8 +505,9 @@ if (!function_exists('integrations_collection')) {
                 return false;
             } else {
                 // Something went awry
-                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, output: " . (string)$output . ".')";
-                $data = array($integration->id, microtime(true));
+                $message = '[integrations_collection] Could not logon to NMIS, output: ' . (string)$output . '.';
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
                 return false;
             }
@@ -636,8 +638,9 @@ if (!function_exists('integrations_update')) {
                 return false;
             } else {
                 // Something went awry
-                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, output: " . (string)$output . ".')";
-                $data = array($integration->id, microtime(true));
+                $message = '[integrations_update] Could not logon to NMIS, output: ' . (string)$output . '.';
+                $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
                 return false;
             }
@@ -752,8 +755,9 @@ if (!function_exists('integrations_create')) {
                 return false;
             } else {
                 // Something went awry
-                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, output: " . (string)$output . ".')";
-                $data = array($integration->id, microtime(true));
+                $message = '[integrations_create] Could not logon to NMIS, output: ' . (string)$output . '.';
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
                 return false;
             }
@@ -886,8 +890,9 @@ if (!function_exists('integrations_delete')) {
                 return false;
             } else {
                 // Something went awry
-                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, output: " . (string)$output . ".')";
-                $data = array($integration->id, microtime(true));
+                $message = '[integrations_delete] Could not logon to NMIS, output: ' . (string)$output . '.';
+                $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
                 return false;
             }
@@ -998,8 +1003,9 @@ if (!function_exists('integrations_post')) {
                 return false;
             } else {
                 // Something went awry
-                $sql = "/* integrations_nmis_helper::post */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, output: " . (string)$output . ".')";
-                $data = array($integration->id, microtime(true));
+                $message = '[integrations_post] Could not logon to NMIS, output: ' . (string)$output . '.';
+                $sql = "/* integrations_nmis_helper::post */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
                 return false;
             }
