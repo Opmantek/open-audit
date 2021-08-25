@@ -2576,56 +2576,53 @@ for each objItem In colDiskDrives
     hard_drive_scsi_logical_unit = objItem.SCSITargetId
     hard_drive_model = objItem.Model
     if hard_drive_model = "VMware, VMware Virtual S SCSI Disk Device" then
-    hard_drive_model = "VMware Virtual Disk"
+        hard_drive_model = "VMware Virtual Disk"
     end if
     hard_drive_serial = ""
     hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
-
     ' Win 2k3 doesn't support this property
     on error resume next
-    hard_drive_firmware = objItem.FirmwareRevision
+        hard_drive_firmware = objItem.FirmwareRevision
     on error goto 0
     if ((len(hard_drive_firmware) = 0) or (isnull(hard_drive_firmware))) then
-    hard_drive_firmware = ""
+        hard_drive_firmware = ""
     end if
-
     on error resume next
-    hard_drive_serial = objItem.SerialNumber
+        hard_drive_serial = objItem.SerialNumber
     on error goto 0
     if ((len(hard_drive_serial) < 2) or (isnull(hard_drive_serial))) then
-    hard_drive_serial = ""
+        hard_drive_serial = ""
     end if
     hard_drive_size = int(objItem.size / 1024 / 1024)
     hard_drive_device_id = objItem.deviceid
     hard_drive_partitions = objItem.Partitions
     hard_drive_manufacturer = objItem.manufacturer
     if (hard_drive_manufacturer = "(Standard disk drives)") then
-    if lcase(left(hard_drive_model, 8)) = "hitachi "   then hard_drive_manufacturer = "Hitachi"     end if
-    if lcase(left(hard_drive_model, 6)) = "maxtor"  then hard_drive_manufacturer = "Maxtor"             end if
-    if lcase(left(hard_drive_model, 7)) = "sandisk"     then hard_drive_manufacturer = "SanDisk"            end if
-    if lcase(left(hard_drive_model, 2)) = "st"      then hard_drive_manufacturer = "Seagate"            end if
-    if lcase(left(hard_drive_model, 4)) = "wdc "    then hard_drive_manufacturer = "Western Digital"    end if
-    if lcase(left(hard_drive_model, 3)) = "wd "     then hard_drive_manufacturer = "Western Digital"    end if
-    if lcase(left(hard_drive_model, 6)) = "VMware"      then hard_drive_manufacturer = "VMware"     end if
+        if lcase(left(hard_drive_model, 8)) = "hitachi " then hard_drive_manufacturer = "Hitachi" end if
+        if lcase(left(hard_drive_model, 6)) = "maxtor" then hard_drive_manufacturer = "Maxtor" end if
+        if lcase(left(hard_drive_model, 7)) = "sandisk" then hard_drive_manufacturer = "SanDisk" end if
+        if lcase(left(hard_drive_model, 2)) = "st" then hard_drive_manufacturer = "Seagate" end if
+        if lcase(left(hard_drive_model, 4)) = "wdc " then hard_drive_manufacturer = "Western Digital" end if
+        if lcase(left(hard_drive_model, 3)) = "wd " then hard_drive_manufacturer = "Western Digital" end if
+        if lcase(left(hard_drive_model, 6)) = "VMware" then hard_drive_manufacturer = "VMware" end if
     end if
-
     hard_drive_status = "Not available"
     on error resume next
-    set DriveStatus = objWMIService2.ExecQuery("Select * FROM MSStorageDriver_FailurePredictStatus",,16)
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MSStorageDriver_FailurePredictStatus)" : audit_wmi_fails = audit_wmi_fails & "MSStorageDriver_FailurePredictStatus " : end if
-    if isnull(DriveStatus) then
-    ' do nothing - no return value
-    else
-    for each objItem2 in DriveStatus
-    if (lcase(objItem2.InstanceName) = hard_drive_pnp_id) then
-    if (objItem2.PredictFailure <> False and objItem2.Active = True) then
-    hard_drive_status = objItem2.PredictFailure & " because of " & objItem2.Reason
-    else
-    hard_drive_status = "OK"
-    end if
-    end if
-    next
-    end if
+        set DriveStatus = objWMIService2.ExecQuery("Select * FROM MSStorageDriver_FailurePredictStatus",,16)
+        error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MSStorageDriver_FailurePredictStatus)" : audit_wmi_fails = audit_wmi_fails & "MSStorageDriver_FailurePredictStatus " : end if
+        if isnull(DriveStatus) then
+            ' do nothing - no return value
+        else
+            for each objItem2 in DriveStatus
+                if (lcase(objItem2.InstanceName) = hard_drive_pnp_id) then
+                    if (objItem2.PredictFailure <> False and objItem2.Active = True) then
+                        hard_drive_status = objItem2.PredictFailure & " because of " & objItem2.Reason
+                    else
+                        hard_drive_status = "OK"
+                    end if
+                end if
+            next
+        end if
     on error goto 0
 
     item = item & "     <item>" & vbcrlf
