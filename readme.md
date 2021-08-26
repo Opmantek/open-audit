@@ -7,6 +7,7 @@ Open-AudIT is an application to tell you exactly what is on your network, how it
 
 Windows PCs can be queried for hardware, software, operating system settings, security settings, IIS settings, services, users & groups and much more. Linux systems can be queried for a similar amount of information. Network devices (printers, switches, routers, etc) can have data recorded such as IP-Address, MAC Address, open ports, serial number, etc, etc.
 
+![Home](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/community_home.png)<br>
 ![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/community_devices.png)<br>
 
 ## Getting Started
