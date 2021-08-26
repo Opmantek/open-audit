@@ -8,14 +8,14 @@ Open-AudIT is an application to tell you exactly what is on your network, how it
 Windows PCs can be queried for hardware, software, operating system settings, security settings, IIS settings, services, users & groups and much more. Linux systems can be queried for a similar amount of information. Network devices (printers, switches, routers, etc) can have data recorded such as IP-Address, MAC Address, open ports, serial number, etc, etc.
 
 ![Home](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/community_home.png)<br>
-![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/community_devices.png)<br>
+![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/community_devices.png)
 
-## Open-AudIT Enterprise
+# Open-AudIT Enterprise
 
 [Opmantek](https://opmantek.com) offer Open-AudIT Enterprise which leverages from Open-AudIT to provide extra features and benefits as well as an easy to use installer for Windows and Linux. Please consider purchasing a license to assist with the continued development of Open-AudIT.
 
 ![Home](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/dashboards.png)<br>
-![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/devices.png)<br>
+![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/devices.png)
 
 ## Getting Started
 
