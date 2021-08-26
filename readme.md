@@ -7,6 +7,8 @@ Open-AudIT is an application to tell you exactly what is on your network, how it
 
 Windows PCs can be queried for hardware, software, operating system settings, security settings, IIS settings, services, users & groups and much more. Linux systems can be queried for a similar amount of information. Network devices (printers, switches, routers, etc) can have data recorded such as IP-Address, MAC Address, open ports, serial number, etc, etc.
 
+![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/community_devices.png)<br>
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
@@ -19,11 +21,11 @@ The other Linux prerequisites are:
 
 #### RedHat / Centos
 
-awscli curl httpd mariadb-server nmap php php-cli php-ldap php-mbstring php-mcrypt php-mysql php-process php-snmp php-xml samba-client screen sshpass wget zip
+mariadb-server httpd php php-cli php-mysqlnd php-ldap php-json php-mbstring php-process php-snmp php-xml nmap zip curl wget sshpass screen samba-client logrotate perl-Time-ParseDate ipmitool rrdtool libpng12
 
 #### Debian / Ubuntu
 
-apache2 apache2-utils awscli curl libapache2-mod-php mariadb-server nmap openssh-client php php-cli php-curl php-ldap php-mbstring php-mysql php-snmp php-xml screen smbclient sshpass wget zip
+mariadb-server apache2 apache2-utils libapache2-mod-php openssh-client php php-cli php-curl php-ldap php-mbstring php-mysql php-snmp php-xml nmap zip wget curl sshpass screen smbclient logrotate ipmitool rrdtool libpng12-0 awscli
 
 ### Installing
 
@@ -40,7 +42,7 @@ To install from this source, please it in /usr/local/open-audit and copy the www
 
 ## Contributing
 
-Please contact [Opmantek](https://opmantek.com) with any enquiries for contributing or post to the [Questions](https://community.opmantek.com/questions) site.
+Please contact [Opmantek](https://opmantek.com) with any enquiries for contributing or post to the [Questions](https://community.opmantek.com/questions) site. And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
 
 ## Versioning
 

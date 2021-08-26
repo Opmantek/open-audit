@@ -19,11 +19,11 @@ The other Linux prerequisites are:
 
 #### RedHat / Centos
 
-awscli curl httpd ipmitool logrotate mariadb-server nmap perl-Time-modules php php-cli php-ldap php-mbstring php-mcrypt php-mysql php-process php-snmp php-xml samba-client screen sshpass wget zip
+mariadb-server httpd php php-cli php-mysqlnd php-ldap php-json php-mbstring php-process php-snmp php-xml nmap zip curl wget sshpass screen samba-client logrotate perl-Time-ParseDate ipmitool rrdtool libpng12
 
 #### Debian / Ubuntu
 
-apache2 apache2-utils awscli curl ipmitool libapache2-mod-php5 libapache2-mod-proxy-html libtime-modules-perl logrotate mysql-server nmap openssh-client php5 php5-ldap php5-mcrypt php5-mysql php5-snmp screen smbclient sshpass wget zip
+mariadb-server apache2 apache2-utils libapache2-mod-php openssh-client php php-cli php-curl php-ldap php-mbstring php-mysql php-snmp php-xml nmap zip wget curl sshpass screen smbclient logrotate ipmitool rrdtool libpng12-0 awscli
 
 ### Installing
 
@@ -40,7 +40,7 @@ To install from this source, please it in /usr/local/open-audit and copy the www
 
 ## Contributing
 
-Please contact [Opmantek](https://opmantek.com) with any enquiries for contributing or post to the [Open-AudIT](http://www.open-audit) forums or the [Questions](https://community.opmantek.com/questions) site.
+Please contact [Opmantek](https://opmantek.com) with any enquiries for contributing or post to the [Questions](https://community.opmantek.com/questions) site. And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
 
 ## Versioning
 
