@@ -3102,6 +3102,112 @@ if audit_dns = "y" then
     item = ""
 end if
 
+if debugging > "0" then wscript.echo "USB info" end if
+item = ""
+on error resume next
+set colItems = objWMIService.ExecQuery("Select * From Win32_USBControllerDevice")
+' https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-usbcontrollerdevice
+' https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-pnpentity
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_USBControllerDevice)" : audit_wmi_fails = audit_wmi_fails & "Win32_USBControllerDevice" : end if
+for each objItem in colItems
+    strDeviceName = objItem.Dependent
+    strQuotes = Chr(34)
+    strDeviceName = Replace(strDeviceName, strQuotes, "")
+    arrDeviceNames = Split(strDeviceName, "=")
+    strDeviceName = arrDeviceNames(1)
+    set colUSBDevices = objWMIService.ExecQuery("Select * From Win32_PnPEntity Where DeviceID = '" & strDeviceName & "'")
+    for each objUSBDevice in colUSBDevices
+
+        ' exclude bluetooth devices
+        if (instr(lcase(objUSBDevice.Description), "bluetooth") or instr(lcase(objUSBDevice.PNPClass), "bluetooth")) then
+        ' Do nothing and exclude these Bluetooth devices
+        else
+
+            error_code = ""
+            select case objUSBDevice.ConfigManagerErrorCode
+                case "0"  error_code = "0 - This device is working properly."
+                case "1"  error_code = "1 - This device is not configured correctly."
+                case "2"  error_code = "2 - Windows cannot load the driver for this device."
+                case "3"  error_code = "3 - The driver for this device might be corrupted, or your system may be running low on memory or other resources."
+                case "4"  error_code = "4 - This device is not working properly. One of its drivers or your registry might be corrupted."
+                case "5"  error_code = "5 - The driver for this device needs a resource that Windows cannot manage."
+                case "6"  error_code = "6 - The boot configuration for this device conflicts with other devices."
+                case "7"  error_code = "7 - Cannot filter."
+                case "8"  error_code = "8 - The driver loader for the device is missing."
+                case "9"  error_code = "9 - This device is not working properly because the controlling firmware is reporting the resources for the device incorrectly."
+                case "10" error_code = "10 - This device cannot start."
+                case "11" error_code = "11 - This device failed."
+                case "12" error_code = "12 - This device cannot find enough free resources that it can use."
+                case "13" error_code = "13 - Windows cannot verify this device's resources."
+                case "14" error_code = "14 - This device cannot work properly until you restart your computer."
+                case "15" error_code = "15 - This device is not working properly because there is probably a re-enumeration problem."
+                case "16" error_code = "16 - Windows cannot identify all the resources this device uses."
+                case "17" error_code = "17 - This device is asking for an unknown resource type."
+                case "18" error_code = "18 - Reinstall the drivers for this device."
+                case "19" error_code = "19 - Failure using the VxD loader."
+                case "20" error_code = "20 - Your registry might be corrupted."
+                case "21" error_code = "21 - System failure: Try changing the driver for this device. If that does not work, see your hardware documentation. Windows is removing this device."
+                case "22" error_code = "22 - This device is disabled."
+                case "23" error_code = "23 - System failure: Try changing the driver for this device. If that doesn't work, see your hardware documentation."
+                case "24" error_code = "24 - This device is not present, is not working properly, or does not have all its drivers installed."
+                case "25" error_code = "25 - Windows is still setting up this device."
+                case "26" error_code = "26 - Windows is still setting up this device."
+                case "27" error_code = "27 - This device does not have valid log configuration."
+                case "28" error_code = "28 - The drivers for this device are not installed."
+                case "29" error_code = "29 - This device is disabled because the firmware of the device did not give it the required resources."
+                case "30" error_code = "30 - This device is using an Interrupt Request (IRQ) resource that another device is using."
+                case "31" error_code = "31 - This device is not working properly because Windows cannot load the drivers required for this device."
+                case else error_code = objUSBDevice.ConfigManagerErrorCode
+            end select
+
+            availability = ""
+            select case objUSBDevice.Availability
+                case "1"  availability = "1 - Other"
+                case "2"  availability = "2 - Unknown"
+                case "3"  availability = "3 - Running/Full Power"
+                case "4"  availability = "4 - Warning"
+                case "5"  availability = "5 - In Test"
+                case "6"  availability = "6 - Not Applicable"
+                case "7"  availability = "7 - Power Off"
+                case "8"  availability = "8 - Off Line"
+                case "9"  availability = "9 - Off Duty"
+                case "10" availability = "10 - Degraded"
+                case "11" availability = "11 - Not Installed"
+                case "12" availability = "12 - Install Error"
+                case "13" availability = "13 - Power Save - Unknown"
+                case "14" availability = "14 - Power Save - Low Power Mode"
+                case "15" availability = "15 - Power Save - Standby"
+                case "16" availability = "16 - Power Cycle"
+                case "17" availability = "17 - Power Save - Warning"
+                case "18" availability = "18 - Paused"
+                case "19" availability = "19 - Not Ready"
+                case "20" availability = "20 - Not Configured"
+                case "21" availability = "21 - Quiesced" 
+                case else availability = "0 - Available"
+            end select
+
+            item = item & "     <item>" & vbcrlf
+            item = item & "         <name>" & escape_xml(objUSBDevice.Name) & "</name>" & vbcrlf
+            item = item & "         <manufacturer>" & escape_xml(objUSBDevice.Manufacturer) & "</manufacturer>" & vbcrlf
+            item = item & "         <availability>" & escape_xml(availability) & "</availability>" & vbcrlf
+            item = item & "         <config_manager_error_code>" & escape_xml(error_code) & "</config_manager_error_code>" & vbcrlf
+            item = item & "         <description>" & escape_xml(objUSBDevice.Description) & "</description>" & vbcrlf
+            item = item & "         <device>" & escape_xml(objUSBDevice.DeviceID) & "</device>" & vbcrlf
+            item = item & "         <pnp_class>" & escape_xml(objUSBDevice.PNPClass) & "</pnp_class>" & vbcrlf
+            item = item & "         <present>" & escape_xml(objUSBDevice.Present) & "</present>" & vbcrlf
+            item = item & "         <status>" & escape_xml(objUSBDevice.Status) & "</status>" & vbcrlf
+            item = item & "     </item>" & vbcrlf
+        end if
+    next
+next
+on error goto 0
+if item > "" then
+    result.WriteText "  <usb>" & vbcrlf
+    result.WriteText item
+    result.WriteText "  </usb>" & vbcrlf
+end if
+item = ""
+
 Set StdOut = WScript.StdOut
 ' NOTE - we do not record devices we cannot detect (local USB) or ping (network)
 ' LPT1 connected printers will be recorded regardless of status
@@ -3333,10 +3439,6 @@ end if
 
 ' only run this if we are auditing on the local machine
 ' only run this for build 7600 and newer (Win7 and Win 2008 r2 or later)
-' TODO - the database field for task name is only 100 characters long
-'        this will need extending to avoid creating false positive alerts
-'        because some built in Windows tasks have LONG names
-'        Fix the truncated name below and expand the database attribute to 250 characters
 if (strcomputer = "." and audit_location = "local" and cint(windows_build_number) > 7599) then
     if debugging > "0" and strcomputer = "." then wscript.echo "scheduled tasks" end if
     item = ""
@@ -3351,24 +3453,9 @@ if (strcomputer = "." and audit_location = "local" and cint(windows_build_number
         MyArray = Split(strResults, vbcrlf)
         for each line in MyArray
             sTask = CSVParser(line)
-            ' if UCase(sTask(0)) = UCase(system_hostname) then
-            '   item = item & "      <item>" & vbcrlf
-            '   item = item & "         <name><![CDATA[" & mid(sTask(1), 1, 100) & "]]></name>" & vbcrlf
-            '   item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
-            '   item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
-            '   item = item & "         <last_run><![CDATA[" & sTask(5) & "]]></last_run>" & vbcrlf
-            '   item = item & "         <last_result><![CDATA[" & sTask(6) & "]]></last_result>" & vbcrlf
-            '   item = item & "         <creator><![CDATA[" & sTask(7) & "]]></creator>" & vbcrlf
-            '   item = item & "         <schedule></schedule>" & vbcrlf
-            '   item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
-            '   item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
-            '   item = item & "         <runas><![CDATA[" & sTask(14) & "]]></runas>" & vbcrlf
-            '   item = item & "      </item>" & vbcrlf
-            ' end if
-
             if UCase(safeArraySubscript(sTask, 0, "")) = UCase(system_hostname) then
                 item = item & "      <item>" & vbcrlf
-                item = item & "         <name><![CDATA[" & mid(safeArraySubscript(sTask, 1, ""), 1, 100) & "]]></name>" & vbcrlf
+                item = item & "         <name><![CDATA[" & mid(safeArraySubscript(sTask, 1, ""), 1, 200) & "]]></name>" & vbcrlf
                 item = item & "         <next_run><![CDATA[" & safeArraySubscript(sTask, 2, "") & "]]></next_run>" & vbcrlf
                 item = item & "         <status><![CDATA[" & safeArraySubscript(sTask, 3, "") & "]]></status>" & vbcrlf
                 item = item & "         <last_run><![CDATA[" & safeArraySubscript(sTask, 5, "") & "]]></last_run>" & vbcrlf
@@ -3378,9 +3465,9 @@ if (strcomputer = "." and audit_location = "local" and cint(windows_build_number
                 item = item & "         <task><![CDATA[" & safeArraySubscript(sTask, 8, "") & "]]></task>" & vbcrlf
                 item = item & "         <state><![CDATA[" & safeArraySubscript(sTask, 11, "") & "]]></state>" & vbcrlf
                 item = item & "         <runas><![CDATA[" & safeArraySubscript(sTask, 14, "") & "]]></runas>" & vbcrlf
+                item = item & "         <comment><![CDATA[" & safeArraySubscript(sTask, 10, "") & "]]></comment>" & vbcrlf
                 item = item & "      </item>" & vbcrlf
             end if
-
         next
     end if
     if item > "" then

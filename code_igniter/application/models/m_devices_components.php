@@ -280,6 +280,9 @@ class M_devices_components extends MY_Model
         if ($table === 'task') {
                 $match_columns = array('name', 'task');
         }
+        if ($table === 'usb') {
+                $match_columns = array('device');
+        }
         if ($table === 'user') {
                 $match_columns = array('name', 'sid', 'keys');
         }
@@ -1250,6 +1253,11 @@ class M_devices_components extends MY_Model
 
         // find the version string, based on the version integer.
         $version_string = '';
+
+        // SQL 2019
+        if (mb_strpos($version, '15.00.2000.5') === 0 OR mb_strpos($version, '15.0.2000.5') === 0) {
+            $version_string = 'SQL Server 2019';
+        }
 
         // SQL 2017
         if (mb_strpos($version, '14.00.3008.27') === 0 OR mb_strpos($version, '14.0.3008.27') === 0) {

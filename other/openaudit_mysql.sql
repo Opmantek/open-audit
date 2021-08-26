@@ -3813,6 +3813,7 @@ CREATE TABLE `task` (
   `task` text NOT NULL,
   `state` varchar(10) NOT NULL DEFAULT '',
   `runas` varchar(50) NOT NULL DEFAULT '',
+  `comment` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
@@ -3867,6 +3868,43 @@ CREATE TABLE `tasks` (
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `usb`
+--
+
+DROP TABLE IF EXISTS `usb`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usb` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `availability` varchar(100) NOT NULL DEFAULT '',
+  `config_manager_error_code` varchar(100) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `device` varchar(200) NOT NULL DEFAULT '',
+  `pnp_class` varchar(100) NOT NULL DEFAULT '',
+  `present` varchar(100) NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `usb_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usb`
+--
+
+LOCK TABLES `usb` WRITE;
+/*!40000 ALTER TABLE `usb` DISABLE KEYS */;
+/*!40000 ALTER TABLE `usb` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

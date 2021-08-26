@@ -137,7 +137,7 @@ class Devices extends MY_Controller
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format === 'screen' && $this->response->meta->include === '') OR $this->response->meta->include === '*' OR $this->response->meta->include === 'all') {
-            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,field,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,field,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,usb,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource !== '') {
             if (empty($this->response->meta->sub_resource_id)) {
@@ -450,7 +450,6 @@ class Devices extends MY_Controller
         if (empty($this->response->meta->sub_resource_id)) {
             $this->response->meta->sub_resource_id = 0;
         }
-
         $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current, '');
         $this->response->meta->total = 0;
         if (is_array($this->response->data)) {
@@ -749,7 +748,7 @@ class Devices extends MY_Controller
     public function export()
     {
         $this->response->meta->format = 'json';
-        $this->response->meta->include = 'bios,disk,dns,ip,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+        $this->response->meta->include = 'bios,disk,dns,ip,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,usb,user,user_group,variable,video,vm,windows';
         $device = new stdClass();
 
         $sql = 'SELECT * FROM system WHERE id = ?';
