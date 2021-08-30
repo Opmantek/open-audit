@@ -36,6 +36,22 @@ UPDATE `configuration` SET `value` = '4.2.1' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 4.2.1 commenced');
 
+$sql = "DELETE FROM configuration WHERE name = 'create_change_log_usb'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log_usb','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the USB table.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM configuration WHERE name = 'delete_noncurrent_usb'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_usb','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current USB data.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 if ($this->db->field_exists('comment', 'task')) {
     $this->alter_table('task', 'comment', "DROP `comment`", 'drop');
 }
