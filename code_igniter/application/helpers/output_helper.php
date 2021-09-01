@@ -36,11 +36,11 @@
 * @link      http://www.open-audit.org
 */
 
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
      exit('No direct script access allowed');
 }
 
-if ( ! function_exists('output')) {
+if (! function_exists('output')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
      *
@@ -63,18 +63,18 @@ if ( ! function_exists('output')) {
             unset($CI->response->data);
             $CI->response->data = array();
         }
-        if ( ! empty($CI->response->data) && count($CI->response->data) > 0) {
+        if (!empty($CI->response->data) && count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
         }
         if (empty($CI->response->data)) {
             $CI->response->data = false;
         }
-        if ( ! empty($CI->response->included) && $CI->response->meta->collection !== 'scripts') {
+        if (!empty($CI->response->included) && $CI->response->meta->collection !== 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }
         create_links();
         // if we have errors set, make sure we remove the data object / array
-        if ( ! empty($CI->response->errors) && count($CI->response->errors) > 0) {
+        if (!empty($CI->response->errors) && count($CI->response->errors) > 0) {
             if ($CI->response->meta->collection !== 'discoveries') {
                 unset($CI->response->data);
             }
@@ -83,8 +83,8 @@ if ( ! function_exists('output')) {
         }
 
         if ($CI->response->meta->collection === 'summaries' && $CI->response->meta->action === 'execute') {
-           unset($CI->response->meta->data_order);
-           $CI->response->meta->data_order = array('name','count');
+            unset($CI->response->meta->data_order);
+            $CI->response->meta->data_order = array('name','count');
         } else if ($CI->response->meta->collection === 'charts') {
             // Do nothing
         } else if ($CI->response->meta->collection === 'nmis') {
@@ -93,13 +93,12 @@ if ( ! function_exists('output')) {
                 $CI->response->meta->data_order = array();
             }
         } else {
-
             unset($CI->response->meta->data_order);
             $CI->response->meta->data_order = array();
 
-            if ( ! empty($CI->response->data[0]->attributes)) {
+            if (!empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    if (strpos($key, '.') !== false OR $CI->response->meta->collection === 'reports' OR $CI->response->meta->collection === 'search' OR $CI->response->meta->collection === 'help' OR $CI->response->meta->collection === 'database') {
+                    if (strpos($key, '.') !== false or $CI->response->meta->collection === 'reports' or $CI->response->meta->collection === 'search' or $CI->response->meta->collection === 'help' or $CI->response->meta->collection === 'database') {
                         $CI->response->meta->data_order[] = $key;
                     } else {
                         $table = $CI->response->meta->collection;
@@ -118,7 +117,7 @@ if ( ! function_exists('output')) {
             if ($CI->response->meta->collection === 'devices' && $CI->response->meta->action === 'sub_resource_read') {
                 unset($CI->response->meta->data_order);
                 $CI->response->meta->data_order = array();
-                if ( ! empty($CI->response->data) && is_array($CI->response->data)) {
+                if (!empty($CI->response->data) && is_array($CI->response->data)) {
                     foreach ($CI->response->data[0]->attributes as $key => $value) {
                         $CI->response->meta->data_order[] = $key;
                     }
@@ -141,12 +140,12 @@ if ( ! function_exists('output')) {
         $entry->time_now = time();
         $GLOBALS['timer_log'][] = $entry;
 
-        if ( ! empty($CI->response->meta->debug) && $CI->response->meta->debug === true) {
+        if (!empty($CI->response->meta->debug) && $CI->response->meta->debug === true) {
             $CI->response->meta->user = $CI->user;
             $CI->response->meta->timing = $GLOBALS['timer_log'];
             $CI->response->meta->time_end = microtime(true);
             $CI->response->meta->time_elapsed = '';
-            if ( ! empty($CI->response->meta->time_end) && ! empty($CI->response->meta->time_start)) {
+            if (!empty($CI->response->meta->time_end) && ! empty($CI->response->meta->time_start)) {
                 $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
             }
         } else {
@@ -223,9 +222,9 @@ if ( ! function_exists('output')) {
 
         $log = new stdClass();
         $log->object = $CI->response->meta->collection;
-        $log->function = strtolower($CI->response->meta->collection) . '::' . strtolower($CI->response->meta->action); 
+        $log->function = strtolower($CI->response->meta->collection) . '::' . strtolower($CI->response->meta->action);
         $log->severity = 7;
-        if ($CI->response->meta->action === 'create' OR $CI->response->meta->action === 'update' OR $CI->response->meta->action === 'delete') {
+        if ($CI->response->meta->action === 'create' or $CI->response->meta->action === 'update' or $CI->response->meta->action === 'delete') {
             $log->severity = 5;
         }
         $log->status = @$CI->response->meta->header;
@@ -243,9 +242,9 @@ if ( ! function_exists('output')) {
     {
         $CI = & get_instance();
 
-        if ( ! empty($CI->response->meta->heading)) {
+        if (!empty($CI->response->meta->heading)) {
             $filename = $CI->response->meta->heading;
-        } else if ( ! empty($CI->response->meta->collection)) {
+        } else if (!empty($CI->response->meta->collection)) {
             $filename = $CI->response->meta->collection;
         } else {
             $filename = 'openaudit';
@@ -294,7 +293,7 @@ if ( ! function_exists('output')) {
         }
 
         $table = $CI->response->meta->collection;
-        if ($table === 'devices' OR $table === 'queries') {
+        if ($table === 'devices' or $table === 'queries') {
             $table = 'system';
         }
 
@@ -312,30 +311,30 @@ if ( ! function_exists('output')) {
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
         // Each individual data line
         $output_escape_csv = @$CI->config->config['output_escape_csv'];
-        if ( ! empty($CI->response->data)) {
+        if (!empty($CI->response->data)) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
                 foreach ($CI->response->meta->data_order as $field) {
                     $value = '';
-                    if ( ! empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
+                    if (!empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
                         $value = $item->attributes->{$CI->response->meta->collection.'.'.$field};
                     }
-                    if ( ! empty($item->attributes->$field)) {
+                    if (!empty($item->attributes->$field)) {
                         $value = $item->attributes->$field;
                     }
                     if (empty($value) && stripos($field, '.') !== false) {
                         $temp = explode('.', $field);
-                        if ( ! empty($item->attributes->{$temp[1]})) {
+                        if (!empty($item->attributes->{$temp[1]})) {
                             $value = $item->attributes->{$temp[1]};
                         }
                     }
-                    if (is_string($value) OR is_int($value)) {
+                    if (is_string($value) or is_int($value)) {
                         $value = str_replace('"', '""', (string)$value);
                     } else {
                         $value = '';
                     }
-                    if ( ! empty($output_escape_csv) && $output_escape_csv === 'y') {
-                        if (strpos($value, '=') === 0 OR strpos($value, '+') === 0 OR strpos($value, '-') === 0 OR strpos($value, '@') === 0) {
+                    if (!empty($output_escape_csv) && $output_escape_csv === 'y') {
+                        if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
                             $value = "'" . $value;
                         }
                     }
@@ -471,21 +470,21 @@ if ( ! function_exists('output')) {
         $output->tooltip->pointFormat = 'Percent: {point.percentage:.1f}%<br />Count: {point.y}';
 
         $output->series = array();
-            $item = new stdClass();
-            $item->name = $response->included[0]->attributes->dataset_title;
-            $item->colorByPoint = true;
-            $item->data = array();
-            for($i=0; $i<count($response->data); $i++) {
-                $slice = new stdClass();
-                $slice->name = $response->data[$i]->attributes->name;
-                if (empty($slice->name)) {
-                    $slice->name = 'NoData';
-                }
-                $slice->y = intval($response->data[$i]->attributes->count);
-                # $slice->url = '../' . $response->data[$i]->attributes->link;
-                $slice->url = $response->data[$i]->attributes->link;
-                $item->data[] = $slice;
+        $item = new stdClass();
+        $item->name = $response->included[0]->attributes->dataset_title;
+        $item->colorByPoint = true;
+        $item->data = array();
+        for ($i=0; $i<count($response->data); $i++) {
+            $slice = new stdClass();
+            $slice->name = $response->data[$i]->attributes->name;
+            if (empty($slice->name)) {
+                $slice->name = 'NoData';
             }
+            $slice->y = intval($response->data[$i]->attributes->count);
+            # $slice->url = '../' . $response->data[$i]->attributes->link;
+            $slice->url = $response->data[$i]->attributes->link;
+            $item->data[] = $slice;
+        }
         $output->series[] = $item;
 
         unset($response->data);
@@ -545,26 +544,26 @@ if ( ! function_exists('output')) {
         $output->yAxis->title->text = $response->included[0]->attributes->primary;
 
         $output->series = array();
-            $dataset = new stdClass();
-            $dataset->name = $response->included[0]->attributes->dataset_title;
-            $dataset->color = '#333333';
-            $dataset->data = array();
-            $sub_title_text = '';
-            for($i=0; $i<count($response->data); $i++) {
-                $item = new stdClass();
-                $item->y = intval($response->data[$i]->attributes->count);
-                # $item->url = '../' . str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
-                $item->url = str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
-                $item->tooltip = date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y');
-                $dataset->data[] = $item;
-                if ($i === 0) {
-                    $sub_title_text = date_format(date_create($response->data[$i]->attributes->date), 'D, M j') . ' to ';
-                }
-                if ($i === count($response->data)-1) {
-                    $sub_title_text = $sub_title_text . date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y' . '.');
-                }
-                $output->xAxis->categories[] = date_format(date_create($response->data[$i]->attributes->date), 'j M');
+        $dataset = new stdClass();
+        $dataset->name = $response->included[0]->attributes->dataset_title;
+        $dataset->color = '#333333';
+        $dataset->data = array();
+        $sub_title_text = '';
+        for ($i=0; $i<count($response->data); $i++) {
+            $item = new stdClass();
+            $item->y = intval($response->data[$i]->attributes->count);
+            # $item->url = '../' . str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
+            $item->url = str_replace('@date', $response->data[$i]->attributes->date, $response->included[0]->attributes->link);
+            $item->tooltip = date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y');
+            $dataset->data[] = $item;
+            if ($i === 0) {
+                $sub_title_text = date_format(date_create($response->data[$i]->attributes->date), 'D, M j') . ' to ';
             }
+            if ($i === count($response->data)-1) {
+                $sub_title_text = $sub_title_text . date_format(date_create($response->data[$i]->attributes->date), 'D, M j Y' . '.');
+            }
+            $output->xAxis->categories[] = date_format(date_create($response->data[$i]->attributes->date), 'j M');
+        }
         $output->series[] = $dataset;
 
         $output->subtitle->text = $sub_title_text;
@@ -572,6 +571,185 @@ if ( ! function_exists('output')) {
         unset($response->data);
         $response->data = $output;
         return $response;
+    }
+
+    function icon($collection)
+    {
+        $icon = 'fa fa-refresh fa-spin fa-fw';
+        switch ($collection) {
+            case 'applications':
+                $icon = 'fa fa-snowflake-o';
+                break;
+
+            case 'attributes':
+                $icon = 'fa fa-list';
+                break;
+
+            case 'baselines':
+                $icon = 'fa fa-line-chart';
+                break;
+
+            case 'baselines_policies':
+                $icon = 'fa fa-area-chart';
+                break;
+
+            case 'buildings':
+                $icon = 'fa fa-building-o';
+                break;
+
+            case 'clouds':
+                $icon = 'fa fa-cloud';
+                break;
+
+            case 'clusters':
+                $icon = 'fa fa-cubes';
+                break;
+
+            case 'collectors':
+                $icon = 'fa fa-cogs';
+                break;
+
+            case 'configuration':
+                $icon = 'fa fa-sliders';
+                break;
+
+            case 'connections':
+                $icon = 'fa fa-link';
+                break;
+
+            case 'credentials':
+                $icon = 'fa fa-shield';
+                break;
+
+            case 'dashboards':
+                $icon = 'fa fa-dashboard';
+                break;
+
+            case 'database':
+                $icon = 'fa fa-database';
+                break;
+
+            case 'devices':
+                $icon = 'fa fa-desktop';
+                break;
+
+            case 'discoveries':
+                $icon = 'fa fa-binoculars';
+                break;
+
+            case 'discovery_scan_options':
+                $icon = 'fa fa-random';
+                break;
+
+            case 'fields':
+                $icon = 'fa fa-comments-o';
+                break;
+
+            case 'files':
+                $icon = 'fa fa-file-image-o';
+                break;
+
+            case 'floors':
+                $icon = 'fa fa-sort-numeric-desc';
+                break;
+
+            case 'groups':
+                $icon = 'fa fa-tags';
+                break;
+
+            case 'help':
+                $icon = 'fa fa-question';
+                break;
+
+            case 'integrations':
+                $icon = 'fa fa-exchange';
+                break;
+
+            case 'ldap_servers':
+                $icon = 'fa fa-address-card-o';
+                break;
+
+            case 'licenses':
+                $icon = 'fa fa-leanpub';
+                break;
+
+            case 'locations':
+                $icon = 'fa fa-building';
+                break;
+
+            case 'logs':
+                $icon = 'fa fa-bars';
+                break;
+
+            case 'maps':
+                $icon = 'fa fa-map-o';
+                break;
+
+            case 'networks':
+                $icon = 'fa fa-wifi';
+                break;
+
+            case 'orgs':
+                $icon = 'fa fa-bank';
+                break;
+
+            case 'queries':
+                $icon = 'fa fa-table';
+                break;
+
+            case 'rack_devices':
+                $icon = 'fa fa-desktop';
+                break;
+
+            case 'racks':
+                $icon = 'fa fa-film';
+                break;
+
+            case 'reports':
+                $icon = 'fa fa-table';
+                break;
+
+            case 'roles':
+                $icon = 'fa fa-lock';
+                break;
+
+            case 'rooms':
+                $icon = 'fa fa-plus-square-o';
+                break;
+
+            case 'rows':
+                $icon = 'fa fa-hashtag';
+                break;
+
+            case 'rules':
+                $icon = 'fa fa-map-signs';
+                break;
+
+            case 'scripts':
+                $icon = 'fa fa-code';
+                break;
+
+            case 'summaries':
+                $icon = 'fa fa-pie-chart';
+                break;
+
+            case 'tasks':
+                $icon = 'fa fa-clock-o';
+                break;
+
+            case 'users':
+                $icon = 'fa fa-users';
+                break;
+
+            case 'widgets':
+                $icon = 'fa fa-bar-chart';
+                break;
+
+            default:
+                $icon = 'fa fa-refresh fa-spin fa-fw';
+                break;
+        }
+        return $icon;
     }
 
     function output_screen()
@@ -582,6 +760,10 @@ if ( ! function_exists('output')) {
             redirect($CI->response->meta->collection . '/' . $CI->response->meta->id);
         }
         header($CI->response->meta->header);
+        $CI->response->meta->icon = icon($CI->response->meta->collection);
+        $CI->response->queries = array();
+
+        $CI->response->orgs = $CI->m_orgs->collection($CI->user->id);
 
         $enterprise_report = new stdClass();
         $enterprise_report->id =  "10000";
@@ -854,18 +1036,18 @@ if ( ! function_exists('output')) {
             if (is_array($row)) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
-                if ( ! empty($row->attributes)) {
+                if (!empty($row->attributes)) {
                     foreach ($row->attributes as $key => $value) {
-                        if (isset($key) && ($key === 'id' OR $key === 'free' OR $key === 'used' OR $key === 'size' OR $key === 'speed' OR $key === 'total' OR $key === 'col_order' OR $key === 'access_level' OR $key === 'count')) {
+                        if (isset($key) && ($key === 'id' or $key === 'free' or $key === 'used' or $key === 'size' or $key === 'speed' or $key === 'total' or $key === 'col_order' or $key === 'access_level' or $key === 'count')) {
                             $row->attributes->$key = intval($value);
-                        } elseif ((strrpos($key, '_id') === strlen($key)-3) OR
-                                    (strrpos($key, '.id') === strlen($key)-3) OR
-                                    (strrpos($key, '_count') === strlen($key)-6) OR
-                                    (strrpos($key, '_percent') === strlen($key)-8) OR
+                        } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                    (strrpos($key, '.id') === strlen($key)-3) or
+                                    (strrpos($key, '_count') === strlen($key)-6) or
+                                    (strrpos($key, '_percent') === strlen($key)-8) or
                                     (strrpos($key, '_size') === strlen($key)-5)) {
                             $row->attributes->$key = intval($value);
-                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) OR
-                                (strrpos($key, 'next_hop') === strlen($key)-8) OR
+                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
+                                (strrpos($key, 'next_hop') === strlen($key)-8) or
                                 (strrpos($key, 'destination') === strlen($key)-11)) {
                             $temp_name = $key . '_padded';
                             $row->attributes->$temp_name = ip_address_from_db($value);
@@ -947,8 +1129,12 @@ if ( ! function_exists('output')) {
             $query_parameters = $CI->response->meta->query_parameters;
             if (!empty($CI->response->meta->offset)) {
                 $temp = intval($CI->response->meta->limit);
-                if (empty($temp)) { $temp = $CI->config->config['page_size']; }
-                if ($temp < 0) { $temp = 0; }
+                if (empty($temp)) {
+                    $temp = $CI->config->config['page_size'];
+                }
+                if ($temp < 0) {
+                    $temp = 0;
+                }
                 $offset = intval($CI->response->meta->offset - $temp);
                 if (!empty($offset)) {
                     $hit = false;
@@ -991,8 +1177,12 @@ if ( ! function_exists('output')) {
             $query_parameters = $CI->response->meta->query_parameters;
             if ($CI->response->meta->total > $CI->response->meta->limit) {
                 $temp = intval($CI->response->meta->limit);
-                if (empty($temp)) { $temp = $CI->config->config['page_size']; }
-                if ($temp < 0) { $temp = 0; }
+                if (empty($temp)) {
+                    $temp = $CI->config->config['page_size'];
+                }
+                if ($temp < 0) {
+                    $temp = 0;
+                }
                 $offset = intval($CI->response->meta->total) - intval($temp);
                 $hit = false;
                 for ($i=0; $i < count($query_parameters); $i++) {
