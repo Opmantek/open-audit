@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Model
 * @package   Attributes
 * @author    Mark Unwin <marku@opmantek.com>
@@ -65,17 +65,17 @@ class M_attributes extends MY_Model
      */
     public function create($data = null)
     {
-        if ( ! empty($data->type)) {
+        if (!empty($data->type)) {
             $data->type = str_replace('<', '', $data->type);
             $data->type = str_replace("'", '', $data->type);
             $data->type = str_replace('"', '', $data->type);
         }
-        if ( ! empty($data->name)) {
+        if (!empty($data->name)) {
             $data->name = str_replace('<', '', $data->name);
             $data->name = str_replace("'", '', $data->name);
             $data->name = str_replace('"', '', $data->name);
         }
-        if ( ! empty($data->value)) {
+        if (!empty($data->value)) {
             $data->value = str_replace('<', '', $data->value);
             $data->value = str_replace("'", '', $data->value);
             $data->value = str_replace('"', '', $data->value);
@@ -95,7 +95,7 @@ class M_attributes extends MY_Model
      */
     public function read($id = 0)
     {
-        $sql = 'SELECT * FROM `attributes` WHERE id = ?';
+        $sql = 'SELECT attributes.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM `attributes` LEFT JOIN orgs ON (attributes.org_id = orgs.id) WHERE attributes.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'attributes');
@@ -113,7 +113,7 @@ class M_attributes extends MY_Model
         $data = array(intval($id));
         $sql = 'DELETE FROM `attributes` WHERE `id` = ?';
         $test = $this->run_sql($sql, $data);
-        if ( ! empty($test)) {
+        if (!empty($test)) {
             return true;
         } else {
             return false;
@@ -143,19 +143,19 @@ class M_attributes extends MY_Model
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if ( ! empty($user_id)) {
+        if (!empty($user_id)) {
             $org_list = $CI->m_orgs->get_user_all($user_id);
             $sql = 'SELECT * FROM attributes WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'attributes');
             return $result;
         }
-        if ( ! empty($response)) {
+        if (!empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM attributes LEFT JOIN orgs ON (attributes.org_id = orgs.id) ' . 
-                    $CI->response->meta->internal->filter . ' ' . 
-                    $CI->response->meta->internal->groupby . ' ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM attributes LEFT JOIN orgs ON (attributes.org_id = orgs.id) ' .
+                    $CI->response->meta->internal->filter . ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'attributes');
