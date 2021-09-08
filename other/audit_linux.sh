@@ -2514,6 +2514,22 @@ if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		echo "		</item>" >> "$xml_file"
 	done
 fi
+# Detect Quest InTrust agent
+adcscm_path=`service adcscm.linux_intel status 2>/dev/null | grep '\-service' | awk '{ print $3 }'`
+if [ -n "$adcscm_path" ]; then
+	adcscm_binary=`echo "${adcscm_path/adcscm\.linux_intel/adcscm}"`
+	version=`$adcscm_binary -help | grep version | awk '{ print $5 }'`
+	installed_on=$(env stat --format=%y "$adcscm_binary" 2>/dev/null | cut -d. -f1)
+	echo "		<item>" >> "$xml_file"
+	echo "			<name>Quest InTrust Agent</name>" >> "$xml_file"
+	echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+	echo "			<description></description>" >> "$xml_file"
+	echo "			<url>https://www.quest.com/products/intrust/</url>" >> "$xml_file"
+	echo "			<publisher>Quest</publisher>" >> "$xml_file"
+	echo "			<location>$(escape_xml $adcscm_binary)</location>" >> "$xml_file"
+	echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
+	echo "		</item>" >> "$xml_file"
+fi
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
