@@ -935,6 +935,7 @@ if (! function_exists('output')) {
         $CI->load->model('m_dashboards');
         $result = @$CI->m_dashboards->collection($CI->user->id);
         $CI->response->included = @array_merge($CI->response->included, $result);
+        $CI->response->dashboards = @array_merge($CI->response->included, $result);
 
         $include = true;
         if (is_array($CI->response->included)) {

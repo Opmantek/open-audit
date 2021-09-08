@@ -33,6 +33,7 @@
 * @version   GIT: Open-AudIT_4.2.0
 * @link      http://www.open-audit.org
  */
+$version ='';
 $header = "
     connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
     font-src 'self';
@@ -43,11 +44,12 @@ $header = "
     manifest-src 'none';
     media-src 'none';
     object-src 'none';
-    prefetch-src: 'self';
     script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
     style-src 'self' 'unsafe-inline';
     worker-src 'self';
     ";
+    # prefetch-src 'self'; # removed as still marked as experimental and not supported in any browsers
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/prefetch-src#browser_compatibility
 $header = str_replace(PHP_EOL, "", $header);
 header("Content-Security-Policy: {$header}");
 header('X-Frame-Options: DENY');
@@ -58,53 +60,51 @@ if (intval($this->config->config['internal_version']) < intval($this->config->co
 }
 
 // Define our constans for use in htmlspecialchars
-if ( ! defined('CHARSET')) {
+if (!defined('CHARSET')) {
     define('CHARSET', 'UTF-8');
-    if (phpversion() >= 5.4) {
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
-    } else {
-        define('REPLACE_FLAGS', ENT_COMPAT);
-    }
+    define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 }
 
-function refine($property, $value, $display = '', $align = 'left')
-{
-    if ($display === '') {
-        $display = $value;
-    }
-    $CI = & get_instance();
-    if (strlen($display) > 28) {
-        $trim = intval($CI->config->config['gui_trim_characters']);
-        if (empty($trim)) {
-            $trim = 25;
+if ($version !== 5) {
+    function refine($property, $value, $display = '', $align = 'left')
+    {
+        if ($display === '') {
+            $display = $value;
         }
-        $display = mb_substr($display, 0, $trim) . ' ...';
-    }
+        $CI = & get_instance();
+        if (strlen($display) > 28) {
+            $trim = intval($CI->config->config['gui_trim_characters']);
+            if (empty($trim)) {
+                $trim = 25;
+            }
+            $display = mb_substr($display, 0, $trim) . ' ...';
+        }
 
-    $query_parameters = $CI->response->meta->query_parameters;
-    $item = new stdClass();
-    $item->name = $property;
-    $item->operator = '=';
-    $item->value = $value;
-    $query_parameters[] = $item;
-    $include_link = create_url($query_parameters);
-    unset($query_parameters);
+        $query_parameters = $CI->response->meta->query_parameters;
+        $item = new stdClass();
+        $item->name = $property;
+        $item->operator = '=';
+        $item->value = $value;
+        $query_parameters[] = $item;
+        $include_link = create_url($query_parameters);
+        unset($query_parameters);
 
-    $query_parameters = $CI->response->meta->query_parameters;
-    $item = new stdClass();
-    $item->name = $property;
-    $item->operator = '!=';
-    $item->value = $value;
-    $query_parameters[] = $item;
-    $exclude_link = create_url($query_parameters);
-    unset($query_parameters);
+        $query_parameters = $CI->response->meta->query_parameters;
+        $item = new stdClass();
+        $item->name = $property;
+        $item->operator = '!=';
+        $item->value = $value;
+        $query_parameters[] = $item;
+        $exclude_link = create_url($query_parameters);
+        unset($query_parameters);
 
-    if ( ! empty($value)) {
-        echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . $value . '">' . $display . "</span></td>\n";
-    } else {
-        echo '            <td class="text-' . $align . '">' . $display . "</td>\n";
+        if (!empty($value)) {
+            echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . $value . '">' . $display . "</span></td>\n";
+        } else {
+            echo '            <td class="text-' . $align . '">' . $display . "</td>\n";
+        }
     }
 }
 
-include 'theme-bootstrap/v_template.php';
+include 'theme-bootstrap' . $version . '/v_template.php';
 exit;
