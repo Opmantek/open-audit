@@ -186,7 +186,11 @@ if (!function_exists('integrations_pre')) {
             }
         } else {
             if ($integration->log) {
-                $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
+                if ($integration->debug) {
+                    $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS. " . json_encode($external_locations);
+                } else {
+                    $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
+                }
                 $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
