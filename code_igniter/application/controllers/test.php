@@ -919,10 +919,6 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
         $this->load->model('m_configuration');
         $this->m_configuration->load();
 
-        // $sql = "SELECT * FROM `rules`";
-        // $query = $this->db->query($sql);
-        // $rules = $query->result();
-
         $file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
         echo "<pre>\n";
         $ouis = array();
@@ -934,9 +930,69 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
                 $ouis[$oui] = $manufacturer;
             }
         }
+        echo "&lt;?php
+if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+#
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+/*
+* @category  Helper
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   GIT: Open-AudIT_" . $this->config->config['display_version'] . "
+* @link      http://www.open-audit.org
+ */
+if (! function_exists('get_manufacturer_from_mac')) {
+    /**
+     * A function that takes a mac address and returns the manufacturer
+     *
+     * @access    public
+     * @category  Function
+     * @author    Mark Unwin <marku@opmantek.com>
+     * @param     String    mac     The MAC Address to test
+     * @return    String    The manuafacturer according to http://standards.ieee.org/develop/regauth/oui/oui.txt
+     */
+    function get_manufacturer_from_mac(\$mac) {
+
+        if (empty(\$mac)) {
+            return('');
+        }
+        \$mac = substr(strtolower(\$mac), 0, 8);
+        switch (\$mac) {\n";
+
+        ksort($ouis);
+
         foreach ($ouis as $key => $value) {
             $value = trim($value);
             if ($value == 'TP-LINK TECHNOLOGIES CO.,LTD.') { $value = 'TP-Link'; }
+            if ($value === 'XEROX CORPORATION') { $value = 'Xerox Corporation'; }
             if (stripos($value, '3Com') === 0) { $value = '3Com Ltd'; }
             if (stripos($value, 'Alcatel') === 0) { $value = 'Alcatel-Lucent'; }
             if (stripos($value, 'Arista') !== false) { $value = 'Arista Networks'; }
@@ -958,47 +1014,14 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
             if (stripos($value, 'Samsung Electronics') === 0) { $value = 'Samsung Electronics'; }
             if (stripos($value, 'SonicWall') === 0) { $value = 'SonicWall'; }
 
-            $inputs = array();
-            $outputs = array();
-
-            $item = new stdClass();
-            $item->table = 'network';
-            $item->attribute = 'mac';
-            $item->operator = 'st';
-            $item->value = $key;
-            $inputs[] = $item;
-
-            $item = new stdClass();
-            $item->table = 'system';
-            $item->attribute = 'manufacturer';
-            $item->operator = 'eq';
-            $item->value = '';
-            $inputs[] = $item;
-
-            $item = new stdClass();
-            $item->table = 'system';
-            $item->attribute = 'manufacturer';
-            $item->value = $value;
-            $item->value_type = 'string';
-            $outputs[] = $item;
-
-            $insert = true;
-            // foreach ($rules as $rule) {
-            //     if ($rule->name = "MAC Address for $value" and $rule->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
-            //         $insert = false;
-            //         break;
-            //     }
-            // }
-
-            if ($insert and $value != '') {
-                $sql = "INSERT INTO `rules` VALUES (NULL, " . $this->db->escape('Mac Address for ' . $value) . ", 1, 'Set the manufacturer based on the MAC prefix.', 90, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
-
-                echo $sql . "\n";
-
-                # $query = $this->db->query($sql);
-            }
-
+            echo "            case '$key': \$manufacturer = '" . str_replace("'", "\'", mb_convert_case($value,  MB_CASE_TITLE)) . "'; break;\n";
         }
+        echo "            default: \$manufacturer = ''; break;
+        }
+        return(\$manufacturer);
+    }
+}";
+
     }
 
     public function read_snmp_unique()
