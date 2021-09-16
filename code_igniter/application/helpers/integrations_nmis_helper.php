@@ -224,12 +224,22 @@ if (!function_exists('integrations_pre')) {
                 if ($external_location->Address2) {
                     $address .= ' ' . $external_location->Address2;
                 }
+                if (empty($address)) {
+                    $address = '';
+                }
                 $type = 'Office';
                 if ($external_location->_id === 'Cloud') {
                     $type = 'Cloud';
                 }
                 if ($external_location->_id === 'DataCenter') {
                     $type = 'Data Center';
+                }
+
+                $attributes = array('Room', 'Floor', 'Suburb', 'City', 'State', 'Postcode', 'Country', 'Latitude', 'Longitude', 'Geocode');
+                foreach ($attributes as $attribute) {
+                    if (empty($external_location->{$attribute})) {
+                        $external_location->{$attribute} = '';
+                    }
                 }
 
                 $data = array(  'id' => null,
