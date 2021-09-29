@@ -779,24 +779,77 @@ class M_devices extends MY_Model
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if ( ! empty($user_id)) {
+        if (! empty($user_id)) {
             $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
             $sql = "SELECT * FROM system WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'system');
             return $result;
         }
-        if ( ! empty($response)) {
+        if (! empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->join . ' ' . 
-                    $CI->response->meta->internal->filter . ' ' . 
-                    $CI->response->meta->internal->groupby . ' ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " .
+                    $CI->response->meta->internal->join . ' ' .
+                    $CI->response->meta->internal->filter . ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            $CI->response->data = $this->format_data($result, 'system');
+            $result = $this->format_data($result, 'system');
+            #$CI->response->data = $this->format_data($result, 'system');
+            #$CI->response->meta->filtered = count($CI->response->data);
+
+            if (isset($result[0]->attributes->{'system.type'}) and isset($result[0]->attributes->{'system.last_seen_by'})) {
+                for ($i=0; $i < count($result); $i++) {
+                    # BAD
+                    if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'nmap' and ($result[$i]->{'attributes'}->{'system.type'} === 'unclassified' or $result[$i]->{'attributes'}->{'system.type'} === 'unknown')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-times fa-spin text-danger';
+                        $result[$i]->attributes->audit_text = 'Nmap discovered, data retrieval will be very limited.';
+
+                    # NOT GOOD
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'nmap' and $result[$i]->{'attributes'}->{'system.type'} !== 'unclassified' and $result[$i]->{'attributes'}->{'system.type'} !== 'unknown') {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-info';
+                        $result[$i]->attributes->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'cloud') {
+                        $result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        $result[$i]->attributes->audit_text = 'Cloud import, data retrieval will be very limited.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'integrations') {
+                        $result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        $result[$i]->attributes->audit_text = 'Integration import, data retrieval will be very limited.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'ssh' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'snmp')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-info';
+                        $result[$i]->attributes->audit_text = 'Partially discovered computer. Data retrieval limited.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'web form') {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-info';
+                        $result[$i]->attributes->audit_text = 'Manually created ' . $result[$i]->{'attributes'}->{'system.type'} . '. Data retrieval limited.';
+
+                    # GOOD
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'snmp' and $result[$i]->{'attributes'}->{'system.type'} !== 'computer') {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Discovered and audited ' . $result[$i]->{'attributes'}->{'system.type'} . '.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit_wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit_ssh')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Discovered and audited computer.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit') {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Audited computer.';
+
+                    # BAD - FALLBACK
+                    } else {
+                        $result[$i]->attributes->audit_class = 'fa fa-question text-danger';
+                        $result[$i]->attributes->audit_text = 'Limited information available.';
+                    }
+                }
+            }
+            $CI->response->data = $result;
             $CI->response->meta->filtered = count($CI->response->data);
+
         }
     }
 
