@@ -65,19 +65,40 @@ class M_clouds extends MY_Model
      */
     public function create($data = null)
     {
-        if ( ! empty($data->credentials) && is_string($data->credentials)) {
+        $CI = & get_instance();
+        if (! empty($data->credentials) && is_string($data->credentials)) {
             $data->credentials = (string)simpleEncrypt($data->credentials);
         } else {
             $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
-        if ( ! empty($data->options)) {
+        if (! empty($data->options)) {
             $data->options = json_encode($data->options);
         }
-        if ($id = $this->insert_collection('clouds', $data)) {
-            return intval($id);
-        } else {
+
+
+        $id = $this->insert_collection('clouds', $data);
+        if (empty($id)) {
             return false;
         }
+
+        $cloud = $this->read($id);
+        $cloud = $cloud[0];
+
+        # The discovery
+        $CI->load->model('m_discoveries');
+        $discovery = new stdClass();
+        $discovery->type = 'cloud';
+        $discovery->name = 'Discovery for ' . $cloud->attributes->name;
+        $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
+        $discovery->org_id = $cloud->attributes->org_id;
+        $discovery->discard = 'n';
+        $discovery->complete = 'n';
+        $discovery->subnet = '';
+        $discovery->cloud_id = $id;
+        $discovery->cloud_name = $cloud->attributes->name;
+        $discovery_id = intval($CI->m_discoveries->create($discovery));
+
+        return intval($id);
     }
 
     /**
@@ -199,6 +220,9 @@ class M_clouds extends MY_Model
         $test = $this->run_sql($sql, $data);
         // Delete any cloud log entries
         $sql = 'DELETE FROM `cloud_log` WHERE cloud_id = ?';
+        $test = $this->run_sql($sql, $data);
+        // Delete the discovery
+        $sql = 'DELETE FROM `discoveries` WHERE cloud_id = ?';
         $test = $this->run_sql($sql, $data);
         // Delete the cloud
         $sql = 'DELETE FROM `clouds` WHERE `id` = ?';
