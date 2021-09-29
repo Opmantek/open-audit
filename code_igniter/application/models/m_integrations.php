@@ -860,6 +860,7 @@ class M_integrations extends MY_Model
                                             $external_device = $this->set_value($external_device, $ifield->external_field_name, $test);
                                             $hit = true;
                                             if ($integration->debug) {
+                                                // TODO - ip not seeing in logs
                                                 $message = "Updating {$local_device->system->ip} because {$ifield->external_field_name} == $test";
                                                 $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                                                 $data = array($integration->id, microtime(true), $message);
