@@ -1528,6 +1528,12 @@ if ( ! function_exists('snmp_audit')) {
 
         if ($retrieve_routes === 1) {
             // Route table
+            // NOTE - we use ipRouteTable not ipForwardTable, ipCidrRouteTable or inetCidrRouteTable.
+            // 1.3.6.1.2.1.4.21     - ipRouteTable
+            // 1.3.6.1.2.1.4.24.2   - ipForwardTable
+            // 1.3.6.1.2.1.4.24.4   - ipCidrRouteTable
+            // 1.3.6.1.2.1.4.24.7   - inetCidrRouteTable
+            // We could add in the above if required.
             $item_start = microtime(true);
             $table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.21.1.1');
             $log->command_time_to_execute = (microtime(true) - $item_start);
