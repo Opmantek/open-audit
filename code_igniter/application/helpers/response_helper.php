@@ -114,6 +114,24 @@ if (!function_exists('response_create')) {
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
         }
+
+        $response->meta->server_app_version = $instance->config->config['display_version'];
+        $response->meta->server_platform = php_uname('s');
+        if ($response->meta->server_platform === 'Windows NT') {
+            $command = 'wmic os get name';
+            exec($command, $output);
+            if (!empty($output[1])) {
+                $os = explode('|', $output[1]);
+                $response->meta->server_platform = $os[0];
+            }
+        } else {
+            $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $response->meta->server_platform = $output[0];
+            }
+        }
+
         $response->meta->sort = '';
         $response->meta->sub_resource = '';
         // $response->meta->sub_resource_id = 0; // Only set below if it contains data
