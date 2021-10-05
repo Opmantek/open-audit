@@ -244,6 +244,11 @@ For Each objGroup In colGroups
     end if
 Next
 
+set colItems = objWMIService.ExecQuery("Select AddressWidth from Win32_Processor where DeviceID='CPU0'",,32)
+for each objItem In colItems
+    address_width = objItem.AddressWidth
+next
+
 wscript.echo ""
 wscript.echo "Computer Settings"
 wscript.echo "================="
@@ -264,6 +269,7 @@ wscript.echo "PartOfDomain:              " & cs_part_of_domain
 wscript.echo "DomainRole:                " & cs_domain_role
 wscript.echo "OS Name:                   " & os_name
 wscript.echo "OS Build Number:           " & os_number
+wscript.echo "OS Architecture:           " & address_width
 wscript.echo "Local Administrators:      " & left(local_administrators,len(local_administrators)-1)
 wscript.echo ""
 
@@ -459,6 +465,11 @@ wscript.echo
 wscript.echo "------------------------"
 wscript.echo "Running Tests"
 wscript.echo "------------------------"
+
+if (os_bit = "32") then
+    wscript.echo "FAIL - Discovery requires a 64bit OS."
+end if
+
 
 ' check localtime versus domain controller time
 if (cs_part_of_domain = "True" and instr(lcase(cs_domain_role), "controller") = 0 ) then
