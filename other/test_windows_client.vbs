@@ -470,6 +470,30 @@ if (os_bit = "32") then
     wscript.echo "FAIL - Discovery requires a 64bit OS."
 end if
 
+set colItems = objWMIService.ExecQuery("Select * from Win32_Service Where name = 'RpcSs'",,32)
+for each objItem In colItems
+    if (objItem.Caption = "Remote Procedure Call (RPC)") then
+        if (objItem.State = "Stopped") then
+            wscript.echo "FAIL - RPC service not running."
+        else
+            wscript.echo "PASS - RPC service registered and running."
+    else
+        wscript.echo "FAIL - RPC service not returned."
+    end if
+next
+
+set colItems = objWMIService.ExecQuery("Select * from Win32_Service Where name = 'Netlogon'",,32)
+for each objItem In colItems
+    if (objItem.Caption = "Netlogon") then
+        if (objItem.State = "Stopped") then
+            wscript.echo "INFO - Netlogon service not running."
+        else
+            wscript.echo "PASS - Netlogon service registered and running."
+    else
+        wscript.echo "FAIL - Netlogon service not returned."
+    end if
+next
+
 
 ' check localtime versus domain controller time
 if (cs_part_of_domain = "True" and instr(lcase(cs_domain_role), "controller") = 0 ) then
