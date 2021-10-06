@@ -507,7 +507,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Net Use';
             $log->command_output = json_encode($output);
-            if ($output[0] === 'The command completed successfully.') {
+            if ($output[0] === 'The command completed successfully.' or $return_var === 0) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
@@ -519,7 +519,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Copy to ' . $ip;
             $log->command_output = json_encode($output);
-            if (stripos($output[0], 'file(s) copied.') !== false) {
+            if (stripos($output[0], 'file(s) copied.') !== false or $return_var === 0) {
                 $log->command_status = 'success';
                 $return = true;
             }
@@ -532,7 +532,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Net Use Delete';
             $log->command_output = json_encode($output);
-            if (stripos($output[0], 'was deleted successfully') !== false) {
+            if (stripos($output[0], 'was deleted successfully') !== false or $return_var === 0) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
