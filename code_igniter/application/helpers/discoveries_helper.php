@@ -1484,6 +1484,7 @@ if ( ! function_exists('ip_audit')) {
 				// Copy the audit script to admin$
 				$copy = false;
 				$copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $log);
+				$output = false;
 				if ($copy) {
 					$command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
 					$output = execute_windows($device->ip, $credentials_windows, $command, $log);
