@@ -660,6 +660,218 @@ class M_discoveries extends MY_Model
         }
     }
 
+    public function issues_read($id)
+    {
+        if (empty($id)) {
+            return array();
+        }
+        $CI = & get_instance();
+        $issues = array();
+
+        # Windows issues from Linx
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command using winexe-static-2' AND discoveries.id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        $issues = $result;
+
+        # Windows issues from Windows
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command' AND discoveries.id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # Invalid SSH Credentials
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SSH detected but no valid SSH credentials%' AND discoveries.id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # Invalid SNMP credentials
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SNMP detected, but no valid SNMP credentials%' AND discoveries.id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # No management protcols and an unknown or unidentified device
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'No management protocols%' AND (system.type = 'unknown' OR system.type = 'unclassified') AND discoveries.id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # Could not copy audit result back to server
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not SCP GET to%' AND command_status = 'fail' AND discoveries.id = " . intval($id);
+
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        foreach ($issues as $issue) {
+            $issue->padded_ip = $issue->{'system.ip'};
+            $issue->{'system.ip'} = ip_address_from_db($issue->{'system.ip'});
+            $issue = $this->issue_map($issue);
+        }
+        return $issues;
+    }
+
+    public function issues_collection($user_id)
+    {
+        if (empty($user_id)) {
+            return array();
+        }
+        $CI = & get_instance();
+        $issues = array();
+        $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
+
+        # Windows issues from Linx
+        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command using winexe-static-2' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->run_sql($sql, array());
+        $issues = $result;
+
+        # Windows issues from Windows
+        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # Invalid SSH Credentials
+        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SSH detected but no valid SSH credentials%' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # Invalid SNMP credentials
+        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SNMP detected, but no valid SNMP credentials%' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # No management protcols and an unknown or unidentified device
+        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'No management protocols%' AND (system.type = 'unknown' OR system.type = 'unclassified') AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        # Could not copy audit result back to server
+        $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not SCP GET to%' AND command_status = 'fail' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
+
+        foreach ($issues as $issue) {
+            $issue = $this->issue_map($issue);
+            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
+         #   $issue->description = str_replace('../help', 'help', $issue->description);
+        }
+        foreach ($issues as $issue) {
+            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
+            $issue->description = str_replace('../help', 'help', $issue->description);
+        }
+        return $issues;
+    }
+
+    public function issue_map($issue) {
+        if (empty($issue)) {
+            return stdclass();
+        }
+        if ($issue->output === '["ERROR: Failed to open connection - NT_STATUS_LOGON_FAILURE"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+
+        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_IO_TIMEOUT"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+
+        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="../help/discovery_issues/2">here</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="../help/discovery_issues/3">here</a>.';
+            $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_NO_LOGON_SERVERS') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="../help/discovery_issues/4">here</a>.';
+            $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_CONNECTION_REFUSED') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Is the Windows firewall restricting incoming connections? Check <a href="../help/discovery_issues/5">here</a>.'; #We would try disabling the Windows Firewall, testing and seeing if it works. Then be sure to reenable the firewall. If it did work, create a new firewall rule to allow this connection.';
+            $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_NETLOGON_NOT_STARTED') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Is the network logon service is running on the target machine? Check <a href="../help/discovery_issues/6">here</a>.';
+            $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_ACCOUNT_EXPIRED') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'The credentials have expired. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_INVALID_PARAMETER') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="../help/discovery_issues/2">here</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["ERROR: UploadService failed - NT_STATUS_ACCESS_DENIED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="../help/discovery_issues/3">here</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_CANT_WAIT."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Most likely you are trying to audit a 32bit Windows machine. We support 64bit only for discovery (it\'s a winexe thing). You can copy the audit script to the target and run it manually until such time as you decommission the 32bit machine. Check <a href="../help/discovery_issues/7">here</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["ERROR: Failed to install service winexesvc - NT_STATUS_ACCESS_DENIED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'This likely means the user account being used does not have sufficient rights on the target machine. It may also be that the ADMIN$ share is not available on the target machine. Check <a href="../help/discovery_issues/7">here</a>.';
+            $issue->action = 'add credentials';
+
+        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_PLUGPLAY_NO_DEVICE."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="../help/discovery_issues/4">here</a>.';
+            $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'STATUS_SHARING_VIOLATION') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'This may be an issue on some Windows 7 and 2008 machines. We suggest a disk defrag on the target machine as a first step. See this <a href="https://support.microsoft.com/en-us/topic/-status-sharing-violation-error-message-when-you-try-to-open-a-highly-fragmented-file-on-a-computer-that-is-running-windows-7-or-windows-server-2008-r2-be899c3b-8c5a-c883-ce0d-055d258a9178" target="_blank">link</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["ERROR: CreateService failed. NT_STATUS_ACCESS_DENIED."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It appears that the winexesvc.exe file has been copied to the target but the service could not be registered. Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="../help/discovery_issues/7">here</a>.';
+            $issue->action = '';
+
+        } else if ($issue->output ==='["",""]') {
+            # Windows connection from Windows Open-AudIT server
+            $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+
+        } else if (strpos($issue->{'output'}, 'SSH detected but no valid SSH credentials') !== false) {
+            # SSH connection from Open-AudIT server
+            $issue->description = 'Check you have valid SSH credentials and that the Open-AudIT server IP is allowed to connect.';
+            $issue->action = 'add credentials';
+
+        } else if (strpos($issue->{'output'}, 'SNMP detected, but no valid SNMP credentials') !== false) {
+            # SNMP connection from Open-AudIT server
+            $issue->description = 'Check you have valid SNMP credentials and that the Open-AudIT server IP is allowed to connect.';
+            $issue->action = 'add credentials';
+
+        } else if (strpos($issue->{'output'}, 'No management protocols for') !== false) {
+            # No management protcols and an unknown or unidentified device
+            $issue->description = 'There are no open management ports to this device. This may be an issue or it may be a device of a type we cannot audit (in this case, please set the device type).';
+            $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'Could not SCP GET to') !== false) {
+            $issue->description = 'Could not copy audit result from target to Open-AudIT Server. Check directory permissions.';
+            $issue->action = '';
+
+        } else {
+            $issue->description = 'Unknown';
+            $issue->action = '';
+        }
+    }
+
     /**
      *
      * @param  int $id The ID of the requested item
