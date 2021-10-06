@@ -228,6 +228,7 @@ class Discoveries extends MY_Controller
                     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
                 }
             }
+            $this->response->issues = $this->m_discoveries->issues_read($this->response->meta->id);
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
@@ -279,6 +280,7 @@ class Discoveries extends MY_Controller
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
         }
         $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        $this->response->issues = $this->m_discoveries->issues_collection($this->user->id);
         output($this->response);
     }
 
