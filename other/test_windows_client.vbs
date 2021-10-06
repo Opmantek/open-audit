@@ -494,6 +494,37 @@ for each objItem In colItems
     end if
 next
 
+' Check we can resolve all IPv4 IP's to DNS Names
+set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = True ",,32)
+for each objItem in colItems
+    if net_mac_address > "" then
+        for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
+            ip_address = objItem.IPAddress(i)
+            if len(ip_address) > 15 then
+                ip_address_version = "6"
+            else
+                ip_address_version = "4"
+            end if
+            if ip_address <> "0.0.0.0" and ip_address_version = "4" then
+                strParams = "%comspec% /c NSlookup " & ip_address
+                Set objExecObj = objShell.exec(strParams)
+                hit = "false"
+                strhost = ""
+                Do While Not objExecObj.StdOut.AtEndOfStream
+                    strText = objExecObj.StdOut.Readline()
+                    if instr (strText, "Name") then
+                        hit = "true"
+                        strhost = trim(replace(strText,"Name:",""))
+                    End if
+                Loop
+                if (hit = "true") then
+                    wscript.echo "PASS - Could resolve " & ip_address & " to " & strhost
+                else
+                    wscript.echo "FAIL - Could not resolve " & ip_address
+            end if
+        next
+    end if
+next
 
 ' check localtime versus domain controller time
 if (cs_part_of_domain = "True" and instr(lcase(cs_domain_role), "controller") = 0 ) then

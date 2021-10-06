@@ -416,21 +416,27 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Starting audit"
 fi
 
-local_hostname=""
+system_hostname=""
 if [ -f /etc/hostname ]; then
-	local_hostname=$(cat /etc/hostname 2>/dev/null)
-else
-	local_hostname=$(hostname -s 2>/dev/null)
+	system_hostname=$(cat /etc/hostname 2>/dev/null | cut -d. -f1)
 fi
 
-if [ -z "$local_hostname" ]; then
-	local_hostname=$(hostname 2>/dev/null)
+if [ -z "$system_hostname" ]; then
+	system_hostname=$(hostname -s 2>/dev/null | cut -d. -f1)
+fi
+
+if [ -z "$system_hostname" ]; then
+	system_hostname=$(hostname 2>/dev/null | cut -d. -f1)
+fi
+
+if [ -z "$system_hostname" ]; then
+	# Ubiquiti specific
+	system_hostname=$(cat /proc/sys/kernel/hostname 2>/dev/null)
 fi
 
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
 script_name=$(basename $0)
-system_hostname=$(hostname | cut -d. -f1)
 xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 xml_file_full_path=`pwd`"/$xml_file"
 
@@ -548,8 +554,8 @@ if [ -z "$system_uuid" ] && [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]; t
 fi
 
 # Get the hostname & DNS domain
-system_domain=$(hostname -d | grep -v \(none\))
-system_fqdn=$(hostname -f | grep -v \(none\))
+system_domain=$(hostname -d 2>/dev/null | grep -v \(none\))
+system_fqdn=$(hostname -f 2>/dev/null | grep -v \(none\))
 
 dns_hostname=$(hostname --short 2>/dev/null | head -n1 | cut -d. -f1)
 dns_domain=$(hostname --domain 2>/dev/null)
@@ -619,60 +625,62 @@ fi
 
 instance_ident=`grep instance_id /etc/default/instance_configs.cfg 2>/dev/null | cut -d= -f2`
 
-for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
+if [ "$busybox" = "n" ]; then
+	for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
-	[ -f "$system_release_file" ] || continue;
-	[ "$system_release_file" = "/etc/os-release" ] && continue;
+		[ -f "$system_release_file" ] || continue;
+		[ "$system_release_file" = "/etc/os-release" ] && continue;
 
-	if [ -z "$system_os_name" ]; then
-		system_os_name=$(head -n1 "$system_release_file")
-	fi
-
-	# Suse Based
-	# if echo "$system_os_name" | grep -Fqi "Suse" ; then
-	# 	if [ -z "$system_os_family" ]; then
-	# 		system_os_family="Suse"
-	# 	fi
-	# 	break;
-	# fi
-
-	if [ -z "$system_os_family" ]; then
-		if [ -e "/etc/arch-release" ]; then
-			system_os_name="Arch Linux";
-			system_os_family="Arch";
+		if [ -z "$system_os_name" ]; then
+			system_os_name=$(head -n1 "$system_release_file")
 		fi
-	fi
 
-	# CentOS based - must come before RedHat based
-	if [ "$system_release_file" = "/etc/centos-release" ]; then
-			system_os_family="CentOS";
-			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
-			if [ -z "$system_os_version" ]; then
-				system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null | head -n1)
-			fi
-		break;
-	fi
+		# Suse Based
+		# if echo "$system_os_name" | grep -Fqi "Suse" ; then
+		# 	if [ -z "$system_os_family" ]; then
+		# 		system_os_family="Suse"
+		# 	fi
+		# 	break;
+		# fi
 
-	# RedHat based
-	if [ "$system_release_file" = "/etc/redhat-release" ]; then
-		if cat "$system_release_file" | grep -q "Red Hat" ; then
-			system_os_family="RedHat"
-		fi
-		if cat "$system_release_file" | grep -q "CentOS" ; then
-			system_os_family="CentOS"
-		fi
-		if cat "$system_release_file" | grep -q "Fedora" ; then
-			system_os_family="Fedora"
-		fi
-		if [ -z "$system_os_version" ]; then
-			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
-			if [ -z "$system_os_version" ]; then
-				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
+		if [ -z "$system_os_family" ]; then
+			if [ -e "/etc/arch-release" ]; then
+				system_os_name="Arch Linux";
+				system_os_family="Arch";
 			fi
 		fi
-		break;
-	fi
-done
+
+		# CentOS based - must come before RedHat based
+		if [ "$system_release_file" = "/etc/centos-release" ]; then
+				system_os_family="CentOS";
+				system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
+				if [ -z "$system_os_version" ]; then
+					system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null | head -n1)
+				fi
+			break;
+		fi
+
+		# RedHat based
+		if [ "$system_release_file" = "/etc/redhat-release" ]; then
+			if cat "$system_release_file" | grep -q "Red Hat" ; then
+				system_os_family="RedHat"
+			fi
+			if cat "$system_release_file" | grep -q "CentOS" ; then
+				system_os_family="CentOS"
+			fi
+			if cat "$system_release_file" | grep -q "Fedora" ; then
+				system_os_family="Fedora"
+			fi
+			if [ -z "$system_os_version" ]; then
+				system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
+				if [ -z "$system_os_version" ]; then
+					system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
+				fi
+			fi
+			break;
+		fi
+	done
+fi
 
 if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
@@ -701,20 +709,36 @@ if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
 	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
 fi
-	
+
+# Busy box test
+if [ "$busybox" = "n" ]; then
+	test=$(ls -lh `echo $SHELL` | grep busybox)
+	if [ -n "$test" ]; then
+		busybox="y"
+	fi
+fi
 
 if [ "$busybox" = "n" ] && [ -z "$system_ip_address" ]; then
 	system_ip_address=$(ip route get $(ip route show 0.0.0.0/0 2>/dev/null | grep -oP 'via \K\S+') 2>/dev/null | grep -oP 'src \K\S+')
 fi
+
+if [ "$busybox" = "y" ] && [ -z "$system_ip_address" ]; then
+	system_ip_address=$(ip route show 0.0.0.0/0 2>/dev/null | head -n1 | awk '{print $3}')
+fi
+
 if [ -z "$system_ip_address" ]; then
 	system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
 fi
 
 # Set the icon as the lower case version of the System Family.
-system_os_icon=$(lcase "$system_os_family")
+if [ -z "$system_os_icon" ]; then
+	system_os_icon=$(lcase "$system_os_family")
+fi
 
 # Get the System Serial Number
-system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
+	system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
+fi
 
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
@@ -726,15 +750,28 @@ if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
 
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
+	# Ubiquiti
+	system_serial=$(grep serialno /proc/ubnthal/system.info 2>/dev/null | cut -d= -f2)
+fi
+
 # Get the System Model
 if [ -z "$system_model" ]; then
 	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#")
-	if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
-		system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
-	fi
-	if [ -z "$system_model" ]; then
-		system_model=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
-	fi
+fi
+if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
+fi
+if [ -z "$system_model" ]; then
+	system_model=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
+fi
+if [ -z "$system_model" ]; then
+	# Ubiquiti
+	system_model=$(cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2)
+fi
+if [ -z "$system_model" ]; then
+	# Ubiquiti #2 - for some $SHELL reason, this doesn't appear to work
+	system_model=$(info 2>/dev/null | grep Model | awk '{ print $2 }')
 fi
 
 # get the systemd identifier
@@ -884,7 +921,7 @@ fi
 # Guess the OS Instalation Date
 # There is no way to know for sure the install date. /etc/distro-release should give a clue, but it is not really accurate
 #
-if [ -n "$(which stat 2>/dev/null)" ]; then
+if [ -n "$(which stat 2>/dev/null)" ] && [ "$busybox" = "n" ]; then
 	system_pc_date_os_installation=$(stat "$system_release_file" | grep "^Modify:" | cut -d" " -f2)
 else
 	system_pc_date_os_installation=""
@@ -2864,7 +2901,10 @@ fi
 # Custom addition - alexander.szele@umanitoba.ca
 # Pull web server info from tomcat
 # test = PID of java tomcat process
-test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
+test=""
+if [ "$busybox" = "n" ]; then
+	test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
+fi
 if [ -n "$test" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "	tomcat"
@@ -3245,44 +3285,51 @@ done
 echo "	</netstat>" >> "$xml_file"
 
 
+# End the XML because busybox is likely to choke on the below
+if [ "$busybox" = "y" ]; then
+	echo "</system>" >> "$xml_file"
+fi
+
+
 ########################################################
 # CUSTOM FILES                                         #
 ########################################################
 if [ "$debugging" -gt "0" ]; then
 	echo "Custom Files Info"
 fi
-echo "	<file>" >> "$xml_file"
-for dir in ${files[@]}; do
-    for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
-        file_size=$(stat --printf="%s" "$file")
-        file_directory=$(dirname "${file}")
-        file_hash=$(sha1sum "$file" | cut -d" " -f1)
-        file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
-        file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
-        file_permissions=$(stat -c "%a" "$file")
-        file_owner=$(ls -ld "$file" | awk '{print $3}')
-        file_group=$(ls -ld "$file" | awk '{print $4}')
-        inode=$(ls -li "$file" | awk '{print $1}')
-        file_name=$(basename "$file")
-        {
-    	echo "		<item>"
-    	echo "			<name>$(escape_xml "$file_name")</name>"
-    	echo "			<full_name>$(escape_xml "$file")</full_name>"
-        echo "			<size>$(escape_xml "$file_size")</size>"
-        echo "			<directory>$(escape_xml " $file_directory")</directory>"
-        echo "			<hash>$(escape_xml "$file_hash")</hash>"
-        echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
-        echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
-        echo "			<permission>$(escape_xml "$file_permissions")</permission>"
-        echo "			<owner>$(escape_xml "$file_owner")</owner>"
-        echo "			<group>$(escape_xml "$file_group")</group>"
-        echo "			<inode>$(escape_xml "$inode")</inode>"
-        echo "		</item>"
-    	} >> "$xml_file"
-    done
-done
-echo "	</file>" >> "$xml_file"
-
+if [ "$busybox" = "n" ]; then
+	echo "	<file>" >> "$xml_file"
+	for dir in ${files[@]}; do
+		for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
+			file_size=$(stat --printf="%s" "$file")
+			file_directory=$(dirname "${file}")
+			file_hash=$(sha1sum "$file" | cut -d" " -f1)
+			file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
+			file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
+			file_permissions=$(stat -c "%a" "$file")
+			file_owner=$(ls -ld "$file" | awk '{print $3}')
+			file_group=$(ls -ld "$file" | awk '{print $4}')
+			inode=$(ls -li "$file" | awk '{print $1}')
+			file_name=$(basename "$file")
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$file_name")</name>"
+			echo "			<full_name>$(escape_xml "$file")</full_name>"
+			echo "			<size>$(escape_xml "$file_size")</size>"
+			echo "			<directory>$(escape_xml " $file_directory")</directory>"
+			echo "			<hash>$(escape_xml "$file_hash")</hash>"
+			echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
+			echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
+			echo "			<permission>$(escape_xml "$file_permissions")</permission>"
+			echo "			<owner>$(escape_xml "$file_owner")</owner>"
+			echo "			<group>$(escape_xml "$file_group")</group>"
+			echo "			<inode>$(escape_xml "$inode")</inode>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	done
+	echo "	</file>" >> "$xml_file"
+fi
 
 
 ########################################################
