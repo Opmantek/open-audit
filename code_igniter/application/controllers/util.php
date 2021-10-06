@@ -170,6 +170,22 @@ class Util extends CI_Controller
         }
     }
 
+    public function test_windows_client()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $filename = $this->config->config['base_path'] . '/other/test_windows_client.vbs';
+        $file = file_get_contents($filename);
+        // Set headers
+        header('Cache-Control: public');
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=test_windows_client.vbs');
+        header('Content-Type: text/plain');
+        header('Content-Transfer-Encoding: binary');
+        // echo our file contents
+        echo $file;
+    }
+
     public function dictionary()
     {
         $this->load->model('m_configuration');
