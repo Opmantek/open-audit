@@ -26,7 +26,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Helper
 * @package   Discoveries
 * @author    Mark Unwin <marku@opmantek.com>
@@ -46,11 +46,11 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-if ( ! defined('BASEPATH')) {
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-if ( ! function_exists('snmp_credentials')) {
+if (! function_exists('snmp_credentials')) {
     /**
      * [snmp_credentials description]
      * @param  string $ip           [description]
@@ -61,18 +61,20 @@ if ( ! function_exists('snmp_credentials')) {
      */
     function snmp_credentials($ip = '', $credentials = array(), $log = null, $discovery_id = null)
     {
-        $retries = '0';
-        $timeout = '5000000';
+        $retries = 0;
+        $timeout = 5000000;
+        $oid = '1.3.6.1.2.1.1.1.0';
+
         if (is_null($log)) {
             $log = new stdClass();
         }
-        if ( ! is_null($discovery_id)) {
+        if (! is_null($discovery_id)) {
             $log->discovery_id = $discovery_id;
         }
         $log->file = 'snmp_helper';
         $log->function = 'snmp_credentials';
 
-        if ( ! extension_loaded('snmp')) {
+        if (! extension_loaded('snmp')) {
             $log->message = 'SNMP extension for PHP is not present, aborting credential test on '.$ip;
             $log->ip = @$ip;
             $log->status = 'error';
@@ -87,7 +89,7 @@ if ( ! function_exists('snmp_credentials')) {
             discovery_log($log);
             return false;
         }
-        if (empty($ip) OR ! filter_var($ip, FILTER_VALIDATE_IP)) {
+        if (empty($ip) or ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No IP or bad IP passed to snmp_credentials.';
             $log->ip = @$ip;
             $log->status = 'error';
@@ -96,46 +98,135 @@ if ( ! function_exists('snmp_credentials')) {
         }
         $log->ip = $ip;
 
+
+        $users = array();
+        $multiple = false;
+        $cred_ids = array();
         foreach ($credentials as $credential) {
-            $from = ' ';
-            if ( ! empty($credential->source)) {
-                $from = 'from ' . $credential->source;
+            $cred_ids[] = $credential->id;
+            if ($credential->type === 'snmp_v3') {
+                $users[] = $credential->credentials->security_name;
             }
-            if ( ! empty($credential->name)) {
-                $from = 'named ' . $credential->name;
+        }
+        $counts = array_count_values($users);
+        foreach ($counts as $key => $value) {
+            if ($value > 1) {
+                $multiple = true;
             }
-            if ( ! empty($credential->type) && $credential->type === 'snmp_v3') {
-                $sec_name = $credential->credentials->security_name ?: '';
-                $sec_level = $credential->credentials->security_level ?: '';
-                $auth_protocol = $credential->credentials->authentication_protocol ?: '';
-                $auth_passphrase = $credential->credentials->authentication_passphrase ?: '';
-                $priv_protocol = $credential->credentials->privacy_protocol ?: '';
-                $priv_passphrase = $credential->credentials->privacy_passphrase ?: '';
-                $oid = '1.3.6.1.2.1.1.2.0';
-                if (@snmp3_get($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries)) {
-                    $credential->credentials->version = 3;
-                    $log->message = 'Credential set for SNMPv3 ' . $from . ' working on ' . $ip;
-                    $log->command_status = 'success';
-                    discovery_log($log);
-                    return $credential;
-                } else {
-                    $log->message = 'Credential set for SNMPv3 ' . $from . ' not working on ' . $ip;
-                    $log->command_status = 'notice';
-                    discovery_log($log);
+        }
+
+        if ($multiple and php_uname('s') !== 'Windows NT') {
+            $log->message = 'Running externally because multiple credential sets use identical security user names.';
+            $log->command_status = 'notice';
+            $log->command_output = json_encode($cred_ids);
+            $log->command = php_uname('s');
+            $log->status = 'notice';
+            discovery_log($log);
+
+            // Use net-snmp instead of calling with PHP
+            foreach ($credentials as $credential) {
+                if (! empty($credential->type) && $credential->type === 'snmp_v3') {
+                    $command = 'snmpget -v3 -On -l ' . escapeshellarg($credential->credentials->security_level)  .
+                                ' -u ' . escapeshellarg($credential->credentials->security_name) .
+                                ' -a ' . escapeshellarg($credential->credentials->authentication_protocol) .
+                                ' -A ' . escapeshellarg($credential->credentials->authentication_passphrase) .
+                                ' -x ' . escapeshellarg($credential->credentials->privacy_protocol) .
+                                ' -X ' . escapeshellarg($credential->credentials->privacy_passphrase) .
+                                ' ' . $ip . ' ' . $oid;
+
+                    $log->command = 'Sample Command: snmpget -v3 -On -l ' . escapeshellarg($credential->credentials->security_level)  .
+                                ' -u ' . escapeshellarg($credential->credentials->security_name) .
+                                ' -a ' . escapeshellarg($credential->credentials->authentication_protocol) .
+                                ' -A ' . escapeshellarg('XXXX') .
+                                ' -x ' . escapeshellarg($credential->credentials->privacy_protocol) .
+                                ' -X ' . escapeshellarg('XXXX') .
+                                ' ' . $ip . ' ' . $oid;
+
+                    exec($command, $output, $return_var);
+                    if ($return_var === 0 and !empty($output[0])) {
+                        $credential->credentials->version = 3;
+                        $log->message = 'Credential set for SNMPv3 ' . $from . ' working on ' . $ip;
+                        $log->command_status = 'success';
+                        $log->command_output = $output[0];
+                        discovery_log($log);
+                        return $credential;
+                    } else {
+                        $log->message = 'Credential set for SNMPv3 ' . $from . ' not working on ' . $ip;
+                        $log->command_status = 'notice';
+                        $log->command_output = $output[0];
+                        discovery_log($log);
+                    }
+                }
+            }
+        } else {
+            if ($multiple and php_uname('s') === 'Windows NT') {
+                $log->message = 'Multiple identical security usernames detected for SNMPv3. This is likely to not work. You should add a specific set of credentials per device.';
+                $log->command_status = 'warning';
+                $log->command_output = json_encode($users);
+                $log->command = php_uname('s');
+                $log->status = 'warning';
+                discovery_log($log);
+            }
+
+            foreach ($credentials as $credential) {
+                $from = ' ';
+                if (! empty($credential->source)) {
+                    $from = 'from ' . $credential->source;
+                }
+                if (! empty($credential->name)) {
+                    $from = 'named ' . $credential->name;
+                }
+                $log->command = 'Sample Command: snmpget -v3 -On -l ' . escapeshellarg($credential->credentials->security_level)  .
+                            ' -u ' . escapeshellarg($credential->credentials->security_name) .
+                            ' -a ' . escapeshellarg($credential->credentials->authentication_protocol) .
+                            ' -A ' . escapeshellarg('XXXX') .
+                            ' -x ' . escapeshellarg($credential->credentials->privacy_protocol) .
+                            ' -X ' . escapeshellarg('XXXX') .
+                            ' ' . $ip . ' ' . $oid;
+                if (! empty($credential->type) && $credential->type === 'snmp_v3') {
+                    $result = '';
+                    $session = new SNMP(SNMP::VERSION_3, $ip, $credential->credentials->security_name, $timeout, $retries);
+                    $session->setSecurity(
+                        $credential->credentials->security_level,
+                        $credential->credentials->authentication_protocol,
+                        $credential->credentials->authentication_passphrase,
+                        $credential->credentials->privacy_protocol,
+                        $credential->credentials->privacy_passphrase,
+                        '',
+                        ''
+                    );
+                    $result = @$session->get($oid);
+                    $session->close();
+                    unset($session);
+                    if (!empty($result)) {
+                        $credential->credentials->version = 3;
+                        $log->message = 'Credential set for SNMPv3 ' . $from . ' working on ' . $ip;
+                        $log->command_status = 'success';
+                        discovery_log($log);
+                        return $credential;
+                    } else {
+                        $log->message = 'Credential set for SNMPv3 ' . $from . ' not working on ' . $ip;
+                        $log->command_status = 'notice';
+                        discovery_log($log);
+                    }
+
+                    $log->command = '';
+                    $log->command_output = '';
                 }
             }
         }
 
         foreach ($credentials as $credential) {
             $from = '';
-            if ( ! empty($credential->source)) {
+            if (! empty($credential->source)) {
                 $from = 'from ' . $credential->source;
             }
-            if ( ! empty($credential->name)) {
+            if (! empty($credential->name)) {
                 $from = 'named ' . $credential->name;
             }
-            if ( ! empty($credential->type) && $credential->type === 'snmp') {
-                if (@snmp2_get($ip, $credential->credentials->community, '1.3.6.1.2.1.1.1.0', $timeout, $retries)) {
+            $log->command = "Sample command: snmpget -v2c -On -c 'XXXX' {$ip} {$oid}";
+            if (! empty($credential->type) && $credential->type === 'snmp') {
+                if (@snmp2_get($ip, $credential->credentials->community, $oid, $timeout, $retries)) {
                     $credential->credentials->version = 2;
                     $log->message = 'Credential set for SNMPv2 ' . $from . ' working on ' . $ip;
                     $log->command_status = 'success';
@@ -146,7 +237,20 @@ if ( ! function_exists('snmp_credentials')) {
                     $log->command_status = 'notice';
                     discovery_log($log);
                 }
-                if (@snmpget($ip, $credential->credentials->community, '1.3.6.1.2.1.1.1.0', $timeout, $retries)) {
+            }
+        }
+
+        foreach ($credentials as $credential) {
+            $from = '';
+            if (! empty($credential->source)) {
+                $from = 'from ' . $credential->source;
+            }
+            if (! empty($credential->name)) {
+                $from = 'named ' . $credential->name;
+            }
+            $log->command = "Sample command: snmpget -v1 -On -c 'XXXX' {$ip} {$oid}";
+            if (! empty($credential->type) && $credential->type === 'snmp') {
+                if (@snmpget($ip, $credential->credentials->community, $oid, $timeout, $retries)) {
                     $credential->credentials->version = 1;
                     $log->message = 'Credential set for SNMPv1 ' . $from . ' working on ' . $ip;
                     $log->command_status = 'success';
@@ -160,6 +264,7 @@ if ( ! function_exists('snmp_credentials')) {
             }
         }
 
+
         $log->command_status = 'warning';
         $log->message = 'SNMP detected, but no valid SNMP credentials found for ' . $ip;
         discovery_log($log);
@@ -168,7 +273,7 @@ if ( ! function_exists('snmp_credentials')) {
 }
 
 
-if ( ! function_exists('my_snmp_get')) {
+if (! function_exists('my_snmp_get')) {
     /**
      * [my_snmp_get description]
      * @param  [type] $ip          [description]
@@ -181,7 +286,7 @@ if ( ! function_exists('my_snmp_get')) {
         $timeout = '3000000';
         $retries = '0';
 
-        if (empty($credentials->credentials->version) OR ($credentials->credentials->version !== 1 && $credentials->credentials->version !== 2 && $credentials->credentials->version !== 3)) {
+        if (empty($credentials->credentials->version) or ($credentials->credentials->version !== 1 && $credentials->credentials->version !== 2 && $credentials->credentials->version !== 3)) {
             $credentials->credentials->version = 2;
         }
         switch ($credentials->credentials->version) {
@@ -226,10 +331,10 @@ if ( ! function_exists('my_snmp_get')) {
             $string = substr($string, 0, strlen($string)-1);
         }
         // remove some return strings
-        if (strpos(strtolower($string), '/etc/snmp') !== false OR
-            strpos(strtolower($string), 'no such instance') !== false OR
-            strpos(strtolower($string), 'no such object') !== false OR
-            strpos(strtolower($string), 'not set') !== false OR
+        if (strpos(strtolower($string), '/etc/snmp') !== false or
+            strpos(strtolower($string), 'no such instance') !== false or
+            strpos(strtolower($string), 'no such object') !== false or
+            strpos(strtolower($string), 'not set') !== false or
             strpos(strtolower($string), 'unknown value type') !== false) {
             $string = '';
         }
@@ -241,7 +346,7 @@ if ( ! function_exists('my_snmp_get')) {
     }
 }
 
-if ( ! function_exists('my_snmp_walk')) {
+if (! function_exists('my_snmp_walk')) {
     /**
      * [my_snmp_walk description]
      * @param  [type] $ip          [description]
@@ -276,10 +381,10 @@ if ( ! function_exists('my_snmp_walk')) {
                 return false;
                 break;
         }
-        if ( ! is_array($array)) {
+        if (! is_array($array)) {
             return false;
         }
-        foreach ($array AS $key => $value) {
+        foreach ($array as $key => $value) {
             $value = $value;
             $array[$key] = trim($array[$key]);
             if ($array[$key] === '""') {
@@ -296,10 +401,10 @@ if ( ! function_exists('my_snmp_walk')) {
                 $array[$key] = substr($array[$key], 0, strlen($array[$key])-1);
             }
             // remove some return strings
-            if (strpos(strtolower($array[$key]), '/etc/snmp') !== false OR
-                strpos(strtolower($array[$key]), 'no such instance') !== false OR
-                strpos(strtolower($array[$key]), 'no such object') !== false OR
-                strpos(strtolower($array[$key]), 'not set') !== false OR
+            if (strpos(strtolower($array[$key]), '/etc/snmp') !== false or
+                strpos(strtolower($array[$key]), 'no such instance') !== false or
+                strpos(strtolower($array[$key]), 'no such object') !== false or
+                strpos(strtolower($array[$key]), 'not set') !== false or
                 strpos(strtolower($array[$key]), 'unknown value type') !== false) {
                 $array[$key] = '';
             }
@@ -313,7 +418,7 @@ if ( ! function_exists('my_snmp_walk')) {
 }
 
 
-if ( ! function_exists('my_snmp_real_walk')) {
+if (! function_exists('my_snmp_real_walk')) {
     /**
      * [my_snmp_real_walk description]
      * @param  [type] $ip          [description]
@@ -348,7 +453,7 @@ if ( ! function_exists('my_snmp_real_walk')) {
                 return false;
                 break;
         }
-        if ( ! is_array($array)) {
+        if (! is_array($array)) {
             return false;
         }
         foreach ($array as $key => $value) {
@@ -368,10 +473,10 @@ if ( ! function_exists('my_snmp_real_walk')) {
                 $array[$key] = substr($array[$key], 0, strlen($array[$key])-1);
             }
             // remove some return strings
-            if (strpos(strtolower($array[$key]), '/etc/snmp') !== false OR
-                strpos(strtolower($array[$key]), 'no such instance') !== false OR
-                strpos(strtolower($array[$key]), 'no such object') !== false OR
-                strpos(strtolower($array[$key]), 'not set') !== false OR
+            if (strpos(strtolower($array[$key]), '/etc/snmp') !== false or
+                strpos(strtolower($array[$key]), 'no such instance') !== false or
+                strpos(strtolower($array[$key]), 'no such object') !== false or
+                strpos(strtolower($array[$key]), 'not set') !== false or
                 strpos(strtolower($array[$key]), 'unknown value type') !== false) {
                 $array[$key] = '';
             }
@@ -385,7 +490,7 @@ if ( ! function_exists('my_snmp_real_walk')) {
 }
 
 
-if ( ! function_exists('snmp_audit')) {
+if (! function_exists('snmp_audit')) {
     /**
      * [snmp_audit description]
      * @param  [type] $ip           [description]
@@ -402,7 +507,7 @@ if ( ! function_exists('snmp_audit')) {
         if (is_null($log)) {
             $log = new stdClass();
         }
-        if ( ! is_null($discovery_id)) {
+        if (! is_null($discovery_id)) {
             $log->discovery_id = $discovery_id;
         }
         $log->file = 'snmp_helper';
@@ -410,7 +515,7 @@ if ( ! function_exists('snmp_audit')) {
         $log->ip = @$ip;
         $log->severity = 7;
 
-        if ( ! extension_loaded('snmp')) {
+        if (! extension_loaded('snmp')) {
             $log->message = 'SNMP PHP function not loaded hence not attempting to run snmp_helper::snmp_audit function';
             $log->severity = 5;
             discovery_log($log);
@@ -423,14 +528,14 @@ if ( ! function_exists('snmp_audit')) {
             $log->severity = 5;
             discovery_log($log);
             return false;
-        } elseif ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
+        } elseif (! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'Received invalid ip address ' . (string)$ip;
             $log->severity = 5;
             discovery_log($log);
             return false;
         }
 
-        if (empty($credentials) OR ! is_object($credentials)) {
+        if (empty($credentials) or ! is_object($credentials)) {
             $log->message = 'Received no credentials for ' . $ip;
             $log->severity = 5;
             discovery_log($log);
@@ -510,7 +615,7 @@ if ( ! function_exists('snmp_audit')) {
         discovery_log($log);
         unset($log->command_time_to_execute, $log->command_output);
 
-        if ( ! empty($details->sysUpTime) && strpos($details->sysUpTime, ')') !== false) {
+        if (! empty($details->sysUpTime) && strpos($details->sysUpTime, ')') !== false) {
             $temp = explode('(', $details->sysUpTime);
             $temp2 = explode(')', $temp[1]);
             $details->uptime = intval($temp2[0] / 100);
@@ -530,7 +635,7 @@ if ( ! function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
 
-            if ( ! empty($interface_number)) {
+            if (! empty($interface_number)) {
                 $item_start = microtime(true);
                 snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
                 $details->mac_address = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.'.$interface_number);
@@ -587,14 +692,14 @@ if ( ! function_exists('snmp_audit')) {
 
         $details->snmp_oid = (string)$details->sysObjectID;
         $details->snmp_enterprise_id = '';
-        if ( ! empty($details->snmp_oid)) {
+        if (! empty($details->snmp_oid)) {
             if (substr($details->snmp_oid, 0, 1) === '.') {
                 $temp = substr($details->snmp_oid, 1, strlen($details->snmp_oid));
             } else {
                 $temp = $details->snmp_oid;
             }
             $temp_array = explode('.', $temp);
-            if ( ! empty($temp_array[6])) {
+            if (! empty($temp_array[6])) {
                 $details->snmp_enterprise_id = @intval($temp_array[6]);
             }
         }
@@ -604,16 +709,16 @@ if ( ! function_exists('snmp_audit')) {
             $details->snmp_enterprise_id = 0;
         }
 
-        if ( ! empty($details->sysDescr) && stripos($details->sysDescr, 'ZyXEL') !== false) {
+        if (! empty($details->sysDescr) && stripos($details->sysDescr, 'ZyXEL') !== false) {
             $details->snmp_enterprise_id = 890;
         }
 
-        if ( ! empty($details->sysDescr) && (stripos($details->sysDescr, 'synology') !== false OR stripos($details->sysDescr, 'diskstation') !== false)) {
+        if (! empty($details->sysDescr) && (stripos($details->sysDescr, 'synology') !== false or stripos($details->sysDescr, 'diskstation') !== false)) {
             // Synology
             $details->snmp_enterprise_id = 6574;
         }
 
-        if ( ! empty($details->mac_address) && stripos($details->mac_address, '00:11:32') === 0) {
+        if (! empty($details->mac_address) && stripos($details->mac_address, '00:11:32') === 0) {
             // Synology
             $details->snmp_enterprise_id = 6574;
         }
@@ -658,7 +763,7 @@ if ( ! function_exists('snmp_audit')) {
 
         // Ubiquiti specific items to determine manufacturer
         $temp_services = my_snmp_walk($ip, $credentials, '1.3.6.1.2.1.1.9.1.3');
-        if ( ! empty($temp_services)) {
+        if (! empty($temp_services)) {
             foreach ($temp_services as $line) {
                 if (strpos($line, 'Ubiquiti') !== false) {
                     $details->manufacturer = 'Ubiquiti Networks Inc.';
@@ -825,7 +930,7 @@ if ( ! function_exists('snmp_audit')) {
         }
 
         // type
-        if (empty($details->type) OR $details->type === 'network printer') {
+        if (empty($details->type) or $details->type === 'network printer') {
             $item_start = microtime(true);
             $temp = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.25.3.2.1.2.1');
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1356,7 +1461,7 @@ if ( ! function_exists('snmp_audit')) {
                 $interface->mac = format_mac(my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.'.$interface->net_index));
                 snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
-                if ( ! isset($interface->mac)) {
+                if (! isset($interface->mac)) {
                     $interface->mac = (string)'';
                 }
 
@@ -1476,7 +1581,7 @@ if ( ! function_exists('snmp_audit')) {
 
         $retrieve_routes = 0;
         $config_value = 20;
-        if ( ! empty($CI->config->config['discovery_route_retrieve_limit'])) {
+        if (! empty($CI->config->config['discovery_route_retrieve_limit'])) {
             $config_value = intval($CI->config->config['discovery_route_retrieve_limit']);
         }
 
@@ -1488,11 +1593,11 @@ if ( ! function_exists('snmp_audit')) {
         $log->command = 'snmpwalk 1.3.6.1.2.1.4.24.6.0';
         $log->command_output = 'Count is ' . $route_count;
         $log->command_status = 'notice';
-        if ( ! empty($route_count) && $route_count < $config_value) {
+        if (! empty($route_count) && $route_count < $config_value) {
             $retrieve_routes = 1;
             $log->command_output .= ", which is less than config of {$config_value} - retrieving route table.";
         } else {
-            if ( ! empty($route_count)) {
+            if (! empty($route_count)) {
                 $log->command_output .= ", which is more than config of {$config_value} - not retrieving route table.";
                 $retrieve_routes = 2;
             } else {
@@ -1511,11 +1616,11 @@ if ( ! function_exists('snmp_audit')) {
             $log->command = 'snmpwalk 1.3.6.1.2.1.4.24.3.0';
             $log->command_output = 'Count is ' . $route_count;
             $log->command_status = 'notice';
-            if ( ! empty($route_count) && $route_count < $config_value) {
+            if (! empty($route_count) && $route_count < $config_value) {
                 $retrieve_routes = 1;
                 $log->command_output .= ", which is less than config of {$config_value} - retrieving route table.";
             } else {
-                if ( ! empty($route_count)) {
+                if (! empty($route_count)) {
                     $log->command_output .= ", which is more than config of {$config_value} - not retrieving route table.";
                     $retrieve_routes = 2;
                 } else {
@@ -1595,7 +1700,7 @@ if ( ! function_exists('snmp_audit')) {
         }
 
         // Special for ExaBlaze
-        if ( ! isset($modules_list) OR ! is_array($modules_list) OR count($modules_list) === 0) {
+        if (! isset($modules_list) or ! is_array($modules_list) or count($modules_list) === 0) {
             if (intval($details->snmp_enterprise_id) === 43296) {
                 $interfaces_filtered = @$get_modules($ip, $credentials, $log, $log->discovery_id, $details->id);
                 unset($log->id, $log->command, $log->command_time_to_execute);
@@ -1603,13 +1708,13 @@ if ( ! function_exists('snmp_audit')) {
         }
 
         // Check and set the default IP/MAC/Subnet
-        if ( ! empty($details->mac_address) && ! empty($details->ip) && empty($return_ips->item)) {
+        if (! empty($details->mac_address) && ! empty($details->ip) && empty($return_ips->item)) {
             $new_ip = new stdclass();
             $new_ip->net_index = 0;
             $new_ip->ip = $details->ip;
             $new_ip->mac = $details->mac_address;
             $new_ip->netmask = '255.55.255.0';
-            if ( ! empty($details->netmask)) {
+            if (! empty($details->netmask)) {
                 $new_ip->netmask = $details->netmask;
             }
             $new_ip->version = '4';
@@ -1644,7 +1749,7 @@ if ( ! function_exists('snmp_audit')) {
                     $log->command = 'snmpwalk 1.3.6.1.4.1.2281.10.5.1.1.2.' . $interface->net_index;
 
                     $log->command_output = 'Failed (likely not supported)';
-                    if ( ! empty($radio_rx_level)) {
+                    if (! empty($radio_rx_level)) {
                         $log->command_output = $radio_rx_level;
                     }
                     $log->command_status = 'notice';
@@ -1772,15 +1877,15 @@ if ( ! function_exists('snmp_audit')) {
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.22.1.2');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            if ( ! empty($temp)) {
+            if (! empty($temp)) {
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->message = 'Seed. Detecting IPs at ipNetToMediaPhysAddress for ' . $ip;
                 $log->command = 'snmpwalk 1.3.6.1.2.1.4.22.1.2';
                 $log->command_output = 'Count: ' . count($temp);
                 $log->command_status = 'notice';
-                if ( ! empty($temp)) {
+                if (! empty($temp)) {
                     foreach ($temp as $key => $value) {
-                        if ( ! empty($value)) {
+                        if (! empty($value)) {
                             // the IP
                             $explode = explode('.', $key);
                             $found_ip = implode('.', array_splice($explode, -4));
@@ -1814,15 +1919,15 @@ if ( ! function_exists('snmp_audit')) {
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.4.35.1.4.3.1.4');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            if ( ! empty($temp)) {
+            if (! empty($temp)) {
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->message = 'Seed. Detecting IPs at ipNetToPhysicalPhysAddress for '.$ip;
                 $log->command = 'snmpwalk 1.3.6.1.2.1.4.35.1.4.3.1.4';
                 $log->command_output = 'Count: ' . count($temp);
                 $log->command_status = 'notice';
-                if ( ! empty($temp)) {
+                if (! empty($temp)) {
                     foreach ($temp as $key => $value) {
-                        if ( ! empty($value)) {
+                        if (! empty($value)) {
                             // the IP
                             $explode = explode('.', $key);
                             $found_ip = implode('.', array_splice($explode, -4));
@@ -1857,14 +1962,14 @@ if ( ! function_exists('snmp_audit')) {
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.3.1.1.2');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            if ( ! empty($temp)) {
+            if (! empty($temp)) {
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->message = 'Seed. Detecting IPs at atPhysAddress for '.$ip;
                 $log->command = 'snmpwalk 1.3.6.1.2.1.3.1.1.2';
                 $log->command_output = 'Count: ' . count($temp);
                 $log->command_status = 'notice';
                 foreach ($temp as $key => $value) {
-                    if ( ! empty($value)) {
+                    if (! empty($value)) {
                         // the IP
                         $explode = explode('.', $key);
                         $found_ip = implode('.', array_splice($explode, -4));
@@ -1894,7 +1999,7 @@ if ( ! function_exists('snmp_audit')) {
 
         if ($type === 'seed') {
             $temp = array();
-            if ( ! empty($routes) && ! empty($ips_found)) {
+            if (! empty($routes) && ! empty($ips_found)) {
                 foreach ($routes as $route) {
                     if ($route->next_hop === '0.0.0.0' or empty($route->next_hop)) {
                         break;
@@ -1941,7 +2046,7 @@ if ( ! function_exists('snmp_audit')) {
     }
 }
 
-if ( ! function_exists('format_mac')) {
+if (! function_exists('format_mac')) {
     /**
      * [format_mac description]
      * @param  [type] $mac_address [description]
@@ -1995,7 +2100,7 @@ if ( ! function_exists('format_mac')) {
     }
 }
 
-if ( ! function_exists('ip_enabled')) {
+if (! function_exists('ip_enabled')) {
     /**
      * [ip_enabled description]
      * @param  [type] $ip_enabled [description]
@@ -2041,7 +2146,7 @@ if ( ! function_exists('ip_enabled')) {
     }
 }
 
-if ( ! function_exists('if_admin_status')) {
+if (! function_exists('if_admin_status')) {
     /**
      * [if_admin_status description]
      * @param  [type] $ifadminstatus [description]
@@ -2071,7 +2176,7 @@ if ( ! function_exists('if_admin_status')) {
     }
 }
 
-if ( ! function_exists('interface_type')) {
+if (! function_exists('interface_type')) {
     /**
      * [interface_type description]
      * @param  [type] $int_type [description]
