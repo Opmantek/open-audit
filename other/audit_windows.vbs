@@ -3008,33 +3008,33 @@ for each objItem in colItems
     net_mac_address = objItem.MACAddress
     net_index = objItem.Index
     if net_mac_address > "" then
-    for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
-    ip_address = objItem.IPAddress(i)
-    ip_subnet = objItem.IPSubnet(i)
-    if len(ip_address) > 15 then
-        ip_address_version = "6"
-        cidr = ip_subnet
-        netmask = ""
-    else
-        ip_address_version = "4"
-        cidr = ""
-        netmask = ip_subnet
-    end if
-    if ip_address <> "0.0.0.0" then
-    count = count + 1
-    item = item & "     <item>" & vbcrlf
-    item = item & "         <mac>" & escape_xml(net_mac_address) & "</mac>" & vbcrlf
-    item = item & "         <net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
-    item = item & "         <ip>" & escape_xml(ip_address) & "</ip>" & vbcrlf
-    item = item & "         <netmask>" & escape_xml(netmask) & "</netmask>" & vbcrlf
-    item = item & "         <cidr>" & escape_xml(cidr) & "</cidr>" & vbcrlf
-    item = item & "         <version>" & escape_xml(ip_address_version) & "</version>" & vbcrlf
-    item = item & "     </item>" & vbcrlf
-    if ip_address_version = "4" then
-    ip_address_array(count) = ip_address_v4
-    end if
-    end if
-    next
+        for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
+            ip_address = objItem.IPAddress(i)
+            ip_subnet = objItem.IPSubnet(i)
+            if len(ip_address) > 15 then
+                ip_address_version = "6"
+                cidr = ip_subnet
+                netmask = ""
+            else
+                ip_address_version = "4"
+                cidr = ""
+                netmask = ip_subnet
+            end if
+            if ip_address <> "0.0.0.0" then
+                count = count + 1
+                item = item & "     <item>" & vbcrlf
+                item = item & "         <mac>" & escape_xml(net_mac_address) & "</mac>" & vbcrlf
+                item = item & "         <net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
+                item = item & "         <ip>" & escape_xml(ip_address) & "</ip>" & vbcrlf
+                item = item & "         <netmask>" & escape_xml(netmask) & "</netmask>" & vbcrlf
+                item = item & "         <cidr>" & escape_xml(cidr) & "</cidr>" & vbcrlf
+                item = item & "         <version>" & escape_xml(ip_address_version) & "</version>" & vbcrlf
+                item = item & "     </item>" & vbcrlf
+                if ip_address_version = "4" then
+                    ip_address_array(count) = ip_address_v4
+                end if
+            end if
+        next
     end if
 next
 if item > "" then
