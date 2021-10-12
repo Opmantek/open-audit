@@ -118,13 +118,20 @@ if (! function_exists('snmp_credentials')) {
         if ($multiple and php_uname('s') !== 'Windows NT') {
             $log->message = 'Running externally because multiple credential sets use identical security user names.';
             $log->command_status = 'notice';
-            $log->command_output = json_encode($cred_ids);
+            $log->command_output = 'php_uname(\'s\');';
             $log->command = php_uname('s');
             $log->status = 'notice';
             discovery_log($log);
 
             // Use net-snmp instead of calling with PHP
             foreach ($credentials as $credential) {
+                $from = ' ';
+                if (! empty($credential->source)) {
+                    $from = 'from ' . $credential->source;
+                }
+                if (! empty($credential->name)) {
+                    $from = 'named ' . $credential->name;
+                }
                 if (! empty($credential->type) && $credential->type === 'snmp_v3') {
                     $command = 'snmpget -v3 -On -l ' . escapeshellarg($credential->credentials->security_level)  .
                                 ' -u ' . escapeshellarg($credential->credentials->security_name) .
