@@ -29,12 +29,13 @@
 
 /*
 
-UPDATE `configuration` SET `value` = '20210830' WHERE `name` = 'internal_version';
 
-UPDATE `configuration` SET `value` = '4.2.1' WHERE `name` = 'display_version';
+UPDATE `configuration` SET `value` = '2021112' WHERE `name` = 'internal_version';
+
+UPDATE `configuration` SET `value` = '4.3.0' WHERE `name` = 'display_version';
 */
 
-$this->log_db('Upgrade database to 4.2.1 commenced');
+$this->log_db('Upgrade database to 4.3.0 commenced');
 
 $sql = "DELETE FROM configuration WHERE name = 'create_change_log_usb'";
 $this->db->query($sql);
@@ -83,15 +84,20 @@ $sql = "CREATE TABLE `usb` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('expiry_date', 'licenses')) {
+    $this->alter_table('licenses', 'expiry_date', "DROP `expiry_date`", 'drop');
+}
+$this->alter_table('licenses', 'expiry_date', "ADD expiry_date DATE NOT NULL DEFAULT '2001-01-01' AFTER software_version", 'add');
+
 // set our versions
-$sql = "UPDATE `configuration` SET `value` = '20210830' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20211112' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "UPDATE `configuration` SET `value` = '4.2.1' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '4.3.0' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->log_db('Upgrade database to 4.2.1 completed');
-$this->config->config['internal_version'] = '20210830';
-$this->config->config['display_version'] = '4.2.1';
+$this->log_db('Upgrade database to 4.3.0 completed');
+$this->config->config['internal_version'] = '20211112';
+$this->config->config['display_version'] = '4.3.0';
