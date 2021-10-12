@@ -287,6 +287,7 @@ class M_licenses extends MY_Model
         $dictionary->columns->software_name = 'Your generice name for this piece of software';
         $dictionary->columns->software_version = 'Your generice version for this piece of software';
         $dictionary->columns->sql = 'unused';
+        $dictionary->columns->expiry_date = 'For licenses that are not perpetual, when does the license expire.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;
