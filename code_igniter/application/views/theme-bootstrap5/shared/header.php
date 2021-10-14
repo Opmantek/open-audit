@@ -252,7 +252,7 @@
                                             <li><a class="dropdown-item greyout toastPermission" href="#"><?php echo __('Discovery Data Retention') ?></a></li>
                                         <?php } ?>
                                         <!-- Discovery Scan Options -->
-                                            <li><a class="dropdown-item dropdown-toggle" href="#"><?php echo __('Discovery Scan Options') ?></a>
+                                            <li><a class="dropdown-item dropdown-toggle second-level-dropdown-toggle" href="#"><?php echo __('Discovery Scan Options') ?></a>
                                                 <ul class="dropdown-menu">
                                                     <?php if ($this->config->config['oae_product'] === 'enterprise' && $this->m_users->get_user_permission('', 'discovery_scan_options', 'r')) { ?>
                                                     <li><a class="dropdown-item" href="<?php echo $this->config->config['oae_url']; ?>/discovery_scan_options/create"><?php echo __('List') . ' ' . __('Discovery Scan Options') ?></a></li>

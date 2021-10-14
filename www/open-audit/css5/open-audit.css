@@ -26,6 +26,17 @@
 				position: absolute;
 				left: 80%;
 				margin-top: 0.7em;
+				color:  #aaa;
+				transform: rotate(270deg);
+			}
+
+			/* to right align the carets in the menus */
+			.second-level-dropdown-toggle::after {
+				position: absolute;
+				left: 90%;
+				margin-top: 0.7em;
+				color:  #aaa;
+				transform: rotate(270deg);
 			}
 
 			.form-control:disabled {
