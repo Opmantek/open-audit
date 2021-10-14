@@ -62,7 +62,8 @@
 
         <script>
             $(document).ready( function () {
-                $( '.dropdown-menu a.dropdown-toggle' ).on( 'click', function ( e ) {
+              //$( '.dropdown-menu a.dropdown-toggle' ).on( 'click', function ( e ) {
+                $( '.dropdown-menu a.dropdown-toggle' ).on( 'mouseenter', function ( e ) {
                     var $el = $( this );
                     $el.toggleClass('active-dropdown');
                     var $parent = $( this ).offsetParent( ".dropdown-menu" );
