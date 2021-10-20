@@ -130,7 +130,11 @@ if (!empty($temp1) and !empty($temp2)) {
 }
 $temp = @$this->response->meta->flash;
 if (!empty($temp)) {
-    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
+    if (!empty($this->response->meta->flash->html) and $this->response->meta->flash->html === 1) {
+        echo "<div class=\"alert alert-{$this->response->meta->flash->status}\" role=\"alert\">" . html_entity_decode($this->response->meta->flash->message) . "</div>\n";
+    } else {
+        echo "<div class=\"alert alert-{$this->response->meta->flash->status}\" role=\"alert\">{$this->response->meta->flash->message}</div>\n";
+    }
 }
 
 include($this->response->include.'.php');
