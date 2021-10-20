@@ -56,7 +56,9 @@ if ( ! function_exists('from_unix_timestamp')) {
         }
         $sql = '/* input_helper::from_unix_timestamp */ ' . "SELECT FROM_UNIXTIME({$timestamp}) as `timestamp`";
         $CI = & get_instance();
-        $CI->response->meta->sql[] = $sql;
+        if (!empty($CI->response->meta->sql)) {
+            $CI->response->meta->sql[] = $sql;
+        }
         $query = $CI->db->query($sql);
         $result = $query->result();
         $datetime = $result[0]->timestamp;
