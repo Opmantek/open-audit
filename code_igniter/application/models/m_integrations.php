@@ -993,7 +993,7 @@ class M_integrations extends MY_Model
 
         // Select by Attribute
         if ($integration->attributes->select_internal_type === 'attribute') {
-            $sql = "SELECT system.*, locations.name AS `locations_name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE `" . $integration->attributes->select_internal_attribute . "` = ? and system.org_id IN (" . implode(',', $orgs) . ") AND status = 'production'";
+            $sql = "SELECT system.*, locations.name AS `locations_name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system." . $integration->attributes->select_internal_attribute . " = ? and system.org_id IN (" . implode(',', $orgs) . ") AND status = 'production'";
             $data = array($integration->attributes->select_internal_value);
             $query = $this->db->query($sql, $data);
             $devices = $query->result();
