@@ -558,7 +558,7 @@ CREATE TABLE `certificate` (
   `issuer` text NOT NULL,
   `valid_from_raw` varchar(100) NOT NULL DEFAULT '',
   `valid_from` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `valid_to_raW` varchar(100) NOT NULL DEFAULT '',
+  `valid_to_raw` varchar(100) NOT NULL DEFAULT '',
   `valid_to` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `encryption` varchar(100) NOT NULL DEFAULT '',
   `algorithm` varchar(100) NOT NULL DEFAULT '',
