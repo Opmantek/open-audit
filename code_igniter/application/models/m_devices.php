@@ -132,7 +132,7 @@ class M_devices extends MY_Model
             return false;
         }
         $return = array();
-        $tables = array('audit_log', 'bios', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('audit_log', 'bios', 'certificate', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $sql = "SELECT COUNT(*) AS `count` FROM `{$table}` WHERE system_id = " . intval($id);
             $result = $this->run_sql($sql, array());
@@ -376,7 +376,7 @@ class M_devices extends MY_Model
                 if ($current === 'n') {
                     $currency = 'AND `' . $sub_resource . "`.`current` = '" . $current . "'" ;
                 }
-                if ($current === '' OR $current === 'all') {
+                if ($current === '' or $current === 'all') {
                     $currency = '';
                 }
                 if ($current === 'delta' && $first_seen) {
@@ -405,7 +405,7 @@ class M_devices extends MY_Model
         if ($sub_resource === 'credential' && ! empty($result)) {
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
-                if ( ! empty($result[$i]->credentials)) {
+                if (! empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                 }
             }

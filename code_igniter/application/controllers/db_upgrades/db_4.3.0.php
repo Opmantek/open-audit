@@ -37,19 +37,46 @@ UPDATE `configuration` SET `value` = '4.3.0' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 4.3.0 commenced');
 
-$sql = "DELETE FROM configuration WHERE name = 'create_change_log_usb'";
+$sql = "DROP TABLE IF EXISTS certificate";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log_usb','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the USB table.')";
+$sql = "CREATE TABLE `certificate` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `issuer` text NOT NULL,
+  `valid_from_raw` varchar(100) NOT NULL DEFAULT '',
+  `valid_from` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `valid_to_raw` varchar(100) NOT NULL DEFAULT '',
+  `valid_to` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `encryption` varchar(100) NOT NULL DEFAULT '',
+  `algorithm` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `certificate_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "DELETE FROM configuration WHERE name = 'delete_noncurrent_usb'";
+$sql = "DELETE FROM configuration WHERE name = 'create_change_log_certificate'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_usb','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current USB data.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log_certificate','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the Certificate table.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM configuration WHERE name = 'delete_noncurrent_certificate'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_certificate','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current Certificate data.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
@@ -69,18 +96,35 @@ $sql = "CREATE TABLE `usb` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `availability` varchar(100) NOT NULL DEFAULT '',
+  `class` varchar(100) NOT NULL DEFAULT '',
   `config_manager_error_code` varchar(100) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `device` varchar(200) NOT NULL DEFAULT '',
-  `pnp_class` varchar(100) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `present` varchar(100) NOT NULL DEFAULT '',
+  `serial` text NOT NULL,
   `status` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `usb_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM configuration WHERE name = 'create_change_log_usb'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'create_change_log_usb','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the USB table.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM configuration WHERE name = 'delete_noncurrent_usb'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_usb','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current USB data.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 

@@ -125,7 +125,7 @@ class M_devices_components extends MY_Model
                     $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? AND current = 'n' {$filter}";
                     $data = array($id);
                 }
-                if ($current === '' OR $current === 'all') {
+                if ($current === '' or $current === 'all') {
                     $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? {$filter}";
                     $data = array($id);
                 }
@@ -187,6 +187,9 @@ class M_devices_components extends MY_Model
         $match_columns = array();
         if ($table === 'bios') {
                 $match_columns = array('manufacturer', 'model', 'serial', 'smversion', 'version');
+        }
+        if ($table === 'certificate') {
+                $match_columns = array('name', 'issuer', 'serial', 'valid_from_raw', 'valid_to_raw');
         }
         if ($table === 'disk') {
                 $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
@@ -475,6 +478,21 @@ class M_devices_components extends MY_Model
                 // Remove `description`
                 if ( ! empty($input[$i]->description)) {
                     unset($input[$i]->description);
+                }
+            }
+        }
+
+        // CERTIFICATE
+        if ((string)$table === 'certificate') {
+            // Format the dates to our standard
+            if ($parameters->details->os_group === 'Linux') {
+                for ($i=0; $i<count($input); $i++) {
+                    if (! empty($input[$i]->valid_from_raw)) {
+                        $input[$i]->valid_from = gmdate('Y-m-d H:i:s', strtotime($input[$i]->valid_from_raw));
+                    }
+                    if (! empty($input[$i]->valid_to_raw)) {
+                        $input[$i]->valid_to = gmdate('Y-m-d H:i:s', strtotime($input[$i]->valid_to_raw));
+                    }
                 }
             }
         }

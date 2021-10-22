@@ -973,13 +973,109 @@ echo "	</sys>"
 
 
 ##################################
+# USB SECTION                    #
+##################################
+if [ "$debugging" -gt "0" ]; then
+	echo "USB Info"
+fi
+IFS="$NEWLINEIFS"
+echo "	<usb>" >> "$xml_file"
+list=$(lsusb 2>/dev/null)
+if [ -n "$list" ]; then
+	for device in $(echo "$list"); do
+		bus=$(echo "$device" | awk '{print $2}')
+		dev=$(echo "$device" | awk '{print $4}')
+		details=$(lsusb -v -s "$bus":"$dev" 2>/dev/null)
+		if [ -n "$details" ]; then
+			name=$(echo "$details" | grep "iProduct" | head -n1 | awk '{$1=$2=""; print $0}')
+			if [ -z "$name" ]; then
+				name=$(echo "$details" | grep "idProduct" | head -n1 | awk '{$1=$2=""; print $0}')
+			fi
+			manufacturer=$(echo "$details" | grep "idVendor" | head -n1 | awk '{$1=$2=""; print $0}')
+			if [ -z "$manufacturer" ]; then
+				manufacturer=$(echo "$details" | grep "iManufacturer" | head -n1 | awk '{$1=$2=""; print $0}')
+			fi
+			description=$(echo "$details" | grep "idProduct" | head -n1 | awk '{$1=$2=""; print $0}')
+			class=$(echo "$details" | grep "bInterfaceClass" | head -n1 | awk '{$1=$2=""; print $0}')
+			status=$(echo "$details" | grep "Device Status" -A1 | tail -n1)
+			serial=$(echo "$details" | grep "iSerial" | head -n1 | awk '{$1=$2=""; print $0}')
+			device=$(echo "$device" | awk '{print $1 " " $2 " " $3 " " $4}' | cut -d: -f1)
+			{
+	      echo "	     <item>"
+	      echo "	         <name>$(escape_xml "$name")</name>"
+	      echo "	         <availability></availability>"
+	      echo "	         <class>$(escape_xml "$class")</class>"
+	      echo "	         <config_manager_error_code></config_manager_error_code>"
+	      echo "	         <description>$(escape_xml "$description")</description>"
+	      echo "	         <device>$(escape_xml "$device")</device>"
+	      echo "	         <manufacturer>$(escape_xml "$manufacturer")</manufacturer>"
+	      echo "	         <present></present>"
+	      echo "	         <serial>$(escape_xml "$serial")</serial>"
+	      echo "	         <status>$(escape_xml "$status")</status>"
+	      echo "	     </item>"
+			} >> "$xml_file"
+		fi
+	done
+fi
+echo "	</usb>" >> "$xml_file"
+
+
+##################################
+# CERTIFICATES SECTION           #
+##################################
+cert_dirs[1]="/etc/ssl/certs/*.pem"
+cert_dirs[2]="/etc/ssl/certs/*.crt"
+cert_dirs[3]="/etc/ssl/private/*.key"
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Certificate Info"
+fi
+IFS="$NEWLINEIFS"
+echo "	<certificate>" >> "$xml_file"
+for dir in ${cert_dirs[@]}; do
+	files=$(ls "$dir" 2>/dev/null)
+	for file in $(echo "$files"); do
+		name="$file"
+		details=$(openssl x509 -text -noout -in "$file" 2>/dev/null)
+		if [ -n "$details" ]; then
+			serial=$(echo "$details" | grep "Serial" | cut -d: -f2-)
+			if [ -z "$serial" ]; then
+				serial=$(trim "$(echo "$details" | grep "Serial" -A1 | grep -v Serial)")
+			else
+				serial=$(trim "$(echo "$details" | grep "Serial" | cut -d: -f2-)")
+			fi
+			issuer=$(echo "$details" | grep "Issuer" | cut -d: -f2-)
+			valid_from_raw=$(echo "$details" | grep "Not Before" | cut -d: -f2-)
+			valid_to_raw=$(echo "$details" | grep "Not After" | cut -d: -f2-)
+			algorithm=$(echo "$details" | grep "Signature Algorithm" | head -n1 | cut -d: -f2-)
+			encryption=""
+			version=$(echo "$details" | grep Version | cut -d: -f2)
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$name")</name>"
+			echo "			<serial>$(escape_xml "$serial")</serial>"
+			echo "			<issuer>$(escape_xml "$issuer")</issuer>"
+			echo "			<valid_from_raw>$(escape_xml "$valid_from_raw")</valid_from_raw>"
+			echo "			<valid_to_raw>$(escape_xml "$valid_to_raw")</valid_to_raw>"
+			echo "			<algorithm>$(escape_xml "$algorithm")</algorithm>"
+			echo "			<encryption>$(escape_xml "$encryption")</encryption>"
+			echo "			<version>$(escape_xml "$version")</version>"
+			echo "		</item>"
+			} >> "$xml_file"
+		fi
+	done
+done
+echo "	</certificate>" >> "$xml_file"
+
+
+##################################
 # POLICY SECTION                 #
 ##################################
 if [ "$debugging" -gt "0" ]; then
 	echo "Policy Info"
 fi
-	echo "	<policy>" >> "$xml_file"
-	IFS="$NEWLINEIFS"
+IFS="$NEWLINEIFS"
+echo "	<policy>" >> "$xml_file"
 for policy in $(grep -v ^# /etc/login.defs 2>/dev/null | grep -v ^$); do
 	type="/etc/login.defs"
 	name=$(echo "$policy" | awk '{print $1}')
