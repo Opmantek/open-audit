@@ -2897,6 +2897,8 @@ if [ -n "$test" ]; then
 	else
 		port=""
 	fi
+	config_file=$(apachectl -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
+	certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//')
 	{
 	echo "		<item>"
 	echo "			<type>web</type>"
@@ -2905,6 +2907,7 @@ if [ -n "$test" ]; then
 	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
 	echo "			<status>$(escape_xml "$apache_status")</status>"
 	echo "			<port>$(escape_xml "$port")</port>"
+	echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 	echo "		</item>"
 	} >> "$xml_file"
 fi
