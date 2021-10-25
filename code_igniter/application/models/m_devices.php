@@ -342,18 +342,27 @@ class M_devices extends MY_Model
         if ($sub_resource === 'location') {
             $sql = 'SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?';
             $data = array($id);
+
         } else if ($sub_resource === 'purchase') {
             $sql = 'SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?';
             $data = array($id);
+
         } else if ($sub_resource === 'discovery_log') {
             $sql = 'SELECT discovery_log.id, discovery_log.discovery_id, discoveries.name AS `discoveries.name`, discovery_log.timestamp, discovery_log.file, discovery_log.function, discovery_log.message, discovery_log.command_status, discovery_log.command_output, discovery_log.command_time_to_execute, discovery_log.command FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) WHERE discovery_log.system_id = ? ' . $limit;
             $data = array($id);
+
         } else if ($sub_resource === 'edit_log') {
             $sql = 'SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? ' . $limit;
             $data = array($id);
+
         } else if ($sub_resource === 'network') {
             $sql = "SELECT network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') WHERE system.id = ? ";
             $data = array($id);
+
+        } else if ($sub_resource === 'certificate') {
+            $sql = "SELECT certificate.*, IF(certificate.valid_to > DATE(NOW() - INTERVAL 1 day) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day), 'warning', '') AS expiring FROM certificate WHERE certificate.system_id = ? " . $limit;
+            $data = array($id);
+
         } else {
             $currency = false;
             $first_seen = false;
