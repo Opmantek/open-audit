@@ -89,9 +89,42 @@ $sql = "DELETE FROM queries WHERE name = 'Expiring Certificates'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates','Server','y','Certificates expiring between today - 7 days and today + 30 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() - INTERVAL 7 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day)','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates','Server','y','Certificates expiring between today - 1 days and today + 30 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() - INTERVAL 1 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day)','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM queries WHERE name = 'Expiring Certificates (action immediately)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates (action immediately)','Server','y','Certificates expiring in the next 8 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > NOW() AND certificate.valid_to < DATE(NOW() + INTERVAL 8 day)','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM queries WHERE name = 'Expiring Certificates (action soon)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates (action soon)','Server','y','Certificates expiring between 8 and 32 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() + INTERVAL 8 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 32 day)','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM queries WHERE name = 'Expiring Certificates (action later)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates (action later)','Server','y','Certificates expiring between 32 and 92 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() + INTERVAL 32 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 92 day)','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "DELETE FROM queries WHERE name = 'Expired Certificates'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Expired Certificates','Server','y','Expired certificates','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to < DATE(NOW())','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 
 if ($this->db->field_exists('comment', 'task')) {
     $this->alter_table('task', 'comment', "DROP `comment`", 'drop');
