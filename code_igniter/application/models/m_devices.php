@@ -360,7 +360,7 @@ class M_devices extends MY_Model
             $data = array($id);
 
         } else if ($sub_resource === 'certificate') {
-            $sql = "SELECT certificate.*, IF(certificate.valid_to > DATE(NOW() - INTERVAL 1 day) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day), 'warning', '') AS expiring FROM certificate WHERE certificate.system_id = ? " . $limit;
+            $sql = "SELECT certificate.*, IF(certificate.valid_to > DATE(NOW() - INTERVAL 7 day) AND certificate.valid_to < DATE(NOW() + INTERVAL 7 day), 'expiring_week', IF(certificate.valid_to > DATE(NOW()) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day), 'expiring_month', IF(certificate.valid_to < DATE(NOW()), 'expired', ''))) AS status FROM certificate WHERE certificate.system_id = ? " . $limit;
             $data = array($id);
 
         } else {
