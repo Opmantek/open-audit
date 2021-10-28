@@ -78,7 +78,13 @@ class Util extends CI_Controller
 
     public function subnet_size()
     {
-        $command = "nmap -n -sL " . $_POST['subnet'];
+        # filter out all characters not in the $chars list
+        $subnet = $_POST['subnet'];
+        $chars = "0123456789-./";
+        $pattern = "/[^".preg_quote($chars, "/")."]/";
+        $subnet = preg_replace($pattern, "", $subnet);
+        # now run the command
+        $command = "nmap -n -sL " . $subnet;
         exec($command, $output, $return_var);
         $count = 0;
         if ($return_var === 0) {
