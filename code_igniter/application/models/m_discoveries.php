@@ -839,7 +839,7 @@ class M_discoveries extends MY_Model
 
         } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
             # Windows connection from Linux Open-AudIT server
-            $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="../help/discovery_issues/7">here</a>.';
+            $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="../help/discovery_issues/8">here</a>.';
             $issue->action = '';
 
         } else if ($issue->output ==='["",""]') {
