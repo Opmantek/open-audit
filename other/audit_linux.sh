@@ -111,6 +111,11 @@ last_seen_by="audit"
 display=""
 # This should only be set by Discovery when using the debug option
 
+# The pattern matches to check for certificates
+cert_dirs[1]="/etc/ssl/certs/*.pem"
+cert_dirs[2]="/etc/ssl/certs/*.crt"
+cert_dirs[3]="/etc/ssl/private/*.key"
+
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
 
@@ -1020,52 +1025,6 @@ fi
 echo "	</usb>" >> "$xml_file"
 
 
-##################################
-# CERTIFICATES SECTION           #
-##################################
-cert_dirs[1]="/etc/ssl/certs/*.pem"
-cert_dirs[2]="/etc/ssl/certs/*.crt"
-cert_dirs[3]="/etc/ssl/private/*.key"
-
-if [ "$debugging" -gt "0" ]; then
-	echo "Certificate Info"
-fi
-IFS="$NEWLINEIFS"
-echo "	<certificate>" >> "$xml_file"
-for dir in ${cert_dirs[@]}; do
-	files=$(ls "$dir" 2>/dev/null)
-	for file in $(echo "$files"); do
-		name="$file"
-		details=$(openssl x509 -text -noout -in "$file" 2>/dev/null)
-		if [ -n "$details" ]; then
-			serial=$(echo "$details" | grep "Serial" | cut -d: -f2-)
-			if [ -z "$serial" ]; then
-				serial=$(trim "$(echo "$details" | grep "Serial" -A1 | grep -v Serial)")
-			else
-				serial=$(trim "$(echo "$details" | grep "Serial" | cut -d: -f2-)")
-			fi
-			issuer=$(echo "$details" | grep "Issuer" | cut -d: -f2-)
-			valid_from_raw=$(echo "$details" | grep "Not Before" | cut -d: -f2-)
-			valid_to_raw=$(echo "$details" | grep "Not After" | cut -d: -f2-)
-			algorithm=$(echo "$details" | grep "Signature Algorithm" | head -n1 | cut -d: -f2-)
-			encryption=""
-			version=$(echo "$details" | grep Version | cut -d: -f2)
-			{
-			echo "		<item>"
-			echo "			<name>$(escape_xml "$name")</name>"
-			echo "			<serial>$(escape_xml "$serial")</serial>"
-			echo "			<issuer>$(escape_xml "$issuer")</issuer>"
-			echo "			<valid_from_raw>$(escape_xml "$valid_from_raw")</valid_from_raw>"
-			echo "			<valid_to_raw>$(escape_xml "$valid_to_raw")</valid_to_raw>"
-			echo "			<algorithm>$(escape_xml "$algorithm")</algorithm>"
-			echo "			<encryption>$(escape_xml "$encryption")</encryption>"
-			echo "			<version>$(escape_xml "$version")</version>"
-			echo "		</item>"
-			} >> "$xml_file"
-		fi
-	done
-done
-echo "	</certificate>" >> "$xml_file"
 
 
 ##################################
@@ -2898,7 +2857,12 @@ if [ -n "$test" ]; then
 		port=""
 	fi
 	config_file=$(apachectl -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
-	certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//')
+	certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
+	if [ -n "$certificates" ]; then
+		for file in $(echo "$certificates"); do
+			cert_dirs[${#cert_dirs[@]}]="$file"
+		done
+	fi
 	{
 	echo "		<item>"
 	echo "			<type>web</type>"
@@ -2920,6 +2884,13 @@ if [ -n "$test" ]; then
 	version=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2 | cut -d/ -f2 | awk '{ print $1 }')
 	version_string=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2)
 	apache_status=$(service httpd status 2>/dev/null | grep Active | awk '{ print $2 }')
+	config_file=$(httpd -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
+	certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
+	if [ -n "$certificates" ]; then
+		for file in $(echo "$certificates"); do
+			cert_dirs[${#cert_dirs[@]}]="$file"
+		done
+	fi
 	if [ -n "$rev_exists" ]; then
 		port=$(netstat -tulpn 2>/dev/null | grep httpd | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
 	else
@@ -3317,6 +3288,50 @@ done
 
 echo "	</server_item>" >> "$xml_file"
 
+
+
+##################################
+# CERTIFICATES SECTION           #
+##################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Certificate Info"
+fi
+IFS="$NEWLINEIFS"
+echo "	<certificate>" >> "$xml_file"
+for dir in ${cert_dirs[@]}; do
+	files=$(ls "$dir" 2>/dev/null)
+	for file in $(echo "$files"); do
+		name="$file"
+		details=$(openssl x509 -text -noout -in "$file" 2>/dev/null)
+		if [ -n "$details" ]; then
+			serial=$(echo "$details" | grep "Serial" | cut -d: -f2-)
+			if [ -z "$serial" ]; then
+				serial=$(trim "$(echo "$details" | grep "Serial" -A1 | grep -v Serial)")
+			else
+				serial=$(trim "$(echo "$details" | grep "Serial" | cut -d: -f2-)")
+			fi
+			issuer=$(echo "$details" | grep "Issuer" | cut -d: -f2-)
+			valid_from_raw=$(echo "$details" | grep "Not Before" | cut -d: -f2-)
+			valid_to_raw=$(echo "$details" | grep "Not After" | cut -d: -f2-)
+			algorithm=$(echo "$details" | grep "Signature Algorithm" | head -n1 | cut -d: -f2-)
+			encryption=""
+			version=$(echo "$details" | grep Version | cut -d: -f2)
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$name")</name>"
+			echo "			<serial>$(escape_xml "$serial")</serial>"
+			echo "			<issuer>$(escape_xml "$issuer")</issuer>"
+			echo "			<valid_from_raw>$(escape_xml "$valid_from_raw")</valid_from_raw>"
+			echo "			<valid_to_raw>$(escape_xml "$valid_to_raw")</valid_to_raw>"
+			echo "			<algorithm>$(escape_xml "$algorithm")</algorithm>"
+			echo "			<encryption>$(escape_xml "$encryption")</encryption>"
+			echo "			<version>$(escape_xml "$version")</version>"
+			echo "		</item>"
+			} >> "$xml_file"
+		fi
+	done
+done
+echo "	</certificate>" >> "$xml_file"
 
 
 ########################################################
