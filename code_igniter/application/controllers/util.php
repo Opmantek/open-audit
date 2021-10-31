@@ -237,7 +237,7 @@ class Util extends CI_Controller
 
     public function summary_tables()
     {
-        $data = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
+        $data = array('bios','certificate','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','usb','variable','video','vm','warranty','windows');
         $json = new stdClass();
         $json->data = $data;
         header('Content-Type: application/json');
