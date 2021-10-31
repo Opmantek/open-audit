@@ -1076,12 +1076,7 @@ if (! function_exists('output')) {
 
     function create_url($query_parameters = null)
     {
-        $CI = & get_instance();
-        $proto = 'http://';
-        if ($CI->config->config['is_ssl'] === true) {
-            $proto = 'https://';
-        }
-        $link = $proto . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?';
+        $link = '?';
         if (!empty($query_parameters)) {
             for ($i=0; $i < count($query_parameters); $i++) {
                 if (!empty($query_parameters[$i]->name)) {
