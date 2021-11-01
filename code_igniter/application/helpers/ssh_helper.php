@@ -1183,10 +1183,10 @@ if ( !  function_exists('ssh_audit')) {
         }
 
         // Type based on os_group = Linux (set to computer)
-        if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type) && $device->manufacturer !== 'Ubiquiti Networks Inc.') {
+        if (! empty($device->os_group) and $device->os_group === 'Linux' and empty($device->type) and ! empty($device->manufacturer) and $device->manufacturer !== 'Ubiquiti Networks Inc.') {
             $device->type = 'computer';
         }
-        if ( ! empty($device->os_group) && stripos($device->os_group, 'BSD') !== false) {
+        if (! empty($device->os_group) and stripos($device->os_group, 'BSD') !== false) {
             $device->type = 'computer';
             $device->model = $device->bsd_model;
             $device->os_group = 'BSD';
