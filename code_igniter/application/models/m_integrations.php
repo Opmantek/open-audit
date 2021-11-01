@@ -1253,17 +1253,19 @@ class M_integrations extends MY_Model
                                     break;
 
                                 case 'bool_one_zero':
-                                    $value = 0;
                                     if ($value === 'y' or $value === 'Y' or $value === '1' or $value === 1 or $value === true) {
                                         $value = 1;
+                                    } else {
+                                        $value = 0;
                                     }
                                     $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
                                     break;
 
                                 case 'bool_y_n':
-                                    $value = 'n';
                                     if ($value === 'y' or $value === 'Y' or $value === '1' or $value === 1 or $value === true) {
                                         $value = 'y';
+                                    } else {
+                                        $value = 'n';
                                     }
                                     $newdevice = $this->set_value($newdevice, $field->external_field_name, $value);
                                     break;
