@@ -368,7 +368,10 @@ if ( ! function_exists('audit_format_system')) {
             }
         }
 
-        $input->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+        $input->audits_ip = '127.000.000.001';
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $input->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+        }
 
         if (empty($input->discovery_id)) {
             $input->discovery_id = '';
