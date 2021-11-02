@@ -60,9 +60,6 @@ class Util extends CI_Controller
         $log->status = 'start';
         $log->function = strtolower(__METHOD__);
         stdlog($log);
-        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
-            exit;
-        }
     }
 
     /**
@@ -106,6 +103,9 @@ class Util extends CI_Controller
     */
     public function version_padded()
     {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
+            exit;
+        }
         $json = new stdClass();
         $json->version = $this->uri->segment(3, '');
         if (isset($_POST['version'])) {
@@ -264,6 +264,9 @@ class Util extends CI_Controller
 
     public function google()
     {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
+            exit;
+        }
         $response = new stdClass();
         $credentials = @$this->input->post('credentials');
         if (empty($credentials)) {
