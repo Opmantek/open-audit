@@ -159722,7 +159722,7 @@ Decimal
     Carl-Martin Pershed
       calmar&csbnet.se
 40043
-  NewPace Technology Development Inc.‎
+  NewPace Technology Development Inc.
     Josh Warren
       josh.branchwarren&newpace.com
 40044
