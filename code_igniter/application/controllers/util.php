@@ -76,7 +76,11 @@ class Util extends CI_Controller
     public function subnet_size()
     {
         # filter out all characters not in the $chars list
-        $subnet = $_POST['subnet'];
+        if (!empty($_POST['subnet'])) {
+            $subnet = $_POST['subnet'];
+        } else {
+            return;
+        }
         $chars = "0123456789-./";
         $pattern = "/[^".preg_quote($chars, "/")."]/";
         $subnet = preg_replace($pattern, "", $subnet);
