@@ -108,6 +108,7 @@ if (!function_exists('audit_convert')) {
         } else {
             $log = $parameters->log;
         }
+        $log->discovery_id = @$parameters->discovery_id;
         $log->ip = @ip_address_from_db($log->ip);
         $log->file = 'audit_helper';
         $log->function = 'audit_convert';
