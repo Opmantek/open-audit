@@ -584,7 +584,7 @@ system_serial=""
 
 # Some DD-WRT specials stuff
 if [ -z "$system_os_family" ]; then
-	if [ -f "/etc/motd" ] && [ grep -qi 'DD-WRT' /etc/motd ]; then
+	if [ -f "/etc/motd" ] && [ $(grep -qi 'DD-WRT' /etc/motd) ]; then
 		system_os_family="DD-WRT"
 		system_os_version=$(grep DD-WRT /etc/motd | cut -dv -f2)
 		system_os_version="v$system_os_version"
@@ -2857,11 +2857,13 @@ if [ -n "$test" ]; then
 		port=""
 	fi
 	config_file=$(apachectl -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
-	certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
-	if [ -n "$certificates" ]; then
-		for file in $(echo "$certificates"); do
-			cert_dirs[${#cert_dirs[@]}]="$file"
-		done
+	if [ -n "$config_file" ]; then
+		certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
+		if [ -n "$certificates" ]; then
+			for file in $(echo "$certificates"); do
+				cert_dirs[${#cert_dirs[@]}]="$file"
+			done
+		fi
 	fi
 	{
 	echo "		<item>"
@@ -2885,11 +2887,13 @@ if [ -n "$test" ]; then
 	version_string=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2)
 	apache_status=$(service httpd status 2>/dev/null | grep Active | awk '{ print $2 }')
 	config_file=$(httpd -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
-	certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
-	if [ -n "$certificates" ]; then
-		for file in $(echo "$certificates"); do
-			cert_dirs[${#cert_dirs[@]}]="$file"
-		done
+	if [ -n "$config_file" ]; then
+		certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
+		if [ -n "$certificates" ]; then
+			for file in $(echo "$certificates"); do
+				cert_dirs[${#cert_dirs[@]}]="$file"
+			done
+		fi
 	fi
 	if [ -n "$rev_exists" ]; then
 		port=$(netstat -tulpn 2>/dev/null | grep httpd | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
