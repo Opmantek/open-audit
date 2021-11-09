@@ -315,9 +315,9 @@ if ( !  function_exists('scp_get')) {
         $log->command = 'sftp ' . @$username . '@' . @$ip . ':' . @$source . ' to ' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file from ' . $ip;
+        $log->command_status = 'success';
         try {
             $output = $ssh->get($source, $destination);
-            $log->command_output = $output;
         } catch (Exception $error) {
             $log->command = $ssh->getLog();
             $log->command_output = $output;
@@ -328,6 +328,12 @@ if ( !  function_exists('scp_get')) {
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        if ($log->command_status === 'success') {
+            $log->command_output = $output;
+            if (empty($output)) {
+                $log->command_output = 1;
+            }
+        }
         discovery_log($log);
         unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
         return($output);
