@@ -597,7 +597,7 @@ class M_integrations extends MY_Model
             foreach ($external_formatted_devices as $device) {
                 $parameters = new stdClass();
                 $parameters->id = intval($device->system->id);
-                $parameters->discovery_id = '';
+                $parameters->discovery_id = @$integration->attributes->discovery_id;
                 $parameters->action = 'update';
                 $this->m_rules->execute($parameters);
             }
