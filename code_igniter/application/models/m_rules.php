@@ -211,7 +211,9 @@ class M_rules extends MY_Model
                 $log->severity = 4;
                 $log->command_status = 'fail';
                 $log->message = 'Could not retrieve data from system table for ID: ' . $parameters->id . '. Not running Rules function.';
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 return false;
             }
             // Get the first MAC Address because there is no mac stored in 'system'
@@ -252,7 +254,9 @@ class M_rules extends MY_Model
             $id = $device->id;
         }
 
-        discovery_log($log);
+        if (!empty($log->discovery_id)) {
+            discovery_log($log);
+        }
 
         // NOTE - don't set the id or last_seen_by here as we test if empty after rules
         //        have been run and only update if not empty (after adding id and last_seen_by).
@@ -268,7 +272,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - SNMP OID for  ' . $temp;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 foreach ($newdevice as $key => $value) {
                     $device->{$key} = $value;
                 }
@@ -284,7 +290,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - Mac Address for ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 $device->manufacturer = $newdevice->manufacturer;
             }
         }
@@ -298,7 +306,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 $device->manufacturer = $newdevice->manufacturer;
             }
         }
@@ -312,7 +322,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - Mac Model into description';
                 $log->command_output = json_encode($newdevice->description);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 $device->description = $newdevice->description;
             }
         }
@@ -334,7 +346,9 @@ class M_rules extends MY_Model
                     $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
                     $l->command = json_encode($rule);
                     $l->command_output = '';
-                    discovery_log($l);
+                    if (!empty($log->discovery_id)) {
+                        discovery_log($l);
+                    }
                     continue;
                 }
                 if ($input->table !== 'system' and !in_array($input->table, $other_tables)) {
@@ -370,7 +384,9 @@ class M_rules extends MY_Model
                 $l->message = 'Rule ' . $rule->id . ' inputs is not an array.';
                 $l->command = $rule->inputs;
                 $l->command_output = '';
-                discovery_log($l);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($l);
+                }
                 continue;
             }
             $hit = 0;
@@ -637,7 +653,9 @@ class M_rules extends MY_Model
                     $log->command = 'Rules Match - ' . $rule->name . ', ID: ' . $rule->id;
                     $log->command_output = json_encode($attributes);
                     $log->command_time_to_execute = (microtime(true) - $item_start);
-                    discovery_log($log);
+                    if (!empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
             }
             $log->message = '';
@@ -648,7 +666,9 @@ class M_rules extends MY_Model
         $log->command = '';
         $log->command_output = '';
         $log->command_status = 'notice';
-        discovery_log($log);
+        if (!empty($log->discovery_id)) {
+            discovery_log($log);
+        }
 
         if (count(get_object_vars($newdevice)) > 0) {
             $newdevice->id = @$device->id;
