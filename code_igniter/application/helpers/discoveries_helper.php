@@ -1787,23 +1787,15 @@ if ( ! function_exists('ip_audit')) {
 			$parameters->discovery_id = $discovery->id;
 			$parameters->ip = $device->ip;
 			$audit = audit_convert($parameters);
-			if ( ! $audit) {
-				$log->severity = 4;
-				$log->message = 'Could not convert audit result from XML.';
-				$log->command_status = 'fail';
-				discovery_log($log);
-				$log->severity = 7;
-				$log->message = '';
-				$log->command_status = 'notice';
-			} else {
+			if (!empty($audit)) {
 				$ip_audited_count = 1;
 			}
 		}
 
 		// Delete the local audit result file
-		if ( ! empty($audit_result)) {
-			if ($audit) {
-				if ( ! empty($destination)) {
+		if (!empty($audit_result)) {
+			if (!empty($audit)) {
+				if (!empty($destination)) {
 					$log->severity = 7;
 					$log->message = 'Delete audit result from filesystem.';
 					$log->command_status = 'success';
@@ -2226,6 +2218,7 @@ if ( ! function_exists('discovery_check_finished')) {
 				}
 			}
 		} else {
+			// Check if any discoveries are complete and set status if so
 			$sql = '/* discoveries_helper::discovery_check_finished */ ' . 'SELECT discoveries.id, discoveries.ip_responding_count, discoveries.status, COUNT(discovery_log.id) AS `count` FROM `discoveries` LEFT JOIN `discovery_log` ON discoveries.id = discovery_log.discovery_id WHERE `command_status` = "device complete" GROUP BY discoveries.id';
 			$query = $CI->db->query($sql);
 			$result = $query->result();
