@@ -695,17 +695,22 @@ class M_discoveries extends MY_Model
 
         # Could not copy audit result back to server
         $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not SCP GET to%' AND command_status = 'fail' AND discoveries.id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        $issues = array_merge($issues, $result);
 
         # Invalid result XML
         $sql = "SELECT discovery_log.system_id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not convert audit result from XML%' AND command_status = 'fail' AND discoveries.id = " . intval($id);
-
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
         foreach ($issues as $issue) {
-            $issue->padded_ip = $issue->{'system.ip'};
-            $issue->{'system.ip'} = ip_address_from_db($issue->{'system.ip'});
+            // Derive the description and action
             $issue = $this->issue_map($issue);
+            // Format the IP
+            if (!empty($issue->{'system.ip'})) {
+                $issue->padded_ip = $issue->{'system.ip'};
+                $issue->{'system.ip'} = ip_address_from_db($issue->{'system.ip'});
+            }
         }
         return $issues;
     }
@@ -720,52 +725,65 @@ class M_discoveries extends MY_Model
         $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
 
         # Windows issues from Linx
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command using winexe-static-2' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command using winexe-static-2' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = $result;
 
         # Windows issues from Windows
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.system_id IN (select system_id from discovery_log a where message like 'WMI detected but no valid Windows credentials%') AND discovery_log.message = 'Attempting to execute command' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
         # Invalid SSH Credentials
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SSH detected but no valid SSH credentials%' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SSH detected but no valid SSH credentials%' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
         # Invalid SNMP credentials
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SNMP detected, but no valid SNMP credentials%' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'SNMP detected, but no valid SNMP credentials%' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
         # No management protcols and an unknown or unidentified device
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'No management protocols%' AND (system.type = 'unknown' OR system.type = 'unclassified') AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'No management protocols%' AND (system.type = 'unknown' OR system.type = 'unclassified') AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
         # Could not copy audit result back to server
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not SCP GET to%' AND command_status = 'fail' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not SCP GET to%' AND command_status = 'fail' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
         # Invalid XML
-        $sql = "SELECT discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not convert audit result from XML%' AND command_status = 'fail' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.type AS `system.type`, system.icon AS `system.icon`, system.identification AS `system.identification`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN system ON (discovery_log.system_id = system.id) WHERE discovery_log.message LIKE 'Could not convert audit result from XML%' AND command_status = 'fail' AND discoveries.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
 
+        // Refine the issue list to the latest discovery_log.id per device
+        $issue_devices = array();
         foreach ($issues as $issue) {
-            $issue = $this->issue_map($issue);
-            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
-            // $issue->description = str_replace('../help', 'help', $issue->description);
-            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
-            if (!empty($issue->description)) {
-                $issue->description = str_replace('../help', 'help', $issue->description);
+            if (empty($issue_devices[$issue->{'system.id'}]) or $issue_devices[$issue->{'system.id'}] < $issue->{'discovery_log.id'}) {
+                $issue_devices[$issue->{'system.id'}] = $issue->{'discovery_log.id'};
             }
+        }
+        for ($i=0; $i < count($issues); $i++) {
+            if ($issue_devices[$issues[$i]->{'system.id'}] === $issues[$i]->{'discovery_log.id'}) {
+                $new_issues[] = $issues[$i];
+            }
+        }
+        $issues = $new_issues;
+
+        for ($i=0; $i < count($issues); $i++) {
+            // Derive the description and action
+            $issues[$i] = $this->issue_map($issues[$i]);
             // Format the IP
-            if (!empty($issue->{'system.ip'})) {
-                $issue->{'system.ip'} = ip_address_from_db($issue->{'system.ip'});
-                $issue->{'system.ip_padded'} = ip_address_to_db($issue->{'system.ip'});
+            if (!empty($issues[$i]->{'system.ip'})) {
+                $issues[$i]->{'system.ip_padded'} = ip_address_to_db($issues[$i]->{'system.ip'});
+                $issues[$i]->{'system.ip'} = ip_address_from_db($issues[$i]->{'system.ip'});
+            }
+            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
+            if (!empty($issues[$i]->description)) {
+                $issues[$i]->description = str_replace('../help', 'help', $issues[$i]->description);
             }
         }
         return $issues;
@@ -887,6 +905,7 @@ class M_discoveries extends MY_Model
             $issue->description = 'Unknown';
             $issue->action = '';
         }
+        return $issue;
     }
 
     /**
