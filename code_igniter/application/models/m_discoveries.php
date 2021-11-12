@@ -873,6 +873,11 @@ class M_discoveries extends MY_Model
             $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="../help/discovery_issues/8">here</a>.';
             $issue->action = '';
 
+        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_NOT_SUPPORTED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Most likely this is a result of attempting to connect using SMB2 to a Windows machine that only has SMB1 enabled. You should be using SMB2 as Microsoft has deprecated SMB1 due to security vulnerabilities.';
+            $issue->action = '';
+
         } else if ($issue->output ==='["",""]') {
             # Windows connection from Windows Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
