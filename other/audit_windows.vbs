@@ -3189,7 +3189,7 @@ for each objItem in colItems
             item = item & "     <item>" & vbcrlf
             item = item & "         <name>" & escape_xml(objUSBDevice.Name) & "</name>" & vbcrlf
             item = item & "         <availability>" & escape_xml(availability) & "</availability>" & vbcrlf
-            item = item & "         <class>" & escape_xml(objUSBDevice.PNPClass) & "</pnp_class>" & vbcrlf
+            item = item & "         <class>" & escape_xml(objUSBDevice.PNPClass) & "</class>" & vbcrlf
             item = item & "         <config_manager_error_code>" & escape_xml(error_code) & "</config_manager_error_code>" & vbcrlf
             item = item & "         <description>" & escape_xml(objUSBDevice.Description) & "</description>" & vbcrlf
             item = item & "         <device>" & escape_xml(objUSBDevice.DeviceID) & "</device>" & vbcrlf
