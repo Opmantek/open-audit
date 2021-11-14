@@ -1704,8 +1704,10 @@ if ( ! function_exists('ip_audit')) {
 					$parameters->discovery_id = $discovery->id;
 					$parameters->ssh_port = $ip_scan->details->ssh_port;
 					// Allow 20 seconds to copy the file
+					$timeout = $CI->config->config['discovery_ssh_timeout'];
 					$CI->config->config['discovery_ssh_timeout'] = 20;
 					$temp = scp_get($parameters);
+					$CI->config->config['discovery_ssh_timeout'] = $timeout;
 					if ($temp) {
 						$audit_result = file_get_contents($destination);
 						if (empty($audit_result)) {
