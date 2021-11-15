@@ -149,7 +149,7 @@ if (empty($json)){
 if (empty($json->system->discovery_id)) {
     $json->system->discovery_id = '';
 } else {
-    $log->discovery_id = $json->system->discovery_id;
+    $log->discovery_id = intval($json->system->discovery_id);
     $GLOBALS['discovery_id'] = $json->system->discovery_id;
 }
 if ( ! empty($json->system->id)) {
@@ -335,11 +335,6 @@ $parameters->action = 'update';
 $this->m_rules->execute($parameters);
 
 $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
-$log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
-$log->file = 'include_input_devices';
-$log->function = 'devices';
-$log->ip = ip_address_from_db($log->ip);
-discovery_log($log);
 
 // set the ip (if not already set)
 $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
@@ -363,6 +358,17 @@ if ($this->response->meta->format == 'screen') {
     #echo '</body></html>';
 }
 
+if (!empty($log->discovery_id)) {
+    $log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+    $log->file = 'include_input_devices';
+    $log->function = 'devices';
+    $log->ip = ip_address_from_db($log->ip);
+    $log->command_time_to_execute = (microtime(true) - $timer_start);
+    $log->command = '';
+    $log->command_output = '';
+    $log->command_status = 'notice';
+    discovery_log($log);
+}
 
 # If we are configured as a collector, forward the information to the server
 if ($this->config->config['servers'] !== '') {
