@@ -812,35 +812,33 @@ class M_devices extends MY_Model
                 for ($i=0; $i < count($result); $i++) {
                     # BAD
                     if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'nmap' and ($result[$i]->{'attributes'}->{'system.type'} === 'unclassified' or $result[$i]->{'attributes'}->{'system.type'} === 'unknown')) {
-                        $result[$i]->attributes->audit_class = 'fa fa-times fa-spin text-danger';
+                        $result[$i]->attributes->audit_class = 'fa fa-times text-danger';
                         $result[$i]->attributes->audit_text = 'Nmap discovered, data retrieval will be very limited.';
 
                     # NOT GOOD
                     } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'nmap' and $result[$i]->{'attributes'}->{'system.type'} !== 'unclassified' and $result[$i]->{'attributes'}->{'system.type'} !== 'unknown') {
-                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-info';
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
                         $result[$i]->attributes->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
 
                     } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'cloud') {
-                        $result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        #$result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
                         $result[$i]->attributes->audit_text = 'Cloud import, data retrieval will be very limited.';
 
                     } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'integrations') {
-                        $result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        #$result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
                         $result[$i]->attributes->audit_text = 'Integration import, data retrieval will be very limited.';
 
-                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'ssh' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'snmp')) {
-                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-info';
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'ssh' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'windows' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'snmp')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
                         $result[$i]->attributes->audit_text = 'Partially discovered computer. Data retrieval limited.';
 
                     } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'web form') {
-                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-info';
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
                         $result[$i]->attributes->audit_text = 'Manually created ' . $result[$i]->{'attributes'}->{'system.type'} . '. Data retrieval limited.';
 
                     # GOOD
-                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'snmp' and $result[$i]->{'attributes'}->{'system.type'} !== 'computer') {
-                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
-                        $result[$i]->attributes->audit_text = 'Discovered and audited ' . $result[$i]->{'attributes'}->{'system.type'} . '.';
-
                     } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit_wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit_ssh')) {
                         $result[$i]->attributes->audit_class = 'fa fa-check text-success';
                         $result[$i]->attributes->audit_text = 'Discovered and audited computer.';
@@ -848,6 +846,10 @@ class M_devices extends MY_Model
                     } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit') {
                         $result[$i]->attributes->audit_class = 'fa fa-check text-success';
                         $result[$i]->attributes->audit_text = 'Audited computer.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} !== 'computer' and !empty($result[$i]->{'attributes'}->{'system.snmp_oid'})) {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Discovered and audited ' . $result[$i]->{'attributes'}->{'system.type'} . '.';
 
                     # BAD - FALLBACK
                     } else {
