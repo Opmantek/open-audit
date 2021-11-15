@@ -520,6 +520,8 @@ class M_devices extends MY_Model
             $device_ids = explode(',', $CI->response->meta->received_data->ids);
         } elseif ( ! empty($CI->response->meta->id)) {
             $device_ids = array($CI->response->meta->id);
+        } elseif ( ! empty($CI->response->meta->ids)) {
+            $device_ids = explode(',', $CI->response->meta->ids);
         } else {
             $log->level = 5;
             $log->message = 'No ID, nor list of IDs supplied to sub_resource_create.';

@@ -525,6 +525,10 @@ if (!function_exists('response_get_action')) {
             $action = 'sub_resource_create';
             $log->summary = 'Set action because POST, id, sub_resource.';
         }
+        if ($request_method === 'GET' && !empty($device_ids) && !empty($sub_resource)) {
+            $action = 'sub_resource_create_form';
+            $log->summary = 'Set action because GET, ids, sub_resource.';
+        }
         if ($request_method === 'DELETE' && ! empty($id) && empty($sub_resource)) {
             $action = 'delete';
             $log->summary = 'Set action because DELETE, id.';
