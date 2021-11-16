@@ -1118,7 +1118,7 @@ if (! function_exists('output')) {
                     unset($item);
                 }
             }
-            $CI->response->links->next = create_url($query_parameters);
+            $CI->response->links->next =  $CI->response->links->self . create_url($query_parameters);
             unset($query_parameters);
 
             #prev link
@@ -1155,7 +1155,7 @@ if (! function_exists('output')) {
                     }
                 }
             }
-            $CI->response->links->prev = create_url($query_parameters);
+            $CI->response->links->prev =  $CI->response->links->self . create_url($query_parameters);
             unset($query_parameters);
 
             # first link
@@ -1166,7 +1166,7 @@ if (! function_exists('output')) {
                     unset($query_parameters[$i]);
                 }
             }
-            $CI->response->links->first = create_url($query_parameters);
+            $CI->response->links->first =  $CI->response->links->self . create_url($query_parameters);
             unset($query_parameters);
 
             # last link
@@ -1195,7 +1195,7 @@ if (! function_exists('output')) {
                     unset($item);
                 }
             }
-            $CI->response->links->last = create_url($query_parameters);
+            $CI->response->links->last = $CI->response->links->self . create_url($query_parameters);
             unset($query_parameters);
         }
     }
