@@ -2408,7 +2408,7 @@ if ( ! function_exists('discover_ad')) {
 						$log->message = 'Discovery ' . $network->name . ' placed in queue for execution.';
 					} else {
 						$log->command_status = 'failed';
-						$log->message = 'Discovery ' . $network->name . ' could not be placed 9in the queue. See system log for more details.';
+						$log->message = 'Discovery ' . $network->name . ' could not be placed in the queue. See system log for more details.';
 						$log->severity = 4;
 					}
 					$log->command = '';

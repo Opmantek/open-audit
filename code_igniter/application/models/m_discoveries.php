@@ -768,10 +768,10 @@ class M_discoveries extends MY_Model
         }
         for ($i=0; $i < count($issues); $i++) {
             if ($issue_devices[$issues[$i]->{'system.id'}] === $issues[$i]->{'discovery_log.id'}) {
-                $new_issues[] = $issues[$i];
+                $issue_devices[] = $issues[$i];
             }
         }
-        $issues = $new_issues;
+        $issues = $issue_devices;
 
         for ($i=0; $i < count($issues); $i++) {
             // Derive the description and action
