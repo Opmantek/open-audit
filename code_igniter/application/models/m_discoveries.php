@@ -766,12 +766,13 @@ class M_discoveries extends MY_Model
                 $issue_devices[$issue->{'system.id'}] = $issue->{'discovery_log.id'};
             }
         }
+        $new_issues = array();
         for ($i=0; $i < count($issues); $i++) {
             if ($issue_devices[$issues[$i]->{'system.id'}] === $issues[$i]->{'discovery_log.id'}) {
-                $issue_devices[] = $issues[$i];
+                $new_issues[] = $issues[$i];
             }
         }
-        $issues = $issue_devices;
+        $issues = $new_issues;
 
         for ($i=0; $i < count($issues); $i++) {
             // Derive the description and action
@@ -791,7 +792,7 @@ class M_discoveries extends MY_Model
 
     public function issue_map($issue) {
         if (empty($issue)) {
-            return stdclass();
+            return new stdclass();
         }
         if ($issue->output === '["ERROR: Failed to open connection - NT_STATUS_LOGON_FAILURE"]') {
             # Windows connection from Linux Open-AudIT server
