@@ -231,8 +231,8 @@ $(document).ready(function () {
             $(img).load(function(){
                 $('#feature_image').append($(this));
                 $(this).addClass("center-block");
-                $(this).attr("title","<?php echo strtolower($this->response->dictionary->table); ?>");
-                $(this).attr("alt", "<?php echo strtolower($this->response->dictionary->table); ?>");
+                $(this).attr("title","<?php echo @strtolower($this->response->dictionary->table); ?>");
+                $(this).attr("alt", "<?php echo @strtolower($this->response->dictionary->table); ?>");
                 $(this).attr("width", "100%");
             }).error(function(error, gg) {
                 console.log('cannot find the image');
@@ -243,9 +243,9 @@ $(document).ready(function () {
             .attr({
                 src: function(){
                     if(loadLocal === false){
-                        return "https://opmantek.com/product_data/open-audit_<?php echo strtolower($this->response->dictionary->table); ?>.png";
+                        return "https://opmantek.com/product_data/open-audit_<?php echo @strtolower($this->response->dictionary->table); ?>.png";
                     }else{
-                        var url = '/open-audit/images/<?php echo strtolower($this->response->dictionary->table); ?>.png';
+                        var url = '/open-audit/images/<?php echo @strtolower($this->response->dictionary->table); ?>.png';
                         return  url;
                     }
                 }
