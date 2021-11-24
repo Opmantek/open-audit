@@ -340,6 +340,14 @@ if (!function_exists('response_create')) {
 
         // depends on query string
         $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
+        if (! empty($response->meta->requestor) and $response->meta->collection === 'devices') {
+            $add = new stdClass();
+            $add->name = 'system.oae_manage';
+            $add->operator = '=';
+            $add->value = 'y';
+            $response->meta->filter[] = $add;
+            unset($add);
+        }
 
         // depends on query string
         $response->meta->query_parameters = response_get_query_filter($response->meta->query_string, 'query');
