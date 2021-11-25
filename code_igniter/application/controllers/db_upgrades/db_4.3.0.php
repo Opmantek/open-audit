@@ -125,6 +125,9 @@ $sql = "INSERT INTO `queries` VALUES (NULL,1,'Expired Certificates','Server','y'
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
+if ($this->db->field_exists('other', 'discoveries')) {
+    $this->alter_table('discoveries', 'other', "DROP `other`", 'drop');
+}
 
 if ($this->db->field_exists('comment', 'task')) {
     $this->alter_table('task', 'comment', "DROP `comment`", 'drop');

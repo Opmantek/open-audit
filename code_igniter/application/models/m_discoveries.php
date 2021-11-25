@@ -629,14 +629,6 @@ class M_discoveries extends MY_Model
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
             $sql = 'SELECT * FROM discoveries WHERE org_id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
-            for ($i=0; $i < count($result); $i++) {
-                if (! empty($result[$i]->other)) {
-                    $result[$i]->other = json_decode($result[$i]->other);
-                    foreach ($result[$i]->other as $key => $value) {
-                        $result[$i]->{'other.'.$key} = $value;
-                    }
-                }
-            }
             $result = $this->format_data($result, 'discoveries');
             return $result;
         }
@@ -648,13 +640,6 @@ class M_discoveries extends MY_Model
                     $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            if (! empty($result) && is_array($result)) {
-                for ($i=0; $i < count($result); $i++) {
-                    if (! empty($result[$i]->other)) {
-                        $result[$i]->other = json_decode($result[$i]->other);
-                    }
-                }
-            }
             $CI->response->data = $this->format_data($result, 'discoveries');
             $CI->response->meta->filtered = count($CI->response->data);
         }
@@ -1100,7 +1085,6 @@ class M_discoveries extends MY_Model
         $dictionary->columns->network_address = 'The URL the audit_* scripts should submit their result to.';
         $dictionary->columns->last_run = 'A calculated field that is updated each time the discovery has been executed.';
         $dictionary->columns->complete = 'A internal field that indicates if the discovery has completed.';
-        # $dictionary->columns->other = 'A JSON document containing the required attributes depending on the <code>discoveries.type</code>.';
         $dictionary->columns->scan_options = 'A JSON document containing the required attributes overriding the chosen discovery_scan_options.';
         $dictionary->columns->match_options = 'A JSON document containing the required attributes overriding the default device match options.';
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';

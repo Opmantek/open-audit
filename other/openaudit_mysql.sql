@@ -1160,7 +1160,6 @@ CREATE TABLE `discoveries` (
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `other` text NOT NULL,
   `scan_options` text NOT NULL,
   `match_options` text NOT NULL,
   `command_options` text NOT NULL,
