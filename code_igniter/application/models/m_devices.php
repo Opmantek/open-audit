@@ -731,7 +731,7 @@ class M_devices extends MY_Model
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                 $data = array(intval($CI->response->meta->id),
                         $CI->response->meta->received_data->attributes->name,
-                        $CI->response->meta->received_data->attributes->filename,
+                        basename($CI->response->meta->received_data->attributes->filename),
                         $CI->response->meta->received_data->attributes->orientation,
                         $CI->user->full_name);
                 $this->db->query($sql, $data);

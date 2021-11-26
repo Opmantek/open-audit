@@ -685,17 +685,10 @@ class Devices extends MY_Controller
         }
         $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, '*', '', '', '');
         $this->load->helper('file');
-        if (php_uname('s') === 'Windows NT') {
-            $temp = explode('\\', $attachment[0]->attributes->filename);
-        } else {
-            $temp = explode('/', $attachment[0]->attributes->filename);
-        }
-        $filename = $temp[count($temp)-1];
-        $filename = preg_replace('/'.$this->response->meta->id.'_/', '', $filename, 1);
         header('Content-Type: '.get_mime_by_extension($attachment[0]->attributes->filename));
-        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Content-Disposition: attachment;filename="'.basename($attachment[0]->attributes->filename).'"');
         header('Cache-Control: max-age=0');
-        readfile($attachment[0]->attributes->filename);
+        readfile($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . basename($attachment[0]->attributes->filename));
     }
 
     /**
