@@ -3303,8 +3303,8 @@ fi
 IFS="$NEWLINEIFS"
 echo "	<certificate>" >> "$xml_file"
 for dir in ${cert_dirs[@]}; do
-	files=$(ls "$dir" 2>/dev/null)
-	for file in $(echo "$files"); do
+	thesefiles=$(ls "$dir" 2>/dev/null)
+	for file in $(echo "$thesefiles"); do
 		name="$file"
 		details=$(openssl x509 -text -noout -in "$file" 2>/dev/null)
 		if [ -n "$details" ]; then
