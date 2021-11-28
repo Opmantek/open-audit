@@ -95,7 +95,7 @@ class Devices extends MY_Controller
             $this->response->data = $this->m_devices->query();
         } else if ($this->response->meta->sub_resource !== '' && $this->response->meta->sub_resource === 'group') {
             $this->response->data = $this->m_devices->group();
-        } else if ( ! empty($this->response->meta->groupby)) {
+        } else if (! empty($this->response->meta->groupby)) {
             $this->response->data = $this->m_devices->collection_group_by();
         } else {
             $this->m_devices->collection(null, 1);
@@ -685,10 +685,18 @@ class Devices extends MY_Controller
         }
         $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, '*', '', '', '');
         $this->load->helper('file');
-        header('Content-Type: '.get_mime_by_extension($attachment[0]->attributes->filename));
+        $filename = $attachment[0]->attributes->filename;
+        if ($this->response->meta->sub_resource === 'image') {
+            $filename = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . basename($filename);
+        } else if ($this->response->meta->sub_resource === 'attachment') {
+            $filename = BASEPATH . '../application/attachments/' . basename($filename);
+        } else {
+            $filename = basename($filename);
+        }
+        header('Content-Type: '.get_mime_by_extension($filename));
         header('Content-Disposition: attachment;filename="'.basename($attachment[0]->attributes->filename).'"');
         header('Cache-Control: max-age=0');
-        readfile($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . basename($attachment[0]->attributes->filename));
+        readfile($filename);
     }
 
     /**

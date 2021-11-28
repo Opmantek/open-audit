@@ -238,7 +238,11 @@ if (!function_exists('response_create')) {
             $instance->input->post('id')
         );
         if (!empty($temp)) {
-            $response->meta->sub_resource_id = $temp;
+            $response->meta->sub_resource_id = intval($temp);
+        }
+
+        if (!empty($instance->input->get('sub_resource_id'))) {
+            $response->meta->sub_resource_id = intval($instance->input->get('sub_resource_id'));
         }
 
         // depends on id, ids, recevied_data, request_method, sub_resource and sub_resource_id
