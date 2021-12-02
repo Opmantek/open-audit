@@ -241,7 +241,8 @@ if (!function_exists('response_create')) {
             $response->meta->sub_resource_id = intval($temp);
         }
 
-        if (!empty($instance->input->get('sub_resource_id'))) {
+        $temp = $instance->input->get('sub_resource_id');
+        if (!empty($temp)) {
             $response->meta->sub_resource_id = intval($instance->input->get('sub_resource_id'));
         }
 
