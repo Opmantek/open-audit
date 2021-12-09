@@ -1251,7 +1251,8 @@ class M_device extends MY_Model
         }
 
         // check IP Address in system, then ip tables
-        if (strtolower($match->match_ip) === 'y' && empty($details->id) && ! empty($details->ip) && filter_var($details->ip, FILTER_VALIDATE_IP)) {
+        $ip = ip_address_from_db(@$details->ip);
+        if (strtolower($match->match_ip) === 'y' && empty($details->id) && ! empty($details->ip) && filter_var($ip, FILTER_VALIDATE_IP)) {
             // first check the ip table as eny existing devices that have been seen
             // by more than just Nmap will have an entry here
             $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND system.status != 'deleted' LIMIT 1";
