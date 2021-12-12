@@ -1907,7 +1907,7 @@ if ( ! function_exists('ip_audit')) {
 		}
 
 		$sql = '/* discoveries_helper::ip_audit */ ' . 'UPDATE `discovery_log` SET system_id = ? WHERE discovery_id = ? and ip = ?';
-		$data = array($log->system_id, $discovery->id, $device->ip);
+		$data = array($log->system_id, $discovery->id, ip_address_from_db($device->ip));
 		$query = $CI->db->query($sql, $data);
 
 		if ($audit) {
