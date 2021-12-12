@@ -270,6 +270,12 @@ if ( ! empty($details->discovery_id)) {
     $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
     $data = array(intval($details->id), intval(getmypid()));
     $query = $this->db->query($sql, $data);
+
+    // And update any existing discovery logs
+    $sql = "/* include_input_device */" . " UPDATE discovery_log SET system_id = ? WHERE system_id is NULL and discovery_id = ? and ip = ?";
+    $data = array($details->id, $details->discovery_id, ip_address_from_db($details->ip));
+    $query = $this->db->query($sql, $data);
+
 } else {
     // we were supplied an audit result, but no discovery_id
     // delete all dicovery logs where system_id = our ID and log.pid != our pid
