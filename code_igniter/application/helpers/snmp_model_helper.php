@@ -368,6 +368,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.12356.101.1.633': $device->model = 'Fortinet fwf90DPOE'; $details->type = 'Firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.639': $device->model = 'Fortinet FortiWiFi 60E'; $details->type = 'Firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.641': $device->model = 'Fortinet Fortigate 60E'; $details->type = 'Firewall'; break;
+            case '1.3.6.1.4.1.12356.101.1.644': $device->model = 'Fortinet Fortigate 60F'; $details->type = 'Firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.800': $device->model = 'Fortinet fgt80C'; $details->type = 'Firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.8000': $device->model = 'Fortigate 800'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.8000': $device->model = 'Fortinet Fortigate FGT800'; $details->type = 'Firewall'; break;
