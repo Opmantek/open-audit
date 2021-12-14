@@ -709,6 +709,11 @@ if [ "$system_os_family" == "centos" ]; then
 	system_os_family="CentOS"
 fi
 
+if [ "$system_os_family" == "Common Base Linux Mariner" ]; then
+	system_os_family="Mariner"
+	system_os_name="Mariner Linux"
+fi
+
 if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]] || [[ "$system_os_family" == *"SuSE"* ]] || [[ "$system_os_family" == *"SuSe"* ]]; then
 	system_os_family="Suse"
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
@@ -2370,7 +2375,7 @@ if [ "$debugging" -gt "0" ]; then
         echo "Log Info"
 fi
 
-echo "  <log>" >> "$xml_file"
+echo "	<log>" >> "$xml_file"
 for log in ls /etc/logrotate.d/* ; do
         if [ -e "$log" ]; then
                 log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
@@ -2393,15 +2398,15 @@ for log in ls /etc/logrotate.d/* ; do
                     fi
                 fi
                 {
-                echo "          <item>"
-                echo "                  <name>$(escape_xml "$log")</name>"
-                echo "                  <file_name>$(escape_xml "$log_file_name")</file_name>"
-                echo "                  <max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
-                echo "          </item>"
+                echo "		<item>"
+                echo "			<name>$(escape_xml "$log")</name>"
+                echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
+                echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+                echo "		</item>"
                 } >> "$xml_file"
         fi
 done
-echo "  </log>" >> "$xml_file"
+echo "	</log>" >> "$xml_file"
 
 
 ##################################
@@ -2627,7 +2632,7 @@ case $system_os_family in
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -2760,7 +2765,7 @@ if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; the
 	fi
 fi
 
-if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ]; then
+if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ] || [ "$system_os_family" = "Mariner" ]; then
 	INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
 fi
 
