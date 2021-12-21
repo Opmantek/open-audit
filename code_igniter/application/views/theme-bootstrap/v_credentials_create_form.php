@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 ?>
@@ -207,8 +207,8 @@ $(document).ready(function(){
              </div>';
 
     var $windows_text = '        <div class="form-group">\
-            <label for="data[attributes][credentials][username]" class="col-sm-4 control-label"><?php echo __('Username'); ?></label>\
-            <div class="col-sm-7 input-group">\
+            <label for="data[attributes][credentials][username]" class="col-sm-3 control-label"><?php echo __('Username'); ?></label>\
+            <div class="col-sm-8 input-group">\
                 <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="username@domain" value="">\
             </div>\
         </div>\

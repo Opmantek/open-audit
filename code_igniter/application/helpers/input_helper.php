@@ -34,7 +34,7 @@ if ( ! defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -56,7 +56,9 @@ if ( ! function_exists('from_unix_timestamp')) {
         }
         $sql = '/* input_helper::from_unix_timestamp */ ' . "SELECT FROM_UNIXTIME({$timestamp}) as `timestamp`";
         $CI = & get_instance();
-        $CI->response->meta->sql[] = $sql;
+        if (!empty($CI->response->meta->sql)) {
+            $CI->response->meta->sql[] = $sql;
+        }
         $query = $CI->db->query($sql);
         $result = $query->result();
         $datetime = $result[0]->timestamp;
@@ -444,9 +446,9 @@ if ( ! function_exists('inputRead')) {
         if ( ! empty($CI->response->meta->include)) {
             if ($CI->response->meta->collection === 'devices') {
                 if (($CI->response->meta->format === 'screen' && empty($CI->response->meta->include)) OR $CI->response->meta->include === '*' OR $CI->response->meta->include === 'all') {
-                    $CI->response->meta->include = 'application,attachment,audit_log,bios,change_log,cluster,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+                    $CI->response->meta->include = 'application,attachment,audit_log,bios,change_log,cluster,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
                 } else {
-                    $valid = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                    $valid = array('application', 'attachment', 'audit_log', 'bios', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'fields', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                     $temp = explode(',', $CI->response->meta->include);
                     for ($i=0; $i < count($temp); $i++) {
                         if ( ! in_array($temp[$i], $valid)) {

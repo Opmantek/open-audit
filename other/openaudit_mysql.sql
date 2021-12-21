@@ -388,6 +388,7 @@ CREATE TABLE `audit_log` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `audit_log_system_id_type` (`system_id`,`type`),
+  KEY `audit_log_system_id_timestamp` (`system_id`,`timestamp`),
   CONSTRAINT `audit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -537,6 +538,44 @@ LOCK TABLES `buildings` WRITE;
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
 INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `buildings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `certificate`
+--
+
+DROP TABLE IF EXISTS `certificate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `certificate` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `issuer` text NOT NULL,
+  `valid_from_raw` varchar(100) NOT NULL DEFAULT '',
+  `valid_from` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `valid_to_raw` varchar(100) NOT NULL DEFAULT '',
+  `valid_to` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `encryption` varchar(100) NOT NULL DEFAULT '',
+  `algorithm` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `certificate_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `certificate`
+--
+
+LOCK TABLES `certificate` WRITE;
+/*!40000 ALTER TABLE `certificate` DISABLE KEYS */;
+/*!40000 ALTER TABLE `certificate` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -799,6 +838,7 @@ INSERT INTO `configuration` VALUES (NULL,'blessed_subnets_use','y','bool','y','s
 INSERT INTO `configuration` VALUES (NULL,'collector_check_minutes','5','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_bios','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the bios table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_certificate','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the Certificate table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_disk','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the disk table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_dns','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the dns table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_file','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the file table.');
@@ -820,6 +860,7 @@ INSERT INTO `configuration` VALUES (NULL,'create_change_log_partition','y','bool
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_policy','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the policy table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_print_queue','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the print_queue table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_processor','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the processor table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_route','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the route table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_san','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the san table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_scsi','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the scsi table.');
@@ -831,6 +872,7 @@ INSERT INTO `configuration` VALUES (NULL,'create_change_log_software','y','bool'
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_software_key','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the software_key table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_sound','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the sound table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_task','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the task table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_usb','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the USB table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_user','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the user table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_user_group','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the user_group table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_variable','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the variable table.');
@@ -842,6 +884,7 @@ INSERT INTO `configuration` VALUES (NULL,'decrypt_credentials','y','bool','y','s
 INSERT INTO `configuration` VALUES (NULL,'default_network_address','','text','y','system','2000-01-01 00:00:00','The URL used by external devices to talk to Open-AudIT.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent','n','bool','y','system','2000-01-01 00:00:00','Should we delete all non-current data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_bios','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current bios data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_certificate','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current Certificate data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_disk','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current disk data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_dns','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current dns data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_file','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current file data.');
@@ -860,6 +903,7 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_partition','n','bool
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_policy','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current policy data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_print_queue','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current print_queue data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_processor','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current processor data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_route','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current route data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_san','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current san data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_scsi','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current scsi data.');
@@ -871,6 +915,7 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_software','n','bool'
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_software_key','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current software_key data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_sound','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current sound data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_task','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current task data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_usb','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current USB data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_user','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current user data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_user_group','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current user_group data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current variable data.');
@@ -896,12 +941,12 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_sunos_use_sudo','y','bool','
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
-INSERT INTO `configuration` VALUES (NULL,'display_version','3.5.3','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL,'display_version','4.3.1','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (NULL,'download_reports','y','bool','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.');
 INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (NULL,'gui_trim_characters','25','number','y','system','2000-01-01 00:00:00','When showing a table of information in the web GUI, replace characters greater than this with \"...\".');
 INSERT INTO `configuration` VALUES (NULL,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (NULL,'internal_version','20210104','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL,'internal_version','20211213','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (NULL,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (NULL,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
 INSERT INTO `configuration` VALUES (NULL,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
@@ -1104,12 +1149,20 @@ CREATE TABLE `discoveries` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
+  `subnet` varchar(45) NOT NULL DEFAULT '',
+  `seed_ip` varchar(45) NOT NULL DEFAULT '',
+  `seed_restrict_to_subnet` enum('y','n') NOT NULL DEFAULT 'y',
+  `seed_restrict_to_private` enum('y','n') NOT NULL DEFAULT 'y',
+  `seed_ping` enum('y','n') NOT NULL DEFAULT 'y',
+  `ad_domain` varchar(200) NOT NULL DEFAULT '',
+  `ad_server` varchar(45) NOT NULL DEFAULT '',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `other` text NOT NULL,
-  `options` text NOT NULL,
+  `scan_options` text NOT NULL,
+  `match_options` text NOT NULL,
+  `command_options` text NOT NULL,
   `discard` enum('y','n') NOT NULL DEFAULT 'n',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_finished` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -1120,6 +1173,8 @@ CREATE TABLE `discoveries` (
   `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_discovered_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_audited_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `cloud_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `cloud_name` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1132,6 +1187,8 @@ CREATE TABLE `discoveries` (
 
 LOCK TABLES `discoveries` WRITE;
 /*!40000 ALTER TABLE `discoveries` DISABLE KEYS */;
+INSERT INTO `discoveries` (id, name, org_id, type, subnet, edited_date, edited_by) VALUES (1,'Default Discovery',1,'subnet','',NOW(),'system');
+INSERT INTO `discoveries` VALUES (2,'Discovery for Default NMIS Integration',1,'','integration','','','y','y','y','','',NULL,NULL,'http://127.0.0.1/open-audit/index.php/input/discoveries',0,'{\"id\":1,\"ping\":\"\",\"service_version\":\"\",\"open|filtered\":\"\",\"filtered\":\"\",\"timeout\":\"\",\"timing\":\"\",\"nmap_tcp_ports\":\"\",\"nmap_udp_ports\":\"\",\"tcp_ports\":\"\",\"udp_ports\":\"\",\"exclude_tcp_ports\":\"\",\"exclude_udp_ports\":\"\",\"exclude_ip\":\"\",\"ssh_ports\":\"\",\"script_timeout\":\"\",\"snmp_timeout\":\"\",\"ssh_timeout\":\"\",\"wmi_timeout\":\"\"}','{\"match_dbus\":\"\",\"match_fqdn\":\"\",\"match_dns_fqdn\":\"\",\"match_dns_hostname\":\"\",\"match_hostname\":\"\",\"match_hostname_dbus\":\"\",\"match_hostname_serial\":\"\",\"match_hostname_uuid\":\"\",\"match_ip\":\"\",\"match_ip_no_data\":\"\",\"match_mac\":\"\",\"match_mac_vmware\":\"\",\"match_serial\":\"\",\"match_serial_type\":\"\",\"match_sysname\":\"\",\"match_sysname_serial\":\"\",\"match_uuid\":\"\"}','','n','2000-01-01 00:00:00','2000-01-01 00:00:00','00:00:00','complete',0,0,0,0,0,0,'','system',NOW());
 /*!40000 ALTER TABLE `discoveries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1192,6 +1249,10 @@ CREATE TABLE `discovery_scan_options` (
   `open|filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `timeout` int(10) unsigned NOT NULL DEFAULT '0',
+  `snmp_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `ssh_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `wmi_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `script_timeout` tinyint(5) unsigned NOT NULL DEFAULT '0',
   `timing` int(1) unsigned NOT NULL DEFAULT '4',
   `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT '0',
   `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1202,6 +1263,9 @@ CREATE TABLE `discovery_scan_options` (
   `exclude_ip` text NOT NULL,
   `ssh_ports` text NOT NULL,
   `options` text NOT NULL,
+  `ports_in_order` enum('','y','n') NOT NULL DEFAULT 'n',
+  `ports_stop_after` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `command_options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1214,13 +1278,13 @@ CREATE TABLE `discovery_scan_options` (
 
 LOCK TABLES `discovery_scan_options` WRITE;
 /*!40000 ALTER TABLE `discovery_scan_options` DISABLE KEYS */;
-INSERT INTO `discovery_scan_options` VALUES (1,'UltraFast',1,'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,0,0,'22,135,62078','161','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (2,'SuperFast',1,'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,10,10,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (3,'Fast',1,'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,100,100,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (4,'Medium (Classic)',1,'Approximately 90 seconds per target. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An open|filtered port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.','n','n','y','y',0,4,1000,0,'62078','161','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 seconds per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,4,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y','y',0,3,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00');
-INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y','y',0,2,1000,1000,'62078','','','','','22','','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (1,'UltraFast',1,'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,0,0,0,0,4,0,0,'22,135,62078','161','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (2,'SuperFast',1,'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,0,0,0,0,4,10,10,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (3,'Fast',1,'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is considered closed. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,0,0,0,0,4,100,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (4,'Medium (Classic)',1,'Approximately 90 seconds per target. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An open|filtered port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.','n','n','y','y',0,0,0,0,0,4,1000,0,'62078','161','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 seconds per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An open|filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n','n',0,0,0,0,0,4,1000,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y','y',0,0,0,0,0,3,1000,100,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
+INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An open|filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y','y',0,0,0,0,0,2,1000,1000,'62078','','','','','22','','n',0,'','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `discovery_scan_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1389,6 +1453,12 @@ CREATE TABLE `fields` (
 
 LOCK TABLES `fields` WRITE;
 /*!40000 ALTER TABLE `fields` DISABLE KEYS */;
+INSERT INTO `fields` VALUES (NULL,'nmis_active',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_collect',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_model',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_netType',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_ping',1,1,'varchar','','system','Administrator',NOW());
+INSERT INTO `fields` VALUES (NULL,'nmis_port',1,1,'varchar','','system','Administrator',NOW());
 /*!40000 ALTER TABLE `fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1622,8 +1692,34 @@ CREATE TABLE `integrations` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'nmis',
-  `options` longtext NOT NULL,
+  `additional_items` longtext NOT NULL,
+  `attributes` longtext NOT NULL,
+  `create_external_count` int(10) unsigned DEFAULT NULL,
+  `create_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
+  `create_internal_count` int(10) unsigned DEFAULT NULL,
+  `create_internal_from_external` enum('y','n') NOT NULL DEFAULT 'n',
+  `devices` longtext NOT NULL,
+  `locations` longtext NOT NULL,
+  `debug` enum('y','n') NOT NULL DEFAULT 'n',
+  `discovery_id` int(10) unsigned DEFAULT NULL,
+  `discovery_run` enum('y','n') NOT NULL DEFAULT 'n',
+  `fields` longtext NOT NULL,
+  `select_external_attribute` varchar(200) NOT NULL DEFAULT '',
+  `select_external_count` int(10) unsigned DEFAULT NULL,
+  `select_external_type` enum('','all','none','attribute') DEFAULT 'all',
+  `select_external_value` varchar(200) NOT NULL DEFAULT '',
+  `select_internal_attribute` varchar(200) NOT NULL DEFAULT '',
+  `select_internal_count` int(10) unsigned DEFAULT NULL,
+  `select_internal_type` enum('','none','attribute','group','query') DEFAULT 'attribute',
+  `select_internal_value` varchar(200) NOT NULL DEFAULT '',
+  `update_external_count` int(10) unsigned DEFAULT NULL,
+  `update_external_from_internal` enum('y','n') NOT NULL DEFAULT 'y',
+  `update_internal_count` int(10) unsigned DEFAULT NULL,
+  `update_internal_from_external` enum('y','n') NOT NULL DEFAULT 'y',
+  `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
+  `status` varchar(200) NOT NULL DEFAULT '',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `duration` int(10) unsigned DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1636,7 +1732,35 @@ CREATE TABLE `integrations` (
 
 LOCK TABLES `integrations` WRITE;
 /*!40000 ALTER TABLE `integrations` DISABLE KEYS */;
+INSERT INTO `integrations` VALUES (NULL,'Default NMIS Integration',1,'','nmis','{\"pollers\":[],\"groups\":[],\"roles\":[],\"customers\":[],\"business_services\":[]}','{\"password\":\"\",\"url\":\"http://localhost/omk/\",\"username\":\"\"}',0,'y',0,'y','[]','[]','n',2,'y','[{\"default_value\":\"\",\"external_field_name\":\"configuration.businessService\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_business_service\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"server_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_poller\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.notes\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_notes\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"y\",\"external_field_name\":\"\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_manage\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.sysDescr\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.sysDescr\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"Default Location\",\"external_field_name\":\"configuration.location\",\"external_field_type\":\"text\",\"internal_field_name\":\"locations.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmiusername\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_username\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmipassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_password\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.version\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.version\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.community\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_community\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.username\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.security_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.customer\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_customer\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.authentication_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authprotocol\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.authentication_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.privacy_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privprotocol\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.privacy_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.active\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_active\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.collect\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_collect\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"automatic\",\"external_field_name\":\"configuration.model\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_model\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"wan\",\"external_field_name\":\"configuration.netType\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_netType\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"true\",\"external_field_name\":\"configuration.ping\",\"external_field_type\":\"bool\",\"internal_field_name\":\"fields.nmis_ping\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"161\",\"external_field_name\":\"configuration.port\",\"external_field_type\":\"integer\",\"internal_field_name\":\"fields.nmis_port\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.display_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"Open-AudIT\",\"external_field_name\":\"configuration.group\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_group\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.host\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.ip\",\"matching_attribute\":\"y\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"uuid\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.omk_uuid\",\"matching_attribute\":\"y\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.roleType\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_role\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.serviceStatus\",\"external_field_type\":\"capitalise\",\"internal_field_name\":\"system.environment\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"cluster_id\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_poller_uuid\",\"matching_attribute\":\"n\",\"priority\":\"external\"}]','',0,'all','','nmis_manage',0,'attribute','y',0,'y',0,'y','n','','2000-01-01 00:00:00',0,'system',NOW());
 /*!40000 ALTER TABLE `integrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `integrations_log`
+--
+
+DROP TABLE IF EXISTS `integrations_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `integrations_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `integrations_id` int(10) unsigned DEFAULT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `microtime` decimal(16,6) DEFAULT NULL,
+  `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `integrations_log`
+--
+
+LOCK TABLES `integrations_log` WRITE;
+/*!40000 ALTER TABLE `integrations_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `integrations_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1828,6 +1952,7 @@ CREATE TABLE `licenses` (
   `match_string` text NOT NULL,
   `software_name` text NOT NULL,
   `software_version` varchar(200) NOT NULL DEFAULT '',
+  `expiry_date` date NOT NULL DEFAULT '2000-01-01',
   `sql` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -2250,7 +2375,9 @@ CREATE TABLE `networks` (
   `cloud_id` int(10) unsigned DEFAULT NULL,
   `gateways` varchar(200) NOT NULL DEFAULT '',
   `network_domain` varchar(200) NOT NULL DEFAULT '',
-  `secutity_zone` varchar(200) NOT NULL DEFAULT '',
+  `security_zone` varchar(200) NOT NULL DEFAULT '',
+  `admin_status` enum('allocated','delegated','planning','reserved','unallocated','unknown','unmanaged') NOT NULL DEFAULT 'allocated',
+  `environment` varchar(100) NOT NULL DEFAULT 'Production',
   `location_id` int(10) unsigned DEFAULT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -2724,15 +2851,21 @@ INSERT INTO `queries` VALUES (NULL,1,'Shares','Device','y','Shared directory det
 INSERT INTO `queries` VALUES (NULL,1,'Elevated','User','y','Name, group name, group members.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.name as `user_group.name`, user_group.members AS `user_group.members` FROM user_group LEFT JOIN system ON (user_group.system_id = system.id AND user_group.current = \'y\') WHERE @filter AND (user_group.name = \'Administrators\' OR user_group.name = \'Power Users\' OR user_group.name = \'Remote Desktop Users\' OR user_group.name = \'wheel\' OR user_group.name = \'sudo\') AND user_group.members > \'\' GROUP BY system.id, user_group.name ORDER BY system.name','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'Orphaned','User','y','User accounts that no longer appear to be valid.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.name as `user_group.name`, user_group.members AS `user_group.members` FROM system LEFT JOIN user_group ON (user_group.system_id = system.id AND user_group.current = \'y\') WHERE @filter AND user_group.members LIKE \'%@,%\' AND user_group.members NOT LIKE \'Everyone@,\' GROUP BY user_group.id ORDER BY system.name','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'Standard','User','y','Name, group name, group members.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.members AS `user_group.members`, user_group.name AS `user_group.name` FROM user_group LEFT JOIN system ON (user_group.system_id = system.id AND user_group.current = \'y\') WHERE @filter AND (user_group.name = \'Users\' OR user_group.name = \'Guests\') AND user_group.members > \'\'','','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (NULL,1,'Files','Change','y','Any changes in the table \'file\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'file\'','','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (NULL,1,'Hardware','Change','y','Any changes created in the tables \'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\' and \'video\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\')','','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (NULL,1,'New Devices','Change','y','Any changes in the table \'system\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'system\'','','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (NULL,1,'Settings','Change','y','Any changes in the tables \'dns\', \'ip\', \'log\', netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\' and \'variable\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'dns\', \'ip\', \'log\', \'netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\', \'variable\')','','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (NULL,1,'Software','Change','y','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Files','Change','y','Any changes in the table \'file\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'file\'','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Hardware','Change','y','Any changes created in the tables \'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\' and \'video\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\')','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'New Devices','Change','y','Any changes in the table \'system\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'system\'','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Settings','Change','y','Any changes in the tables \'dns\', \'ip\', \'log\', netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\' and \'variable\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'dns\', \'ip\', \'log\', \'netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\', \'variable\')','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Software','Change','y','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'AD Controllers','Server','y','Active Directory Domain Controllers','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = \'y\') WHERE @filter AND windows.domain_role LIKE \'%Domain Controller\' AND system.status = \'production\'','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'Cloud Device Details','Device','y','Details about your cloud based devices','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.name AS `system.name`, system.ip AS `system.ip`, system.instance_type AS `system.instance.type`, clouds.type AS `clouds.type`, clouds.name AS `clouds.name`, locations.name AS `locations.name` FROM system LEFT JOIN clouds ON (clouds.id = system.cloud_id) LEFT JOIN locations ON (locations.id = system.location_id) WHERE @filter AND system.cloud_id != \'\';','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'NMIS','Device','y','NMIS Export query','SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.hostname AS `system.hostname`, system.fqdn AS `system.fqdn`, system.dns_hostname AS `system.dns_hostname`, system.omk_uuid AS `system.omk_uuid`, system.nmis_name AS `system.nmis_name`, system.nmis_group AS `system.nmis_group`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_poller AS `system.nmis_poller` FROM `system` WHERE @filter AND system.nmis_manage = \'y\'','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'Integration Default for NMIS','Other','y','The default query for integration with NMIS. Uses all devices with nmis_manage set to y.','SELECT system.id AS `system.id`, system.name AS `system.name`, system.hostname AS `system.hostname`, system.dns_hostname AS `system.dns_hostname`, system.fqdn AS `system.fqdn`, system.dns_fqdn AS `system.dns_fqdn`, system.ip AS `system.ip`, system.type AS `system.type`, system.credentials AS `system.credentials`, system.nmis_group AS `system.nmis_group`, system.nmis_name AS `system.nmis_name`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_customer AS `system.nmis_customer`, system.nmis_poller AS `system.nmis_poller`, system.snmp_version AS `system.snmp_version`, system.omk_uuid AS `system.omk_uuid`, locations.name AS `locations.name`, IF(system.snmp_version != \'\', \'true\', \'false\') AS `system.collect_snmp`, IF(system.os_group LIKE \'%windows%\', \'true\', \'false\') AS `system.collect_wmi` FROM `system` LEFT JOIN `locations` ON system.location_id = locations.id WHERE @filter AND system.nmis_manage = \'y\'','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'opAddress','Other','y','The default query for integration with opAddress.','SELECT system.id AS `system.id`, system.ip AS `system.ip`, system.hostname AS `system.hostname`, system.sysName AS `system.sysName`, system.fqdn AS `system.fqdn`, system.dns_fqdn AS `system.dns_fqdn`, system.last_seen AS `system.last_seen`, network.speed AS `network.speed`, network.connection AS `network.connection`, ip.ip AS `ip.ip`, ip.mac AS `ip.mac`,ip.netmask AS `ip.netmask`, ip.network AS `ip.network`, ip.version AS `ip.version`, locations.name AS `locations.name` FROM ip LEFT JOIN system ON (ip.system_id = system.id AND ip.current = \'y\') LEFT JOIN network ON (ip.net_index = network.net_index AND ip.mac = network.mac) LEFT JOIN locations ON (system.location_id = locations.id) WHERE @filter','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates','Server','y','Certificates expiring between today - 7 days and today + 30 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() - INTERVAL 1 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day)','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates (action immediately)','Server','y','Certificates expiring between in the next 8 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > NOW() AND certificate.valid_to < DATE(NOW() + INTERVAL 8 day)','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates (action soon)','Server','y','Certificates expiring between 8 and 32 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() + INTERVAL 8 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 32 day)','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Expiring Certificates (action later)','Server','y','Certificates expiring between 32 and 92 days','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() + INTERVAL 32 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 92 day)','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Expired Certificates','Server','y','Expired certificates','SELECT system.id AS `system.id`, system.name AS `system.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN system ON (certificate.system_id = system.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to < DATE(NOW())','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2865,6 +2998,46 @@ LOCK TABLES `rack_devices` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `radio`
+--
+
+DROP TABLE IF EXISTS `radio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `radio` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `net_index` varchar(200) NOT NULL DEFAULT '',
+  `rx_level` varchar(200) NOT NULL DEFAULT '',
+  `rx_profile` varchar(200) NOT NULL DEFAULT '',
+  `rx_freq` varchar(200) NOT NULL DEFAULT '',
+  `rx_power` varchar(200) NOT NULL DEFAULT '',
+  `rx_bitrate` varchar(200) NOT NULL DEFAULT '',
+  `tx_level` varchar(200) NOT NULL DEFAULT '',
+  `tx_profile` varchar(200) NOT NULL DEFAULT '',
+  `tx_freq` varchar(200) NOT NULL DEFAULT '',
+  `tx_power` varchar(200) NOT NULL DEFAULT '',
+  `tx_bitrate` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `radio_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `radio`
+--
+
+LOCK TABLES `radio` WRITE;
+/*!40000 ALTER TABLE `radio` DISABLE KEYS */;
+/*!40000 ALTER TABLE `radio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `roles`
 --
 
@@ -2893,7 +3066,7 @@ INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\
 INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"applications\":\"r\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"r\",\"dashboards\":\"\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (6,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"dashboards\":\"\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\",\"widgets\":\"\"}','open-audit_roles_agent','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -3074,10 +3247,10 @@ INSERT INTO `rules` VALUES (NULL,'Apresia switches default',1,'Set type as a def
 INSERT INTO `rules` VALUES (NULL,'Apresia WAPs default',1,'Set type as a default based on OID.',90,'[{\"table\":\"system\",\"attribute\":\"snmp_oid\",\"operator\":\"st\",\"value\":\"1.3.6.1.4.1.278.1.19\"},{\"table\":\"system\",\"attribute\":\"model\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"system\",\"attribute\":\"type\",\"value\":\"wap\",\"value_type\":\"string\"},{\"table\":\"system\",\"attribute\":\"model\",\"value\":\"Apresia\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Ceragon Wireless Link default',1,'Set type as a default based on manufacturer.',80,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"Ceragon\"},{\"table\":\"system\",\"attribute\":\"type\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"system\",\"attribute\":\"type\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'VSS Monitor',1,'Set model and type based on OID.',90,'[{\"table\":\"system\",\"attribute\":\"snmp_oid\",\"operator\":\"st\",\"value\":\"1.3.6.1.4.1.21671.1.2\"},{\"table\":\"system\",\"attribute\":\"type\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"system\",\"attribute\":\"type\",\"value\":\"network device\",\"value_type\":\"string\"},{\"table\":\"system\",\"attribute\":\"model\",\"value\":\"VSS Monitor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like VMware)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"vmware\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like Parallels)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"parallels\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like Systemtechnik)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"PCS Systemtechnik GmbH\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like Virtual)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"virtual\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like VMware)',1,'Set the form factor based on the manufacturer.',90,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"vmware\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like Parallels)',1,'Set the form factor based on the manufacturer.',90,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"parallels\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like Systemtechnik)',1,'Set the form factor based on the manufacturer.',90,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"PCS Systemtechnik GmbH\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like Virtual)',1,'Set the form factor based on the manufacturer.',90,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"li\",\"value\":\"virtual\"}]','[{\"table\":\"system\",\"attribute\":\"form_factor\",\"value\":\"Virtual\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Class based on Form Factor and OS (Virtual Server)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"system\",\"attribute\":\"form_factor\",\"operator\":\"eq\",\"value\":\"Virtual\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"Windows\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"system\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"system\",\"attribute\":\"class\",\"value\":\"virtual server\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Class based on Form Factor and OS (Physical Server)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"system\",\"attribute\":\"form_factor\",\"operator\":\"ne\",\"value\":\"Virtual\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"Windows\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"system\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"},{\"table\":\"system\",\"attribute\":\"manufacturer\",\"operator\":\"nl\",\"value\":\"Ubiquiti\"},{\"table\":\"system\",\"attribute\":\"type\",\"operator\":\"eq\",\"value\":\"computer\"}]','[{\"table\":\"system\",\"attribute\":\"class\",\"value\":\"server\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Class based on Form Factor and OS (Virtual Windows Server)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"system\",\"attribute\":\"form_factor\",\"operator\":\"eq\",\"value\":\"Virtual\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"Windows\"},{\"table\":\"system\",\"attribute\":\"os_name\",\"operator\":\"li\",\"value\":\"Server\"},{\"table\":\"system\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"system\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"system\",\"attribute\":\"class\",\"value\":\"virtual server\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
@@ -3087,6 +3260,7 @@ INSERT INTO `rules` VALUES (NULL,'Type based on Manufacturer and DNS Hostname (p
 INSERT INTO `rules` VALUES (NULL,'Form Factor based on Manufacturer (like innotek GmbH)',1,'Set the form factor based on the manufacturer.',100,'[{\"table\":\"system\",\"attribute\":\"manufacturer\",\"value\":\"innotek GmbH\",\"operator\":\"li\"}]','[{\"value\":\"Virtual\",\"table\":\"system\",\"attribute\":\"form_factor\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"system\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (NULL,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based on model.',100,'[{\"attribute\":\"model\",\"operator\":\"li\",\"table\":\"system\",\"value\":\"RP-5AC-Gen2\"}]','[{\"attribute\":\"type\",\"table\":\"system\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"system\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"system\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3221,6 +3395,7 @@ CREATE TABLE `server` (
   `status` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
   `port` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `certificates` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `server_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
@@ -3541,6 +3716,12 @@ CREATE TABLE `system` (
   `uptime` varchar(50) NOT NULL DEFAULT '',
   `form_factor` varchar(50) NOT NULL DEFAULT '',
   `os_bit` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `os_arch` varchar(50) NOT NULL DEFAULT '',
+  `os_license` varchar(250) NOT NULL DEFAULT '',
+  `os_license_code` varchar(250) NOT NULL DEFAULT '',
+  `os_license_mode` varchar(250) NOT NULL DEFAULT '',
+  `os_license_type` varchar(250) NOT NULL DEFAULT '',
+  `os_licence_expiry` date NOT NULL DEFAULT '2000-01-01',
   `memory_count` bigint(20) unsigned NOT NULL DEFAULT '0',
   `processor_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `storage_count` int(10) unsigned NOT NULL DEFAULT '0',
@@ -3611,6 +3792,7 @@ CREATE TABLE `system` (
   `nmis_notes` text NOT NULL,
   `nmis_business_service` varchar(50) NOT NULL DEFAULT '',
   `nmis_poller` text NOT NULL,
+  `nmis_poller_uuid` varchar(45) NOT NULL DEFAULT '',
   `nmis_customer` varchar(200) NOT NULL DEFAULT '',
   `oae_manage` enum('y','n') NOT NULL DEFAULT 'y',
   `snmp_oid` text NOT NULL,
@@ -3678,6 +3860,7 @@ CREATE TABLE `task` (
   `task` text NOT NULL,
   `state` varchar(10) NOT NULL DEFAULT '',
   `runas` varchar(50) NOT NULL DEFAULT '',
+  `comment` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
@@ -3732,6 +3915,44 @@ CREATE TABLE `tasks` (
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `usb`
+--
+
+DROP TABLE IF EXISTS `usb`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usb` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `availability` varchar(100) NOT NULL DEFAULT '',
+  `class` varchar(100) NOT NULL DEFAULT '',
+  `config_manager_error_code` varchar(100) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `device` varchar(200) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `present` varchar(100) NOT NULL DEFAULT '',
+  `serial` text NOT NULL,
+  `status` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `usb_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usb`
+--
+
+LOCK TABLES `usb` WRITE;
+/*!40000 ALTER TABLE `usb` DISABLE KEYS */;
+/*!40000 ALTER TABLE `usb` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -4046,7 +4267,7 @@ INSERT INTO `widgets` VALUES (18,'Processor Models',1,'','pie','','processor.des
 INSERT INTO `widgets` VALUES (19,'Active Directory Sites',1,'','pie','','windows.client_site_name','','','','','',0,'','','devices?windows.client_site_name=@name&properties=system.id,system.icon,system.os_group,system.name,system.ip,windows.client_site_name,windows.domain_controller_name,windows.active_directory_ou','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (20,'Active Directory OUs',1,'','pie','','windows.active_directory_ou','','','','','',0,'','','devices?windows.active_directory_ou=@name&properties=system.id,system.icon,system.os_group,system.name,system.ip,windows.client_site_name,windows.domain_controller_name,windows.active_directory_ou','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (21,'Devices by Network',1,'','pie','','','','','','','',0,'','SELECT ip.network AS `my_name`, COUNT(ip.system_id) AS `count` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = \'y\') WHERE @filter AND ip.network != \'\' GROUP BY `my_name`','devices?ip.network=@name&properties=system.id,system.icon,system.type,system.os_group,system.name,ip.ip,ip.mac,ip.network','system','2000-01-01 00:00:00');
-INSERT INTO `widgets` VALUES (22,'Devices Audited per Day',1,'','line','','','','','Devices','','',30,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date%','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (22,'Devices Audited per Day',1,'','line','','','','','Devices','','',30,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date%&groupby=system.id','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (23,'End Of Life (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.end_of_life = \'2000-01-01\', \'Unknown\', ( IF ( system.end_of_life < DATE(NOW()), \'Expired\', ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 90 day), \'90+ Days\', ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 60 day), \'60-90 Days\', ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 30 day), \'30-60 Days\', ( IF ( system.end_of_life > DATE(NOW()), \'0-30 days\', \'Less than 30 Days\' ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.end_of_life = \'2000-01-01\', \'system.end_of_life=2000-01-01\', ( IF ( system.end_of_life < DATE(NOW()), CONCAT(\'system.end_of_life=!=2000-01-01&system.end_of_life=<\', DATE(NOW())), ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 90 day), CONCAT(\'system.end_of_life=>\', DATE(NOW() + INTERVAL 90 day)), ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 60 day), CONCAT(\'system.end_of_life=<\', DATE(NOW() + INTERVAL 90 day), \'&system.end_of_life=>\', DATE(NOW() + INTERVAL 60 day)), ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 30 day), CONCAT(\'system.end_of_life=<\', DATE(NOW() + INTERVAL 60 day), \'&system.end_of_life=>\', DATE(NOW() + INTERVAL 30 day)), (  CONCAT(\'system.end_of_life=<\', DATE(NOW() + INTERVAL 30 day), \'&system.end_of_life=>\', DATE(NOW())) ) ) ) ) ) ) ) ) ) ) AS `my_description`,  count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name`, `my_description`','devices?@description&properties=system.id,system.icon,system.ip,system.name,system.os_family,system.end_of_life,system.status','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (24,'End of Service (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.end_of_service = \'2000-01-01\', \'Unknown\', ( IF ( system.end_of_service < DATE(NOW()), \'Expired\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 90 day), \'90+ Days\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 60 day), \'60-90 Days\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 30 day), \'30-60 Days\', ( IF ( system.end_of_service > DATE(NOW()), \'0-30 days\', \'Less than 30 Days\' ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.end_of_service = \'2000-01-01\', \'system.end_of_service=2000-01-01\', ( IF ( system.end_of_service < DATE(NOW()), CONCAT(\'system.end_of_service=<\', DATE(NOW()), \'&system.end_of_service=!=2000-01-01\'), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 90 day), CONCAT(\'system.end_of_service=>\', DATE(NOW() + INTERVAL 90 day)), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 60 day), CONCAT(\'system.end_of_service=<\', DATE(NOW() + INTERVAL 90 day), \'&system.end_of_service=>\', DATE(NOW() + INTERVAL 60 day)), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 30 day), CONCAT(\'system.end_of_service=<\', DATE(NOW() + INTERVAL 60 day), \'&system.end_of_service=>\', DATE(NOW() + INTERVAL 30 day)), ( CONCAT(\'system.end_of_service=<\', DATE(NOW() + INTERVAL 30 day), \'&system.end_of_service=>\', DATE(NOW())) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name`, `my_description`','devices?@description&properties=system.id,system.icon,system.ip,system.name,system.os_family,system.end_of_service,system.status','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (25,'Device Age (0-3+ Years)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.purchase_date = \'2000-01-01\', \'unknown\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), \'3+ Years\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), \'2-3 Years\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), \'1-2 Years\', \'Less Than 1 Year\' ) ) ) ) ) ) ) AS `my_name`, IF ( system.purchase_date = \'2000-01-01\', \'system.purchase_date=2000-01-01\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), CONCAT(\'system.purchase_date=<\', DATE(NOW() - INTERVAL 3 year), \"&system.purchase_date=>2000-01-01\"), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), CONCAT(\'system.purchase_date=>\', DATE(NOW() - INTERVAL 3 year), \'&system.purchase_date=<\', DATE(NOW() - INTERVAL 2 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), CONCAT(\'system.purchase_date=>\', DATE(NOW() - INTERVAL 2 year), \'&system.purchase_date=<\', DATE(NOW() - INTERVAL 1 year)), CONCAT(\'system.purchase_date=>\', DATE(NOW() - INTERVAL 1 year)) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name`','devices?@description&properties=system.id,system.icon,system.ip,system.name,system.os_family,system.manufacturer,system.os_family,system.purchase_date,system.status','system','2000-01-01 00:00:00');

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 include 'v_lang.php';
@@ -39,16 +39,15 @@ include 'v_lang.php';
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <!-- <meta http-equiv="refresh" content="300" /> -->
-    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>favicon.png" type="image/x-icon" />
     <title>Open-AudIT</title>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-table.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-dropdown.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-dropdown.css">
 <?php if (!empty($this->response->meta->action) and $this->response->meta->action == 'read_partition_graph') { ?>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/chartist.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/chartist.min.css">
 <?php } ?>
 
 
@@ -57,22 +56,22 @@ if (!empty($this->response->meta->collection) and $this->response->meta->collect
         <script src="//maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>
     <?php
 } ?>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-table.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.tablesorter.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-filestyle.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/jquery.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap-table.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/jquery.tablesorter.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap-filestyle.min.js"></script>
     <!-- Open-AudIT specific items -->
     <script>
 <?php
-if (isset($this->response->meta->id) and !is_null($this->response->meta->id)) {
-    echo "        var id = '" . $this->response->meta->id . "';\n";
+if (isset($meta->id) and !is_null($meta->id)) {
+    echo "        var id = '" . $meta->id . "';\n";
 }
-if (!empty($this->response->meta->collection)) {
-    echo "        var collection = '" . $this->response->meta->collection . "';\n";
+if (!empty($meta->collection)) {
+    echo "        var collection = '" . $meta->collection . "';\n";
 }
-if (!empty($this->response->meta->baseurl)) {
-    echo "        var baseurl = '" . $this->response->meta->baseurl . "';\n";
+if (!empty($meta->baseurl)) {
+    echo "        var baseurl = '" . $meta->baseurl . "';\n";
 } else {
     echo "        var baseurl = '';\n";
 }
@@ -85,8 +84,8 @@ if (!empty($this->response->meta->baseurl)) {
         }
 
     </script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/open-audit.js"></script>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/open-audit.css">
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/open-audit.js"></script>
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/open-audit.css">
 </head>
 <body>
 
@@ -95,7 +94,12 @@ if (!empty($this->response->meta->baseurl)) {
 include "include_header.php";
 if (!empty($this->response->errors) and is_array($this->response->errors)) {
     foreach ($this->response->errors as $error) {
-        echo '<div class="alert alert-danger" role="alert"><strong>' . $error->title . "</strong><br />" . $error->detail . "</div>\n";
+        echo '<div class="alert alert-danger" role="alert"><strong>' . $error->title . "</strong><br />";
+        if ( ! empty($error->code)) {
+            echo html_entity_decode($error->detail) . "</div>\n";
+        } else {
+            echo $error->detail . "</div>\n";
+        }
     }
 }
 $temp = @$this->session->flashdata('error');
@@ -126,7 +130,11 @@ if (!empty($temp1) and !empty($temp2)) {
 }
 $temp = @$this->response->meta->flash;
 if (!empty($temp)) {
-    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
+    if (!empty($this->response->meta->flash->html) and $this->response->meta->flash->html === 1) {
+        echo "<div class=\"alert alert-{$this->response->meta->flash->status}\" role=\"alert\">" . html_entity_decode($this->response->meta->flash->message) . "</div>\n";
+    } else {
+        echo "<div class=\"alert alert-{$this->response->meta->flash->status}\" role=\"alert\">{$this->response->meta->flash->message}</div>\n";
+    }
 }
 
 include($this->response->include.'.php');

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -263,7 +263,7 @@ class Main extends MY_Controller
                 }
                 $document["$table"] = $result;
             }
-            $tables = array('bios', 'credentials', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'credentials', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }

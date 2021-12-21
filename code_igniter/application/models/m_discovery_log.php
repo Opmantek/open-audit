@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -84,8 +84,8 @@ class M_discovery_log extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
         $sql = 'DELETE FROM `discovery_log` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -123,15 +123,45 @@ class M_discovery_log extends MY_Model
             $sql = 'SELECT count(*) AS `count` FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN orgs ON (discoveries.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')' . $select_filter;
             $result = $this->run_sql($sql, array());
             $CI->response->meta->total = intval($result[0]->count);
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ' FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN orgs ON (discoveries.org_id = orgs.id) ' . 
-                    $CI->response->meta->internal->filter . ' ' . 
-                    $CI->response->meta->internal->groupby . ' ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ' FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN orgs ON (discoveries.org_id = orgs.id) ' .
+                    $CI->response->meta->internal->filter . ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'discovery_log');
             $CI->response->meta->filtered = count($CI->response->data);
         }
+    }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'discovery_log';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        #$dictionary->attributes->create = mandatory_fields($collection);
+        #$dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = '';
+        $dictionary->marketing = '';
+        $dictionary->about = '';
+        $dictionary->product = 'community';
+        $dictionary->notes = '';
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        return $dictionary;
     }
 }
 // End of file m_discovery_log.php

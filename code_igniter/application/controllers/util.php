@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -75,7 +75,17 @@ class Util extends CI_Controller
 
     public function subnet_size()
     {
-        $command = "nmap -n -sL " . $_POST['subnet'];
+        # filter out all characters not in the $chars list
+        if (!empty($_POST['subnet'])) {
+            $subnet = $_POST['subnet'];
+        } else {
+            return;
+        }
+        $chars = "0123456789-./";
+        $pattern = "/[^".preg_quote($chars, "/")."]/";
+        $subnet = preg_replace($pattern, "", $subnet);
+        # now run the command
+        $command = "nmap -n -sL " . $subnet;
         exec($command, $output, $return_var);
         $count = 0;
         if ($return_var === 0) {
@@ -97,6 +107,9 @@ class Util extends CI_Controller
     */
     public function version_padded()
     {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
+            exit;
+        }
         $json = new stdClass();
         $json->version = $this->uri->segment(3, '');
         if (isset($_POST['version'])) {
@@ -130,22 +143,16 @@ class Util extends CI_Controller
 
         if ($client == 'aix') {
             $filename = 'audit_aix.sh';
-
         } elseif ($client == 'esxi') {
             $filename = 'audit_esxi.sh';
-
         } elseif ($client == 'hpux') {
             $filename = 'audit_hpux.sh';
-
         } elseif ($client == 'linux') {
             $filename = 'audit_linux.sh';
-
         } elseif ($client == 'osx') {
             $filename = 'audit_osx.sh';
-
         } elseif ($client == 'solaris') {
             $filename = 'audit_solaris.sh';
-
         } elseif ($client == 'windows') {
             $filename = 'audit_windows.vbs';
         }
@@ -153,7 +160,7 @@ class Util extends CI_Controller
         $sql = "SELECT `id` AS `id` FROM `scripts` WHERE `name` = '$filename' ORDER BY id LIMIT 1";
         $query = $this->db->query($sql);
 
-        foreach($query->result_array() as $row) {
+        foreach ($query->result_array() as $row) {
             $id = $row['id'];
         }
 
@@ -176,6 +183,22 @@ class Util extends CI_Controller
         }
     }
 
+    public function test_windows_client()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $filename = $this->config->config['base_path'] . '/other/test_windows_client.vbs';
+        $file = file_get_contents($filename);
+        // Set headers
+        header('Cache-Control: public');
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=test_windows_client.vbs');
+        header('Content-Type: text/plain');
+        header('Content-Transfer-Encoding: binary');
+        // echo our file contents
+        echo $file;
+    }
+
     public function dictionary()
     {
         $this->load->model('m_configuration');
@@ -196,7 +219,7 @@ class Util extends CI_Controller
         $this->temp_dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
         $this->temp_dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
-        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
+        $collections = array('agents', 'applications', 'attributes', 'baselines', 'baselines_policies', 'buildings', 'clouds', 'clusters', 'collectors', 'configuration', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'integrations_rules', 'ldap_servers', 'licenses', 'locations', 'networks', 'orgs', 'queries', 'racks', 'rack_devices', 'roles', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'tasks', 'users', 'widgets');
         if (in_array($table, $collections)) {
             $this->load->model('m_'.$table);
             $dictionary = $this->{'m_'.$table}->dictionary();
@@ -218,7 +241,7 @@ class Util extends CI_Controller
 
     public function summary_tables()
     {
-        $data = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
+        $data = array('bios','certificate','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','usb','variable','video','vm','warranty','windows');
         $json = new stdClass();
         $json->data = $data;
         header('Content-Type: application/json');
@@ -245,6 +268,9 @@ class Util extends CI_Controller
 
     public function google()
     {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
+            exit;
+        }
         $response = new stdClass();
         $credentials = @$this->input->post('credentials');
         if (empty($credentials)) {
@@ -407,8 +433,10 @@ class Util extends CI_Controller
         $this->load->model('m_devices');
         $this->load->model('m_devices_components');
         $this->load->model('m_discoveries');
+        $this->load->model('m_integrations');
         $this->load->model('m_networks');
         $this->load->model('m_orgs');
+        $this->load->model('m_queue');
         $this->load->model('m_rules');
         $this->load->model('m_scripts');
 
@@ -434,13 +462,13 @@ class Util extends CI_Controller
             exit;
         }
         // Increase the queue count in the config table
-        $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
+        $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
         $this->db->query($sql);
         // POP an item off the queue
         $this->load->model('m_queue');
-        while ( true ) {
+        while (true) {
             $item = $this->m_queue->pop();
-            if ( ! empty($item->details) && is_string($item->details)) {
+            if (!empty($item->details) && is_string($item->details)) {
                 $details = @json_decode($item->details);
             }
 
@@ -461,22 +489,23 @@ class Util extends CI_Controller
 
             // Spawn another process
             if (php_uname('s') !== 'Windows NT') {
-                $instance = '';
-                if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database !== 'openaudit') {
-                    $instance = '/' . $this->db->database;
+                if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
+                    $command = 'nohup ' . $this->config->config['base_path'] . '/other/execute.sh url=http://localhost/' . $this->db->database. '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
+                    @exec($command);
+                } else {
+                    $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+                    @exec($command);
                 }
-                $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
-                if (php_uname('s') === 'Linux') {
-                    $command = 'nohup ' . $command;
-                }
-                @exec($command);
             } else {
-                $filepath = $this->config->config['base_path'] . '\\other';
-                $command = "%comspec% /c start /b cscript //nologo {$filepath}\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php util queue";
                 pclose(popen($command, 'r'));
             }
 
             if ($item->type === 'subnet') {
+                discover_subnet($details);
+            }
+
+            if ($item->type === 'seed') {
                 discover_subnet($details);
             }
 
@@ -487,7 +516,7 @@ class Util extends CI_Controller
             if ($item->type === 'ip_scan') {
                 $result = ip_scan($details);
                 $result = json_encode($result);
-                if ( ! empty($result)) {
+                if (!empty($result)) {
                     $queue_item = new stdClass();
                     $queue_item->ip = $details->ip;
                     $queue_item->discovery_id = $details->discovery_id;
@@ -498,6 +527,10 @@ class Util extends CI_Controller
 
             if ($item->type === 'ip_audit') {
                 $result = ip_audit($details);
+            }
+
+            if ($item->type === 'integrations') {
+                $this->m_integrations->execute($details->integrations_id);
             }
         }
     }

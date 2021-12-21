@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -89,6 +89,7 @@ class Nmis extends MY_Controller
     {
         $this->load->model('m_devices');
         $this->load->model('m_device');
+        $this->load->helper('network');
         $log = new stdClass();
         $log->type = 'system';
         $log->severity = 7;
@@ -99,12 +100,12 @@ class Nmis extends MY_Controller
 
         $match = new stdClass();
         $match->match_ip = 'y';
+        $match->match_dns_fqdn = 'y';
+        $match->match_dns_hostname = 'y';
         
         $devices = array();
         $this->load->model('m_attributes');
         $attributes = $this->m_attributes->collection(1);
-
-        // $nodes = array($nodes[0]);
 
         foreach ($nodes as $node) {
             $device = new stdClass();
@@ -114,6 +115,7 @@ class Nmis extends MY_Controller
             $device->fqdn = '';
             if (filter_var($node['configuration']['host'], FILTER_VALIDATE_IP) !== false) {
                 $device->ip = $node['configuration']['host'];
+                $device = dns_validate($device);
             } else {
                 if (strpos($node['configuration']['host'], '.') !== false) {
                     $device->fqdn =  $node['configuration']['host'];
@@ -122,11 +124,13 @@ class Nmis extends MY_Controller
                     unset($temp[0]);
                     $device->domain = implode('.', $temp);
                     unset($temp);
+                    $device->ip = gethostbyname($device->fqdn);
                 } else {
                     $device->hostname =  $node['configuration']['host'];
+                    $device->ip = gethostbyname($device->hostname);
                 }
             }
-            $serviceStatus = $node['configuration']['serviceStatus'];
+            $serviceStatus = @$node['configuration']['serviceStatus'];
             foreach ($attributes as $attribute) {
                 if ($attribute->attributes->type === 'environment') {
                     if (strtolower($serviceStatus) === strtolower($attribute->attributes->value) OR strtolower($serviceStatus) === strtolower($attribute->attributes->name)) {
@@ -204,22 +208,20 @@ class Nmis extends MY_Controller
             $parameters->log = $log;
             $parameters->match = $match;
 
-            // echo "<pre>"; print_r($device); echo "</pre>";
             // Remove any empty entries
             foreach ($device as $key => $value) {
                 if (empty($value)) {
                     unset($device->$key);
                 }
             }
-            // echo "<pre>"; print_r($device); echo "</pre>"; exit;
 
             // Need to manually remove any discovery logs.
             $sql = '/* nmis::_from_nmis_9 */ ' . 'DELETE FROM discovery_log WHERE ip = ?';
-            $data = array(ip_address_from_db($device->ip));
+            $data = array(ip_address_from_db(@$device->ip));
             $this->db->query($sql, $data);
 
             $device->id = $this->m_device->match($parameters);
-            $device->ip = ip_address_to_db($device->ip);
+            $device->ip = ip_address_to_db(@$device->ip);
             $log->command_output = '';
 
             $credentials = $device->credentials;
@@ -241,7 +243,7 @@ class Nmis extends MY_Controller
                 $inserted++;
                 // need to update the discovery log with our system.id
                 $sql = '/* nmis::_from_nmis_9 */ ' . 'UPDATE discovery_log SET system_id = ? WHERE ip = ?';
-                $data = array($device->id, ip_address_from_db($device->ip));
+                $data = array($device->id, ip_address_from_db(@$device->ip));
                 $this->db->query($sql, $data);
             }
             $this->m_devices->sub_resource_create($device->id, 'credential', $credentials);
@@ -255,7 +257,7 @@ class Nmis extends MY_Controller
             $data->attributes->id = $device->id;
             $data->attributes->name = $device->name;
             $data->attributes->hostname = @$device->hostname;
-            $data->attributes->ip = ip_address_from_db($device->ip);
+            $data->attributes->ip = ip_address_from_db(@$device->ip);
             $this->response->data[] = $data;
         }
         $ids = implode(',', $ids);
@@ -514,18 +516,20 @@ class Nmis extends MY_Controller
 
         // Use nmis9 node admin tool
         if ($this->response->meta->received_data->attributes->source === 'nmis9' && file_exists('/usr/local/nmis9/admin/node_admin.pl')) {
-            $command = '/usr/local/nmis9/admin/node_admin.pl act=export format=json keep_ids=1 2>&1';
+            $command = '/usr/local/nmis9/admin/node_admin.pl act=export format=json keep_ids=1 2>/dev/null';
             exec($command, $string, $return_var);
             if ($return_var !== 0) {
                 echo "<pre>\n";
                 print_r($string);
                 exit;
             }
+            if (is_array($string)) {
+                $string = implode('', $string);
+            }
             $nodes = json_decode($string, true);
             unset($string);
             unset($command);
             unset($return_var);
-            $nodes = json_decode($string, true);
             for ($i=0; $i < count($nodes); $i++) { 
                 $nodes[$i]['org_id'] = @intval(@$this->response->meta->received_data->attributes->org_id);
                 $nodes[$i]['location_id'] = @intval(@$this->response->meta->received_data->attributes->location_id);
@@ -577,6 +581,8 @@ class Nmis extends MY_Controller
     */
     public function collection()
     {
+        redirect('devices');
+        exit;
         $this->load->model('m_devices');
         $this->response->meta->internal->join = '';
         $this->response->meta->internal->properties = 'system.id, system.name, system.ip, system.nmis_manage, system.type, system.nmis_name, system.omk_uuid, system.nmis_notes, system.nmis_role, system.nmis_business_service, system.nmis_group';
@@ -620,7 +626,7 @@ class Nmis extends MY_Controller
                     $this_device->attributes->host = $device->attributes->hostname;
                 }
                 $this_device->attributes->community = '';
-                $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
+                $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y', '');
                 if (!empty($credentials)) {
                     foreach ($credentials as $credential) {
                         if ($credential->attributes->type == 'snmp') {

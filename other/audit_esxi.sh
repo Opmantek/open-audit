@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   GIT: Open-AudIT_3.5.3
+# @version   GIT: Open-AudIT_4.3.1
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,7 +79,7 @@ self_delete='n'
 debugging=2
 
 # Version
-version="3.5.3"
+version="4.3.1"
 
 discovery_id=""
 
@@ -350,6 +350,7 @@ system_manufacturer=$(trim `echo "$smbiosDump" | sed -n '/^  System Info:/,/^  [
 system_uptime=$(trim `echo "$quickStats" | grep uptime | cut -d= -f2 | sed 's/,//g' | sed 's/\"//g'`)
 system_form_factor=$(trim `echo "$smbiosDump" | sed -n '/^  Chassis Info:/,/^  [A-Za-z]/p' | grep '    Type' | cut -d":" -f2 | cut -d" " -f3 | sed 's/"//g' | sed 's/(//g' | sed 's/)//g'`)
 system_pc_os_bit=`uname -m | grep x86_64 | cut -d_ -f2`
+system_os_arch=`uname -m 2>/dev/null`
 
 system_pc_memory=0
 memory_slots=$(echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Slots' | cut -d":" -f2)
@@ -395,6 +396,7 @@ echo "		<manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> 
 echo "		<uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
 echo "		<form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
 echo "		<os_bit>"$(escape_xml "$system_pc_os_bit")"</os_bit>" >> $xml_file
+echo "		<os_arch>"$(escape_xml "$system_pc_os_arch")"</os_arch>" >> $xml_file
 echo "		<memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
 echo "		<processor_count>"$(escape_xml "$system_pc_processors")"</processor_count>" >> $xml_file
 echo "		<os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file

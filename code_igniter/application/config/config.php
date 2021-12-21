@@ -2,8 +2,8 @@
 if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-$config['web_internal_version'] = '20210104';
-$config['web_display_version'] = '3.5.3';
+$config['web_internal_version'] = '20211213';
+$config['web_display_version'] = '4.3.1';
 $config['microtime'] = microtime(true);
 // $config['debug'] = false;
 /*
@@ -71,6 +71,7 @@ $config['index_page'] = "index.php";
 |
 */
 $config['uri_protocol']    = "REQUEST_URI";
+$config['uri_protocol']    = "AUTO";
 
 /*
 |--------------------------------------------------------------------------

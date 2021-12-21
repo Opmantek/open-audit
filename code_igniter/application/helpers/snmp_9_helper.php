@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -31,7 +31,7 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   GIT: Open-AudIT_3.5.3
+ * @version   GIT: Open-AudIT_4.3.1
 
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,12 +40,11 @@
 # Vendor Cisco
 
 
-$get_oid_details = function ($ip, $credentials, $oid) {  
-     
+$get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     # the only MIB providing overall RAM is 1.3.6.1.4.1.9.3.6.6.0 which is deprecated
     $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1024);
-    $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1.0") / 1048576); 
+    $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1.0") / 1048576);
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
     $details->os_version = '';
 
@@ -55,22 +54,34 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.7");
     if (stripos($i, "IOS") !== false) {
-        $details->os_group = 'Cisco'; $details->os_family = 'Cisco IOS'; $details->os_name = "Cisco IOS version ".$details->os_version;
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS';
+        $details->os_name = "Cisco IOS version ".$details->os_version;
     }
     if (stripos($details->description, "Cisco IOS Software") !== false) {
-        $details->os_group = 'Cisco'; $details->os_family = 'Cisco IOS'; $details->os_name = "Cisco IOS version ".$details->os_version;
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS';
+        $details->os_name = "Cisco IOS version ".$details->os_version;
     }
     if (stripos($details->description, "Cisco Internetwork Operating System Software") !== false) {
-        $details->os_group = 'Cisco'; $details->os_family = 'Cisco IOS'; $details->os_name = "Cisco IOS version ".$details->os_version;
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS';
+        $details->os_name = "Cisco IOS version ".$details->os_version;
     }
     if (stripos($i, "Catalyst Operating") !== false) {
-        $details->os_group = 'Cisco'; $details->os_family = 'Cisco Catalyst OS'; $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco Catalyst OS';
+        $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
     }
     if (stripos($details->description, "Cisco Systems WS-C") !== false) {
-        $details->os_group = 'Cisco'; $details->os_family = 'Cisco Catalyst OS'; $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco Catalyst OS';
+        $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
     }
     if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== false) {
-        $details->os_group = 'Cisco'; $details->os_family = 'Cisco Catalyst OS'; $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco Catalyst OS';
+        $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
     }
     if (empty($details->os_group)) {
         if (stripos($details->description, 'NX-OS')) {
@@ -87,7 +98,8 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 
     # catch all for catalyst == switch
     if (!empty($details->model) and (stripos($details->model, 'catalyst') !== false or stripos($details->os_family, 'cataylst') !== false)) {
-        $details->type = 'switch'; }
+        $details->type = 'switch';
+    }
 
     # Generic Cisco serial
     if (empty($details->serial)) {
@@ -114,27 +126,3 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 
     return($details);
 };
-
-/*
-// installed modules with serial numbers
-$i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11");
-if (count($i) > 0) {
-    if (($i[0] == 'No more variables left in this MIB View (It is past the end of the MIB tree)') or ($i[0] == '')){unset($i); $i = array();}
-    if (count($i) > 0) {
-        $count = 0;
-        for ($j=0; $j<count($i); $j++) {
-            if ((mb_strpos($i[$j], $details->serial) === false) and ($i[$j] != "") and ($i[$j] != "\"\"")){
-                $k = $j + 1;
-                $k = "1.3.6.1.2.1.47.1.1.1.1.3." . $k;
-                $oid = my_snmp_get($ip, $credentials, $k);
-                $oid = str_replace("OID: .", "", $oid);
-                $module->$count = get_manufacturer_from_oid($oid);
-                $module->$count->serial = str_replace("STRING: ", "", $i[$j]);
-                $module->$count->serial = str_replace('"', '', $module->$count->serial);
-                $count++;
-            }
-        }
-        $details->modules = $module;
-    }
-}
-*/

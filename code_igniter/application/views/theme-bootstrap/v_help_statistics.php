@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 if (php_uname('s') == "Windows NT") {
@@ -87,12 +87,12 @@ if (php_uname('s') == "Windows NT") {
             <table class="table">
                 <tbody>
                     <tr>
-                        <td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-agpl.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-php.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-code_igniter.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-jquery.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-w3c.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $this->config->config['oa_web_folder']; ?>images/logo-agpl.png' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $this->config->config['oa_web_folder']; ?>images/logo-php.png' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $this->config->config['oa_web_folder']; ?>images/logo-code_igniter.png' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>images/logo-jquery.png' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>images/logo-w3c.png' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>
                     </tr>
                 </tbody>
             </table>

@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 
@@ -135,27 +135,14 @@ class M_rules extends MY_Model
      */
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        $this->log->summary = 'start';
-        stdlog($this->log);
-        $id = intval($id);
-        if ($id === 0) {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        }
-        if ($id !== 0) {
-            $CI = & get_instance();
-            $sql = 'DELETE FROM `rules` WHERE id = ?';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            $this->log->summary = 'finish';
-            stdlog($this->log);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `rules` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
+        } else {
+            return false;
         }
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return false;
     }
 
     /**
@@ -224,7 +211,9 @@ class M_rules extends MY_Model
                 $log->severity = 4;
                 $log->command_status = 'fail';
                 $log->message = 'Could not retrieve data from system table for ID: ' . $parameters->id . '. Not running Rules function.';
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 return false;
             }
             // Get the first MAC Address because there is no mac stored in 'system'
@@ -265,7 +254,9 @@ class M_rules extends MY_Model
             $id = $device->id;
         }
 
-        discovery_log($log);
+        if (!empty($log->discovery_id)) {
+            discovery_log($log);
+        }
 
         // NOTE - don't set the id or last_seen_by here as we test if empty after rules
         //        have been run and only update if not empty (after adding id and last_seen_by).
@@ -281,7 +272,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - SNMP OID for  ' . $temp;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 foreach ($newdevice as $key => $value) {
                     $device->{$key} = $value;
                 }
@@ -297,7 +290,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - Mac Address for ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 $device->manufacturer = $newdevice->manufacturer;
             }
         }
@@ -311,7 +306,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
                 $log->command_output = json_encode($newdevice);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 $device->manufacturer = $newdevice->manufacturer;
             }
         }
@@ -325,7 +322,9 @@ class M_rules extends MY_Model
                 $log->command = 'Rules Match - Mac Model into description';
                 $log->command_output = json_encode($newdevice->description);
                 $log->command_time_to_execute = (microtime(true) - $log_start);
-                discovery_log($log);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($log);
+                }
                 $device->description = $newdevice->description;
             }
         }
@@ -347,7 +346,9 @@ class M_rules extends MY_Model
                     $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
                     $l->command = json_encode($rule);
                     $l->command_output = '';
-                    discovery_log($l);
+                    if (!empty($log->discovery_id)) {
+                        discovery_log($l);
+                    }
                     continue;
                 }
                 if ($input->table !== 'system' and !in_array($input->table, $other_tables)) {
@@ -383,7 +384,9 @@ class M_rules extends MY_Model
                 $l->message = 'Rule ' . $rule->id . ' inputs is not an array.';
                 $l->command = $rule->inputs;
                 $l->command_output = '';
-                discovery_log($l);
+                if (!empty($log->discovery_id)) {
+                    discovery_log($l);
+                }
                 continue;
             }
             $hit = 0;
@@ -650,7 +653,9 @@ class M_rules extends MY_Model
                     $log->command = 'Rules Match - ' . $rule->name . ', ID: ' . $rule->id;
                     $log->command_output = json_encode($attributes);
                     $log->command_time_to_execute = (microtime(true) - $item_start);
-                    discovery_log($log);
+                    if (!empty($log->discovery_id)) {
+                        discovery_log($log);
+                    }
                 }
             }
             $log->message = '';
@@ -661,7 +666,9 @@ class M_rules extends MY_Model
         $log->command = '';
         $log->command_output = '';
         $log->command_status = 'notice';
-        discovery_log($log);
+        if (!empty($log->discovery_id)) {
+            discovery_log($log);
+        }
 
         if (count(get_object_vars($newdevice)) > 0) {
             $newdevice->id = @$device->id;
@@ -749,13 +756,13 @@ class M_rules extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->weight = 'A lower number means it will have a lower preference for being applied, versus other rules.';
-        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->weight = 'A lower number means it will be applied before other rules.';
+        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match (normal weight is 100).';
         $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
 
-        $tables = array('bios', 'credential', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        $tables = array('bios', 'credential', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         $columns = array();
         foreach ($tables as $table) {
             $fields = $this->db->list_fields($table);

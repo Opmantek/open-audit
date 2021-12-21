@@ -17,9 +17,7 @@
     <?php } ?>
 
     // Menu click response
-    $(document).ready(function(){
-    $('a.buy_more_licenses').click(function(e){
-    // $('.buy_licenses').click(function(e){
+    $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
         // $.get('/omk/data/open-audit.json', function(data){
         $.get('https://opmantek.com/product_data/open-audit.json', function(data){
@@ -241,7 +239,6 @@ output += "<div class=\"row market-row\">\
 
         return method;
     }());
-    });
 
     <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
     // Wait until the DOM has loaded before querying the document

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 ?>
@@ -42,7 +42,7 @@
     </h3>
   </div>
   <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>">
+    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&id=<?php echo $this->response->meta->id; ?>">
         <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
         <div class="form-group">
             <label for="id" class="col-sm-2 control-label"><?php echo __('ID'); ?></label>

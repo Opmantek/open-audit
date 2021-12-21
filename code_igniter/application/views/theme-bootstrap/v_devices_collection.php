@@ -23,16 +23,14 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-#
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- *
- * @version   GIT: Open-AudIT_3.5.3
-
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @category  View
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   GIT: Open-AudIT_4.3.1
+* @link      http://www.open-audit.org
  */
 
 $refine_link = $_SERVER["REQUEST_URI"];
@@ -114,7 +112,7 @@ if ($this->response->meta->sub_resource !== 'group') {
             <div class="pull-left"><?php echo __('Devices'). ' '; ?> <?php echo $title ?></div>
 
             <div class="nav navbar-nav navbar-center">
-                <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
+                <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>index.php/search" method="post">
                     <div class="form-group">
                         <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or full IP">
                         <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
@@ -284,6 +282,9 @@ if (!empty($this->response->data)) { ?>
 
                 } elseif ($property == 'system.seen_by') {
                     echo "            <td>" . $item->attributes->$property . "</td>\n";
+
+                } elseif ($property == 'link') {
+                    echo "            <td><a href=\"../../" . $item->attributes->$property . "\" target=\"_blank\" role=\"button\" class=\"btn btn-sm btn-primary\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span></a></td>\n";
 
                 } else {
                     refine($property, $item->attributes->$property);

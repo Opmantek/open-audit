@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -127,14 +127,13 @@ class M_locations extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
+        $data = array(intval($id));
         if ($id === 1) {
             // never allowed to delete the default location
             log_error('ERR-0013', 'm_locations::delete');
             return false;
         }
         $sql = 'DELETE FROM `locations` WHERE id = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -256,7 +255,28 @@ class M_locations extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->type = 'What is the type of this location.';
+        $dictionary->columns->type = 'What is the type of this location. Allowable types held in attributes table.';
+        $dictionary->columns->room = 'The locations room.';
+        $dictionary->columns->suite = 'The locations suite.';
+        $dictionary->columns->level = 'The locations level.';
+        $dictionary->columns->address = 'The locations address.';
+        $dictionary->columns->suburb = 'The locations suburb.';
+        $dictionary->columns->city = 'The locations city.';
+        $dictionary->columns->district = 'The locations district.';
+        $dictionary->columns->region = 'The locations region.';
+        $dictionary->columns->area = 'The locations area.';
+        $dictionary->columns->state = 'The locations state.';
+        $dictionary->columns->postcode = 'The locations postcode.';
+        $dictionary->columns->country = 'The locations country.';
+        $dictionary->columns->tags = 'unused';
+        $dictionary->columns->phone = 'The locations phone.';
+        $dictionary->columns->picture = 'unused';
+        $dictionary->columns->external_ident = 'The externally referenced location ID. Usually populated by Cloud audits.';
+        $dictionary->columns->options = 'unused';
+        $dictionary->columns->latitude = 'The locations latitude.';
+        $dictionary->columns->longitude = 'The locations longitude.';
+        $dictionary->columns->geo = 'An optional GeoCode';
+        $dictionary->columns->cloud_id = 'The Cloud that owns this item. Links to <code>clouds.id</code>. ';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

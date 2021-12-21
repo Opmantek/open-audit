@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -65,19 +65,40 @@ class M_clouds extends MY_Model
      */
     public function create($data = null)
     {
-        if ( ! empty($data->credentials) && is_string($data->credentials)) {
+        $CI = & get_instance();
+        if (! empty($data->credentials) && is_string($data->credentials)) {
             $data->credentials = (string)simpleEncrypt($data->credentials);
         } else {
             $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
-        if ( ! empty($data->options)) {
+        if (! empty($data->options)) {
             $data->options = json_encode($data->options);
         }
-        if ($id = $this->insert_collection('clouds', $data)) {
-            return intval($id);
-        } else {
+
+
+        $id = $this->insert_collection('clouds', $data);
+        if (empty($id)) {
             return false;
         }
+
+        $cloud = $this->read($id);
+        $cloud = $cloud[0];
+
+        # The discovery
+        $CI->load->model('m_discoveries');
+        $discovery = new stdClass();
+        $discovery->type = 'cloud';
+        $discovery->name = 'Discovery for ' . $cloud->attributes->name;
+        $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
+        $discovery->org_id = $cloud->attributes->org_id;
+        $discovery->discard = 'n';
+        $discovery->complete = 'n';
+        $discovery->subnet = '';
+        $discovery->cloud_id = $id;
+        $discovery->cloud_name = $cloud->attributes->name;
+        $discovery_id = intval($CI->m_discoveries->create($discovery));
+
+        return intval($id);
     }
 
     /**
@@ -193,8 +214,18 @@ class M_clouds extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
+        // Delete any associated tasks
+        $sql = "DELETE FROM tasks WHERE sub_resource_id = ? AND type = 'clouds'";
+        $test = $this->run_sql($sql, $data);
+        // Delete any cloud log entries
+        $sql = 'DELETE FROM `cloud_log` WHERE cloud_id = ?';
+        $test = $this->run_sql($sql, $data);
+        // Delete the discovery
+        $sql = 'DELETE FROM `discoveries` WHERE cloud_id = ?';
+        $test = $this->run_sql($sql, $data);
+        // Delete the cloud
         $sql = 'DELETE FROM `clouds` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -281,9 +312,8 @@ class M_clouds extends MY_Model
         $dictionary->columns->type = 'At the moment, only Amazon AWS is supported.';
         $dictionary->columns->key = 'Your API key.';
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your API key.';
-        $dictionary->columns->ssh = 'Should we use SSH to discover these devices.';
-        $dictionary->columns->wmi = 'Should we use WMI to discover these devices.';
-        $dictionary->columns->snmp = 'Should we use SNMP to discover these devices.';
+        $dictionary->columns->status = 'The current status of the Cloud Discovery.';
+        $dictionary->columns->options = 'Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

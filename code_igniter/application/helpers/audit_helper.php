@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
@@ -108,6 +108,7 @@ if (!function_exists('audit_convert')) {
         } else {
             $log = $parameters->log;
         }
+        $log->discovery_id = @$parameters->discovery_id;
         $log->ip = @ip_address_from_db($log->ip);
         $log->file = 'audit_helper';
         $log->function = 'audit_convert';
@@ -263,7 +264,7 @@ if (!function_exists('audit_convert')) {
             if ( ! empty($audit->system->id)) {
                 $log->system_id = intval($audit->system->id);
             }
-            if ( ! empty($audit->system->ip)) {
+            if ( ! empty($audit->system->ip) && empty($log->ip)) {
                 $log->ip = $audit->system->ip;
             }
         }
@@ -368,7 +369,10 @@ if ( ! function_exists('audit_format_system')) {
             }
         }
 
-        $input->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+        $input->audits_ip = '127.000.000.001';
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $input->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+        }
 
         if (empty($input->discovery_id)) {
             $input->discovery_id = '';

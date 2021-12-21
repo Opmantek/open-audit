@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 
@@ -200,7 +200,11 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $timer_start = microtime(true);
-        $query = $this->db->query($sql, $data);
+        if (!empty($data)) {
+            $query = $this->db->query($sql, $data);
+        } else {
+            $query = $this->db->query($sql);
+        }
         $duration = microtime(true) - $timer_start;
         // $temp = explode(';', $sql);
         // if (count($temp) > 1) {

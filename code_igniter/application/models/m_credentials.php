@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -187,22 +187,14 @@ class M_credentials extends MY_Model
      */
     public function delete($id = 0)
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if (empty($id)) {
-            $id = @intval($CI->response->meta->id);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `credentials` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
+            return true;
         } else {
-            $id = intval($id);
-        }
-        if (empty($id)) {
             return false;
         }
-        $CI = & get_instance();
-        $sql = 'DELETE FROM `credentials` WHERE id = ?';
-        $data = array($id);
-        $this->run_sql($sql, $data);
-        return true;
     }
 
     /**
@@ -303,6 +295,29 @@ class M_credentials extends MY_Model
             }
             $CI->response->data = $this->format_data($result, 'credentials');
             $CI->response->meta->filtered = count($CI->response->data);
+
+            if (php_uname('s') === 'Windows NT') {
+                $security_names = array();
+                $multiple = false;
+                foreach ($CI->response->data as $credential) {
+                    if ($credential->attributes->type === 'snmp_v3') {
+                        $security_names[] = $credential->attributes->credentials->security_name;
+                    }
+                }
+                $counts = array_count_values($security_names);
+                foreach ($counts as $key => $value) {
+                    if ($value > 1) {
+                        $multiple = true;
+                    }
+                }
+                if ($multiple) {
+                    $error_message = "You have multiple SNMPv3 credential sets with the same security name. Please see <a href=\"https://community.opmantek.com/display/OA/SNMPv3+and+Windows\" target=\"_blank\">the wiki</a>.";
+                    $CI->response->meta->flash = new stdClass();
+                    $CI->response->meta->flash->status = 'warning';
+                    $CI->response->meta->flash->message = $error_message;
+                    $CI->response->meta->flash->html = 1;
+                }
+            }
         }
     }
 

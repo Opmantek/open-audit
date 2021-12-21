@@ -11,10 +11,10 @@ if (!empty($this->config->config['servers'])) {
 
             <!-- The left side 'header' of the navbar -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
-                    <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oac.png">
+                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>index.php">
+                    <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>images/oac.png">
                 </a>
-                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
+                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>index.php">
                     Open-AudIT Community <?php echo $this->config->config['display_version']; ?>
                 </a>
             </div>
@@ -92,7 +92,7 @@ if (!empty($this->config->config['servers'])) {
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'><?php echo __('List Discoveries'); ?></a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'><?php echo __('Create Discovery'); ?></a></li>
-                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'><?php echo __('Discover a single device'); ?></a></li>
+                                            <!-- <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'><?php echo __('Discover a single device'); ?></a></li> -->
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/import'><?php echo __('Import Discoveries from CSV'); ?></a></li>
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                                 <li class="disabled"><a href='#'><?php echo __('Configure Discoveries'); ?></a></li>
@@ -270,7 +270,7 @@ if (!empty($this->config->config['servers'])) {
                                                     <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Import Devices from Audit Script Result'); ?></a></li>
                                                     <li><a href='<?php echo $link; ?>/nmis/create'><?php echo __('Import Devices from NMIS'); ?></a></li>
                                                     <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'><?php echo __('Export Devices to CSV'); ?></a></li>
-                                                    <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li>
+                                                    <!-- <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li> -->
                                                 <?php } else { ?>
                                                     <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Create').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                                     <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'><?php echo __('Import').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
@@ -332,10 +332,10 @@ if (!empty($this->config->config['servers'])) {
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Licenses')?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
+                                <li><a href='/omk/open-audit/license_free'><?php echo __('Activate Free License')?></a></li>
                             <?php } ?>
                             <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
-                            <li><a href='#' class='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
+                            <li><a href='#' id='buy_more_licenses' class='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
                             <li><a href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                         </ul>
                     </li>
@@ -420,7 +420,7 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <li>
-                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" alt=""/></a>
+                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-opmaps.png" alt=""/></a>
                     </li>
 
                     <?php
@@ -431,11 +431,11 @@ if (!empty($this->config->config['servers'])) {
                     }
                     ?>
                     <li>
-                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" alt=""/></a>
+                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-nmis.png" alt=""/></a>
                     </li>
 
                     <li>
-                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oae_sml.png" alt=""/></a>
+                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/oae_sml.png" alt=""/></a>
                     </li>
 
                     <li class="dropdown">

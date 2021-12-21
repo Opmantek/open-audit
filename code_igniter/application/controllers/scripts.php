@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -122,9 +122,22 @@ class Scripts extends MY_Controller
             $this->response->included[] = $option;
             unset($option);
         }
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection($this->user->id));
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
+
+        $this->load->model('m_files');
+        $files = $this->m_files->collection($this->user->id);
+        $filtered_files = array();
+        foreach ($files as $file) {
+            if ($this->response->data[0]->attributes->based_on === 'audit_windows.vbs' and strpos($file->attributes->path, '/') !== 0) {
+                $filtered_files[] = $file;
+            }
+            if ($this->response->data[0]->attributes->based_on !== 'audit_windows.vbs' and strpos($file->attributes->path, '/') === 0) {
+                $filtered_files[] = $file;
+            }
+        }
+        #$this->response->included = array_merge($this->response->included, $this->m_files->collection($this->user->id));
+        $this->response->included = array_merge($this->response->included, $filtered_files);
+
         if ( ! empty($this->response->data) && is_array($this->response->data)) {
             $this->response->meta->total = 1;
             $this->response->meta->filtered = 1;

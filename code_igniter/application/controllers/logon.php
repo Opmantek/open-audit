@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Logon
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -70,7 +70,7 @@ class Logon extends CI_Controller
         $log->file = 'system';
         $log->message = '';
 
-        # get the output format
+        // get the output format
         $format = '';
         $http_accept = @$_SERVER['HTTP_ACCEPT'];
         $log->function = 'logon';
@@ -173,7 +173,7 @@ class Logon extends CI_Controller
     {
         $temp = @$this->session->userdata('user_id');
         if (!empty($temp)) {
-            if ($this->response->meta->format != 'json') {
+            if ($this->response->meta->format !== 'json') {
                 redirect('summaries');
             } else {
                 $this->load->model('m_users');
@@ -278,42 +278,29 @@ class Logon extends CI_Controller
      */
     public function check_defaults()
     {
-        if ( empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
+        if (empty($this->config->config['oae_product']) or $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             $oae_url = '';
-            if (!empty($this->config->config['oae_url'])) {
+            if (! empty($this->config->config['oae_url'])) {
                 $oae_url = $this->config->config['oae_url'];
+            } else {
+                $oae_url = '/omk/open-audit';
             }
-            $oae_url = str_replace('/omk/oae', '/omk/open-audit', $oae_url);
-            if ($oae_url == '') {
-                $oae_url = '/omk/open-audit/';
+            if (substr($oae_url, 0, 1) === '/') {
+                $oae_url = 'http://localhost' . $oae_url;
+            } else {
+                $temp = explode('/', $oae_url);
+                unset($temp[0], $temp[1], $temp[2]);
+                $oae_url = 'http://localhost' . implode('/', $temp);
             }
-            # Add a trailing slash if not already present
-            if (substr($oae_url, -1, 1) != '/') {
-                $oae_url = $oae_url.'/';
+            if (substr($oae_url, 1, -1) !== '/') {
+                $oae_url .= '/';
             }
-            // if we already have http... in the oae_url variable, no need to do anything.
-            if (strpos(strtolower($oae_url), 'http') === false) {
-                // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
-                // Make sure we have a leading /
-                if (substr($oae_url, 0, 1) != '/') {
-                    $oae_url = '/'.$oae_url;
-                }
-                // need to create a link to OAE on port 8042 to check the license
-                // we cannot detect and use the browser http[s] as it may being used in the client browser,
-                //     but stripped by a https offload or proxy
-                $oae_license_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url.'license';
-                // we create a link for the browser using the same address + the path & file in oae_url
-                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                    $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
-                } else {
-                    $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
-                }
-            }
+            $oae_license_url = $oae_url.'license';
+
             ini_set('default_socket_timeout', 3);
 
             // Get the license type and set our logo
             $license = '';
-            $oae_license_url = $oae_url.'license';
 
             // get the license status from the OAE API
             // license status are: none, free, commercial
@@ -357,7 +344,7 @@ class Logon extends CI_Controller
         $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 
         // If the default_network_address has not been altered by the user, update it.
-        if ((empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') && $this->db->table_exists('configuration')) {
+        if ((empty($this->config->config['oae_product']) or $this->config->config['oae_product'] !== 'Open-AudIT Cloud') && $this->db->table_exists('configuration')) {
             $sql = '/* logon::check_defaults */ ' . "SELECT * FROM configuration WHERE name = 'default_network_address'";
             $query = $this->db->query($sql);
             $result = $query->result();
@@ -403,8 +390,8 @@ class Logon extends CI_Controller
             $query = $this->db->query($sql);
         }
 
-        if (empty($this->config->config['oae_product']) OR $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
-            # Get the installed application list from Enterprise
+        // Get the installed application list from Enterprise
+        if (empty($this->config->config['oae_product']) or $this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
             $url = str_replace('open-audit/', '', $oae_url);
             $installed = @json_decode(@file_get_contents($url . '.json'));
             # get the available application list from file
@@ -424,17 +411,46 @@ class Logon extends CI_Controller
             }
         }
 
+        // Upsert the local server subnet into the /networks
         if ($this->config->config['oae_product'] !== 'Open-AudIT Cloud') {
-            // Upsert the local server subnet into the /networks
             foreach ($this->m_configuration->read_subnet() as $subnet) {
                 $this->load->model('m_networks');
                 $network = new stdClass();
                 $network->name = $subnet;
                 $network->network = $subnet;
-                $network->org_id = 0;
+                $network->org_id = 1;
+                $network->location_id = 1;
                 $network->description = 'Auto inserted local server subnet';
                 $this->m_networks->upsert($network);
                 unset($network);
+            }
+        }
+
+        // Run an integration for Linux default only to populate the locations, pollers and groups
+        if ($this->db->table_exists('integrations') and
+            $this->db->table_exists('integrations_log') and
+            php_uname('s') !== 'Windows NT' and
+            file_exists('/usr/local/nmis9/conf/Config.nmis')) {
+            $sql = "SELECT id FROM integrations WHERE name = 'Default NMIS Integration' ORDER BY id LIMIT 1";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result[0]->id)) {
+                $this->load->model('m_integrations');
+                $this->load->model('m_orgs');
+                $integration = $this->m_integrations->read($result[0]->id);
+                $integration = $integration[0];
+                $integration->debug = false;
+                $integration->log = false;
+                if (!empty($integration->attributes->attributes->url) and
+                    (stripos($integration->attributes->attributes->url, 'localhost') !== false or
+                    stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or
+                    stripos($integration->attributes->attributes->url, '127.0.1.1') !== false) and
+                        empty($integration->attributes->attributes->username) and
+                        empty($integration->attributes->attributes->password)) {
+                    // We should be able to run the integration, assuming config auth_token set
+                    $this->load->helper('integrations_nmis');
+                    integrations_pre($integration);
+                }
             }
         }
     }

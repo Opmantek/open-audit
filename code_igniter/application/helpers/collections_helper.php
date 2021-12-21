@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -168,7 +168,7 @@ if ( ! function_exists('mandatory_fields')) {
                 break;
 
             case 'discoveries':
-                return(array('name','org_id','type','other'));
+                return(array('name','org_id','type'));
                 break;
 
             case 'discovery_scan_options':
@@ -192,7 +192,11 @@ if ( ! function_exists('mandatory_fields')) {
                 break;
 
             case 'integrations':
-                return(array('name','org_id','options'));
+                return(array('name','org_id','attributes','fields'));
+                break;
+
+            case 'integrations_rules':
+                return(array('remote_field','authoritive_source'));
                 break;
 
             case 'ldap_servers':

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -288,7 +288,11 @@ class M_configuration extends MY_Model
 
         // set the used URLs
         $this->config->config['oa_web_index'] = site_url();
-        $this->config->config['oa_web_folder'] = base_url();
+
+        $web_folder = base_url();
+        $temp = explode('/', $web_folder);
+        unset($temp[0], $temp[1], $temp[2]);
+        $this->config->config['oa_web_folder'] =  '/' . implode('/', $temp);
 
         // set the timestamp
         if ($this->db->dbdriver === 'mysql' OR $this->db->dbdriver === 'mysqli') {

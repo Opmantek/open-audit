@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Discoveries
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -207,8 +207,8 @@ class Discoveries extends MY_Controller
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
-            if ( ! empty($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id)) {
-                $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->read($this->response->data[0]->attributes->other->nmap->discovery_scan_option_id));
+            if ( ! empty($this->response->data[0]->attributes->scan_options->id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->read($this->response->data[0]->attributes->scan_options->id));
             }
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
@@ -228,6 +228,7 @@ class Discoveries extends MY_Controller
                     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->devices_assigned_to_org));
                 }
             }
+            $this->response->issues = $this->m_discoveries->issues_read($this->response->meta->id);
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
@@ -235,6 +236,8 @@ class Discoveries extends MY_Controller
                 redirect($this->response->meta->collection);
             }
         }
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
@@ -277,6 +280,7 @@ class Discoveries extends MY_Controller
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
         }
         $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
+        $this->response->issues = $this->m_discoveries->issues_collection($this->user->id);
         output($this->response);
     }
 
@@ -308,6 +312,8 @@ class Discoveries extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
         $this->load->model('m_discovery_scan_options');
         $this->response->included = array_merge($this->response->included, $this->m_discovery_scan_options->collection($this->user->id));
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
@@ -377,10 +383,6 @@ class Discoveries extends MY_Controller
             $user = get_current_user();
             if ($user === 'SYSTEM') {
                 log_error('ERR-0041');
-                $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Windows is running the Apache service as "Local System". This <b>must</b> be changed to a real user (with network access). See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.');
-                $this->response->meta->flash = new stdClass();
-                $this->response->meta->flash->status = 'danger';
-                $this->response->meta->flash->message = '<strong>WARNING</strong> - Windows is running the Apache service as "Local System". This <b>must</b> be changed to a real user (with network access). See the <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Open-AudIT wiki</a> for more details.';
             }
         }
     }
@@ -395,13 +397,13 @@ class Discoveries extends MY_Controller
             $this->load->model('m_help');
             $system = $this->m_help->get_os();
             if ( ! empty($system->os_version) && (stripos($system->os_version, 'redhat') !== false OR stripos($system->os_version, 'centos') !== false) && stripos($system->os_version, 'release 6') !== false) {
-                // Do not set an error because this would disable the Execute buttons.
-                $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
+                // Do not set an error because this would disable the Execute buttons (regardles of Samba 4 being actually installed).
+                $this->response->meta->warning = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to RedHat 8 as support for Centos/RedHat 6 has finished. Open-AudIT no longer supports Redhat / Centos 6 and breakages may occur.';
 
-                $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.');
+                $this->session->set_flashdata('danger', '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to RedHat 8 as support for Centos/RedHat 6 has finished. Open-AudIT no longer supports Redhat / Centos 6 and breakages may occur.');
                 $this->response->meta->flash = new stdClass();
                 $this->response->meta->flash->status = 'danger';
-                $this->response->meta->flash->message = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to Centos/RedHat 8 as support for Centos/RedHat 6 will be ending very soon.';
+                $this->response->meta->flash->message = '<strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed. Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2" target="_blank">this wiki page</a> for more information.<br /> We very much recommend upgrading to RedHat 8 as support for Centos/RedHat 6 has finished. Open-AudIT no longer supports Redhat / Centos 6 and breakages may occur.';
             }
         }
     }
@@ -434,6 +436,9 @@ class Discoveries extends MY_Controller
             $command_string = 'which nmap 2>/dev/null';
             exec($command_string, $output);
             if (isset($output[0]) && strpos($output[0], 'nmap')) {
+                $nmap_installed = 'y';
+            }
+            if (isset($output[1]) && strpos($output[1], 'nmap')) {
                 $nmap_installed = 'y';
             }
             if ($nmap_installed === 'n') {

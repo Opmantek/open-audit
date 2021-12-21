@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -129,14 +129,8 @@ class M_users extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
-        if ($id === 1) {
-            // never allowed to delete the default user
-            log_error('ERR-0013', 'm_users::delete');
-            return false;
-        }
-        $sql = 'DELETE FROM `users` WHERE id = ?';
-        $data = array($id);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `users` WHERE id = ? AND id > 1';
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -773,6 +767,8 @@ class M_users extends MY_Model
         $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>.';
         $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
         $dictionary->columns->type = "Can be 'user' or 'collector'.";
+        $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.';
+        $dictionary->columns->access_token = 'Internal JSON array of valid access tokens for this user.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

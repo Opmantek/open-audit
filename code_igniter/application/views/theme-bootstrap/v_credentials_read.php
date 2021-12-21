@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -119,7 +119,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.password" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo $item->attributes->credentials->password; ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -133,7 +133,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.password" class="col-sm-3 control-label"><?php echo __('Password (optional)'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo $item->attributes->credentials->password; ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -144,7 +144,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.sudo_password" class="col-sm-3 control-label"><?php echo __('Sudo Password (optional)'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.sudo_password" name="credentials.sudo_password" value="<?php echo $item->attributes->credentials->sudo_password; ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.sudo_password" name="credentials.sudo_password" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.sudo_password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.sudo_password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -164,7 +164,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.community" class="col-sm-3 control-label"><?php echo __('Community'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.community" name="credentials.community" value="<?php echo $item->attributes->credentials->community; ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.community" name="credentials.community" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.community" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.community"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -227,7 +227,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.authentication_passphrase" class="col-sm-3 control-label"><?php echo __('User / Authentication Passphrase'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" value="<?php echo $item->attributes->credentials->authentication_passphrase; ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.authentication_passphrase" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.authentication_passphrase"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -258,7 +258,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.privacy_passphrase" class="col-sm-3 control-label"><?php echo __('Privacy Passphrase'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" value="<?php echo $item->attributes->credentials->privacy_passphrase; ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.privacy_passphrase" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.privacy_passphrase"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

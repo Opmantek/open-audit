@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 
@@ -129,42 +129,42 @@ if (empty($data['mount_point'])) {
           <div class="panel-body">
               <ul class="list-group">
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Cellular Details'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Cellular Details'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom_fields"><?php echo __('Custom Fields'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/custom.svg"/><a href="#" data-menuitem="custom_fields"><?php echo __('Custom Fields'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/discovery_log.svg"/><a href="#" data-menuitem="discovery_log"><?php echo __('Discovery Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/discovery_log.svg"/><a href="#" data-menuitem="discovery_log"><?php echo __('Discovery Log'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="edit_log"><?php echo __('Edit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/edit_log.svg"/><a href="#" data-menuitem="edit_log"><?php echo __('Edit Log'); ?></a></li>
 
                 <?php if (!empty($data['ip'])) { ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/ip_address.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/ip_address.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
                 <?php } ?>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
 
                 <?php if ($data['system']->type != 'computer' and !empty($data['network'])) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/network.svg"/><a href="#" data-menuitem="network"><?php echo __('Network'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/network.svg"/><a href="#" data-menuitem="network"><?php echo __('Network'); ?></a></li>
                 <?php } ?>
 
                 <?php if (isset($data['nmap'])) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
                 <?php } ?>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
 
                 <?php if (isset($data['windows'])) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
                 <?php } ?>
 
               </ul>
@@ -197,7 +197,7 @@ if (empty($data['mount_point'])) {
                 foreach ($hardware as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }
@@ -234,27 +234,27 @@ if (empty($data['mount_point'])) {
                 <ul class="list-group">
                 <?php
                 if (!empty($data['software'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software.svg"/><a href="#" data-menuitem="software"><?php echo __('Software'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software.svg"/><a href="#" data-menuitem="software"><?php echo __('Software'); ?></a></li>
                 <?php
                 }
                 if (!empty($software_odbc)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver"><?php echo __('Software ODBC Driver'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver"><?php echo __('Software ODBC Driver'); ?></a></li>
                 <?php
                 }
                 if (!empty($software_update)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update"><?php echo __('Software Update'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software_update.svg"/><a href="#" data-menuitem="software_update"><?php echo __('Software Update'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['software_key'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_key.svg"/><a href="#" data-menuitem="software_key"><?php echo __('Software Key'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/software_key.svg"/><a href="#" data-menuitem="software_key"><?php echo __('Software Key'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['service'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="service"><?php echo __('Service'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/service.svg"/><a href="#" data-menuitem="service"><?php echo __('Service'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['server'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/server.svg"/><a href="#" data-menuitem="server"><?php echo __('Server'); ?></a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/server.svg"/><a href="#" data-menuitem="server"><?php echo __('Server'); ?></a></li>
                 <?php
                 }
                 ?>
@@ -292,7 +292,7 @@ if (empty($data['mount_point'])) {
                 foreach ($software as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }
@@ -806,10 +806,10 @@ if (empty($data['mount_point'])) {
                         $icon_path = $this->config->config['base_path'] . '\\..\\htdocs\\open-audit\\device_images\\';
                     }
                     if (file_exists($icon_path.$data['system']->icon.'.svg')) { ?>
-                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/<?php echo $data['system']->icon; ?>.svg" />
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo $this->config->config['oa_web_folder'] ?>device_images/<?php echo $data['system']->icon; ?>.svg" />
                     <?php
                     } else { ?>
-                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/network_device.svg" />
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo $this->config->config['oa_web_folder'] ?>device_images/network_device.svg" />
                     <?php
                     } ?>
                         <br /><br />
@@ -1608,15 +1608,7 @@ if (!empty($data['policy'])) { ?>
                         echo "                        <td>" . $row->type . "</td>\n";
                         echo "                        <td>" . $row->name . "</td>\n";
                         echo "                        <td>" . $row->value . "</td>\n";
-                        echo "                          <td>";
-                        echo "<table class=\"table table-striped\"><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>";
-                        $options = json_decode($row->options);
-                        foreach ($options as $key => $value) {
-                            echo "<tr><td>" . $key . "</td><td>" . $value . "</td></tr>\n";
-                        }
-                        echo "</tbody></table>\n";
-                        echo "                          </td>";
-
+                        echo "                          <td>" . $row->options . "</td>";
                         echo "                      </tr>\n";
                     } ?>
                     </tbody>
@@ -1624,6 +1616,8 @@ if (!empty($data['policy'])) { ?>
             </div>
         </div>
     </div>
+
+
 <?php } ?>
 
 
@@ -1695,13 +1689,13 @@ foreach ($list as $item) {
                                         }
                                     } elseif ($item == 'vm'and $key == 'guest_system_id') {
                                         if (!empty($value)) {
-                                            echo "                            <td class=\"text-center\"><a href=\"" . base_url() . "index.php/devices/" . $value . "\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
+                                            echo "                            <td class=\"text-center\"><a href=\"" . $this->config->config['oa_web_folder'] . "index.php/devices/" . $value . "\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
                                         } else {
                                             echo "                            <td></td>\n";
                                         }
                                     } elseif ($item == 'vm'and $key == 'icon') {
                                         if (!empty($value)) {
-                                            echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . base_url() . "device_images/" . $value . ".svg\" /></td>\n";
+                                            echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . $this->config->config['oa_web_folder'] . "device_images/" . $value . ".svg\" /></td>\n";
                                         } else {
                                             echo "                            <td class=\"text-center\"></td>\n";
                                         }
@@ -1869,7 +1863,7 @@ if ($data['system']->type == 'computer') {
                                                 <?php
                                                 foreach ($sub_row as $sub_key => $sub_value) {
                                                     if ($sub_item == 'partition' and $sub_key == 'id') {
-                                                        echo '<td><a href="' . base_url() . 'index.php/devices/' . $data['system']->id . '/partition_graph/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
+                                                        echo '<td><a href="' . $this->config->config['oa_web_folder'] . 'index.php/devices/' . $data['system']->id . '/partition_graph/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
                                                     }
                                                     if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded' and $sub_key != 'system.name' and $sub_key != 'system.id') {
                                                         if (is_int($sub_value)) {

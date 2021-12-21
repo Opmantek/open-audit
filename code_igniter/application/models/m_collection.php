@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -379,273 +379,309 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
-            $all_options = array('ping', 'service_version', 'open|filtered', 'filtered', 'timeout', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports', 'tcp_ports', 'udp_ports', 'exclude_tcp_ports', 'exclude_udp_ports', 'exclude_ip', 'ssh_ports');
 
+            if ( ! empty($data->subnet)) {
+                if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Subnet supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $data->description = 'Subnet - ' . $data->subnet;
+                }
+            }
+
+            if (isset($data->ad_domain)) {
+                $data->description = 'Active Directory - ' . $data->ad_domain;
+            }
+
+            if (isset($data->ad_server)) {
+                if (filter_var($data->ad_server, FILTER_VALIDATE_IP) === false && $data->ad_server !== '') {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid ad_server supplied (should be an IP Address).');
+                    log_error('ERR-0010', 'm_collections::update (invalid ad_server supplied)');
+                    output($CI->response);
+                    exit();
+                }
+            }
+
+            if (isset($data->seed_ip)) {
+                if (filter_var($data->seed_ip, FILTER_VALIDATE_IP) === false && $data->seed_ip !== '') {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid seed_ip supplied (should be an IP Address).');
+                    log_error('ERR-0010', 'm_collections::update (invalid seed_ip supplied)');
+                    output($CI->response);
+                    exit();
+                }
+            }
+
+            if (isset($data->seed_restrict_to_subnet)) {
+                if ($data->seed_restrict_to_subnet !== 'y' && $data->seed_restrict_to_subnet !== 'n' && $data->seed_restrict_to_subnet !== '') {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid seed_restrict_to_subnet supplied (should be y or n).');
+                    log_error('ERR-0010', 'm_collections::update (invalid seed_restrict_to_subnet supplied)');
+                    output($CI->response);
+                    exit();
+                }
+            }
+
+            if (isset($data->seed_restrict_to_private)) {
+                if ($data->seed_restrict_to_private !== 'y' && $data->seed_restrict_to_private !== 'n' && $data->seed_restrict_to_private !== '') {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid seed_restrict_to_private supplied (should be y or n).');
+                    log_error('ERR-0010', 'm_collections::update (invalid seed_restrict_to_private supplied)');
+                    output($CI->response);
+                    exit();
+                }
+            }
+
+            if (isset($data->devices_assigned_to_org)) {
+                if ( ! is_int($data->devices_assigned_to_org) && ! is_numeric($data->devices_assigned_to_org) && $data->devices_assigned_to_org !== '') {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid devices_assigned_to_org supplied.');
+                    log_error('ERR-0010', 'm_collections::update (invalid devices_assigned_to_org supplied)');
+                    output($CI->response);
+                    exit();
+                } else {
+                    if ( ! empty($data->devices_assigned_to_org)) {
+                        $data->devices_assigned_to_org = intval($data->devices_assigned_to_org);
+                    }
+                }
+            }
+
+            if (isset($data->devices_assigned_to_location)) {
+                if ( ! is_int($data->devices_assigned_to_location) && ! is_numeric($data->devices_assigned_to_location) && $data->devices_assigned_to_location !== '') {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid devices_assigned_to_location supplied.');
+                    log_error('ERR-0010', 'm_collections::update (invalid devices_assigned_to_location supplied)');
+                    output($CI->response);
+                    exit();
+                } else {
+                    if ( ! empty($data->devices_assigned_to_location)) {
+                        $data->devices_assigned_to_location = intval($data->devices_assigned_to_location);
+                    }
+                }
+            }
+
+            $db_scan_options = new stdClass();
             $query = $this->db->query('SELECT * FROM discoveries WHERE id = ?', array($data->id));
             $result = $query->result();
             $db_discovery = $result[0];
-            $other = json_decode($db_discovery->other);
-
-            if ( ! empty($data->other)) {
-                $received_other = new stdClass();
-                foreach ($data->other as $key => $value) {
-                        $received_other->$key = $value;
-                }
-
-                if ( ! empty($received_other->subnet) && ! preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
-                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for subnet');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Subnet supplied.');
-                    $data->other->subnet = '';
-                    if ($CI->response->meta->format === 'screen') {
-                        redirect('/discoveries');
-                    } else {
-                        output($CI->response);
-                        exit();
-                    }
-                }
-
-                $discovery_scan_options = '';
-                if (isset($received_other->nmap->discovery_scan_option_id)) {
-                    if ( ! is_numeric($received_other->nmap->discovery_scan_option_id) && $received_other->nmap->discovery_scan_option_id !== '') {
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (non-numeric) supplied.');
-                        $data->other->subnet = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    } else {
-                        if ((string)$received_other->nmap->discovery_scan_option_id !== '' && intval($received_other->nmap->discovery_scan_option_id) !== 0) {
-                            $select = 'SELECT * FROM discovery_scan_options WHERE id = ?';
-                            $data_array = array(intval($received_other->nmap->discovery_scan_option_id));
-                            $query = $this->db->query($select, $data_array);
-                            $result = $query->result();
-                            if (empty($result)) {
-                                log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
-                                $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
-                                if ($CI->response->meta->format === 'screen') {
-                                    redirect('/discoveries');
-                                } else {
-                                    output($CI->response);
-                                    exit();
-                                }
-                            } else {
-                                $discovery_scan_options = $result[0];
-                            }
-                        }
-                    }
-                }
-
-                // If any of the below are changed, we're not using a default
-                if ( ! empty($received_other->nmap->ping)) {
-                    if ($received_other->nmap->ping === 'y' OR $received_other->nmap->ping === 'n') {
-                        $received_other->nmap->discovery_scan_option_id = '0';
-                    } else {
-                        $received_other->nmap->ping = '';
-                    }
-                }
-                if ( ! empty($received_other->nmap->service_version)) {
-                    if ($received_other->nmap->service_version === 'y' OR $received_other->nmap->service_version === 'n') {
-                        $received_other->nmap->discovery_scan_option_id = '0';
-                    } else {
-                        $received_other->nmap->service_version = '';
-                    }
-                }
-                if ( ! empty($received_other->nmap->{'open|filtered'})) {
-                    if ($received_other->nmap->{'open|filtered'} === 'y' OR $received_other->nmap->{'open|filtered'} === 'n') {
-                        $received_other->nmap->discovery_scan_option_id = '0';
-                    } else {
-                        $received_other->nmap->{'open|filtered'} = '';
-                    }
-                }
-                if ( ! empty($received_other->nmap->filtered)) {
-                    if ($received_other->nmap->filtered === 'y' OR $received_other->nmap->filtered === 'n') {
-                        $received_other->nmap->discovery_scan_option_id = '0';
-                    } else {
-                        $received_other->nmap->filtered = '';
-                    }
-                }
-                if ( ! empty($received_other->nmap->timeout)) {
-                    $received_other->nmap->timeout = intval($received_other->nmap->timeout);
-                    $received_other->nmap->discovery_scan_option_id = '0';
-                }
-                if ( ! empty($received_other->nmap->timing)) {
-                    $received_other->nmap->timing = intval($received_other->nmap->timing);
-                    $received_other->nmap->discovery_scan_option_id = '0';
-                }
-                if ( ! empty($received_other->nmap->nmap_tcp_ports)) {
-                    $received_other->nmap->discovery_scan_option_id = '0';
-                    $received_other->nmap->nmap_tcp_ports = intval($received_other->nmap->nmap_tcp_ports);
-                }
-                if ( ! empty($received_other->nmap->nmap_udp_ports)) {
-                    $received_other->nmap->discovery_scan_option_id = '0';
-                    $received_other->nmap->nmap_udp_ports = intval($received_other->nmap->nmap_udp_ports);
-                }
-
-                if ( ! empty($received_other->nmap->tcp_ports)) {
-                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->tcp_ports)) {
-                        // Invalid TCP ports
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for tcp_ports');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
-                        $data->other->nmap->tcp_ports = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    } else {
-                        // Valid TCP ports
-                        $received_other->nmap->discovery_scan_option_id = '0';
-                    }
-                }
-
-                if ( ! empty($received_other->nmap->udp_ports)) {
-                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->udp_ports)) {
-                        // Invalid UDP ports
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for udp_ports');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
-                        $data->other->nmap->udp_ports = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    } else {
-                        // Valid UDP ports
-                        $received_other->nmap->discovery_scan_option_id = '0';
-                    }
-                }
-
-                if ( ! empty($received_other->nmap->exclude_tcp_ports)) {
-                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_tcp_ports)) {
-                        // Invalid Exclude TCP ports
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
-                        $data->other->nmap->exclude_tcp_ports = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    } else {
-                        // Valid Exclude TCP ports
-                    }
-                }
-
-                if ( ! empty($received_other->nmap->exclude_udp_ports)) {
-                    if ( ! preg_match('/^[\d,\/,\/-]*$/', $received_other->nmap->exclude_udp_ports)) {
-                        // Invalid Exclude UDP ports
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
-                        $data->other->nmap->exclude_udp_ports = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    } else {
-                        // Valid Exclude UDP ports
-                    }
-                }
-
-                if ( ! empty($received_other->nmap->exclude_ip)) {
-                    $received_other->nmap->exclude_ip = str_replace(' ', ',', $received_other->nmap->exclude_ip);
-                    if ( ! preg_match('/^[\d,\.,\/,\-,\,]*$/', $received_other->nmap->exclude_ip)) {
-                        // Invalid Exclude IP
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_ip');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
-                        $data->other->nmap->exclude_ip = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    } else {
-                        // Valid Exclude IP
-                    }
-                }
-
-                if ( ! empty($received_other->nmap->ssh_ports)) {
-                    $received_other->nmap->ssh_ports = str_replace(' ', ',', $received_other->nmap->ssh_ports);
-                    if ( ! preg_match('/^[\d,\/,-]*$/', $received_other->nmap->ssh_ports)) {
-                        // Invalid SSH Ports
-                        log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for ssh_ports');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid ssh_ports supplied.');
-                        $data->other->nmap->exclude_ip = '';
-                        if ($CI->response->meta->format === 'screen') {
-                            redirect('/discoveries');
-                            return false;
-                        } else {
-                            output($CI->response);
-                            exit();
-                            return false;
-                        }
-                    } else {
-                        // Valid SSH Ports
-                    }
-                }
-
-                // top level - subnet, ad_domain, ad_server
-                if ( ! empty($received_other->subnet)) {
-                    $other->subnet = $received_other->subnet;
-                    $data->description = 'Subnet - ' . $received_other->subnet;
-                    if (stripos($received_other->subnet, '-') === false && stripos($received_other->subnet, ',') === false) {
-                        $this->load->helper('network');
-                        $temp = network_details($received_other->subnet);
-                        if ( ! empty($temp->error) && filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
-                            $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid subnet attribute supplied.');
-                            log_error('ERR-0010', 'm_collections::update (invalid subnet supplied)');
-                            return;
-                        }
-                    }
-                }
-                if ( ! empty($received_other->ad_domain)) {
-                    $other->ad_domain = $received_other->ad_domain;
-                    $data->description = 'Active Directory - ' . $received_other->ad_domain;
-                }
-
-                if ( ! empty($received_other->ad_server)) {
-                    $other->ad_server = $received_other->ad_server;
-                }
-
-                if (empty($other->nmap) OR count((array)$other->nmap) === 0) {
-                    $other->nmap = new stdClass();
-                }
-
-                if ( ! empty($received_other->nmap)) {
-                    foreach ($received_other->nmap as $key => $value) {
-                        $other->nmap->{$key} = $value;
-                    }
-                }
-
-                if (empty($other->match) OR count((array)$other->match) === 0) {
-                    $other->match = new stdClass();
-                }
-
-                if ( ! empty($received_other->match)) {
-                    foreach ($received_other->match as $key => $value) {
-                        $other->match->{$key} = $received_other->match->{$key};
-                    }
-                }
-
-                if ( ! empty($discovery_scan_options)) {
-                    // We have set a discovery options - reset all
-                    foreach ($all_options as $field) {
-                        $other->nmap->{$field} = $discovery_scan_options->{$field};
-                    }
-                }
-
-                unset($data->other);
-                $data->other = (string)json_encode($other);
+            if (empty($db_discovery->scan_options)) {
+                $db_discovery->scan_options = new stdClass();
             }
-            if ( ! empty($data->killed)) {
+            if (is_string($db_discovery->scan_options)) {
+                $db_scan_options = json_decode($db_discovery->scan_options);
+            }
+            if (empty($db_discovery->match_options)) {
+                $db_discovery->match_options = new stdClass();
+            }
+            if (is_string($db_discovery->match_options)) {
+                $db_match_options = json_decode($db_discovery->match_options);
+            }
+
+            if (isset($data->scan_options->id)) {
+                if (isset($data->scan_options->id) && $data->scan_options->id !== '' && ! is_numeric($data->scan_options->id)) {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for scan_options::id (non-numeric)');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid scan_options::id (non-numeric) supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    if ( ! empty($data->scan_options->id)) {
+                        $select = "SELECT id FROM discovery_scan_options";
+                        $query = $this->db->query($select);
+                        $result = $query->result();
+                        $ids = array();
+                        foreach ($result as $item) {
+                            $ids[] = $item->id;
+                        }
+                        if ( ! in_array($data->scan_options->id, $ids)) {
+                            log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid ID supplied for scan_options::id (non-numeric)');
+                            $this->session->set_flashdata('error', 'Discovery could not be updated - invalid scan_options::id (does not exist) supplied.');
+                            output($CI->response);
+                            exit();
+                        } else {
+                            $db_scan_options->id = intval($data->scan_options->id);
+                        }
+                    } else {
+                        $db_scan_options->id = 0;
+                    }
+                }
+            }
+
+            $all_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'open|filtered', 'ping', 'script_timeout', 'service_version', 'snmp_timeout', 'ssh_ports', 'ssh_timeout', 'tcp_ports', 'timeout', 'timing', 'udp_ports', 'wmi_timeout');
+
+            if (isset($data->scan_options->ping)) {
+                if ($data->scan_options->ping !== 'y' && $data->scan_options->ping !== 'n' && $data->scan_options->ping !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid ping value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid ping value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->ping = $data->scan_options->ping;
+                }
+            }
+            if (isset($data->scan_options->service_version)) {
+                if ($data->scan_options->service_version !== 'y' && $data->scan_options->service_version !== 'n' && $data->scan_options->service_version !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid service_version value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid service_version value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->service_version = $data->scan_options->service_version;
+                }
+            }
+            if (isset($data->scan_options->{'open|filtered'})) {
+                if ($data->scan_options->{'open|filtered'} !== 'y' && $data->scan_options->{'open|filtered'} !== 'n' && $data->scan_options->{'open|filtered'} !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid open|filtered value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid open|filtered value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->{'open|filtered'} = $data->scan_options->{'open|filtered'};
+                }
+            }
+            if (isset($data->scan_options->filtered)) {
+                if ($data->scan_options->filtered !== 'y' && $data->scan_options->filtered !== 'n' && $data->scan_options->filtered !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid filtered value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid filtered value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->filtered = $data->scan_options->filtered;
+                }
+            }
+            if (isset($data->scan_options->timeout)) {
+                if (! is_int($data->scan_options->timeout) && ! is_numeric($data->scan_options->timeout) && $data->scan_options->timeout !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid timeout value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid timeout value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->timeout = intval($db_scan_options->timeout);
+                    $db_scan_options->timeout = $data->scan_options->timeout;
+                }
+            }
+            if (isset($data->scan_options->timing)) {
+                if (! is_int($data->scan_options->timing) && ! is_numeric($data->scan_options->timing) && $data->scan_options->timing !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid timing value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid timing value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->timing = intval($db_scan_options->timing);
+                    $db_scan_options->timing = $data->scan_options->timing;
+                }
+            }
+            if (isset($data->scan_options->nmap_tcp_ports)) {
+                if (! is_int($data->scan_options->nmap_tcp_ports) && ! is_numeric($data->scan_options->nmap_tcp_ports) && $data->scan_options->nmap_tcp_ports !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid nmap_tcp_ports value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid nmap_tcp_ports value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->nmap_tcp_ports = intval($db_scan_options->nmap_tcp_ports);
+                    $db_scan_options->nmap_tcp_ports = $data->scan_options->nmap_tcp_ports;
+                }
+            }
+            if (isset($data->scan_options->nmap_udp_ports)) {
+                if (! is_int($data->scan_options->nmap_udp_ports) && ! is_numeric($data->scan_options->nmap_udp_ports) && $data->scan_options->nmap_udp_ports !== '') {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid nmap_udp_ports value supplied');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid nmap_udp_ports value supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->nmap_udp_ports = intval($db_scan_options->nmap_udp_ports);
+                    $db_scan_options->nmap_udp_ports = $data->scan_options->nmap_udp_ports;
+                }
+            }
+            if (isset($data->scan_options->tcp_ports)) {
+                if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->tcp_ports)) {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for tcp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->tcp_ports = $data->scan_options->tcp_ports;
+                }
+            }
+            if (isset($data->scan_options->udp_ports)) {
+                if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->udp_ports)) {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for udp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->udp_ports = $data->scan_options->udp_ports;
+                }
+            }
+            if (isset($data->scan_options->exclude_tcp_ports)) {
+                if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->exclude_tcp_ports)) {
+                    // Invalid Exclude TCP ports
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->exclude_tcp_ports = $data->scan_options->exclude_tcp_ports;
+                }
+            }
+            if (isset($data->scan_options->exclude_udp_ports)) {
+                if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->exclude_udp_ports)) {
+                    // Invalid Exclude TCP ports
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->exclude_udp_ports = $data->scan_options->exclude_udp_ports;
+                }
+            }
+            if (isset($data->scan_options->exclude_ip)) {
+                $data->scan_options->exclude_ip = str_replace(' ', ',', $data->scan_options->exclude_ip);
+                if (! preg_match('/^[\d,\.,\/,\-,\,]*$/', $data->scan_options->exclude_ip)) {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for exclude_ip');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->exclude_ip = $data->scan_options->exclude_ip;
+                }
+            }
+            if (isset($data->scan_options->ssh_ports)) {
+                $data->scan_options->ssh_ports = str_replace(' ', ',', $data->scan_options->ssh_ports);
+                if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->ssh_ports)) {
+                    log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid field data supplied for ssh_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid ssh_ports supplied.');
+                    output($CI->response);
+                    exit();
+                } else {
+                    $db_scan_options->ssh_ports = $data->scan_options->ssh_ports;
+                }
+            }
+
+            if (! empty($data->match_options)) {
+                $all_options = array('match_dbus', 'match_dns_fqdn', 'match_dns_hostname', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+                foreach ($all_options as $option) {
+                    if (isset($data->match_options->{$option})) {
+                        if ($data->match_options->{$option} !== 'y' && $data->match_options->{$option} !== 'n' && $data->match_options->{$option} !== '') {
+                            log_error('ERR-0024', 'm_collection::update (discoveries)', 'Invalid match value supplied');
+                            $this->session->set_flashdata('error', 'Discovery could not be updated - invalid match value supplied.');
+                            output($CI->response);
+                            exit();
+                        } else {
+                            $db_match_options->{$option} = $data->match_options->{$option};
+                        }
+                    }
+                }
+                foreach ($all_options as $option) {
+                    if (! isset($db_match_options->{$option})) {
+                        $db_match_options->{$option} = '';
+                    }
+                }
+                $data->match_options = json_encode($db_match_options);
+            }
+
+            if (! empty($data->scan_options)) {
+                // If we were given any attributes, they should now be incorporated into db_scan_options.
+                $data->scan_options = json_encode($db_scan_options);
+            }
+
+            if (! empty($data->killed)) {
                 unset($data->killed);
                 $log = new stdClass();
                 $log->discovery_id = $data->id;
@@ -668,52 +704,96 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'groups') {
-            if ( ! empty($data->sql)) {
-                if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+            if (! empty($data->sql)) {
+                if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
                         log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
                         return false;
                 }
-                if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                if (stripos($data->sql, 'delete from ') !== false or stripos($data->sql, 'delete from`') !== false) {
                         log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
                         return false;
                 }
-                if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                if (stripos($data->sql, 'insert into ') !== false or stripos($data->sql, 'insert into`') !== false) {
                     log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
                     return false;
                 }
             }
         }
 
-        if ($collection === 'integrations' && ! empty($data->options)) {
+        if ($collection === 'integrations' && ! empty($data->attributes)) {
             $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
             $query = $this->db->query($select, array($data->id));
             $result = $query->result();
             $existing = new stdClass();
-            if ( ! empty($result[0]->options)) {
-                $original = json_decode($result[0]->options);
+            if (! empty($result[0]->attributes)) {
+                $original = @json_decode($result[0]->attributes);
             }
-            $submitted = $data->options;
+            $submitted = $data->attributes;
             $merged = $this->deep_merge($original, $submitted);
-            $data->options = (string)json_encode($merged);
+            $data->attributes = (string)json_encode($merged);
+        }
+
+        if ($collection === 'integrations' && ! empty($data->fields)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            // TODO - Unsure why an errors array is in here
+            unset($data->fields->errors);
+            $fields = @json_decode($result[0]->fields);
+            $newfield = new stdClass();
+            foreach ($data->fields as $key => $value) {
+                $newfield->{$key} = $value;
+            }
+            $data->fields = $fields;
+            array_push($data->fields, $newfield);
+            $data->fields = json_encode($data->fields);
+        }
+
+        if ($collection === 'integrations' && ! empty($data->discovery_run)) {
+            $select = "/* m_collection::update */ " . "SELECT * FROM integrations WHERE id = ?";
+            $query = $this->db->query($select, array($data->id));
+            $result = $query->result();
+            if ($data->discovery_run === 'n') {
+                // Delete any existing discovery
+                if (! empty($result[0]->discovery_id)) {
+                    $select = "DELETE FROM discoveries WHERE id = " . @intval($result[0]->discovery_id);
+                    $query = $this->db->query($select);
+                    $select = "DELETE FROM discovery_log WHERE discovery_id = " . @intval($result[0]->discovery_id);
+                    $query = $this->db->query($select);
+                }
+                $data->discovery_id = null;
+            } else {
+                // Make a new discovery
+                $CI->load->model('m_discoveries');
+                $discovery = new stdClass();
+                $discovery->type = 'integration';
+                $discovery->name = 'Discovery for ' . $result[0]->name . ' integration';
+                $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
+                $discovery->org_id = $result[0]->org_id;
+                $discovery->discard = 'n';
+                $discovery->complete = 'n';
+                $discovery->subnet = '';
+                $data->discovery_id = @intval($CI->m_discoveries->create($discovery));
+            }
         }
 
         if ($collection === 'ldap_servers') {
-            if ( ! empty($data->dn_password)) {
+            if (! empty($data->dn_password)) {
                 $data->dn_password = (string)simpleEncrypt($data->dn_password);
             }
         }
 
         if ($collection === 'queries') {
-            if ( ! empty($data->sql)) {
-                if (stripos($data->sql, 'update ') !== false OR stripos($data->sql, 'update`') !== false) {
+            if (! empty($data->sql)) {
+                if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
                         log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain UPDATE clause');
                         return false;
                 }
-                if (stripos($data->sql, 'delete from ') !== false OR stripos($data->sql, 'delete from`') !== false) {
+                if (stripos($data->sql, 'delete from ') !== false or stripos($data->sql, 'delete from`') !== false) {
                         log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain DELETE clause.');
                         return false;
                 }
-                if (stripos($data->sql, 'insert into ') !== false OR stripos($data->sql, 'insert into`') !== false) {
+                if (stripos($data->sql, 'insert into ') !== false or stripos($data->sql, 'insert into`') !== false) {
                     log_error('ERR-0045', 'm_collection::update', 'SQL cannot contain INSERT clause.');
                     return false;
                 }
@@ -722,7 +802,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'scripts') {
             $options = $CI->options;
-            if ( ! empty($data->options)) {
+            if (! empty($data->options)) {
                 if (is_string($data->options)) {
                     $data->options = json_decode($data->options);
                 }
@@ -734,9 +814,9 @@ class M_collection extends MY_Model
                     $value = str_replace(';', '', $value);
                     $value = str_replace("\n", '', $value);
                     $values = $options[$name]->values;
-                    if ( ! empty($values)) {
+                    if (! empty($values)) {
                         $value_array = explode(',', $values);
-                        if ( ! in_array($value, $value_array)) {
+                        if (! in_array($value, $value_array)) {
                             $value = '';
                             log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
                             if ($CI->response->meta->format === 'screen') {
@@ -753,7 +833,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'ldap_seen_date') {
                         // date
-                        if ( ! preg_match('/^[\d{4},\-,\d{2},\-,\d{2}]+$/', $value)) {
+                        if (! preg_match('/^[\d{4},\-,\d{2},\-,\d{2}]+$/', $value)) {
                             unset($data->options->{$name});
                             log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
                             if ($CI->response->meta->format === 'screen') {
@@ -766,7 +846,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'ldap_seen_days') {
                         // number
-                        if ( ! empty($value)) {
+                        if (! empty($value)) {
                             $data->options->{$name} = intval($value);
                             // Check if we have set it to 0 and if so, remove it
                             if (empty($data->options->{$name})) {
@@ -783,7 +863,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'org_id') {
                         // number
-                        if ( ! empty($value)) {
+                        if (! empty($value)) {
                             $data->options->{$name} = intval($value);
                             // Check if we have set it to 0 and if so, remove it
                             if (empty($data->options->{$name})) {
@@ -800,7 +880,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'strcomputer') {
                         // text
-                        if ( ! preg_match('/^[\w,\.]+$/', $value)) {
+                        if (! preg_match('/^[\w,\.]+$/', $value)) {
                             unset($data->options->{$name});
                             log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
                             if ($CI->response->meta->format === 'screen') {
@@ -816,7 +896,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'system_id') {
                         // number
-                        if ( ! empty($value)) {
+                        if (! empty($value)) {
                             $data->options->{$name} = intval($value);
                             // Check if we have set it to 0 and if so, remove it
                             if (empty($data->options->{$name})) {
@@ -833,7 +913,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'url') {
                         // url
-                        if ( ! preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $value)) {
+                        if (! preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $value)) {
                             unset($data->options->{$name});
                             log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
                             if ($CI->response->meta->format === 'screen') {
@@ -846,7 +926,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'windows_user_work_1') {
                         // text
-                        if ( ! preg_match('/^[\w]+$/', $value)) {
+                        if (! preg_match('/^[\w]+$/', $value)) {
                             unset($data->options->{$name});
                             log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
                             if ($CI->response->meta->format === 'screen') {
@@ -859,7 +939,7 @@ class M_collection extends MY_Model
                     }
                     if ($name === 'windows_user_work_2') {
                         // text
-                        if ( ! preg_match('/^[\w]+$/', $value)) {
+                        if (! preg_match('/^[\w]+$/', $value)) {
                             unset($data->options->{$name});
                             log_error('ERR-0024', 'm_collection::update (scripts)', 'Invalid value supplied for ' . $name . '.');
                             if ($CI->response->meta->format === 'screen') {
@@ -875,7 +955,7 @@ class M_collection extends MY_Model
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
                 $existing = new stdClass();
-                if ( ! empty($result[0]->options)) {
+                if (! empty($result[0]->options)) {
                     $existing = json_decode($result[0]->options);
                 }
                 foreach ($data->options as $key => $value) {
@@ -886,19 +966,19 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'tasks') {
-            if ( ! empty($data->options)) {
+            if (! empty($data->options)) {
                 $received = new stdClass();
-                if (gettype($data->options) === 'object' OR gettype($data->options) === 'array') {
+                if (gettype($data->options) === 'object' or gettype($data->options) === 'array') {
                     foreach ($data->options as $key => $value) {
                             $received->$key = $value;
                     }
                 }
                 $existing = new stdClass();
-                if ( ! empty($data->id)) {
+                if (! empty($data->id)) {
                     $select = 'SELECT * FROM tasks WHERE id = ?';
                     $query = $this->db->query($select, array($data->id));
                     $result = $query->result();
-                    if ( ! empty($result[0]->options)) {
+                    if (! empty($result[0]->options)) {
                         $existing = json_decode($result[0]->options);
                     }
                 }
@@ -912,30 +992,30 @@ class M_collection extends MY_Model
                 }
                 $data->options = (string)json_encode($new);
             }
-            if ( ! empty($data->{'minute[]'}) && is_array($data->{'minute[]'})) {
+            if (! empty($data->{'minute[]'}) && is_array($data->{'minute[]'})) {
                 $data->minute = implode(',', $data->{'minute[]'});
                 unset($data->{'minute[]'});
             }
-            if ( ! empty($data->{'hour[]'}) && is_array($data->{'hour[]'})) {
+            if (! empty($data->{'hour[]'}) && is_array($data->{'hour[]'})) {
                 $data->hour = implode(',', $data->{'hour[]'});
                 unset($data->{'hour[]'});
             }
-            if ( ! empty($data->{'day_of_month[]'}) && is_array($data->{'day_of_month[]'})) {
+            if (! empty($data->{'day_of_month[]'}) && is_array($data->{'day_of_month[]'})) {
                 $data->day_of_month = implode(',', $data->{'day_of_month[]'});
                 unset($data->{'day_of_month[]'});
             }
-            if ( ! empty($data->{'month[]'}) && is_array($data->{'month[]'})) {
+            if (! empty($data->{'month[]'}) && is_array($data->{'month[]'})) {
                 $data->month = implode(',', $data->{'month[]'});
                 unset($data->{'month[]'});
             }
-            if ( ! empty($data->{'day_of_week[]'}) && is_array($data->{'day_of_week[]'})) {
+            if (! empty($data->{'day_of_week[]'}) && is_array($data->{'day_of_week[]'})) {
                 $data->day_of_week = implode(',', $data->{'day_of_week[]'});
                 unset($data->{'day_of_week[]'});
             }
         }
 
         if ($collection === 'users') {
-            if ( ! empty($data->password)) {
+            if (! empty($data->password)) {
                 set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/random_compat');
                 require_once 'lib/random.php';
                 $salt = bin2hex(random_bytes(32));

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -98,8 +98,8 @@ class M_discovery_scan_options extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
         $sql = 'DELETE FROM `discovery_scan_options` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -180,8 +180,8 @@ class M_discovery_scan_options extends MY_Model
         $dictionary->columns->nmap_udp_ports = 'The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.';
         $dictionary->columns->tcp_ports = 'Any specific TCP ports you wish tested (comma seperated, no spaces).';
         $dictionary->columns->udp_ports = 'Any specific UDP ports you wish tested (comma seperated, no spaces).';
-        $dictionary->columns->exclude_tcp_ports = 'Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.';
-        $dictionary->columns->exclude_udp_ports = 'Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.';
+        $dictionary->columns->exclude_tcp_ports = 'Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.';
+        $dictionary->columns->exclude_udp_ports = 'Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.';
         $dictionary->columns->exclude_ip = 'Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.';
         $dictionary->columns->ssh_ports = 'If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -143,20 +143,14 @@ class M_ldap_servers extends MY_Model
      */
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $CI = & get_instance();
-        $sql = 'DELETE FROM `ldap_servers` WHERE id = ?';
         $data = array(intval($id));
+        $sql = 'DELETE FROM `ldap_servers` WHERE id = ?';
         $this->run_sql($sql, $data);
-        return true;
+        if ( ! empty($test)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

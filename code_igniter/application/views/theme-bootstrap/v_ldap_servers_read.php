@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -274,7 +274,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="dn_password" class="col-sm-3 control-label"><?php echo __('DN Password'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="dn_password" name="dn_password" value="<?php echo $item->attributes->dn_password; ?>" disabled>
+                            <input type="password" class="form-control" id="dn_password" name="dn_password" value="******" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_user_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dn_password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

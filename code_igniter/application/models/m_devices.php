@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -132,7 +132,7 @@ class M_devices extends MY_Model
             return false;
         }
         $return = array();
-        $tables = array('audit_log', 'bios', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'policy', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('audit_log', 'bios', 'certificate', 'change_log', 'credential', 'disk', 'dns', 'edit_log', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $sql = "SELECT COUNT(*) AS `count` FROM `{$table}` WHERE system_id = " . intval($id);
             $result = $this->run_sql($sql, array());
@@ -186,7 +186,7 @@ class M_devices extends MY_Model
 
             $result = $this->format_data($result, 'devices');
 
-            // format our uptime from unixtime to humane readable
+            // format our uptime from unixtime to human readable
             $result[0]->attributes->uptime_formatted = '';
             if ( ! empty($result[0]->attributes->uptime)) {
                 $seconds = intval($result[0]->attributes->uptime);
@@ -297,7 +297,7 @@ class M_devices extends MY_Model
 
     /**
      * [read_sub_resource description]
-     * @param  string $id              [description]
+     * @param  string $id              system.id
      * @param  string $sub_resource    [description]
      * @param  string $sub_resource_id [description]
      * @param  string $properties      [description]
@@ -313,32 +313,16 @@ class M_devices extends MY_Model
         $log->file = 'system';
         $log->level = 7;
 
-        if ($id === '') {
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
         if (empty($id)) {
             $log->message = 'No ID, returning false';
             stdlog($log);
             return false;
         }
-
-        if ($sub_resource === '') {
-            $sub_resource = $CI->response->meta->sub_resource;
-        }
         if (empty($sub_resource)) {
             $log->message = 'No sub_resource, returning false';
             stdlog($log);
             return false;
-        }
-
-        if (empty($sub_resource_id)) {
-            if ( ! empty($CI->response->meta->sub_resource_id)) {
-                $sub_resource_id = intval($CI->response->meta->sub_resource_id);
-            }
-        } else {
-            $sub_resource_id = intval($sub_resource_id);
         }
         if (empty($sub_resource_id)) {
             $sub_resource_id = '';
@@ -346,21 +330,9 @@ class M_devices extends MY_Model
             $sub_resource_id = ' AND `' . $sub_resource . '`.id = ' . intval($sub_resource_id);
             $current = '';
         }
-
-        // if ($properties == '') {
-        //     $properties = @$CI->response->meta->properties;
-        // }
         if (empty($properties) OR $properties === '*') {
             $properties = '`' . $sub_resource . '`.*';
         }
-
-        if ($sort === '') {
-            $sort = @$CI->response->meta->sort;
-        }
-        if (empty($sort)) {
-            $sort = '';
-        }
-
         if ( ! empty($limit)) {
             $limit = ' LIMIT ' . intval($limit);
         }
@@ -370,18 +342,27 @@ class M_devices extends MY_Model
         if ($sub_resource === 'location') {
             $sql = 'SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?';
             $data = array($id);
+
         } else if ($sub_resource === 'purchase') {
             $sql = 'SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?';
             $data = array($id);
+
         } else if ($sub_resource === 'discovery_log') {
-            $sql = 'SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? ' . $limit;
+            $sql = 'SELECT discovery_log.id, discovery_log.discovery_id, discoveries.name AS `discoveries.name`, discovery_log.timestamp, discovery_log.file, discovery_log.function, discovery_log.message, discovery_log.command_status, discovery_log.command_output, discovery_log.command_time_to_execute, discovery_log.command FROM discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) WHERE discovery_log.system_id = ? ' . $limit;
             $data = array($id);
+
         } else if ($sub_resource === 'edit_log') {
             $sql = 'SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? ' . $limit;
             $data = array($id);
+
         } else if ($sub_resource === 'network') {
             $sql = "SELECT network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') WHERE system.id = ? ";
             $data = array($id);
+
+        } else if ($sub_resource === 'certificate') {
+            $sql = "SELECT certificate.*, IF(certificate.valid_to > DATE(NOW() - INTERVAL 7 day) AND certificate.valid_to < DATE(NOW() + INTERVAL 7 day), 'expiring_week', IF(certificate.valid_to > DATE(NOW()) AND certificate.valid_to < DATE(NOW() + INTERVAL 30 day), 'expiring_month', IF(certificate.valid_to < DATE(NOW()), 'expired', ''))) AS status FROM certificate WHERE certificate.system_id = ? " . $limit;
+            $data = array($id);
+
         } else {
             $currency = false;
             $first_seen = false;
@@ -404,7 +385,7 @@ class M_devices extends MY_Model
                 if ($current === 'n') {
                     $currency = 'AND `' . $sub_resource . "`.`current` = '" . $current . "'" ;
                 }
-                if ($current === '' OR $current === 'all') {
+                if ($current === '' or $current === 'all') {
                     $currency = '';
                 }
                 if ($current === 'delta' && $first_seen) {
@@ -433,7 +414,7 @@ class M_devices extends MY_Model
         if ($sub_resource === 'credential' && ! empty($result)) {
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
-                if ( ! empty($result[$i]->credentials)) {
+                if (! empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                 }
             }
@@ -539,6 +520,8 @@ class M_devices extends MY_Model
             $device_ids = explode(',', $CI->response->meta->received_data->ids);
         } elseif ( ! empty($CI->response->meta->id)) {
             $device_ids = array($CI->response->meta->id);
+        } elseif ( ! empty($CI->response->meta->ids)) {
+            $device_ids = explode(',', $CI->response->meta->ids);
         } else {
             $log->level = 5;
             $log->message = 'No ID, nor list of IDs supplied to sub_resource_create.';
@@ -702,8 +685,11 @@ class M_devices extends MY_Model
                 } else {
                     $mime_type = '';
                 }
-                $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
-                $extensions = array('jpg', 'jpeg', 'png', 'svg');
+                // $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
+                // $extensions = array('jpg', 'jpeg', 'png', 'svg');
+                // disabled SVG for now because of XSS issues when requesting the direct image
+                $filetypes = array('image/png', 'image/jpeg', '');
+                $extensions = array('jpg', 'jpeg', 'png');
                 $temp = explode('.', $filename);
                 $extension = strtolower($temp[count($temp)-1]);
                 if ( ! in_array($mime_type, $filetypes) OR ! in_array($extension, $extensions)) {
@@ -745,7 +731,7 @@ class M_devices extends MY_Model
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                 $data = array(intval($CI->response->meta->id),
                         $CI->response->meta->received_data->attributes->name,
-                        $CI->response->meta->received_data->attributes->filename,
+                        basename($CI->response->meta->received_data->attributes->filename),
                         $CI->response->meta->received_data->attributes->orientation,
                         $CI->user->full_name);
                 $this->db->query($sql, $data);
@@ -804,24 +790,79 @@ class M_devices extends MY_Model
     public function collection($user_id = null, $response = null)
     {
         $CI = & get_instance();
-        if ( ! empty($user_id)) {
+        if (! empty($user_id)) {
             $org_list = implode(',', array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id))));
             $sql = "SELECT * FROM system WHERE org_id IN ({$org_list})";
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'system');
             return $result;
         }
-        if ( ! empty($response)) {
+        if (! empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . 
-                    $CI->response->meta->internal->join . ' ' . 
-                    $CI->response->meta->internal->filter . ' ' . 
-                    $CI->response->meta->internal->groupby . ' ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
+            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.name AS `orgs.name` FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " .
+                    $CI->response->meta->internal->join . ' ' .
+                    $CI->response->meta->internal->filter . ' ' .
+                    $CI->response->meta->internal->groupby . ' ' .
+                    $CI->response->meta->internal->sort . ' ' .
                     $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
-            $CI->response->data = $this->format_data($result, 'system');
+            $result = $this->format_data($result, 'system');
+            #$CI->response->data = $this->format_data($result, 'system');
+            #$CI->response->meta->filtered = count($CI->response->data);
+
+            if (isset($result[0]->attributes->{'system.type'}) and isset($result[0]->attributes->{'system.last_seen_by'})) {
+                for ($i=0; $i < count($result); $i++) {
+                    # BAD
+                    if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'nmap' and ($result[$i]->{'attributes'}->{'system.type'} === 'unclassified' or $result[$i]->{'attributes'}->{'system.type'} === 'unknown')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-times text-danger';
+                        $result[$i]->attributes->audit_text = 'Nmap discovered, data retrieval will be very limited.';
+
+                    # NOT GOOD
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'nmap' and $result[$i]->{'attributes'}->{'system.type'} !== 'unclassified' and $result[$i]->{'attributes'}->{'system.type'} !== 'unknown') {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
+                        $result[$i]->attributes->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'cloud') {
+                        #$result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
+                        $result[$i]->attributes->audit_text = 'Cloud import, data retrieval will be very limited.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'integrations') {
+                        #$result[$i]->attributes->audit_class = 'fa fa-times text-info';
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
+                        $result[$i]->attributes->audit_text = 'Integration import, data retrieval will be very limited.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'ssh' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'windows' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'snmp')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
+                        $result[$i]->attributes->audit_text = 'Partially discovered computer. Data retrieval limited.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'web form') {
+                        $result[$i]->attributes->audit_class = 'fa fa-exclamation-triangle text-warning';
+                        $result[$i]->attributes->audit_text = 'Manually created ' . $result[$i]->{'attributes'}->{'system.type'} . '. Data retrieval limited.';
+
+                    # GOOD
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and ($result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit_wmi' or $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit_ssh')) {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Discovered and audited computer.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} === 'computer' and $result[$i]->{'attributes'}->{'system.last_seen_by'} === 'audit') {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Audited computer.';
+
+                    } else if ($result[$i]->{'attributes'}->{'system.type'} !== 'computer' and !empty($result[$i]->{'attributes'}->{'system.snmp_oid'})) {
+                        $result[$i]->attributes->audit_class = 'fa fa-check text-success';
+                        $result[$i]->attributes->audit_text = 'Discovered and audited ' . $result[$i]->{'attributes'}->{'system.type'} . '.';
+
+                    # BAD - FALLBACK
+                    } else {
+                        $result[$i]->attributes->audit_class = 'fa fa-question text-danger';
+                        $result[$i]->attributes->audit_text = 'Limited information available.';
+                    }
+                }
+            }
+            $CI->response->data = $result;
             $CI->response->meta->filtered = count($CI->response->data);
+
         }
     }
 
@@ -833,6 +874,9 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $sql = "SELECT id, COUNT(*) AS `count`, {$CI->response->meta->groupby} FROM system {$CI->response->meta->internal->groupby} {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
+        if (!empty($CI->response->meta->internal->properties)) {
+            $sql = "SELECT {$CI->response->meta->internal->properties}, COUNT(*) AS `count`, {$CI->response->meta->groupby} FROM system {$CI->response->meta->internal->groupby} {$CI->response->meta->internal->sort} {$CI->response->meta->internal->limit}";
+        }
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
         return $result;
@@ -1261,13 +1305,14 @@ class M_devices extends MY_Model
                 break;
 
             case 'cloud':
+            case 'nmis':
             case 'snmp':
             case 'ssh':
-            case 'nmis':
                 $weight = 3000;
                 break;
 
             case 'ipmi':
+            case 'integrations':
                 $weight = 4000;
                 break;
 

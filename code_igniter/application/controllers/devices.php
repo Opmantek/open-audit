@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Devices
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -95,7 +95,7 @@ class Devices extends MY_Controller
             $this->response->data = $this->m_devices->query();
         } else if ($this->response->meta->sub_resource !== '' && $this->response->meta->sub_resource === 'group') {
             $this->response->data = $this->m_devices->group();
-        } else if ( ! empty($this->response->meta->groupby)) {
+        } else if (! empty($this->response->meta->groupby)) {
             $this->response->data = $this->m_devices->collection_group_by();
         } else {
             $this->m_devices->collection(null, 1);
@@ -137,7 +137,7 @@ class Devices extends MY_Controller
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format === 'screen' && $this->response->meta->include === '') OR $this->response->meta->include === '*' OR $this->response->meta->include === 'all') {
-            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'application,attachment,audit_log,bios,certificate,change_log,credential,discovery_log,disk,dns,edit_log,field,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,purchase,rack_devices,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,usb,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource !== '') {
             if (empty($this->response->meta->sub_resource_id)) {
@@ -162,7 +162,7 @@ class Devices extends MY_Controller
             if ( ! empty($this->response->meta->include) && ! empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
-                    if ($table !== 'fields' && $table !== 'application' && $table !== 'rack_devices') {
+                    if ($table !== 'field' && $table !== 'application' && $table !== 'rack_devices') {
                         $result = false;
                         $result = $this->m_devices->read_sub_resource(
                             $this->response->meta->id,
@@ -176,7 +176,7 @@ class Devices extends MY_Controller
                         if ($result !== false) {
                             $this->response->included = array_merge($this->response->included, $result);
                         }
-                    } else if ($table === 'fields') {
+                    } else if ($table === 'field') {
                         $result = false;
                         $result = $this->m_devices->get_device_fields($this->response->meta->id);
                         $this->response->included = array_merge($this->response->included, $result);
@@ -394,7 +394,7 @@ class Devices extends MY_Controller
         if (empty($this->response->meta->ids)) {
             $this->response->meta->ids = '0';
         }
-        $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in ({$this->response->meta->ids})";
+        $sql = "SELECT system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status, orgs.name FROM system LEFT JOIN orgs ON (system.org_id = orgs.id) " . $this->response->meta->internal->filter . " AND system.id IN (" . $this->response->meta->ids . ")";
         $query = $this->db->query($sql);
         // TODO - change the below to use this->response->included
         $this->response->devices = $query->result();
@@ -450,8 +450,7 @@ class Devices extends MY_Controller
         if (empty($this->response->meta->sub_resource_id)) {
             $this->response->meta->sub_resource_id = 0;
         }
-
-        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current);
+        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $current, '');
         $this->response->meta->total = 0;
         if (is_array($this->response->data)) {
             $this->response->meta->total = count($this->response->data);
@@ -564,28 +563,28 @@ class Devices extends MY_Controller
                     $data->type = 'subnet';
                     $data->network_address = $this->config->config['default_network_address'];
                     $data->other = new stdClass();
-                    $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
-                    $data->other->nmap = new stdClass();
-                    $data->other->match = new stdClass();
+                    $data->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
+                    $data->scan_options = new stdClass();
+                    $data->match_options = new stdClass();
                     if ( ! empty($this->response->data[0]->attributes->discovery_id)) {
                         $discovery = $this->m_discoveries->read($this->response->data[0]->attributes->discovery_id);
-                        if ( ! empty($discovery[0]->attributes->other->nmap)) {
-                            $data->other->nmap = $discovery[0]->attributes->other->nmap;
+                        if ( ! empty($discovery[0]->attributes->scan_options)) {
+                            $data->scan_options = $discovery[0]->attributes->scan_options;
                         } else {
                             $this->response->data[0]->attributes->discovery_id = 0;
                         }
-                        if ( ! empty($discovery[0]->attributes->other->match)) {
-                            $data->other->match = $discovery[0]->attributes->other->match;
+                        if ( ! empty($discovery[0]->attributes->match_options)) {
+                            $data->match_options = $discovery[0]->attributes->match_options;
                         }
                     }
                     if (empty($this->response->data[0]->attributes->discovery_id)) {
-                        $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
+                        $do_not_use = array('name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
                         $discovery_scan_options = $this->m_discovery_scan_options->read($this->config->config['discovery_default_scan_option']);
                         if ( ! empty($discovery_scan_options->data)) {
                             foreach ($discovery_scan_options->data as $item) {
                                 foreach ($item as $key => $value) {
                                     if ( ! in_array($key, $do_not_use)) {
-                                        $data->other->nmap->{$key} = $value;
+                                        $data->scan_options->{$key} = $value;
                                     }
                                 }
                             }
@@ -595,7 +594,7 @@ class Devices extends MY_Controller
                         // use the defaults
                         $match_rules = array('match_dbus', 'match_dns_fqdn', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
                         foreach ($match_rules as $item) {
-                            $data->other->match->{$item} = @$this->config->config[$item];
+                            $data->match_options->{$item} = @$this->config->config[$item];
                         }
                     }
                     $discovery_id = $this->m_discoveries->create($data);
@@ -684,19 +683,20 @@ class Devices extends MY_Controller
         if (empty($this->response->meta->sub_resource_id)) {
             $this->response->meta->sub_resource_id = 0;
         }
-        $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
+        $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, '*', '', '', '');
         $this->load->helper('file');
-        if (php_uname('s') === 'Windows NT') {
-            $i = explode('\\', $attachment[0]->attributes->filename);
+        $filename = $attachment[0]->attributes->filename;
+        if ($this->response->meta->sub_resource === 'image') {
+            $filename = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . basename($filename);
+        } else if ($this->response->meta->sub_resource === 'attachment') {
+            $filename = BASEPATH . '../application/attachments/' . basename($filename);
         } else {
-            $i = explode('/', $attachment[0]->attributes->filename);
+            $filename = basename($filename);
         }
-        $filename = $i[count($i)-1];
-        $filename = preg_replace('/'.$this->response->meta->id.'_/', '', $filename, 1);
-        header('Content-Type: '.get_mime_by_extension($attachment[0]->attributes->filename));
-        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Content-Type: '.get_mime_by_extension($filename));
+        header('Content-Disposition: attachment;filename="'.basename($attachment[0]->attributes->filename).'"');
         header('Cache-Control: max-age=0');
-        readfile($attachment[0]->attributes->filename);
+        readfile($filename);
     }
 
     /**
@@ -749,7 +749,7 @@ class Devices extends MY_Controller
     public function export()
     {
         $this->response->meta->format = 'json';
-        $this->response->meta->include = 'bios,disk,dns,ip,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+        $this->response->meta->include = 'bios,certificate,disk,dns,ip,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,policy,print_queue,processor,radio,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,usb,user,user_group,variable,video,vm,windows';
         $device = new stdClass();
 
         $sql = 'SELECT * FROM system WHERE id = ?';

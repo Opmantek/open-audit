@@ -1,7 +1,7 @@
 /**
 * @author Mark Unwin <marku@opmantek.com>
 *
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @copyright Copyright (c) 2014, Opmantek
 * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 */
@@ -44,42 +44,28 @@ $(document).ready(function () {
     });
 });
 
-/* Send to nmis export */
+/* Delete links */
 $(document).ready(function () {
-    $(document).on('click', '.nmis_manage_button', function (e) {
-        var ids = "";
-        $("input:checked").each(function () {
-            if ($(this).attr("value")) {
-                ids = ids + "," + $(this).attr("value");
-            }
-        });
-        ids = ids.substring(1);
-        var url = baseurl + 'index.php/nmis?action=export&system.id=in(' + ids + ')';
-        window.location = url;
-    });
-});
-
-/* any Delete links */
-$(document).ready(function () {
-    $('.delete_link').click(function () {
+    $('.delete_link').click(function (e) {
         if (confirm("Are you sure?\nThis will permanently DELETE this entry for " + collection +".") !== true) {
             return;
         }
         var $id = $(this).attr('data-id');
         var $name = $(this).attr('data-name');
         var $url = baseurl + 'index.php/' + collection + '/' + $id;
-        //alert($url);
         $.ajax({
             type: 'DELETE',
             url: $url,
-            dataType: 'json'
-       })
-       .success(function (data) {
-        window.location = web_folder + "/index.php/" + collection;
-       })
-       .fail( function (jqXHR, textStatus, errorThrown) {
-        alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
-       });
+            dataType: 'json',
+            success: function(data, textStatus) { 
+                window.location = baseurl + "index.php/" + collection; },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("errorThrown: " + errorThrown);
+                console.log(JSON.stringify(jqXHR));
+                alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
+                return false; }
+        });
     });
 });
 
@@ -372,6 +358,9 @@ $(document).ready(function () {
             $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_type', text: 'Type' }));
         }
         if ($("#data\\[attributes\\]\\[resource\\]").val() == 'locations') {
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
+        }
+        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'orgs') {
             $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
         }
         if ($("#data\\[attributes\\]\\[resource\\]").val() == 'queries') {

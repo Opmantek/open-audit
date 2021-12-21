@@ -34,7 +34,7 @@ if ( ! defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 if ( ! function_exists('log_error')) {
@@ -316,7 +316,7 @@ if ( ! function_exists('discovery_log')) {
         }
 
         // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
-        if ($log->message === 'Discovery has finished.' && ! empty($log->discovery_id)) {
+        if (stripos($log->message, 'Discovery has finished') !== false && ! empty($log->discovery_id)) {
             $sql = '/* log_helper::discovery_log */ ' . "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
             $data = array($log->discovery_id);
             $query = $CI->db->query($sql, $data);
@@ -507,7 +507,7 @@ if ( ! function_exists('stdlog')) {
             $log['summary'] = $log_details->summary;
         }
 
-        if (intval($CI->config->config['internal_version']) <= 20160820) {
+        if (!empty($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) <= 20160820) {
             $sql = "SHOW TABLES LIKE 'logs'";
             $query = $CI->db->query($sql);
             $count = count($query->result());

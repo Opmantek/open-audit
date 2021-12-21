@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -173,6 +173,8 @@ class Networks extends MY_Controller
         $this->response->dictionary = $this->m_networks->dictionary();
         $this->load->model('m_orgs');
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->user->id));
         output($this->response);
     }
 

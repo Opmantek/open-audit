@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -113,9 +113,8 @@ class M_widgets extends MY_Model
      */
     public function delete($id = 0)
     {
-        $id = intval($id);
+        $data = array(intval($id));
         $sql = 'DELETE FROM `widgets` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -608,10 +607,12 @@ class M_widgets extends MY_Model
         $dictionary->columns->ternary = 'The optional third column.';
         $dictionary->columns->where = 'Any required filter.';
         $dictionary->columns->limit = 'Limit the query to the first X items.';
+        $dictionary->columns->options = 'unused';
         $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
         $dictionary->columns->type = "Can be 'line' or 'pie'.";
         $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';
         $dictionary->columns->sql = "For advanced entry of a raw SQL query. As per Queries, you must include 'WHERE @filter AND' in your SQL.";
+        $dictionary->columns->link = 'The template for the link to be generated per result line.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
 

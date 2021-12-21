@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -95,8 +95,15 @@ class M_baselines extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
+        // Delete any associated tasks
+        $sql = "DELETE FROM tasks WHERE sub_resource_id = ? AND type = 'baselines'";
+        $test = $this->run_sql($sql, $data);
+        // Delete any baseline policies
+        $sql = "DELETE FROM baselines_policies WHERE baseline_id = ?";
+        $test = $this->run_sql($sql, $data);
+        // Delete the baseline
         $sql = 'DELETE FROM `baselines` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;

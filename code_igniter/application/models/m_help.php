@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -296,10 +296,12 @@ class M_help extends MY_Model
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             $data->prereq->nmap = @$output[0];
+            unset($output);
 
             $command_string = 'tzutil /g';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
+            unset($output);
         }
 
         if (php_uname('s') === 'Darwin') {
@@ -307,10 +309,12 @@ class M_help extends MY_Model
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             $data->prereq->nmap = @$output[0];
+            unset($output);
 
             $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
+            unset($output);
         }
 
         if (php_uname('s') === 'Linux') {
@@ -327,7 +331,7 @@ class M_help extends MY_Model
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             $data->prereq->nmap = @$output[1];
-
+            unset($output);
             $prereqs = array('screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
             foreach ($prereqs as $prereq) {
                 $command_string = 'which ' . $prereq . ' 2>/dev/null';
@@ -336,7 +340,6 @@ class M_help extends MY_Model
                 unset($output);
                 unset($command_string);
             }
-
             // Samba Client
             $command_string = 'which smbclient 2>/dev/null';
             exec($command_string, $output, $return_var);

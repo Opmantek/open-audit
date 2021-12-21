@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Input
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -222,22 +222,34 @@ class Input extends CI_Controller
                 $proto = 'https';
             }
             # run the script and continue (do not wait for result)
-            if (php_uname('s') != 'Windows NT') {
-                $instance = '';
-                if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database != 'openaudit') {
-                    $instance = '/' . $this->db->database;
+            if (php_uname('s') !== 'Windows NT') {
+                if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
+                    $command = 'nohup ' . $this->config->config['base_path'] . '/other/execute.sh url=http://localhost/' . $this->db->database. '/open-audit/index.php/input/queue/scans method=post > /dev/null 2>&1 &';
+                    @exec($command);
+                } else {
+                    $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php input queue scans > /dev/null 2>&1 &';
+                    @exec($command);
                 }
-                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost' . $instance . '/open-audit/index.php/input/queue/scans method=post > /dev/null 2>&1 &';
-                if (php_uname('s') == 'Linux') {
-                    $command_string = 'nohup ' . $command_string;
-                }
-                @exec($command_string, $output, $return_var);
             } else {
-                $filepath = $this->config->config['base_path'] . '\\other';
-                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=" . $proto . "://localhost/open-audit/index.php/input/queue/scans method=post";
-                pclose(popen($command_string, "r"));
+                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php input queue scans";
+                pclose(popen($command, 'r'));
             }
-            $log->detail = $command_string;
+            // if (php_uname('s') != 'Windows NT') {
+            //     $instance = '';
+            //     if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database != 'openaudit') {
+            //         $instance = '/' . $this->db->database;
+            //     }
+            //     $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost' . $instance . '/open-audit/index.php/input/queue/scans method=post > /dev/null 2>&1 &';
+            //     if (php_uname('s') == 'Linux') {
+            //         $command_string = 'nohup ' . $command_string;
+            //     }
+            //     @exec($command_string, $output, $return_var);
+            // } else {
+            //     $filepath = $this->config->config['base_path'] . '\\other';
+            //     $command_string = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=" . $proto . "://localhost/open-audit/index.php/input/queue/scans method=post";
+            //     pclose(popen($command_string, "r"));
+            // }
+            $log->detail = $command;
             stdlog($log);
         }
 

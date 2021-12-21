@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -138,18 +138,15 @@ class M_queue extends MY_Model
     public function start()
     {
         if (php_uname('s') !== 'Windows NT') {
-            $instance = '';
-            if ($this->config->config['oae_product'] === 'Open-AudIT Cloud' && $this->db->database !== 'openaudit') {
-                $instance = '/' . $this->db->database;
+            if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
+                $command = 'nohup ' . $this->config->config['base_path'] . '/other/execute.sh url=http://localhost/' . $this->db->database. '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
+                @exec($command);
+            } else {
+                $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+                @exec($command);
             }
-            $command = $this->config->config['base_path'] . '/other/execute.sh url=http://localhost' . $instance . '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
-            if (php_uname('s') === 'Linux') {
-                $command = 'nohup ' . $command;
-            }
-            @exec($command);
         } else {
-            $filepath = $this->config->config['base_path'] . '\\other';
-            $command = "%comspec% /c start /b cscript //nologo {$filepath}\\execute.vbs url=http://localhost/open-audit/index.php/util/queue method=post";
+            $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php util queue";
             pclose(popen($command, 'r'));
         }
     }
@@ -180,19 +177,12 @@ class M_queue extends MY_Model
     # Return TRUE on success or FALSE on failure
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->action = 'delete';
-        $this->log->summary = intval($id);
-        $sql = "/* m_queue::delete */ " . "DELETE FROM `queue` WHERE `id` = ?";
         $data = array(intval($id));
-        $this->db->query($sql, $data);
-        $affected_rows = $this->db->affected_rows();
-        if (!empty($affected_rows)) {
-            stdlog($this->log);
+        $sql = 'DELETE FROM `queue` WHERE id = ?';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
         } else {
-            $this->log->status = 'fail';
-            stdlog($this->log);
             return false;
         }
     }
@@ -278,4 +268,47 @@ class M_queue extends MY_Model
     //         return false;
     //     }
     // }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'networks';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = 'An internal table used for queuing discovery items.';
+        $dictionary->marketing = '';
+        $dictionary->about = '';
+        $dictionary->product = 'community';
+        $dictionary->notes = '';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->name = $CI->temp_dictionary->name;
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
+        $dictionary->columns->type = '';
+        $dictionary->columns->pid = '';
+        $dictionary->columns->status = '';
+        $dictionary->columns->details = '';
+        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
+        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        return $dictionary;
+    }
+
+
+
+
 }

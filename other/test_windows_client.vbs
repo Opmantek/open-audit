@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
 ' 
-' @version   GIT: Open-AudIT_3.5.3
+' @version   GIT: Open-AudIT_4.3.1
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -126,7 +126,10 @@ On Error Resume Next
 Set objWMIService = GetObject("winmgmts:\\.\root\CIMV2")
 If Err.Number <> 0 Then ShowError("Cannot connect to local WMI.") end if
 
-dim hostname, running_user, running_user_domain
+dim objShell
+set objShell = CreateObject("WScript.Shell")
+
+dim hostname, running_user, running_user_domain, objWMIService2
 
 hostname = objNetwork.ComputerName
 If Err.Number <> 0 Then ShowError("Cannot retrieve local computer name.") end if
@@ -424,17 +427,17 @@ dim ad_dc_current_timezone, ad_dc_daylight_in_effect, ad_dc_enable_daylight_savi
 if (cs_part_of_domain = "True") then
     if (instr(lcase(cs_domain_role), "ontroller") = 0 ) then
         ' we belong to a domain and we are not a domain controller.
-        set objWMIService = GetObject("winmgmts:\\" & domain_controller_name & "\root\cimv2")
+        set objWMIService2 = GetObject("winmgmts:\\" & domain_controller_name & "\root\cimv2")
         If Err.Number <> 0 Then ShowError("Problem authenticating to Domain Controller '" & ad_domain_controller_name & "'") end if
 
-        colItems = objWMIService.ExecQuery("SELECT * FROM Win32_LocalTime", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+        colItems = objWMIService2.ExecQuery("SELECT * FROM Win32_LocalTime", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
         If Err.Number <> 0 Then ShowError("Cannot select from Win32_LocalTime on " & ad_domain_controller_name) end if
         For Each objItem In colItems
             ad_dc_local_time = objItem.Year & "-" & objItem.Month & "-" & objItem.Day & " " & objItem.Hour & ":" & objItem.Minute & ":" & objItem.Second
             If Err.Number <> 0 Then ShowError("Failed to create local time (2).") end if
         Next
 
-        Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+        Set colItems = objWMIService2.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
         For Each objItem In colItems
             ad_dc_current_timezone = objItem.CurrentTimeZone
             If Err.Number <> 0 Then ShowError("Cannot select CurrentTimezone from Win32_ComputerSystem on " & domain_controller_name) end if
@@ -460,6 +463,114 @@ wscript.echo "------------------------"
 wscript.echo "Running Tests"
 wscript.echo "------------------------"
 
+
+wscript.echo
+wscript.echo "------------------------"
+wscript.echo "Testing 64-bit"
+wscript.echo "------------------------"
+dim address_width
+set colItems = objWMIService.ExecQuery("Select * from Win32_Processor where DeviceID = 'CPU0' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+If Err.Number <> 0 Then ShowError("Cannot select from Win32_Processor") end if
+for each objItem In colItems
+    address_width = objItem.AddressWidth
+next
+if (address_width = "32") then
+    wscript.echo "FAIL - Discovery requires a 64bit Processor."
+else
+    wscript.echo "PASS - 64bit processor detected."
+end if
+
+set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+If Err.Number <> 0 Then ShowError("Cannot select from Win32_OperatingSystem") end if
+for each objItem In colItems
+    address_width = objItem.OSArchitecture
+next
+if (address_width <> "64-bit") then
+    wscript.echo "FAIL - Discovery requires a 64bit operating system."
+else
+    wscript.echo "PASS - 64bit operating system detected."
+end if
+
+
+wscript.echo
+wscript.echo "------------------------"
+wscript.echo "Testing Services"
+wscript.echo "------------------------"
+set colItems = objWMIService.ExecQuery("Select * from Win32_Service Where name = 'RpcSs' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+for each objItem In colItems
+    if (objItem.Caption = "Remote Procedure Call (RPC)") then
+        if (objItem.State = "Stopped") then
+            wscript.echo "FAIL - RPC service not running."
+        else
+            wscript.echo "PASS - RPC service registered and running."
+        end if
+    else
+        wscript.echo "FAIL - RPC service not returned."
+    end if
+next
+
+set colItems = objWMIService.ExecQuery("Select * from Win32_Service Where name = 'Netlogon' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+for each objItem In colItems
+    if (objItem.Caption = "Netlogon") then
+        if (objItem.State = "Stopped") then
+            wscript.echo "INFO - Netlogon service not running."
+        else
+            wscript.echo "PASS - Netlogon service registered and running."
+        end if
+    else
+        wscript.echo "FAIL - Netlogon service not returned."
+    end if
+next
+
+wscript.echo
+wscript.echo "------------------------"
+wscript.echo "Testing DNS"
+wscript.echo "------------------------"
+' Check we can resolve all IPv4 IP's to DNS Names
+dim i, ip_address, ip_address_version, strParams, hit, strhost, strText, objExecObj
+set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = True ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+for each objItem in colItems
+    if (objItem.MACAddress > "") then
+        for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
+            if len(objItem.IPAddress(i)) > 15 then
+                ip_address_version = "6"
+            else
+                ip_address_version = "4"
+            end if
+            if objItem.IPAddress(i) <> "0.0.0.0" and ip_address_version = "4" then
+                strParams = "%comspec% /c NSlookup " & objItem.IPAddress(i) & " | findStr Name: "
+                wscript.echo "NSLookup for " & objItem.IPAddress(i)
+                Set objExecObj = objShell.exec(strParams)
+                hit = "false"
+                strhost = ""
+                do while Not objExecObj.StdOut.AtEndOfStream
+                    strText = objExecObj.StdOut.Readline()
+                    if (strText <> "") then
+                        if (instr (strText, "Name") and instr(lcase(strText), lcase(hostname))) then
+                            'hit = "true"
+                            'strhost = trim(replace(strText,"Name:",""))
+                            wscript.echo "PASS - Could resolve " & objItem.IPAddress(i) & " to " & trim(replace(strText,"Name:",""))
+                        elseif (instr (strText, "Name")) then
+                            wscript.echo "INFO - Resolved " & objItem.IPAddress(i) & " to " & trim(replace(strText,"Name:","")) & ", but this isn't the hostname"
+                        else
+                            wscript.echo "FAIL - Could not resolve " & objItem.IPAddress(i)
+                        end if
+                    end if
+                loop
+                ' if (hit = "true") then
+                '     wscript.echo "PASS - Could resolve " & objItem.IPAddress(i) & " to " & strhost
+                ' else
+                '     wscript.echo "FAIL - Could not resolve " & objItem.IPAddress(i)
+                ' end if
+            end if
+        next
+    end if
+next
+
+wscript.echo
+wscript.echo "------------------------"
+wscript.echo "Testing Account"
+wscript.echo "------------------------"
 ' check localtime versus domain controller time
 if (cs_part_of_domain = "True" and instr(lcase(cs_domain_role), "controller") = 0 ) then
     if ( abs(datediff("s", lt_local_time, ad_dc_local_time)) > 300) then
@@ -531,7 +642,11 @@ wscript.echo "Connecting to Registry"
 wscript.echo "------------------------"
 temp = ""
 set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
-If Err.Number <> 0 Then ShowError("Cannot connect to local registry.") end if
+If Err.Number <> 0 Then
+    ShowError("Cannot connect to local registry.")
+else
+    wscript.echo "PASS - Can connect to registry"
+end if
 
 
 wscript.echo
@@ -558,9 +673,9 @@ wscript.echo "------------------------"
 dim smb1
 Err.Clear
 oreg.GetDWORDValue HKEY_LOCAL_MACHINE, "SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "SMB1", smb1
-if Err.Number <> 0 then
-    wscript.echo "INFO - SMB1 not present in registry, therefore enabled."
-else
+'if Err.Number <> 0 then
+''    wscript.echo "INFO - SMB1 not present in registry, therefore enabled."
+'else
     if (smb1 = "" or isnull(smb1)) then
         wscript.echo "INFO - SMB1 not present in registry, therefore enabled."
     elseif (smb1 = "1" or smb1 = "" or isnull(smb1)) then
@@ -572,7 +687,7 @@ else
     else
         wscript.echo "WARNING - Unknown issue detecting SMB1 in registry."
     end if
-end if
+'end if
 
 
 

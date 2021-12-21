@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 ?>
@@ -72,7 +72,10 @@
                     <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][type]" name="data[attributes][type]" required>
+                             <!--<input type="text" class="form-control" id="data[attributes][type]" name="data[attributes][type]" required>-->
+                             <select class="form-control" id="data[attributes][type]" name="data[attributes][type]" required>
+                                <option value="" label=" "><?php echo __('Choose') ?></option>
+                            </select>
                         </div>
                     </div>
 

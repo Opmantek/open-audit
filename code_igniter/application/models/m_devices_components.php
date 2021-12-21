@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -81,6 +81,12 @@ class M_devices_components extends MY_Model
             unset($filter);
             $filter = '';
         }
+        if (empty($properties)) {
+            $properties = '*';
+        }
+        if ($table === 'attachment') {
+            $filter = '';
+        }
 
         if ($current === 'delta' OR $current === 'full') {
             $sql = "SELECT first_seen FROM `{$table}` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
@@ -122,7 +128,7 @@ class M_devices_components extends MY_Model
                     $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? AND current = 'n' {$filter}";
                     $data = array($id);
                 }
-                if ($current === '' OR $current === 'all') {
+                if ($current === '' or $current === 'all') {
                     $sql = "SELECT {$properties} FROM `{$table}` WHERE `{$table}`.system_id = ? {$filter}";
                     $data = array($id);
                 }
@@ -185,6 +191,9 @@ class M_devices_components extends MY_Model
         if ($table === 'bios') {
                 $match_columns = array('manufacturer', 'model', 'serial', 'smversion', 'version');
         }
+        if ($table === 'certificate') {
+                $match_columns = array('name', 'issuer', 'serial', 'valid_from_raw', 'valid_to_raw');
+        }
         if ($table === 'disk') {
                 $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
         }
@@ -240,6 +249,9 @@ class M_devices_components extends MY_Model
         if ($table === 'processor') {
                 $match_columns = array('description');
         }
+        if ($table === 'radio') {
+                $match_columns = array('name');
+        }
         if ($table === 'route') {
                 $match_columns = array('destination', 'next_hop');
         }
@@ -273,6 +285,9 @@ class M_devices_components extends MY_Model
         }
         if ($table === 'task') {
                 $match_columns = array('name', 'task');
+        }
+        if ($table === 'usb') {
+                $match_columns = array('device');
         }
         if ($table === 'user') {
                 $match_columns = array('name', 'sid', 'keys');
@@ -470,6 +485,21 @@ class M_devices_components extends MY_Model
             }
         }
 
+        // CERTIFICATE
+        if ((string)$table === 'certificate') {
+            // Format the dates to our standard
+            if ($parameters->details->os_group === 'Linux') {
+                for ($i=0; $i<count($input); $i++) {
+                    if (! empty($input[$i]->valid_from_raw)) {
+                        $input[$i]->valid_from = gmdate('Y-m-d H:i:s', strtotime($input[$i]->valid_from_raw));
+                    }
+                    if (! empty($input[$i]->valid_to_raw)) {
+                        $input[$i]->valid_to = gmdate('Y-m-d H:i:s', strtotime($input[$i]->valid_to_raw));
+                    }
+                }
+            }
+        }
+
         // DISK
         if ((string)$table === 'disk') {
             for ($i=0; $i<count($input); $i++) {
@@ -608,10 +638,13 @@ class M_devices_components extends MY_Model
                 if ( ! empty($input[$i]->network)) {
                     $network = new stdClass();
                     $network->name = $input[$i]->network;
+                    $network->org_id = 1;
                     if ( ! empty($details->org_id)) {
                         $network->org_id = intval($details->org_id);
-                    } else {
-                        $network->org_id = 1;
+                    }
+                    $network->location_id = 1;
+                    if ( ! empty($details->location_id)) {
+                        $network->location_id = intval($details->location_id);
                     }
                     $network->description = 'Inserted from audit result.';
                     $this->m_networks->upsert($network);
@@ -1241,6 +1274,11 @@ class M_devices_components extends MY_Model
 
         // find the version string, based on the version integer.
         $version_string = '';
+
+        // SQL 2019
+        if (mb_strpos($version, '15.00.2000.5') === 0 OR mb_strpos($version, '15.0.2000.5') === 0) {
+            $version_string = 'SQL Server 2019';
+        }
 
         // SQL 2017
         if (mb_strpos($version, '14.00.3008.27') === 0 OR mb_strpos($version, '14.0.3008.27') === 0) {

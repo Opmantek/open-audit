@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -208,7 +208,7 @@ $item = $this->response->data[0];
                     <table class="table">
                         <thead>
                             <tr>
-                                <th><?php echo __('Use'); ?></th>
+                                <!--<th><?php echo __('Use'); ?></th>-->
                                 <th><?php echo __('Name'); ?></th>
                                 <th><?php echo __('Path'); ?></th>
                             </tr>
@@ -218,7 +218,7 @@ $item = $this->response->data[0];
                             <?php foreach ($this->response->included as $included) { ?>
                                 <?php if ($included->type == 'files') { ?>
                                 <tr>
-                                    <td>
+                                    <!--<td>
                                         <?php
                                         $checked = '';
                                         if (!empty($item->attributes->options->files)) {
@@ -230,7 +230,7 @@ $item = $this->response->data[0];
                                         }
                                         ?>
                                         <input type="checkbox" name="options.files.<?php echo $included->attributes->id; ?>" id="options.files.<?php echo $included->attributes->id; ?>" <?php echo $checked; ?> <?php if (empty($edit)) { echo " disabled"; } ?>/>
-                                        </td>
+                                        </td>-->
                                     <td><?php echo $included->attributes->name; ?></td>
                                     <td><?php echo $included->attributes->path; ?></td>
                                 </tr>

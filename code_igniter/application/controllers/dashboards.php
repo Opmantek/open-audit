@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Dashboards
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -116,10 +116,8 @@ class Dashboards extends MY_Controller
             $this->load->model('m_orgs');
             $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
             $this->load->model('m_widgets');
+            # Need all widgets for dashboards_read to be able to select another widget
             $this->response->included = array_merge($this->response->included, $this->m_widgets->collection($this->user->id));
-            #foreach ($this->response->data[0]->attributes->options->widgets as $widget) {
-            #    $this->response->included = array_merge($this->response->included, $this->m_widgets->read($widget->widget_id));
-            #}
             if ($this->response->meta->format === 'screen') {
                 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
             } else {

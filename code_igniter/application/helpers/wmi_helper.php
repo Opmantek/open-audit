@@ -32,14 +32,14 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   GIT: Open-AudIT_3.5.3
+ * @version   GIT: Open-AudIT_4.3.1
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 
 if (! function_exists('windows_credentials')) {
     /**
-     * The SSH credentials test. 
+     * The SSH credentials test.
      *
      * @access    public
      *
@@ -115,7 +115,7 @@ if (! function_exists('windows_credentials')) {
 
 if (! function_exists('execute_windows')) {
     /**
-     * The SSH credentials test. 
+     * The SSH credentials test.
      *
      * @access    public
      *
@@ -133,7 +133,7 @@ if (! function_exists('execute_windows')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-   function execute_windows($ip = '', $credentials, $command = '', $log)
+    function execute_windows($ip = '', $credentials = null, $command = '', $log = null)
     {
 
         $log->file = 'wmi_helper';
@@ -179,54 +179,50 @@ if (! function_exists('execute_windows')) {
             $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
             $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . ' \'' . $command . '\'';
             discovery_log($log);
-           exec($command_string, $output, $return_var);
+            exec($command_string, $output, $return_var);
         }
 
         if (php_uname('s') === 'Linux') {
             $filepath = $CI->config->config['base_path'] . '/other';
-
-            $temp = explode('@', $credentials->credentials->username);
-            $password = escapeshellarg($credentials->credentials->password);
-            $username = escapeshellarg(str_replace("'", "", $temp[0]));
-            $domain = @$temp[1];
-            if ($domain != '') { $domain .= '/'; }
-            unset($temp);
-
-            // test for working 'new' winexe first
-            $command_string = "timeout 1m ${filepath}/winexe-static-2 -U ${domain}${username}%${password} --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" 2>&1";
-            exec($command_string, $output, $return_var);
-
-            $log->command = "timeout 1m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"wmic csproduct get uuid\" 2>&1";
-            $log->command_time_to_execute = 1;
-            $log->message = 'Attempting to execute command using winexe-static-2';
-            $output[] = intval($return_var);
-            $log->command_output = json_encode($output);
-            $log->command_status = 'notice';
-            discovery_log($log);
-
-
-            if (intval($return_var) !== 0) {
-                // Winexe 2 using SMB2 failed.
-                $command_string = "timeout 5m ${filepath}/winexe-static -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
-                $log->message = 'Using winexe-static to run audit.';
-            } else {
-                // Winexe 2 using SMB2 succeeded
-                $command_string = "timeout 5m ${filepath}/winexe-static-2 -U ${domain}${username}%****** --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
-                $log->message = 'Using winexe-static-2 to run audit.';
-            }
-            unset($log->command_output);
-            $log->command = $command_string;
-            $command_string = str_replace('******', $password, $command_string);
-            $log->command_time_to_execute = '';
-            $log_id = discovery_log($log);
+            $filename = credentials_file($ip, $credentials);
+            // For an unknown reason, if we attempt to execute an SMB2 command first and it does not work, the return var is NULL, which means success.
+            // So before we attempt to actually run the audit script, try a WMIC query using SMB2 and determine which to use for the script.
+            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //".$ip." \"wmic csproduct get uuid\" 2>&1";
             $item_start = microtime(true);
-            $output = '';
             exec($command_string, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->id = $log_id;
-            $log->command_output = json_encode($output);
-            $log->status = gettype($output);
+            $log->output = @json_encode($output);
+            $log->command_status = 'notice';
+            $log->command = $command_string;
+            $output = '';
+            if ($return_var == 0) {
+                // Success, use SMB2
+                $log->message = 'Winexe 2 tested and working.';
+                $command_string = "timeout 15m ${filepath}/winexe-static-2 -A $filename --uninstall //$ip \"$command\" 2>&1";
+                $win = 'winexe-static-2';
+            } else {
+                // Failure, use SMB1
+                $log->message = 'Winexe 2 tested and failed, so using Winexe.';
+                $command_string = "timeout 15m ${filepath}/winexe-static -A $filename --uninstall //$ip \"$command\" 2>&1";
+                $win = 'winexe-static';
+            }
             discovery_log($log);
+            unset($return_var);
+
+            $log->command_status = '';
+            $log->command = $command_string;
+            $item_start = microtime(true);
+            exec($command_string, $output, $return_var);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->command_output = @json_encode($output);
+            $log->command_status = 'notice';
+            $log->message = 'Attempting to execute command using ' . $win . ' succeeded.';
+            if (empty($output)) {
+                $log->command_status = 'fail';
+                $log->message = 'Attempting to execute command using ' . $win . ' failed.';
+            }
+            discovery_log($log);
+            unlink($filename);
         }
 
         if (php_uname('s') == 'Windows NT') {
@@ -234,7 +230,7 @@ if (! function_exists('execute_windows')) {
             $command_string  = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
             $log->command    = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
             exec($command_string, $output, $return_var);
-            $log->message = 'Running audit script on ' . $ip;
+            $log->message = 'Running command script on ' . $ip;
             $log->command_output = json_encode($output);
             $log->command_status = 'fail';
             foreach ($output as $line) {
@@ -256,7 +252,7 @@ if (! function_exists('execute_windows')) {
 
 if (! function_exists('copy_to_windows')) {
     /**
-     * The SSH credentials test. 
+     * The SSH credentials test.
      *
      * @access    public
      *
@@ -276,7 +272,7 @@ if (! function_exists('copy_to_windows')) {
      *
      * @return    false || true
      */
-   function copy_to_windows($ip = '', $credentials, $share, $source = '', $destination, $log)
+    function copy_to_windows($ip = '', $credentials, $share, $source = '', $destination, $log)
     {
         $log->file = 'wmi_helper';
         $log->function = 'copy_to_windows';
@@ -326,7 +322,7 @@ if (! function_exists('copy_to_windows')) {
             unset($temp);
             $password = $credentials->credentials->password;
             if ( ! is_dir('/private/tmp')) {
-                mkdir('/private/tmp') or die ('OSX attempt to create /private/tmp failed in wmi_helper::copy_to_windows failed');
+                mkdir('/private/tmp') or die('OSX attempt to create /private/tmp failed in wmi_helper::copy_to_windows failed');
             }
             $log->command = "mkdir('/private/tmp')";
             if (mkdir('/private/tmp/' . $timestamp)) {
@@ -360,7 +356,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command = '';
 
             $log->command = "copy($source, '/tmp/$timestamp/$destination')";
-            if (copy($source, '/tmp/'.$timestamp.'/'.$destination) or die ('Could not copy ' . $source . ' to /tmp/' . $timestamp . '/' . $destination)) {
+            if (copy($source, '/tmp/'.$timestamp.'/'.$destination) or die('Could not copy ' . $source . ' to /tmp/' . $timestamp . '/' . $destination)) {
                 $log->message = 'Attempt to copy ' . $destination . ' in wmi_helper::copy_to_windows succeeded.';
                 discovery_log($log);
             } else {
@@ -401,60 +397,24 @@ if (! function_exists('copy_to_windows')) {
                 return false;
             }
             $log->command = '';
-            $password = str_replace('$', '\$', $credentials->credentials->password);
-            $password = str_replace("'", "", escapeshellarg($password));
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $temp = explode('@', $username);
-            if (count($temp) > 1) {
-                $username = $temp[1] . '\\' . $temp[0];
-                $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-                $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . '*******' . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-                $output = '';
-                exec($command, $output, $return_var);
-                if ($return_var == 0) {
-                    $log->message = 'Linux attempt (SMB2 domain\\user) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
-                    $log->command_status = 'success';
-                    $log->command_output = '';
-                    $log->severity = 7;
-                    discovery_log($log);
-                    return true;
-                } else {
-                    $log->message = 'Linux attempt (SMB2 domain\\user) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows.';
-                    $log->command_status = 'notice';
-                    $log->command_output = json_encode($output);
-                    $log->severity = 7;
-                    discovery_log($log);
-                }
-            }
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . '*******' . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $filename = credentials_file($ip, $credentials);
+            $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var == 0) {
-                $log->message = 'Linux attempt (SMB2 user@domain) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                $log->message = 'Linux attempt using SMB2 to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
                 $log->command_status = 'success';
                 $log->command_output = '';
                 $log->severity = 7;
                 discovery_log($log);
-                return true;
             } else {
-                $log->command_output = json_encode($output);
-                $log->message = 'Linux attempt (SMB2 user@domain) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows.';
+                $log->message = 'Linux attempt using SMB2 to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows.';
                 $log->command_status = 'notice';
                 $log->command_output = json_encode($output);
                 $log->severity = 7;
                 discovery_log($log);
-            }
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $temp = explode('@', $username);
-            if (count($temp) > 1) {
-                $username = $temp[1] . '\\' . $temp[0];
-                $command =      'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-                $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . '*******' . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-                $output = '';
+                $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                $log->command = $command;
                 exec($command, $output, $return_var);
                 if ($return_var == 0) {
                     $log->message = 'Linux attempt (SMB domain\\user) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
@@ -462,35 +422,19 @@ if (! function_exists('copy_to_windows')) {
                     $log->command_output = '';
                     $log->severity = 7;
                     discovery_log($log);
-                    return true;
                 } else {
                     $log->message = 'Linux attempt (SMB domain\\user) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows';
                     $log->command_status = 'fail';
                     $log->command_output = json_encode($output);
                     $log->severity = 5;
                     discovery_log($log);
-                    return false;
                 }
             }
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command =      'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-            $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . '*******' . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-            $output = '';
-            exec($command, $output, $return_var);
-            if (intval($return_var) === 0) {
-                $log->message = 'Linux attempt (SMB user@domain) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
-                $log->command_status = 'success';
-                $log->command_output = '';
-                $log->severity = 7;
-                discovery_log($log);
+            unlink($filename);
+            if ($return_var == 0) {
                 return true;
             } else {
-                $log->message = 'Linux attempt (SMB user@domain) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows.';
-                $log->command_status = 'fail';
-                $log->command_output = json_encode($output);
-                $log->severity = 7;
-                discovery_log($log);
+                return false;
             }
         }
 
@@ -507,7 +451,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Net Use';
             $log->command_output = json_encode($output);
-            if ($output[0] === 'The command completed successfully.') {
+            if ($output[0] === 'The command completed successfully.' or $return_var === 0) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
@@ -519,7 +463,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Copy to ' . $ip;
             $log->command_output = json_encode($output);
-            if (stripos($output[0], 'file(s) copied.') !== false) {
+            if (stripos($output[0], 'file(s) copied.') !== false or $return_var === 0) {
                 $log->command_status = 'success';
                 $return = true;
             }
@@ -532,7 +476,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Net Use Delete';
             $log->command_output = json_encode($output);
-            if (stripos($output[0], 'was deleted successfully') !== false) {
+            if (stripos($output[0], 'was deleted successfully') !== false or $return_var === 0) {
                 $log->command_status = 'success';
             }
             discovery_log($log);
@@ -608,98 +552,44 @@ if (! function_exists('delete_windows_result')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $password = str_replace('$', '\$', $parameters->credentials->credentials->password);
-            $password = str_replace("'", "", escapeshellarg($password));
-
-            $username = str_replace("'", "", escapeshellarg($parameters->credentials->credentials->username));
-            $temp = explode('@', $username);
-            if (count($temp) > 1) {
-                $username = $temp[1] . '\\' . $temp[0];
-                $command =      'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . $password . '" -c "del ' . $parameters->file . '"';
-                $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . '*******' . '" -c "del ' . $parameters->file . '"';
-                $output = '';
-                exec($command, $output, $return_var);
-                $log->command_output = '';
-                if ($return_var == 0) {
-                    $log->message = 'Linux attempt (SMB2 domain\\user) to delete file from ' . $parameters->ip . ' succeeded in wmi_helper::delete_windows_result';
-                    $log->command_status = 'success';
-                    $log->command_output = '';
-                    $log->severity = 7;
-                    discovery_log($log);
-                    return true;
-                } else {
-                    $log->message = 'Linux attempt (SMB2 domain\\user) to delete file from ' . $parameters->ip . ' failed in wmi_helper::delete_windows_result';
-                    $log->command_status = 'notice';
-                    $log->command_output = json_encode($output);
-                    $log->severity = 6;
-                    discovery_log($log);
-                }
-            }
-
-            $username = str_replace("'", "", escapeshellarg($parameters->credentials->credentials->username));
-            $command      = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . $password . '" -c "del ' . $parameters->file . '"';
-            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . '*******' . '" -c "del ' . $parameters->file . '"';
+            $filename = credentials_file($parameters->ip, $parameters->credentials);
+            $command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -A ' . $filename . ' -c "del ' . $parameters->file . '"';
+            $log->command = $command;
             exec($command, $output, $return_var);
-            $log->command_output = '';
             if ($return_var == 0) {
-                $log->message = 'Linux attempt (SMB2 user@domain) to delete file from ' . $parameters->ip . ' succeeded in wmi_helper::delete_windows_result';
+                $log->message = 'Linux attempt using SMB2 to delete file from ' . $parameters->ip . ' succeeded in wmi_helper::delete_windows_result';
                 $log->command_status = 'success';
                 $log->command_output = '';
                 $log->severity = 7;
                 discovery_log($log);
-                return true;
             } else {
-                $log->message = 'Linux attempt (SMB2 user@domain) to delete file from ' . $parameters->ip . ' failed in wmi_helper::delete_windows_result';
+                $log->message = 'Linux attempt using SMB2 to delete file from ' . $parameters->ip . ' failed in wmi_helper::delete_windows_result';
                 $log->command_status = 'notice';
                 $log->command_output = json_encode($output);
                 $log->severity = 6;
                 discovery_log($log);
-            }
-
-            $username = str_replace("'", "", escapeshellarg($parameters->credentials->credentials->username));
-            $temp = explode('@', $username);
-            if (count($temp) > 1) {
-                $username = $temp[1] . '\\' . $temp[0];
-                $command =      'smbclient \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . $password . '" -c "del ' . $parameters->file . ' 2>&1"';
-                $log->command = 'smbclient \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . '*******' . '" -c "del ' . $parameters->file . ' 2>&1"';
-                $output = '';
+                $command = 'smbclient \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -A ' . $filename . ' -c "del ' . $parameters->file . '"';
+                $log->command = $command;
                 exec($command, $output, $return_var);
-                $log->command_output = '';
                 if ($return_var == 0) {
-                    $log->message = 'Linux attempt (SMB domain\\user) to delete file from ' . $parameters->ip . ' succeeded in wmi_helper::delete_windows_result';
+                    $log->message = 'Linux attempt using SMB1 to delete file from ' . $parameters->ip . ' succeeded in wmi_helper::delete_windows_result';
                     $log->command_status = 'success';
                     $log->command_output = '';
                     $log->severity = 7;
                     discovery_log($log);
-                    return true;
                 } else {
-                    $log->message = 'Linux attempt (SMB domain\\user) to delete file from ' . $parameters->ip . ' failed in wmi_helper::delete_windows_result';
+                    $log->message = 'Linux attempt using SMB1 to delete file from ' . $parameters->ip . ' failed in wmi_helper::delete_windows_result';
                     $log->command_status = 'fail';
                     $log->command_output = json_encode($output);
                     $log->severity = 5;
                     discovery_log($log);
                 }
             }
-
-            $username = str_replace("'", "", escapeshellarg($parameters->credentials->credentials->username));
-            $command =      'smbclient \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . $password . '" -c "del ' . $parameters->file . ' 2>&1"';
-            $log->command = 'smbclient \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $username . '%' . '*******' . '" -c "del ' . $parameters->file . ' 2>&1"';
-            $output = '';
-            exec($command, $output, $return_var);
-            $log->command_output = '';
+            unlink($filename);
             if ($return_var == 0) {
-                $log->message = 'Linux attempt (SMB user@domain) to delete file from ' . $parameters->ip . ' succeeded in wmi_helper::delete_windows_result';
-                $log->command_status = 'success';
-                $log->command_output = '';
-                $log->severity = 7;
-                discovery_log($log);
                 return true;
             } else {
-                $log->message = 'Linux attempt (SMB user@domain) to delete file from ' . $parameters->ip . ' failed in wmi_helper::delete_windows_result';
-                $log->command_status = 'fail';
-                $log->command_output = json_encode($output);
-                $log->severity = 5;
-                discovery_log($log);
+                return false;
             }
         }
 
@@ -860,98 +750,47 @@ if ( ! function_exists('copy_from_windows')) {
                 $log->severity = 7;
                 return false;
             }
-            $log->command = '';
-            $password = str_replace('$', '\$', $credentials->credentials->password);
-            $password = str_replace("'", "", escapeshellarg($password));
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $temp = explode('@', $username);
-            if (count($temp) > 1) {
-                $username = $temp[1] . '\\' . $temp[0];
-                $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-                $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . '*******' . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-                $output = '';
-                exec($command, $output, $return_var);
-                $log->command_output = json_encode($output);
-                if ($return_var == 0) {
-                    $log->message = 'Linux attempt (SMB2 domain\\user) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_from_windows';
-                    $log->command_status = 'success';
-                    $log->command_output = '';
-                    $log->severity = 7;
-                    discovery_log($log);
-                    return true;
-                } else {
-                    $log->message = 'Linux attempt (SMB2 domain\\user) to copy file from ' . $ip . ' failed in wmi_helper::copy_from_windows';
-                    $log->command_status = 'notice';
-                    $log->command_output = json_encode($output);
-                    $log->severity = 7;
-                    discovery_log($log);
-                }
-            }
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . '*******' . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-            exec($command, $output, $return_var);
-            $log->command_output = json_encode($output);
-            if ($return_var == 0) {
-                $log->message = 'Linux attempt (SMB2 user@domain) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_from_windows';
-                $log->command_status = 'success';
-                $log->command_output = '';
-                $log->severity = 7;
-                discovery_log($log);
-                return true;
-            } else {
-                $log->message = 'Linux attempt (SMB2 user@domain) to copy file from ' . $ip . ' failed in wmi_helper::copy_from_windows';
-                $log->command_status = 'notice';
-                $log->command_output = json_encode($output);
-                $log->severity = 7;
-                discovery_log($log);
-            }
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $temp = explode('@', $username);
-            if (count($temp) > 1) {
-                $username = $temp[1] . '\\' . $temp[0];
-                $command =      'smbclient \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-                $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . '*******' . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-                exec($command, $output, $return_var);
-                $log->command_output = json_encode($output);
-                if ($return_var == 0) {
-                    $log->message = 'Linux attempt (SMB domain\\user) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_from_windows';
-                    $log->command_status = 'success';
-                    $log->command_output = '';
-                    $log->severity = 7;
-                    discovery_log($log);
-                    return true;
-                } else {
-                    $log->message = 'Linux attempt (SMB domain\\user) to copy file from ' . $ip . ' failed in wmi_helper::copy_from_windows.';
-                    $log->command_status = 'fail';
-                    $log->command_output = json_encode($output);
-                    $log->severity = 5;
-                    discovery_log($log);
-                    return false;
-                }
-            }
-
-            $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command =      'smbclient \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
-            $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . '*******' . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $filename = credentials_file($ip, $credentials);
+            $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $log->command = $command;
             $output = '';
             exec($command, $output, $return_var);
             $log->command_output = json_encode($output);
             if ($return_var == 0) {
-                $log->message = 'Linux attempt (SMB user@domain) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_from_windows';
+                $log->message = 'Linux attempt using SMB2 to copy file from ' . $ip . ' succeeded in wmi_helper::copy_from_windows';
                 $log->command_status = 'success';
                 $log->command_output = '';
                 $log->severity = 7;
                 discovery_log($log);
+                unlink($filename);
                 return true;
             } else {
-                $log->message = 'Linux attempt (SMB user@domain) to copy file from ' . $ip . ' failed in wmi_helper::copy_from_windows.';
+                $log->message = 'Linux attempt using SMB2 to copy file from ' . $ip . ' failed in wmi_helper::copy_from_windows';
                 $log->command_status = 'notice';
                 $log->command_output = json_encode($output);
                 $log->severity = 7;
                 discovery_log($log);
+            }
+            $command = 'smbclient \\\\\\\\'.$ip.'\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $log->command = $command;
+            exec($command, $output, $return_var);
+            $log->command_output = json_encode($output);
+            if ($return_var == 0) {
+                $log->message = 'Linux attempt using SMB1 to copy file from ' . $ip . ' succeeded in wmi_helper::copy_from_windows';
+                $log->command_status = 'success';
+                $log->command_output = '';
+                $log->severity = 7;
+                discovery_log($log);
+                unlink($filename);
+                return true;
+            } else {
+                $log->message = 'Linux attempt using SMB1 to copy file from ' . $ip . ' failed in wmi_helper::copy_from_windows.';
+                $log->command_status = 'fail';
+                $log->command_output = json_encode($output);
+                $log->severity = 5;
+                discovery_log($log);
+                unlink($filename);
+                return false;
             }
         }
 
@@ -1005,7 +844,6 @@ if ( ! function_exists('copy_from_windows')) {
     }
 }
 
-
 if (! function_exists('wmi_command')) {
     /**
      * The SSH credentials test. 
@@ -1028,16 +866,16 @@ if (! function_exists('wmi_command')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-   function wmi_command($ip = '', $credentials, $command = '', $log)
+    function wmi_command($ip = '', $credentials, $command = '', $log)
     {
 
         $log->file = 'wmi_helper';
         $log->function = 'wmi_command';
         $log->severity = 7;
         $return = array('output' => '', 'status' => '');
+        $CI = & get_instance();
 
         $log->message = 'Using credentials named ' . $credentials->name;
-        #discovery_log($log);
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::wmi_command';
@@ -1107,40 +945,28 @@ if (! function_exists('wmi_command')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $command_string = "timeout 1m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static-2";
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            $domain = @$temp[1];
-            if ($domain != '') {
-                $domain .= '/';
-            }
-            unset($temp);
-            $password = escapeshellarg($credentials->credentials->password);
-            $username = escapeshellarg(str_replace("'", "", $username));
-            $command_string .= " -U ".$domain.$username."%****** --uninstall //".$ip." \"wmic $command\" 2>&1";
+            $filepath = $CI->config->config['base_path'] . '/other';
+            $filename = credentials_file($ip, $credentials);
+            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //".$ip." \"wmic $command\" 2>&1";
             $log->command   = $command_string;
-            $log->message = "Attempting to execute command using winexe-static-2";
-            $log->id = discovery_log($log);
+            $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static-2';
             $item_start = microtime(true);
-            $command_string = str_replace("******", $password, $command_string);
             exec($command_string, $return['output'], $return['status']);
             if ($return['status'] != '0') {
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->command_status = 'notice';
-
                 $log->command_output = json_encode($return['output']);
-                $log->id = discovery_log($log);
+                discovery_log($log);
                 unset($log->id, $log->command_status, $log->command_time_to_execute, $log->command_output);
 
                 $log->command   = str_replace('winexe-static-2', 'winexe-static', $log->command);
-                $log->message = "Attempting to execute command using winexe-static";
-                $log->id = discovery_log($log);
-
+                $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static';
                 $return['output'] = '';
                 $command_string = str_replace('winexe-static-2', 'winexe-static', $command_string);
                 $item_start = microtime(true);
                 exec($command_string, $return['output'], $return['status']);
             }
+            unlink($filename);
         }
 
         if (php_uname('s') == 'Windows NT') {
@@ -1187,6 +1013,80 @@ if (! function_exists('wmi_command')) {
     }
 }
 
+
+if ( ! function_exists('windows_ips_found')) {
+    /**
+     * [wmi_audit description]
+     * @param  string $ip           [description]
+     * @param  [type] $credentials  [description]
+     * @param  [type] $log          [description]
+     * @param  [type] $discovery_id [description]
+     * @return [type]               [description]
+     */
+    function windows_ips_found($ip = '', $credentials, $discovery_id = null)
+    {
+        $log = new stdClass();
+        $log->discovery_id = $discovery_id;
+        $log->file = 'wmi_helper';
+        $log->function = 'windows_ips_found';
+        $log->severity = 7;
+        $log->command_status = 'notice';
+        $log->message = 'Retrieving arp table from Windows';
+        $log->ip = @$ip;
+        discovery_log($log);
+
+        if (empty($ip)) {
+            $log->message = 'No IP supplied to wmi_helper::windows_ips_found.';
+            discovery_log($log);
+            return false;
+        }
+
+        if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'No valid IP supplied to wmi_helper::windows_ips_found.';
+            discovery_log($log);
+            return false;
+        }
+
+        if ( ! is_object($credentials)) {
+            $log->message = 'No credentials supplied to wmi_helper::windows_ips_found.';
+            discovery_log($log);
+            return false;
+        }
+        $temp = execute_windows($ip, $credentials, 'arp -a', $log);
+        $ips_found = array();
+        foreach ($temp as $line) {
+            if (strpos($line, 'dynamic') === false) {
+                continue;
+            }
+            $line = trim(preg_replace("/ {2,}/", " ", $line));
+            $line_array = explode(' ', $line);
+            $ips_found[strtolower(str_replace('-', ':', $line_array[1]))] = $line_array[0];
+        }
+        return $ips_found;
+    }
+}
+
+
+if ( ! function_exists('credentials_file')) {
+    function credentials_file($ip = '', $credentials = null) {
+        $filename = str_replace('.', '', microtime());
+        $filename = str_replace(' ', '', $filename);
+        $filename = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/scripts/" . str_replace('.', '', $ip) . '_' . $filename . '.txt';
+        $temp = explode('@', $credentials->credentials->username);
+        $username = $temp[0];
+        $domain = @$temp[1];
+        $password = $credentials->credentials->password;
+        $file = fopen($filename, 'w');
+        $text = "username = {$username}\npassword = {$password}\n";
+        if (!empty($domain)) {
+            $text .= "domain   = {$domain}\n";
+        }
+        fwrite($file, $text);
+        fclose($file);
+        sleep(1);
+        return $filename;
+    }
+}
 
 
 if ( ! function_exists('wmi_audit')) {
@@ -1332,6 +1232,9 @@ if ( ! function_exists('wmi_audit')) {
                 }
                 if (stripos($details->os_name, 'Windows 10') !== false) {
                     $details->os_family = 'Windows 10';
+                }
+                if (stripos($details->os_name, 'Windows 11') !== false) {
+                    $details->os_family = 'Windows 11';
                 }
                 if (stripos($details->os_name, '2016') !== false) {
                     $details->os_family = 'Windows 2016';

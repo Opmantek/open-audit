@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Discoveries
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -123,6 +123,8 @@ class Discovery_scan_options extends MY_Controller
                 redirect($this->response->meta->collection);
             }
         }
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 
@@ -171,6 +173,8 @@ class Discovery_scan_options extends MY_Controller
         $this->response->dictionary = $this->m_discovery_scan_options->dictionary();
         $this->load->model('m_orgs');
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
+        $this->load->helper('discoveries');
+        $this->response->meta->nmap_version = get_nmap_version();
         output($this->response);
     }
 

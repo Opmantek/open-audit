@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   All
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 $display = 'n';
@@ -803,7 +803,7 @@ foreach ($xml->children() as $input) {
 
     // $device->id is now set
     if (!empty($display) and $display == 'y') {
-        echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
+        echo '<pre>DEBUG - System ID <a href="' . $this->config->config['oa_web_folder'] . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
     }
 
     // process and store the Nmap data

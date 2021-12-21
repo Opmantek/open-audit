@@ -4,7 +4,7 @@
     define('Chartist', [], function () {
       return (root['Chartist'] = factory());
     });
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
@@ -14,8 +14,8 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.10.0
- * Copyright © 2016 Gion Kunz
+/* Chartist.js 0.11.4
+ * Copyright © 2019 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT
@@ -26,11 +26,14 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.10.0'
+  version: '0.11.4'
 };
 
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   /**
    * This object contains all namespaces used within Chartist.
@@ -337,9 +340,10 @@ var Chartist = {
     svg = new Chartist.Svg('svg').attr({
       width: width,
       height: height
-    }).addClass(className).attr({
-      style: 'width: ' + width + '; height: ' + height + ';'
-    });
+    }).addClass(className);
+
+    svg._node.style.width = width;
+    svg._node.style.height = height;
 
     // Add the DOM node to our container
     container.appendChild(svg._node);
@@ -993,10 +997,12 @@ var Chartist = {
     if(useForeignObject) {
       // We need to set width and height explicitly to px as span will not expand with width and height being
       // 100% in all browsers
-      var content = '<span class="' + classes.join(' ') + '" style="' +
-        axis.units.len + ': ' + Math.round(positionalData[axis.units.len]) + 'px; ' +
-        axis.counterUnits.len + ': ' + Math.round(positionalData[axis.counterUnits.len]) + 'px">' +
-        labels[index] + '</span>';
+      var content = document.createElement('span');
+      content.className = classes.join(' ');
+      content.setAttribute('xmlns', Chartist.namespaces.xhtml);
+      content.innerText = labels[index];
+      content.style[axis.units.len] = Math.round(positionalData[axis.units.len]) + 'px';
+      content.style[axis.counterUnits.len] = Math.round(positionalData[axis.counterUnits.len]) + 'px';
 
       labelElement = group.foreignObject(content, Chartist.extend({
         style: 'overflow: visible;'
@@ -1164,14 +1170,14 @@ var Chartist = {
 
     return segments;
   };
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * Chartist path interpolation functions.
  *
  * @module Chartist.Interpolation
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
   Chartist.Interpolation = {};
@@ -1601,14 +1607,14 @@ var Chartist = {
     };
   };
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * A very basic event module that helps to generate and catch events.
  *
  * @module Chartist.Event
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
 
   Chartist.EventEmitter = function () {
@@ -1679,14 +1685,14 @@ var Chartist = {
     };
   };
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * This module provides some basic prototype inheritance utilities.
  *
  * @module Chartist.Class
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
   function listToArray(list) {
@@ -1790,15 +1796,17 @@ var Chartist = {
     cloneDefinitions: cloneDefinitions
   };
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * Base for all chart types. The methods in Chartist.Base are inherited to all chart types.
  *
  * @module Chartist.Base
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
 
   // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
   // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -1983,15 +1991,17 @@ var Chartist = {
     supportsForeignObject: false
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * Chartist SVG module for simple SVG DOM abstraction
  *
  * @module Chartist.Svg
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
+
+  var document = globalRoot.document;
 
   /**
    * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
@@ -2581,14 +2591,14 @@ var Chartist = {
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * Chartist SVG path module for SVG path description creation and modification.
  *
  * @module Chartist.Svg.Path
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
   /**
@@ -2966,10 +2976,13 @@ var Chartist = {
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;
   Chartist.Svg.Path.join = join;
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   var axisUnits = {
     x: {
@@ -3082,7 +3095,7 @@ var Chartist = {
 
   Chartist.Axis.units = axisUnits;
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.
  * **Options**
@@ -3105,8 +3118,11 @@ var Chartist = {
  * @module Chartist.AutoScaleAxis
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   function AutoScaleAxis(axisUnit, data, chartRect, options) {
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
@@ -3133,7 +3149,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * The fixed scale axis uses standard linear projection of values along an axis. It makes use of a divisor option to divide the range provided from the minimum and maximum value or the options high and low that will override the computed minimum and maximum.
  * **Options**
@@ -3154,8 +3170,11 @@ var Chartist = {
  * @module Chartist.FixedScaleAxis
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   function FixedScaleAxis(axisUnit, data, chartRect, options) {
     var highLow = options.highLow || Chartist.getHighLow(data, options, axisUnit.pos);
@@ -3189,7 +3208,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the whole axis length. The projection is done using the index of the data value rather than the value itself and therefore it's only useful for distribution purpose.
  * **Options**
@@ -3206,8 +3225,11 @@ var Chartist = {
  * @module Chartist.StepAxis
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   function StepAxis(axisUnit, data, chartRect, options) {
     Chartist.StepAxis.super.constructor.call(this,
@@ -3229,7 +3251,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
  *
@@ -3238,8 +3260,11 @@ var Chartist = {
  * @module Chartist.Line
  */
 /* global Chartist */
-(function(window, document, Chartist){
+(function(globalRoot, Chartist){
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   /**
    * Default options in line charts. Expand the code view to see a detailed list of options with comments.
@@ -3644,15 +3669,18 @@ var Chartist = {
     createChart: createChart
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.
  *
  * @module Chartist.Bar
  */
 /* global Chartist */
-(function(window, document, Chartist){
+(function(globalRoot, Chartist){
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   /**
    * Default options in bar charts. Expand the code view to see a detailed list of options with comments.
@@ -4087,15 +4115,18 @@ var Chartist = {
     createChart: createChart
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 ;/**
  * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts
  *
  * @module Chartist.Pie
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   /**
    * Default options in line charts. Expand the code view to see a detailed list of options with comments.
@@ -4116,6 +4147,7 @@ var Chartist = {
       series: 'ct-series',
       slicePie: 'ct-slice-pie',
       sliceDonut: 'ct-slice-donut',
+      sliceDonutSolid: 'ct-slice-donut-solid',
       label: 'ct-label'
     },
     // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
@@ -4124,6 +4156,8 @@ var Chartist = {
     total: undefined,
     // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
     donut: false,
+    // If specified the donut segments will be drawn as shapes instead of strokes.
+    donutSolid: false,
     // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
     // This option can be set as number or string to specify a relative width (i.e. 100 or '30%').
     donutWidth: 60,
@@ -4199,15 +4233,17 @@ var Chartist = {
     // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
     // Unfortunately this is not possible with the current SVG Spec
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
-    radius -= options.donut ? donutWidth.value / 2  : 0;
+    radius -= options.donut && !options.donutSolid ? donutWidth.value / 2  : 0;
 
     // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
     // if regular pie chart it's half of the radius
-    if(options.labelPosition === 'outside' || options.donut) {
+    if(options.labelPosition === 'outside' || options.donut && !options.donutSolid) {
       labelRadius = radius;
     } else if(options.labelPosition === 'center') {
       // If labelPosition is center we start with 0 and will later wait for the labelOffset
       labelRadius = 0;
+    } else if(options.donutSolid) {
+      labelRadius = radius - donutWidth.value / 2;
     } else {
       // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
       // slice
@@ -4268,21 +4304,38 @@ var Chartist = {
       var start = Chartist.polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
+      var innerStart,
+        innerEnd,
+        donutSolidRadius;
+
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
-      var path = new Chartist.Svg.Path(!options.donut)
+      var path = new Chartist.Svg.Path(!options.donut || options.donutSolid)
         .move(end.x, end.y)
         .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
       if(!options.donut) {
         path.line(center.x, center.y);
+      } else if (options.donutSolid) {
+        donutSolidRadius = radius - donutWidth.value;
+        innerStart = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
+        innerEnd = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, endAngle);
+        path.line(innerStart.x, innerStart.y);
+        path.arc(donutSolidRadius, donutSolidRadius, 0, endAngle - startAngle  > 180, 1, innerEnd.x, innerEnd.y);
       }
 
       // Create the SVG path
       // If this is a donut chart we add the donut class, otherwise just a regular slice
+      var pathClassName = options.classNames.slicePie;
+      if (options.donut) {
+        pathClassName = options.classNames.sliceDonut;
+        if (options.donutSolid) {
+          pathClassName = options.classNames.sliceDonutSolid;
+        }
+      }
       var pathElement = seriesGroups[index].elem('path', {
         d: path.stringify()
-      }, options.donut ? options.classNames.sliceDonut : options.classNames.slicePie);
+      }, pathClassName);
 
       // Adding the pie series value to the path
       pathElement.attr({
@@ -4291,10 +4344,8 @@ var Chartist = {
       });
 
       // If this is a donut, we add the stroke-width as style attribute
-      if(options.donut) {
-        pathElement.attr({
-          'style': 'stroke-width: ' + donutWidth.value + 'px'
-        });
+      if(options.donut && !options.donutSolid) {
+        pathElement._node.style.strokeWidth = donutWidth.value + 'px';
       }
 
       // Fire off draw event
@@ -4458,7 +4509,7 @@ var Chartist = {
     determineAnchorPosition: determineAnchorPosition
   });
 
-}(window, document, Chartist));
+}(this || global, Chartist));
 
 return Chartist;
 

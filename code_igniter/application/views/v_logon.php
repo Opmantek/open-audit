@@ -30,26 +30,43 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 if ($this->config->config['oae_product'] === 'Open-AudIT Cloud') {
     header("Location: /omk/open-audit");
 }
-header("Content-Security-Policy: frame-ancestors 'none'");
-header("X-Frame-Options: DENY");
+$header = "
+    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
+    font-src 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    frame-src 'none';
+    img-src 'self' data:;
+    manifest-src 'none';
+    media-src 'none';
+    object-src 'none';
+    prefetch-src: 'self';
+    script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
+    style-src 'self' 'unsafe-inline';
+    worker-src 'self';
+    ";
+$header = str_replace(PHP_EOL, "", $header);
+header("Content-Security-Policy: {$header}");
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
 ?><!DOCTYPE html>
 <html lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta http-equiv="refresh" content="300" />
-    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>favicon.png" type="image/x-icon" />
     <title>Open-AudIT</title>
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.min.js"></script>
-    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>css/font-awesome.min.css">
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/jquery.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>js/bootstrap.min.js"></script>
 </head>
 <body onload="document.form.username.focus();">
 <br />
@@ -86,7 +103,7 @@ if (!empty($this->config->config['internal_version']) and $this->config->config[
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-sm-12 text-center">
-                        <img src='<?php echo $this->config->config['oa_web_folder'] ?>/images/logo.png' alt='logo' border='0' /><br /><br />
+                        <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo.png' alt='logo' border='0' /><br /><br />
                     </div>
 
                     <div class="form-group text-center">
@@ -157,15 +174,15 @@ if (!empty($temp)) {
     {
         var testWin = navigator.userAgent.match(/Windows NT/i);
         if (testWin) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/windows";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>index.php/util/audit_my_pc/windows";
         }
         var testLin = navigator.userAgent.match(/Linux /i);
         if (testLin) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/linux";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>index.php/util/audit_my_pc/linux";
         }
         var testOsx = navigator.userAgent.match(/Mac OS X/i);
         if (testOsx) {
-            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/osx";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>index.php/util/audit_my_pc/osx";
         }
     }
 

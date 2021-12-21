@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 
@@ -57,6 +57,20 @@ if (! function_exists('is_ssl')) {
             return true;
         }
         return false;
+    }
+}
+
+if (! function_exists('is_private_ip')) {
+    function is_private_ip($ip)
+    {
+        $ip = ip_address_to_db($ip);
+        $private = false;
+        if (($ip >= '010.000.000.000' AND $ip <= '010.255.255.255') ||
+            ($ip >= '172.016.000.000' AND $ip <= '172.031.255.255') ||
+            ($ip >= '192.168.000.000' AND $ip <= '192.168.255.255')) {
+            $private = true;
+        }
+        return $private;
     }
 }
 

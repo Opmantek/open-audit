@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -58,7 +58,8 @@ if ( !  function_exists('scp')) {
      */
     function scp($parameters)
     {
-
+        $item_start = microtime(true);
+        $CI = & get_instance();
         $message = '';
         if (empty($parameters->ip)) {
             $message = 'No IP supplied to scp function.';
@@ -82,6 +83,14 @@ if ( !  function_exists('scp')) {
         }
         if ( ! empty($parameters->discovery_id)) {
             $log->discovery_id = $parameters->discovery_id;
+        }
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
         }
         $log->severity = 7;
         $log->file = 'ssh_helper';
@@ -107,9 +116,6 @@ if ( !  function_exists('scp')) {
             $ssh_port = '22';
         }
 
-        $item_start = microtime(true);
-        $CI = & get_instance();
-
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
@@ -124,8 +130,8 @@ if ( !  function_exists('scp')) {
             $log->severity = 7;
             return false;
         }
-        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        if ($timeout > 0) {
+            $ssh->setTimeout($timeout);
         }
         $key = new Crypt_RSA();
         if ($credentials->type === 'ssh_key') {
@@ -170,7 +176,7 @@ if ( !  function_exists('scp')) {
         }
 
         $status = true;
-        $log->command = 'sftp ' . $source . ' to ' . $ip . ':' . $destination;
+        $log->command = 'sftp ' . $source . ' to ' . @$username . '@' . $ip . ':' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file to ' . $ip;
         if ($ssh->put($destination, $source, NET_SFTP_LOCAL_FILE) === false) {
@@ -197,6 +203,8 @@ if ( !  function_exists('scp_get')) {
      */
     function scp_get($parameters)
     {
+        $item_start = microtime(true);
+        $CI = & get_instance();
         $message = '';
         if (empty($parameters->ip)) {
             $message = 'No IP supplied to scp_get function.';
@@ -244,9 +252,15 @@ if ( !  function_exists('scp_get')) {
         if ( ! empty($parameters->ssh_port)) {
             $ssh_port = intval($parameters->ssh_port);
         }
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
+        }
 
-        $CI = & get_instance();
-        $item_start = microtime(true);
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
@@ -261,8 +275,8 @@ if ( !  function_exists('scp_get')) {
             $log->severity = 7;
             return false;
         }
-        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        if ($timeout > 0) {
+            $ssh->setTimeout($timeout);
         }
         $key = new Crypt_RSA();
         if ($credentials->type === 'ssh_key') {
@@ -298,12 +312,12 @@ if ( !  function_exists('scp_get')) {
             return false;
         }
 
-        $log->command = 'sftp ' . $source . ' to ' . $destination;
+        $log->command = 'sftp ' . @$username . '@' . @$ip . ':' . @$source . ' to ' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file from ' . $ip;
+        $log->command_status = 'success';
         try {
             $output = $ssh->get($source, $destination);
-            $log->command_output = $output;
         } catch (Exception $error) {
             $log->command = $ssh->getLog();
             $log->command_output = $output;
@@ -314,6 +328,12 @@ if ( !  function_exists('scp_get')) {
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        if ($log->command_status === 'success') {
+            $log->command_output = $output;
+            if (empty($output)) {
+                $log->command_output = 1;
+            }
+        }
         discovery_log($log);
         unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
         return($output);
@@ -328,6 +348,8 @@ if ( !  function_exists('ssh_command')) {
      */
     function ssh_command($parameters)
     {
+        $item_start = microtime(true);
+        $CI = & get_instance();
         if (empty($parameters) OR empty($parameters->ip) OR empty($parameters->credentials) OR empty($parameters->command)) {
             $mylog = new stdClass();
             $mylog->message = 'Function ssh_command called without params object';
@@ -338,7 +360,6 @@ if ( !  function_exists('ssh_command')) {
             stdlog($mylog);
             return;
         }
-
         if (empty($parameters->log)) {
             $log = new stdClass();
             if ( ! empty($parameters->discovery_id)) {
@@ -360,10 +381,14 @@ if ( !  function_exists('ssh_command')) {
         if (empty($ssh_port)) {
             $ssh_port = '22';
         }
-
-        $item_start = microtime(true);
-        $CI = & get_instance();
-
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
+        }
         if ( ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'Invalid IP supplied to ssh_command function.';
             $log->severity = 5;
@@ -441,7 +466,7 @@ if ( !  function_exists('ssh_command')) {
         $log->message = 'Executing SSH command';
         $item_start = microtime(true);
         if (strpos($command, 'sudo') === false) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+            $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
             $result = $ssh->exec($command);
             $result = explode("\n", $result);
@@ -461,7 +486,7 @@ if ( !  function_exists('ssh_command')) {
                 if (stripos($output, 'Audit Completed') !== false) {
                     break;
                 }
-                if ((microtime(true) - $item_start) > intval($CI->config->config['discovery_ssh_timeout'])) {
+                if ((microtime(true) - $item_start) > $timeout) {
                     break;
                 }
             }
@@ -474,9 +499,6 @@ if ( !  function_exists('ssh_command')) {
         }
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_output = @json_encode($result);
-        if (stripos($command, 'audit_') !== false && stripos($command, 'submit_online') !== false and intval($CI->config->config['log_level']) < 7) {
-            $log->command_output = 'Audit console output removed.';
-        }
         $log->command_status = 'success';
         discovery_log($log);
         unset($log);
@@ -492,7 +514,7 @@ if ( !  function_exists('ssh_audit')) {
      */
     function ssh_audit($parameters)
     {
-
+        $CI = & get_instance();
         if (empty($parameters) OR empty($parameters->credentials) OR empty($parameters->ip)) {
             $mylog = new stdClass();
             $mylog->severity = 4;
@@ -503,7 +525,6 @@ if ( !  function_exists('ssh_audit')) {
             stdlog($mylog);
             return;
         }
-
         if (empty($parameters->log)) {
             $log = new stdClass();
             if ( ! empty($parameters->discovery_id)) {
@@ -524,6 +545,11 @@ if ( !  function_exists('ssh_audit')) {
         }
 
         discovery_log($log);
+        if ( ! empty($parameters->type)) {
+            $type = $parameters->type;
+        } else {
+            $type = 'subnet';
+        }
 
         if (is_array($parameters->credentials)) {
             $credentials = $parameters->credentials;
@@ -550,8 +576,14 @@ if ( !  function_exists('ssh_audit')) {
         if (empty($ssh_port)) {
             $ssh_port = '22';
         }
-
-        $CI = & get_instance();
+        $timeout = 0;
+        if ( ! empty($parameters->timeout)) {
+            $timeout = intval($parameters->timeout);
+        } else {
+            if ( ! empty($CI->config->config['discovery_ssh_timeout'])) {
+                $timeout = intval($CI->config->config['discovery_ssh_timeout']);
+            }
+        }
 
         set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         include_once('Crypt/RSA.php');
@@ -562,8 +594,7 @@ if ( !  function_exists('ssh_audit')) {
 
         foreach ($credentials as $credential) {
             $ssh = new Net_SSH2($ip, $ssh_port);
-            // This is only for login. If the target cannot respond within 10
-            // seconds, give up
+            // This is only for login. If the target cannot respond within 10 seconds, give up
             $ssh->setTimeout(10);
             if ($credential->type === 'ssh_key') {
                 $key = new Crypt_RSA();
@@ -817,7 +848,7 @@ if ( !  function_exists('ssh_audit')) {
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}" 2>/dev/null',
             'esx_uuid' => 'vim-cmd hostsvc/hostsummary 2>/dev/null | sed -n "/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p" | grep uuid | cut -d= -f2 | sed s/,//g | sed s/\"//g',
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
-            'lshal_uuid' => 'lshal 2>/dev/null | grep \'system.hardware.uuid\'',
+            'lshal_uuid' => 'lshal 2>/dev/null | grep "system.hardware.uuid"',
 
             'bsd_manufacturer' => 'kenv 2>/dev/null | grep smbios.chassis.maker | cut -d\" -f2',
             'bsd_model' => 'kenv 2>/dev/null | grep smbios.planar.product | cut -d\" -f2',
@@ -839,8 +870,14 @@ if ( !  function_exists('ssh_audit')) {
             'synology_os_minor' => 'grep version_minor /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
             'synology_os_build' => 'grep version_build /etc/avahi/services/dsminfo.service 2>/dev/null | cut -d= -f2 | cut -d\< -f1',
 
-            'which_sudo' => 'which sudo 2>/dev/null'
+            'which_sudo' => 'which sudo 2>/dev/null',
+
         );
+
+        if ($type === 'seed') {
+            $commands['arp'] = 'arp -an 2>/dev/null';
+            $commands['route'] = 'netstat -rn 2>/dev/null | grep "^[0-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"';
+        }
 
         foreach ($commands as $item => $command) {
             if (strpos($device->shell, 'bash') === false && $device->bash !== '') {
@@ -889,6 +926,54 @@ if ( !  function_exists('ssh_audit')) {
             }
         }
 
+        // ARP for other devices
+        $device->ips_found = array();
+
+        if ($type === 'seed') {
+            if ( ! empty($device->arp)) {
+                foreach ($device->arp as $line) {
+                    $item = array();
+
+                    $explode = explode('(', $line);
+                    $explode_2 = explode(')', $explode[1]);
+                    $item_ip = $explode_2[0];
+
+                    $item_mac = '';
+                    $explode = explode(' ', $line);
+                    if ( ! empty($explode[3])) {
+                        $item_mac = strtolower($explode[3]);
+                    }
+                    if ( ! empty($item_mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' &&
+                            ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255' && filter_var($item_ip, FILTER_VALIDATE_IP)) {
+                        $device->ips_found[$item_mac] = $item_ip;
+                    }
+                }
+            }
+            unset($device->arp);
+            if ( ! empty($device->route)) {
+                foreach ($device->route as $ip) {
+                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                        $device->ips_found[] = $ip;
+                    }
+                }
+            }
+            unset($device->route);
+
+            // Lower case all MAC addresses
+            $device->ips_found = array_change_key_case($device->ips_found, CASE_LOWER);
+            // Only need one unique IP
+            $device->ips_found = array_unique($device->ips_found);
+
+            $log->command_time_to_execute = '';
+            $log->message = 'Seed. All IPs detected using SSH.';
+            $log->command = 'Combined SSH arp and route.';
+            $log->command_status = 'notice';
+            $log->command_output = json_encode($device->ips_found);
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
+        }
+
+
         // Set some items that may have multiple results
         if ( ! empty($device->hostname)) {
             $device->hostname = strtolower($device->hostname);
@@ -916,6 +1001,7 @@ if ( !  function_exists('ssh_audit')) {
 
         if ( ! empty($device->ubiquiti_os)) {
             #$device->os_family = 'Ubiquiti';
+            $device->os_group = '';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
         }
         unset($device->ubiquiti_os);
@@ -991,7 +1077,6 @@ if ( !  function_exists('ssh_audit')) {
             $log->command_status = 'success';
             $log->command_output = $device->os_name;
             discovery_log($log);
-
 
             $item_start = microtime(true);
             $command = "esxcli hardware platform get | grep 'Vendor Name' | cut -d: -f2 2>/dev/null";
@@ -1104,10 +1189,10 @@ if ( !  function_exists('ssh_audit')) {
         }
 
         // Type based on os_group = Linux (set to computer)
-        if ( ! empty($device->os_group) && $device->os_group === 'Linux' && empty($device->type)) {
+        if (! empty($device->os_group) and $device->os_group === 'Linux' and empty($device->type) and ! empty($device->manufacturer) and $device->manufacturer !== 'Ubiquiti Networks Inc.') {
             $device->type = 'computer';
         }
-        if ( ! empty($device->os_group) && stripos($device->os_group, 'BSD') !== false) {
+        if (! empty($device->os_group) and stripos($device->os_group, 'BSD') !== false) {
             $device->type = 'computer';
             $device->model = $device->bsd_model;
             $device->os_group = 'BSD';
@@ -1137,8 +1222,6 @@ if ( !  function_exists('ssh_audit')) {
 
         $device->use_sudo = false;
         $command = '';
-
-
 
         if (empty($device->which_sudo) and ! empty($CI->config->config['discovery_sudo_path'])) {
             $sudo_paths = explode(',', $CI->config->config['discovery_sudo_path']);

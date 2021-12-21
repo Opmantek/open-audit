@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 
@@ -39974,7 +39974,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 40040: $manufacturer = 'Stichting Ifcat Foundation'; break;
 			case 40041: $manufacturer = 'ООО «Электронные Офисные Системы (проектирование и внедрение)» /ooo “elektronnye Ofisnye Sistemy (proektirovanie I Vnedrenie)/'; break;
 			case 40042: $manufacturer = 'Stiftelsen Chalmers Studentbostäder'; break;
-			case 40043: $manufacturer = 'Newpace Technology Development Inc.‎'; break;
+			case 40043: $manufacturer = 'NewPace Technology Development Inc.'; break;
 			case 40044: $manufacturer = 'Pc-doctor, Inc.'; break;
 			case 40045: $manufacturer = 'Nexenta Systems, Inc.'; break;
 			case 40046: $manufacturer = 'Credit Europe Bank Ltd.'; break;

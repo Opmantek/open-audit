@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -119,8 +119,8 @@ class M_licenses extends MY_Model
      */
     public function delete($id = 0)
     {
+        $data = array(intval($id));
         $sql = 'DELETE FROM `licenses` WHERE `id` = ?';
-        $data = array($id);
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
@@ -284,6 +284,10 @@ class M_licenses extends MY_Model
         $dictionary->columns->purchase_count = 'The number of purchased licenses.';
         $dictionary->columns->used_count = 'A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).';
         $dictionary->columns->match_string = 'A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.';
+        $dictionary->columns->software_name = 'Your generice name for this piece of software';
+        $dictionary->columns->software_version = 'Your generice version for this piece of software';
+        $dictionary->columns->sql = 'unused';
+        $dictionary->columns->expiry_date = 'For licenses that are not perpetual, when does the license expire.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

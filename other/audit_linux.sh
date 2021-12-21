@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   GIT: Open-AudIT_3.5.3
+# @version   GIT: Open-AudIT_4.3.1
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="3.5.3"
+version="4.3.1"
 
 # Display help
 help="n"
@@ -110,6 +110,11 @@ last_seen_by="audit"
 
 display=""
 # This should only be set by Discovery when using the debug option
+
+# The pattern matches to check for certificates
+cert_dirs[1]="/etc/ssl/certs/*.pem"
+cert_dirs[2]="/etc/ssl/certs/*.crt"
+cert_dirs[3]="/etc/ssl/private/*.key"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
@@ -416,21 +421,27 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Starting audit"
 fi
 
-local_hostname=""
+system_hostname=""
 if [ -f /etc/hostname ]; then
-	local_hostname=$(cat /etc/hostname 2>/dev/null)
-else
-	local_hostname=$(hostname -s 2>/dev/null)
+	system_hostname=$(cat /etc/hostname 2>/dev/null | cut -d. -f1)
 fi
 
-if [ -z "$local_hostname" ]; then
-	local_hostname=$(hostname 2>/dev/null)
+if [ -z "$system_hostname" ]; then
+	system_hostname=$(hostname -s 2>/dev/null | cut -d. -f1)
+fi
+
+if [ -z "$system_hostname" ]; then
+	system_hostname=$(hostname 2>/dev/null | cut -d. -f1)
+fi
+
+if [ -z "$system_hostname" ]; then
+	# Ubiquiti specific
+	system_hostname=$(cat /proc/sys/kernel/hostname 2>/dev/null)
 fi
 
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
 script_name=$(basename $0)
-system_hostname=$(hostname | cut -d. -f1)
 xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 xml_file_full_path=`pwd`"/$xml_file"
 
@@ -463,14 +474,12 @@ if pidof -x -o $$ "$script_name" >/dev/null 2>&1; then
 	exit 0
 fi
 
-
-
 #========================
 #  SAN INFO             #
 #========================
 if [ "$san_audit" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
-		san_url=$(echo "$san_url" | sed 's/input\/devices/san\/add_san/g')
+		san_url=$(echo "$url" | sed 's/input\/devices/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
@@ -550,8 +559,8 @@ if [ -z "$system_uuid" ] && [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]; t
 fi
 
 # Get the hostname & DNS domain
-system_domain=$(hostname -d | grep -v \(none\))
-system_fqdn=$(hostname -f | grep -v \(none\))
+system_domain=$(hostname -d 2>/dev/null | grep -v \(none\))
+system_fqdn=$(hostname -f 2>/dev/null | grep -v \(none\))
 
 dns_hostname=$(hostname --short 2>/dev/null | head -n1 | cut -d. -f1)
 dns_domain=$(hostname --domain 2>/dev/null)
@@ -575,7 +584,7 @@ system_serial=""
 
 # Some DD-WRT specials stuff
 if [ -z "$system_os_family" ]; then
-	if [ -f "/etc/motd" ] && [ grep -qi 'DD-WRT' /etc/motd ]; then
+	if [ -f "/etc/motd" ] && [ $(grep -qi 'DD-WRT' /etc/motd) ]; then
 		system_os_family="DD-WRT"
 		system_os_version=$(grep DD-WRT /etc/motd | cut -dv -f2)
 		system_os_version="v$system_os_version"
@@ -621,60 +630,62 @@ fi
 
 instance_ident=`grep instance_id /etc/default/instance_configs.cfg 2>/dev/null | cut -d= -f2`
 
-for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
+if [ "$busybox" = "n" ]; then
+	for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
-	[ -f "$system_release_file" ] || continue;
-	[ "$system_release_file" = "/etc/os-release" ] && continue;
+		[ -f "$system_release_file" ] || continue;
+		[ "$system_release_file" = "/etc/os-release" ] && continue;
 
-	if [ -z "$system_os_name" ]; then
-		system_os_name=$(head -n1 "$system_release_file")
-	fi
-
-	# Suse Based
-	# if echo "$system_os_name" | grep -Fqi "Suse" ; then
-	# 	if [ -z "$system_os_family" ]; then
-	# 		system_os_family="Suse"
-	# 	fi
-	# 	break;
-	# fi
-
-	if [ -z "$system_os_family" ]; then
-		if [ -e "/etc/arch-release" ]; then
-			system_os_name="Arch Linux";
-			system_os_family="Arch";
+		if [ -z "$system_os_name" ]; then
+			system_os_name=$(head -n1 "$system_release_file")
 		fi
-	fi
 
-	# CentOS based - must come before RedHat based
-	if [ "$system_release_file" = "/etc/centos-release" ]; then
-			system_os_family="CentOS";
-			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
-			if [ -z "$system_os_version" ]; then
-				system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null | head -n1)
-			fi
-		break;
-	fi
+		# Suse Based
+		# if echo "$system_os_name" | grep -Fqi "Suse" ; then
+		# 	if [ -z "$system_os_family" ]; then
+		# 		system_os_family="Suse"
+		# 	fi
+		# 	break;
+		# fi
 
-	# RedHat based
-	if [ "$system_release_file" = "/etc/redhat-release" ]; then
-		if cat "$system_release_file" | grep -q "Red Hat" ; then
-			system_os_family="RedHat"
-		fi
-		if cat "$system_release_file" | grep -q "CentOS" ; then
-			system_os_family="CentOS"
-		fi
-		if cat "$system_release_file" | grep -q "Fedora" ; then
-			system_os_family="Fedora"
-		fi
-		if [ -z "$system_os_version" ]; then
-			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
-			if [ -z "$system_os_version" ]; then
-				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
+		if [ -z "$system_os_family" ]; then
+			if [ -e "/etc/arch-release" ]; then
+				system_os_name="Arch Linux";
+				system_os_family="Arch";
 			fi
 		fi
-		break;
-	fi
-done
+
+		# CentOS based - must come before RedHat based
+		if [ "$system_release_file" = "/etc/centos-release" ]; then
+				system_os_family="CentOS";
+				system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
+				if [ -z "$system_os_version" ]; then
+					system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null | head -n1)
+				fi
+			break;
+		fi
+
+		# RedHat based
+		if [ "$system_release_file" = "/etc/redhat-release" ]; then
+			if cat "$system_release_file" | grep -q "Red Hat" ; then
+				system_os_family="RedHat"
+			fi
+			if cat "$system_release_file" | grep -q "CentOS" ; then
+				system_os_family="CentOS"
+			fi
+			if cat "$system_release_file" | grep -q "Fedora" ; then
+				system_os_family="Fedora"
+			fi
+			if [ -z "$system_os_version" ]; then
+				system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
+				if [ -z "$system_os_version" ]; then
+					system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
+				fi
+			fi
+			break;
+		fi
+	done
+fi
 
 if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
@@ -686,8 +697,8 @@ if [ "$system_os_family" == "\"amzn\"" ]; then
 	system_os_family="Amazon"
 fi
 
-if [ "$system_os_family" == "debian" ]; then
-	system_os_family="Debian GNU/Linux"
+if [ "$system_os_family" == "debian" ] || [ "$system_os_family" == "Debian GNU/Linux" ]; then
+	system_os_family="Debian"
 fi
 
 if [ "$system_os_family" == "ubuntu" ]; then
@@ -698,25 +709,46 @@ if [ "$system_os_family" == "centos" ]; then
 	system_os_family="CentOS"
 fi
 
+if [ "$system_os_family" == "Common Base Linux Mariner" ]; then
+	system_os_family="Mariner"
+	system_os_name="Mariner Linux"
+fi
+
 if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]] || [[ "$system_os_family" == *"SuSE"* ]] || [[ "$system_os_family" == *"SuSe"* ]]; then
 	system_os_family="Suse"
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
 	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
 fi
-	
+
+# Busy box test
+if [ "$busybox" = "n" ]; then
+	test=$(ls -lh `echo $SHELL` | grep busybox)
+	if [ -n "$test" ]; then
+		busybox="y"
+	fi
+fi
 
 if [ "$busybox" = "n" ] && [ -z "$system_ip_address" ]; then
 	system_ip_address=$(ip route get $(ip route show 0.0.0.0/0 2>/dev/null | grep -oP 'via \K\S+') 2>/dev/null | grep -oP 'src \K\S+')
 fi
+
+if [ "$busybox" = "y" ] && [ -z "$system_ip_address" ]; then
+	system_ip_address=$(ip route show 0.0.0.0/0 2>/dev/null | head -n1 | awk '{print $3}')
+fi
+
 if [ -z "$system_ip_address" ]; then
 	system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
 fi
 
 # Set the icon as the lower case version of the System Family.
-system_os_icon=$(lcase "$system_os_family")
+if [ -z "$system_os_icon" ]; then
+	system_os_icon=$(lcase "$system_os_family")
+fi
 
 # Get the System Serial Number
-system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
+	system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
+fi
 
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
@@ -728,15 +760,28 @@ if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
 
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
+	# Ubiquiti
+	system_serial=$(grep serialno /proc/ubnthal/system.info 2>/dev/null | cut -d= -f2)
+fi
+
 # Get the System Model
 if [ -z "$system_model" ]; then
 	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#")
-	if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
-		system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
-	fi
-	if [ -z "$system_model" ]; then
-		system_model=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
-	fi
+fi
+if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
+fi
+if [ -z "$system_model" ]; then
+	system_model=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
+fi
+if [ -z "$system_model" ]; then
+	# Ubiquiti
+	system_model=$(cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2)
+fi
+if [ -z "$system_model" ]; then
+	# Ubiquiti #2 - for some $SHELL reason, this doesn't appear to work
+	system_model=$(info 2>/dev/null | grep Model | awk '{ print $2 }')
 fi
 
 # get the systemd identifier
@@ -807,6 +852,8 @@ fi
 if [ -z "$system_pc_os_bit" ]; then
 	system_pc_os_bit=32
 fi
+
+system_pc_os_arch=$(uname -m 2>/dev/null)
 
 # Get the System Memory
 # system_pc_memory=$(grep MemTotal /proc/meminfo | cut -d: -f2 | cut -dk -f1)
@@ -884,7 +931,7 @@ fi
 # Guess the OS Instalation Date
 # There is no way to know for sure the install date. /etc/distro-release should give a clue, but it is not really accurate
 #
-if [ -n "$(which stat 2>/dev/null)" ]; then
+if [ -n "$(which stat 2>/dev/null)" ] && [ "$busybox" = "n" ]; then
 	system_pc_date_os_installation=$(stat "$system_release_file" | grep "^Modify:" | cut -d" " -f2)
 else
 	system_pc_date_os_installation=""
@@ -918,6 +965,7 @@ echo "		<manufacturer>$(escape_xml "$system_manufacturer")</manufacturer>"
 echo "		<uptime>$(escape_xml "$system_uptime")</uptime>"
 echo "		<form_factor>$(escape_xml "$system_form_factor")</form_factor>"
 echo "		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>"
+echo "		<os_arch>$(escape_xml "$system_pc_os_arch")</os_arch>"
 echo "		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>"
 echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_count>"
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
@@ -935,13 +983,63 @@ echo "	</sys>"
 
 
 ##################################
+# USB SECTION                    #
+##################################
+if [ "$debugging" -gt "0" ]; then
+	echo "USB Info"
+fi
+IFS="$NEWLINEIFS"
+echo "	<usb>" >> "$xml_file"
+list=$(lsusb 2>/dev/null)
+if [ -n "$list" ]; then
+	for device in $(echo "$list"); do
+		bus=$(echo "$device" | awk '{print $2}')
+		dev=$(echo "$device" | awk '{print $4}')
+		details=$(lsusb -v -s "$bus":"$dev" 2>/dev/null)
+		if [ -n "$details" ]; then
+			name=$(echo "$details" | grep "iProduct" | head -n1 | awk '{$1=$2=""; print $0}')
+			if [ -z "$name" ]; then
+				name=$(echo "$details" | grep "idProduct" | head -n1 | awk '{$1=$2=""; print $0}')
+			fi
+			manufacturer=$(echo "$details" | grep "idVendor" | head -n1 | awk '{$1=$2=""; print $0}')
+			if [ -z "$manufacturer" ]; then
+				manufacturer=$(echo "$details" | grep "iManufacturer" | head -n1 | awk '{$1=$2=""; print $0}')
+			fi
+			description=$(echo "$details" | grep "idProduct" | head -n1 | awk '{$1=$2=""; print $0}')
+			class=$(echo "$details" | grep "bInterfaceClass" | head -n1 | awk '{$1=$2=""; print $0}')
+			status=$(echo "$details" | grep "Device Status" -A1 | tail -n1)
+			serial=$(echo "$details" | grep "iSerial" | head -n1 | awk '{$1=$2=""; print $0}')
+			device=$(echo "$device" | awk '{print $1 " " $2 " " $3 " " $4}' | cut -d: -f1)
+			{
+	      echo "	     <item>"
+	      echo "	         <name>$(escape_xml "$name")</name>"
+	      echo "	         <availability></availability>"
+	      echo "	         <class>$(escape_xml "$class")</class>"
+	      echo "	         <config_manager_error_code></config_manager_error_code>"
+	      echo "	         <description>$(escape_xml "$description")</description>"
+	      echo "	         <device>$(escape_xml "$device")</device>"
+	      echo "	         <manufacturer>$(escape_xml "$manufacturer")</manufacturer>"
+	      echo "	         <present></present>"
+	      echo "	         <serial>$(escape_xml "$serial")</serial>"
+	      echo "	         <status>$(escape_xml "$status")</status>"
+	      echo "	     </item>"
+			} >> "$xml_file"
+		fi
+	done
+fi
+echo "	</usb>" >> "$xml_file"
+
+
+
+
+##################################
 # POLICY SECTION                 #
 ##################################
 if [ "$debugging" -gt "0" ]; then
 	echo "Policy Info"
 fi
-	echo "	<policy>" >> "$xml_file"
-	IFS="$NEWLINEIFS"
+IFS="$NEWLINEIFS"
+echo "	<policy>" >> "$xml_file"
 for policy in $(grep -v ^# /etc/login.defs 2>/dev/null | grep -v ^$); do
 	type="/etc/login.defs"
 	name=$(echo "$policy" | awk '{print $1}')
@@ -2277,7 +2375,7 @@ if [ "$debugging" -gt "0" ]; then
         echo "Log Info"
 fi
 
-echo "  <log>" >> "$xml_file"
+echo "	<log>" >> "$xml_file"
 for log in ls /etc/logrotate.d/* ; do
         if [ -e "$log" ]; then
                 log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
@@ -2300,15 +2398,15 @@ for log in ls /etc/logrotate.d/* ; do
                     fi
                 fi
                 {
-                echo "          <item>"
-                echo "                  <name>$(escape_xml "$log")</name>"
-                echo "                  <file_name>$(escape_xml "$log_file_name")</file_name>"
-                echo "                  <max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
-                echo "          </item>"
+                echo "		<item>"
+                echo "			<name>$(escape_xml "$log")</name>"
+                echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
+                echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+                echo "		</item>"
                 } >> "$xml_file"
         fi
 done
-echo "  </log>" >> "$xml_file"
+echo "	</log>" >> "$xml_file"
 
 
 ##################################
@@ -2465,12 +2563,76 @@ echo "			<name>$(escape_xml $system_os_name)</name>" >> "$xml_file"
 echo "			<version>$(escape_xml $system_os_version)</version>" >> "$xml_file"
 echo "			<description>Operating System</description>" >> "$xml_file"
 echo "		</item>" >> "$xml_file"
+# Detect Opmantek applications
+if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
+	for package in $(/usr/local/omk/bin/show_versions.pl 2>/dev/null); do
+		name=$(echo "$package" | cut -d" " -f1)
+		version=$(echo "$package" | cut -d" " -f2)
+		# Determine the modified date
+		installed_on=""
+		if [[ "$name" == *"NMIS"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/nmis8/lib/NMIS.pm 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"NMIS"* ]] && [[ "$installed_on" == "" ]]; then
+			installed_on=$(env stat --format=%y /usr/local/nmis9/lib/NMISNG.pm 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"Open-AudIT"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/OaeController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opAddress"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/AddressController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opCharts"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/ChartsController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opConfig"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/ConfigController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opEvents"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/EventsController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opFlow"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/FlowController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opHA"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/HighAvailabilityController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		if [[ "$name" == *"opReports"* ]]; then
+			installed_on=$(env stat --format=%y /usr/local/omk/lib/ReportsController.pm.exe 2>/dev/null | cut -d. -f1)
+		fi
+		echo "		<item>" >> "$xml_file"
+		echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
+		echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+		echo "			<description></description>" >> "$xml_file"
+		echo "			<url>https://opmantek.com</url>" >> "$xml_file"
+		echo "			<publisher>Opmantek</publisher>" >> "$xml_file"
+		echo "			<location>/usr/local/omk</location>" >> "$xml_file"
+		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
+		echo "		</item>" >> "$xml_file"
+	done
+fi
+# Detect Quest InTrust agent
+adcscm_path=`service adcscm.linux_intel status 2>/dev/null | grep '\-service' | awk '{ print $3 }'`
+if [ -n "$adcscm_path" ]; then
+	adcscm_binary=`echo "${adcscm_path/adcscm\.linux_intel/adcscm}"`
+	version=`$adcscm_binary -help | grep version | awk '{ print $5 }'`
+	installed_on=$(env stat --format=%y "$adcscm_binary" 2>/dev/null | cut -d. -f1)
+	echo "		<item>" >> "$xml_file"
+	echo "			<name>Quest InTrust Agent</name>" >> "$xml_file"
+	echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+	echo "			<description></description>" >> "$xml_file"
+	echo "			<url>https://www.quest.com/products/intrust/</url>" >> "$xml_file"
+	echo "			<publisher>Quest</publisher>" >> "$xml_file"
+	echo "			<location>$(escape_xml $adcscm_binary)</location>" >> "$xml_file"
+	echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
+	echo "		</item>" >> "$xml_file"
+fi
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -2530,8 +2692,9 @@ if hash systemctl 2>/dev/null; then
 	if [ "$debugging" -gt "1" ]; then
 		echo "    systemd services"
 	fi
-	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
-	for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
+	# systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
+	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }' | cut -d. -f1)
+	for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }'); do
 		description=$(systemctl show "$name" -p Description | cut -d= -f2)
 		description="$description (using systemd)"
 		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
@@ -2602,7 +2765,7 @@ if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; the
 	fi
 fi
 
-if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ]; then
+if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ] || [ "$system_os_family" = "Mariner" ]; then
 	INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
 fi
 
@@ -2698,6 +2861,15 @@ if [ -n "$test" ]; then
 	else
 		port=""
 	fi
+	config_file=$(apachectl -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
+	if [ -n "$config_file" ]; then
+		certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
+		if [ -n "$certificates" ]; then
+			for file in $(echo "$certificates"); do
+				cert_dirs[${#cert_dirs[@]}]="$file"
+			done
+		fi
+	fi
 	{
 	echo "		<item>"
 	echo "			<type>web</type>"
@@ -2706,6 +2878,7 @@ if [ -n "$test" ]; then
 	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
 	echo "			<status>$(escape_xml "$apache_status")</status>"
 	echo "			<port>$(escape_xml "$port")</port>"
+	echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 	echo "		</item>"
 	} >> "$xml_file"
 fi
@@ -2718,6 +2891,15 @@ if [ -n "$test" ]; then
 	version=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2 | cut -d/ -f2 | awk '{ print $1 }')
 	version_string=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2)
 	apache_status=$(service httpd status 2>/dev/null | grep Active | awk '{ print $2 }')
+	config_file=$(httpd -S 2>/dev/null | grep ServerRoot | cut -d\" -f2)
+	if [ -n "$config_file" ]; then
+		certificates=$(sudo grep -r -h -i SSLCertificateFile "$config_file"/* 2>/dev/null | sed -e 's/^[ \t]*//' | grep -v ^# | sed 's/SSLCertificateFile//' | sed -e 's/^[ \t]*//' | sort | uniq)
+		if [ -n "$certificates" ]; then
+			for file in $(echo "$certificates"); do
+				cert_dirs[${#cert_dirs[@]}]="$file"
+			done
+		fi
+	fi
 	if [ -n "$rev_exists" ]; then
 		port=$(netstat -tulpn 2>/dev/null | grep httpd | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
 	else
@@ -2798,7 +2980,10 @@ fi
 # Custom addition - alexander.szele@umanitoba.ca
 # Pull web server info from tomcat
 # test = PID of java tomcat process
-test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
+test=""
+if [ "$busybox" = "n" ]; then
+	test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
+fi
 if [ -n "$test" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "	tomcat"
@@ -3114,6 +3299,50 @@ echo "	</server_item>" >> "$xml_file"
 
 
 
+##################################
+# CERTIFICATES SECTION           #
+##################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Certificate Info"
+fi
+IFS="$NEWLINEIFS"
+echo "	<certificate>" >> "$xml_file"
+for dir in ${cert_dirs[@]}; do
+	thesefiles=$(ls "$dir" 2>/dev/null)
+	for file in $(echo "$thesefiles"); do
+		name="$file"
+		details=$(openssl x509 -text -noout -in "$file" 2>/dev/null)
+		if [ -n "$details" ]; then
+			serial=$(echo "$details" | grep "Serial" | cut -d: -f2-)
+			if [ -z "$serial" ]; then
+				serial=$(trim "$(echo "$details" | grep "Serial" -A1 | grep -v Serial)")
+			else
+				serial=$(trim "$(echo "$details" | grep "Serial" | cut -d: -f2-)")
+			fi
+			issuer=$(echo "$details" | grep "Issuer" | cut -d: -f2-)
+			valid_from_raw=$(echo "$details" | grep "Not Before" | cut -d: -f2-)
+			valid_to_raw=$(echo "$details" | grep "Not After" | cut -d: -f2-)
+			algorithm=$(echo "$details" | grep "Signature Algorithm" | head -n1 | cut -d: -f2-)
+			encryption=""
+			version=$(echo "$details" | grep Version | cut -d: -f2)
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$name")</name>"
+			echo "			<serial>$(escape_xml "$serial")</serial>"
+			echo "			<issuer>$(escape_xml "$issuer")</issuer>"
+			echo "			<valid_from_raw>$(escape_xml "$valid_from_raw")</valid_from_raw>"
+			echo "			<valid_to_raw>$(escape_xml "$valid_to_raw")</valid_to_raw>"
+			echo "			<algorithm>$(escape_xml "$algorithm")</algorithm>"
+			echo "			<encryption>$(escape_xml "$encryption")</encryption>"
+			echo "			<version>$(escape_xml "$version")</version>"
+			echo "		</item>"
+			} >> "$xml_file"
+		fi
+	done
+done
+echo "	</certificate>" >> "$xml_file"
+
+
 ########################################################
 # ROUTE SECTION                                        #
 ########################################################
@@ -3179,44 +3408,51 @@ done
 echo "	</netstat>" >> "$xml_file"
 
 
+# End the XML because busybox is likely to choke on the below
+if [ "$busybox" = "y" ]; then
+	echo "</system>" >> "$xml_file"
+fi
+
+
 ########################################################
 # CUSTOM FILES                                         #
 ########################################################
 if [ "$debugging" -gt "0" ]; then
 	echo "Custom Files Info"
 fi
-echo "	<file>" >> "$xml_file"
-for dir in ${files[@]}; do
-    for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
-        file_size=$(stat --printf="%s" "$file")
-        file_directory=$(dirname "${file}")
-        file_hash=$(sha1sum "$file" | cut -d" " -f1)
-        file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
-        file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
-        file_permissions=$(stat -c "%a" "$file")
-        file_owner=$(ls -ld "$file" | awk '{print $3}')
-        file_group=$(ls -ld "$file" | awk '{print $4}')
-        inode=$(ls -li "$file" | awk '{print $1}')
-        file_name=$(basename "$file")
-        {
-    	echo "		<item>"
-    	echo "			<name>$(escape_xml "$file_name")</name>"
-    	echo "			<full_name>$(escape_xml "$file")</full_name>"
-        echo "			<size>$(escape_xml "$file_size")</size>"
-        echo "			<directory>$(escape_xml " $file_directory")</directory>"
-        echo "			<hash>$(escape_xml "$file_hash")</hash>"
-        echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
-        echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
-        echo "			<permission>$(escape_xml "$file_permissions")</permission>"
-        echo "			<owner>$(escape_xml "$file_owner")</owner>"
-        echo "			<group>$(escape_xml "$file_group")</group>"
-        echo "			<inode>$(escape_xml "$inode")</inode>"
-        echo "		</item>"
-    	} >> "$xml_file"
-    done
-done
-echo "	</file>" >> "$xml_file"
-
+if [ "$busybox" = "n" ]; then
+	echo "	<file>" >> "$xml_file"
+	for dir in ${files[@]}; do
+		for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
+			file_size=$(stat --printf="%s" "$file")
+			file_directory=$(dirname "${file}")
+			file_hash=$(sha1sum "$file" | cut -d" " -f1)
+			file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
+			file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
+			file_permissions=$(stat -c "%a" "$file")
+			file_owner=$(ls -ld "$file" | awk '{print $3}')
+			file_group=$(ls -ld "$file" | awk '{print $4}')
+			inode=$(ls -li "$file" | awk '{print $1}')
+			file_name=$(basename "$file")
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$file_name")</name>"
+			echo "			<full_name>$(escape_xml "$file")</full_name>"
+			echo "			<size>$(escape_xml "$file_size")</size>"
+			echo "			<directory>$(escape_xml " $file_directory")</directory>"
+			echo "			<hash>$(escape_xml "$file_hash")</hash>"
+			echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
+			echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
+			echo "			<permission>$(escape_xml "$file_permissions")</permission>"
+			echo "			<owner>$(escape_xml "$file_owner")</owner>"
+			echo "			<group>$(escape_xml "$file_group")</group>"
+			echo "			<inode>$(escape_xml "$inode")</inode>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	done
+	echo "	</file>" >> "$xml_file"
+fi
 
 
 ########################################################

@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   All
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 $this->benchmark->mark('code_start');
@@ -149,7 +149,7 @@ if (empty($json)){
 if (empty($json->system->discovery_id)) {
     $json->system->discovery_id = '';
 } else {
-    $log->discovery_id = $json->system->discovery_id;
+    $log->discovery_id = intval($json->system->discovery_id);
     $GLOBALS['discovery_id'] = $json->system->discovery_id;
 }
 if ( ! empty($json->system->id)) {
@@ -243,7 +243,7 @@ if (empty($i)) {
     $query = $this->db->query($sql, $data);
     $details->original_last_seen = '';
     if ($this->response->meta->format === 'screen') {
-        // echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        // echo "SystemID (new): <a href='" . $this->config->config['oa_web_folder'] . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 } else {
     // update an existing system
@@ -255,7 +255,7 @@ if (empty($i)) {
     // $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
     $this->m_device->update($details);
     if ($this->response->meta->format === 'screen') {
-        // echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        // echo "SystemID (updated): <a href='" . $this->config->config['oa_web_folder'] . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 }
 
@@ -270,6 +270,12 @@ if ( ! empty($details->discovery_id)) {
     $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
     $data = array(intval($details->id), intval(getmypid()));
     $query = $this->db->query($sql, $data);
+
+    // And update any existing discovery logs
+    $sql = "/* include_input_device */" . " UPDATE discovery_log SET system_id = ? WHERE system_id is NULL and discovery_id = ? and ip = ?";
+    $data = array($details->id, $details->discovery_id, ip_address_from_db($details->ip));
+    $query = $this->db->query($sql, $data);
+
 } else {
     // we were supplied an audit result, but no discovery_id
     // delete all dicovery logs where system_id = our ID and log.pid != our pid
@@ -335,11 +341,6 @@ $parameters->action = 'update';
 $this->m_rules->execute($parameters);
 
 $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
-$log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
-$log->file = 'include_input_devices';
-$log->function = 'devices';
-$log->ip = ip_address_from_db($log->ip);
-discovery_log($log);
 
 // set the ip (if not already set)
 $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
@@ -363,6 +364,17 @@ if ($this->response->meta->format == 'screen') {
     #echo '</body></html>';
 }
 
+if (!empty($log->discovery_id)) {
+    $log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+    $log->file = 'include_input_devices';
+    $log->function = 'devices';
+    $log->ip = ip_address_from_db($log->ip);
+    $log->command_time_to_execute = (microtime(true) - $timer_start);
+    $log->command = '';
+    $log->command_output = '';
+    $log->command_status = 'notice';
+    discovery_log($log);
+}
 
 # If we are configured as a collector, forward the information to the server
 if ($this->config->config['servers'] !== '') {

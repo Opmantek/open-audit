@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 ?>
@@ -64,13 +64,13 @@ mv /usr/local/nmis8/conf/Nodes.nmis.new /usr/local/nmis8/conf/Nodes.nmis
                     ",\""  . str_replace('"', '\"', $item->attributes->community) . "\"" .
                     ",\""  . str_replace('"', '\"', $item->attributes->uuid) . "\"" .
                     ",\""  . str_replace('"', '\"', $item->attributes->notes) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->version) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->privprotocol) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->privpassword) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->authprotocol) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->authpassword) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->wmiusername) . "\"" .
-                    ",\""  . str_replace('"', '\"', $item->attributes->wmipassword) . "\"";
+                    ",\""  . @str_replace('"', '\"', $item->attributes->version) . "\"" .
+                    ",\""  . @str_replace('"', '\"', $item->attributes->privprotocol) . "\"" .
+                    ",\""  . @str_replace('"', '\"', $item->attributes->privpassword) . "\"" .
+                    ",\""  . @str_replace('"', '\"', $item->attributes->authprotocol) . "\"" .
+                    ",\""  . @str_replace('"', '\"', $item->attributes->authpassword) . "\"" .
+                    ",\""  . @str_replace('"', '\"', $item->attributes->wmiusername) . "\"" .
+                    ",\""  . @str_replace('"', '\"', $item->attributes->wmipassword) . "\"";
                     echo $line . "\n";
                 endforeach;
             } ?>

@@ -32,7 +32,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -226,31 +226,13 @@ class M_scripts extends MY_Model
 
     public function delete($id = '')
     {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'deleting data';
-        stdlog($this->log);
-        if ($id === '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-
-        // do not allow deletion of default Scripts
-        $script = $this->m_scripts->read();
-        if ($script[0]->attributes->name === $script[0]->attributes->based_on) {
-            $CI->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-            log_error('ERR-0014');
-            return false;
-        } else {
-            $sql = 'DELETE FROM `scripts` WHERE id = ? AND name != based_on';
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
+        $data = array(intval($id));
+        $sql = 'DELETE FROM `scripts` WHERE id = ? AND name != based_on';
+        $test = $this->run_sql($sql, $data);
+        if ( ! empty($test)) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -344,7 +326,13 @@ class M_scripts extends MY_Model
 
         // TODO - enable the below for a per script list of files
         // if (!$files and $data->based_on == $data->name) {
-            $sql = 'SELECT * FROM files';
+
+            // Unix style paths
+            $sql = "SELECT * FROM files WHERE `path` LIKE '/%'";
+            if ($data->based_on === 'audit_windows.vbs') {
+                // Windows style paths
+                $sql = "SELECT * FROM files WHERE `path` NOT LIKE '/%'";
+            }
             $result = $this->run_sql($sql, array());
             $options = new stdClass();
             $options->files = array();
@@ -373,6 +361,13 @@ class M_scripts extends MY_Model
                 }
             }
         // }
+
+        // Force all line endings to be Unix style
+        // Windows audit scripts with Unix line endings work
+        // Unix audit scripts with Windows line endings do not work (bash for one, chokes)
+        $file = str_replace("\r\n", "\n", $file);
+        $file = str_replace("\r", "\n", $file);
+
         return $file;
     }
 

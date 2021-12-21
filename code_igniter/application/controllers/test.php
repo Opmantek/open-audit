@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -77,6 +77,454 @@ class Test extends CI_Controller
     {
         redirect('/');
     }
+
+
+    public function integrations()
+    {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        #$this->load->model('m_orgs');
+        $response = new stdCLass();
+        $response->meta = new stdClass();
+        $response->meta->filter = array();
+        $this->load->model('m_integrations');
+        $this->m_integrations->execute(2);
+        $sql = "SELECT * FROM integrations_log";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        echo "<pre>\n";
+        print_r($result);
+    }
+
+
+    public function integrate()
+    {
+        $username = 'admin';
+        $password = 'password';
+        $url = 'http://dev.local/omk';
+
+
+        $fields = array();
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = '';
+        $field->priority = '';
+        $field->default_value_for_create = '';
+        #$fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_business_service';
+        $field->external_field_name = 'configuration.businessService';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_customer';
+        $field->external_field_name = 'configuration.customer';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.name';
+        $field->external_field_name = 'name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_name';
+        $field->external_field_name = 'name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.name';
+        $field->external_field_name = 'configuration.display_name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_group';
+        $field->external_field_name = 'configuration.group';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = 'Open-AudIT';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.ip';
+        $field->external_field_name = 'configuration.host';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'y';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.omk_uuid';
+        $field->external_field_name = 'uuid';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'y';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_role';
+        $field->external_field_name = 'configuration.roleType';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_poller_uuid';
+        $field->external_field_name = 'cluster_id';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_poller';
+        $field->external_field_name = 'server_name';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_notes';
+        $field->external_field_name = 'configuration.notes';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.nmis_manage';
+        $field->external_field_name = '';
+        $field->external_field_type = '';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = 'y';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'system.sysDescr';
+        $field->external_field_name = 'configuration.sysDescr';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'locations.name';
+        $field->external_field_name = 'configuration.location';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.username';
+        $field->external_field_name = 'configuration.wmipassword';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.password';
+        $field->external_field_name = 'configuration.wmiusername';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.version';
+        $field->external_field_name = 'configuration.version';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.snmp_community';
+        $field->external_field_name = 'configuration.community';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.security_name';
+        $field->external_field_name = 'configuration.username';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.authentication_passphrase';
+        $field->external_field_name = 'configuration.authpassword';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.authentication_protocol';
+        $field->external_field_name = 'configuration.authprotocol';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.privacy_passphrase';
+        $field->external_field_name = 'configuration.privpassword';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = 'credentials.privacy_protocol';
+        $field->external_field_name = 'configuration.privprotocol';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'internal';
+        $field->default_value_for_create = '';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.active';
+        $field->external_field_type = 'bool_one_zero';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '1';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.collect';
+        $field->external_field_type = 'bool_one_zero';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '1';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.model';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = 'automatic';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.netType';
+        $field->external_field_type = 'text';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = 'wan';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.ping';
+        $field->external_field_type = 'bool';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = 'true';
+        $fields[] = $field;
+        unset($field);
+
+        $field = new stdClass();
+        $field->internal_field_name = '';
+        $field->external_field_name = 'configuration.port';
+        $field->external_field_type = 'number';
+        $field->matching_attribute = 'n';
+        $field->priority = 'external';
+        $field->default_value_for_create = '161';
+        $fields[] = $field;
+        unset($field);
+
+        echo "<pre>" . json_encode($fields);
+exit;
+
+        // Create temp file to store cookies
+        $ckfile = tempnam("/tmp", "CURLCOOKIE");
+
+        $form_fields = array(
+            'username' => $username,
+            'password' => $password,
+        );
+
+        // Post login form and follow redirects
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_URL, $url . '/admin/login');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $form_fields);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        $output = curl_exec($ch);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Accepts all CAs
+        curl_setopt($ch, CURLOPT_URL, $url . '/admin/api/v2/nodes.json');
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $ckfile); //Uses cookies from the temp file
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        $external_devices = json_decode($output);
+
+        $external_devices[2]->configuration->host = 'switch';
+
+
+
+        echo "<pre>\n";
+
+        $internal_devices = array();
+        foreach ($external_devices as $device) {
+            $newdevice = new stdClass();            
+            foreach ($fields as $field) {
+                if (empty($field->internal_field_name)) {
+                    $temp = explode('.', $field->external_field_name);
+                    $field->internal_field_name = 'fields.nmis_' . $temp[count($temp)-1];
+                }
+
+                if (!empty($field->internal_field_name)) {
+                    $int = explode('.', $field->internal_field_name);
+                    if (empty($newdevice->{$int[0]})) {
+                        $newdevice->{$int[0]} = new stdClass();
+                    }
+                    if (empty($newdevice->{$int[0]}->{$int[1]})) {
+
+                        $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) { return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null; }, $device);
+
+                        if (is_null($newdevice->{$int[0]}->{$int[1]})) {
+                            unset($newdevice->{$int[0]}->{$int[1]});
+                        }
+                    }
+                }
+            }
+            $internal_devices[] = $newdevice;
+        }
+
+        # Ensure we have an IP in system.ip
+        foreach ($internal_devices as $device) {
+            if (isset($device->system->ip) and !empty($device->system->ip)) {
+                if (!filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
+                    if (strpos('.', $device->system->ip) !== false) {
+                        $device->system->dns_fqdn = $device->system->ip;
+                    } else {
+                        $device->system->dns_hostname = $device->system->ip;
+                    }
+                    $device->system->ip = gethostbyname($device->system->ip);
+                }
+                $fqdn = gethostbyaddr($device->system->ip);
+                if (empty($device->system->dns_fqdn) and strpos($fqdn, '.') !== false) {
+                    $device->system->dns_fqdn = $fqdn;
+                }
+            }
+        }
+
+        print_r($internal_devices);
+        exit;
+
+        $sql = "SELECT * FROM system WHERE id = 1";
+        $query = $this->db->query($sql);
+        $internal_devices = $query->result();
+
+
+    }
+
+
+    public function convert($instance , $str) 
+    {
+        $params = explode('.', $str);
+        if($params == 1) {
+            return $instance;
+        } else {
+            $obj = $instance;
+            foreach($params as $key => $param) {
+                if(!$key) {
+                    continue;
+                }
+                $obj = $obj->{$param};
+            }
+        }
+        return $obj;
+    }
+
 
     /**
      * [response description]
@@ -471,10 +919,6 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
         $this->load->model('m_configuration');
         $this->m_configuration->load();
 
-        // $sql = "SELECT * FROM `rules`";
-        // $query = $this->db->query($sql);
-        // $rules = $query->result();
-
         $file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
         echo "<pre>\n";
         $ouis = array();
@@ -486,9 +930,69 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
                 $ouis[$oui] = $manufacturer;
             }
         }
+        echo "&lt;?php
+if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+#
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+/*
+* @category  Helper
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   GIT: Open-AudIT_" . $this->config->config['display_version'] . "
+* @link      http://www.open-audit.org
+ */
+if (! function_exists('get_manufacturer_from_mac')) {
+    /**
+     * A function that takes a mac address and returns the manufacturer
+     *
+     * @access    public
+     * @category  Function
+     * @author    Mark Unwin <marku@opmantek.com>
+     * @param     String    mac     The MAC Address to test
+     * @return    String    The manuafacturer according to http://standards.ieee.org/develop/regauth/oui/oui.txt
+     */
+    function get_manufacturer_from_mac(\$mac) {
+
+        if (empty(\$mac)) {
+            return('');
+        }
+        \$mac = substr(strtolower(\$mac), 0, 8);
+        switch (\$mac) {\n";
+
+        ksort($ouis);
+
         foreach ($ouis as $key => $value) {
             $value = trim($value);
             if ($value == 'TP-LINK TECHNOLOGIES CO.,LTD.') { $value = 'TP-Link'; }
+            if ($value === 'XEROX CORPORATION') { $value = 'Xerox Corporation'; }
             if (stripos($value, '3Com') === 0) { $value = '3Com Ltd'; }
             if (stripos($value, 'Alcatel') === 0) { $value = 'Alcatel-Lucent'; }
             if (stripos($value, 'Arista') !== false) { $value = 'Arista Networks'; }
@@ -510,47 +1014,14 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
             if (stripos($value, 'Samsung Electronics') === 0) { $value = 'Samsung Electronics'; }
             if (stripos($value, 'SonicWall') === 0) { $value = 'SonicWall'; }
 
-            $inputs = array();
-            $outputs = array();
-
-            $item = new stdClass();
-            $item->table = 'network';
-            $item->attribute = 'mac';
-            $item->operator = 'st';
-            $item->value = $key;
-            $inputs[] = $item;
-
-            $item = new stdClass();
-            $item->table = 'system';
-            $item->attribute = 'manufacturer';
-            $item->operator = 'eq';
-            $item->value = '';
-            $inputs[] = $item;
-
-            $item = new stdClass();
-            $item->table = 'system';
-            $item->attribute = 'manufacturer';
-            $item->value = $value;
-            $item->value_type = 'string';
-            $outputs[] = $item;
-
-            $insert = true;
-            // foreach ($rules as $rule) {
-            //     if ($rule->name = "MAC Address for $value" and $rule->inputs == json_encode($inputs, JSON_UNESCAPED_UNICODE)) {
-            //         $insert = false;
-            //         break;
-            //     }
-            // }
-
-            if ($insert and $value != '') {
-                $sql = "INSERT INTO `rules` VALUES (NULL, " . $this->db->escape('Mac Address for ' . $value) . ", 1, 'Set the manufacturer based on the MAC prefix.', 90, " . $this->db->escape(json_encode($inputs, JSON_UNESCAPED_UNICODE)) . ", " . $this->db->escape(json_encode($outputs, JSON_UNESCAPED_UNICODE)) . ", 'system', '2000-01-01 00:00:00');";
-
-                echo $sql . "\n";
-
-                # $query = $this->db->query($sql);
-            }
-
+            echo "            case '$key': \$manufacturer = '" . str_replace("'", "\'", mb_convert_case($value,  MB_CASE_TITLE)) . "'; break;\n";
         }
+        echo "            default: \$manufacturer = ''; break;
+        }
+        return(\$manufacturer);
+    }
+}";
+
     }
 
     public function read_snmp_unique()
@@ -820,9 +1291,7 @@ INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 m
 
         $this->load->model('m_devices_components');
         echo "<pre>\n";
-        #$tables = array('bios', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-        #$tables = array('bios', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-        $tables = array('user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('bios', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $sql = "SELECT CONCAT(\"'\", column_name, \"', `\", column_name, \"`\") as `string` FROM information_schema.columns WHERE  table_name = '$table' AND table_schema = 'openaudit' AND column_name NOT IN ('id', 'system_id', 'first_seen', 'last_seen', 'current')";
             $columns = '';

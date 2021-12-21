@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 ?>
@@ -43,7 +43,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <?php if (strtolower($this->response->dictionary->product) === 'enterprise') { ?>
+                <?php if (strtolower(@$this->response->dictionary->product) === 'enterprise') { ?>
                  <div class="row">
                     <div class="col-md-12 text-center">
                         <h4><i>Enterprise Only</i></h4>
@@ -51,7 +51,7 @@
                 </div>
                 <?php } ?>
 
-                <?php if (strtolower($this->response->dictionary->product) === 'professional') { ?>
+                <?php if (strtolower(@$this->response->dictionary->product) === 'professional') { ?>
                  <div class="row">
                     <div class="col-md-12 text-center">
                         <h4><i>Professional and Enterprise Only</i></h4>
@@ -70,10 +70,10 @@
                     <div class="col-md-8 col-md-offset-2 text-center">
                         <p><?php echo $this->response->dictionary->sentence; ?></p><br />
                         <?php echo html_entity_decode($this->response->dictionary->marketing); ?>
-                        <?php if (strtolower($this->response->dictionary->product) === 'enterprise') { ?>
+                        <?php if (strtolower(@$this->response->dictionary->product) === 'enterprise') { ?>
                             <strong>To upgrade to an Enterprise License, click <a href="#" class="buy_more_licenses">here</a>.</strong><br /><br />
                         <?php } ?>
-                        <?php if (strtolower($this->response->dictionary->product) === 'professional') { ?>
+                        <?php if (strtolower(@$this->response->dictionary->product) === 'professional') { ?>
                             <strong>To upgrade to a Professional License, click <a href="#" class="buy_more_licenses">here</a>.</strong><br /><br />
                         <?php } ?>
                     </div>
@@ -231,8 +231,8 @@ $(document).ready(function () {
             $(img).load(function(){
                 $('#feature_image').append($(this));
                 $(this).addClass("center-block");
-                $(this).attr("title","<?php echo strtolower($this->response->dictionary->table); ?>");
-                $(this).attr("alt", "<?php echo strtolower($this->response->dictionary->table); ?>");
+                $(this).attr("title","<?php echo @strtolower($this->response->dictionary->table); ?>");
+                $(this).attr("alt", "<?php echo @strtolower($this->response->dictionary->table); ?>");
                 $(this).attr("width", "100%");
             }).error(function(error, gg) {
                 console.log('cannot find the image');
@@ -243,9 +243,9 @@ $(document).ready(function () {
             .attr({
                 src: function(){
                     if(loadLocal === false){
-                        return "https://opmantek.com/product_data/open-audit_<?php echo strtolower($this->response->dictionary->table); ?>.png";
+                        return "https://opmantek.com/product_data/open-audit_<?php echo @strtolower($this->response->dictionary->table); ?>.png";
                     }else{
-                        var url = '/open-audit/images/<?php echo strtolower($this->response->dictionary->table); ?>.png';
+                        var url = '/open-audit/images/<?php echo @strtolower($this->response->dictionary->table); ?>.png';
                         return  url;
                     }
                 }

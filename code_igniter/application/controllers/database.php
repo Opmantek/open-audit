@@ -26,13 +26,13 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Controller
 * @package   Database
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
 */
 
@@ -99,7 +99,11 @@ class Database extends MY_Controller
             $this->response->meta->filtered = 1;
             $this->load->model('m_orgs');
             // TODO - A dictionary for each database table
-            // $this->response->dictionary = $this->{'m_'.$this->response->meta->collection}->dictionary();
+            $models_with_dictionary = response_valid_collections();
+            if (in_array($this->response->meta->id, $models_with_dictionary)) {
+                $this->load->model('m_' . $this->response->meta->id);
+                $this->response->dictionary = @$this->{'m_'.$this->response->meta->id}->dictionary();
+            }
         } else {
             log_error('ERR-0002', $this->response->meta->collection . ':read');
             $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called m_' . $this->response->meta->collection . '->read.');
@@ -156,6 +160,12 @@ class Database extends MY_Controller
     */
     public function execute()
     {
+        if ($this->response->meta->format === 'csv') {
+            $this->response->meta->collection = $this->response->meta->id;
+            $this->response->data = $this->m_database->execute($this->response->meta->id, 'export table', $this->response->meta->format);
+            output($this->response);
+            exit;
+        }
         $this->data = $this->m_database->execute($this->response->meta->id, 'export table', $this->response->meta->format);
         $this->response->meta->action = 'read';
         $this->response->meta->format = 'screen';
@@ -172,7 +182,7 @@ class Database extends MY_Controller
                 $this->load->model('m_orgs');
                 if ($this->response->meta->format === 'screen') {
                     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection($this->user->id));
-                } else {
+                } else if ($this->response->meta->format === 'json') {
                     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
                 }
             }
@@ -884,6 +894,36 @@ class Database extends MY_Controller
         if (($db_internal_version < '20210104') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
             # upgrade for 3.5.3
             include "db_upgrades/db_3.5.3.php";
+        }
+
+        if (($db_internal_version < '20210126') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 3.5.4
+            include "db_upgrades/db_3.5.4.php";
+        }
+
+        if (($db_internal_version < '20210512') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 4.1.1
+            include "db_upgrades/db_4.1.1.php";
+        }
+
+        if (($db_internal_version < '20210620') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 4.1.2
+            include "db_upgrades/db_4.1.2.php";
+        }
+
+        if (($db_internal_version < '20210810') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 4.2.0
+            include "db_upgrades/db_4.2.0.php";
+        }
+
+        if (($db_internal_version < '20211112') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 4.3.0
+            include "db_upgrades/db_4.3.0.php";
+        }
+
+        if (($db_internal_version < '20211213') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 4.3.1
+            include "db_upgrades/db_4.3.1.php";
         }
 
         $this->data['include'] = 'v_database_update';

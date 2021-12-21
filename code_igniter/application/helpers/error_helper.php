@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.1
 * @link      http://www.open-audit.org
  */
 if (! function_exists('getError')) {
@@ -417,6 +417,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0045']->severity = 5;
         $error_array['ERR-0045']->title = 'Invalid value supplied for attribute';
         $error_array['ERR-0045']->detail = 'The value as passed cannot be used for this attribute.';
+
+        $error_array['ERR-0046'] = new stdClass();
+        $error_array['ERR-0046']->code = 'ERR-0046';
+        $error_array['ERR-0046']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0046']->severity = 5;
+        $error_array['ERR-0046']->title = 'Invalid value supplied for ID';
+        $error_array['ERR-0046']->detail = 'The value as passed is not an integer, assuming a name, but not found.';
 
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
