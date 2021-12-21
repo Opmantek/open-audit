@@ -36,6 +36,12 @@ UPDATE `configuration` SET `value` = '4.3.1' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 4.3.1 commenced');
 
+$sql = "UPDATE `licenses` SET expiry_date = '2000-01-01' WHERE expiry_date = '2001-01-01'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$this->alter_table('licenses', 'expiry_date', "expiry_date DATE NOT NULL DEFAULT '2000-01-01'", 'change');
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20211213' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

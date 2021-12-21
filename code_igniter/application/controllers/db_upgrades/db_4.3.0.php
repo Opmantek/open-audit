@@ -180,7 +180,7 @@ $this->log_db($this->db->last_query() . ';');
 if ($this->db->field_exists('expiry_date', 'licenses')) {
     $this->alter_table('licenses', 'expiry_date', "DROP `expiry_date`", 'drop');
 }
-$this->alter_table('licenses', 'expiry_date', "ADD expiry_date DATE NOT NULL DEFAULT '2001-01-01' AFTER software_version", 'add');
+$this->alter_table('licenses', 'expiry_date', "ADD expiry_date DATE NOT NULL DEFAULT '2000-01-01' AFTER software_version", 'add');
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20211112' WHERE `name` = 'internal_version'";
