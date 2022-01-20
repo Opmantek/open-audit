@@ -701,7 +701,7 @@ if ( ! function_exists('check_nmap_output')) {
 						if ($keywords[1] === $status) {
 							$device['host_is_up'] = 'true';
 							$device['status'] = $status;
-							if ($status === 'open') {
+							if ($status === 'open' or ($discovery->scan_options->{'open|filtered'} === 'y' and $status === 'open|filtered')) {
 								if (empty($device['nmap_ports'])) {
 									$device['nmap_ports'] = $keywords[0] . '/' . str_replace('/', '+', $keywords[2]);
 								} else {
