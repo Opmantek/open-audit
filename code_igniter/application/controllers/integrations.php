@@ -238,6 +238,18 @@ class Integrations extends MY_Controller
             if ($parameter->name === 'external_field_name') {
                 $subresource->external_field_name = $parameter->value;
             }
+            if ($parameter->name === 'external_field_type') {
+                $subresource->external_field_type = $parameter->value;
+            }
+            if ($parameter->name === 'default_value') {
+                $subresource->default_value = $parameter->value;
+            }
+            if ($parameter->name === 'priority') {
+                $subresource->priority = $parameter->value;
+            }
+            if ($parameter->name === 'matching_attribute') {
+                $subresource->matching_attribute = $parameter->value;
+            }
         }
         $this->m_integrations->sub_resource_delete($this->response->meta->id, $subresource);
         $this->response->meta->format = 'json';
