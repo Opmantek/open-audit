@@ -799,19 +799,27 @@ if (! function_exists('ip_audit')) {
             stdlog($mylog);
             return false;
         }
+        $orig_ip_scan_details = '';
         if (is_string($ip_scan->details)) {
+            $orig_ip_scan_details = $ip_scan->details;
             $ip_scan->details = @json_decode($ip_scan->details);
         }
         if (empty($ip_scan->details)) {
             $mylog = new stdClass();
             $mylog->severity = 4;
             $mylog->status = 'fail';
-            $mylog->message = 'No ip_scan->details (or invalid JSON) passed to ip_audit.';
+            $mylog->summary = 'Bad JSON string ip_scan->details passed to ip_audit.';
+            if (is_string($orig_ip_scan_details)) {
+                $mylog->detail = @$orig_ip_scan_details;
+            } else if (empty($ip_scan->details)) {
+                $mylog->detail = 'Empty object ip_scan->details passed to ip_audit.';
+            }
             $mylog->file = 'discoveries_helper';
             $mylog->function = 'ip_audit';
             stdlog($mylog);
             return false;
         }
+        unset($orig_ip_scan_details);
         if (empty($ip_scan->details->snmp_status)) {
             $ip_scan->details->snmp_status = 'false';
         }
