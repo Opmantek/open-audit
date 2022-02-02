@@ -1156,7 +1156,7 @@ foreach ($list as $item) {
                 <br />
                 <div class="col-md-6">
                     <?php
-                    $items = array('location_level','location_suite','location_room','location_rack_position','location_latitude','location_longitude');
+                    $items = array('location_level','location_suite','location_room','location_rack','location_rack_position','location_latitude','location_longitude');
                     foreach ($items as $item) {
                     ?>
                     <div class="form-group">
