@@ -151,6 +151,7 @@ if (!function_exists('response_create')) {
         $response->meta->query_parameters = array();
         $response->meta->received_data = array();
         $response->meta->sql = array();
+        $response->meta->user = $instance->user->name;
 
         // Need to set version FIRST because it may impact routes
         $response->meta->version = response_get_version(
