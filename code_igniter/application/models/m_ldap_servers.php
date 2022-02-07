@@ -145,7 +145,7 @@ class M_ldap_servers extends MY_Model
     {
         $data = array(intval($id));
         $sql = 'DELETE FROM `ldap_servers` WHERE id = ?';
-        $this->run_sql($sql, $data);
+        $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
         } else {
