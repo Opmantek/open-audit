@@ -60,7 +60,7 @@ if (!function_exists('generate_token')) {
         if (empty($token)) {
             return false;
         }
-        $files = array($bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
+        $files = array('/usr/local/open-audit/other/generate_auth_token.pl', $bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
         foreach ($files as $file) {
             if (file_exists($file)) {
                 $command = $file;
@@ -123,6 +123,7 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
+
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
             if ($integration->debug) {
