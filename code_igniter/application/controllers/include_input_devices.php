@@ -273,7 +273,7 @@ if ( ! empty($details->discovery_id)) {
 
     // And update any existing discovery logs
     $sql = "/* include_input_device */" . " UPDATE discovery_log SET system_id = ? WHERE system_id is NULL and discovery_id = ? and ip = ?";
-    $data = array($details->id, $details->discovery_id, ip_address_from_db($details->ip));
+    $data = array($details->id, $details->discovery_id, ip_address_from_db(@$details->ip));
     $query = $this->db->query($sql, $data);
 
 } else {
