@@ -105,4 +105,51 @@ class M_logs extends MY_Model
             $CI->response->meta->filtered = count($CI->response->data);
         }
     }
+
+    /**
+     * [dictionary description]
+     * @return [type] [description]
+     */
+    public function dictionary()
+    {
+        $CI = & get_instance();
+        $collection = 'logs';
+        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $this->load->helper('collections');
+
+        $dictionary = new stdClass();
+        $dictionary->table = $collection;
+        $dictionary->about = '';
+        $dictionary->marketing = '';
+        $dictionary->notes = '';
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
+        $dictionary->attributes->fields = $this->db->list_fields($collection);
+        $dictionary->attributes->create = mandatory_fields($collection);
+        $dictionary->attributes->update = update_fields($collection);
+        $dictionary->sentence = "";
+        $dictionary->marketing = '<p><br /><br /></p>';
+        $dictionary->about = '<p><br /><br /></p>';
+        $dictionary->product = 'community';
+        $dictionary->notes = '<br /><br />';
+
+        $dictionary->columns->id = $CI->temp_dictionary->id;
+        $dictionary->columns->timestamp = 'The date and time of the logs entry.';
+        $dictionary->columns->request_microtime = 'The microtime of the entire request this log entry is associated with.';
+        $dictionary->columns->type = 'system or access. System denotes regular logs where-as access denotes a user access log.';
+        $dictionary->columns->severity = 'Standard Unix style log levels - 0: Emergency, 1: Alert, 2: Critical, 3: Error, 4: Warning, 5: Notice, 6: Info, 7: Debug.';
+        $dictionary->columns->severity_text = 'The matching text as per the severity entry. Automatically set.';
+        $dictionary->columns->pid = 'The process ID of the entire request this log entry is associated with.';
+        $dictionary->columns->user = 'The user associated with the request.';
+        $dictionary->columns->server = 'Unused';
+        $dictionary->columns->ip = 'The user IP associated with this request.';
+        $dictionary->columns->collection = 'The collection requested.';
+        $dictionary->columns->action = 'The action requested (create, read, update, delete, execute, etc).';
+        $dictionary->columns->function = 'The internal file and function logging this entry.';
+        $dictionary->columns->status = 'The overall status of this log entry.';
+        $dictionary->columns->summary = 'A short description of this entry.';
+        $dictionary->columns->detail = 'A more detailed entry often containing data about this entry.';
+        return $dictionary;
+    }
+
 }
