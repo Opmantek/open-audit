@@ -522,16 +522,20 @@ class M_users extends MY_Model
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() === 1) {
-                $this->log->summary = 'Valid username submitted via headers (' . $_SERVER['HTTP_USER'] . ')';
-                stdlog($this->log);
                 $user = $query->row();
+                $this->log->summary = 'Valid username submitted via headers';
+                $this->log->detail = 'USER: ' . $_SERVER['HTTP_USER'];
+                stdlog($this->log);
             } else {
-                $this->log->summary = 'Invalid username submitted via headers (' . $_SERVER['HTTP_USER'] . ')';
+                $this->log->summary = 'Invalid username submitted via headers';
+                $this->log->detail = 'USER: ' . $_SERVER['HTTP_USER'];
                 stdlog($this->log);
                 log_error('ERR-0036');
                 redirect('logon');
             }
         }
+        $this->log->summary = '';
+        $this->log->detail = '';
         if ( ! empty($_SERVER['REMOTE_ADDR']) && ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' OR $_SERVER['REMOTE_ADDR'] === '::1')) {
             $ip = '127.0.0.1';
         }
@@ -570,12 +574,15 @@ class M_users extends MY_Model
             $uuid_2 = '';
             if (file_exists('/usr/local/omk/conf/opCommon.json')) {
                 $json = file_get_contents('/usr/local/omk/conf/opCommon.json');
+                $json_file = '/usr/local/omk/conf/opCommon.json';
             }
             if (file_exists('/usr/local/opmojo/conf/opCommon.json')) {
                 $json = file_get_contents('/usr/local/opmojo/conf/opCommon.json');
+                $json_file = '/usr/local/opmojo/conf/opCommon.json';
             }
             if (file_exists('c:\\omk\\conf\\opCommon.json')) {
                 $json = file_get_contents('c:\\omk\\conf\\opCommon.json');
+                $json_file = 'c:\\omk\\conf\\opCommon.json';
             }
             if (! empty($json)) {
                 $commercial_config = json_decode($json);
@@ -590,6 +597,7 @@ class M_users extends MY_Model
                 $CI->response->errors = array();
                 log_error('ERR-0015', 'm_users:validate Cannot read UUID');
                 $this->log->summary = 'Cannot read UUID';
+                $this->log->detail = 'FILE: ' . $json_file;
                 stdlog($this->log);
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
                     echo json_encode($CI->response);
@@ -610,6 +618,7 @@ class M_users extends MY_Model
                 $CI->response->errors = array();
                 log_error('ERR-0015', 'm_users:validate Bad UUID');
                 $this->log->summary = 'Bad UUID';
+                $this->log->detail = 'UUID: ' . $supplied_uuid;
                 stdlog($this->log);
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false OR ( ! empty($_GET['format']) && $_GET['format'] === 'json')) {
                     echo json_encode($CI->response);
@@ -622,6 +631,7 @@ class M_users extends MY_Model
             }
             if ($supplied_uuid === $uuid OR $supplied_uuid === $uuid_2) {
                 $this->log->summary = 'Valid UUID submitted via headers';
+                $this->log->detail = 'UUID: ' . $supplied_uuid;
                 stdlog($this->log);
             }
         }
@@ -646,6 +656,7 @@ class M_users extends MY_Model
             $userdata = array('user_id' => $CI->user->id, 'user_debug' => '', 'access_token' => $access_token);
             $this->session->set_userdata($userdata);
             $this->log->summary = 'User validated by name, uuid and localhost';
+            $this->log->detail = 'USER: ' . $user->name . ' UUID: ' . $supplied_uuid . ' IP: ' . $ip;
             stdlog($this->log);
             return;
         }
