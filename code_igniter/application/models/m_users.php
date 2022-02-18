@@ -500,6 +500,65 @@ class M_users extends MY_Model
         if (empty($this->config->config['access_token_count'])) {
             $this->config->config['access_token_count'] = 20;
         }
+
+        if ($CI->input->is_cli_request()) {
+            $this->log->ip = '0.0.0.0';
+            $_SERVER['QUERY_STRING'] = '';
+            # Build our http alike query string and remove some items from the built-in uri->segments.
+            for ($i=0; $i < count($CI->uri->segments)+1; $i++) {
+                if (!empty($CI->uri->segments[$i])) {
+                    if (strpos($CI->uri->segments[$i], 'user=') !== false) {
+                        $explode = explode('=', $CI->uri->segments[$i]);
+                        $supplied_user = $explode[1];
+                        unset($CI->uri->segments[$i]);
+                    } else if (strpos($CI->uri->segments[$i], '=') !== false) {
+                        if ($_SERVER['QUERY_STRING'] === '') {
+                            $_SERVER['QUERY_STRING'] .= $CI->uri->segments[$i];
+                        } else {
+                            $_SERVER['QUERY_STRING'] .= '&' . $CI->uri->segments[$i];
+                        }
+                        unset($CI->uri->segments[$i]);
+                    }
+                }
+            }
+            # we MUST have a user supplied
+            if (!empty($supplied_user)) {
+                $sql = 'SELECT * FROM `users` WHERE `name` = ?';
+                $data = array($supplied_user);
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql, $data);
+                if ($query->num_rows() === 1) {
+                    # Found a valid matching username
+                    $user = $query->row();
+                    $this->log->summary = 'Valid username submitted via CLI';
+                    $this->log->detail = 'USER: ' . $supplied_user;
+                    stdlog($this->log);
+                    $CI->user = $user;
+                    return;
+                } else {
+                    # Invalid username
+                    $this->log->summary = 'Invalid username submitted via CLI';
+                    $this->log->detail = 'USER: ' . $supplied_user;
+                    stdlog($this->log);
+                    log_error('ERR-0036');
+                    unset($CI->response->meta->sql);
+                    unset($CI->response->logs);
+                    echo json_encode($CI->response);
+                    exit;
+                }
+            } else {
+                # No username
+                $this->log->summary = 'No username submitted via CLI';
+                $this->log->detail = 'USER: ';
+                stdlog($this->log);
+                log_error('ERR-0036');
+                unset($CI->response->meta->sql);
+                unset($CI->response->logs);
+                echo json_encode($CI->response);
+                exit;
+            }
+        }
+
         $db_table = 'oa_user';
         if ($this->db->table_exists('users')) {
             $db_table = 'users';
