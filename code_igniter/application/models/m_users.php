@@ -495,6 +495,8 @@ class M_users extends MY_Model
         $this->load->helper('log');
         $this->load->helper('error');
 
+        $this->log->function = 'm_users::validate';
+
         if (empty($this->config->config['access_token_count'])) {
             $this->config->config['access_token_count'] = 20;
         }
