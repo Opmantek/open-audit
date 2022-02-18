@@ -76,7 +76,9 @@ if (!function_exists('response_create')) {
         }
 
         // enable the $_GET global
-        parse_str(substr(strrchr($_SERVER['REQUEST_URI'], '?'), 1), $_GET);
+        if (!$instance->input->is_cli_request()) {
+            parse_str(substr(strrchr($_SERVER['REQUEST_URI'], '?'), 1), $_GET);
+        }
 
         $response = new stdClass();
         $response->meta = new stdClass();
@@ -110,6 +112,9 @@ if (!function_exists('response_create')) {
         $response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         $response->meta->query_string = str_replace('&amp;', '&', $response->meta->query_string);
         $response->meta->request_method = strtoupper($instance->input->server('REQUEST_METHOD'));
+        if ($instance->input->is_cli_request()) {
+            $response->meta->request_method = 'CLI';
+        }
         $response->meta->requestor = '';
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
@@ -169,9 +174,22 @@ if (!function_exists('response_create')) {
             $instance->input->get_request_header('debug')
         );
 
-        // no dependencies - set in GET or POST or HEADERS
+        // no dependencies - set in GET or POST or HEADERS or CLI
+        $get_format = $instance->input->get('format');
+        if ($response->meta->request_method === 'CLI') {
+            // Check if we've been passed a format on the CLI
+            foreach ($instance->uri->segments as $segment) {
+                if (strpos($segment, 'format=') !== false) {
+                    $get_format = str_replace('format=', '', $segment);
+                }
+            }
+            // Set format to JSON if nothing or invalid format passed
+            if ($get_format !== 'json' and $get_format !== 'highcharts' and $get_format !== 'csv') {
+                $get_format = 'json';
+            }
+        }
         $response->meta->format = response_get_format(
-            $instance->input->get('format'),
+            $get_format,
             $instance->input->post('format'),
             $instance->input->get_request_header('Accept')
         );
@@ -403,6 +421,15 @@ if (!function_exists('response_create')) {
         if (!empty($instance->response->logs)) {
             $response->logs = $instance->response->logs;
         }
+
+        // Unused
+        // $external = new stdCLass();
+        // $external->meta = $response->meta;
+        // $external->user = $instance->user;
+        // $sql = "INSERT INTO external VALUES (null, '', ?, '')";
+        // $data = json_encode($external);
+        // $query = $instance->db->query($sql, $data);
+
         return $response;
     }
 }
@@ -438,9 +465,11 @@ if (!function_exists('response_get_action')) {
 
         if (in_array($instance->uri->segment(2), $valid_actions)) {
             $action = $instance->uri->segment(2);
+            $log->summary = 'Set collection according to URI Segment 2.';
         }
         if (empty($action) && in_array($instance->uri->segment(3), $valid_actions)) {
             $action = $instance->uri->segment(3);
+            $log->summary = 'Set collection according to URI Segment 3.';
         }
         if (isset($_GET['action']) && in_array($_GET['action'], $valid_actions)) {
             $action = $_GET['action'];
@@ -449,6 +478,10 @@ if (!function_exists('response_get_action')) {
         if (isset($_POST['action']) && in_array($_POST['action'], $valid_actions)) {
             $action = $_POST['action'];
             $log->summary = 'Set collection according to POST.';
+        }
+        if ($request_method === 'CLI' && !empty($id) && $action === '') {
+            $action = 'read';
+            $log->summary = 'Set action because CLI, id, no action.';
         }
         if ($request_method === 'GET' && empty($id) && $action === '') {
             $action = 'collection';
