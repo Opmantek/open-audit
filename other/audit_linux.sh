@@ -2950,6 +2950,40 @@ if [ -n "$test" ]; then
 	} >> "$xml_file"
 fi
 
+# Custom addition - retroK@gmail.com
+test=$(which psql 2>/dev/null)
+if [ -n "$test" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	psql"
+	fi
+	version=$(psql --version | head -1 | awk '{ print $3 }' | cut -d, -f1)
+	version_string=$(psql --version 2>/dev/null | head -1)
+	status=$(service postgresql status 2>/dev/null | grep Active | awk '{ print $2 }')
+	if [ -z "$status" ]; then
+		status=$(service postgresql status 2>/dev/null | grep Uptime | cut -d: -f2 2>/dev/null)
+		if [ -n "$status" ]; then
+			status="active"
+		fi
+	fi
+	if [ -n "$rev_exists" ]; then
+		port=$(netstat -tulpn 2>/dev/null | grep postgres | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	else
+		port=""
+	fi
+	ip=$(netstat -tulpn 2>/dev/null | grep postgres | awk '{ print $4 }' | cut -d: -f1 | head -n1)
+	{
+	echo "		<item>"
+	echo "			<type>database</type>"
+	echo "			<name>PostgreSQL</name>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+	echo "			<status>$(escape_xml "$status")</status>"
+	echo "			<ip>$(escape_xml "$ip")</ip>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "		</item>"
+	} >> "$xml_file"
+fi
+
 # Custom addition - alexander.szele@umanitoba.ca
 # Pull web server info from nginx
 test=$(which nginx 2>/dev/null)
@@ -2992,7 +3026,7 @@ if [ -n "$test" ]; then
 	for pid in $test
 	do
 		instance=$(expr $instance + 1)
-        if [ $instance -gt 1 ] 
+        if [ $instance -gt 1 ]
         then
 			name="Tomcat-instance$instance"
         else
@@ -3171,6 +3205,36 @@ if [ -n "$datadir" ]; then
 	fi
 fi
 
+# Custom addition - retroK@gmail.com
+datadir=$(grep -R data_directory /etc/postgresql/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2 | cut -d"'" -f2)
+if [ -n "$datadir" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "	postgresql using /etc/postgresql/"
+	fi
+	if [ -n "$rev_exists" ]; then
+		for i in $(find "$datadir/base/" -type d 2>/dev/null | rev | cut -d/ -f1 | rev | grep -v tmp); do
+			size=$(ls -lk "$datadir/base/"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+			oid2name=$(find /usr/lib/postgresql/ -name oid2name)
+			if [ -f "$oid2name" ]; then
+				myname=$(sudo -u postgres $oid2name 2>/dev/null | grep -w $i | tr -s ' ' | cut -d" " -f3)
+			else
+				myname=$i
+			fi
+			{
+			echo "		<item>"
+			echo "			<type>database</type>"
+			echo "			<parent_name>PostgreSQL</parent_name>"
+			echo "			<name>$(escape_xml "$myname")</name>"
+			echo "			<description></description>"
+			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+			echo "			<instance>PostgreSQL</instance>"
+			echo "			<path>$(escape_xml "$datadir/base")/$(escape_xml "$i")</path>"
+			echo "			<size>$(escape_xml "$size")</size>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	fi
+fi
 for i in $(apachectl -S 2>/dev/null  | grep port); do
 	if [ "$debugging" -gt "0" ]; then
 		echo "	apache using apachectl"
@@ -3275,8 +3339,8 @@ for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 2>/dev/null | xargs -
 		port=$(egrep '^([[:space:]])*listen ' $i | awk '{ print $2 }' | cut -d: -f2 | cut -d';' -f1)
 		path=$(awk '/location \/ {/,/}/{ print $0 }' $i | grep root | awk '{ print $2 }' | cut -d';' -f1)
 		if [ -z $path ]; then
-	        path=$(awk '/^([[:space:]])*root /' $i | awk '{ print $2 }' | cut -d';' -f1)
-        fi
+		path=$(awk '/^([[:space:]])*root /' $i | awk '{ print $2 }' | cut -d';' -f1)
+	fi
         {
 		echo "		<item>"
 		echo "			<type>website</type>"
@@ -3291,7 +3355,7 @@ for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 2>/dev/null | xargs -
 		echo "			<instance></instance>"
 		echo "			<path>$(escape_xml "$path")</path>"
 		echo "		</item>"
-		} >> "$xml_file"	
+		} >> "$xml_file"
 	fi
 done
 
