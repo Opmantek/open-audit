@@ -215,6 +215,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     net_connection_id="$line"
     net_speed=""
     net_adapter_type="$j"
+    connection_status=`ifconfig $line | grep status | cut -d: -f2 | sed 's/^ *//g'`
     if [[ "$net_mac_address" > "" ]]; then
         echo "      <item>" >> $xml_file
         echo "          <net_index>$net_index</net_index>" >> $xml_file
@@ -224,6 +225,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
         echo "          <description>$net_description</description>" >> $xml_file
         echo "          <ip_enabled>$net_ip_enabled</ip_enabled>" >> $xml_file
         echo "          <connection>$net_connection_id</connection>" >> $xml_file
+        echo "          <connection_status>$connection_status</connection_status>" >> $xml_file
         echo "          <type>$net_adapter_type</type>" >> $xml_file
         echo "      </item>" >> $xml_file
     fi
@@ -234,16 +236,39 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
     net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
     if [[ "$net_mac_address" > "" ]]; then
+        # IPv4
         ip_address_v4=`ipconfig getifaddr $line`
         if [[ "$ip_address_v4" > "" ]]; then
             net_index="$line"
             ip_subnet=`ipconfig getpacket $line | grep "subnet_mask" | cut -d" " -f3`
+            ip_address_v6=""
+            version="4"
+        fi
+        if [[ "$ip_address_v4" > "" ]]; then
             echo "      <item>" >> $xml_file
             echo "          <net_index>$net_index</net_index>" >> $xml_file
             echo "          <mac>$net_mac_address</mac>" >> $xml_file
             echo "          <ip>$ip_address_v4</ip>" >> $xml_file
             echo "          <netmask>$ip_subnet</netmask>" >> $xml_file
-            echo "          <version>4</version>" >> $xml_file
+            echo "          <version>$version</version>" >> $xml_file
+            echo "      </item>" >> $xml_file
+        fi
+        # IPv6
+        ip_address_v4=""
+        ip_address_v6=`ifconfig $line | grep inet6 | cut -d% -f1 | cut -d" " -f2`
+        if [[ "$ip_address_v6" == *":"* ]]; then
+            net_index="$line"
+            ip_subnet=`ifconfig $line | grep inet6 | cut -d% -f2 | cut -d" " -f3`
+            ip_address_v4="$ip_address_v6"
+            version="6"
+        fi
+        if [[ "$ip_address_v4" > "" ]]; then
+            echo "      <item>" >> $xml_file
+            echo "          <net_index>$net_index</net_index>" >> $xml_file
+            echo "          <mac>$net_mac_address</mac>" >> $xml_file
+            echo "          <ip>$ip_address_v4</ip>" >> $xml_file
+            echo "          <netmask>$ip_subnet</netmask>" >> $xml_file
+            echo "          <version>$version</version>" >> $xml_file
             echo "      </item>" >> $xml_file
         fi
     fi
