@@ -158,6 +158,9 @@ system_pc_os_arch=$(uname -m 2>/dev/null)
 system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d':' -f2 | sed 's/^ *//g' | cut -d' ' -f1)
 system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
 processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
+if [ "$system_pc_os_arch" == "arm64" ]; then
+    processor_count=1
+fi
 system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
 
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
@@ -257,8 +260,16 @@ processor_logical=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
 processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
-processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
-processor_manufacturer="GenuineIntel"
+if [ -n "$processor_speed" ]; then
+    processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
+fi
+if [[ "$processor_description" == *"Apple"* ]]; then
+    processor_manufacturer="Apple"
+    processor_architecture="arm64"
+else
+    processor_manufacturer="GenuineIntel"
+    processor_architecture="x64"
+fi
 
 echo  " <processor>" >> $xml_file
 echo  "     <item>" >> $xml_file
@@ -269,7 +280,7 @@ echo  "         <socket>$processor_socket</socket>" >> $xml_file
 echo  "         <description>$processor_description</description>" >> $xml_file
 echo  "         <speed>$processor_speed</speed>" >> $xml_file
 echo  "         <manufacturer>$processor_manufacturer</manufacturer>" >> $xml_file
-echo "          <architecture>x64</architecture>" >> $xml_file
+echo  "         <architecture>$processor_architecture</architecture>" >> $xml_file
 echo  "     </item>" >> $xml_file
 echo  " </processor>" >> $xml_file
 
