@@ -544,11 +544,17 @@ class M_discoveries extends MY_Model
         if (is_string($result[0]->scan_options)) {
             $result[0]->scan_options = json_decode($result[0]->scan_options);
         }
+        if (empty($result[0]->scan_options)) {
+            $result[0]->scan_options = new stdClass();
+        }
         if (empty($result[0]->match_options)) {
             $result[0]->match_options = new stdClass();
         }
         if (is_string($result[0]->match_options)) {
             $result[0]->match_options = json_decode($result[0]->match_options);
+        }
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = new stdClass();
         }
         if (! isset($result[0]->scan_options->id) or ! is_numeric($result[0]->scan_options->id)) {
             if (! empty($this->config->config['discovery_default_scan_option'])) {
