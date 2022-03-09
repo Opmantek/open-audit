@@ -8428,6 +8428,10 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'L415': $description = 'MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)'; break;
 			case 'LVDV': $description = 'MacBook Pro (15-inch, 2019)'; break;
 			case 'M0XV': $description = 'iMac Pro (2017)'; break;
+			case 'PN78': $description = 'iMac (Retina 5K, 27-inch, 2020)'; break;
+			case 'PN7C': $description = 'iMac (Retina 5K, 27-inch, 2020)'; break;
+			case 'Q6LT': $description = 'MacBook Air (M1, 2020)'; break;
+
 
 			default: $description = 'Unknown model, please send ' . $manufacturer_code . ' to code@opmantek.com for inclusion and/or add to your Rules.'; break;
 		}
