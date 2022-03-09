@@ -158,6 +158,9 @@ system_pc_os_arch=$(uname -m 2>/dev/null)
 system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d':' -f2 | sed 's/^ *//g' | cut -d' ' -f1)
 system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
 processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
+if [ "$system_pc_os_arch" == "arm64" ]; then
+    processor_count=1
+fi
 system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
 
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
@@ -212,6 +215,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     net_connection_id="$line"
     net_speed=""
     net_adapter_type="$j"
+    connection_status=`ifconfig $line | grep status | cut -d: -f2 | sed 's/^ *//g'`
     if [[ "$net_mac_address" > "" ]]; then
         echo "      <item>" >> $xml_file
         echo "          <net_index>$net_index</net_index>" >> $xml_file
@@ -221,6 +225,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
         echo "          <description>$net_description</description>" >> $xml_file
         echo "          <ip_enabled>$net_ip_enabled</ip_enabled>" >> $xml_file
         echo "          <connection>$net_connection_id</connection>" >> $xml_file
+        echo "          <connection_status>$connection_status</connection_status>" >> $xml_file
         echo "          <type>$net_adapter_type</type>" >> $xml_file
         echo "      </item>" >> $xml_file
     fi
@@ -231,16 +236,39 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
     net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
     if [[ "$net_mac_address" > "" ]]; then
+        # IPv4
         ip_address_v4=`ipconfig getifaddr $line`
         if [[ "$ip_address_v4" > "" ]]; then
             net_index="$line"
             ip_subnet=`ipconfig getpacket $line | grep "subnet_mask" | cut -d" " -f3`
+            ip_address_v6=""
+            version="4"
+        fi
+        if [[ "$ip_address_v4" > "" ]]; then
             echo "      <item>" >> $xml_file
             echo "          <net_index>$net_index</net_index>" >> $xml_file
             echo "          <mac>$net_mac_address</mac>" >> $xml_file
             echo "          <ip>$ip_address_v4</ip>" >> $xml_file
             echo "          <netmask>$ip_subnet</netmask>" >> $xml_file
-            echo "          <version>4</version>" >> $xml_file
+            echo "          <version>$version</version>" >> $xml_file
+            echo "      </item>" >> $xml_file
+        fi
+        # IPv6
+        ip_address_v4=""
+        ip_address_v6=`ifconfig $line | grep inet6 | cut -d% -f1 | cut -d" " -f2`
+        if [[ "$ip_address_v6" == *":"* ]]; then
+            net_index="$line"
+            ip_subnet=`ifconfig $line | grep inet6 | cut -d% -f2 | cut -d" " -f3`
+            ip_address_v4="$ip_address_v6"
+            version="6"
+        fi
+        if [[ "$ip_address_v4" > "" ]]; then
+            echo "      <item>" >> $xml_file
+            echo "          <net_index>$net_index</net_index>" >> $xml_file
+            echo "          <mac>$net_mac_address</mac>" >> $xml_file
+            echo "          <ip>$ip_address_v4</ip>" >> $xml_file
+            echo "          <netmask>$ip_subnet</netmask>" >> $xml_file
+            echo "          <version>$version</version>" >> $xml_file
             echo "      </item>" >> $xml_file
         fi
     fi
@@ -257,8 +285,16 @@ processor_logical=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
 processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
-processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
-processor_manufacturer="GenuineIntel"
+if [ -n "$processor_speed" ]; then
+    processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
+fi
+if [[ "$processor_description" == *"Apple"* ]]; then
+    processor_manufacturer="Apple"
+    processor_architecture="arm64"
+else
+    processor_manufacturer="GenuineIntel"
+    processor_architecture="x64"
+fi
 
 echo  " <processor>" >> $xml_file
 echo  "     <item>" >> $xml_file
@@ -269,7 +305,7 @@ echo  "         <socket>$processor_socket</socket>" >> $xml_file
 echo  "         <description>$processor_description</description>" >> $xml_file
 echo  "         <speed>$processor_speed</speed>" >> $xml_file
 echo  "         <manufacturer>$processor_manufacturer</manufacturer>" >> $xml_file
-echo "          <architecture>x64</architecture>" >> $xml_file
+echo  "         <architecture>$processor_architecture</architecture>" >> $xml_file
 echo  "     </item>" >> $xml_file
 echo  " </processor>" >> $xml_file
 
@@ -280,42 +316,57 @@ if [ "$debugging" -gt "0" ]; then
     echo "Memory Info"
 fi
 echo "  <memory>" >> $xml_file
-for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
+if [ "$processor_architecture" == "arm64" ]; then
+    memory_type=$(system_profiler SPMemoryDataType | grep Type | cut -d: -f2 | sed 's/^ *//g')
+    memory_capacity=$system_pc_memory
 
-    if [[ "$line" == *"BANK"* ]]; then
-        memory_tag=`echo "$line" | cut -d"/" -f1 | sed 's/^ *//'`
-        memory_bank=`echo "$memory_tag" | sed 's/BANK/DIMM/g'`
-    fi
+    echo "      <item>" >> $xml_file
+    echo "          <bank>1</bank>" >> $xml_file
+    echo "          <type>$memory_type</type>" >> $xml_file
+    echo "          <form_factor></form_factor>" >> $xml_file
+    echo "          <detail></detail>" >> $xml_file
+    echo "          <size>$memory_capacity</size>" >> $xml_file
+    echo "          <speed></speed>" >> $xml_file
+    echo "          <tag></tag>" >> $xml_file
+    echo "          <serial></serial>" >> $xml_file
+    echo "      </item>" >> $xml_file
+else
+    for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
 
-    if [[ "$line" == *"Size"* ]]; then
-        memory_capacity=`echo "$line" | grep "Size:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
-        memory_capacity=`echo "scale = 0; $memory_capacity * 1024" | bc`
-    fi
+        if [[ "$line" == *"BANK"* ]]; then
+            memory_tag=`echo "$line" | cut -d"/" -f1 | sed 's/^ *//'`
+            memory_bank=`echo "$memory_tag" | sed 's/BANK/DIMM/g'`
+        fi
 
-    if [[ "$line" == *"Type"* ]]; then
-        memory_detail=`echo "$line" | grep "Type:" | cut -d":" -f2 | sed 's/^ *//g'`
-    fi
+        if [[ "$line" == *"Size"* ]]; then
+            memory_capacity=`echo "$line" | grep "Size:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
+            memory_capacity=`echo "scale = 0; $memory_capacity * 1024" | bc`
+        fi
 
-    if [[ "$line" == *"Speed"* ]]; then
-        memory_speed=`echo "$line" | grep "Speed:" | cut -d":" -f2 | sed 's/^ *//g'`
-    fi
+        if [[ "$line" == *"Type"* ]]; then
+            memory_detail=`echo "$line" | grep "Type:" | cut -d":" -f2 | sed 's/^ *//g'`
+        fi
 
-    if [[ "$line" == *"Serial Number"* ]]; then
-        memory_serial=`echo "$line" | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g'`
+        if [[ "$line" == *"Speed"* ]]; then
+            memory_speed=`echo "$line" | grep "Speed:" | cut -d":" -f2 | sed 's/^ *//g'`
+        fi
 
-        echo "      <item>" >> $xml_file
-        echo "          <bank>$memory_bank</bank>" >> $xml_file
-        echo "          <type></type>" >> $xml_file
-        echo "          <form_factor></form_factor>" >> $xml_file
-        echo "          <detail>$memory_detail</detail>" >> $xml_file
-        echo "          <size>$memory_capacity</size>" >> $xml_file
-        echo "          <speed>$memory_speed</speed>" >> $xml_file
-        echo "          <tag>$memory_tag</tag>" >> $xml_file
-        echo "          <serial>$memory_serial</serial>" >> $xml_file
-        echo "      </item>" >> $xml_file
-    fi
-done
-#unset IFS
+        if [[ "$line" == *"Serial Number"* ]]; then
+            memory_serial=`echo "$line" | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g'`
+
+            echo "      <item>" >> $xml_file
+            echo "          <bank>$memory_bank</bank>" >> $xml_file
+            echo "          <type></type>" >> $xml_file
+            echo "          <form_factor></form_factor>" >> $xml_file
+            echo "          <detail>$memory_detail</detail>" >> $xml_file
+            echo "          <size>$memory_capacity</size>" >> $xml_file
+            echo "          <speed>$memory_speed</speed>" >> $xml_file
+            echo "          <tag>$memory_tag</tag>" >> $xml_file
+            echo "          <serial>$memory_serial</serial>" >> $xml_file
+            echo "      </item>" >> $xml_file
+        fi
+    done
+fi
 echo "  </memory>" >> $xml_file
 
 if [ "$debugging" -gt "0" ]; then
@@ -336,30 +387,32 @@ partition_each=""
 if [ "$debugging" -gt 3 ]; then
     echo "COMMAND: diskutil list | grep "^/" | cut -d/ -f3 | cut -d\" \" -f1"
 fi
-for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
+for disk in $(diskutil list | grep "physical\|synthesized" | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
     hard_drive_index=$disk
     if [ "$debugging" -gt 3 ]; then
-        echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Device / Media Name:\" | cut -d\":\" -f2- | sed 's/^ *//g'"
+        echo "COMMAND: diskutil list | grep \"physical\\|synthesized\" | grep \"^/\" | grep \"$disk\" | cut -d\\( -f2 | cut -d\\) -f1"
     fi
-    hard_drive_caption=$(diskutil info "$disk" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g')
+    hard_drive_caption=$(diskutil list | grep "physical\|synthesized" | grep "^/" | grep "$disk" | cut -d\( -f2 | cut -d\) -f1)
     if [ "$debugging" -gt 3 ]; then
         echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Protocol:\" | cut -d\":\" -f2- | sed 's/^ *//g'"
     fi
     hard_drive_interface_type=$(diskutil info "$disk" | grep "^ " | grep "Protocol:" | cut -d":" -f2- | sed 's/^ *//g')
-    if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
-        if [ "$debugging" -gt 3 ]; then
-            echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Disk Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
-        fi
-        hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-        if [ "$debugging" -gt 3 ]; then
-            echo "COMMAND: echo \"$hard_drive_size / 1000 / 1000 \" | bc | cut -d\".\" -f1"
-        fi
-        hard_drive_size=$(echo "$hard_drive_size / 1000 / 1000 " | bc | cut -d"." -f1)
-    else
+
+    hard_drive_size=""
+    if [ "$debugging" -gt 3 ]; then
+        echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Disk Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+    fi
+    hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+    if [ "$hard_drive_size" == "" ]; then
         if [ "$debugging" -gt 3 ]; then
             echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Total Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
         fi
-        hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)]
+    fi
+
+    if [ "$hard_drive_size" == "" ]; then
+        hard_drive_size="0"
+    else
         if [ "$debugging" -gt 3 ]; then
             echo "COMMAND: echo \"$hard_drive_size / 1000 / 1000 \" | bc | cut -d\".\" -f1"
         fi
@@ -371,44 +424,138 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
     hard_drive_manufacturer=""
     hard_drive_model=""
     if [[ "$hard_drive_interface_type" == "SATA" ]]; then
-        hard_drive_model=$(system_profiler SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Model:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-        hard_drive_serial=$(system_profiler SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-        hard_drive_firmware=$(system_profiler SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Revision:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_model=$(system_profiler    SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Model:"         | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_serial=$(system_profiler   SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_firmware=$(system_profiler SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Revision:"      | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_status=$(diskutil info $disk 2>/dev/null | grep "SMART Status:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
     fi
     if [[ "$hard_drive_interface_type" == "USB" ]]; then
-        hard_drive_serial=$(system_profiler SPUSBDataType 2>/dev/null | grep "BSD Name: $disk$" -B12 | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-        hard_drive_firmware=$(system_profiler SPUSBDataType 2>/dev/null | grep "BSD Name: $disk$" -B12 | grep "Version:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-        hard_drive_manufacturer=$(system_profiler SPUSBDataType 2>/dev/null | grep "BSD Name: $disk$" -B12 | grep "Manufacturer:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_model=$(diskutil info "$disk" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g')
+        hard_drive_serial=$(system_profiler       SPUSBDataType 2>/dev/null | grep "BSD Name: $disk$" -B12 | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_firmware=$(system_profiler     SPUSBDataType 2>/dev/null | grep "BSD Name: $disk$" -B12 | grep "Version:"       | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_manufacturer=$(system_profiler SPUSBDataType 2>/dev/null | grep "BSD Name: $disk$" -B12 | grep "Manufacturer:"  | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+    fi
+    if [[ "$hard_drive_interface_type" == "Apple Fabric" ]]; then
+        hard_drive_model=$(system_profiler    SPNVMeDataType 2>/dev/null | grep "BSD Name: $disk$" -B6 | grep "Model:"         | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_serial=$(system_profiler   SPNVMeDataType 2>/dev/null | grep "BSD Name: $disk$" -B6 | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_firmware=$(system_profiler SPNVMeDataType 2>/dev/null | grep "BSD Name: $disk$" -B6 | grep "Revision:"      | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_status=$(diskutil info $disk 2>/dev/null | grep "SMART Status:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+    fi
+    if [[ "$hard_drive_interface_type" == "PCI" ]]; then
+        hard_drive_model=$(system_profiler    SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Model:"         | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_serial=$(system_profiler   SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_firmware=$(system_profiler SPSerialATADataType | grep "BSD Name: $disk$" -B8 | grep "Revision:"      | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        hard_drive_status=$(diskutil info $disk 2>/dev/null | grep "SMART Status:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
     fi
     if [[ "$hard_drive_model" == *"APPLE"* ]]; then
         hard_drive_manufacturer="Apple"
     fi
-    test=""
-    test=$(diskutil info "$disk" | grep "^ "| grep "This disk is a Core Storage Logical Volume")
-    if [ -n "$test" ]; then
-        # we have a LVM - likely the data partition used on the main disk
-        # get some extra info we would normally only get for a partition
-        partition_device_id=$(diskutil info "$disk" | grep "^ " | grep "Volume UUID:" | cut -d":" -f2- | sed 's/^ *//g')
-        hard_drive_index=$(system_profiler SPStorageDataType | grep "Volume UUID: $partition_device_id" -A20 | grep "Physical Volumes:" -A1 | grep -v "Physical" | cut -d":" -f1 | cut -d"s" -f2 | sed 's/^ *//g')
-        hard_drive_index="dis$hard_drive_index"
-        partition_mount_point=$(diskutil info "$disk" | grep "^ " | grep "Mount Point:" | cut -d":" -f2- | sed 's/^ *//g')
-        partition_name=$(diskutil info "$disk" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g')
-        partition_size="$hard_drive_size"
-        if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
-            partition_free_space=""
-            partition_used_space=""
-        else
-            partition_free_space=$(diskutil info "$disk" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-            partition_free_space=$(echo "$partition_free_space / 1000 / 1000 " | bc | cut -d"." -f1)
-            partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
+
+    echo "      <item>" >> $xml_file
+    echo "          <caption>$hard_drive_caption</caption>" >> $xml_file
+    echo "          <hard_drive_index>$hard_drive_index</hard_drive_index>" >> $xml_file
+    echo "          <interface_type>$hard_drive_interface_type</interface_type>" >> $xml_file
+    echo "          <manufacturer>$hard_drive_manufacturer</manufacturer>" >> $xml_file
+    echo "          <model>$hard_drive_model</model>" >> $xml_file
+    echo "          <serial>$hard_drive_serial</serial>" >> $xml_file
+    echo "          <size>$hard_drive_size</size>" >> $xml_file
+    echo "          <device>$hard_drive_device_id</device>" >> $xml_file
+    echo "          <status>$hard_drive_status</status>" >> $xml_file
+    echo "          <firmware>$hard_drive_firmware</firmware>" >> $xml_file
+    echo "      </item>" >> $xml_file
+
+    # partitions on this disk
+    if [ "$debugging" -gt 3 ]; then
+        echo "COMMAND: diskutil list | grep \"  $disk\"s.\\\$ | awk 'NF>1{print $NF}'"
+    fi
+    for partition in $(diskutil list | grep "  $disk"s.\$ | awk 'NF>1{print $NF}'); do
+
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Mount Point:\" | cut -d\":\" -f2 | sed 's/^ *//g' | sed 's/ *$//g'"
         fi
-        partition_format=$(diskutil info "$disk" | grep "^ " | grep "File System Personality:" | cut -d":" -f2- | sed 's/^ *//g')
-        partition_caption=$(diskutil info "$disk" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g')
-        partition_disk_index=$(system_profiler SPStorageDataType | grep "Volume UUID: $partition_device_id" -A20 | grep "Physical Volumes:" -A1 | grep -v "Physical" | cut -d":" -f1 | sed 's/^ *//g')
+        partition_mount_point=$(diskutil info "$partition" | grep "^ " | grep "Mount Point:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+
+
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Volume Name:\" | cut -d\":\" -f2- | sed 's/^ *//g' | sed 's/ *$//g'"
+        fi
+        partition_name=$(diskutil info "$partition" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g' | sed 's/ *$//g')
+
+
+        if [ "$partition_name" == "Not applicable (no file system)" ]; then
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Device / Media Name:\" | cut -d\":\" -f2- | sed 's/^ *//g' | sed 's/ *$//g'"
+            fi
+            partition_name=$(diskutil info "$partition" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g' | sed 's/ *$//g')
+        fi
+
+
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Disk Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+        fi
+        partition_size=$(diskutil info "$partition" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        if [ "$partition_size" == "" ]; then
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Total Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+            fi
+            partition_size=$(diskutil info "$partition" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        fi
+        if [ "$partition_size" == "" ]; then
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Container Total Space:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+            fi
+            partition_size=$(diskutil info "$partition" | grep "^ " | grep "Container Total Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        fi
+
+
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Volume Free Space:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+        fi
+        partition_free_space=$(diskutil info "$partition" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        if [ "$partition_free_space" == "" ]; then
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: diskutil info \"$partition\" | grep \"^ \" | grep \"Container Free Space:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+            fi
+            partition_free_space=$(diskutil info "$partition" | grep "^ " | grep "Container Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        fi
+
+        if [ "$partition_free_space" != "" ]; then
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: echo \"$partition_size - $partition_free_space\" | bc | cut -d\".\" -f1"
+            fi
+            partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: echo \"$partition_used_space / 1000 / 1000\" | bc | cut -d\".\" -f1"
+            fi
+            partition_used_space=$(echo "$partition_used_space / 1000 / 1000" | bc | cut -d"." -f1)
+
+            if [ "$debugging" -gt 3 ]; then
+                echo "COMMAND: echo \"$partition_free_space / 1000 / 1000\" | bc | cut -d\".\" -f1"
+            fi
+            partition_free_space=$(echo "$partition_free_space / 1000 / 1000" | bc | cut -d"." -f1)
+        else
+            partition_free_space="0"
+            partition_used_space="0"
+        fi
+
+        mount_type="partition"
+        if [ "$hard_drive_caption" == "synthesized" ]; then
+            mount_type="volume"
+        fi
+
+        partition_size=$(echo "$partition_size / 1000 / 1000" | bc | cut -d"." -f1)
+        partition_format=$(diskutil info "$partition" | grep "^ " | grep "File System Personality:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        partition_caption=$(diskutil info "$partition" | grep "^ " | grep "Volume Name:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        partition_serial=$(diskutil info "$partition" | grep "^ " | grep "Volume UUID:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        if [ -z "$partition_serial" ]; then
+            partition_serial=$(diskutil info "$partition" | grep "^ " | grep "Partition UUID:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        fi
+        partition_disk_index=$(diskutil info "$partition" | grep "^ " | grep "Device Identifier:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+
         partition_each="$partition_each       <item>"$'\n'
         partition_each="$partition_each           <serial>$partition_serial</serial>"$'\n'
         partition_each="$partition_each           <hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
-        partition_each="$partition_each           <mount_type>partition</mount_type>"$'\n'
+        partition_each="$partition_each           <mount_type>$mount_type</mount_type>"$'\n'
         partition_each="$partition_each           <mount_point><![CDATA[$partition_mount_point]]></mount_point>"$'\n'
         partition_each="$partition_each           <name>$partition_name</name>"$'\n'
         partition_each="$partition_each           <size>$partition_size</size>"$'\n'
@@ -421,60 +568,8 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
         partition_each="$partition_each           <bootable></bootable>"$'\n'
         partition_each="$partition_each           <type>local</type>"$'\n'
         partition_each="$partition_each       </item>"$'\n'
-    else
-        echo "      <item>" >> $xml_file
-        echo "          <caption>$hard_drive_caption</caption>" >> $xml_file
-        echo "          <hard_drive_index>$hard_drive_index</hard_drive_index>" >> $xml_file
-        echo "          <interface_type>$hard_drive_interface_type</interface_type>" >> $xml_file
-        echo "          <manufacturer>$hard_drive_manufacturer</manufacturer>" >> $xml_file
-        echo "          <model>$hard_drive_model</model>" >> $xml_file
-        echo "          <serial>$hard_drive_serial</serial>" >> $xml_file
-        echo "          <size>$hard_drive_size</size>" >> $xml_file
-        echo "          <device>$hard_drive_device_id</device>" >> $xml_file
-        echo "          <status>$hard_drive_status</status>" >> $xml_file
-        echo "          <firmware>$hard_drive_firmware</firmware>" >> $xml_file
-        echo "      </item>" >> $xml_file
-        # partitions on this disk
-        for partition in $(diskutil list | grep "  $disk"s.\$ | awk 'NF>1{print $NF}'); do
-            partition_mount_point=$(diskutil info "$partition" | grep "^ " | grep "Mount Point:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-            partition_name=$(diskutil info "$partition" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g' | sed 's/ *$//g')
-            if [ "$partition_name" == "Not applicable (no file system)" ]; then
-                partition_name=$(diskutil info "$partition" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g' | sed 's/ *$//g')
-            fi
-            if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
-                # Sierra has removed 'Volume Free Space' and changed 'Total Size' to 'Disk Size' in diskutil
-                partition_size=$(diskutil info "$partition" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-                partition_free_space=""
-                partition_used_space=""
-            else
-                partition_size=$(diskutil info "$partition" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-                partition_free_space=$(diskutil info "$partition" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-                partition_free_space=$(echo "$partition_free_space / 1000 / 1000" | bc | cut -d"." -f1)
-                partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
-            fi
-            partition_size=$(echo "$partition_size / 1000 / 1000" | bc | cut -d"." -f1)
-            partition_format=$(diskutil info "$partition" | grep "^ " | grep "File System Personality:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-            partition_caption=$(diskutil info "$partition" | grep "^ " | grep "Volume Name:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-            partition_device_id=$(diskutil info "$partition" | grep "^ " | grep "Volume UUID:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-            partition_disk_index=$(diskutil info "$partition" | grep "^ " | grep "Device Identifier:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-            partition_each="$partition_each       <item>"$'\n'
-            partition_each="$partition_each           <serial>$partition_serial</serial>"$'\n'
-            partition_each="$partition_each           <hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
-            partition_each="$partition_each           <mount_type>partition</mount_type>"$'\n'
-            partition_each="$partition_each           <mount_point><![CDATA[$partition_mount_point]]></mount_point>"$'\n'
-            partition_each="$partition_each           <name>$partition_name</name>"$'\n'
-            partition_each="$partition_each           <size>$partition_size</size>"$'\n'
-            partition_each="$partition_each           <free>$partition_free_space</free>"$'\n'
-            partition_each="$partition_each           <used>$partition_used_space</used>"$'\n'
-            partition_each="$partition_each           <format>$partition_format</format>"$'\n'
-            partition_each="$partition_each           <description>$partition_caption</description>"$'\n'
-            partition_each="$partition_each           <device>$partition_device_id</device>"$'\n'
-            partition_each="$partition_each           <partition_disk_index>$partition_disk_index</partition_disk_index>"$'\n'
-            partition_each="$partition_each           <bootable></bootable>"$'\n'
-            partition_each="$partition_each           <type>local</type>"$'\n'
-            partition_each="$partition_each       </item>"$'\n'
-        done
-    fi
+    done
+
 done
 echo "  </disk>" >> $xml_file
 echo "   <partition>" >> $xml_file

@@ -54,9 +54,9 @@ if (!function_exists('generate_token')) {
         if (empty($json)) {
             return false;
         }
-        $json = json_decode($json);
-        $bin = $json->{'directories'}->{'<omk_base>'} . '/bin/';
-        $token = $json->{'authentication'}->{'auth_token_key'}[0];
+        $json = @json_decode($json);
+        $bin = @$json->{'directories'}->{'<omk_base>'} . '/bin/';
+        $token = @$json->{'authentication'}->{'auth_token_key'}[0];
         if (empty($token)) {
             return false;
         }
