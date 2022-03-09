@@ -316,42 +316,57 @@ if [ "$debugging" -gt "0" ]; then
     echo "Memory Info"
 fi
 echo "  <memory>" >> $xml_file
-for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
+if [ "$processor_architecture" == "arm64" ]; then
+    memory_type=$(system_profiler SPMemoryDataType | grep Type | cut -d: -f2 | sed 's/^ *//g')
+    memory_capacity=$system_pc_memory
 
-    if [[ "$line" == *"BANK"* ]]; then
-        memory_tag=`echo "$line" | cut -d"/" -f1 | sed 's/^ *//'`
-        memory_bank=`echo "$memory_tag" | sed 's/BANK/DIMM/g'`
-    fi
+    echo "      <item>" >> $xml_file
+    echo "          <bank>1</bank>" >> $xml_file
+    echo "          <type>$memory_type</type>" >> $xml_file
+    echo "          <form_factor></form_factor>" >> $xml_file
+    echo "          <detail></detail>" >> $xml_file
+    echo "          <size>$memory_capacity</size>" >> $xml_file
+    echo "          <speed></speed>" >> $xml_file
+    echo "          <tag></tag>" >> $xml_file
+    echo "          <serial></serial>" >> $xml_file
+    echo "      </item>" >> $xml_file
+else
+    for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
 
-    if [[ "$line" == *"Size"* ]]; then
-        memory_capacity=`echo "$line" | grep "Size:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
-        memory_capacity=`echo "scale = 0; $memory_capacity * 1024" | bc`
-    fi
+        if [[ "$line" == *"BANK"* ]]; then
+            memory_tag=`echo "$line" | cut -d"/" -f1 | sed 's/^ *//'`
+            memory_bank=`echo "$memory_tag" | sed 's/BANK/DIMM/g'`
+        fi
 
-    if [[ "$line" == *"Type"* ]]; then
-        memory_detail=`echo "$line" | grep "Type:" | cut -d":" -f2 | sed 's/^ *//g'`
-    fi
+        if [[ "$line" == *"Size"* ]]; then
+            memory_capacity=`echo "$line" | grep "Size:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
+            memory_capacity=`echo "scale = 0; $memory_capacity * 1024" | bc`
+        fi
 
-    if [[ "$line" == *"Speed"* ]]; then
-        memory_speed=`echo "$line" | grep "Speed:" | cut -d":" -f2 | sed 's/^ *//g'`
-    fi
+        if [[ "$line" == *"Type"* ]]; then
+            memory_detail=`echo "$line" | grep "Type:" | cut -d":" -f2 | sed 's/^ *//g'`
+        fi
 
-    if [[ "$line" == *"Serial Number"* ]]; then
-        memory_serial=`echo "$line" | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g'`
+        if [[ "$line" == *"Speed"* ]]; then
+            memory_speed=`echo "$line" | grep "Speed:" | cut -d":" -f2 | sed 's/^ *//g'`
+        fi
 
-        echo "      <item>" >> $xml_file
-        echo "          <bank>$memory_bank</bank>" >> $xml_file
-        echo "          <type></type>" >> $xml_file
-        echo "          <form_factor></form_factor>" >> $xml_file
-        echo "          <detail>$memory_detail</detail>" >> $xml_file
-        echo "          <size>$memory_capacity</size>" >> $xml_file
-        echo "          <speed>$memory_speed</speed>" >> $xml_file
-        echo "          <tag>$memory_tag</tag>" >> $xml_file
-        echo "          <serial>$memory_serial</serial>" >> $xml_file
-        echo "      </item>" >> $xml_file
-    fi
-done
-#unset IFS
+        if [[ "$line" == *"Serial Number"* ]]; then
+            memory_serial=`echo "$line" | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g'`
+
+            echo "      <item>" >> $xml_file
+            echo "          <bank>$memory_bank</bank>" >> $xml_file
+            echo "          <type></type>" >> $xml_file
+            echo "          <form_factor></form_factor>" >> $xml_file
+            echo "          <detail>$memory_detail</detail>" >> $xml_file
+            echo "          <size>$memory_capacity</size>" >> $xml_file
+            echo "          <speed>$memory_speed</speed>" >> $xml_file
+            echo "          <tag>$memory_tag</tag>" >> $xml_file
+            echo "          <serial>$memory_serial</serial>" >> $xml_file
+            echo "      </item>" >> $xml_file
+        fi
+    done
+fi
 echo "  </memory>" >> $xml_file
 
 if [ "$debugging" -gt "0" ]; then
