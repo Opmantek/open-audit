@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# 
+#
 # @version   GIT: Open-AudIT_4.3.2
 
 # @copyright Copyright (c) 2014, Opmantek
@@ -547,7 +547,7 @@ fi
 
 # Set the UUID
 system_uuid=""
-system_uuid=$(dmidecode -s system-uuid 2>/dev/null | grep -v "^#")
+system_uuid=$(dmidecode -s system-uuid 2>/dev/null | grep -v "^#" | head -1)
 if [ -z "$system_uuid" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	system_uuid=$(lshal 2>/dev/null | grep "system.hardware.uuid" | cut -d\' -f2)
 fi
@@ -747,7 +747,7 @@ fi
 
 # Get the System Serial Number
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
-	system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
+	system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#" | head -1)
 fi
 
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
@@ -767,7 +767,7 @@ fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
-	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#")
+	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#" | head -1)
 fi
 if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
@@ -792,7 +792,7 @@ fi
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
-	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null | grep -v "^#")
+	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null | grep -v "^#" | head -1)
 fi
 if [ -z "$system_manufacturer" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
@@ -832,7 +832,7 @@ if [ "$system_model" = "Bochs" -o \
 	 "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
 else
-	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#")
+	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#" | head -1)
 	if [ "$system_form_factor" = "<OUT OF SPEC>" ]; then
 		system_form_factor="Unknown"
 	fi
@@ -1112,7 +1112,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 # Get the BIOS Manufacturer
-bios_manufacturer=$(dmidecode -s bios-vendor 2>/dev/null)
+bios_manufacturer=$(dmidecode -s bios-vendor 2>/dev/null | head -1)
 if [ -z "$bios_manufacturer" ] && [ -f "/sys/class/dmi/id/bios_vendor" ]; then
 	bios_manufacturer=$(cat /sys/class/dmi/id/bios_vendor 2>/dev/null)
 fi
@@ -1125,7 +1125,7 @@ fi
 bios_manufacturer=$(trim "$bios_manufacturer")
 
 # Get the BIOS Version
-bios_version=$(dmidecode -s bios-version 2>/dev/null)
+bios_version=$(dmidecode -s bios-version 2>/dev/null | head -1)
 if [ -z "$bios_version" ]; then
 	bios_version=$(dmidecode 2>/dev/null | grep "Firmware Revision" | cut -d: -f2)
 fi
@@ -1166,7 +1166,7 @@ if [ -z "$bios_smversion" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 fi
 
 # Get the BIOS date
-bios_date=$(dmidecode -s bios-release-date 2>/dev/null)
+bios_date=$(dmidecode -s bios-release-date 2>/dev/null | head -1)
 if [ -z "$bios_date" ] && [ -f "/sys/devices/virtual/dmi/id/bios_date" ]; then
 	bios_date=$(cat /sys/devices/virtual/dmi/id/bios_date 2>/dev/null)
 fi
@@ -1329,19 +1329,19 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Motherboard Info"
 fi
 
-mobo_manufacturer=$(dmidecode -s baseboard-manufacturer 2> /dev/null)
+mobo_manufacturer=$(dmidecode -s baseboard-manufacturer 2> /dev/null | head -1)
 if [ -z "$mobo_manufacturer" ] && [ -f "/sys/devices/virtual/dmi/id/board_vendor" ]; then
 	mobo_manufacturer=$(cat /sys/devices/virtual/dmi/id/board_vendor 2>/dev/null)
 fi
-mobo_model=$(dmidecode -s baseboard-product-name 2> /dev/null)
+mobo_model=$(dmidecode -s baseboard-product-name 2> /dev/null | head -1)
 if [ -z "$mobo_model" ] && [ -f "/sys/devices/virtual/dmi/id/board_name" ]; then
 	mobo_model=$(cat /sys/devices/virtual/dmi/id/board_name 2>/dev/null)
 fi
-mobo_version=$(dmidecode -s baseboard-version 2> /dev/null | grep -v Not)
+mobo_version=$(dmidecode -s baseboard-version 2> /dev/null | grep -v Not | head -1)
 if [ -z "$mobo_version" ] && [ -f "/sys/devices/virtual/dmi/id/board_version" ]; then
 	mobo_version=$(cat /sys/devices/virtual/dmi/id/board_version 2>/dev/null)
 fi
-mobo_serial=$(dmidecode -s baseboard-serial-number 2> /dev/null)
+mobo_serial=$(dmidecode -s baseboard-serial-number 2> /dev/null | head -1)
 if [ -z "$mobo_serial" ] && [ -f "/sys/devices/virtual/dmi/id/board_serial" ]; then
 	mobo_serial=$(cat /sys/devices/virtual/dmi/id/board_serial 2>/dev/null)
 fi
@@ -2917,13 +2917,21 @@ if [ -n "$test" ]; then
 	} >> "$xml_file"
 fi
 
-test=$(which mysql 2>/dev/null)
+# fix mysqld instead of mysql to prevent mysql-client false positive
+test=$(which mysqld 2>/dev/null)
 if [ -n "$test" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "	mysql"
 	fi
-	version=$(mysql --version | awk '{ print $5 }' | cut -d, -f1)
+	# fix for mysql 8
+	# version=$(mysql --version | awk '{ print $5 }' | cut -d, -f1)
+	version=$(mysqld --version | awk '{ print $3 }' | cut -d"-" -f1)
 	version_string=$(mysql --version 2>/dev/null)
+	if mysql --version 2>/dev/null | grep -iq mariadb; then
+		dbname="MariaDB"
+	else 
+		dbname="MySQL"
+	fi
 	status=$(service mysql status 2>/dev/null | grep Active | awk '{ print $2 }')
 	if [ -z "$status" ]; then
 		status=$(service mysql status 2>/dev/null | grep Uptime | cut -d: -f2 2>/dev/null)
@@ -2940,7 +2948,7 @@ if [ -n "$test" ]; then
 	{
 	echo "		<item>"
 	echo "			<type>database</type>"
-	echo "			<name>MySQL</name>"
+	echo "			<name>$(escape_xml "$dbname")</name>"
 	echo "			<version>$(escape_xml "$version")</version>"
 	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
 	echo "			<status>$(escape_xml "$status")</status>"
@@ -2950,7 +2958,7 @@ if [ -n "$test" ]; then
 	} >> "$xml_file"
 fi
 
-# Custom addition - retroK@gmail.com
+# Custom addition - postgresql
 test=$(which psql 2>/dev/null)
 if [ -n "$test" ]; then
 	if [ "$debugging" -gt "0" ]; then
@@ -3026,12 +3034,14 @@ if [ -n "$test" ]; then
 	for pid in $test
 	do
 		instance=$(expr $instance + 1)
-        if [ $instance -gt 1 ]
-        then
+	
+		if [ $instance -gt 1 ]
+	        then
 			name="Tomcat-instance$instance"
-        else
+	        else
 			name="Tomcat"
-        fi
+	        fi
+	
 		catalina_home=$(ps -fp $pid | sed -n -e 's/^.*Dcatalina\.home=//p' | awk '{ print $1 }')
 		catalina_base=$(ps -fp $pid | sed -n -e 's/^.*Dcatalina\.base=//p' | awk '{ print $1 }')
 		version_text=$(unzip -q -c $catalina_home/lib/catalina.jar META-INF/MANIFEST.MF | grep "Implementation-Title:" | cut -d":" -f2 | sed -e 's/^[[:space:]]*//' | tr -d '\r')
@@ -3114,11 +3124,11 @@ if [ -e "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
 				{
 				echo "		<item>"
 				echo "			<type>database</type>"
-				echo "			<parent_name>MySQL</parent_name>"
+				echo "			<parent_name>$(escape_xml "$dbname")</parent_name>"
 				echo "			<name>$(escape_xml "$i")</name>"
 				echo "			<description></description>"
 				echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-				echo "			<instance>MySQL</instance>"
+				echo "			<instance>$(escape_xml "$dbname")</instance>"
 				echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
 				echo "			<size>$(escape_xml "$size")</size>"
 				echo "		</item>"
@@ -3140,11 +3150,11 @@ if [ -e "/etc/my.cnf" ]; then
 				{
 				echo "		<item>"
 				echo "			<type>database</type>"
-				echo "			<parent_name>MySQL</parent_name>"
+				echo "			<parent_name>$(escape_xml "$dbname")</parent_name>"
 				echo "			<name>$(escape_xml "$i")</name>"
 				echo "			<description></description>"
 				echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-				echo "			<instance>MySQL</instance>"
+				echo "			<instance>$(escape_xml "$dbname")</instance>"
 				echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
 				echo "			<size>$(escape_xml "$size")</size>"
 				echo "		</item>"
@@ -3166,11 +3176,11 @@ if [ -e "/etc/mysql/my.cnf" ]; then
 				{
 				echo "		<item>"
 				echo "			<type>database</type>"
-				echo "			<parent_name>MySQL</parent_name>"
+				echo "			<parent_name>$(escape_xml "$dbname")</parent_name>"
 				echo "			<name>$(escape_xml "$i")</name>"
 				echo "			<description></description>"
 				echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-				echo "			<instance>MySQL</instance>"
+				echo "			<instance>$(escape_xml "$dbname")</instance>"
 				echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
 				echo "			<size>$(escape_xml "$size")</size>"
 				echo "		</item>"
@@ -3192,11 +3202,11 @@ if [ -n "$datadir" ]; then
 			{
 			echo "		<item>"
 			echo "			<type>database</type>"
-			echo "			<parent_name>MySQL</parent_name>"
+			echo "			<parent_name>$(escape_xml "$dbname")</parent_name>"
 			echo "			<name>$(escape_xml "$i")</name>"
 			echo "			<description></description>"
 			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
-			echo "			<instance>MySQL</instance>"
+			echo "			<instance>$(escape_xml "$dbname")</instance>"
 			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
 			echo "			<size>$(escape_xml "$size")</size>"
 			echo "		</item>"
@@ -3205,16 +3215,22 @@ if [ -n "$datadir" ]; then
 	fi
 fi
 
-# Custom addition - retroK@gmail.com
+# Custom addition - postgres data_directory 
 datadir=$(grep -R data_directory /etc/postgresql/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2 | cut -d"'" -f2)
-if [ -n "$datadir" ]; then
+
+# if above fails, try to get datadir from running process command line
+if [ ! -d "$datadir" ]; then
+	datadir=$(ps -ef | grep postgres | grep '\-D .*' -o | awk '{print $2}')
+fi
+
+if [ -d "$datadir" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "	postgresql using /etc/postgresql/"
 	fi
 	if [ -n "$rev_exists" ]; then
 		for i in $(find "$datadir/base/" -type d 2>/dev/null | rev | cut -d/ -f1 | rev | grep -v tmp); do
 			size=$(ls -lk "$datadir/base/"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
-			oid2name=$(find /usr/lib/postgresql/ -name oid2name)
+			oid2name=$(find /usr/lib/postgresql/ -name oid2name 2>/dev/null)
 			if [ -f "$oid2name" ]; then
 				myname=$(sudo -u postgres $oid2name 2>/dev/null | grep -w $i | tr -s ' ' | cut -d" " -f3)
 			else
@@ -3235,6 +3251,56 @@ if [ -n "$datadir" ]; then
 		done
 	fi
 fi
+
+# Custom addition - tomcat instances
+instance=0
+	
+for i in $(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null); do
+	if [ "$debugging" -gt "0" ]; then
+		echo "	tomcat instances"
+	fi
+
+	if [ -n "$i" ]; then
+		instance=$(expr $instance + 1)
+		if [ $instance -gt 1 ]
+	        then
+			parent="Tomcat-instance$instance"
+	        else
+			parent="Tomcat"
+	        fi
+		
+		# iterate over every port of tomcat pid
+		for j in $(netstat -pln | grep "$i"/java | tr -s ' ' | cut -d" " -f4); do
+			# rev makes port work with tcp and tcp6 output
+			port=$(echo "$j" | rev | cut -d":" -f1 | rev)
+			ip=$(echo "$j" | cut -d":" -f1)
+			path=$(ps -fp "$i" | sed -n -e 's/^.*Dcatalina\.home=//p' | awk '{ print $1 }')
+			description=""
+
+			if (grep $port "$path"/conf/server.xml | grep -i -q shutdown); then
+				description="Shutdown"
+			fi
+
+			name=$(basename "$path")
+			{
+			echo "		<item>"
+			echo "			<type>website</type>"
+			echo "			<parent_name>$(escape_xml "$parent")</parent_name>"
+			echo "			<name>$(escape_xml "$name")</name>"
+			echo "			<description>$(escape_xml "$description")</description>"
+			echo "			<id_internal></id_internal>"
+			echo "			<ip>$(escape_xml "$ip")</ip>"
+			echo "			<hostname></hostname>"
+			echo "			<port>$(escape_xml "$port")</port>"
+			echo "			<status>$(escape_xml "$tomcat_status")</status>"
+			echo "			<instance></instance>"
+			echo "			<path>$(escape_xml "$path")</path>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	fi
+done
+
 for i in $(apachectl -S 2>/dev/null  | grep port); do
 	if [ "$debugging" -gt "0" ]; then
 		echo "	apache using apachectl"
