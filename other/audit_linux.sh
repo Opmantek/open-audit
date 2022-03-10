@@ -3191,7 +3191,7 @@ if [ -e "/etc/mysql/my.cnf" ]; then
 fi
 
 
-datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2)
+datadir=$(grep -IR datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2)
 if [ -n "$datadir" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "	mariadb using /etc/mysql/mariadb.conf.d"
@@ -3216,7 +3216,7 @@ if [ -n "$datadir" ]; then
 fi
 
 # Custom addition - postgres data_directory 
-datadir=$(grep -R data_directory /etc/postgresql/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2 | cut -d"'" -f2)
+datadir=$(grep -IR data_directory /etc/postgresql/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2 | cut -d"'" -f2)
 
 # if above fails, try to get datadir from running process command line
 if [ ! -d "$datadir" ]; then
