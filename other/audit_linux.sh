@@ -3223,6 +3223,7 @@ if [ ! -d "$datadir" ]; then
 	datadir=$(ps -ef | grep postgres | grep '\-D .*' -o | awk '{print $2}')
 fi
 
+oid2name=$(which oid2name 2>/dev/null)
 if [ -d "$datadir" ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "	postgresql using /etc/postgresql/"
@@ -3230,8 +3231,13 @@ if [ -d "$datadir" ]; then
 	if [ -n "$rev_exists" ]; then
 		for i in $(find "$datadir/base/" -type d 2>/dev/null | rev | cut -d/ -f1 | rev | grep -v tmp); do
 			size=$(ls -lk "$datadir/base/"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
-			oid2name=$(find /usr/lib/postgresql/ -name oid2name 2>/dev/null)
-			if [ -f "$oid2name" ]; then
+			
+			if [ ! "$oid2name" ]; then
+				# try to find oid2name in path (for ubuntu)
+				oid2name=$(find /usr/lib/postgresql/ -name oid2name 2>/dev/null)
+			fi
+			
+			if [ -x "$oid2name" ]; then
 				myname=$(sudo -u postgres $oid2name 2>/dev/null | grep -w $i | tr -s ' ' | cut -d" " -f3)
 			else
 				myname=$i
