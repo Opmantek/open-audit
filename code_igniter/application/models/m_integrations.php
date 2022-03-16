@@ -125,30 +125,32 @@ class M_integrations extends MY_Model
 
         # Any custom fields
         $CI->load->model('m_fields');
-        foreach ($integration->attributes->fields as $field) {
-            if ($field->internal_field_name === '' or strpos($field->internal_field_name, 'fields.') === 0) {
-                if (strpos($field->internal_field_name, 'fields.') === 0) {
-                    $field_name = str_replace('fields.', '', $field->internal_field_name);
-                } else {
-                    #$external_field = explode('.', $field->external_field_name);
-                    #$field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
-                    $field_name = $this->internal_field_from_empty($data->type, $field->external_field_name);
-                }
-                $sql = "SELECT * FROM fields WHERE name = ? AND org_id = ?";
-                $data = array($field_name, $integration->attributes->org_id);
-                $query = $this->db->query($sql, $data);
-                $result = $query->result();
-                if (empty($result)) {
-                    # No field exists, create it
-                    $field = new stdClass();
-                    $field->type = $field;
-                    $field->name = $field_name;
-                    $field->org_id = $integration->attributes->org_id;
-                    $field->type = 'varchar';
-                    $field->values = @$field->default_value;
-                    $field->group_id = 1;
-                    $field->placement = 'system';
-                    $CI->m_fields->create($field);
+        if (!empty($integration->attributes->fields)) {
+            foreach ($integration->attributes->fields as $field) {
+                if ($field->internal_field_name === '' or strpos($field->internal_field_name, 'fields.') === 0) {
+                    if (strpos($field->internal_field_name, 'fields.') === 0) {
+                        $field_name = str_replace('fields.', '', $field->internal_field_name);
+                    } else {
+                        #$external_field = explode('.', $field->external_field_name);
+                        #$field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
+                        $field_name = $this->internal_field_from_empty($data->type, $field->external_field_name);
+                    }
+                    $sql = "SELECT * FROM fields WHERE name = ? AND org_id = ?";
+                    $data = array($field_name, $integration->attributes->org_id);
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
+                    if (empty($result)) {
+                        # No field exists, create it
+                        $field = new stdClass();
+                        $field->type = $field;
+                        $field->name = $field_name;
+                        $field->org_id = $integration->attributes->org_id;
+                        $field->type = 'varchar';
+                        $field->values = @$field->default_value;
+                        $field->group_id = 1;
+                        $field->placement = 'system';
+                        $CI->m_fields->create($field);
+                    }
                 }
             }
         }
