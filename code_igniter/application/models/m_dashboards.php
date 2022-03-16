@@ -219,7 +219,9 @@ class M_dashboards extends MY_Model
             $this->db->db_debug = $temp_debug;
             unset($temp_debug);
             $CI->response->meta->sql[] = $this->db->last_query();
-            $result = @$query->result();
+            if (!empty($query)) {
+                $result = @$query->result();
+            }
             if ( ! empty($result)) {
                 $result = $this->format_data($result, 'dashboards');
             } else {
