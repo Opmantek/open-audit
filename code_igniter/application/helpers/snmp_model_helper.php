@@ -3126,6 +3126,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.30065.1.3011.7250.3095.64': $device->model = 'DCS-7250Q-X64'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.30065.1.3011.7250.3095.64.761': $device->model = 'DCS-7250Q-X64SSD'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.30065.1.3011.7280.3735.48.2878.6': $device->model = 'DCS-7280-SR48C6'; $device->type = 'switch'; break;
+			case '1.3.6.1.4.1.30065.1.3011.7280.3735.3.48.1654.8': $device->model = '7280SR3-48YC8'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.30065.1.3011.7304': $device->model = 'DCS-7304'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.30065.1.3011.7308': $device->model = 'DCS-7308'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.30065.1.3011.7504': $device->model = 'DCS-7504'; $device->type = 'switch'; break;
@@ -6227,7 +6228,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.9.12.3.1.3.1160': $device->model = 'Cisco Chassis ASR901E'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.1161': $device->model = 'Cisco Chassis OeSmSre710'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.1162': $device->model = 'Cisco Chassis OeSmSre910'; $device->type = 'cisco module'; break;
-			case '1.3.6.1.4.1.9.12.3.1.3.1163': $device->model = 'Cisco Chassis N3kC3064PQ10GX'; $device->type = 'cisco module'; break;
+			case '1.3.6.1.4.1.9.12.3.1.3.1163': $device->model = 'Cisco Nexus N3K-C3064PQ-10GX'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.1166': $device->model = 'Cisco Chassis FlowAgent3000'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.1168': $device->model = 'Cisco Chassis NamApp2304'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.1169': $device->model = 'Cisco Chassis NamApp2320'; $device->type = 'cisco module'; break;
@@ -6285,6 +6286,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.9.12.3.1.3.137': $device->model = 'Cisco Chassis As5400'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.138': $device->model = 'Cisco Chassis 7140Octt1'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.139': $device->model = 'Cisco Chassis 7140Dualfe'; $device->type = 'cisco module'; break;
+			case '1.3.6.1.4.1.9.12.3.1.3.1390': $device->model = 'Cisco Nexus N3K-C3132Q-40GE'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.14': $device->model = 'Cisco Chassis 2511'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.140': $device->model = 'Cisco Chassis Cat 3548XL'; $device->type = 'cisco module'; break;
 			case '1.3.6.1.4.1.9.12.3.1.3.141': $device->model = 'Cisco Chassis Cat 6006'; $device->type = 'cisco module'; break;
