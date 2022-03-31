@@ -76,7 +76,7 @@ if (! function_exists('all_ip_list')) {
             $command = 'nmap -n -sL --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
         } else {
             $command = 'nmap -n -sL ' . $discovery->subnet;
-        }
+        }Ø
 
         if (php_uname('s') === 'Darwin') {
             $command = '/usr/local/bin/' . $command;
@@ -878,11 +878,11 @@ if (! function_exists('ip_audit')) {
         $device->hostname =     '';
         // If we have specifically assigned another org_id, set it
         if (! empty($discovery->devices_assigned_to_org)) {
-            $device->org_id = $discovery->devices_assigned_to_org;
+            $device->org_id = intval($discovery->devices_assigned_to_org);
         }
         // If we have specifically assigned a location_id, set it
         if (! empty($discovery->devices_assigned_to_location)) {
-            $device->location_id = $discovery->devices_assigned_to_location;
+            $device->location_id = intval($discovery->devices_assigned_to_location);
         }
 
         if ($CI->config->config['discovery_use_dns'] === 'y') {
