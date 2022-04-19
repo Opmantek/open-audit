@@ -7418,21 +7418,25 @@ end function
 
 function os_family(os)
     os = replace(os, chr(160), " ")
-    if InStr(os, " 95")        then os_family="Windows 95"
-    if InStr(os, " 98")        then os_family="Windows 98"
-    if InStr(os, " NT")        then os_family="Windows NT"
-    if InStr(os, "2000")       then os_family="Windows 2000"
-    if InStr(os, " XP")        then os_family="Windows XP"
-    if InStr(os, "2003")       then os_family="Windows 2003"
-    if InStr(os, "Vista")      then os_family="Windows Vista"
-    if InStr(os, "2008")       then os_family="Windows 2008"
-    if InStr(os, "Windows 7")  then os_family="Windows 7"
-    if InStr(os, "Windows 8")  then os_family="Windows 8"
-    if InStr(os, "2012")       then os_family="Windows 2012"
-    if InStr(os, "Windows 10") then os_family="Windows 10"
-    if InStr(os, "2016")       then os_family="Windows 2016"
-    if InStr(os, "2019")       then os_family="Windows 2019"
- 
+    if InStr(os, " 95")        then os_family="Windows 95" end if
+    if InStr(os, " 98")        then os_family="Windows 98" end if
+    if InStr(os, " NT")        then os_family="Windows NT" end if
+    if InStr(os, "2000")       then os_family="Windows 2000" end if
+    if InStr(os, " XP")        then os_family="Windows XP" end if
+    if InStr(os, "2003")       then os_family="Windows 2003" end if
+    if InStr(os, "Vista")      then os_family="Windows Vista" end if
+    if InStr(os, "2008")       then os_family="Windows 2008" end if
+    if InStr(os, "Windows 7")  then os_family="Windows 7" end if
+    if InStr(os, "Windows 8")  then os_family="Windows 8" end if
+    if InStr(os, "2012")       then os_family="Windows 2012" end if
+    if InStr(os, "Windows 10") then os_family="Windows 10" end if
+    if InStr(os, "Windows 11") then os_family="Windows 11" end if
+    if InStr(os, "2016")       then os_family="Windows 2016" end if
+    if InStr(os, "2019")       then os_family="Windows 2019" end if
+    if InStr(os, "2022")       then os_family="Windows 2022" end if
+    if (os_family = "" and InStr(os, "Server")) then
+        os_family = "Windows Server"
+    end if
 end function
 
 
@@ -8459,3 +8463,4 @@ End Sub
 ' 10211 - Win Phone 8
 ' 10240 - Windows 10
 ' 14393 - Server 2016, Windows 10 Anniversary Update
+' 22000 - Windows 11
