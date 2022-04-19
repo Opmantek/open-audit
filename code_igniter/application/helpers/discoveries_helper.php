@@ -76,7 +76,7 @@ if (! function_exists('all_ip_list')) {
             $command = 'nmap -n -sL --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
         } else {
             $command = 'nmap -n -sL ' . $discovery->subnet;
-        }Ø
+        }
 
         if (php_uname('s') === 'Darwin') {
             $command = '/usr/local/bin/' . $command;
