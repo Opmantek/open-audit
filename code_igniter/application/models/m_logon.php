@@ -168,6 +168,9 @@ class M_logon extends MY_Model
             }
             $ldap_servers = $query->result();
             if ( ! empty($ldap_servers)) {
+                # Added so we do not fail when checking self-signed certificates
+                # See here - https://community.opmantek.com/display/OA/Troubleshooting+LDAP+logins
+                putenv('LDAPTLS_REQCERT=never');
                 $log->summary = 'Retrieved LDAP Servers';
                 $log->detail = count($ldap_servers) . ' LDAP servers retrieved from database.';
                 $log->status = 'reading data';
