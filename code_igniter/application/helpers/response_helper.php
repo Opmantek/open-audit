@@ -620,16 +620,16 @@ if (!function_exists('response_get_collection')) {
 
         if (!empty($collection)) {
             if (in_array($collection, $collections)) {
-                $log->summary = 'Set collection according to GET.';
+                $log->summary = 'Set collection according to URL.';
             } else {
-                $log->summary = 'Collection set to summaries as invalid collection supplied.';
+                $log->summary = 'Invalid collection supplied (' . $collection . ').';
                 $log->severity = 5;
-                $collection = 'summaries';
+                $collection = '';
             }
         } else {
-            $log->summary = 'Collection set to summaries as no collection supplied.';
+            $log->summary = 'No collection supplied.';
             $log->severity = 5;
-            $collection = 'summaries';
+            $collection = '';
         }
         if (!empty($collection)) {
             $log->detail = 'COLLECTION: ' . $collection;
