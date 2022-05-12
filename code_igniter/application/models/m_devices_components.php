@@ -802,7 +802,7 @@ class M_devices_components extends MY_Model
         // PARTITION
         if ((string)$table === 'partition') {
             // AIX needs to also match on partition.description
-            if (strtolower($details->os_family) === 'ibm aix') {
+            if ( ! empty($details->os_family) and strtolower($details->os_family) === 'ibm aix') {
                 $match_columns[] = 'description';
             }
             for ($i=0; $i<count($input); $i++) {
