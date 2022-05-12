@@ -261,42 +261,79 @@ class M_summaries extends MY_Model
 
     public function read_sub_resource()
     {
+        $CI = & get_instance();
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
         $this->load->model('m_users');
         $data = array();
 
-        $collections = array('attributes' => 'th-list', 'configuration' => 'cogs', 'connections' => 'link', 'credentials' => 'shield', 'database' => 'database', 'devices' => 'tv', 'discoveries' => 'binoculars', 'fields' => 'list', 'groups' => 'tags', 'ldap_servers' => 'key', 'licenses' => 'leanpub', 'locations' => 'globe', 'logs' => 'bars', 'networks' => 'wifi', 'orgs' => 'bank', 'queries' => 'table', 'scripts' => 'code', 'summaries' => 'file-image-o', 'users' => 'users');
+        $collections = collections_list();
 
         foreach ($collections as $collection => $value) {
             if ($this->m_users->get_user_permission('', $collection, 'r')) {
+                // if ($collection == 'database') {
+                //     $count = count($this->db->list_tables());
+                // } else if ($collection == 'logs') {
+                //     $count = 2;
+                // } else if ($collection == 'devices') {
+                //     $sql = "SELECT COUNT(*) AS `count` FROM `system`";
+                //     $count = $this->run_sql($sql);
+                //     $count = intval($count[0]->count);
+                // } else if ($this->db->table_exists($collection)) {
+                //     $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "`";
+                //     $count = $this->run_sql($sql);
+                //     $count = intval($count[0]->count);
+                // } else {
+                //     $count = '';
+                // }
+                if ($collection === 'devices') {
+                    $collection = 'system';
+                }
                 if ($collection == 'database') {
                     $count = count($this->db->list_tables());
-                } else if ($collection == 'logs') {
-                    $count = 2;
-                } else if ($collection == 'devices') {
-                    $sql = "SELECT COUNT(*) AS `count` FROM `system`";
-                    $count = $this->run_sql($sql);
-                    $count = intval($count[0]->count);
-                } else if ($this->db->table_exists($collection)) {
+                } else if ($collection === 'reports') {
+                    $count = 0;
+                } else if ($collection === 'discovery_log' or $collection === 'logs' or $collection === 'roles') {
                     $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "`";
                     $count = $this->run_sql($sql);
                     $count = intval($count[0]->count);
-                } else {
-                    $count = '';
+                } else if ($collection === 'orgs') {
+                    $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE id IN (" . implode($org_list, ',') . ")";
+                    $count = $this->run_sql($sql);
+                    $count = intval($count[0]->count);
+                } else if ($value->orgs === 'u') {
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "`";
+                    $count = $this->run_sql($sql);
+                    $count = intval($count[0]->count);
+                } else if ($value->orgs === 'd') {
+                    $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE org_id IN (" . implode($org_list, ',') . ")";
+                    $count = $this->run_sql($sql);
+                    $count = intval($count[0]->count);
+                } else if ($value->orgs === 'b') {
+                    $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
+                    $org_list = array_unique(array_merge($org_list, $CI->m_orgs->get_user_ascendants($CI->user->id)));
+                    $org_list[] = 1;
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE org_id IN (" . implode($org_list, ',') . ")";
+                    $count = $this->run_sql($sql);
+                    $count = intval($count[0]->count);
                 }
+
                 $item = new stdClass();
                 $item->type = 'collection';
                 $item->attributes = new stdClass();
-                $item->attributes->name = ucwords(str_replace('_', ' ', $collection));
-                $item->attributes->collection = $collection;
-                $item->attributes->icon = $value;
+                foreach ($value as $key => $value) {
+                    $item->attributes->{$key} = $value;
+                }
                 $item->attributes->count = $count;
+                $item->attributes->collection = $collection;
                 $data[] = $item;
-                unset($item);
             }
         }
+
+
 
         $this->log->summary = 'finish';
         stdlog($this->log);
