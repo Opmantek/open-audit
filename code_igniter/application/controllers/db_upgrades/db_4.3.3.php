@@ -44,6 +44,14 @@ $this->alter_table('user', 'last_logon', "ADD last_logon datetime NOT NULL DEFAU
 
 $this->alter_table('users', 'name', "name varchar(200) NOT NULL DEFAULT ''", 'change');
 
+$sql = "DELETE FROM configuration WHERE name = 'firstwave_prompt'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20220321' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
