@@ -191,11 +191,11 @@ class M_attributes extends MY_Model
         $dictionary->product = 'community';
         $dictionary->notes = '';
         $dictionary->columns->id = $CI->temp_dictionary->id;
-        $dictionary->columns->name = $CI->temp_dictionary->name;
-        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->resource = 'The foreign table to reference.';
-        $dictionary->columns->value = 'The value for this particular item.';
         $dictionary->columns->type = 'The attribute in the foreign table.';
+        $dictionary->columns->name = 'The text that is displayed.';
+        $dictionary->columns->value = 'The value that is stored for this particular item.';
+        $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;
