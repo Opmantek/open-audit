@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Open-AudIT Community">
         <meta name="author" content="Mark Unwin">
-        <title>Open-AudIT Community</title>
+        <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>favicon.png" type="image/x-icon" />
+        <title>Open-AudIT</title>
 
         <!-- JS -->
         <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/jquery.min.js"></script>
@@ -13,7 +14,13 @@
         <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/bootstrap.bundle.min.js"></script>
         <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/jquery.dataTables.min.js"></script>
         <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/dataTables.bootstrap5.min.js"></script>
+        <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/fontawesome-all.min.js"></script>
+        <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/fa-v4-shims.js"></script>
         <script src="<?php echo $this->config->config['oa_web_folder']; ?>js5/open-audit.js"></script>
+
+        <?php if ($meta->action == 'read') { ?>
+            <script src="<?php echo $this->config->config['oa_web_folder'] . 'index.php/' . $meta->collection . '/' . $meta->id . '?format=js'; ?>"></script>
+        <?php } ?>
 
         <!-- CSS -->
         <link href="<?php echo $this->config->config['oa_web_folder']; ?>css5/bootstrap.min.css" rel="stylesheet">
@@ -21,174 +28,72 @@
         <link href="<?php echo $this->config->config['oa_web_folder']; ?>css5/font-awesome.css" rel="stylesheet" >
         <link href="<?php echo $this->config->config['oa_web_folder']; ?>css5/open-audit.css" rel="stylesheet" >
 
-        <script>
-            $(document).ready( function () {
-                $('.toastEnterprise').on('click', function() {
-                    var toastElList = [].slice.call(document.querySelectorAll('.toast-ent'));
-                    var toastList = toastElList.map(function(toastEl) {
-                        return new bootstrap.Toast(toastEl)
-                    });
-                    toastList.forEach(toast => toast.show());
-                    console.log(toastList);
-                });
-            });
-        </script>
-
-        <script>
-            $(document).ready( function () {
-                $('.toastProfessional').on('click', function() {
-                    var toastElList = [].slice.call(document.querySelectorAll('.toast-pro'));
-                    var toastList = toastElList.map(function(toastEl) {
-                        return new bootstrap.Toast(toastEl)
-                    });
-                    toastList.forEach(toast => toast.show());
-                    console.log(toastList);
-                });
-            });
-        </script>
-
-        <script>
-            $(document).ready( function () {
-                $('.toastPermission').on('click', function() {
-                    var toastElList = [].slice.call(document.querySelectorAll('.toast-perm'));
-                    var toastList = toastElList.map(function(toastEl) {
-                        return new bootstrap.Toast(toastEl)
-                    });
-                    toastList.forEach(toast => toast.show());
-                    console.log(toastList);
-                });
-            });
-        </script>
-
-        <script>
-            $(document).ready( function () {
-              //$( '.dropdown-menu a.dropdown-toggle' ).on( 'click', function ( e ) {
-                $( '.dropdown-menu a.dropdown-toggle' ).on( 'mouseenter', function ( e ) {
-                    var $el = $( this );
-                    $el.toggleClass('active-dropdown');
-                    var $parent = $( this ).offsetParent( ".dropdown-menu" );
-                    if ( !$( this ).next().hasClass( 'show' ) ) {
-                        $( this ).parents( '.dropdown-menu' ).first().find( '.show' ).removeClass( "show" );
-                    }
-                    var $subMenu = $( this ).next( ".dropdown-menu" );
-                    $subMenu.toggleClass( 'show' );
-                    $( this ).parent( "li" ).toggleClass( 'show' );
-                    $( this ).parents( 'li.nav-item.dropdown.show' ).on( 'hidden.bs.dropdown', function ( e ) {
-                        $( '.dropdown-menu .show' ).removeClass( "show" );
-                        $el.removeClass('active-dropdown');
-                    });
-                    if ( !$parent.parent().hasClass( 'navbar-nav' ) ) {
-                        $el.next().css( { "top": $el[0].offsetTop, "left": $parent.outerWidth() - 4 } );
-                    }
-                    return false;
-                } );
-            });
-
-            /* DataTables Init */
-            $(document).ready(function() {
-                $('.dataTable').DataTable( {
-                    "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-                    "pageLength": 25,
-                    "pagingType": "full"
-                } );
-            } );
-
-            /* Debug button */
-            $(document).ready(function () {
-                $('.debug').click(function (e) {
-                    $('#json_response').css('display', 'block');
-                })
-            });
-
-        </script>
-
-        <script>
-            $(document).ready(function () {
-                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-                var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                    return new bootstrap.Popover(popoverTriggerEl)
-                });
-            });
-        </script>
-
         <!-- Open-AudIT specific items -->
         <script>
             <?php
             if (isset($meta->id) and !is_null($meta->id)) {
-                echo "var id = '" . $meta->id . "';\n";
+                echo "            var id = '" . $meta->id . "';\n";
             }
             if (!empty($meta->collection)) {
-                echo "var collection = '" . $meta->collection . "';\n";
+                echo "            var collection = '" . $meta->collection . "';\n";
             }
             if (!empty($meta->baseurl)) {
-                echo "var baseurl = '" . $meta->baseurl . "';\n";
+                echo "            var baseurl = '" . $meta->baseurl . "';\n";
             } else {
-                echo "var baseurl = '';\n";
+                echo "            var baseurl = '';\n";
             }
             ?>
             var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
             var device_auto_delete = '<?php echo $this->config->config['device_auto_delete']; ?>';
-
-            function logout() {
-                $.get( "/omk/open-audit/logout");
-            }
         </script>
+
+        <?php # include 'modal_js.php'; ?>
+        <?php $this->config->config['oae_product'] = 'Open-AudIT Enterprise'; ?>
+        <?php #$instance->config->config['oae_product'] = 'enterprise'; ?>
+        <?php #$this->config->config['oae_license'] = 'none'; ?>
+        <?php $theme = '1'; ?>
 
         <?php if (!empty($orgs) and is_array($orgs) and !empty($data[0]->attributes->org_id)) { ?>
         <!-- Orgs Dropdown -->
         <script>
-        $(document).ready(function () {
-            $(document).on('click', '.edit_org', function (e) {
-                var org_id = $(this).attr("data-original_value");
-                $("#org_id").html("<div class='input-group' style='margin: 0 0 4px 0;'>\
-                    <select class='form-select form-select-sm'>\
-                    <?php
-                    foreach ($orgs as $org) {
-                        $selected = '';
-                        if ($org->id === $data[0]->attributes->org_id) {
-                            $selected = ' selected';
-                        }
-                        echo '<option value=\'' . $org->id . '\'' . $selected . '>' . $org->attributes->name . '</option>';
-                    } ?>\
-                    </select>\
-                    <div data-attribute='org_id' class='btn btn-success submit'><i class='fa fa-check'></i></div>\
-                    <div data-attribute='org_id' class='btn btn-danger cancel_org' ><i class='fa fa-remove'></i></div></div>");
-            });
+        // $(document).ready(function () {
+        //     $(document).on('click', '.edit_org', function (e) {
+        //         var org_id = $(this).attr("data-original_value");
+        //         $("#org_id").html("<div class='input-group' style='margin: 0 0 4px 0;'>\
+        //             <select class='form-select form-select-sm' data-attribute=\"org_id\">\
+        //             <?php
+        //             foreach ($orgs as $org) {
+        //                 $selected = '';
+        //                 if ($org->id === $data[0]->attributes->org_id) {
+        //                     $selected = ' selected';
+        //                 }
+        //                 echo '<option value=\'' . $org->id . '\'' . $selected . '>' . $org->attributes->name . '</option>';
+        //             } ?>\
+        //             </select>\
+        //             <div data-attribute='org_id' class='btn btn-success submit'><i class='fa fa-check'></i></div>\
+        //             <div data-attribute='org_id' class='btn btn-danger cancel_org' ><i class='fa fa-remove'></i></div></div>");
+        //     });
 
-            $(document).on('click', '.cancel_org', function (e) {
-                var attribute = $(this).attr("data-attribute");
-                console.log("Attribute: " + attribute);
-                console.log("Original Value: " + $("#"+attribute).attr("data-original-value"));
-                $("#"+attribute).html('<a href="<?php echo $this->config->config['oa_web_index'] . '/orgs/' . $data[0]->attributes->{'orgs.id'}; ?> ">' + $("#"+attribute).attr("data-original-value") + "</a>");
-            });
-
-        });
+        //     $(document).on('click', '.cancel_org', function (e) {
+        //         var attribute = $(this).attr("data-attribute");
+        //         console.log("Attribute: " + attribute);
+        //         console.log("Original Value: " + $("#"+attribute).attr("data-original-value"));
+        //         $("#"+attribute).html('<a href="<?php echo $this->config->config['oa_web_index'] . '/orgs/' . $data[0]->attributes->{'orgs.id'}; ?> ">' + $("#"+attribute).attr("data-original-value") + "</a>");
+        //     });
+        // });
         </script>
         <?php } ?>
-
-        <?php # include 'modal_js.php'; ?>
-        <?php $this->config->config['oae_product'] = 'Open-AudIT'; ?>
-        <?php $this->config->config['oae_license'] = 'none'; ?>
-        <?php $theme = '1'; ?>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
     <body class="d-flex flex-column h-100">
-
+        
         <?php #include 'modal_html.php'; ?>
 
         <!-- Menu -->
-        <?php if ($theme === 'green') { ?>
-        <nav class="navbar navbar-expand-md navbar-dark" style="background: linear-gradient(to right, #7EC56E, #52C0A7);">
-        <?php } else { ?>
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="background: #16325c">
-        <?php } ?>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="background-image: linear-gradient(180deg, #485563 2%, #29323C 97%);">
             <div class="container-fluid">
-                <?php if ($theme === 'green') { ?>
-                <img class="rounded-circle border border-white border-2" style="background: white; width:25px; margin-right:6px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/Open-AudIT.svg" alt="">
-                <?php } else { ?>
                 <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?php echo $this->config->config['oa_web_folder']; ?>images/Open-AudIT.svg" alt="">
-                <?php } ?>
-                <a class="navbar-brand" href="#">Open-AudIT <?php echo $this->config->config['display_version'] ?></a>
+                <a class="navbar-brand" href="#">Open-AudIT Enterprise <?php echo $this->config->config['display_version'] ?></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -197,15 +102,15 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarView" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?php echo __('View') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarView">
-                                <?php foreach ($dashboards as $dashboard) { ?>
-                                    <?php if ($dashboard->type === 'dashboards') { ?>
-                                        <?php if ($this->config->config['oae_product'] === 'enterprise' or $this->config->config['oae_product'] === 'professional') { ?>
-                                            <li><a class="dropdown-item" href="<?php echo $this->config->config['oae_url'] ?>/dashboards/<?php echo $dashboard->id; ?>/execute"><?php echo $dashboard->attributes->name; ?></a></li>
-                                        <?php } else { ?>
-                                            <li><a class="dropdown-item greyout toastEnterprise" href="#"><?php echo $dashboard->attributes->name; ?></a></li>
-                                        <?php } ?>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?php foreach ($dashboards as $dashboard) {
+                                if ($dashboard->type === 'dashboards') {
+                                    if ($this->config->config['oae_product'] === 'enterprise' or $this->config->config['oae_product'] === 'professional') {
+                                        echo "                                <li><a class=\"dropdown-item\" href=\"" . $this->config->config['oae_url'] . "/dashboards/" . $dashboard->id . "/execute\">" . $dashboard->attributes->name . "</a></li>\n";
+                                    } else {
+                                        echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
+                                    }
+                                }
+                            } ?>
                             </ul>
                         </li>
 
@@ -577,9 +482,9 @@ if (!empty($this->config->config['modules'])) {
         </nav>
 
         <!-- Breadcrumbs -->
-        <div class="container-fluid">
+        <div class="container-fluid" style="margin-bottom: -10px;">
                 <div class="row second-nav">
-                    <div class="col-3" style="padding-top:18px;">
+                    <div class="col-3" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="<?php echo $this->config->config['oa_web_index']; ?>" class="link-secondary" style="text-decoration: none;">Home</a></li>
@@ -590,11 +495,14 @@ if (!empty($this->config->config['modules'])) {
                             </ol>
                         </nav>
                     </div>
-                    <div class="col-9 clearfix" style="padding-bottom: 10px;padding-top: 12px;">
-                        <form class="float-end">
+                    <div class="col-9 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
+                        <form class="float-end" method="post" action="<?php echo $this->config->config['oa_web_index']; ?>/search">
                             <div class="btn-group" role="group">
-                                <input class="form-control form-control-sm" type="search" placeholder="Device Name or IP" aria-label="Search">
-                                <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+                                <input type="hidden" id="data[access_token]"        name="data[access_token]"        value="<?php echo $meta->access_token; ?>" />
+                                <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control form-control-sm" placeholder="Device Name or full IP" />
+                                <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["system"]' />
+                                <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]' />
+                                <button class="btn btn-sm btn-success" type="submit">Search</button>
                             </div>
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
@@ -602,13 +510,13 @@ if (!empty($this->config->config['modules'])) {
                                     Dashboards
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <?php
+<?php
                                     foreach ($dashboards as $dashboard) {
                                         if ($dashboard->type === 'dashboards') {
-                                            if ($this->config->config['oae_product'] === 'enterprise' or $this->config->config['oae_product'] === 'professional') {
+                                            if ($this->config->config['oae_product'] === 'Open-AudIT Enterprise' or $this->config->config['oae_product'] === 'Open-AudIT Professional') {
                                                 echo "                                    <li><a class=\"dropdown-item\" href=\"" . $this->config->config['oae_url'] . "/dashboards/" . $dashboard->id . "/execute\">" . $dashboard->attributes->name . "</a></li>\n";
                                             } else {
-                                                echo "                                      <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
+                                                echo "                                    <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
                                             }
                                         }
                                     } ?>
@@ -620,7 +528,6 @@ if (!empty($this->config->config['modules'])) {
                 </div>
             <br />
         </div>
-
 
         <div class="toast-container">
             <div class="position-fixed end-0 top-0 p-3" style="z-index: 5">
@@ -727,21 +634,21 @@ function professional_menu_item($collection, $import = 'y')
                                     <ul class=\"dropdown-menu\">
                                         <!-- " . ucwords($collection) . " List -->\n";
     // read
-    if (($instance->config->config['oae_product'] === 'enterprise' or $instance->config->config['oae_product'] === 'professional') && $instance->m_users->get_user_permission('', $collection, 'r')) {
+    if (($instance->config->config['oae_product'] === 'Open-AudIT Enterprise' or $instance->config->config['oae_product'] === 'Open-AudIT Professional') && $instance->m_users->get_user_permission('', $collection, 'r')) {
         $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"{$link}\">{$list}</a></li>\n";
-    } else if ($instance->config->config['oae_product'] === 'enterprise') {
+    } else if ($instance->config->config['oae_product'] === 'Open-AudIT Enterprise') {
         $return_string .= "                                     <li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">{$list}</a></li>\n";
     } else {
         $return_string .= "                                     <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">{$list}</a></li>\n";
     }
     // create
     $return_string .= "                                     <!-- " . ucwords($collection) . " Create -->\n";
-    if (($instance->config->config['oae_product'] === 'enterprise' or $instance->config->config['oae_product'] === 'professional') && $instance->m_users->get_user_permission('', $collection, 'c')) {
+    if (($instance->config->config['oae_product'] === 'Open-AudIT Enterprise' or $instance->config->config['oae_product'] === 'Open-AudIT Professional') && $instance->m_users->get_user_permission('', $collection, 'c')) {
         $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"{$link}/create\">{$create}</a></li>\n";
         if ($import === 'y') {
             $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"{$link}/import\">{$import_string}</a></li>\n";
         }
-    } else if ($instance->config->config['oae_product'] === 'enterprise' or $instance->config->config['oae_product'] === 'professional') {
+    } else if ($instance->config->config['oae_product'] === 'Open-AudIT Enterprise' or $instance->config->config['oae_product'] === 'Open-AudIT Professional') {
         $return_string .= "                                     <li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">{$create}</a></li>\n";
         if ($import === 'y') {
             $return_string .= "                                     <li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">{$import_string}</a></li>\n";
@@ -776,24 +683,24 @@ function enterprise_menu_item($collection, $import = 'y')
                                     <ul class=\"dropdown-menu\">
                                         <!-- " . ucwords($collection) . " List -->\n";
     // read
-    if ($instance->config->config['oae_product'] === 'enterprise' && $instance->m_users->get_user_permission('', $collection, 'r')) {
+    if ($instance->config->config['oae_product'] === 'Open-AudIT Enterprise' && $instance->m_users->get_user_permission('', $collection, 'r')) {
         $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"{$link}\">{$list}</a></li>\n";
     } else if ($collection === 'roles' && $instance->m_users->get_user_permission('', $collection, 'r')) {
         // special case - we don't need for Enterprise to 'read' roles.
         $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"" . $instance->config->config['oa_web_index'] . "/" . $collection . "\">{$list}</a></li>\n";
-    } else if ($instance->config->config['oae_product'] === 'enterprise') {
+    } else if ($instance->config->config['oae_product'] === 'Open-AudIT Enterprise') {
         $return_string .= "                                     <li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">{$list}</a></li>\n";
     } else {
         $return_string .= "                                     <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">{$list}</a></li>\n";
     }
     // create
     $return_string .= "                                     <!-- " . ucwords($collection) . " Create -->\n";
-    if ($instance->config->config['oae_product'] === 'enterprise' && $instance->m_users->get_user_permission('', $collection, 'c')) {
+    if ($instance->config->config['oae_product'] === 'Open-AudIT Enterprise' && $instance->m_users->get_user_permission('', $collection, 'c')) {
         $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"{$link}/create\">{$create}</a></li>\n";
         if ($import === 'y') {
             $return_string .= "                                     <li><a class=\"dropdown-item\" href=\"{$link}/import\">{$import}</a></li>\n";
         }
-    } else if ($instance->config->config['oae_product'] === 'enterprise') {
+    } else if ($instance->config->config['oae_product'] === 'Open-AudIT Enterprise') {
         $return_string .= "                                     <li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">{$create}</a></li>\n";
         if ($import === 'y') {
             $return_string .= "                                     <li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">{$import}</a></li>\n";

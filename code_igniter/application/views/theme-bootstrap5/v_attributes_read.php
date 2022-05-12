@@ -44,98 +44,106 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <div class="row">
-                                <div class="offset-2 col-8">
-                                    <p class="form_label">Organisation<br />
-                                    <p class="text_content">
-                                        <span id="org_id" name="org_id" data-original-value="<?php echo $item->attributes->{'orgs.name'}; ?>">
-                                            <a href="<?php echo $this->config->config['oa_web_index'] ?>/orgs/<?php echo $item->attributes->{'orgs.id'}; ?>">Default Organisation</a>
-                                        </span>
-                                        <span class="pull-right">
-                                            <i class="edit_org fa fa-pencil" data-attribute="org_id" title="Edit"></i>
-                                        </span>
-                                    </p>
-                                    <hr class="form_bottom"/></p>
-                                </div>
-                            </div>
+
                             <div class="row">
                                 <div class="offset-2 col-8">
                                     <p class="form_label">Resource<br />
                                     <p class="text_content">
-                                        <span id="resource" name="resource" data-original-value="<?php echo $item->attributes->resource; ?>">
+                                        <span id="resource" data-original-value="<?php echo $item->attributes->resource; ?>">
                                             <?php echo $item->attributes->resource; ?>
                                         </span>
                                         <span class="pull-right">
                                             <i class="edit fa fa-pencil" data-attribute="resource" title="Edit"></i>
                                         </span>
                                     </p>
-                                    <hr class="form_bottom"/></p>
+                                    <hr class="form_bottom"/>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="offset-2 col-8">
                                     <p class="form_label">Type<br />
                                     <p class="text_content">
-                                        <span id="type" name="type" data-original-value="<?php echo $item->attributes->type; ?>">
+                                        <span id="type" data-original-value="<?php echo $item->attributes->type; ?>">
                                             <?php echo $item->attributes->type; ?>
                                         </span>
                                         <span class="pull-right">
                                             <i class="edit fa fa-pencil" data-attribute="type" title="Edit"></i>
                                         </span>
                                     </p>
-                                    <hr class="form_bottom"/></p>
+                                    <hr class="form_bottom"/>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="offset-2 col-8">
-                                    <p class="form_label">Name<br />
+                                    <p class="form_label">Name (display)<br />
                                     <p class="text_content">
-                                        <span id="name" name="name" data-original-value="<?php echo $item->attributes->name; ?>">
+                                        <span id="name" data-original-value="<?php echo $item->attributes->name; ?>">
                                             <?php echo $item->attributes->name; ?>
                                         </span>
                                         <span class="pull-right">
                                             <i class="edit fa fa-pencil" data-attribute="name" title="Edit"></i>
                                         </span>
                                     </p>
-                                    <hr class="form_bottom"/></p>
+                                    <hr class="form_bottom"/>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="offset-2 col-8">
-                                    <p class="form_label">Value<br />
+                                    <p class="form_label">Value (store)<br />
                                     <p class="text_content">
-                                        <span id="value" name="value" data-original-value="<?php echo $item->attributes->value; ?>">
+                                        <span id="value" data-original-value="<?php echo $item->attributes->value; ?>">
                                             <?php echo $item->attributes->value; ?>
                                         </span>
                                         <span class="pull-right">
                                             <i class="edit fa fa-pencil" data-attribute="value" title="Edit"></i>
                                         </span>
                                     </p>
-                                    <hr class="form_bottom"/></p>
+                                    <hr class="form_bottom"/>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="offset-2 col-8">
+                                    <p class="form_label">Organisation<br />
+                                    <p class="text_content">
+                                        <span id="org_id" data-original-value="<?php echo $item->attributes->{'orgs.name'}; ?>">
+                                            <a href="<?php echo $this->config->config['oa_web_index'] ?>/orgs/<?php echo $item->attributes->{'orgs.id'}; ?>">Default Organisation</a>
+                                        </span>
+                                        <span class="pull-right">
+                                            <i class="edit_org fa fa-pencil" data-attribute="org_id" title="Edit"></i>
+                                        </span>
+                                    </p>
+                                    <hr class="form_bottom"/>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="offset-2 col-8">
                                     <p class="form_label">Edited By<br />
                                     <p class="text_content">
-                                        <span id="edited_by" name="edited_by" data-original-value="<?php echo $item->attributes->edited_by; ?>">
+                                        <span id="edited_by" data-original-value="<?php echo $item->attributes->edited_by; ?>">
                                             <?php echo $item->attributes->edited_by; ?>
                                         </span>
                                     </p>
-                                    <hr class="form_bottom"/></p>
+                                    <hr class="form_bottom"/>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="offset-2 col-8">
                                     <p class="form_label">Edited Date<br />
                                     <p class="text_content">
-                                        <span id="edited_date" name="edited_date" data-original-value="<?php echo $item->attributes->edited_date; ?>">
+                                        <span id="edited_date" data-original-value="<?php echo $item->attributes->edited_date; ?>">
                                             <?php echo $item->attributes->edited_date; ?>
                                         </span>
                                     </p>
-                                    <hr class="form_bottom"/></p>
+                                    <hr class="form_bottom"/>
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-6">
                             <div class="offset-2 col-8">
@@ -168,41 +176,3 @@ include 'shared/read_functions.php';
 <?php echo json_encode($data, JSON_PRETTY_PRINT); ?>
 </pre>
 -->
-
-
-
-<style>
-.form_label {
-    color:  lightslategrey;
-    margin: 0 0 0px 0;
-    font-size:  1rem;
-}
-.text_content {
-    color:  black;
-    margin: 0 0 0 4px;
-    font-size:  1.4rem;
-}
-.form_bottom {
-    margin: 0 0 0 0;
-}
-.edit_org {
-    color: lightslategrey;
-    font-size:  1.2rem;
-}
-.edit_org:hover {
-    color: rgba(0, 0, 0, 1);
-    cursor:  pointer;
-}
-.edit {
-    color: lightslategrey;
-    font-size:  1.2rem;
-}
-.edit:hover {
-    color: rgba(0, 0, 0, 1);
-    cursor:  pointer;
-}
-a {
-    text-decoration:  none;
-    color: #3bafda;
-}
-</style>

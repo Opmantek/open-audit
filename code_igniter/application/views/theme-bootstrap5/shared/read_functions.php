@@ -63,23 +63,36 @@ function card_header($collection, $id, $icon) {
     }
     $collection_title = __($collection_title);
     $return_string = "<div class=\"row\">
-                        <div class=\"col-9 clearfix\">
-                            <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"\">
-                                <div class=\"btn-group\" role=\"group\">
-                                    <button type=\"button\" class=\"btn btn-outline-dark oa-card-button\"><i class=\"{$icon} ?> oa-icon\"></i>{$collection_title}</button>
-                                </div>
+                    <div class=\"col-9 clearfix\">
+                        <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"\">
+                            <div class=\"btn-group\" role=\"group\">
+                                <button type=\"button\" class=\"btn btn-outline-dark oa-card-button\"><i class=\"{$icon} ?> oa-icon\"></i>{$collection_title}</button>
                             </div>
                         </div>
-                        <div class=\"col-3 clearfix\">
-                            <div class=\"btn-group btn-group-sm float-end\" role=\"group\" aria-label=\"\">
-                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "\" title=\"" . __('List') . "\"><i class=\"fa fa-list\"></i></a>
-                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . '/' . $id . "?format=csv\" title=\"" . __('Download CSV') . "\"><i class=\"fa fa-columns\"></i></a>
-                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . '/' . $id . "?format=json\" title=\"" . __('Request JSON') . "\"><i class=\"fa fa-code\"></i></a>\n";
-                                if ($instance->m_users->get_user_permission('', $collection, 'c')) { $return_string .= "                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/import\" title=\"" . __('Upload CSV') . "\"><i class=\"fa fa-upload\"></i></a>\n"; }
-                                if ($instance->m_users->get_user_permission('', $collection, 'c')) { $return_string .= "                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/create\" title=\"" . __('Create') . "\"><i class=\"fa fa-plus\"></i></a>\n"; }
-                                $return_string .= "                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/help\" title=\"" . __('Help') . "\"><i class=\"fa fa-question\"></i></a>
+                    </div>
+                    <div class=\"col-3 clearfix\">
+                        <div class=\"btn-group btn-group-sm float-end\" role=\"group\">
+                            <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "\" title=\"" . __('List') . "\"><i class=\"fa fa-list\"></i></a>\n";
+                            if ($collection !== 'configuration') {
+                                echo "                            <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/create\" title=\"" . __('Create') . "\"><i class=\"fa fa-plus\"></i></a>\n";
+                            }
+                            if ($instance->m_users->get_user_permission('', $collection, 'd')) {
+                            $return_string .= "                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button delete_link\" data-id=\"{$id}\" data-name=\"\" title=\"" . __('Delete') . "\"><i class=\"fa fa-trash\"></i></a>\n";
+                            }
+                            $return_string .= "                                <div class=\"dropdown\">
+                                <button class=\"btn btn-sm btn-outline-secondary panel-button dropdown-toggle\" type=\"button\" id=\"collectionHeaderButton\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">
+                                    <i class=\"fa fa-ellipsis-v\" aria-hidden=\"true\"></i>
+                                </button>
+                                <ul class=\"dropdown-menu\" aria-labelledby=\"collectionHeaderButton\">\n
+                                    <li><a class=\"dropdown-item\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/" . $id . "?format=csv\">" . __("Export to CSV") . "</a></li>\n
+                                    <li><a class=\"dropdown-item\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "import\">" . __("Import CSV") . "</a></li>\n
+                                    <li><a class=\"dropdown-item\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/" . $id . "?format=json\">" . __("Export to JSON") . "</a></li>\n
+                                    <li><a class=\"dropdown-item\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "import/json\">" . __("Import JSON") . "</a></li>\n
+                                </ul>
                             </div>
+                            <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/help\" title=\"" . __('Help') . "\"><i class=\"fa fa-question\"></i></a>
                         </div>
-                    </div>\n";
+                    </div>
+                </div>";
     return $return_string;
 }

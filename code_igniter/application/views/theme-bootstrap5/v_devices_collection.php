@@ -35,35 +35,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-$refine_link = $_SERVER["REQUEST_URI"];
-if (strpos($refine_link, '?') === false) {
-    $refine_link .= '?';
-} else if (strrpos($refine_link, '&') !== strlen($refine_link)-1) {
-    $refine_link .= '&';
-}
+// $refine_link = $_SERVER["REQUEST_URI"];
+// if (strpos($refine_link, '?') === false) {
+//     $refine_link .= '?';
+// } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1) {
+//     $refine_link .= '&';
+// }
 
-if (!empty($meta->groupby)) {
-    $refine_link = str_replace('?groupby=' . $meta->groupby, '?', $refine_link);
-    $refine_link = str_replace('&groupby=' . $meta->groupby, '', $refine_link);
-    if (strpos($refine_link, 'properties=') !== false) {
-        $refine_link = str_replace('properties=', 'properties=system.id,system.name,', $refine_link);
-    } else {
-        $refine_link .= '&properties=system.id,system.name';
-    }
-}
+// if (!empty($meta->groupby)) {
+//     $refine_link = str_replace('?groupby=' . $meta->groupby, '?', $refine_link);
+//     $refine_link = str_replace('&groupby=' . $meta->groupby, '', $refine_link);
+//     if (strpos($refine_link, 'properties=') !== false) {
+//         $refine_link = str_replace('properties=', 'properties=system.id,system.name,', $refine_link);
+//     } else {
+//         $refine_link .= '&properties=system.id,system.name';
+//     }
+// }
 
-if (!empty($meta->sub_resource_name)) {
-    $title = ' - ' . $meta->sub_resource_name;
-} else {
-    $title = '';
-}
+// if (!empty($meta->sub_resource_name)) {
+//     $title = ' - ' . $meta->sub_resource_name;
+// } else {
+//     $title = '';
+// }
 
-$export_link = $links->first;
-if (strpos($links->first, '?') !== false) {
-    $export_link .= '&';
-} else {
-    $export_link .= '?';
-}
+// $export_link = $links->first;
+// if (strpos($links->first, '?') !== false) {
+//     $export_link .= '&';
+// } else {
+//     $export_link .= '?';
+// }
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -195,43 +195,43 @@ if (strpos($links->first, '?') !== false) {
     </main>
 
 <?php
-function refine($property, $value, $display = '', $align = 'left')
-{
-    if ($display === '') {
-        $display = $value;
-    }
-    $CI = & get_instance();
-    if (strlen($display) > 28) {
-        $trim = intval($CI->config->config['gui_trim_characters']);
-        if (empty($trim)) {
-            $trim = 25;
-        }
-        $display = mb_substr($display, 0, $trim) . ' ...';
-    }
+// function refine($property, $value, $display = '', $align = 'left')
+// {
+//     if ($display === '') {
+//         $display = $value;
+//     }
+//     $CI = & get_instance();
+//     if (strlen($display) > 28) {
+//         $trim = intval($CI->config->config['gui_trim_characters']);
+//         if (empty($trim)) {
+//             $trim = 25;
+//         }
+//         $display = mb_substr($display, 0, $trim) . ' ...';
+//     }
 
-    $query_parameters = $CI->response->meta->query_parameters;
-    $item = new stdClass();
-    $item->name = $property;
-    $item->operator = '=';
-    $item->value = $value;
-    $query_parameters[] = $item;
-    $include_link = create_url($query_parameters);
-    unset($query_parameters);
+//     $query_parameters = $CI->response->meta->query_parameters;
+//     $item = new stdClass();
+//     $item->name = $property;
+//     $item->operator = '=';
+//     $item->value = $value;
+//     $query_parameters[] = $item;
+//     $include_link = create_url($query_parameters);
+//     unset($query_parameters);
 
-    $query_parameters = $CI->response->meta->query_parameters;
-    $item = new stdClass();
-    $item->name = $property;
-    $item->operator = '!=';
-    $item->value = $value;
-    $query_parameters[] = $item;
-    $exclude_link = create_url($query_parameters);
-    unset($query_parameters);
+//     $query_parameters = $CI->response->meta->query_parameters;
+//     $item = new stdClass();
+//     $item->name = $property;
+//     $item->operator = '!=';
+//     $item->value = $value;
+//     $query_parameters[] = $item;
+//     $exclude_link = create_url($query_parameters);
+//     unset($query_parameters);
 
-    if ( ! empty($value)) {
-        echo '            <td class="text-' . $align . '"><span class="small fa fa-filter" aria-hidden="true" data-bs-placement="left" data-bs-html="true" data-bs-toggle="popover" title="Refine" data-bs-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . $value . '">&nbsp;' . $display . "</span></td>\n";
-    } else {
-        echo '            <td class="text-' . $align . '">' . $display . "</td>\n";
-    }
-}
+//     if ( ! empty($value)) {
+//         echo '            <td class="text-' . $align . '"><span class="small fa fa-filter" aria-hidden="true" data-bs-placement="left" data-bs-html="true" data-bs-toggle="popover" title="Refine" data-bs-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . $value . '">&nbsp;' . $display . "</span></td>\n";
+//     } else {
+//         echo '            <td class="text-' . $align . '">' . $display . "</td>\n";
+//     }
+// }
 ?>
 

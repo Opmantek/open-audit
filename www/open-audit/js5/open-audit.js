@@ -119,23 +119,62 @@ $(document).ready(function () {
 */
     $(document).on('click', '.edit', function (e) {
         var attribute = $(this).attr("data-attribute");
-        console.log("Attribute: " + attribute);
-        var item = $("#"+attribute);
-        var value = jQuery.trim(item.text());
-        console.log(value);
-        $("#"+attribute).html("<div class='input-group' style='margin: 0 0 4px 0;'><input class='form-control' type='text' value='" + value + "'/>\
+        var value = jQuery.trim($("#"+attribute).text());
+        // console.log("Attribute: " + attribute);
+        // console.log("Value: " + value);
+        $("#"+attribute).html("<div class='input-group' style='margin: 0 0 4px 0;'><input data-attribute='" + attribute + "' class='form-control' type='text' value='" + value + "'/>\
             <div data-attribute='" + attribute + "' class='btn btn-success submit'><i class='fa fa-check'></i></div>\
             <div data-attribute='" + attribute + "' class='btn btn-danger cancel' ><i class='fa fa-remove'></i></div></div>");
+            $(".edit[data-attribute='" + attribute + "']").hide();
     });
     $(document).on('click', '.cancel', function (e) {
         var attribute = $(this).attr("data-attribute");
-        console.log("Attribute: " + attribute);
-        console.log("Original Value: " + $("#"+attribute).attr("data-original-value"));
+        // console.log("Attribute: " + attribute);
+        // console.log("Original Value: " + $("#"+attribute).attr("data-original-value"));
         $("#"+attribute).html($("#"+attribute).attr("data-original-value"));
+        $(".edit[data-attribute='" + attribute + "']").show();
     });
-
+    $(document).on('click', '.submit', function (e) {
+        var attribute = $(this).attr("data-attribute");
+        var value = $(".form-control[data-attribute='" + attribute + "']").val();
+        // console.log("Attribute: " + attribute);
+        // console.log("Value: " + value);
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = id;
+        data["data"]["type"] = collection;
+        data["data"]["attributes"] = {};
+        if (attribute == 'status' && value == 'deleted' && device_auto_delete == 'y') {
+            if (confirm("Are you sure?\n\nYour settings mean this will permanently DELETE this device and remove all its data from the database.\n\nIs this acceptable?") !== true) {
+                return;
+            }
+        }
+        if (attribute.indexOf(".") === -1) {
+            data["data"]["attributes"][attribute] = value;
+        } else {
+            var attributes = attribute.split(".");
+            data["data"]["attributes"][attributes[0]] = {};
+            data["data"]["attributes"][attributes[0]][attributes[1]] = value;
+        }
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "PATCH",
+            url: id,
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+                /* alert( 'success' ); */
+            },
+            error: function (data) {
+                data = JSON.parse(data.responseText);
+                alert(data.errors[0].code + "\n\n" + data.errors[0].title + "\n\n" + data.errors[0].detail + "\n\n" + data.errors[0].message);
+                console.log(data.errors[0].code + "\n\n" + data.errors[0].title + "\n\n" + data.errors[0].detail + "\n\n" + data.errors[0].message);
+            }
+        });
+        $("#"+attribute).html(value);
+        $(".edit[data-attribute='" + attribute + "']").show();
+    });
 });
-
 
 /* Delete links */
 $(document).ready(function () {
@@ -161,3 +200,88 @@ $(document).ready(function () {
         });
     });
 });
+
+
+$(document).ready( function () {
+    $('.toastEnterprise').on('click', function() {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast-ent'));
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl)
+        });
+        toastList.forEach(toast => toast.show());
+        console.log(toastList);
+    });
+});
+
+$(document).ready( function () {
+    $('.toastProfessional').on('click', function() {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast-pro'));
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl)
+        });
+        toastList.forEach(toast => toast.show());
+        console.log(toastList);
+    });
+});
+
+$(document).ready( function () {
+    $('.toastPermission').on('click', function() {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast-perm'));
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl)
+        });
+        toastList.forEach(toast => toast.show());
+        console.log(toastList);
+    });
+});
+
+/* Menus multi-level */
+$(document).ready( function () {
+    $( '.dropdown-menu a.dropdown-toggle' ).on( 'mouseenter', function ( e ) {
+        var $el = $( this );
+        $el.toggleClass('active-dropdown');
+        var $parent = $( this ).offsetParent( ".dropdown-menu" );
+        if ( !$( this ).next().hasClass( 'show' ) ) {
+            $( this ).parents( '.dropdown-menu' ).first().find( '.show' ).removeClass( "show" );
+        }
+        var $subMenu = $( this ).next( ".dropdown-menu" );
+        $subMenu.toggleClass( 'show' );
+        $( this ).parent( "li" ).toggleClass( 'show' );
+        $( this ).parents( 'li.nav-item.dropdown.show' ).on( 'hidden.bs.dropdown', function ( e ) {
+            $( '.dropdown-menu .show' ).removeClass( "show" );
+            $el.removeClass('active-dropdown');
+        });
+        if ( !$parent.parent().hasClass( 'navbar-nav' ) ) {
+            $el.next().css( { "top": $el[0].offsetTop, "left": $parent.outerWidth() - 4 } );
+        }
+        return false;
+    } );
+});
+
+/* DataTables Init */
+$(document).ready(function() {
+    $('.dataTable').DataTable( {
+        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+        "pageLength": 25,
+        "pagingType": "full"
+    } );
+} );
+
+/* Debug button */
+$(document).ready(function () {
+    $('.debug').click(function (e) {
+        $('#json_response').css('display', 'block');
+    })
+});
+
+$(document).ready(function () {
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
+});
+
+function logout() {
+    $.get( "/omk/open-audit/logout");
+}
+

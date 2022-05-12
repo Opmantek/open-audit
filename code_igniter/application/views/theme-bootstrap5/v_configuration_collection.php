@@ -30,45 +30,46 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_3.5.3
+* @version   GIT: Open-AudIT_4.3.3
 * @link      http://www.open-audit.org
  */
 include 'shared/collection_functions.php';
 ?>
         <main class="container-fluid">
-            <div class="card">
+        <div class="card">
                 <div class="card-header">
                     <?php echo card_header($meta->collection, '', $meta->icon); ?>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
+                    <?php if (!empty($this->response->data)) { ?>
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th class="text-center" data-orderable="false"><?php echo __('Details')?></th>
-                                <th><?php echo __('Resource')?></th>
-                                <th><?php echo __('Type')?></th>
-                                <th><?php echo __('Name (display)')?></th>
-                                <th><?php echo __('Value (store)')?></th>
-                                <?php if ($this->m_users->get_user_permission('', 'attributes', 'd')) { ?>
-                                <th class="text-center" data-orderable="false"><?php echo __('Delete')?></th>
-                                <?php } ?>
+                                <th class="text-center"><?php echo __('Details')?></th>
+                                <th><?php echo __('Name')?></th>
+                                <th><?php echo __('Value')?></th>
+                                <th><?php echo __('Edited By')?></th>
+                                <th><?php echo __('Edited On')?></th>
+                                <th class="wrap"><?php echo __('Description')?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($data as $item) { ?>
+                            <?php foreach ($this->response->data as $item): ?>
+                            <?php if ($item->attributes->name !== 'web_internal_version') { ?>
+                            <?php if (strlen($item->attributes->value) > 30) { $item->attributes->value = substr($item->attributes->value, 0, 27) . '...'; } ?>
                             <tr>
-                                <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="<?php echo $this->config->config['oa_web_index'] ?>/<?php echo $meta->collection ?>/<?php echo $item->id ?>"><i class="fa fa-eye"></i></a></td>
-                                <td><?php echo $item->attributes->resource; ?></td>
-                                <td><?php echo $item->attributes->type ?></td>
-                                <td><?php echo $item->attributes->name ?></td>
-                                <td><?php echo $item->attributes->value ?></td>
-                                <?php if ($this->m_users->get_user_permission('', $meta->collection, 'd')) { ?>
-                                <td class="text-center"><button class="btn btn-sm btn-danger delete_link" data-id="<?php echo $item->id; ?>" data-name="<?php echo $item->attributes->name; ?>" aria-label="Left Align" ><i class="fa fa-trash"></i></button></td>
-                                <?php } ?>
+                                <td class="text-center"><a class="btn btn-sm btn-primary" href="configuration/<?php echo $item->id; ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                <td><?php echo $item->attributes->name; ?></td>
+                                <td><?php echo $item->attributes->value; ?></td>
+                                <td><?php echo $item->attributes->edited_by; ?></td>
+                                <td><?php echo $item->attributes->edited_date; ?></td>
+                                <td class="wrap"><?php echo $item->attributes->description; ?></td>
                             </tr>
                             <?php } ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <?php } ?>
                 </div>
             </div>
         </main>
