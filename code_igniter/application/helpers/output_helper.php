@@ -385,6 +385,9 @@ if (! function_exists('output')) {
         header("Pragma: no-cache");
         header("Expires: 0");
         header($CI->response->meta->header);
+        if ( ! empty($CI->response->meta->collection)) {
+            $CI->response->meta->icon = icon($CI->response->meta->collection);
+        }
         echo json_encode($CI->response);
     }
 
@@ -582,7 +585,7 @@ if (! function_exists('output')) {
                 break;
 
             case 'attributes':
-                $icon = 'fa fa-list';
+                $icon = 'fa fa-list-ul';
                 break;
 
             case 'baselines':
@@ -935,7 +938,7 @@ if (! function_exists('output')) {
         $CI->load->model('m_dashboards');
         $result = @$CI->m_dashboards->collection($CI->user->id);
         $CI->response->included = @array_merge($CI->response->included, $result);
-        $CI->response->dashboards = @array_merge($CI->response->included, $result);
+        $CI->response->dashboards = $result;
 
         $include = true;
         if (is_array($CI->response->included)) {
