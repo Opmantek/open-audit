@@ -1165,6 +1165,7 @@ if ( ! function_exists('inputRead')) {
                 $org_list = $CI->user->orgs;
                 break;
 
+            case 'attributes':
             case 'dashboards':
             case 'discovery_scan_options':
             case 'fields':
@@ -1554,6 +1555,284 @@ if ( ! function_exists('build_join')) {
         return($join);
     }
 }
+
+
+
+
+
+if ( ! function_exists('collections_list')) {
+    /**
+     * Return an object of all valid collections and their attributes
+     * @return object
+     */
+    function collections_list()
+    {
+        $collections = new stdClass();
+
+        $collections->applications = new stdClass();
+        $collections->applications->icon = 'fa fa-snowflake-o';
+        $collections->applications->name = 'Applications';
+        $collections->applications->edition = 'Enterprise';
+        $collections->applications->orgs = 'd';
+
+        $collections->attributes = new stdClass();
+        $collections->attributes->icon = 'fa fa-list-ul';
+        $collections->attributes->name = 'Attributes';
+        $collections->attributes->edition = 'Community';
+        $collections->attributes->orgs = 'b';
+
+        $collections->baselines = new stdClass();
+        $collections->baselines->icon = 'fa fa-line-chart';
+        $collections->baselines->name = 'Baselines';
+        $collections->baselines->edition = 'Enterprise';
+        $collections->baselines->orgs = 'd';
+
+        $collections->baselines_policies = new stdClass();
+        $collections->baselines_policies->icon = 'fa fa-area-chart';
+        $collections->baselines_policies->name = 'Baselines Policies';
+        $collections->baselines_policies->edition = 'Enterprise';
+        $collections->baselines_policies->orgs = 'd';
+
+        $collections->buildings = new stdClass();
+        $collections->buildings->icon = 'fa fa-building-o';
+        $collections->buildings->name = 'Buildings';
+        $collections->buildings->edition = 'Enterprise';
+        $collections->buildings->orgs = 'd';
+
+        $collections->clouds = new stdClass();
+        $collections->clouds->icon = 'fa fa-cloud';
+        $collections->clouds->name = 'Clouds';
+        $collections->clouds->edition = 'Enterprise';
+        $collections->clouds->orgs = 'd';
+
+        $collections->clusters = new stdClass();
+        $collections->clusters->icon = 'fa fa-cubes';
+        $collections->clusters->name = 'Clusters';
+        $collections->clusters->edition = 'Professional';
+        $collections->clusters->orgs = 'd';
+
+        $collections->collectors = new stdClass();
+        $collections->collectors->icon = 'fa fa-cogs';
+        $collections->collectors->name = 'Collectors';
+        $collections->collectors->edition = 'Enterprise';
+        $collections->collectors->orgs = 'd';
+
+        $collections->configuration = new stdClass();
+        $collections->configuration->icon = 'fa fa-sliders';
+        $collections->configuration->name = 'Configuration';
+        $collections->configuration->edition = 'Community';
+        $collections->configuration->orgs = 'u';
+
+        $collections->connections = new stdClass();
+        $collections->connections->icon = 'fa fa-link';
+        $collections->connections->name = 'Connections';
+        $collections->connections->edition = 'Community';
+        $collections->connections->orgs = 'd';
+
+        $collections->credentials = new stdClass();
+        $collections->credentials->icon = 'fa fa-shield';
+        $collections->credentials->name = 'Credentials';
+        $collections->credentials->edition = 'Community';
+        $collections->credentials->orgs = 'd';
+
+        $collections->dashboards = new stdClass();
+        $collections->dashboards->icon = 'fa fa-dashboard';
+        $collections->dashboards->name = 'Dashboards';
+        $collections->dashboards->edition = 'Enterprise';
+        $collections->dashboards->orgs = 'b';
+
+        $collections->database = new stdClass();
+        $collections->database->icon = 'fa fa-database';
+        $collections->database->name = 'Database';
+        $collections->database->edition = 'Community';
+        $collections->database->orgs = 'u';
+
+        $collections->devices = new stdClass();
+        $collections->devices->icon = 'fa fa-desktop';
+        $collections->devices->name = 'Devices';
+        $collections->devices->edition = 'Community';
+        $collections->devices->orgs = 'd';
+
+        $collections->discoveries = new stdClass();
+        $collections->discoveries->icon = 'fa fa-binoculars';
+        $collections->discoveries->name = 'Discoveries';
+        $collections->discoveries->edition = 'Community';
+        $collections->discoveries->orgs = 'd';
+
+        $collections->discovery_log = new stdClass();
+        $collections->discovery_log->icon = 'fa fa-terminal';
+        $collections->discovery_log->name = 'Discovery Log';
+        $collections->discovery_log->edition = 'Community';
+        $collections->discovery_log->orgs = 'd';
+
+        $collections->discovery_scan_options = new stdClass();
+        $collections->discovery_scan_options->icon = 'fa fa-random';
+        $collections->discovery_scan_options->name = 'Scan Options';
+        $collections->discovery_scan_options->edition = 'Community';
+        $collections->discovery_scan_options->orgs = 'b';
+
+        $collections->fields = new stdClass();
+        $collections->fields->icon = 'fa fa-comments-o';
+        $collections->fields->name = 'Fields';
+        $collections->fields->edition = 'Community';
+        $collections->fields->orgs = 'b';
+
+        $collections->files = new stdClass();
+        $collections->files->icon = 'fa fa-file-image-o';
+        $collections->files->name = 'Files';
+        $collections->files->edition = 'Enterprise';
+        $collections->files->orgs = 'b';
+
+        $collections->floors = new stdClass();
+        $collections->floors->icon = 'fa fa-sort-numeric-desc';
+        $collections->floors->name = 'Floors';
+        $collections->floors->edition = 'Enterprise';
+        $collections->floors->orgs = 'd';
+
+        $collections->groups = new stdClass();
+        $collections->groups->icon = 'fa fa-tags';
+        $collections->groups->name = 'Groups';
+        $collections->groups->edition = 'Community';
+        $collections->groups->orgs = 'b';
+
+        $collections->help = new stdClass();
+        $collections->help->icon = 'fa fa-question';
+        $collections->help->name = 'Help';
+        $collections->help->edition = 'Community';
+        $collections->help->orgs = 'u';
+
+        $collections->integrations = new stdClass();
+        $collections->integrations->icon = 'fa fa-exchange';
+        $collections->integrations->name = 'Integrations';
+        $collections->integrations->edition = 'Enterprise';
+        $collections->integrations->orgs = 'd';
+
+        $collections->ldap_servers = new stdClass();
+        $collections->ldap_servers->icon = 'fa fa-address-card-o';
+        $collections->ldap_servers->name = 'LDAP Servers';
+        $collections->ldap_servers->edition = 'Community';
+        $collections->ldap_servers->orgs = 'd';
+
+        $collections->licenses = new stdClass();
+        $collections->licenses->icon = 'fa fa-leanpub';
+        $collections->licenses->name = 'Licenses';
+        $collections->licenses->edition = 'Community';
+        $collections->licenses->orgs = 'd';
+
+        $collections->locations = new stdClass();
+        $collections->locations->icon = 'fa fa-building';
+        $collections->locations->name = 'Locations';
+        $collections->locations->edition = 'Communnity';
+        $collections->locations->orgs = 'd';
+
+        $collections->logs = new stdClass();
+        $collections->logs->icon = 'fa fa-bars';
+        $collections->logs->name = 'Logs';
+        $collections->logs->edition = 'Community';
+        $collections->logs->orgs = 'd';
+
+        $collections->maps = new stdClass();
+        $collections->maps->icon = 'fa fa-map-o';
+        $collections->maps->name = 'Maps';
+        $collections->maps->edition = 'Professional';
+        $collections->maps->orgs = 'd';
+
+        $collections->networks = new stdClass();
+        $collections->networks->icon = 'fa fa-wifi';
+        $collections->networks->name = 'Networks';
+        $collections->networks->edition = 'Community';
+        $collections->networks->orgs = 'd';
+
+        $collections->orgs = new stdClass();
+        $collections->orgs->icon = 'fa fa-bank';
+        $collections->orgs->name = 'Organisations';
+        $collections->orgs->edition = 'Community';
+        $collections->orgs->orgs = 'd';
+
+        $collections->queries = new stdClass();
+        $collections->queries->icon = 'fa fa-table';
+        $collections->queries->name = 'Queries';
+        $collections->queries->edition = 'Community';
+        $collections->queries->orgs = 'b';
+
+        $collections->rack_devices = new stdClass();
+        $collections->rack_devices->icon = 'fa fa-desktop';
+        $collections->rack_devices->name = 'Rack Devices';
+        $collections->rack_devices->edition = 'Enterprise';
+        $collections->rack_devices->orgs = 'd';
+
+        $collections->racks = new stdClass();
+        $collections->racks->icon = 'fa fa-film';
+        $collections->racks->name = 'Racks';
+        $collections->racks->edition = 'Enterprise';
+        $collections->racks->orgs = 'd';
+
+        $collections->reports = new stdClass();
+        $collections->reports->icon = 'fa fa-table';
+        $collections->reports->name = 'Reports';
+        $collections->reports->edition = 'Professional';
+        $collections->reports->orgs = 'b';
+
+        $collections->roles = new stdClass();
+        $collections->roles->icon = 'fa fa-lock';
+        $collections->roles->name = 'Roles';
+        $collections->roles->edition = 'Community';
+        $collections->roles->orgs = 'b';
+
+        $collections->rooms = new stdClass();
+        $collections->rooms->icon = 'fa fa-plus-square-o';
+        $collections->rooms->name = 'Rooms';
+        $collections->rooms->edition = 'Enterprise';
+        $collections->rooms->orgs = 'd';
+
+        $collections->rows = new stdClass();
+        $collections->rows->icon = 'fa fa-hashtag';
+        $collections->rows->name = 'Rows';
+        $collections->rows->edition = 'Enterprise';
+        $collections->rows->orgs = 'd';
+
+        $collections->rules = new stdClass();
+        $collections->rules->icon = 'fa fa-map-signs';
+        $collections->rules->name = 'Rules';
+        $collections->rules->edition = 'Enterprise';
+        $collections->rules->orgs = 'b';
+
+        $collections->scripts = new stdClass();
+        $collections->scripts->icon = 'fa fa-code';
+        $collections->scripts->name = 'Scripts';
+        $collections->scripts->edition = 'Professional';
+        $collections->scripts->orgs = 'b';
+
+        $collections->summaries = new stdClass();
+        $collections->summaries->icon = 'fa fa-pie-chart';
+        $collections->summaries->name = 'Summaries';
+        $collections->summaries->edition = 'Professional';
+        $collections->summaries->orgs = 'b';
+
+        $collections->tasks = new stdClass();
+        $collections->tasks->icon = 'fa fa-clock-o';
+        $collections->tasks->name = 'Tasks';
+        $collections->tasks->edition = 'Professional';
+        $collections->tasks->orgs = 'd';
+
+        $collections->users = new stdClass();
+        $collections->users->icon = 'fa fa-users';
+        $collections->users->name = 'Users';
+        $collections->users->edition = 'Community';
+        $collections->users->orgs = 'd';
+
+        $collections->widgets = new stdClass();
+        $collections->widgets->icon = 'fa fa-bar-chart';
+        $collections->widgets->name = 'Widgets';
+        $collections->widgets->edition = 'Professional';
+        $collections->widgets->orgs = 'b';
+
+        return $collections;
+    }
+}
+
+
+
 
 if ( ! function_exists('filter')) {
     /**
