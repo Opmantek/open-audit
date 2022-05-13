@@ -1570,7 +1570,8 @@ if ( ! function_exists('collections_list')) {
         $collections = new stdClass();
 
         $collections->applications = new stdClass();
-        $collections->applications->icon = 'fa fa-snowflake-o';
+        # FIX ME
+        $collections->applications->icon = 'fa fa-th-list';
         $collections->applications->name = 'Applications';
         $collections->applications->edition = 'Enterprise';
         $collections->applications->orgs = 'd';
@@ -1708,7 +1709,8 @@ if ( ! function_exists('collections_list')) {
         $collections->integrations->orgs = 'd';
 
         $collections->ldap_servers = new stdClass();
-        $collections->ldap_servers->icon = 'fa fa-address-card-o';
+        # FIX ME
+        $collections->ldap_servers->icon = 'fa fa-key';
         $collections->ldap_servers->name = 'LDAP Servers';
         $collections->ldap_servers->edition = 'Community';
         $collections->ldap_servers->orgs = 'd';
