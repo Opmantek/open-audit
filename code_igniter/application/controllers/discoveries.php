@@ -196,6 +196,7 @@ class Discoveries extends MY_Controller
         $this->test_windows_apache_user();
         $this->test_old_linux();
         $this->test_nmap();
+        $this->test_nmap_suid();
         $this->load->model('m_collectors');
         $this->load->model('m_locations');
         $this->load->model('m_discovery_scan_options');
@@ -275,6 +276,7 @@ class Discoveries extends MY_Controller
         $this->test_windows_apache_user();
         $this->test_old_linux();
         $this->test_nmap();
+        $this->test_nmap_suid();
         if ($this->response->meta->format === 'screen') {
             $this->load->model('m_collectors');
             $this->response->included = array_merge($this->response->included, $this->m_collectors->collection($this->user->id));
@@ -296,6 +298,7 @@ class Discoveries extends MY_Controller
         $this->test_windows_apache_user();
         $this->test_old_linux();
         $this->test_nmap();
+        $this->test_nmap_suid();
         unset($this->response->data);
         $this->response->data = array();
         $temp = @$this->input->get('single');
@@ -455,6 +458,18 @@ class Discoveries extends MY_Controller
         if ($nmap_installed === 'n') {
             log_error('ERR-0043');
         }
+    }
+
+    private function test_nmap_suid()
+    {
+        if (php_uname('s') === 'Windows NT') {
+            return;
+        }
+        $command_string = 'ls -lh `which nmap` | cut -d" " -f1 | cut -c4';
+        exec($command_string, $output);
+        if (! isset($output[0]) or $output[0] !== 's') {
+            log_error('ERR-0047');
+        } return;
     }
 
     /**

@@ -425,6 +425,14 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0046']->title = 'Invalid value supplied for ID';
         $error_array['ERR-0046']->detail = 'The value as passed is not an integer, assuming a name, but not found.';
 
+        $error_array['ERR-0047'] = new stdClass();
+        $error_array['ERR-0047']->code = 'ERR-0044';
+        $error_array['ERR-0047']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0047']->severity = 4;
+        $error_array['ERR-0047']->severity_text = 'danger';
+        $error_array['ERR-0047']->title = 'Nmap SUID not set.';
+        $error_array['ERR-0047']->detail = 'The Nmap SUID bit needs to be set. Please run "sudo chmod u+s `which nmap`" to resolve this issue.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
