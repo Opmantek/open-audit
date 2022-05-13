@@ -49,17 +49,35 @@
             foreach ($this->response->included as $endpoint) {
                 if (!empty($endpoint->type) and $endpoint->type == 'collection') {
                     $i++;
+                    $link = $endpoint->attributes->collection;
+                    $color = 'dimgrey';
+                    if ($endpoint->attributes->edition !== 'Community') {
+                        $link = '/omk/open-audit/' . $link;
+                        $color = 'darkgrey';
+                    }
+                    if ($endpoint->attributes->edition === 'Professional') {
+                        $alt = 'Open-AudIT Professional feature';
+                    }
+                    if (($this->config->config['oae_product'] === 'Open-AudIT Professional' or $this->config->config['oae_product'] === 'Open-AudIT Enterprise') and $endpoint->attributes->edition === 'Professional') {
+                        $color = 'dimgrey';
+                    }
+                    if ($this->config->config['oae_product'] === 'Open-AudIT Enterprise' ) {
+                        $color = 'dimgrey';
+                    }
                     $endpoint->attributes->name = str_replace('Ldap Servers', 'LDAP', $endpoint->attributes->name);
                     if ($endpoint->attributes->name == 'Logs') {
-                        $endpoint->attributes->collection = $endpoint->attributes->collection . "?logs.type=system";
+                        $link = 'logs?logs.type=system';
+                    }
+                    if ($endpoint->attributes->name == 'Reports') {
+                        $endpoint->attributes->count = 12;
                     }
                     ?>
                     <div class="col-lg-1 text-center"><?php echo __($endpoint->attributes->name) ?><br />
                         <div class="row">
                             <div class="col-lg-10 col-lg-offset-1">
-                                <span class="badge" style="position:absolute; bottom:-8px; right:15%; font-size:1em; font-weight:400;"><?php echo $endpoint->attributes->count ?></span>
-                                <a href="<?php echo $endpoint->attributes->collection ?>" class="btn btn-default">
-                                    <i class="<?php echo $endpoint->attributes->icon ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
+                                <span class="badge" style="position:absolute; bottom:-8px; right:25%; font-size:1em; font-weight:400;"><?php echo $endpoint->attributes->count ?></span>
+                                <a href="<?php echo $link ?>" class="btn btn-default">
+                                    <i class="<?php echo $endpoint->attributes->icon ?> fa-3x fa-fw" style="font-size:2vw; color: <?php echo $color; ?>;"></i>
                                 </a>
                             </div>
                         </div>
