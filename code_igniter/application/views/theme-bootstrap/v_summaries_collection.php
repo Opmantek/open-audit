@@ -59,13 +59,13 @@
                             <div class="col-lg-10 col-lg-offset-1">
                                 <span class="badge" style="position:absolute; bottom:-8px; right:15%; font-size:1em; font-weight:400;"><?php echo $endpoint->attributes->count ?></span>
                                 <a href="<?php echo $endpoint->attributes->collection ?>" class="btn btn-default">
-                                    <i class="fa fa-<?php echo $endpoint->attributes->icon ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
+                                    <i class="<?php echo $endpoint->attributes->icon ?> fa-3x fa-fw" style="font-size:2vw; color: dimgrey;"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <?php
-                    if ($i == 12) {
+                    if ($i === 12 or $i === 24 or $i === 36) {
                         echo "</div><br /><br /><div class=\"row\">";
                     }
                 }
