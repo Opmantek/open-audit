@@ -31,7 +31,7 @@ $this->log_db('Upgrade database to 1.12.8.1 commenced');
 
 if ($this->db->table_exists('additional_field')) {
     $fields = $this->db->list_fields('system');
-    $fields = implode($fields, "','");
+    $fields = implode("','", $fields);
     $fields = "'" . $fields . "'";
     $sql = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
     $this->db->query($sql);

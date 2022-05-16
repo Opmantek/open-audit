@@ -300,7 +300,7 @@ class M_summaries extends MY_Model
                     $count = intval($count[0]->count);
                 } else if ($collection === 'orgs') {
                     $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
-                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE id IN (" . implode($org_list, ',') . ")";
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE id IN (" . implode(',', $org_list) . ")";
                     $count = $this->run_sql($sql);
                     $count = intval($count[0]->count);
                 } else if ($value->orgs === 'u') {
@@ -309,14 +309,14 @@ class M_summaries extends MY_Model
                     $count = intval($count[0]->count);
                 } else if ($value->orgs === 'd') {
                     $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
-                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE org_id IN (" . implode($org_list, ',') . ")";
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE org_id IN (" . implode(',', $org_list) . ")";
                     $count = $this->run_sql($sql);
                     $count = intval($count[0]->count);
                 } else if ($value->orgs === 'b') {
                     $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($CI->user->id)));
                     $org_list = array_unique(array_merge($org_list, $CI->m_orgs->get_user_ascendants($CI->user->id)));
                     $org_list[] = 1;
-                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE org_id IN (" . implode($org_list, ',') . ")";
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "` WHERE org_id IN (" . implode(',', $org_list) . ")";
                     $count = $this->run_sql($sql);
                     $count = intval($count[0]->count);
                 }
