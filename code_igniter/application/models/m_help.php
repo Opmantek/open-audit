@@ -234,9 +234,10 @@ class M_help extends MY_Model
         $result = $query->result();
         $data->logs = $result;
 
-        $sql = 'SELECT COUNT(*) AS `count`, `type`, `manufacturer`, `model`, `snmp_oid` FROM system GROUP BY type, manufacturer, model, snmp_oid ORDER BY type, manufacturer, model';
+        $sql = "SELECT MAX(timestamp) AS `timestamp`, collection, action, function, status, summary, detail, user FROM logs WHERE severity < 5 GROUP BY CONCAT(collection, action, function)";
         $query = $this->db->query($sql);
-        $data->devices = $query->result();
+        $result = $query->result();
+        $data->log_details = $result;
 
         $sql = "SELECT IF(@@session.time_zone = 'SYSTEM', @@system_time_zone, @@session.time_zone) as timezone";
         $query = $this->db->query($sql);
@@ -256,7 +257,6 @@ class M_help extends MY_Model
         $data->webserver->script_name = @$_SERVER['SCRIPT_NAME'];
         $data->webserver->server_name = @$_SERVER['SERVER_NAME'];
         $data->webserver->current_url = current_url();
-
 
         $data->php->display_errors = ini_get('display_errors');
         $data->php->error_log = ini_get('error_log');
@@ -317,7 +317,7 @@ class M_help extends MY_Model
             unset($output);
         }
 
-        if (php_uname('s') === 'Linux') {
+        if (php_uname('s') === 'Linux' and strpos($CI->response->meta->query_string, 'demo=y') === false) {
             // php process owner
             if (extension_loaded('posix')) {
                 $posix_getpwuid = posix_getpwuid(posix_geteuid());
