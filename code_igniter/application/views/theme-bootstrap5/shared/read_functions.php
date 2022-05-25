@@ -73,8 +73,8 @@ function card_header($collection, $id, $icon) {
                     <div class=\"col-3 clearfix\">
                         <div class=\"btn-group btn-group-sm float-end\" role=\"group\">
                             <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "\" title=\"" . __('List') . "\"><i class=\"fa fa-list\"></i></a>\n";
-                            if ($collection !== 'configuration') {
-                                echo "                            <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/create\" title=\"" . __('Create') . "\"><i class=\"fa fa-plus\"></i></a>\n";
+                            if ($instance->m_users->get_user_permission('', $collection, 'c') and $collection !== 'configuration') {
+                                $return_string .= "                            <a role=\"button\" class=\"btn btn-outline-secondary panel-button\" href=\"" . $instance->config->config['oa_web_index'] . '/' . $collection . "/create\" title=\"" . __('Create') . "\"><i class=\"fa fa-plus\"></i></a>\n";
                             }
                             if ($instance->m_users->get_user_permission('', $collection, 'd')) {
                             $return_string .= "                                <a role=\"button\" class=\"btn btn-outline-secondary panel-button delete_link\" data-id=\"{$id}\" data-name=\"\" title=\"" . __('Delete') . "\"><i class=\"fa fa-trash\"></i></a>\n";
