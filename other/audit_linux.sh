@@ -2432,6 +2432,21 @@ if [ "$system_os_family" != "Arch" ]; then
 		fi
 	done
 fi
+# Puppet facts
+if [ -n "$(which facter 2>/dev/null)" ]; then
+    exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
+    for variable in $(facter -p); do
+        name=$( echo "$variable" | cut -d" " -f1 )
+        if [ -z "$(echo "$exclusions" | grep " $name ")" ]; then
+            value=$(echo "$variable" | cut -d" " -f3-)
+            echo "      <item>" >> "$xml_file"
+            echo "          <program>facter</program>" >> "$xml_file"
+            echo "          <name>$(escape_xml "$name")</name>" >> "$xml_file"
+            echo "          <value>$(escape_xml "$value")</value>" >> "$xml_file"
+            echo "      </item>" >> "$xml_file"
+        fi
+    done
+fi
 echo "	</variable>" >> "$xml_file"
 
 
@@ -2697,7 +2712,7 @@ if hash systemctl 2>/dev/null; then
 	for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | sed 's/^.//' | awk '{ print $1 }'); do
 		description=$(systemctl show "$name" -p Description | cut -d= -f2)
 		description="$description (using systemd)"
-		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
+		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2 | sort -u)
 		state=$(systemctl show "$name" -p ActiveState | cut -d= -f2)
 		user=$(systemctl show "$name" -p User | cut -d= -f2)
 		# start_mode order of attribute preference is WantedBy, Wants, After
