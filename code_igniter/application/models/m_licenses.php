@@ -288,6 +288,8 @@ class M_licenses extends MY_Model
         $dictionary->columns->software_version = 'Your generice version for this piece of software';
         $dictionary->columns->sql = 'unused';
         $dictionary->columns->expiry_date = 'For licenses that are not perpetual, when does the license expire.';
+        $dictionary->columns->end_of_life = 'The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.';
+        $dictionary->columns->end_of_service_life = 'The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;
