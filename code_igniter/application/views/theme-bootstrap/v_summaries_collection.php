@@ -71,6 +71,9 @@
                     if ($endpoint->attributes->name == 'Reports') {
                         $endpoint->attributes->count = 12;
                     }
+                    if ($endpoint->attributes->name === 'Discovery Log') {
+                        $link = 'discoveries';
+                    }
                     ?>
                     <div class="col-lg-1 text-center"><?php echo __($endpoint->attributes->name) ?><br />
                         <div class="row">

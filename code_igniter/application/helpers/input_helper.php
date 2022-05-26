@@ -1669,7 +1669,7 @@ if ( ! function_exists('collections_list')) {
         $collections->discovery_scan_options = new stdClass();
         $collections->discovery_scan_options->icon = 'fa fa-random';
         $collections->discovery_scan_options->name = 'Scan Options';
-        $collections->discovery_scan_options->edition = 'Community';
+        $collections->discovery_scan_options->edition = 'Enterprise';
         $collections->discovery_scan_options->orgs = 'b';
 
         $collections->fields = new stdClass();
@@ -1724,7 +1724,7 @@ if ( ! function_exists('collections_list')) {
         $collections->locations = new stdClass();
         $collections->locations->icon = 'fa fa-building';
         $collections->locations->name = 'Locations';
-        $collections->locations->edition = 'Communnity';
+        $collections->locations->edition = 'Community';
         $collections->locations->orgs = 'd';
 
         $collections->logs = new stdClass();
