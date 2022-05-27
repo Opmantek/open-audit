@@ -1131,7 +1131,11 @@ class M_devices_components extends MY_Model
                     $alert_details = '';
                     foreach ($match_columns as $key => $value) {
                         if ( ! empty($input_item->$value)) {
-                            $alert_details .= $value . ' is ' . $input_item->$value . ', ';
+                            $log_value = $input_item->$value;
+                            if ($value === 'ip') {
+                                $log_value = @ip_address_from_db($input_item->$value);
+                            }
+                            $alert_details .= $value . ' is ' . $log_value . ', ';
                         }
                     }
                     $alert_details = substr($alert_details, 0, -2);
@@ -1243,7 +1247,11 @@ class M_devices_components extends MY_Model
                 $alert_details = '';
                 foreach ($match_columns as $key => $value) {
                     if ( ! empty($db_item->$value)) {
-                        $alert_details .= $value . ' is ' . $db_item->$value . ', ';
+                        $log_value = $input_item->$value;
+                        if ($value === 'ip') {
+                            $log_value = @ip_address_from_db($db_item->$value);
+                        }
+                        $alert_details .= $value . ' is ' . $log_value . ', ';
                     }
                 }
                 $alert_details = substr($alert_details, 0, -2);
