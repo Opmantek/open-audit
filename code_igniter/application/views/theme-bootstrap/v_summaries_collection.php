@@ -74,6 +74,9 @@
                     if ($endpoint->attributes->name === 'Discovery Log') {
                         $link = 'discoveries';
                     }
+                    if ($endpoint->attributes->name === 'Devices') {
+                        $link = 'devices';
+                    }
                     ?>
                     <div class="col-lg-1 text-center"><?php echo __($endpoint->attributes->name) ?><br />
                         <div class="row">
