@@ -825,24 +825,30 @@ if (!function_exists('response_get_query_filter')) {
                 $query->value = str_replace($query->name.'=', '', $item);
 
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
-                    $query->value = '%' . substr($query->value, 8) . '%';
+                    $query->value = substr($query->value, 8);
+                    if (strpos($query->value, '%') === false) {
+                        $query->value = '%' . $query->value . '%';
+                    }
                     $query->operator = 'not like';
-                    // $query->value = str_replace('"', '\"', $query->value);
                     $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 if (strtolower(substr($query->value, 0, 5)) === '!like') {
-                    $query->value = '%' . substr($query->value, 5) . '%';
+                    $query->value = substr($query->value, 5);
+                    if (strpos($query->value, '%') === false) {
+                        $query->value = '%' . $query->value . '%';
+                    }
                     $query->operator = 'not like';
-                    // $query->value = str_replace('"', '\"', $query->value);
                     $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
                 $operator = substr($query->value, 0, 4);
                 if (strtolower($operator) === 'like') {
-                    $query->value = '%' . substr($query->value, 4) . '%';
+                    $query->value = substr($query->value, 4);
+                    if (strpos($query->value, '%') === false) {
+                        $query->value = '%' . $query->value . '%';
+                    }
                     $query->operator = $operator;
-                    // $query->value = str_replace('"', '\"', $query->value);
                     $query->value = mysqli_real_escape_string($instance->db->conn_id, $query->value);
                 }
 
