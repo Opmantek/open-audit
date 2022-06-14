@@ -482,29 +482,38 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_dbus) === 'y' && empty($details->id) && ! empty($details->dbus_identifier)) {
-            $sql = "SELECT system.id FROM system WHERE system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->dbus_identifier}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on dbus_identifier.';
-                $message->command_status = 'success';
-                $message->command_output = 'DbusID: ' . $details->dbus_identifier . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if ((! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on dbus_identifier.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'DbusID: ' . $details->dbus_identifier . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    $message->command_output = '';
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on dbus_identifier + org_id, but hit on dbus_identifier alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'DbusID: ' . $details->dbus_identifier . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                $message->command_output = '';
-                return $details->id;
             }
             $message = new stdClass();
             $message->message = 'MISS on match_dbus.';
@@ -540,28 +549,37 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_dns_fqdn) === 'y' && empty($details->id) && ! empty($details->dns_fqdn)) {
-            $sql = "SELECT system.id FROM system WHERE system.dns_fqdn = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE system.dns_fqdn = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->dns_fqdn}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on dns_fqdn.';
-                $message->command_status = 'success';
-                $message->command_output = 'DNS FQDN: ' . $details->dns_fqdn . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on dns_fqdn.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'DNS FQDN: ' . $details->dns_fqdn . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on dns_fqdn + org_id, but hit on dns_fqdn alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'DNS FQDN: ' . $details->dns_fqdn . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                return $details->id;
             }
             $message = new stdClass();
             $message->message = 'MISS on dns_fqdn.';
@@ -654,29 +672,38 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_fqdn) === 'y' && empty($details->id) && ! empty($details->fqdn)) {
-            $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE system.fqdn = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->fqdn}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on fqdn.';
-                $message->command_status = 'success';
-                $message->command_output = 'FQDN: ' . $details->fqdn . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on fqdn.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'FQDN: ' . $details->fqdn . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    $message->command_output = '';
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on fqdn + org_id, but hit on fqdn alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'FQDN: ' . $details->dns_fqdn . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                $message->command_output = '';
-                return $details->id;
             }
             $message = new stdClass();
             $message->message = 'MISS on fqdn.';
@@ -712,29 +739,38 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type) && ! in_array($details->serial, $invalid_strings)) {
-            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE system.serial = ? AND system.type = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->serial}", "{$details->type}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on serial + type.';
-                $message->command_status = 'success';
-                $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on serial + type.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    $message->command_output = '';
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on serial + type + org_id, but hit on serial + type. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'Serial: ' . $details->serial . ', Type: ' . $details->type . ', "OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                $message->command_output = '';
-                return $details->id;
             }
             $message = new stdClass();
             $message->message = 'MISS on serial + type.';
@@ -782,29 +818,38 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! in_array($details->serial, $invalid_strings)) {
-            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->serial}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on serial.';
-                $message->command_status = 'success';
-                $message->command_output = 'Serial: ' . $details->serial . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on serial.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'Serial: ' . $details->serial . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    $message->command_output = '';
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on serial + org_id, but hit on serial alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'Serial: ' . $details->serial . ' OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                $message->command_output = '';
-                return $details->id;
             }
             $message = new stdClass();
             $message->message = 'MISS on serial.';
@@ -916,29 +961,38 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_sysname) === 'y' && empty($details->id) && ! empty($details->sysName)) {
-            $sql = "SELECT system.id FROM system WHERE (system.sysName = ?) AND system.status != 'deleted'";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE (system.sysName = ?) AND system.status != 'deleted'";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->sysName}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on sysName.';
-                $message->command_status = 'success';
-                $message->command_output = 'SysName: ' . $details->sysName . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on sysName.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'SysName: ' . $details->sysName . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    $message->command_output = '';
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on sysname + org_id, but hit on sysname alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'SysName: ' . $details->sysName . ' OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                $message->command_output = '';
-                return $details->id;
             }
         } else {
             if (strtolower($match->match_sysname_serial) !== 'y') {
@@ -1255,49 +1309,23 @@ class M_device extends MY_Model
         if (strtolower($match->match_ip) === 'y' && empty($details->id) && ! empty($details->ip) && filter_var($ip, FILTER_VALIDATE_IP)) {
             // first check the ip table as eny existing devices that have been seen
             // by more than just Nmap will have an entry here
-            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array(ip_address_to_db($details->ip));
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                if ( ! empty($details->system_id)) {
-                    $log->system_id = $details->id;
-                } else if ( ! empty($details->id)) {
-                    $log->system_id = $details->id;
-                }
-                $message = new stdClass();
-                $message->message = 'HIT on IP Address (network table).';
-                $message->command_status = 'success';
-                $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
-                return $details->id;
-            }
-
-            // next check the system table for a ip match
-            if (empty($details->id)) {
-                $sql = "SELECT system.id FROM system WHERE system.ip = ? AND system.ip NOT LIKE '127%' AND system.ip NOT LIKE '1::%' AND system.status != 'deleted'";
-                $sql = $this->clean_sql($sql);
-                $data = array(ip_address_to_db($details->ip));
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if ( ! empty($row->id)) {
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
                     $details->id = $row->id;
-                    $log->system_id = $details->id;
+                    if ( ! empty($details->system_id)) {
+                        $log->system_id = $details->id;
+                    } else if ( ! empty($details->id)) {
+                        $log->system_id = $details->id;
+                    }
                     $message = new stdClass();
-                    $message->message = 'HIT on IP Address (system table).';
+                    $message->message = 'HIT on IP Address (network table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
+                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . $this->config->config['discovery_use_org_id_match'] . ', Potential System OrgID: ' . $row->org_id;
                     $log_message[] = $message;
                     foreach ($log_message as $message) {
                         $log->message = $message->message;
@@ -1309,6 +1337,50 @@ class M_device extends MY_Model
                     }
                     $message->command_output = '';
                     return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on IP Address (network table) + org_id, but hit on IP (network table) alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'IP: ' . $details->ip . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
+                }
+            }
+
+            // next check the system table for a ip match
+            if (empty($details->id)) {
+                $sql = "SELECT system.id, system.org_id FROM system WHERE system.ip = ? AND system.ip NOT LIKE '127%' AND system.ip NOT LIKE '1::%' AND system.status != 'deleted'";
+                $sql = $this->clean_sql($sql);
+                $data = array(ip_address_to_db($details->ip));
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                if ( ! empty($row->id)) {
+                    if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                        $details->id = $row->id;
+                        $log->system_id = $details->id;
+                        $message = new stdClass();
+                        $message->message = 'HIT on IP Address (system table).';
+                        $message->command_status = 'success';
+                        $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
+                        $log_message[] = $message;
+                        foreach ($log_message as $message) {
+                            $log->message = $message->message;
+                            $log->command_status = $message->command_status;
+                            $log->command_output = $message->command_output;
+                            if ( ! empty($log->discovery_id)) {
+                                discovery_log($log);
+                            }
+                        }
+                        $message->command_output = '';
+                        return $details->id;
+                    } else {
+                        $log->system_id = $details->id;
+                        $message = new stdClass();
+                        $message->message = 'MISS on IP Address (system table) + org_id, but hit on IP (system table) alone. Check assigned_to_org in discovery.';
+                        $message->command_status = 'notice';
+                        $message->command_output = 'IP: ' . $details->ip . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                        $log_message[] = $message;
+                    }
                 }
             }
             $message = new stdClass();
@@ -1443,29 +1515,38 @@ class M_device extends MY_Model
         if ((empty($match->match_ip_no_data) OR strtolower($match->match_ip_no_data) === 'y') && empty($details->id) && ! empty($details->ip) && filter_var($details->ip, FILTER_VALIDATE_IP)) {
             // Check the system table for an ip match on a device without a type or serial
             if (empty($details->id)) {
-                $sql = "SELECT system.id FROM system WHERE system.ip = ? AND system.ip NOT LIKE '127%' AND system.ip NOT LIKE '1::%' AND system.status != 'deleted' and (system.type = 'unknown' or system.type = 'unclassified') and system.serial = ''";
+                $sql = "SELECT system.id, system.org_id FROM system WHERE system.ip = ? AND system.ip NOT LIKE '127%' AND system.ip NOT LIKE '1::%' AND system.status != 'deleted' and (system.type = 'unknown' or system.type = 'unclassified') and system.serial = ''";
                 $sql = $this->clean_sql($sql);
                 $data = array(ip_address_to_db($details->ip));
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if ( ! empty($row->id)) {
-                    $details->id = $row->id;
-                    $log->system_id = $details->id;
-                    $message = new stdClass();
-                    $message->message = 'HIT on IP Address No Data (system table).';
-                    $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
-                    $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
+                    if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                        $details->id = $row->id;
+                        $log->system_id = $details->id;
+                        $message = new stdClass();
+                        $message->message = 'HIT on IP Address No Data (system table).';
+                        $message->command_status = 'success';
+                        $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
+                        $log_message[] = $message;
+                        foreach ($log_message as $message) {
+                            $log->message = $message->message;
+                            $log->command_status = $message->command_status;
+                            $log->command_output = $message->command_output;
+                            if ( ! empty($log->discovery_id)) {
+                                discovery_log($log);
+                            }
                         }
+                        $message->command_output = '';
+                        return $details->id;
+                    } else {
+                        $log->system_id = $details->id;
+                        $message = new stdClass();
+                        $message->message = 'MISS on IP Address No Data (system table) + org_id, but hit on IP Address No Data (system table) alone. Check assigned_to_org in discovery.';
+                        $message->command_status = 'notice';
+                        $message->command_output = 'IP: ' . $details->ip . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                        $log_message[] = $message;
                     }
-                    $message->command_output = '';
-                    return $details->id;
                 }
             }
             $message = new stdClass();
@@ -1554,7 +1635,7 @@ class M_device extends MY_Model
         $log = new stdClass();
         $log->severity = 7;
         $log->pid = getmypid();
-        $log->ip = $_SERVER['REMOTE_ADDR'];
+        $log->ip = @$_SERVER['REMOTE_ADDR'];
         if ( ! empty($details->ip)) {
             $log->ip = ip_address_from_db($details->ip);
         } else {
