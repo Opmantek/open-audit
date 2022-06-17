@@ -3711,6 +3711,7 @@ CREATE TABLE `system` (
   `os_family` varchar(50) NOT NULL DEFAULT '',
   `os_name` varchar(100) NOT NULL DEFAULT '',
   `os_version` varchar(200) NOT NULL DEFAULT '',
+  `os_cpe` varchar(200) NOT NULL DEFAULT '',
   `attached_system_id` int(10) DEFAULT NULL,
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `manufacturer_code` varchar(200) NOT NULL DEFAULT '',
