@@ -47,48 +47,81 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1.0") / 1048576);
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
     $details->os_version = '';
+    $details->os_cpe = '';
+    $details->os_cpe_manufacturer = 'cisco';
+    $details->os_cpe_name = '';
+    $details->os_cpe_version = '';
 
     $i = explode("$", my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.5"));
     if (!empty($i[1])) {
         $details->os_version = trim($i[1]);
+        $details->os_cpe_version = str_replace($details->os_version, '(', '\(');
+        $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
     }
     $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.7");
     if (stripos($i, "IOS") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS version ".$details->os_version;
+        $details->os_name = "Cisco IOS ".$details->os_version;
+        $details->os_cpe_name = 'ios';
     }
     if (stripos($details->description, "Cisco IOS Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS version ".$details->os_version;
+        $details->os_name = "Cisco IOS ".$details->os_version;
+        $details->os_cpe_name = 'ios';
+    }
+    if (stripos($details->description, "IOS-XE Software") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS-XE';
+        $details->os_name = "Cisco IOS-XE ".$details->os_version;
+        $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Cisco Internetwork Operating System Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS version ".$details->os_version;
+        $details->os_name = "Cisco IOS ".$details->os_version;
+        $details->os_cpe_name = 'ios';
     }
     if (stripos($i, "Catalyst Operating") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_cpe_name = 'ios_xe';
+    }
+    if (stripos($details->description, "Catalyst") !== false and stripos($details->description, "L3 Switch Software") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco Catalyst OS';
+        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Cisco Systems WS-C") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS version ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_cpe_name = 'ios_xe';
     }
     if (empty($details->os_group)) {
         if (stripos($details->description, 'NX-OS')) {
             $details->os_group = 'Cisco';
             $details->os_family = 'Cisco Nexus OS';
-            $details->os_name = "Cisco Nexus OS version ".$details->os_version;
+            $details->os_name = "Cisco Nexus OS ".$details->os_version;
+            $details->os_cpe_name = 'nx-os';
         }
+    }
+
+    if (! empty($details->os_cpe_name)) {
+        $details->os_cpe = 'o:' . $details->os_cpe_manufacturer . ':' . $details->os_cpe_name . ':' . $details->os_cpe_version;
+    } else {
+        unset($details->os_cpe);
+        unset($details->os_cpe_name);
+        unset($details->os_cpe_version);
     }
 
     # Cisco specific model OID
