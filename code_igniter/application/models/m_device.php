@@ -615,28 +615,37 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_dns_hostname) === 'y' && empty($details->id) && ! empty($details->dns_hostname)) {
-            $sql = "SELECT system.id FROM system WHERE system.dns_hostname = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE system.dns_hostname = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("{$details->dns_hostname}");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on dns_hostname.';
-                $message->command_status = 'success';
-                $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on dns_hostname.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
+                        }
                     }
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on dns_hostname + org_id, but hit on dns_hostname alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'DNS Hostname: ' . $details->dns_hostname . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
-                return $details->id;
             }
             $message = new stdClass();
             $message->message = 'MISS on dns_hostname.';
@@ -1417,65 +1426,37 @@ class M_device extends MY_Model
         }
 
         if (strtolower($match->match_hostname) === 'y' && empty($details->id) && ! empty($details->hostname)) {
-            $sql = "SELECT system.id FROM system WHERE (system.hostname = ?) AND system.status != 'deleted'";
+            $sql = "SELECT system.id, system.org_id FROM system WHERE (system.hostname = ?) AND system.status != 'deleted'";
             $sql = $this->clean_sql($sql);
             $data = array($details->hostname);
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                $details->id = $row->id;
-                $log->system_id = $details->id;
-                $message = new stdClass();
-                $message->message = 'HIT on hostname.';
-                $message->command_status = 'success';
-                $message->command_output = 'Hostname: ' . $details->hostname . ', SystemID: ' . $details->id;
-                $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
-                return $details->id;
-            }
-
-            // check short hostname in $details
-            if ( ! empty($details->hostname) && empty($details->id)) {
-                if (isset($details->hostname_length) && $details->hostname_length === 'short') {
-                    // we grabbed the hostname from SNMP.
-                    // SNMP hostnames on Windows are truncated to 15 characters
-                    $temp = explode('.', $details->hostname);
-                    $hostname = $temp[0];
-                    if (strlen($hostname) === 15) {
-                        // We do have a 15 character hostname - check if this exists in the DB
-                        $sql = "SELECT system.id FROM system WHERE system.hostname LIKE '".$hostname."%' AND system.status != 'deleted'";
-                        $sql = $this->clean_sql($sql);
-                        $query = $this->db->query($sql);
-                        $row = $query->row();
-                        if (count($row) > 0) {
-                            $details->id = $row->id;
-                            $log->system_id = $details->id;
-                            $message = new stdClass();
-                            $message->message = 'HIT on hostname (short).';
-                            $message->command_status = 'success';
-                            $message->command_output = 'Hostname: ' . $hostname . ', SystemID: ' . $details->id;
-                            $log_message[] = $message;
-                            foreach ($log_message as $message) {
-                                $log->message = $message->message;
-                                $log->command_status = $message->command_status;
-                                $log->command_output = $message->command_output;
-                                if ( ! empty($log->discovery_id)) {
-                                    discovery_log($log);
-                                }
-                            }
-                            $message->command_output = '';
-                            return $details->id;
+                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    $details->id = $row->id;
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'HIT on hostname.';
+                    $message->command_status = 'success';
+                    $message->command_output = 'Hostname: ' . $details->hostname . ', SystemID: ' . $details->id;
+                    $log_message[] = $message;
+                    foreach ($log_message as $message) {
+                        $log->message = $message->message;
+                        $log->command_status = $message->command_status;
+                        $log->command_output = $message->command_output;
+                        if ( ! empty($log->discovery_id)) {
+                            discovery_log($log);
                         }
                     }
-                    unset($temp);
+                    $message->command_output = '';
+                    return $details->id;
+                } else {
+                    $log->system_id = $details->id;
+                    $message = new stdClass();
+                    $message->message = 'MISS on fqdn + org_id, but hit on fqdn alone. Check assigned_to_org in discovery.';
+                    $message->command_status = 'notice';
+                    $message->command_output = 'FQDN: ' . $details->dns_fqdn . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
+                    $log_message[] = $message;
                 }
             }
             $message = new stdClass();
@@ -1483,6 +1464,49 @@ class M_device extends MY_Model
             $message->command_status = 'notice';
             $message->command_output = 'Hostname: ' . $details->hostname;
             $log_message[] = $message;
+
+            // NOTE - Removed the below as I don't think we have a short hostname issue any more. We query the hostname directly, not remotely using netbeui
+            // check short hostname in $details
+            // if ( ! empty($details->hostname) && empty($details->id)) {
+            //     if (isset($details->hostname_length) && $details->hostname_length === 'short') {
+            //         // we grabbed the hostname from SNMP.
+            //         // SNMP hostnames on Windows are truncated to 15 characters
+            //         $temp = explode('.', $details->hostname);
+            //         $hostname = $temp[0];
+            //         if (strlen($hostname) === 15) {
+            //             // We do have a 15 character hostname - check if this exists in the DB
+            //             $sql = "SELECT system.id FROM system WHERE system.hostname LIKE '".$hostname."%' AND system.status != 'deleted'";
+            //             $sql = $this->clean_sql($sql);
+            //             $query = $this->db->query($sql);
+            //             $row = $query->row();
+            //             if (count($row) > 0) {
+            //                 $details->id = $row->id;
+            //                 $log->system_id = $details->id;
+            //                 $message = new stdClass();
+            //                 $message->message = 'HIT on hostname (short).';
+            //                 $message->command_status = 'success';
+            //                 $message->command_output = 'Hostname: ' . $hostname . ', SystemID: ' . $details->id;
+            //                 $log_message[] = $message;
+            //                 foreach ($log_message as $message) {
+            //                     $log->message = $message->message;
+            //                     $log->command_status = $message->command_status;
+            //                     $log->command_output = $message->command_output;
+            //                     if ( ! empty($log->discovery_id)) {
+            //                         discovery_log($log);
+            //                     }
+            //                 }
+            //                 $message->command_output = '';
+            //                 return $details->id;
+            //             }
+            //         }
+            //         unset($temp);
+            //     }
+            // }
+            // $message = new stdClass();
+            // $message->message = 'MISS on hostname.';
+            // $message->command_status = 'notice';
+            // $message->command_output = 'Hostname: ' . $details->hostname;
+            // $log_message[] = $message;
         } else {
             if (strtolower($match->match_hostname) !== 'y') {
                 $message = new stdClass();
