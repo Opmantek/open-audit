@@ -191,7 +191,9 @@ class M_widgets extends MY_Model
 
         $CI = & get_instance();
         if ( ! empty($widget->sql)) {
-            $sql = $widget->sql;
+            // $sql = $widget->sql;
+            // remove excessive white space and line breaks
+            $sql = preg_replace ('/\s+/u', ' ', $widget->sql);
             if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
                 // invalid query
                 return false;
