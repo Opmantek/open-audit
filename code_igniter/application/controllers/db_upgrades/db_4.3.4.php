@@ -46,7 +46,7 @@ $sql = "DELETE FROM `configuration` WHERE name = 'discovery_use_org_id_match'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','y','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
