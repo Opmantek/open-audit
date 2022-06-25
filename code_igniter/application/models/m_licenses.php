@@ -175,8 +175,17 @@ class M_licenses extends MY_Model
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'licenses');
             if (is_array($result) && ! empty($result)) {
-                for ($i=0; $i < count($result); $i++) { 
-                    $result[$i]->used_count = $this->count($result[$i]->id);
+                for ($i=0; $i < count($result); $i++) {
+                    if (! empty($result[$i]->id)) {
+                        $id = $result[$i]->id;
+                    } elseif (! empty($result[$i]->{'licenses.id'})) {
+                        $id = $result[$i]->{'licenses.id'};
+                    }
+                    if (! empty($id)) {
+                        $result[$i]->used_count = $this->count($id);
+                    } else {
+                        $result[$i]->used_count = '';
+                    }
                 }
             }
             $CI->response->meta->filtered = count($CI->response->data);

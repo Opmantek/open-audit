@@ -167,8 +167,18 @@ class Licenses extends MY_Controller
         // If we have less than 100 license entries, run them all and include the used count.
         if (intval($this->response->meta->total) < 100) {
             for ($i=0; $i < count($this->response->data); $i++) {
-                $temp = $this->m_licenses->execute($this->response->data[$i]->attributes->id);
-                $this->response->data[$i]->attributes->used_count = intval(count($temp));
+                if (! empty($this->response->data[$i]->attributes->id)) {
+                    $id = $this->response->data[$i]->attributes->id;
+                }
+                if (! empty($this->response->data[$i]->attributes->{'licenses.id'})) {
+                    $id = $this->response->data[$i]->attributes->{'licenses.id'};
+                }
+                if (! empty($id)) {
+                    $temp = $this->m_licenses->execute($id);
+                    $this->response->data[$i]->attributes->used_count = intval(count($temp));
+                } else {
+                    $this->response->data[$i]->attributes->used_count = '';
+                }
             }
         }
         output($this->response);
