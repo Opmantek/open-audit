@@ -2813,17 +2813,6 @@ end if
 
 
 if debugging > "0" then wscript.echo "shares info" end if
-' test to see if the share permissions .exe exists
-file_exists = False
-if audit_location = "local" then
-    if objFSO.FileExists("C:\RMTSHARE.exe") then
-    file_exists = True
-    else
-    ' copy the file to the machine being audited
-    end if
-    ' TODO: get rmtshare.exe from OA server, if needed
-end if
-
 ' NOTE - only selecting "Disk Drive" type shares.
 ' This does not include default shares.
 set colItems = objWMIService.ExecQuery("Select * from Win32_Share where type='0'",,32)
@@ -2861,34 +2850,71 @@ for each objItem in colItems
     result_share = result_share & "         <path>" & escape_xml(objItem.Path) & "</path>" & vbcrlf
     result_share = result_share & "         <size>" & escape_xml(folder_size) & "</size>" & vbcrlf
 
-    if file_exists = True then
-        strCommand = "c:\RMTSHARE.EXE \\" & system_hostname & "\""" & objItem.Name & """ "
-        set objExecObject = objShell.Exec(strCommand)
-        do While Not objExecObject.StdOut.AtEndOfStream
-            strResults = objExecObject.StdOut.ReadAll()
-        Loop
-        MyArray = Split(strResults, vbcrlf)
-        flag = False
-        for each line in MyArray
-            if line = "The command completed successfully." then
-                flag = False
-            end if
-            if flag = True then
-                newArray = split(line, ":")
-                if (left(ltrim(newArray(0)),1) = "\") then
-                    newArray(0) = mid(trim(newArray(0)), 2)
-                end if
-                share_users = share_users & trim(newArray(0)) & "(" & trim(newArray(1)) & "), "
-            end if
-            if line = "Permissions:" then
-                flag = True
-            end if
-        next
-        if share_users > "" then
-            share_users = left(share_users, len(share_users)-2)
-            result_share = result_share & "         <users>" & escape_xml(share_users) & "</users>" & vbcrlf
+    Set permItems = objWMIService.ExecQuery("SELECT * FROM Win32_LogicalShareAccess",,32)
+    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_LogicalShareAccess)" : audit_wmi_fails = audit_wmi_fails & "Win32_LogicalShareAccess " : end if
+
+    share_permissions = ""
+    for each permItem in permItems
+        SecuritySetting = permItem.SecuritySetting
+        Length = len(mid(SecuritySetting ,(instr(SecuritySetting ,"=")+2)))-1
+        ShareName = mid(SecuritySetting,(instr(SecuritySetting,"=")+2),Length)
+        if ShareName = objItem.Name then
+            permission = ""
+            Trustee = permItem.Trustee
+            Length = len(mid(Trustee ,(instr(Trustee ,"=")+2)))-1
+            Trustee= mid(Trustee,(instr(Trustee,"=")+2),Length)
+            Set objAccount = objWMIService.Get("Win32_SID.SID='" & Trustee & "'")
+            account = objAccount.ReferencedDomainName & " " & objAccount.AccountName
+            account = trim(account)
+            If permItem.AccessMask AND 1048576 Then
+                    permission = ",""Synchronize"""
+            End If
+            If permItem.AccessMask AND 524288 Then
+                    permission = permission & ",""Write owner"""
+            End If
+            If permItem.AccessMask AND 262144 Then
+                    permission = permission & ",""Write ACL"""
+            End If
+            If permItem.AccessMask AND 131072 Then
+                    permission = permission & ",""Read security"""
+            End If
+            If permItem.AccessMask AND 65536 Then
+                    permission = permission & ",""Delete"""
+            End If
+            If permItem.AccessMask AND 256 Then
+                    permission = permission & ",""Write attributes"""
+            End If
+            If permItem.AccessMask AND 128 Then
+                    permission = permission & ",""Read attributes"""
+            End If
+            If permItem.AccessMask AND 64 Then
+                    permission = permission & ",""Delete dir"""
+            End If
+            If permItem.AccessMask AND 32 Then
+                    permission = permission & ",""Execute"""
+            End If
+            If permItem.AccessMask AND 16 Then
+                    permission = permission & ",""Write extended attributes"""
+            End If
+            If permItem.AccessMask AND 8 Then
+                    permission = permission & ",""Read extended attributes"""
+            End If
+            If permItem.AccessMask AND 4 Then
+                    permission = permission & ",""Append"""
+            End If
+            If permItem.AccessMask AND 2 Then
+                    permission = permission & ",""Write"""
+            End If
+            If permItem.AccessMask AND 1 Then
+                    permission = permission & ",""Read"""
+            End If
+            permission = mid(permission, 2)
+            share_permissions = share_permissions & """" & account & """:[" & permission & "],"
         end if
-    end if
+    next
+    share_permissions = "{" & left(share_permissions, (len(share_permissions)-1)) & "}"
+    result_share = result_share & "         <users>" & escape_xml(share_permissions) & "</users>" & vbcrlf
+
     result_share = result_share & "     </item>" & vbcrlf
 next
 
@@ -2897,7 +2923,6 @@ if result_share > "" then
     result.WriteText    result_share
     result.WriteText "  </share>" & vbcrlf
 end if
-
 
 if debugging > "0" then wscript.echo "network card info" end if
 result.WriteText "  <network>" & vbcrlf

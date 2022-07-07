@@ -3514,7 +3514,7 @@ CREATE TABLE `share` (
   `description` text NOT NULL,
   `path` varchar(250) NOT NULL DEFAULT '',
   `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `users` varchar(200) NOT NULL DEFAULT '',
+  `users` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `share_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE

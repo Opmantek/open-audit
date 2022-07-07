@@ -40,6 +40,8 @@ $this->alter_table('licenses', 'end_of_life', "ADD end_of_life date NOT NULL DEF
 
 $this->alter_table('licenses', 'end_of_service_life', "ADD end_of_service_life date NOT NULL DEFAULT '2000-01-01' AFTER end_of_life", 'add');
 
+$this->alter_table('share', 'users', "users text NOT NULL AFTER `size`", "change");
+
 $this->alter_table('system', 'os_cpe', "ADD `os_cpe` varchar(200) NOT NULL DEFAULT '' AFTER os_version", 'add');
 
 $sql = "DELETE FROM `configuration` WHERE name = 'discovery_use_org_id_match'";
