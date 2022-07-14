@@ -36,6 +36,8 @@ UPDATE `configuration` SET `value` = '4.3.4' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 4.3.4 commenced');
 
+$this->alter_table('discoveries', 'cloud_id', "cloud_id int(10) unsigned NOT NULL DEFAULT '0'", "change");
+
 $this->alter_table('licenses', 'end_of_life', "ADD end_of_life date NOT NULL DEFAULT '2000-01-01' AFTER expiry_date", 'add');
 
 $this->alter_table('licenses', 'end_of_service_life', "ADD end_of_service_life date NOT NULL DEFAULT '2000-01-01' AFTER end_of_life", 'add');
@@ -43,6 +45,10 @@ $this->alter_table('licenses', 'end_of_service_life', "ADD end_of_service_life d
 $this->alter_table('share', 'users', "users text NOT NULL AFTER `size`", "change");
 
 $this->alter_table('system', 'os_cpe', "ADD `os_cpe` varchar(200) NOT NULL DEFAULT '' AFTER os_version", 'add');
+
+$sql = "UPDATE discoveries SET cloud_id = 0 WHERE type <> 'cloud'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
 
 $sql = "DELETE FROM `configuration` WHERE name = 'discovery_use_org_id_match'";
 $this->db->query($sql);

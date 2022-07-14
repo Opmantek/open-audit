@@ -1175,7 +1175,7 @@ CREATE TABLE `discoveries` (
   `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_discovered_count` int(10) unsigned NOT NULL DEFAULT '0',
   `ip_audited_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `cloud_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `cloud_id` int(10) unsigned NOT NULL DEFAULT '0',
   `cloud_name` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
