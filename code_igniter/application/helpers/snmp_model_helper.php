@@ -4106,6 +4106,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.6527.1.3.8': $device->model = 'Nokia 7750 SR'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.6527.1.3.9': $device->model = 'Nokia 7750 SR'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.674.10892.2': $device->model = 'DRAC 4/P'; $device->type = 'remote access controller'; break;
+			case '1.3.6.1.4.1.674.10892.5': $device->model = 'iDRAC8'; $device->type = 'remote access controller'; break;
 			case '1.3.6.1.4.1.674.10895.1': $device->model = 'PowerConnect 3024'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.674.10895.1000': $device->model = 'PowerConnect 5212'; $device->type = 'switch'; break;
 			case '1.3.6.1.4.1.674.10895.3': $device->model = 'PowerConnect 3248'; $device->type = 'switch'; break;
