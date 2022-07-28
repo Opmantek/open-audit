@@ -886,6 +886,9 @@ class M_devices_components extends MY_Model
         // SERVICE
         if ((string)$table === 'service') {
             foreach ($input as $item => $attributes) {
+                $explode = explode('_', $attributes->name);
+                $attributes->name = $explode[0];
+                unset($explode);
                 // Remove any PAExec and Winexe 'services' as these are just the audit script running
                 if (strtolower($attributes->name) === 'paexec' OR strtolower($attributes->name) === 'winexesvc') {
                     unset($input[$item]);
