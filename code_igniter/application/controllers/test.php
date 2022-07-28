@@ -78,6 +78,23 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+    public function create_location_rules()
+    {
+        $sql = "DELETE FROM rules WHERE `description` = 'Set Location based on SysLocation'";
+        echo $sql . "<br /><br />\n";
+        $query = $this->db->query($sql);
+
+        $sql = 'SELECT id, name FROM locations';
+        $query = $this->db->query($sql);
+        $locations = $query->result();
+        foreach ($locations as $location) {
+            # below $sql is a SINGLE line
+            $sql = "INSERT INTO rules VALUES (null, 'Location - " . (string)$location->name . "', 1, 'Set Location based on SysLocation', 100, '[{\"attribute\":\"sysLocation\",\"operator\":\"eq\",\"table\":\"system\",\"value\":\"" . $location->name . "\"}]', '[{\"value_type\":\"integer\",\"attribute\":\"location_id\",\"value\":\"" . intval($location->id) . "\",\"table\":\"system\"}]', 'system', now())";
+            echo $sql . "<br /><br />\n";
+            $query = $this->db->query($sql);
+        }
+    }
+
     /**
      * [response description]
      * @return [type] [description]
