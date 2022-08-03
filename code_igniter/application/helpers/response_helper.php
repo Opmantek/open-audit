@@ -1397,6 +1397,18 @@ if (!function_exists('response_get_internal_join')) {
                 }
             }
         }
+
+        if ($collection === 'devices') {
+            if (!empty($filter) && is_array($filter) && count($filter) > 0) {
+                foreach ($filter as $item) {
+                    if (strpos($item->name, 'locations.') !== false) {
+                        $join .= ' LEFT JOIN locations ON (system.location_id = locations.id) ';
+                        break;
+                    }
+                }
+            }
+        }
+
         if ($join !== '') {
             $log->detail = 'JOIN: ' . $join;
             stdlog($log);
