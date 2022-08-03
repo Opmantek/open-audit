@@ -301,10 +301,15 @@ class M_configuration extends MY_Model
             $sql = 'SELECT CONVERT (smalldatetime, SYSDATETIME()) AS [timestamp]';
         }
         $result = $this->run_sql($sql, array());
-        $this->config->config['timestamp'] = $result[0]->timestamp;
+        if (!empty($result[0]->timestamp)) {
+            $this->config->config['timestamp'] = $result[0]->timestamp;
+        }
         $sql = "SELECT TIME_FORMAT(TIMEDIFF(NOW(),CONVERT_TZ(NOW(),@@session.time_zone,'+00:00')),'%H%i') AS `tz`";
         $result = $this->run_sql($sql, array());
-        $this->config->config['timezone'] = $result[0]->tz;
+        $this->config->config['timezone'] = 0;
+        if (!empty($result[0]->tz)) {
+            $this->config->config['timezone'] = $result[0]->tz;
+        }
         if ($this->config->config['timezone'] >= 0) {
             $this->config->config['timezone'] = 'UTC +' . $this->config->config['timezone'];
         } else {
