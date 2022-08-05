@@ -873,6 +873,10 @@ if (!function_exists('response_get_query_filter')) {
                             // $value = str_replace('\"', '"', $value);
                             // $value = str_replace('"', '\"', $value);
                             $value = mysqli_real_escape_string($instance->db->conn_id, $value);
+                            if (($query->name === 'ip' or stripos($query->name, '.ip') !== false) and filter_var($value, FILTER_VALIDATE_IP)) {
+                                # We have an IP addresses - pad it
+                                $value = ip_address_to_db($value);
+                            }
                             $query->value .= '"' . $value . '",';
                         }
                         $query->value = trim($query->value, ',');
