@@ -516,10 +516,16 @@ if ( !  function_exists('ssh_audit')) {
     {
         $CI = & get_instance();
         if (empty($parameters) OR empty($parameters->credentials) OR empty($parameters->ip)) {
+            $message = '(missing parameters object)';
+            if (empty($parameters->credentials)) {
+                $message = '(missing credentials)';
+            } else if (empty($parameters->ip)) {
+                $message = '(missing device ip)';
+            }
             $mylog = new stdClass();
             $mylog->severity = 4;
             $mylog->status = 'fail';
-            $mylog->message = 'Function ssh_audit called without correct params object';
+            $mylog->message = 'Function ssh_audit called without correct params object ' . $message;
             $mylog->file = 'ssh_helper';
             $mylog->function = 'ssh_audit';
             stdlog($mylog);
@@ -758,6 +764,9 @@ if ( !  function_exists('ssh_audit')) {
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_status = 'success';
         $log->message = 'The default shell for ' . $username . ' is ' . $device->shell;
+        if (stripos($device->shell, 'COMMAND NOT RECOGNIZED') !== false) {
+            $device->shell = '';
+        }
         if (strpos($device->shell, 'bash') === false) {
             $log->command_status = 'notice';
             $log->message = 'The default shell for ' . $username . ' is ' . $device->shell . ' (not bash)';
@@ -773,7 +782,7 @@ if ( !  function_exists('ssh_audit')) {
             $log->command_output = $device->bash;
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_status = 'success';
-            if ( ! empty($device->bash) && stripos($device->bash, 'Command not found') === false) {
+            if ( ! empty($device->bash) && stripos($device->bash, 'Command not found') === false && stripos($device->bash, 'COMMAND NOT RECOGNIZED') === false) {
                 $log->message = 'Bash installed';
             } else {
                 $log->message = 'Bash not installed';
@@ -793,7 +802,7 @@ if ( !  function_exists('ssh_audit')) {
             $log->command_output = $device->sh;
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_status = 'success';
-            if ( ! empty($device->sh) && stripos($device->sh, 'Command not found') === false) {
+            if ( ! empty($device->sh) && stripos($device->sh, 'Command not found') === false && stripos($device->bash, 'COMMAND NOT RECOGNIZED') === false) {
                 $log->message = 'SH installed';
                 $device->bash = '/bin/sh';
                 $device->shell = '/bin/sh';
@@ -886,7 +895,17 @@ if ( !  function_exists('ssh_audit')) {
             $item_start = microtime(true);
             $temp1 = $ssh->exec($command);
             $temp1 = trim($temp1);
+            $temp2 = $temp1;
             if (stripos($temp1, 'command not found')) {
+                $temp1 = '';
+            }
+            if (stripos($temp1, 'No entry for terminal type')) {
+                $temp1 = '';
+            }
+            if (stripos($temp1, 'invalid command detected at')) {
+                $temp1 = '';
+            }
+            if (stripos($temp1, 'COMMAND NOT RECOGNIZED')) {
                 $temp1 = '';
             }
             if ($item === 'solaris_domain' && $temp1 === '(none)') {
@@ -919,7 +938,7 @@ if ( !  function_exists('ssh_audit')) {
             } else {
                 $log->command = $command;
                 $log->command_time_to_execute = (microtime(true) - $item_start);
-                $log->command_output = $temp1;
+                $log->command_output = $temp2;
                 $log->command_status = 'notice';
                 $log->message = 'SSH command - ' . $item;
                 discovery_log($log);
