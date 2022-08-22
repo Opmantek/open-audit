@@ -139,6 +139,8 @@ if (!function_exists('integrations_pre')) {
                     $data = array($integration->id, microtime(true));
                     $query = $CI->db->query($sql, $data);
                 }
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
@@ -147,6 +149,8 @@ if (!function_exists('integrations_pre')) {
                     $data = array($integration->id, microtime(true));
                     $query = $CI->db->query($sql, $data);
                 }
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
@@ -155,6 +159,8 @@ if (!function_exists('integrations_pre')) {
                     $data = array($integration->id, microtime(true));
                     $query = $CI->db->query($sql, $data);
                 }
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
@@ -164,6 +170,8 @@ if (!function_exists('integrations_pre')) {
                     $data = array($integration->id, microtime(true), $message);
                     $query = $CI->db->query($sql, $data);
                 }
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             }
         }
@@ -412,7 +420,7 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
-        curl_close($ch);
+
         $business_services_retrieved = @json_decode($output);
         $business_services = array();
 
@@ -444,6 +452,8 @@ if (!function_exists('integrations_pre')) {
         $data = array(json_encode($additional_items), $integration->id);
         $query = $CI->db->query($sql, $data);
 
+        curl_close($ch);
+        unlink($ckfile);
         return true;
     }
 }
@@ -505,18 +515,24 @@ if (!function_exists('integrations_collection')) {
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check Username and Password.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
@@ -524,6 +540,8 @@ if (!function_exists('integrations_collection')) {
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             }
         }
@@ -543,6 +561,8 @@ if (!function_exists('integrations_collection')) {
             $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not retrieve devices from NMIS, output: " . (string)$output . ".')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
+            curl_close($ch);
+            unlink($ckfile);
             return array();
         }
         $external_devices = json_decode($output);
@@ -550,6 +570,8 @@ if (!function_exists('integrations_collection')) {
             $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] No devices returned from NMIS.')";
             $data = array($integration->id, microtime(true));
             $query = $CI->db->query($sql, $data);
+            curl_close($ch);
+            unlink($ckfile);
             return array();
         } else {
             $count = count($external_devices);
@@ -577,6 +599,7 @@ if (!function_exists('integrations_collection')) {
                 $device->configuration->location = 'Default Location';
             }
         }
+        unlink($ckfile);
         return $external_devices;
     }
 }
@@ -638,18 +661,24 @@ if (!function_exists('integrations_update')) {
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check Username and Password.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
@@ -657,6 +686,8 @@ if (!function_exists('integrations_update')) {
                 $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             }
         }
@@ -679,12 +710,16 @@ if (!function_exists('integrations_update')) {
                 $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could update device in NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return array();
             }
             if (empty($output)) {
                 $sql = "/* integrations_nmis_helper::update */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] No result from NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return array();
             } else {
                 $message = '[integrations_update] Device ' . $device->configuration->host . ' updated in NMIS.';
@@ -694,6 +729,7 @@ if (!function_exists('integrations_update')) {
                 $query = $CI->db->query($sql, $data);
             }
         }
+        unlink($ckfile);
         curl_close($ch);
     }
 }
@@ -755,18 +791,24 @@ if (!function_exists('integrations_create')) {
                 $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check Username and Password.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
@@ -774,6 +816,8 @@ if (!function_exists('integrations_create')) {
                 $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             }
         }
@@ -806,6 +850,8 @@ if (!function_exists('integrations_create')) {
                 $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not create device in NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return array();
             }
             $external_device = @json_decode($output);
@@ -813,6 +859,8 @@ if (!function_exists('integrations_create')) {
                 $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] No JSON in result from NMIS. Result: ' . (string)$output)";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return array();
             } else {
                 if (empty($external_device->error)) {
@@ -831,6 +879,7 @@ if (!function_exists('integrations_create')) {
             }
         }
         curl_close($ch);
+        unlink($ckfile);
         return $external_devices;
     }
 }
@@ -890,18 +939,24 @@ if (!function_exists('integrations_delete')) {
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check Username and Password.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
@@ -909,6 +964,8 @@ if (!function_exists('integrations_delete')) {
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             }
         }
@@ -931,12 +988,16 @@ if (!function_exists('integrations_delete')) {
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could delete device in NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return array();
             }
             if (empty($output)) {
                 $sql = "/* integrations_nmis_helper::delete */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] No result from NMIS.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return array();
             } else {
                 $message = '[integrations_delete] Device ' . $device->configuration->host . ' deleted in NMIS.';
@@ -946,6 +1007,7 @@ if (!function_exists('integrations_delete')) {
             }
         }
         curl_close($ch);
+        unlink($ckfile);
     }
 }
 
@@ -1003,18 +1065,24 @@ if (!function_exists('integrations_post')) {
                 $sql = "/* integrations_nmis_helper::post */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check Username and Password.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "/* integrations_nmis_helper::post */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "/* integrations_nmis_helper::post */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check URL.')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
@@ -1022,6 +1090,8 @@ if (!function_exists('integrations_post')) {
                 $sql = "/* integrations_nmis_helper::post */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                 $data = array($integration->id, microtime(true), $message);
                 $query = $CI->db->query($sql, $data);
+                curl_close($ch);
+                unlink($ckfile);
                 return false;
             }
         }
@@ -1275,6 +1345,8 @@ if (!function_exists('integrations_post')) {
         $data = array(json_encode($additional_items), $integration->id);
         $query = $CI->db->query($sql, $data);
 
+        curl_close($ch);
+        unlink($ckfile);
         return true;
     }
 }
