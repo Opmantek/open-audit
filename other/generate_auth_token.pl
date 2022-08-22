@@ -61,7 +61,8 @@ my $plain = $tokentime." ".$username;
 # but default keysize is an incompatibly 64 bits
 my $engine = Crypt::CBC->new(-key => $key,
 														 -cipher => "Rijndael",
-														 -keysize => 128/8);
+														 -keysize => 128/8,
+														 -nodeprecate => 1 );
 my $crypted = $engine->encrypt_hex($plain);
 
 print $crypted,"\n";
