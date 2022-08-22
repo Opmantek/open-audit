@@ -675,6 +675,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         CREATE TABLE `components` (
           `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
           `system_id` int(10) unsigned DEFAULT NULL,
+          `parent_id` int(10) unsigned DEFAULT '0',
           `current` enum('y','n') NOT NULL DEFAULT 'y',
           `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
           `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -693,7 +694,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
 
         $this->load->model('m_devices_components');
         echo "<pre>\n";
-        $tables = array('bios', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $sql = "SELECT CONCAT(\"'\", column_name, \"', `\", column_name, \"`\") as `string` FROM information_schema.columns WHERE  table_name = '$table' AND table_schema = 'openaudit' AND column_name NOT IN ('id', 'system_id', 'first_seen', 'last_seen', 'current')";
             $columns = '';
@@ -705,7 +706,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             $columns = substr($columns, 1);
             $match_columns = $this->m_devices_components->match_columns($table);
             $match_columns_string = "`" . implode("`, '_', `", $match_columns) . "`";
-            $sql = "INSERT INTO components (SELECT NULL, system_id, current, first_seen, last_seen, '$table', `name`, CONCAT($match_columns_string), JSON_OBJECT($columns) FROM `$table`)";
+            $sql = "INSERT INTO components (SELECT NULL, system_id, 0, current, first_seen, last_seen, '$table', `name`, CONCAT($match_columns_string), JSON_OBJECT($columns) FROM `$table`)";
             echo $table . "\n\n" . $sql . "\n\n";
             $item_start = microtime(true);
             $query = $this->db->query($sql);
