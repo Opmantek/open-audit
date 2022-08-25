@@ -162,11 +162,24 @@ class M_rows extends MY_Model
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
             // Replaced $CI->response->meta->internal->properties with * as rows is now a reserved word and our internal->properties code doesn't ` escape words.
-            $sql = 'SELECT `rows`.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, count(racks.id) as `racks` FROM `rows` LEFT JOIN orgs ON (rows.org_id = orgs.id) LEFT JOIN rooms ON (rows.room_id = rooms.id) LEFT JOIN racks ON (rows.id = racks.row_id) ' .
-                    $CI->response->meta->internal->filter . ' ' .
-                    'GROUP BY rows.id ' .
-                    $CI->response->meta->internal->sort . ' ' .
-                    $CI->response->meta->internal->limit;
+            $sql = 'SELECT `rows`.*, count(racks.id) as `racks`,
+                rooms.id AS `rooms.id`, rooms.name as `rooms.name`,
+                floors.id AS `floors.id`, floors.name AS `floors.name`,
+                buildings.id AS `buildings.id`, buildings.name AS `buildings.name`,
+                locations.id AS `locations.id`, locations.name AS `locations.name`,
+                orgs.id AS `orgs.id`, orgs.name AS `orgs.name`
+                FROM `rows`
+                LEFT JOIN `racks` ON (rows.id = racks.row_id)
+                LEFT JOIN `rooms` ON (rows.room_id = rooms.id)
+                LEFT JOIN `floors` ON (rooms.floor_id = floors.id)
+                LEFT JOIN `buildings` ON (floors.building_id = buildings.id)
+                LEFT JOIN `locations` ON (buildings.location_id = locations.id)
+                LEFT JOIN `orgs` ON (rows.org_id = orgs.id) ' .
+                $CI->response->meta->internal->filter . ' ' .
+                'GROUP BY rows.id ' .
+                $CI->response->meta->internal->sort . ' ' .
+                $CI->response->meta->internal->limit;
+
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'rows');
             $CI->response->meta->filtered = count($CI->response->data);

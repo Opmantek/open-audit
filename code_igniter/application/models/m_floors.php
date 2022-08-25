@@ -171,11 +171,20 @@ class M_floors extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT {$CI->response->meta->internal->properties}, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, count(rooms.id) as `rooms_count` FROM `floors` LEFT JOIN orgs ON (floors.org_id = orgs.id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN rooms ON (rooms.floor_id = floors.id) " .
-                    $CI->response->meta->internal->filter . ' ' . 
-                    'GROUP BY floors.id ' . 
-                    $CI->response->meta->internal->sort . ' ' . 
-                    $CI->response->meta->internal->limit;
+            $sql = "SELECT {$CI->response->meta->internal->properties}, count(rooms.id) as `rooms_count`,
+                buildings.id AS `buildings.id`, buildings.name as `buildings.name`,
+                locations.id AS `locations.id`, locations.name AS `locations.name`,
+                orgs.id AS `orgs.id`, orgs.name AS `orgs.name`
+                FROM `floors`
+                LEFT JOIN `rooms` ON (rooms.floor_id = floors.id)
+                LEFT JOIN `buildings` ON (buildings.id = floors.building_id)
+                LEFT JOIN `locations` ON (buildings.location_id = locations.id)
+                LEFT JOIN `orgs` ON (floors.org_id = orgs.id) " .
+                $CI->response->meta->internal->filter . ' ' .
+                'GROUP BY floors.id ' .
+                $CI->response->meta->internal->sort . ' ' .
+                $CI->response->meta->internal->limit;
+
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'floors');
             $CI->response->meta->filtered = count($CI->response->data);

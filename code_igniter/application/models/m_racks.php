@@ -173,10 +173,24 @@ class M_racks extends MY_Model
         }
         if ( ! empty($response)) {
             $CI->response->meta->total = $this->count();
-            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, rows.id AS `rows.id`, rows.name as `rows.name`, rooms.id AS `rooms.id`, rooms.name as `rooms.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(rack_devices.id) as `rack_devices_count`, SUM(rack_devices.height) AS `used`, COALESCE(racks.ru_height, 0) - COALESCE(SUM(rack_devices.height), 0) AS `free` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN `rows` ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) ' .
-                $CI->response->meta->internal->filter . ' ' . 
-                ' GROUP BY racks.id ' . 
-                $CI->response->meta->internal->sort . ' ' . 
+            $sql = 'SELECT ' . $CI->response->meta->internal->properties . ', count(rack_devices.id) as `rack_devices_count`, SUM(rack_devices.height) AS `used`, COALESCE(racks.ru_height, 0) - COALESCE(SUM(rack_devices.height), 0) AS `free`,
+                rows.id AS `rows.id`, rows.name as `rows.name`,
+                rooms.id AS `rooms.id`, rooms.name as `rooms.name`,
+                floors.id AS `floors.id`, floors.name as `floors.name`,
+                buildings.id AS `buildings.id`, buildings.name as `buildings.name`,
+                locations.id AS `locations.id`, locations.name as `locations.name`,
+                orgs.id AS `orgs.id`, orgs.name AS `orgs.name`
+                FROM `racks`
+                LEFT JOIN `rack_devices` ON (rack_devices.rack_id = racks.id)
+                LEFT JOIN `rows` ON (rows.id = racks.row_id)
+                LEFT JOIN `rooms` ON (rooms.id = rows.room_id)
+                LEFT JOIN `floors` ON (floors.id = rooms.floor_id)
+                LEFT JOIN `buildings` ON (buildings.id = floors.building_id)
+                LEFT JOIN `locations` ON (locations.id = buildings.location_id)
+                LEFT JOIN `orgs` ON (racks.org_id = orgs.id) ' .
+                $CI->response->meta->internal->filter . ' ' .
+                ' GROUP BY racks.id ' .
+                $CI->response->meta->internal->sort . ' ' .
                 $CI->response->meta->internal->limit;
             $result = $this->run_sql($sql, array());
             $CI->response->data = $this->format_data($result, 'racks');
