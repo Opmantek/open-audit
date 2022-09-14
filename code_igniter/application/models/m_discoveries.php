@@ -1085,7 +1085,7 @@ class M_discoveries extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->type = "Currently supported types are 'subnet' and 'active directory'.";
+        $dictionary->columns->type = "Currently supported types are 'subnet', 'seed' and 'active directory', along with (internally set) 'cloud' and 'integration'.";
         $dictionary->columns->devices_assigned_to_org = "Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the 'org_id' of this discovery. Links to <code>orgs.id</code>.";
         $dictionary->columns->devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
         $dictionary->columns->network_address = 'The URL the audit_* scripts should submit their result to.';

@@ -92,7 +92,7 @@ class M_rooms extends MY_Model
     public function read($id = 0)
     {
         $id = intval($id);
-        $sql = 'SELECT rooms.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN `rows` ON (rows.room_id = rooms.id) WHERE rooms.id = ?';
+        $sql = 'SELECT rooms.*, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, floors.id AS `floors.id`, floors.name as `floors.name`, buildings.id AS `buildings.id`, buildings.name as `buildings.name`, locations.id AS `locations.id`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id) LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN `rows` ON (rows.room_id = rooms.id) WHERE rooms.id = ?';
 
         $data = array($id);
         $result = $this->run_sql($sql, $data);
@@ -143,7 +143,7 @@ class M_rooms extends MY_Model
     public function children($id = 0)
     {
         $id = intval($id);
-        $sql = 'SELECT `rows`.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = `rows`.`id`) LEFT JOIN rooms ON (rooms.id = `rows`.`room_id`) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) WHERE `rows`.`room_id` = ? GROUP BY `rows`.`id`';
+        $sql = 'SELECT `rows`.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, rooms.name as `rooms.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, racks.name as `racks.name`, racks.id as `racks.id`, count(rows.id) as `rows_count` FROM `rows` LEFT JOIN orgs ON (orgs.id = rows.org_id) LEFT JOIN racks ON (racks.row_id = rows.id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) WHERE rows.room_id = ? GROUP BY rows.id';
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'rows');
@@ -162,7 +162,7 @@ class M_rooms extends MY_Model
         $CI = & get_instance();
         if ( ! empty($user_id)) {
             $org_list = array_unique(array_merge($CI->user->orgs, $CI->m_orgs->get_user_descendants($user_id)));
-            $sql = 'SELECT rooms.*, floors.id AS `floors.id`, floors.name AS `floors.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM rooms LEFT JOIN floors ON (rooms.floor_id = floors.id) LEFT JOIN orgs ON (rooms.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
+            $sql = 'SELECT `rooms`.*, floors.id AS `floors.id`, floors.name AS `floors.name`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM rooms LEFT JOIN floors ON (rooms.floor_id = floors.id) LEFT JOIN orgs ON (rooms.org_id = orgs.id) WHERE orgs.id IN (' . implode(',', $org_list) . ')';
             $result = $this->run_sql($sql, array());
             $result = $this->format_data($result, 'rooms');
             return $result;
@@ -170,8 +170,8 @@ class M_rooms extends MY_Model
         if ( ! empty($response)) {
             $total = $this->collection($CI->user->id);
             $CI->response->meta->total = count($total);
-            $sql = "SELECT {$CI->response->meta->internal->properties}`, count(rows.id) as `rows_count`,
-                floors.id AS `floors.id`, floors.name as `floors.name,
+            $sql = "SELECT `rooms`.*, count(rows.id) as `rows_count`,
+                floors.id AS `floors.id`, floors.name as `floors.name`,
                 buildings.id AS `buildings.id`, buildings.name AS `buildings.name`,
                 locations.id AS `locations.id`, locations.name AS `locations.name`,
                 orgs.id AS `orgs.id`, orgs.name AS `orgs.name`

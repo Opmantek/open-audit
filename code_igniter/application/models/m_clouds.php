@@ -314,6 +314,18 @@ class M_clouds extends MY_Model
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your API key.';
         $dictionary->columns->status = 'The current status of the Cloud Discovery.';
         $dictionary->columns->options = 'Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.';
+        $dictionary->columns->snmp = 'Should we test for SNMP using UDP port 161.';
+        $dictionary->columns->ssh = 'Should we test for SSH using TCP port 21.';
+        $dictionary->columns->wmi = 'Should we test for WMI using TCP port 135.';
+        // Azure
+        $dictionary->columns->subscription_id = 'Likely displayed as the Directory ID in Azure.';
+        $dictionary->columns->tennant_id = 'Your Azure tennant ID.';
+        $dictionary->columns->client_id = 'The client ID is the ID of an Azure Active Directory application. It may be displayed in Azure as the Application ID.';
+        $dictionary->columns->client_secret = 'As created by Azure.';
+        // AWS
+        $dictionary->columns->credentials_key = 'As created in AWS.';
+        $dictionary->columns->credentials_secret_key = 'The associated secret for the AWS credentials.';
+
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
         return $dictionary;

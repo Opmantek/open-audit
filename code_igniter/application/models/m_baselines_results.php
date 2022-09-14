@@ -91,6 +91,7 @@ class M_baselines_results extends MY_Model
         $dictionary->columns->devices = 'The number of devices in the associated group.';
         $dictionary->columns->pass = 'How many policies results in a pass.';
         $dictionary->columns->fail = 'How many policies results in a fail.';
+        $dictionary->columns->{'tests.operator'} = 'How to compare';
         return $dictionary;
     }
 }

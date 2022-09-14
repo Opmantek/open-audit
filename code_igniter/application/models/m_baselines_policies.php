@@ -257,13 +257,13 @@ class M_baselines_policies extends MY_Model
         $dictionary->attributes->create = mandatory_fields($collection);
         $dictionary->attributes->update = update_fields($collection);
         $dictionary->sentence = 'sentence';
-        $dictionary->about = '<p>The About</p>';
-        $dictionary->marketing = '<p>Some Marketing</p>';
+        $dictionary->about = '<p>A baseline is made up of one or more baseline policies. A baseline policy is the test that is executed against the devices in the group specified when generating a baseline result.</p>';
+        $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Track your devices and see if they deviate from your required standard.<br /><br /> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br /> For example - you might create a baseline from a device running Centos 6 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.<br /><br /> You can create a baseline, run it against a group of devices and view the results. You can implement your baselines to be executed on a schedule. All results are kept and can be viewed and exported.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br /><br /><strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br /><br /><strong>Details</strong> - Baselines can compare netstat ports, users and software.<br /><br /><strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br /><br /><strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br /><br /><strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br /><br /></p>';
         $dictionary->product = 'enterprise';
-        $dictionary->notes = '<p>More Notes</p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
-        $dictionary->columns->baseline_id = '';
+        $dictionary->columns->baseline_id = 'The linked baselines. Linkes to <code>baselines.id</code>.';
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
         $dictionary->columns->notes = 'Any additional notes you care to make.';

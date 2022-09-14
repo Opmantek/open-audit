@@ -352,7 +352,7 @@ class M_credentials extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->type = 'Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.';
+        $dictionary->columns->type = 'Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.';
         $dictionary->columns->credentials = 'An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.';
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
         $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;

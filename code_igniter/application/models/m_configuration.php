@@ -548,7 +548,7 @@ class M_configuration extends MY_Model
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->value = 'The value assigned to the item.';
-        $dictionary->columns->type = 'int, text, etc';
+        $dictionary->columns->type = 'For an integer, \'number\'. For a date and time, \'date\', for a boolean (y/n), \'bool\'. For everything else, \'text\'.';
         $dictionary->columns->editable = 'Can the user edit this item.';
         $dictionary->columns->description = $CI->temp_dictionary->description;
         $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
