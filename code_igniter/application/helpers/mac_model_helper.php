@@ -8424,6 +8424,7 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'JHC9': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
 			case 'JHCD': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
 			case 'JHD4': $description = 'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)'; break;
+            case 'JV3N': $description = 'iMac (Retina 5K, 27-inch, 2019)'; break;
 			case 'JV3Y': $description = 'iMac (Retina 5K, 27-inch, 2019)'; break;
 			case 'L415': $description = 'MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)'; break;
 			case 'LVDV': $description = 'MacBook Pro (15-inch, 2019)'; break;
