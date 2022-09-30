@@ -29,7 +29,7 @@
  * @version   GIT: Open-AudIT_3.5.3
 
  *
- * @copyright Copyright (c) 2014, Opmantek
+ * @copyright Copyright (c) 2022, Firstwave
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 

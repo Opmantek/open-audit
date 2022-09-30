@@ -427,7 +427,7 @@ if (!empty($this->config->config['servers'])) {
                     if ( ! empty($this->config->config['nmis_url'])) {
                         $link = htmlspecialchars($this->config->config['nmis_url'], REPLACE_FLAGS, CHARSET);
                     } else {
-                        $link = "https://opmantek.com";
+                        $link = "https://www.firstwave.com";
                     }
                     ?>
                     <li>

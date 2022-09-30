@@ -43,7 +43,7 @@ if (php_uname('s') == 'Windows NT') {
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12">
-                If you are emailing this result to Opmantek, please go into the menu -> Admin -> Database -> List and select the Logs table, export it to SQL and attach it.<br /><br />
+                If you are emailing this result to Firstwave, please go into the menu -> Admin -> Database -> List and select the Logs table, export it to SQL and attach it.<br /><br />
                 Please also attach the files below and the data below and add them as attachments to the email.<br /><pre><?php echo $files; ?></pre>
             </div>
             <div class="col-md-12"><br /><?php echo __('SESSION USERDATA'); ?>

@@ -1,13 +1,10 @@
 #!/bin/sh
-#
-#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
-#
-#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#  Copyright 2022 Firstwave (www.firstwave.com)
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -21,16 +18,14 @@
 #  If not, see <http://www.gnu.org/licenses/>
 #
 #  For further information on Open-AudIT or for a license other than AGPL please see
-#  www.opmantek.com or email contact@opmantek.com
+#  www.firstwave.com or email sales@firstwave.com
 #
 # *****************************************************************************
 
 # @package Open-AudIT
-# @author Mark Unwin <marku@opmantek.com>
-# 
+# @author Mark Unwin <mark.unwin@firstwave.com>
 # @version   GIT: Open-AudIT_4.3.4
-
-# @copyright Copyright (c) 2014, Opmantek
+# @copyright Copyright (c) 2022, Firstwave
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 ########################################################

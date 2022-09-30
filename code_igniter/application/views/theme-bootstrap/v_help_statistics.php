@@ -76,8 +76,8 @@ if (php_uname('s') == "Windows NT") {
                     <li>Apache - our default webserver</li>
                     <li>xHTML W3C standards</li>
                 </ul>
-                Please visit the homepage at <a href="http://www.open-audit.org" style="color: blue;">http://www.open-audit.org</a>, and don't be shy to sign up to the forums.<br />
-                Consulting, implementation and other services are available through <a href="https://opmantek.com" style="color: blue;">Opmantek</a>.<br /><br />
+                Please visit the homepage at <a href="http://www.open-audit.org" style="color: blue;">http://www.open-audit.org</a>.<br />
+                Consulting, implementation and other services are available through <a href="https://www.firstwave.com" style="color: blue;">Firstwave</a>.<br /><br />
                 We hope you find Open-AudIT as useful as we do.<br /><br /><br />
             </div>
         </div>

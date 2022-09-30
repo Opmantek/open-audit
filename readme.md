@@ -12,7 +12,7 @@ Windows PCs can be queried for hardware, software, operating system settings, se
 
 # Open-AudIT Enterprise
 
-[Opmantek](https://opmantek.com) offer Open-AudIT Enterprise which leverages from Open-AudIT to provide extra features and benefits as well as an easy to use installer for Windows and Linux. Please consider purchasing a license to assist with the continued development of Open-AudIT.
+[Firstwave](https://www.firstwave.com) offer Open-AudIT Enterprise which leverages from Open-AudIT to provide extra features and benefits as well as an easy to use installer for Windows and Linux. Please consider purchasing a license to assist with the continued development of Open-AudIT.
 
 ![Home](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/dashboards.png)<br>
 ![Devices](https://github.com/Opmantek/open-audit/raw/master/www/open-audit/images/devices.png)<br>
@@ -51,7 +51,7 @@ To install from this source, please it in /usr/local/open-audit and copy the www
 
 ## Contributing
 
-Please contact [Opmantek](https://opmantek.com) with any enquiries for contributing or post to the [Questions](https://community.opmantek.com/questions) site. And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
+Please contact [Firstwave](https://www.firstwave.com) with any enquiries for contributing or post to the [Questions](https://community.opmantek.com/questions) site. And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
 
 ## Versioning
 

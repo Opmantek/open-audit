@@ -1,37 +1,33 @@
 #!/usr/bin/perl
+#  Copyright 2022 Firstwave (www.firstwave.com)
 #
-# THIS SOFTWARE IS NOT PART OF NMIS AND IS COPYRIGHTED, PROTECTED AND LICENSED
-# BY OPMANTEK.
+#  This file is part of Open-AudIT.
 #
-# YOU MUST NOT MODIFY OR DISTRIBUTE THIS CODE
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
 #
-# This code is NOT Open Source
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
 #
-# IT IS IMPORTANT THAT YOU HAVE READ CAREFULLY AND UNDERSTOOD THE END USER
-# LICENSE AGREEMENT THAT WAS SUPPLIED WITH THIS SOFTWARE.   BY USING THE
-# SOFTWARE  YOU ACKNOWLEDGE THAT (1) YOU HAVE READ AND REVIEWED THE LICENSE
-# AGREEMENT IN ITS ENTIRETY, (2) YOU AGREE TO BE BOUND BY THE AGREEMENT, (3)
-# THE INDIVIDUAL USING THE SOFTWARE HAS THE POWER, AUTHORITY AND LEGAL RIGHT
-# TO ENTER INTO THIS AGREEMENT ON BEHALF OF YOU (AS AN INDIVIDUAL IF ON YOUR
-# OWN BEHALF OR FOR THE ENTITY THAT EMPLOYS YOU )) AND, (4) BY SUCH USE, THIS
-# AGREEMENT CONSTITUTES BINDING AND ENFORCEABLE OBLIGATION BETWEEN YOU AND
-# OPMANTEK LTD.
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
 #
-# Opmantek is a passionate, committed open source software company - we really
-# are.  This particular piece of code was taken from a commercial module and
-# thus we can't legally supply under GPL. It is supplied in good faith as
-# source code so you can get more out of NMIS.  According to the license
-# agreement you can not modify or distribute this code, but please let us know
-# if you want to and we will certainly help -  in most cases just by emailing
-# you a different agreement that better suits what you want to do but covers
-# Opmantek legally too.
-#
-# contact opmantek by emailing code@opmantek.com
-#
-# All licenses for all software obtained from Opmantek (GPL and commercial)
-# are viewable at http://opmantek.com/licensing
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.firstwave.com or email sales@firstwave.com
 #
 # *****************************************************************************
+
+# @package Open-AudIT
+# @author Mark Unwin <mark.unwin@firstwave.com>
+# @version   GIT: Open-AudIT_4.3.4
+# @copyright Copyright (c) 2022, Firstwave
+# @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+
 our $VERSION = "2.335.0";
 
 if (@ARGV == 1 && $ARGV[0] eq "--version")
@@ -50,7 +46,7 @@ timestamp: optional, default: now\n"
 		if (!$key or !$username or (defined $tokentime && !int($tokentime)));
 $tokentime ||= time;
 
-#  what goes into the token? the token time stamp (in unix-seconds, UTC),
+# What goes into the token? the token time stamp (in unix-seconds, UTC),
 # as a plain string, followed by exactly one space and the username.
 
 my $plain = $tokentime." ".$username;

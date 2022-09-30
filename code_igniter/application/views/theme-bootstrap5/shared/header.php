@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Open-AudIT Community">
+        <meta name="description" content="Open-AudIT">
         <meta name="author" content="Mark Unwin">
         <link rel="shortcut icon" href="<?php echo $this->config->config['oa_web_folder']; ?>favicon.png" type="image/x-icon" />
         <title>Open-AudIT</title>
@@ -537,7 +537,7 @@ if (!empty($this->config->config['modules'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        This feature is limited to Enterprise licenses only. Please contact <a href="https://opmantek.com" target="_blank">Opmantek</a> for a license.
+                        This feature is limited to Enterprise licenses only. Please contact <a href="https://www.firstwave.com" target="_blank">Firstwave</a> for a license.
                     </div>
                 </div>
             </div>
@@ -548,7 +548,7 @@ if (!empty($this->config->config['modules'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        This feature is limited to Professional licenses only. Please contact <a href="https://opmantek.com" target="_blank">Opmantek</a> for a license.
+                        This feature is limited to Professional licenses only. Please contact <a href="https://www.firstwave.com" target="_blank">Firstwave</a> for a license.
                     </div>
                 </div>
             </div>

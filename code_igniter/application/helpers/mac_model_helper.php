@@ -8433,7 +8433,7 @@ if (! function_exists('get_description_from_manufacturer_code')) {
 			case 'Q6LT': $description = 'MacBook Air (M1, 2020)'; break;
 
 
-			default: $description = 'Unknown model, please send ' . $manufacturer_code . ' to code@opmantek.com for inclusion and/or add to your Rules.'; break;
+			default: $description = 'Unknown model, please send ' . $manufacturer_code . ' to support@firstwave.com for inclusion and/or add to your Rules.'; break;
 		}
 		return $description;
 	}
