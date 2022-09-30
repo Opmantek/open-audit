@@ -30,7 +30,7 @@
 * @category  Controller
 * @package   Database
 * @author    Mark Unwin <mark.unwin@firstwave.com>
-* @copyright 2014 Opmantek
+* @copyright 2022 Firstwave
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   GIT: Open-AudIT_4.3.4
 * @link      http://www.open-audit.org
