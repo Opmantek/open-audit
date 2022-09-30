@@ -20,7 +20,7 @@
 #  If not, see <http://www.gnu.org/licenses/>
 #
 #  For further information on Open-AudIT or for a license other than AGPL please see
-#  www.opmantek.com or email contact@opmantek.com
+#  www.firstwave.com or email sales@firstwave.com
 #
 # *****************************************************************************
 /**
