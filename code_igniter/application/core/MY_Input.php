@@ -2,9 +2,7 @@
      exit('No direct script access allowed');
  }
 #
-#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
-#
-#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#  Copyright 2022 Firstwave (www.firstwave.com)
 #
 #  This file is part of Open-AudIT.
 #
