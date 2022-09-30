@@ -171,8 +171,8 @@ if ($table === 'scalability') {
 }
 
 if ($table === 'support') {
-    $dictionary->sentence = "Amazing support from Opmantek - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";
-    $dictionary->marketing = "<p>Open-AudIT is supported by Opmantek with an amazing level of support. If you prefer an active community of support givers, there\'s that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if's or but's. Great support. Period.<br /><br />
+    $dictionary->sentence = "Amazing support from Firstwave - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";
+    $dictionary->marketing = "<p>Open-AudIT is supported by Firstwave with an amazing level of support. If you prefer an active community of support givers, there\'s that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if's or but's. Great support. Period.<br /><br />
     <br /><br />
     " . $link . '<br /><br /></p>';
 }
