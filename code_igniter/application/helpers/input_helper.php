@@ -31,7 +31,7 @@ if ( ! defined('BASEPATH')) {
 * PHP version 5.3.3
 * 
 * @category  Helper
-* @author    Mark Unwin <marku@opmantek.com>
+* @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   GIT: Open-AudIT_4.3.4
@@ -97,7 +97,7 @@ if ( ! function_exists('inputRead')) {
      *
      * @category  Function
      *
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      *
      * @return NULL [creates and updates the $this->response object]
      */

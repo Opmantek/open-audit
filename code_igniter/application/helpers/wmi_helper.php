@@ -30,7 +30,7 @@ if (!defined('BASEPATH')) {
 
 /*
  * @package Open-AudIT
- * @author Mark Unwin <marku@opmantek.com>
+ * @author Mark Unwin <mark.unwin@firstwave.com>
  *
  * @version   GIT: Open-AudIT_4.3.4
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,7 +45,7 @@ if (! function_exists('windows_credentials')) {
      *
      * @category  Function
      *
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      *
      * @param     ip          The target device's ip address
      *
@@ -121,7 +121,7 @@ if (! function_exists('execute_windows')) {
      *
      * @category  Function
      *
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      *
      * @param     ip        The target device's ip address
      *
@@ -258,7 +258,7 @@ if (! function_exists('copy_to_windows')) {
      *
      * @category  Function
      *
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      *
      * @param     username  The username used to connect
      *
@@ -499,7 +499,7 @@ if (! function_exists('delete_windows_result')) {
      *
      * @category  Function
      *
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      *
      * @param     parameters    Object containing ip, share, file, credentials, log
      *
@@ -852,7 +852,7 @@ if (! function_exists('wmi_command')) {
      *
      * @category  Function
      *
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      *
      * @param     username  The username used to connect
      *

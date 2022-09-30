@@ -31,7 +31,7 @@ if (!defined('BASEPATH')) {
 /*
 * @category  Helper
 * @package   Open-AudIT
-* @author    Mark Unwin <marku@opmantek.com>
+* @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   GIT: Open-AudIT_4.3.2
@@ -44,7 +44,7 @@ if (!defined('BASEPATH')) {
 * @access   public
 * @category Model
 * @package  Rules
-* @author   Mark Unwin <marku@opmantek.com>
+* @author   Mark Unwin <mark.unwin@firstwave.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */

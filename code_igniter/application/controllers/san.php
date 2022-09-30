@@ -27,7 +27,7 @@
 *
 * @category  Controller
 * @package   Open-AudIT
-* @author    Mark Unwin <marku@opmantek.com>
+* @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   GIT: Open-AudIT_4.3.4
@@ -40,7 +40,7 @@
 * @access   public
 * @category Object
 * @package  Open-AudIT
-* @author   Mark Unwin <marku@opmantek.com>
+* @author   Mark Unwin <mark.unwin@firstwave.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
@@ -69,7 +69,7 @@ class San extends CI_Controller
      * @access    public
      * @category  Function
      * @package   Open-AudIT
-     * @author    Mark Unwin <marku@opmantek.com>
+     * @author    Mark Unwin <mark.unwin@firstwave.com>
      * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
      * @link      http://www.open-audit.org
  
