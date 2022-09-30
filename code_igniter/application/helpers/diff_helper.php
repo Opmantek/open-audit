@@ -1,7 +1,5 @@
 <?php
-
 /*
-
 class.Diff.php
 
 A class containing a diff implementation

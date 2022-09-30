@@ -1,8 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
-#
+/**
 #  Copyright 2022 Firstwave (www.firstwave.com)
 #
 #  This file is part of Open-AudIT.
@@ -25,16 +22,21 @@ if (!defined('BASEPATH')) {
 #  www.firstwave.com or email sales@firstwave.com
 #
 # *****************************************************************************
-
-/*
+*
+* PHP version 5.3.3
+* 
 * @category  Helper
-* @package   Open-AudIT
 * @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2022 Firstwave
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.3.4
+* @version   GIT: Open-AudIT_4.3.2
 * @link      http://www.open-audit.org
- */
+*/
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
 if (! function_exists('getError')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
@@ -105,7 +107,7 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0002']->status = 'HTTP/1.1 404 Not Found';
         $error_array['ERR-0002']->severity = 3;
         $error_array['ERR-0002']->title = "No object could be retrieved";
-        $error_array['ERR-0002']->detail = "When calling this function an identifier (usually but not always an integer based id) should be supplied. The supplied item was either blank, not an integer based id or we could not determine the corresponding object based on the details provided. Please check the log file for the controller and model this occurred on and report the issue to Opmantek.";
+        $error_array['ERR-0002']->detail = "When calling this function an identifier (usually but not always an integer based id) should be supplied. The supplied item was either blank, not an integer based id or we could not determine the corresponding object based on the details provided. Please check the log file for the controller and model this occurred on and report the issue to Firstwave.";
 
         $error_array['ERR-0003'] = new stdClass();
         $error_array['ERR-0003']->code = 'ERR-0003';

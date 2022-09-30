@@ -1,8 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
-#
+/**
 #  Copyright 2022 Firstwave (www.firstwave.com)
 #
 #  This file is part of Open-AudIT.
@@ -25,16 +22,20 @@ if (!defined('BASEPATH')) {
 #  www.firstwave.com or email sales@firstwave.com
 #
 # *****************************************************************************
-
-/*
+*
+* PHP version 5.3.3
+* 
 * @category  Helper
-* @package   Open-AudIT
 * @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2022 Firstwave
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.3.4
+* @version   GIT: Open-AudIT_4.3.2
 * @link      http://www.open-audit.org
- */
+*/
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 # Vendor SonicWall
 
