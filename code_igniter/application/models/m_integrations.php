@@ -1598,7 +1598,7 @@ class M_integrations extends MY_Model
         $dictionary->notes = '<p></p>';
 
         $dictionary->system_fields = $CI->db->list_fields('system');
-        $dictionary->system_fields[] = '';
+        #$dictionary->system_fields[] = '';
         sort($dictionary->system_fields);
         $dictionary->remote_format = array('string', 'int', 'bool', 'date_YMD', 'date_MDY', 'date_DMY');
         sort($dictionary->remote_format);
