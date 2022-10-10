@@ -133,7 +133,7 @@ class M_roles extends MY_Model
     {
         $data = array(intval($id));
         // Delete the role, only if not in default list
-        $sql = "DELETE FROM `roles` WHERE id = ? AND name NOT IN ('admin', 'org_admin', 'reporter', 'user', 'collector')";
+        $sql = "DELETE FROM `roles` WHERE id = ? AND name NOT IN ('admin', 'org_admin', 'user', 'collector')";
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
