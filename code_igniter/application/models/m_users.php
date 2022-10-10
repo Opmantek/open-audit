@@ -828,8 +828,8 @@ class M_users extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.';
-        $dictionary->columns->password = 'A hashed password that enables logon when using application authentication.';
-        $dictionary->columns->full_name = 'The complete first name, last name fo this user.';
+        $dictionary->columns->password = 'Stored as a hashed and salted password that enables logon when using application authentication.';
+        $dictionary->columns->full_name = 'The complete first and last name for this user.';
         $dictionary->columns->email = 'The users email address.';
         $dictionary->columns->lang = 'The language to translate the web interface into for the user.';
         $dictionary->columns->active = "Is this account active? If set to 'n', the user cannot logon.";
