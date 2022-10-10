@@ -176,7 +176,7 @@ class M_rack_devices extends MY_Model
     {
         $CI = & get_instance();
         $collection = 'rack_devices';
-        $CI->temp_dictionary->link = str_replace('$collection', $collection, $CI->temp_dictionary->link);
+        $CI->temp_dictionary->link = str_replace('$collection', 'racks', $CI->temp_dictionary->link);
         $this->load->helper('collections');
 
         $dictionary = new stdClass();
@@ -193,7 +193,7 @@ class M_rack_devices extends MY_Model
         $dictionary->marketing = '<p>These are the devices that live within a rack.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->product = 'enterprise';
-        $dictionary->notes = '<p></p>';
+        $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;
