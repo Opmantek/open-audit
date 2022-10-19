@@ -2076,7 +2076,7 @@ if (!function_exists('response_get_sub_resource')) {
             $sub_resource = $post;
             $log->summary = 'Set sub_resource according to POST.';
         }
-        if (!empty($uri)) {
+        if (!empty($uri) and $collection !== 'groups') {
             $sub_resource = $uri;
             $log->summary = 'Set sub_resource according to URI.';
         }
