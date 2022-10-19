@@ -78,6 +78,7 @@ if ($table === 'attachments') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array();
     $dictionary->attributes->update = array();
+    $dictionary->product = 'community';
 }
 
 if ($table === 'audit_log') {
@@ -92,6 +93,7 @@ if ($table === 'audit_log') {
     $dictionary->columns->timestamp = '';
     $dictionary->attributes->create = array();
     $dictionary->attributes->update = array();
+    $dictionary->product = 'community';
 }
 
 if ($table === 'availability') {
@@ -101,6 +103,7 @@ if ($table === 'availability') {
     ' . $link . '<br /><br /></p>';
     $dictionary->attributes->create = array();
     $dictionary->attributes->update = array();
+    $dictionary->product = 'community';
 }
 
 if ($table === 'changes') {
@@ -113,6 +116,7 @@ if ($table === 'changes') {
     <br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
+    $dictionary->product = 'community';
 }
 
 if ($table === 'cmdb') {
@@ -121,6 +125,7 @@ if ($table === 'cmdb') {
 As at v2.0, Open-AudIT supports a complete JSON restful API.<br /><br />
 Define a query and have your external program call the API and retrieve the data.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->product = 'community';
 }
 
 if ($table === 'export') {
@@ -129,6 +134,7 @@ if ($table === 'export') {
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>With the click of a button export some or all of your data into a CSV for Excel, a JSON or XML document for processing or importing into another program. You can filter your data before export, or just export everything. Select specific sections of one or more devices. Any way you want it, Open-AudIT can export it.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->product = 'community';
 }
 
 if ($table === 'maps') {
@@ -137,6 +143,7 @@ if ($table === 'maps') {
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->product = 'professional';
 }
 
 if ($table === 'reports') {
@@ -147,6 +154,7 @@ if ($table === 'reports') {
 Simply Select which types of devices you want to be exported, which queries to run, and the format you want. Export to CSV and analyze offline, or import into your favorite third part data visualizer. The power is in your hands with Open-AudIT Enterprise Enhanced Reporting.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
+    $dictionary->product = 'professional';
 }
 
 if ($table === 'servers') {
@@ -158,6 +166,7 @@ if ($table === 'servers') {
     $dictionary->columns->user = 'The account name on the server that is used to log on.';
     $dictionary->columns->password = 'A hashed password that enables logon.';
     $dictionary->columns->uuid = 'The local UUID to identify <i>this</i> server.';
+    $dictionary->product = 'enterprise';
 }
 
 if ($table === 'scalability') {
@@ -168,13 +177,15 @@ if ($table === 'scalability') {
     Open-AudIT has three main components. The database, the web server and the audit host. Typically in smaller organisations these are installed on the same server, but this doesn\'t need to be the case if a large number of devices are being audited.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
+    $dictionary->product = 'community';
 }
 
 if ($table === 'support') {
     $dictionary->sentence = "Amazing support from Firstwave - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";
-    $dictionary->marketing = "<p>Open-AudIT is supported by Firstwave with an amazing level of support. If you prefer an active community of support givers, there\'s that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if's or but's. Great support. Period.<br /><br />
+    $dictionary->marketing = "<p>Open-AudIT is supported by Firstwave with an amazing level of support. If you prefer an active community of support givers, there's that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if's or but's. Great support. Period.<br /><br />
     <br /><br />
     " . $link . '<br /><br /></p>';
+    $dictionary->product = 'community';
 }
 
 
@@ -185,4 +196,5 @@ if ($table === 'warranties') {
     $dictionary->marketing = '<p>Warranties are an essential item to track. Open-AudIT makes it easy to record and report on warranties. Easily create reports to tell you what devices have expiring warranties and run have them run automatically. Be able to forecast your replacement equipment purchases for your next purchase period simply and easily.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
+    $dictionary->product = 'community';
 }
