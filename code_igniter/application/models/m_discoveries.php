@@ -1083,12 +1083,12 @@ class M_discoveries extends MY_Model
         $dictionary->columns->name = $CI->temp_dictionary->name;
         $dictionary->columns->org_id = $CI->temp_dictionary->org_id;
         $dictionary->columns->description = $CI->temp_dictionary->description;
-        $dictionary->columns->type = "Currently supported types are 'subnet', 'seed' and 'active directory', along with (internally set) 'cloud' and 'integration'.";
+        $dictionary->columns->type = "Supported types are 'subnet', 'seed' and 'active directory'.";
         $dictionary->columns->devices_assigned_to_org = "Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the 'org_id' of this discovery. Links to <code>orgs.id</code>.";
         $dictionary->columns->devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->network_address = 'The URL the audit_* scripts should submit their result to.';
+        $dictionary->columns->network_address = 'The URL the audit scripts should submit their result to.';
         $dictionary->columns->last_run = 'A calculated field that is updated each time the discovery has been executed.';
-        $dictionary->columns->complete = 'A internal field that indicates if the discovery has completed.';
+        $dictionary->columns->complete = 'An internal field that indicates if the discovery has completed.';
         $dictionary->columns->scan_options = 'A JSON document containing the required attributes overriding the chosen discovery_scan_options.';
         $dictionary->columns->match_options = 'A JSON document containing the required attributes overriding the default device match options.';
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
@@ -1123,9 +1123,9 @@ class M_discoveries extends MY_Model
         $dictionary->columns->match_sysname_serial = 'Should we match a device based only on its SNMP sysName and serial.';
         $dictionary->columns->match_uuid = 'Should we match a device based on its UUID.';
 
-        $dictionary->columns->{'scan_options.id'} = 'The set of options for Nmap for this discovery. Links to discovery_scan_options.id.';
+        $dictionary->columns->{'scan_options.id'} = 'Links to discovery_scan_options.id.';
         $dictionary->columns->{'scan_options.ping'} = 'The device must respond to an Nmap ping before it is considered online.';
-        $dictionary->columns->{'scan_options.service_version'} = 'Should we use Nmap Service Version detection. This will considerably slow the discovery scan.';
+        $dictionary->columns->{'scan_options.service_version'} = 'This will considerably slow the discovery scan.';
         $dictionary->columns->{'scan_options.open|filtered'} = 'If a port responds with open|filtered, should we consider it available.';
         $dictionary->columns->{'scan_options.filtered'} = 'If a port responds with filtered, should we consider it available.';
         $dictionary->columns->{'scan_options.timing'} = 'The Nmap timing preset.';
@@ -1133,7 +1133,7 @@ class M_discoveries extends MY_Model
         $dictionary->columns->{'scan_options.nmap_udp_ports'} = 'Scan the Nmap top number of UDP ports.';
         $dictionary->columns->{'scan_options.tcp_ports'} = 'A list of custom TCP ports to scan.';
         $dictionary->columns->{'scan_options.udp_ports'} = 'A list of custom UDP ports to scan.';
-        $dictionary->columns->{'scan_options.timeout'} = 'How long should Nmap wait for a response, per target device.';
+        $dictionary->columns->{'scan_options.timeout'} = 'How long should Nmap wait for a response, per device.';
         $dictionary->columns->{'scan_options.exclude_tcp_ports'} = 'Do not scan these TCP ports.';
         $dictionary->columns->{'scan_options.exclude_udp_ports'} = 'Do not scan these UDP ports.';
         $dictionary->columns->{'scan_options.exclude_ip'} = 'Exclude these IP addresses from being Nmap scanned.';
