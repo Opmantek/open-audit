@@ -456,6 +456,7 @@ class Discoveries extends MY_Controller
         if ($nmap_installed === 'n') {
             log_error('ERR-0043');
         }
+        return;
     }
 
     private function test_nmap_suid()
@@ -463,11 +464,33 @@ class Discoveries extends MY_Controller
         if (php_uname('s') === 'Windows NT') {
             return;
         }
-        $command_string = 'ls -lh `which nmap` | cut -d" " -f1 | cut -c4';
-        exec($command_string, $output);
-        if (! isset($output[0]) or $output[0] !== 's') {
-            log_error('ERR-0047');
-        } return;
+        if ( ! empty($this->config->config['discovery_override_nmap']) && $this->config->config['discovery_override_nmap'] === 'y') {
+            return;
+        }
+        $command_string = 'which nmap1 2>/dev/null';
+        $output = shell_exec($command_string);
+        if (!empty($output)) {
+            $command_string = 'ls -lh `which nmap` | cut -d" " -f1 | cut -c4';
+            exec($command_string, $output);
+            if (! isset($output[0]) or $output[0] !== 's') {
+                log_error('ERR-0047');
+            }
+        } else if (file_exists('/usr/bin/nmap')) {
+            $command_string = 'ls -lh /usr/bin/nmap | cut -d" " -f1 | cut -c4';
+            exec($command_string, $output);
+            if (! isset($output[0]) or $output[0] !== 's') {
+                log_error('ERR-0047');
+            }
+        } else if (file_exists('/usr/local/bin/nmap')) {
+            $command_string = 'ls -lh /usr/bin/nmap | cut -d" " -f1 | cut -c4';
+            exec($command_string, $output);
+            if (! isset($output[0]) or $output[0] !== 's') {
+                log_error('ERR-0047');
+            }
+        } else {
+            log_error('ERR-0048');
+        }
+        return;
     }
 
     /**

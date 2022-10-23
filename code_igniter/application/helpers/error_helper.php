@@ -426,12 +426,20 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0046']->detail = 'The value as passed is not an integer, assuming a name, but not found.';
 
         $error_array['ERR-0047'] = new stdClass();
-        $error_array['ERR-0047']->code = 'ERR-0044';
+        $error_array['ERR-0047']->code = 'ERR-0047';
         $error_array['ERR-0047']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0047']->severity = 4;
         $error_array['ERR-0047']->severity_text = 'danger';
         $error_array['ERR-0047']->title = 'Nmap SUID not set.';
-        $error_array['ERR-0047']->detail = 'The Nmap SUID bit needs to be set. Please run "sudo chmod u+s `which nmap`" to resolve this issue.';
+        $error_array['ERR-0047']->detail = 'The Nmap SUID bit needs to be set. Please run "sudo chmod u+s `which nmap`" to resolve this issue. If this issue persists and is a false positive, please set discovery_override_nmap in the configuration to y.';
+
+        $error_array['ERR-0048'] = new stdClass();
+        $error_array['ERR-0048']->code = 'ERR-0048';
+        $error_array['ERR-0048']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0048']->severity = 4;
+        $error_array['ERR-0048']->severity_text = 'danger';
+        $error_array['ERR-0048']->title = 'Could not determine Nmap SUID status.';
+        $error_array['ERR-0048']->detail = 'The SUID status of the Nmap binary could not be determined. Please run "sudo chmod u+s `which nmap`" to resolve this issue. If this issue persists and is a false positive, please set discovery_override_nmap in the configuration to y.';
 
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
