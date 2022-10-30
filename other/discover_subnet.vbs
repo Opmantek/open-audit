@@ -67,7 +67,7 @@ dim temp
 dim port
 dim program
 dim script_timer : script_timer = Timer
-dim version: version="4.3.4"
+dim version: version="4.3.5"
 
 dim hosts_scanned : hosts_scanned = 0
 dim host_timer : host_timer = 0
