@@ -939,6 +939,11 @@ class Database extends MY_Controller
             include "db_upgrades/db_4.3.4.php";
         }
 
+        if (($db_internal_version < '20221130') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
+            # upgrade for 4.3.5
+            include "db_upgrades/db_4.3.5.php";
+        }
+
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
         $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->config['display_version']." (".$this->config->config['internal_version'].")";
