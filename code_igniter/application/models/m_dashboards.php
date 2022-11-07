@@ -270,7 +270,7 @@ class M_dashboards extends MY_Model
         $dictionary->marketing = "<p>Simple, intuitive, dynamic - just some of the words used to describe Open-AudIT Enterprises' interactive dashboard. The dashboard provides a single point of access to audit status, new software installs, device breakdowns, and fast access to missing devices.<br /><br />" . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->product = 'enterprise';
-        $dictionary->notes = '<table class="table table-bordered">
+        $dictionary->notes = '<p><table class="table table-bordered">
                                         <tbody>
                                             <tr>
                                                 <td rowspan="2">Sidebar</td>
@@ -284,8 +284,7 @@ class M_dashboards extends MY_Model
                                                 <td>Widget #6</td>
                                             </tr>
                                         </tbody>
-                                    </table><br /><br />';
-                                #</div>';
+                                    </table><br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

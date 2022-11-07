@@ -214,7 +214,6 @@ class M_rooms extends MY_Model
         $dictionary->marketing = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->product = 'enterprise';
-        $dictionary->notes = '<p></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

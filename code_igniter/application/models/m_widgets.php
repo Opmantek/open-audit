@@ -590,12 +590,10 @@ class M_widgets extends MY_Model
         $dictionary->attributes->create = mandatory_fields($collection);
         $dictionary->attributes->update = update_fields($collection);
         $dictionary->sentence = 'Widgets are used on Dashboards and are completely open to user design.';
-        $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />
-        ' . $CI->temp_dictionary->link . '<br /><br /></p>';
-        $dictionary->marketing = '<p>Widgets are the building blocks of Open-AudIT Dashboards.<br /><br />
-        ' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
+        $dictionary->marketing = '<p>Widgets are the building blocks of Open-AudIT Dashboards.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->product = 'enterprise';
-        $dictionary->notes = 'The primary and optional secondary items should be fully qualified - ie, system.type or software.name.';
+        $dictionary->notes = '<p>The primary and optional secondary items should be fully qualified - ie, system.type or software.name.<br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

@@ -172,8 +172,8 @@ class M_agents extends MY_Model
         $dictionary->attributes->update = update_fields($collection);
         $dictionary->sentence = '';
         $dictionary->marketing = '';
-        $dictionary->about = '';
-        $dictionary->notes = '';
+        $dictionary->about = '<p><br /><br /></p>';
+        $dictionary->notes = '<p><br /><br /></p>';
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;

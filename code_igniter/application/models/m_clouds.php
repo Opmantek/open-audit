@@ -300,7 +300,7 @@ class M_clouds extends MY_Model
         $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br /><br />' . $CI->temp_dictionary->link . '<br /><br /></p>';
         $dictionary->product = 'enterprise';
-        $dictionary->notes = "<p>If you intend to completely audit your cloud machines, don't forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.</p>";
+        $dictionary->notes = "<p>If you intend to completely audit your cloud machines, don't forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br /><br /></p>";
 
         $dictionary->columns->id = $CI->temp_dictionary->id;
         $dictionary->columns->name = $CI->temp_dictionary->name;
