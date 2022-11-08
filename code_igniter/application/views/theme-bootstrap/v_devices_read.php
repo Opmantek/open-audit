@@ -157,7 +157,7 @@ if (empty($data['mount_point'])) {
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
                 <?php } ?>
 
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>images/logo-nmis.png"/><a href="#" data-menuitem="firstwave"><?php echo __('FirstWave Details'); ?></a></li>
 
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
 
@@ -955,11 +955,11 @@ foreach ($list as $item) {
     </div>
 
 
-    <div id="opmantek" class="section">
+    <div id="firstwave" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left"><?php echo __('Opmantek Details'); ?></h3>
-                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="opmantek"></span>
+                <h3 class="panel-title pull-left"><?php echo __('FirstWave Details'); ?></h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="firstwave"></span>
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">

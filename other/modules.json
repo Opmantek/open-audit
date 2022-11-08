@@ -3,49 +3,49 @@
 		"name": "NMIS8",
 		"file": "/cgi-bin/nmiscgi.pl",
 		"link": "/cgi-nmis8/nmiscgi.pl",
-		"url": "https://opmantek.com/network-management-system-nmis/"
+		"url": "https://firstwave.com/products/network-management-information-system/"
 	},
 	"opAddress": {
 		"name": "opAddress",
 		"file": "/bin/opaddress-cli.pl",
 		"link": "/omk/opAddress/",
-		"url": "https://community.opmantek.com/display/opAddress/Home"
+		"url": "https://firstwave.com/products/ip-address-audit-and-management/"
 	},
 	"opCharts": {
 		"name": "opCharts",
 		"file": "/public/omk/js/opCharts_a_external_packed.js",
 		"link": "/omk/opCharts",
-		"url": "https://opmantek.com/opcharts-dashboards-charts-management/"
+		"url": "https://firstwave.com/products/interactive-dashboards-and-charts/"
 	},
 	"opConfig": {
 		"name": "opConfig",
 		"file": "/install/opconfigd.init.d",
 		"link": "/omk/opConfig",
-		"url": "https://opmantek.com/network-configuration-management-opconfig/"
+		"url": "https://firstwave.com/products/network-configuration-management/"
 	},
 	"Open-AudIT": {
 		"name": "Open-AudIT",
 		"file": "/bin/oae-tasks.sh",
 		"link": "/omk/open-audit/",
-		"url": "https://opmantek.com/network-audit-software/"
+		"url": "https://firstwave.com/products/network-discovery-and-inventory-software/"
 	},
 	"opEvents": {
 		"name": "opEvents",
 		"file": "/install/opeventsd.init.d",
 		"link": "/omk/opEvents/",
-		"url": "https://opmantek.com/opevents-traps-network-event-management/"
+		"url": "https://firstwave.com/opevents-traps-network-event-management/"
 	},
 	"opFlow": {
 		"name": "opFlow",
 		"file": "/bin/opflow-cli.pl",
 		"link": "/omk/opFlow",
-		"url": "https://opmantek.com/netflow-analyzer-collector-opflow/"
+		"url": "https://firstwave.com/products/network-management-information-system/"
 	},
 	"opHA": {
 		"name": "opHA",
 		"file": "",
 		"link": "/omk/opHA",
-		"url": "https://opmantek.com/distributed-network-management-system/"
+		"url": "https://firstwave.com/products/distributed-network-management/"
 	},
 	"opLicensing": {
 		"name": "opLicensing",
@@ -57,17 +57,11 @@
 		"name": "opReports",
 		"file": "/bin/opreports-cli.pl",
 		"link": "/omk/opReports/",
-		"url": "https://opmantek.com/network-configuration-management-opconfig/"
-	},
-	"opSLA": {
-		"name": "opSLA",
-		"file": "",
-		"link": "/omk/opSLA",
-		"url": "https://opmantek.com/ip-sla-monitor-cisco-ipsla/"
+		"url": "https://firstwave.com/products/advanced-analysis-and-reporting/"
 	},
 	"Other Modules": {
 		"name": "Other Modules",
-		"link": "https://opmantek.com/network-management-system-tools/",
-		"url": "https://opmantek.com/network-management-system-tools/"
+		"link": "https://firstwave.com",
+		"url": "https://firstwave.com"
 	}
 }

@@ -34,6 +34,10 @@ UPDATE `configuration` SET `value` = '4.3.5' WHERE `name` = 'display_version';
 
 $this->log_db('Upgrade database to 4.3.5 commenced');
 
+$sql = "UPDATE `configuration` SET `description` = 'The list of installed FirstWave modules.' WHERE `name` = 'modules'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query() . ';');
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20221130' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

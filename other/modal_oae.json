@@ -96,12 +96,12 @@
                 {"text": "Yes", "class": "text-center"}
             ],
             [
-                {"text": "", "class": "text-center", "button": "Restore My Licenses", "button_link": "https://opmantek.com" },
-                {"text": "Free", "class": "text-center", "button": "Contribute", "button_link": "https://opmantek.com" },
-                {"text": "Free", "class": "text-center", "button": "Activate", "button_link": "https://opmantek.com" },
-                {"text": "$800", "class": "text-center", "button": "Buy", "button_link": "https://opmantek.com" },
-                {"text": "$1,500", "class": "text-center", "button": "Buy", "button_link": "https://opmantek.com" },
-                {"text": "Click to quote", "class": "text-center", "button": "Buy", "button_link": "https://opmantek.com" }
+                {"text": "", "class": "text-center", "button": "Restore My Licenses", "button_link": "https://firstwave.com" },
+                {"text": "Free", "class": "text-center", "button": "Contribute", "button_link": "https://firstwave.com" },
+                {"text": "Free", "class": "text-center", "button": "Activate", "button_link": "https://firstwave.com" },
+                {"text": "$800", "class": "text-center", "button": "Buy", "button_link": "https://firstwave.com" },
+                {"text": "$1,500", "class": "text-center", "button": "Buy", "button_link": "https://firstwave.com" },
+                {"text": "Click to quote", "class": "text-center", "button": "Buy", "button_link": "https://firstwave.com" }
             ]
         ]
     },
@@ -109,8 +109,8 @@
     "bottom_message": "",
 
     "footer": [
-        {"button": "Do not show me again", "button-style": "", "button_parent_style": "float:left;", "button_link": "https://opmantek.com"},
-        {"button": "Ask me later", "button-style": "", "button_parent_style": "float:right;", "button_link": "https://opmantek.com"}
+        {"button": "Do not show me again", "button-style": "", "button_parent_style": "float:left;", "button_link": "https://firstwave.com"},
+        {"button": "Ask me later", "button-style": "", "button_parent_style": "float:right;", "button_link": "https://firstwave.com"}
     ]
 
 }

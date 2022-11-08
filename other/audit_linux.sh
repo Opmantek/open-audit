@@ -2573,7 +2573,7 @@ echo "			<name>$(escape_xml $system_os_name)</name>" >> "$xml_file"
 echo "			<version>$(escape_xml $system_os_version)</version>" >> "$xml_file"
 echo "			<description>Operating System</description>" >> "$xml_file"
 echo "		</item>" >> "$xml_file"
-# Detect Opmantek applications
+# Detect FirstWave applications
 if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 	for package in $(/usr/local/omk/bin/show_versions.pl 2>/dev/null); do
 		name=$(echo "$package" | cut -d" " -f1)
@@ -2614,8 +2614,8 @@ if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 		echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 		echo "			<description></description>" >> "$xml_file"
-		echo "			<url>https://opmantek.com</url>" >> "$xml_file"
-		echo "			<publisher>Opmantek</publisher>" >> "$xml_file"
+		echo "			<url>https://firstwave.com</url>" >> "$xml_file"
+		echo "			<publisher>FirstWave</publisher>" >> "$xml_file"
 		echo "			<location>/usr/local/omk</location>" >> "$xml_file"
 		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"

@@ -977,7 +977,7 @@ INSERT INTO `configuration` VALUES (NULL,'match_serial_type','y','bool','y','sys
 INSERT INTO `configuration` VALUES (NULL,'match_sysname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName.');
 INSERT INTO `configuration` VALUES (NULL,'match_sysname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName and serial.');
 INSERT INTO `configuration` VALUES (NULL,'match_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
-INSERT INTO `configuration` VALUES (NULL,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
+INSERT INTO `configuration` VALUES (NULL,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed FirstWave modules.');
 INSERT INTO `configuration` VALUES (NULL,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
 INSERT INTO `configuration` VALUES (NULL,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
 INSERT INTO `configuration` VALUES (NULL,'oae_license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
