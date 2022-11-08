@@ -1344,7 +1344,6 @@ if (!function_exists('integrations_post')) {
         $data = array(json_encode($additional_items), $integration->id);
         $query = $CI->db->query($sql, $data);
 
-        curl_close($ch);
         unlink($ckfile);
         return true;
     }

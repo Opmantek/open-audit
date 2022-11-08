@@ -168,7 +168,7 @@ class M_integrations extends MY_Model
         if (empty($id)) {
             return false;
         }
-        $sql = "/* m_integrations::read */ " . 'SELECT integrations.*, discoveries.name AS `discoveries.name` FROM integrations LEFT JOIN discoveries ON (integrations.discovery_id = discoveries.id) WHERE integrations.id = ?';
+        $sql = 'SELECT integrations.*, discoveries.name AS `discoveries.name` FROM integrations LEFT JOIN discoveries ON (integrations.discovery_id = discoveries.id) WHERE integrations.id = ?';
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'integrations');
@@ -387,6 +387,7 @@ class M_integrations extends MY_Model
         $query = $this->db->query($sql, $data);
 
         $integration = $this->read($id);
+
         $integration = $integration[0];
         $integration->debug = false;
         if ($integration->attributes->debug === 'y') {
@@ -398,7 +399,6 @@ class M_integrations extends MY_Model
         }
 
         $this->load->helper('integrations_' . $integration->attributes->type);
-
         // Run before integration
         integrations_pre($integration);
 
@@ -1214,7 +1214,7 @@ class M_integrations extends MY_Model
                     }
                     $device->system->ip = gethostbyname($device->system->ip);
                 }
-                $fqdn = gethostbyaddr($device->system->ip);
+                $fqdn = @gethostbyaddr($device->system->ip);
                 if (empty($device->system->dns_fqdn) and strpos($fqdn, '.') !== false) {
                     $device->system->dns_fqdn = $fqdn;
                 }
