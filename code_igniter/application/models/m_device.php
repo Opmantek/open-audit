@@ -1314,7 +1314,7 @@ class M_device extends MY_Model
         // check IP Address in system, then ip tables
         $ip = ip_address_from_db(@$details->ip);
         if (strtolower($match->match_ip) === 'y' && empty($details->id) && ! empty($details->ip) && filter_var($ip, FILTER_VALIDATE_IP)) {
-            // first check the ip table as eny existing devices that have been seen
+            // first check the ip table as any existing devices that have been seen
             // by more than just Nmap will have an entry here
             $sql = "SELECT system.id, system.org_id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -1462,49 +1462,6 @@ class M_device extends MY_Model
             $message->command_status = 'notice';
             $message->command_output = 'Hostname: ' . $details->hostname;
             $log_message[] = $message;
-
-            // NOTE - Removed the below as I don't think we have a short hostname issue any more. We query the hostname directly, not remotely using netbeui
-            // check short hostname in $details
-            // if ( ! empty($details->hostname) && empty($details->id)) {
-            //     if (isset($details->hostname_length) && $details->hostname_length === 'short') {
-            //         // we grabbed the hostname from SNMP.
-            //         // SNMP hostnames on Windows are truncated to 15 characters
-            //         $temp = explode('.', $details->hostname);
-            //         $hostname = $temp[0];
-            //         if (strlen($hostname) === 15) {
-            //             // We do have a 15 character hostname - check if this exists in the DB
-            //             $sql = "SELECT system.id FROM system WHERE system.hostname LIKE '".$hostname."%' AND system.status != 'deleted'";
-            //             $sql = $this->clean_sql($sql);
-            //             $query = $this->db->query($sql);
-            //             $row = $query->row();
-            //             if (count($row) > 0) {
-            //                 $details->id = $row->id;
-            //                 $log->system_id = $details->id;
-            //                 $message = new stdClass();
-            //                 $message->message = 'HIT on hostname (short).';
-            //                 $message->command_status = 'success';
-            //                 $message->command_output = 'Hostname: ' . $hostname . ', SystemID: ' . $details->id;
-            //                 $log_message[] = $message;
-            //                 foreach ($log_message as $message) {
-            //                     $log->message = $message->message;
-            //                     $log->command_status = $message->command_status;
-            //                     $log->command_output = $message->command_output;
-            //                     if ( ! empty($log->discovery_id)) {
-            //                         discovery_log($log);
-            //                     }
-            //                 }
-            //                 $message->command_output = '';
-            //                 return $details->id;
-            //             }
-            //         }
-            //         unset($temp);
-            //     }
-            // }
-            // $message = new stdClass();
-            // $message->message = 'MISS on hostname.';
-            // $message->command_status = 'notice';
-            // $message->command_output = 'Hostname: ' . $details->hostname;
-            // $log_message[] = $message;
         } else {
             if (strtolower($match->match_hostname) !== 'y') {
                 $message = new stdClass();
