@@ -391,13 +391,17 @@ if (! function_exists('ip_address_to_db')) {
     {
         if ($ip != "") {
             if (stripos($ip, '.') !== false) {
-                // this is an ip v4 address
-                $myip = explode(".", $ip);
-                $myip[0] = mb_substr("000".$myip[0], -3);
-                $myip[1] = mb_substr("000".$myip[1], -3);
-                $myip[2] = mb_substr("000".$myip[2], -3);
-                $myip[3] = mb_substr("000".$myip[3], -3);
-                $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    // this is an ip v4 address
+                    $myip = explode(".", $ip);
+                    $myip[0] = mb_substr("000".$myip[0], -3);
+                    $myip[1] = mb_substr("000".$myip[1], -3);
+                    $myip[2] = mb_substr("000".$myip[2], -3);
+                    $myip[3] = mb_substr("000".$myip[3], -3);
+                    $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
+                } else {
+                    $ip = '';
+                }
             }
             if (stripos($ip, ':') !== false) {
                 // this is an ip v6 address
