@@ -29,10 +29,10 @@
 
 UPDATE `configuration` SET `value` = '20221130' WHERE `name` = 'internal_version';
 
-UPDATE `configuration` SET `value` = '4.3.5' WHERE `name` = 'display_version';
+UPDATE `configuration` SET `value` = '4.4.0' WHERE `name` = 'display_version';
 */
 
-$this->log_db('Upgrade database to 4.3.5 commenced');
+$this->log_db('Upgrade database to 4.4.0 commenced');
 
 $sql = "UPDATE `configuration` SET `description` = 'The list of installed FirstWave modules.' WHERE `name` = 'modules'";
 $this->db->query($sql);
@@ -43,10 +43,10 @@ $sql = "UPDATE `configuration` SET `value` = '20221130' WHERE `name` = 'internal
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$sql = "UPDATE `configuration` SET `value` = '4.3.5' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '4.4.0' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query() . ';');
 
-$this->log_db('Upgrade database to 4.3.5 completed');
+$this->log_db('Upgrade database to 4.4.0 completed');
 $this->config->config['internal_version'] = '20221130';
-$this->config->config['display_version'] = '4.3.5';
+$this->config->config['display_version'] = '4.4.0';

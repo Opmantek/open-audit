@@ -30,7 +30,7 @@
 * @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2022 Firstwave
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   GIT: Open-AudIT_4.3.5
+* @version   GIT: Open-AudIT_4.4.0
 * @link      http://www.open-audit.org
 */
 
@@ -940,7 +940,7 @@ class Database extends MY_Controller
         }
 
         if (($db_internal_version < '20221130') and ($this->db->platform() == 'mysql' or $this->db->platform() == 'mysqli')) {
-            # upgrade for 4.3.5
+            # upgrade for 4.4.0
             include "db_upgrades/db_4.4.0.php";
         }
 
