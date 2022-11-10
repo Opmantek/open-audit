@@ -93,8 +93,12 @@ class M_fields extends MY_Model
      */
     public function delete($id = 0)
     {
+        // Delete the associated field data as well.
         $data = array(intval($id));
-        $sql = 'DELETE FROM `attributes` WHERE `id` = ?';
+        $sql = 'DELETE FROM `field` WHERE `fields_id` = ?';
+        $test = $this->run_sql($sql, $data);
+
+        $sql = 'DELETE FROM `fields` WHERE `id` = ?';
         $test = $this->run_sql($sql, $data);
         if ( ! empty($test)) {
             return true;
