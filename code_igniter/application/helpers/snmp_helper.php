@@ -60,7 +60,7 @@ if (! function_exists('snmp_credentials')) {
     {
         $retries = 0;
         $timeout = 5000000;
-        $oid = '1.3.6.1.2.1.1.1.0';
+        $oid = '1.3.6.1.2.1.1.2.0';
 
         if (is_null($log)) {
             $log = new stdClass();
