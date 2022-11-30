@@ -281,6 +281,9 @@ class Discoveries extends MY_Controller
         }
         $this->{'m_'.$this->response->meta->collection}->collection(0, 1);
         $this->response->issues = $this->m_discoveries->issues_collection($this->user->id);
+        if (count($this->response->issues) > 100) {
+            $this->response->issues = array_splice($this->response->issues, 100);
+        }
         output($this->response);
     }
 
