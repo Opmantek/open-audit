@@ -486,7 +486,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if ((! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -553,7 +555,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -619,7 +623,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -685,7 +691,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -752,7 +760,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -831,7 +841,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -974,7 +986,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -1322,7 +1336,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id)) or
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     if ( ! empty($details->system_id)) {
                         $log->system_id = $details->id;
@@ -1332,7 +1348,7 @@ class M_device extends MY_Model
                     $message = new stdClass();
                     $message->message = 'HIT on IP Address (network table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . $this->config->config['discovery_use_org_id_match'] . ', Potential System OrgID: ' . $row->org_id;
+                    $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . @$this->config->config['discovery_use_org_id_match'] . ', Potential System OrgID: ' . $row->org_id;
                     $log_message[] = $message;
                     foreach ($log_message as $message) {
                         $log->message = $message->message;
@@ -1347,7 +1363,7 @@ class M_device extends MY_Model
                 } else {
                     $log->system_id = $details->id;
                     $message = new stdClass();
-                    $message->message = 'MISS on IP Address (network table) + org_id, but hit on IP (network table) alone. Check assigned_to_org in discovery.';
+                    $message->message = 'MISS on IP Address (network table) + org_id, but hit on IP (network table) alone. Check assigned_to_org in discovery.' . json_encode($details) . json_encode($row);
                     $message->command_status = 'notice';
                     $message->command_output = 'IP: ' . $details->ip . ', OrgID: ' . $details->org_id . ', Potential SystemID: ' . $row->id . ', Potential System OrgID: ' . $row->org_id;
                     $log_message[] = $message;
@@ -1362,7 +1378,9 @@ class M_device extends MY_Model
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if ( ! empty($row->id)) {
-                    if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    if ((empty($details->org_id))
+                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                        (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                         $details->id = $row->id;
                         $log->system_id = $details->id;
                         $message = new stdClass();
@@ -1430,7 +1448,9 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                if ((empty($details->org_id))
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
                     $log->system_id = $details->id;
                     $message = new stdClass();
@@ -1490,6 +1510,14 @@ class M_device extends MY_Model
             }
         }
 
+        if (!empty($log->integrations_id)) {
+            foreach ($log_message as $message) {
+                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $data = array($log->integrations_id, microtime(true), json_encode($message));
+                $query = $this->db->query($sql, $data);
+            }
+        }
+
         // check IP Address in system table for a device with no other data
         if ((empty($match->match_ip_no_data) OR strtolower($match->match_ip_no_data) === 'y') && empty($details->id) && ! empty($details->ip) && filter_var($details->ip, FILTER_VALIDATE_IP)) {
             // Check the system table for an ip match on a device without a type or serial
@@ -1500,7 +1528,9 @@ class M_device extends MY_Model
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if ( ! empty($row->id)) {
-                    if (( ! empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or (empty($details->org_id))) {
+                    if ((empty($details->org_id)) or
+                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
+                        (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                         $details->id = $row->id;
                         $log->system_id = $details->id;
                         $message = new stdClass();

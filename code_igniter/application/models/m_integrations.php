@@ -341,6 +341,7 @@ class M_integrations extends MY_Model
         $log->status = '';
         $log->summary = '';
         $log->detail = '';
+        $log->integrations_id = $id;
 
         $this->load->library('encrypt');
         $this->load->model('m_devices');
@@ -464,6 +465,24 @@ class M_integrations extends MY_Model
                 $field_name = str_replace('system.', 'match_', $field->internal_field_name);
                 $parameters->match->{$field_name} = 'y';
             }
+        }
+
+        if ($integration->debug) {
+            $message = 'MATCH RULES - ' . json_encode($parameters->match);
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
+            $message = 'LOG - ' . json_encode($parameters->log);
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
+            $message = 'DEVICE - ' . json_encode($device->system);
+            $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            $data = array($integration->id, microtime(true), $message);
+            $query = $this->db->query($sql, $data);
+
         }
 
         foreach ($external_formatted_devices as $device) {
@@ -1183,11 +1202,13 @@ class M_integrations extends MY_Model
 
                 if (!empty($field->internal_field_name)) {
                     $int = explode('.', $field->internal_field_name);
+                    // If we don't have newdevice->system or newdevice->fields, etc
                     if (empty($newdevice->{$int[0]})) {
                         $newdevice->{$int[0]} = new stdClass();
                     }
+                    // If we don't have newdevice->system->name, et al
+                    // TODO - This only accounts for two levels deep
                     if (empty($newdevice->{$int[0]}->{$int[1]})) {
-                        #$newdevice->{$int[0]}->{$int[1]} = '';
                         $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) {
                             return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null;
                         }, $device);
@@ -1340,7 +1361,7 @@ class M_integrations extends MY_Model
                 if ($field->priority === 'external' and (strpos($field->internal_field_name, 'fields.') !== false or $field->internal_field_name === '')) {
                     // a custom field in Open-AudIT that we should update
                     $field_name = str_replace('fields.', '', $field->internal_field_name);
-                    if (empty($custom_field_name)) {
+                    if (empty($field_name)) {
                         $external_field = explode('.', $field->external_field_name);
                         $field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
                     }
