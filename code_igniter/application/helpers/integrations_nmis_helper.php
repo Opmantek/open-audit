@@ -573,6 +573,13 @@ if (!function_exists('integrations_collection')) {
             unlink($ckfile);
             return array();
         } else {
+            // Exclude the "global" node
+            foreach ($external_devices as $key => $device) {
+                if ($device->configuration->host === '__global__.0.0.0') {
+                    unset($external_devices[$key]);
+                    break;
+                }
+            }
             $count = count($external_devices);
             $sql = "/* integrations_nmis_helper::collection */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '[integrations_collection] $count devices returned from NMIS.')";
             $data = array($integration->id, microtime(true));
