@@ -1378,7 +1378,7 @@ class M_device extends MY_Model
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if ( ! empty($row->id)) {
-                    if ((empty($details->org_id))
+                    if ((empty($details->org_id)) or
                         (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
                         (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                         $details->id = $row->id;
@@ -1448,7 +1448,7 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if ( ! empty($row->id)) {
-                if ((empty($details->org_id))
+                if ((empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
                     (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
                     $details->id = $row->id;
