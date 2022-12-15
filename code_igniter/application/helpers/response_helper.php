@@ -425,7 +425,7 @@ if (!function_exists('response_create')) {
         // $external = new stdCLass();
         // $external->meta = $response->meta;
         // $external->user = $instance->user;
-        // $sql = "INSERT INTO external VALUES (null, '', ?, '')";
+        // $sql = "INSERT INTO external VALUES (null, ?, '', '')";
         // $data = json_encode($external);
         // $query = $instance->db->query($sql, $data);
 
