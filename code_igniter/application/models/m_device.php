@@ -228,15 +228,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'NMIS UUID: ' . $details->omk_uuid . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             } else {
                 $message = new stdClass();
@@ -262,15 +254,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'Instance Ident: ' . $details->instance_ident . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             } else {
                 $message = new stdClass();
@@ -295,15 +279,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'Hostname: ' . $details->hostname . ', UUID: ' . $details->uuid . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             }
             $message = new stdClass();
@@ -359,15 +335,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'Hostname: ' . $details->hostname . ', DbusID: ' . $details->dbus_identifier . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             }
             $message = new stdClass();
@@ -423,15 +391,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'Hostname: ' . $details->hostname . ', Serial: ' . $details->serial . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             }
             $message = new stdClass();
@@ -496,15 +456,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'DbusID: ' . $details->dbus_identifier . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -565,14 +517,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'DNS FQDN: ' . $details->dns_fqdn . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -633,14 +578,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'DNS HOSTNAME: ' . $details->dns_hostname . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -701,15 +639,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'FQDN: ' . $details->fqdn . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -770,15 +700,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -851,15 +773,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'Serial: ' . $details->serial . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -872,7 +786,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on serial.';
-            $message->command_status = 'success';
+            $message->command_status = 'notice';
             $message->command_output = 'Serial: ' . $details->serial;
             $log_message[] = $message;
         } else {
@@ -923,15 +837,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'SysName: ' . $details->sysName . ', Serial: ' . $details->serial . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             }
             $message = new stdClass();
@@ -996,15 +902,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'SysName: ' . $details->sysName . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -1062,15 +960,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'MAC: ' . $details->mac_address . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             }
             $message = new stdClass();
@@ -1130,15 +1020,7 @@ class M_device extends MY_Model
                 $message->command_status = 'success';
                 $message->command_output = 'MAC: ' . $details->mac_address . ', SystemID: ' . $details->id;
                 $log_message[] = $message;
-                foreach ($log_message as $message) {
-                    $log->message = $message->message;
-                    $log->command_status = $message->command_status;
-                    $log->command_output = $message->command_output;
-                    if ( ! empty($log->discovery_id)) {
-                        discovery_log($log);
-                    }
-                }
-                $message->command_output = '';
+                $this->log_array($log_message);
                 return $details->id;
             }
             $message = new stdClass();
@@ -1200,15 +1082,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'MAC: ' . $mac . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 }
                 $message = new stdClass();
@@ -1274,15 +1148,7 @@ class M_device extends MY_Model
                         $message->command_status = 'success';
                         $message->command_output = "MAC: {$mac} , SystemID: {$details->id}";
                         $log_message[] = $message;
-                        foreach ($log_message as $message) {
-                            $log->message = $message->message;
-                            $log->command_status = $message->command_status;
-                            $log->command_output = $message->command_output;
-                            if ( ! empty($log->discovery_id)) {
-                                discovery_log($log);
-                            }
-                        }
-                        $message->command_output = '';
+                        $this->log_array($log_message);
                         return $details->id;
                     }
                 }
@@ -1350,15 +1216,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . @$this->config->config['discovery_use_org_id_match'] . ', Potential System OrgID: ' . $row->org_id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -1388,15 +1246,7 @@ class M_device extends MY_Model
                         $message->command_status = 'success';
                         $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
                         $log_message[] = $message;
-                        foreach ($log_message as $message) {
-                            $log->message = $message->message;
-                            $log->command_status = $message->command_status;
-                            $log->command_output = $message->command_output;
-                            if ( ! empty($log->discovery_id)) {
-                                discovery_log($log);
-                            }
-                        }
-                        $message->command_output = '';
+                        $this->log_array($log_message);
                         return $details->id;
                     } else {
                         $log->system_id = $details->id;
@@ -1458,15 +1308,7 @@ class M_device extends MY_Model
                     $message->command_status = 'success';
                     $message->command_output = 'Hostname: ' . $details->hostname . ', SystemID: ' . $details->id;
                     $log_message[] = $message;
-                    foreach ($log_message as $message) {
-                        $log->message = $message->message;
-                        $log->command_status = $message->command_status;
-                        $log->command_output = $message->command_output;
-                        if ( ! empty($log->discovery_id)) {
-                            discovery_log($log);
-                        }
-                    }
-                    $message->command_output = '';
+                    $this->log_array($log_message);
                     return $details->id;
                 } else {
                     $log->system_id = $details->id;
@@ -1538,15 +1380,7 @@ class M_device extends MY_Model
                         $message->command_status = 'success';
                         $message->command_output = 'IP: ' . $details->ip . ', SystemID: ' . $details->id;
                         $log_message[] = $message;
-                        foreach ($log_message as $message) {
-                            $log->message = $message->message;
-                            $log->command_status = $message->command_status;
-                            $log->command_output = $message->command_output;
-                            if ( ! empty($log->discovery_id)) {
-                                discovery_log($log);
-                            }
-                        }
-                        $message->command_output = '';
+                        $this->log_array($log_message);
                         return $details->id;
                     } else {
                         $log->system_id = $details->id;
@@ -1598,32 +1432,25 @@ class M_device extends MY_Model
             $message->command_status = 'notice';
             $message->command_output = '';
             $log_message[] = $message;
-            foreach ($log_message as $message) {
-                $log->message = $message->message;
-                $log->command_status = $message->command_status;
-                $log->command_output = $message->command_output;
-                if ( ! empty($log->discovery_id)) {
-                    discovery_log($log);
-                }
-            }
+            $this->log_array($log_message);
         } else {
             $message = new stdClass();
             $message->message = 'Returning system.id for device with IP '  . ip_address_from_db($details->ip) . ' (' . $details->id . ')';
             $message->command_status = 'notice';
             $message->command_output = '';
             $log_message[] = $message;
-            foreach ($log_message as $message) {
-                $log->message = $message->message;
-                $log->command_status = $message->command_status;
-                $log->command_output = $message->command_output;
-                if ( ! empty($log->discovery_id)) {
-                    discovery_log($log);
-                }
-            }
+            $this->log_array($log_message);
         }
         unset($log);
         $message->command_output = '';
         return intval($details->id);
+    }
+
+    private function log_array($logs)
+    {
+        foreach ($logs as $log) {
+            discovery_log($log);
+        }
     }
 
     /**
@@ -1645,15 +1472,18 @@ class M_device extends MY_Model
         $log->severity = 7;
         $log->pid = getmypid();
         $log->ip = @$_SERVER['REMOTE_ADDR'];
+        $name_for_log = '';
         if ( ! empty($details->ip)) {
             $log->ip = ip_address_from_db($details->ip);
+            $name_for_log = $details->ip;
         } else {
             $details->ip = '';
+            $name_for_log = $details->hostname;
         }
         $log->function = 'insert';
         $log->system_id = '';
         $log->file = 'm_device';
-        $log->message = 'System insert start for '.ip_address_from_db($details->ip);
+        $log->message = 'System insert start for ' . $name_for_log;
         $log->command = '';
         $log->command_status = 'notice';
         $log->command_time_to_execute = '';
@@ -1854,7 +1684,7 @@ class M_device extends MY_Model
         }
 
         $log->ip = ip_address_from_db($details->ip);
-        $log->message = 'System insert end for '.ip_address_from_db($details->ip);
+        $log->message = 'System insert end for ' . $name_for_log;
         $log->command_status = 'notice';
         discovery_log($log);
 
