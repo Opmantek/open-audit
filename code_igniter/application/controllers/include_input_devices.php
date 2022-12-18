@@ -277,7 +277,7 @@ if ( ! empty($details->discovery_id)) {
 } else {
     // we were supplied an audit result, but no discovery_id
     // delete all dicovery logs where system_id = our ID and log.pid != our pid
-    $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `pid` != ?";
+    $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `pid` != ? AND discovery_id IS NULL";
     $data = array(intval($details->id), intval(getmypid()));
     $query = $this->db->query($sql, $data);
 }

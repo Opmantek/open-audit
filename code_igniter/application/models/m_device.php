@@ -1454,6 +1454,7 @@ class M_device extends MY_Model
         $CI = & get_instance();
         $CI->load->helper('log');
         foreach ($log_array as $log_item) {
+            $log_item->system_id = $log->system_id;
             $log_item->discovery_id = $log->discovery_id;
             $log_item->file = $log->file;
             $log_item->function = 'match';
