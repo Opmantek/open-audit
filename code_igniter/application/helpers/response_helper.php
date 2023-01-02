@@ -1662,6 +1662,7 @@ if (!function_exists('response_get_org_list')) {
                 $org_list = $user->orgs;
                 break;
 
+            case 'attributes':
             case 'dashboards':
             case 'discovery_scan_options':
             case 'fields':
