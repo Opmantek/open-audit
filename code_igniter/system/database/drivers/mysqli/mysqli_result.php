@@ -35,9 +35,9 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	 */
 	function num_rows()
 	{
-        # return mysqli_num_rows($this->result_id);
-        # Changed to below as UPDATE style queries return $this->result_id as a boolean.
-        return @$this->result_id->num_rows;
+		# return @mysqli_num_rows($this->result_id);
+		# Changed to below as UPDATE style queries return $this->result_id as a boolean.
+		return @$this->result_id->num_rows;
 	}
 
 	// --------------------------------------------------------------------
