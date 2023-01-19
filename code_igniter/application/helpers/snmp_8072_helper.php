@@ -42,7 +42,7 @@ if (!defined('BASEPATH')) {
 $get_oid_details = function ($ip, $credentials, $oid) {
     // Test for a NextHop device
     $nextHop = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.32015.0.0");
-    if !empty(($nextHop)) {
+    if (!empty($nextHop)) {
         $details = new stdClass();
         $details->model = 'Next Hop';
         $details->manufacturer = 'ExtraHop Networks, Inc.';
