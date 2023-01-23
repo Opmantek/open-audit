@@ -287,7 +287,7 @@ class M_networks extends MY_Model
         if (stripos($ip_address, ':') !== false) {
             return true;
         }
-        $sql = '/* m_networks::check_ip */ ' . "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
+        $sql = '/* m_networks::check_ip */ ' . "SELECT COUNT(id) AS count FROM networks WHERE ((-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1)) OR network = '" . $ip_address . "/32')";
         $sql = $this->clean_sql($sql);
 
         $temp_debug = $this->db->db_debug;
