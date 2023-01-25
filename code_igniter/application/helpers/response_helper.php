@@ -1917,8 +1917,16 @@ if (!function_exists('response_get_properties')) {
                     $log->summary = 'Set properties to config DEFAULT.';
                     $properties = $instance->config->config['devices_default_retrieve_columns'];
                 } else {
-                    $log->summary = 'Set properties because BLANK.';
-                    $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.description,system.manufacturer,system.os_family,system.status';
+                    if (!empty($instance->user->devices_default_display_columns)) {
+                        $log->summary = 'Set properties to user default.';
+                        $properties = $instance->user->devices_default_display_columns;
+                    } else if (!empty($instance->config['devices_default_display_columns'])) {
+                        $log->summary = 'Set properties to config default.';
+                        $properties = $instance->config->devices_default_display_columns;
+                    } else {
+                        $log->summary = 'Set properties to default because neither user nor config are set.';
+                        $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.description,system.manufacturer,system.os_family,system.status';
+                    }
                 }
             } else if ($action === 'collection' && $sub_resource !== '') {
                 $log->summary = 'Set properties to ALL.';
