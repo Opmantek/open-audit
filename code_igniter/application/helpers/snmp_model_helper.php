@@ -5038,6 +5038,7 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.9.1.250': $device->model = 'Cisco 1417'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.251': $device->model = 'Cisco 6100'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.252': $device->model = 'Cisco 6130'; $device->type = 'router'; break;
+			case '1.3.6.1.4.1.9.1.2520': $device->model = 'Cisco C1117-4P'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.253': $device->model = 'Cisco 6260'; $device->type = 'router'; break;
 			case '1.3.6.1.4.1.9.1.254': $device->model = 'Cisco Optical Regenerator'; $device->type = 'network device'; break;
 			case '1.3.6.1.4.1.9.1.255': $device->model = 'Cisco UBR 924'; $device->type = 'router'; break;
