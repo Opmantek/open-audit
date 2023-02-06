@@ -452,22 +452,58 @@ class Util extends CI_Controller
 
         $this->m_configuration->load();
 
+        $debug = false;
+        if ($debug) {
+            $microtime = microtime(true);
+            $log = new stdClass();
+            $log->status = 'start';
+            $log->function = 'queue';
+            $log->severity = 4;
+            $log->detail = '';
+            $log->summary = '';
+            stdlog($log); $log->detail = $microtime . ' Starting queue with pid ' . $pid . ' and microtime ' . $microtime; stdlog($log);
+            $log->status = 'running';
+            $log->detail = '';
+        }
+
         // queue count is the number of registered processes
         // queue limit is set by the user
         // check it config['queue_count'] > config['queue_limit']
+        if ($debug) {
+            $log->detail = "$microtime Initial Queue Count: " . intval($this->config->config['queue_count']) . " Initial Queue Limit: " . intval($this->config->config['queue_limit']); $log->severity = 4; stdlog($log);
+        }
+
         if (intval($this->config->config['queue_count']) >= intval($this->config->config['queue_limit'])) {
+            if ($debug) {
+                $log->detail = "$microtime QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']) . " EXITING."; $log->severity = 4; stdlog($log);
+            }
             exit;
         }
         // Increase the queue count in the config table
         $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
         $this->db->query($sql);
+        if ($debug) {
+            $log->detail = $microtime . " " . $sql; $log->severity = 4; stdlog($log);
+        }
         // POP an item off the queue
         $this->load->model('m_queue');
         while (true) {
+            if ($debug) {
+                $log->detail = $microtime . " Sleeping for 2 seconds."; $log->severity = 4; stdlog($log);
+            }
             sleep(2);
+            if ($debug) {
+                $log->detail = $microtime . " Done sleeping."; $log->severity = 4; stdlog($log);
+            }
             $item = $this->m_queue->pop();
+            if ($debug) {
+                $log->detail = $microtime . " POPed item " . json_encode($item); $log->severity = 4; stdlog($log);
+            }
             if (!empty($item->details) && is_string($item->details)) {
                 $details = @json_decode($item->details);
+                if ($debug) {
+                    $log->detail = $microtime . " POPed item details " . json_encode($details); $log->severity = 4; stdlog($log);
+                }
             }
 
 
@@ -476,12 +512,18 @@ class Util extends CI_Controller
                 // Remove the queue count
                 $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
+                if ($debug) {
+                    $log->detail = $microtime . " " . $sql . ' EXITING - EMPTY QUEUE'; $log->severity = 4; stdlog($log);
+                }
                 break;
             }
             if ($details === false) {
                 // Remove the queue count
                 $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
+                if ($debug) {
+                    $log->detail = $microtime . " " . $sql . ' EXITING - BAD DETAILS'; $log->severity = 4; stdlog($log);
+                }
                 break;
             }
 
@@ -491,8 +533,12 @@ class Util extends CI_Controller
                     $command = 'nohup ' . $this->config->config['base_path'] . '/other/execute.sh url=http://localhost/' . $this->db->database. '/open-audit/index.php/util/queue method=get > /dev/null 2>&1 &';
                     @exec($command);
                 } else {
-                    $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
-                    @exec($command);
+                    if ($debug) {
+                        $output = array(); $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 & echo $!'; @exec($command, $output); $log->detail = $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output); $log->severity = 4; stdlog($log);
+                    } else {
+                        $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+                        @exec($command);
+                    }
                 }
             } else {
                 $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php util queue";
@@ -500,31 +546,55 @@ class Util extends CI_Controller
             }
 
             if ($item->type === 'subnet') {
+                if ($debug) {
+                    $log->detail = $microtime . " " . "Discovering subnet as per type."; $log->severity = 4; stdlog($log);
+                }
                 discover_subnet($details);
             }
 
             if ($item->type === 'seed') {
+                if ($debug) {
+                    $log->detail = $microtime . " " . "Discovering seed as per type."; $log->severity = 4; stdlog($log);
+                }
                 discover_subnet($details);
             }
 
             if ($item->type === 'active directory') {
+                if ($debug) {
+                    $log->detail = $microtime . " " . "Scanning AD as per type."; $log->severity = 4; stdlog($log);
+                }
                 discover_ad($details);
             }
 
             if ($item->type === 'ip_scan') {
+                if ($debug) {
+                    $log->detail = $microtime . " " . "Scanning IP " . $details->ip . " as per type."; $log->severity = 4; stdlog($log);
+                }
                 $result = ip_scan($details);
                 $result = json_encode($result);
                 if (!empty($result)) {
+                    if ($debug) {
+                        $log->detail =  $microtime . " " . "Creating queue item for ip_audit for " . $details->ip; $log->severity = 4; stdlog($log);
+                    }
                     $queue_item = new stdClass();
                     $queue_item->ip = $details->ip;
                     $queue_item->discovery_id = $details->discovery_id;
                     $queue_item->details = $result;
                     $this->m_queue->create('ip_audit', $queue_item);
                 }
+                if ($debug) {
+                    $log->detail = $microtime . " " . "Scanning IP " . $details->ip . " as per type COMPLETED."; $log->severity = 4; stdlog($log);
+                }
             }
 
             if ($item->type === 'ip_audit') {
+                if ($debug) {
+                    $log->detail =  $microtime . " " . "Auditing IP " . $details->ip . " as per type."; $log->severity = 4; stdlog($log);
+                }
                 $result = ip_audit($details);
+                if ($debug) {
+                    $log->detail =  $microtime . " " . "Auditing IP " . $details->ip . " as per type COMPLETED."; $log->severity = 4; stdlog($log);
+                }
             }
 
             if ($item->type === 'integrations') {
