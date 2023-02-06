@@ -318,7 +318,7 @@ class M_configuration extends MY_Model
         $this->config->config['server_os'] = php_uname('s');
 
         // get the total number of devices
-        $sql = 'SELECT count(*) as device_count FROM `system`';
+        $sql = 'SELECT count(id) as device_count FROM `system`';
         $result = $this->run_sql($sql, array());
         $this->config->config['device_count'] = @intval($result[0]->device_count);
 
