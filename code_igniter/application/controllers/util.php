@@ -455,8 +455,7 @@ class Util extends CI_Controller
         // queue count is the number of registered processes
         // queue limit is set by the user
         // check it config['queue_count'] > config['queue_limit']
-        if (intval($this->config->config['queue_count']) > intval($this->config->config['queue_limit'])) {
-            // echo "QueueCount: " . intval($this->config->config['queue_count']) . " Limit: " . intval($this->config->config['queue_limit']);
+        if (intval($this->config->config['queue_count']) >= intval($this->config->config['queue_limit'])) {
             exit;
         }
         // Increase the queue count in the config table
@@ -465,6 +464,7 @@ class Util extends CI_Controller
         // POP an item off the queue
         $this->load->model('m_queue');
         while (true) {
+            sleep(2);
             $item = $this->m_queue->pop();
             if (!empty($item->details) && is_string($item->details)) {
                 $details = @json_decode($item->details);
@@ -474,13 +474,13 @@ class Util extends CI_Controller
             // If we don't get an item, there's nothing left to do so exit.
             if ($item === false) {
                 // Remove the queue count
-                $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
+                $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
                 break;
             }
             if ($details === false) {
                 // Remove the queue count
-                $sql = '/* util::queue $pid */ ' . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
+                $sql = "/* util::queue $pid */ " . "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
                 break;
             }
