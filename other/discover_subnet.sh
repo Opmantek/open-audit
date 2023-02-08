@@ -24,7 +24,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <mark.unwin@firstwave.com>
-# @version   GIT: Open-AudIT_4.4.1
+# @version   GIT: Open-AudIT_4.4.2
 # @copyright Copyright (c) 2022, Firstwave
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -48,7 +48,7 @@ discovery_id=""
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
-version="4.4.1"
+version="4.4.2"
 int='^[0-9]+$'
 #range='^[0-9\.\//-]+$'
 range='^[0-9\.\,\/\-]+$'

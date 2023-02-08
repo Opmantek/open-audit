@@ -23,7 +23,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <mark.unwin@firstwave.com>
-' @version   GIT: Open-AudIT_4.4.1
+' @version   GIT: Open-AudIT_4.4.2
 ' @copyright Copyright (c) 2022, Firstwave
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -67,7 +67,7 @@ dim temp
 dim port
 dim program
 dim script_timer : script_timer = Timer
-dim version: version="4.4.1"
+dim version: version="4.4.2"
 
 dim hosts_scanned : hosts_scanned = 0
 dim host_timer : host_timer = 0
