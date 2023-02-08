@@ -74,7 +74,7 @@ if (! function_exists('snmp_credentials')) {
         if (! extension_loaded('snmp')) {
             $log->message = 'SNMP extension for PHP is not present, aborting credential test on '.$ip;
             $log->ip = @$ip;
-            $log->status = 'error';
+            $log->command_status = 'error';
             discovery_log($log);
             return false;
         }
@@ -82,14 +82,14 @@ if (! function_exists('snmp_credentials')) {
         if (empty($credentials)) {
             $log->message = 'No credentials array passed to snmp_credentials.';
             $log->ip = @$ip;
-            $log->status = 'error';
+            $log->command_status = 'warning';
             discovery_log($log);
             return false;
         }
         if (empty($ip) or ! filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No IP or bad IP passed to snmp_credentials.';
             $log->ip = @$ip;
-            $log->status = 'error';
+            $log->command_status = 'error';
             discovery_log($log);
             return false;
         }
@@ -117,7 +117,6 @@ if (! function_exists('snmp_credentials')) {
             $log->command_status = 'notice';
             $log->command_output = 'php_uname(\'s\');';
             $log->command = php_uname('s');
-            $log->status = 'notice';
             discovery_log($log);
 
             // Use net-snmp instead of calling with PHP
@@ -168,7 +167,6 @@ if (! function_exists('snmp_credentials')) {
                 $log->command_status = 'warning';
                 $log->command_output = json_encode($users);
                 $log->command = php_uname('s');
-                $log->status = 'warning';
                 discovery_log($log);
             }
 
