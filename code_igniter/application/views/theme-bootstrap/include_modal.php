@@ -66,7 +66,7 @@ output += "<div class=\"modal-header\">\
     <span>" + data.top_message + "</span>";
 
 
-            output += "<div class=\"row market-row\">\
+            output += "<div class=\"row market-row col-md-12\">\
                 <div class=\"col-md-12\">\
                     <h4>" + data.promotion.header.text + "</h4>\
                 </div>\
@@ -141,7 +141,8 @@ output += "<div class=\"row market-row\">\
                           if (data.compare.editions[j].packages[0].url) {
                             output += "<a href=\"" + data.compare.editions[j].packages[0].url + "\" class=\"btn btn-block " + data.compare.editions[j].buttonClass + "\">" + data.compare.editions[j].buttonText + "</a>";
                         } else {
-                            output += "<a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[0].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\" class=\"btn btn-block " + data.compare.editions[j].buttonClass + "\"> " + data.compare.editions[j].buttonText + "</a>";
+                            // output += "<a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[0].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\" class=\"btn btn-block " + data.compare.editions[j].buttonClass + "\"> " + data.compare.editions[j].buttonText + "</a>";
+                            output += "<a href=\"" + data.compare.storeURL + "\" class=\"btn btn-block " + data.compare.editions[j].buttonClass + "\"> " + data.compare.editions[j].buttonText + "</a>";
                         }
                         output += "</div>\
                     </div>\
@@ -150,9 +151,11 @@ output += "<div class=\"row market-row\">\
                     output += "<ul class=\"list-group\">";
                         for (var x = 1; x < data.compare.editions[j].packages.length; x++) {
                             if (data.compare.editions[j].packages[x].url) {
-                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.editions[j].packages[x].url + "\"> " + data.compare.editions[j].packages[x].text + " " + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
+                                // output += "<li class=\"list-group-item\"><a href=\"" + data.compare.editions[j].packages[x].url + "\"> " + data.compare.editions[j].packages[x].text + " " + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
+                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.editions[j].packages[x].url + "\"></a></li>";
                             } else {
-                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[x].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\"> " + data.compare.editions[j].packages[x].text + " " + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
+                                // output += "<li class=\"list-group-item\"><a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[x].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\"> " + data.compare.editions[j].packages[x].text + " " + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
+                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.storeURL + "</a></li>";
                             }
                         }
                     output += "</ul>";
@@ -163,7 +166,7 @@ output += "<div class=\"row market-row\">\
     output += "</div>\
     <div class=\"row market-row\">";
         for (var q = 0; q < data.compare.editions.length; q++) {
-            output += "<div class=\"col-md-4\">\
+            output += "<div class=\"col-md-3\">\
                 <ul class=\"fa-ul\">";
                     for (var w = 0; w < data.compare.editions[q].features.length; w++) {
                         if (data.compare.editions[q].features[w].url) {
@@ -240,22 +243,6 @@ output += "<div class=\"row market-row\">\
         return method;
     }());
 
-    <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
-    // Wait until the DOM has loaded before querying the document
-    $(document).ready(function(){
-        // get from opmantek.com
-        $.get('https://opmantek.com/product_data/open-audit.json', function(data){
-            modal.open({content: data, source: "online"});
-        })
-        .fail(function() {
-            // get from OAE
-                $.get('/omk/data/open-audit.json', function(data){
-                modal.open({content: data, source: "offline"});
-            })
-        });
-    });
-    <?php } ?>
-
     // add a keydown even for the escape key to close the modal
     $(document).keydown(function(e) {
         if (e.keyCode == 27) {
@@ -285,12 +272,17 @@ $(document).ready(function () {
                 /* alert( 'success' ); */
             },
             error: function (data) {
+                console.log(data.responseText);
                 data = JSON.parse(data.responseText);
                 alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
             }
         });
         modal.close();
     });
-});
 
+    $(document).on('click', '.get_started_button', function (e) {
+        modal.close();
+    });
+
+});
 </script>
