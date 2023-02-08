@@ -735,7 +735,9 @@ class M_discoveries extends MY_Model
             (discovery_log.message LIKE '%SNMP detected, but no valid SNMP credentials%') OR
             (discovery_log.message LIKE '%No management protocols%' AND (system.type = 'unknown' OR system.type = 'unclassified')) OR
             (discovery_log.message LIKE '%Could not SCP GET to%' AND command_status = 'fail') OR
-            (discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail')
+            (discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail') OR
+            (discovery_log.message LIKE 'No credentials array passed to%') OR
+            (discovery_log.message LIKE 'No valid credentials for%')
         AND discoveries.org_id IN (" . implode(',', $org_list) . ") GROUP BY system.id ORDER BY discovery_log.id DESC LIMIT 50";
         $result = $this->run_sql($sql, array());
         $issues = array_merge($issues, $result);
@@ -891,6 +893,10 @@ class M_discoveries extends MY_Model
         } else if (strpos($issue->{'output'}, 'Could not convert audit result from XML') !== false) {
             $issue->description = 'The audit result contains invalid XML. Please check the file. Consider increasing the configuration item discovery_ssh_timeout.';
             $issue->action = '';
+
+        } else if (strpos($issue->{'output'}, 'No credentials array passed to') !== false) {
+            $issue->description = 'Ensure you have credentials for this type.';
+            $issue->action = 'add credentials';
 
         } else {
             $issue->description = 'Unknown';
