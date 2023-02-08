@@ -516,6 +516,16 @@ if ( !  function_exists('ssh_audit')) {
     function ssh_audit($parameters)
     {
         $CI = & get_instance();
+
+        if (empty($parameters->credentials)) {
+            $log = new stdClass();
+            $log->discovery_id = $parameters->discovery_id;
+            $log->message = 'No credentials array passed to ssh_audit.';
+            $log->ip = @$parameters->ip;
+            $log->command_status = 'warning';
+            discovery_log($log);
+            return;
+        }
         if (empty($parameters) OR empty($parameters->credentials) OR empty($parameters->ip)) {
             $message = '(missing parameters object)';
             if (empty($parameters->credentials)) {
