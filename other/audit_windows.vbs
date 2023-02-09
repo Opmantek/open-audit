@@ -4431,6 +4431,22 @@ if address_width = "64" then
     end if
 end if
 
+if debugging > "0" then wscript.echo "Win32_InstalledStoreProgram info" end if
+set colItems = objWMIService.ExecQuery("Select * FROM Win32_InstalledStoreProgram", , 48)
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CodecFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_InstalledStoreProgram " : end if
+if (not isnull(colItems)) then
+    for each objItem In colItems
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+        result.WriteText "          <location></location>" & vbcrlf
+        result.WriteText "          <install_date></install_date>" & vbcrlf
+        result.WriteText "          <publisher>" & escape_xml(objItem.Vendor) & "</publisher>" & vbcrlf
+        result.WriteText "          <install_source>Windows Store</install_source>" & vbcrlf
+        result.WriteText "          <type></type>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
+    next
+end if
 
 ' hotfixes
 if (cint(windows_build_number) > 5000) then
