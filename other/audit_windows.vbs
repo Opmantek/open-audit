@@ -4433,8 +4433,9 @@ end if
 
 if debugging > "0" then wscript.echo "Win32_InstalledStoreProgram info" end if
 set colItems = objWMIService.ExecQuery("Select * FROM Win32_InstalledStoreProgram", , 48)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CodecFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_InstalledStoreProgram " : end if
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_InstalledStoreProgram)" : audit_wmi_fails = audit_wmi_fails & "Win32_InstalledStoreProgram " : end if
 if (not isnull(colItems)) then
+    on error resume next
     for each objItem In colItems
         result.WriteText "      <item>" & vbcrlf
         result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
@@ -4446,6 +4447,7 @@ if (not isnull(colItems)) then
         result.WriteText "          <type></type>" & vbcrlf
         result.WriteText "      </item>" & vbcrlf
     next
+    on error goto 0
 end if
 
 ' hotfixes
