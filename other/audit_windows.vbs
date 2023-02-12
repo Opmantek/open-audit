@@ -75,6 +75,9 @@ audit_mount_point = "y"
 ' should we audit the installed software
 audit_software = "y"
 
+' Windows Store software
+audit_store_software = "n"
+
 ' use the win32_product WMI class (not recommended by Microsoft).
 ' https://support.microsoft.com/kb/974524
 ' added and set to disabled by default in 1.5.2
@@ -178,6 +181,9 @@ For Each strArg in objArgs
             case "audit_software"
             audit_software = argvalue
 
+            case "audit_store_software"
+            audit_store_software = argvalue
+
             case "audit_dns"
             audit_dns = argvalue
 
@@ -269,7 +275,7 @@ if (help = "y") then
     wscript.echo "      y - Display this help output."
     wscript.echo "     *n - Do not display this output."
     wscript.echo ""
-    wscript.echo "  ladp"
+    wscript.echo "  ldap"
     wscript.echo "       - Set by the audit_domain or discover_domain scripts. Do not set."
     wscript.echo ""
     wscript.echo "  local_domain"
@@ -293,11 +299,6 @@ if (help = "y") then
     wscript.echo "  self_delete"
     wscript.echo "     *n - Do not delete the audit_windows script upon completion."
     wscript.echo "      y - Delete the audit script file upon script completion."
-    wscript.echo ""
-    wscript.echo "  skip_*"
-    wscript.echo "     *n - Do not skip detecting attributes in this section of the audit script."
-    wscript.echo "      y - Skip detection of this particular section."
-    wscript.echo "     Valid sections are dns, printer, software, mount_point."
     wscript.echo ""
     wscript.echo "  strcomputer"
     wscript.echo "       *. - The name (or IP address) of the computer being audited. Default is '.', which means the local system upon which the script is being run."
@@ -366,6 +367,7 @@ if debugging > "0" then
     wscript.echo "audit_mount_point    " & audit_mount_point
     wscript.echo "audit_netstat        " & audit_netstat
     wscript.echo "audit_software       " & audit_software
+    wscript.echo "audit_store_software " & audit_store_software
     wscript.echo "create_file          " & create_file
     wscript.echo "debugging            " & debugging
     wscript.echo "details_to_lower     " & details_to_lower
@@ -4431,23 +4433,25 @@ if address_width = "64" then
     end if
 end if
 
-if debugging > "0" then wscript.echo "Win32_InstalledStoreProgram info" end if
-set colItems = objWMIService.ExecQuery("Select * FROM Win32_InstalledStoreProgram", , 48)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_InstalledStoreProgram)" : audit_wmi_fails = audit_wmi_fails & "Win32_InstalledStoreProgram " : end if
-if (not isnull(colItems)) then
-    on error resume next
-    for each objItem In colItems
-        result.WriteText "      <item>" & vbcrlf
-        result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-        result.WriteText "          <version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
-        result.WriteText "          <location></location>" & vbcrlf
-        result.WriteText "          <install_date></install_date>" & vbcrlf
-        result.WriteText "          <publisher>" & escape_xml(objItem.Vendor) & "</publisher>" & vbcrlf
-        result.WriteText "          <install_source>Windows Store</install_source>" & vbcrlf
-        result.WriteText "          <type></type>" & vbcrlf
-        result.WriteText "      </item>" & vbcrlf
-    next
-    on error goto 0
+if (audit_store_software = "y") then
+    if debugging > "0" then wscript.echo "Win32_InstalledStoreProgram info" end if
+    set colItems = objWMIService.ExecQuery("Select * FROM Win32_InstalledStoreProgram", , 48)
+    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_InstalledStoreProgram)" : audit_wmi_fails = audit_wmi_fails & "Win32_InstalledStoreProgram " : end if
+    if (not isnull(colItems)) then
+        on error resume next
+        for each objItem In colItems
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+            result.WriteText "          <version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+            result.WriteText "          <location></location>" & vbcrlf
+            result.WriteText "          <install_date></install_date>" & vbcrlf
+            result.WriteText "          <publisher>" & escape_xml(objItem.Vendor) & "</publisher>" & vbcrlf
+            result.WriteText "          <install_source>Windows Store</install_source>" & vbcrlf
+            result.WriteText "          <type></type>" & vbcrlf
+            result.WriteText "      </item>" & vbcrlf
+        next
+        on error goto 0
+    end if
 end if
 
 ' hotfixes
