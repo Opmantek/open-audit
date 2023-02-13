@@ -4440,15 +4440,17 @@ if (audit_store_software = "y") then
     if (not isnull(colItems)) then
         on error resume next
         for each objItem In colItems
-            result.WriteText "      <item>" & vbcrlf
-            result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-            result.WriteText "          <version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
-            result.WriteText "          <location></location>" & vbcrlf
-            result.WriteText "          <install_date></install_date>" & vbcrlf
-            result.WriteText "          <publisher>" & escape_xml(objItem.Vendor) & "</publisher>" & vbcrlf
-            result.WriteText "          <install_source>Windows Store</install_source>" & vbcrlf
-            result.WriteText "          <type></type>" & vbcrlf
-            result.WriteText "      </item>" & vbcrlf
+            if (objItem.Name > "") then
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+                result.WriteText "          <location></location>" & vbcrlf
+                result.WriteText "          <install_date></install_date>" & vbcrlf
+                result.WriteText "          <publisher>" & escape_xml(objItem.Vendor) & "</publisher>" & vbcrlf
+                result.WriteText "          <install_source>Windows Store</install_source>" & vbcrlf
+                result.WriteText "          <type></type>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+            end if
         next
         on error goto 0
     end if
