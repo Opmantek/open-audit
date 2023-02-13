@@ -605,7 +605,7 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A
     fi
 
     if [[ "$line" == *"App Store: No"* ]]; then
-        software_install_source="Unknown"
+        software_install_source=""
     fi
 
     if [[ "$line" == *"Obtained from: "* ]]; then
