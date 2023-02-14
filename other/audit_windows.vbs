@@ -3811,20 +3811,20 @@ if (audit_software = "y") then
     oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, arrValueNames, arrValueTypes
 
     if (isarray(arrValueNames)) then
-    for i = 0 to UBound(arrValueNames)
-    strValueName = arrValueNames(i)
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
-    if strValue = "Installed" then
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(strValueName) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(driver_version) & "</version>" & vbcrlf
-    result.WriteText "          <location>" & escape_xml(file_name) & "</location>" & vbcrlf
-    result.WriteText "          <type>odbc driver</type>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    end if
-    next
+        for i = 0 to UBound(arrValueNames)
+            strValueName = arrValueNames(i)
+            oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
+            if strValue = "Installed" then
+                oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
+                oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(strValueName) & "</name>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(driver_version) & "</version>" & vbcrlf
+                result.WriteText "          <location>" & escape_xml(file_name) & "</location>" & vbcrlf
+                result.WriteText "          <type>odbc driver</type>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+            end if
+        next
     end if
 
 
@@ -3847,63 +3847,18 @@ if (audit_software = "y") then
         result.WriteText "      </item>" & vbcrlf
     end if
 
-
-    ' Note - disabled as it stops at 4.09.00.0904 in the registry
-    ' Possible way around - run "dxdiag /x dxdiag.xml" then parse that for DirectXVersion
-    if 1 > 1 then
-        if debugging > "0" then wscript.echo "DirectX info" end if
-        strKeyPath = "SOFTWARE\Microsoft\DirectX"
-        strValueName = "Version"
-        oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dx_version
-        if (isnull(dx_version)) then dx_version = "" end if
-        dx_name = ""
-        if system_os_version > "6" then dx_version = system_os_version end if
-        dx_version = replace(dx_version, "6.0.", "6.00.")
-        dx_version = replace(dx_version, "6.1.", "6.01.")
-        dx_version = replace(dx_version, "6.2.", "6.02.")
-        dx_version = replace(dx_version, "6.3.", "6.03.")
-        if dx_version = "4.07.00.0700" then dx_name = "DirectX 7" end if
-        if dx_version = "4.08.01.0810" then dx_name = "DirectX 8.1" end if
-        if dx_version = "4.08.01.0881" then dx_name = "DirectX 8.1" end if
-        if dx_version = "4.08.01.0901" then dx_name = "DirectX 8.1a" end if
-        if dx_version = "4.08.01.0901" then dx_name = "DirectX 8.1b" end if
-        if dx_version = "4.08.02.0134" then dx_name = "DirectX 8.2" end if
-        if dx_version = "4.09.00.0900" then dx_name = "DirectX 9" end if
-        if dx_version = "4.09.00.0901" then dx_name = "DirectX 9a" end if
-        if dx_version = "4.09.00.0902" then dx_name = "DirectX 9b" end if
-        if dx_version = "4.09.00.0903" then dx_name = "DirectX 9c" end if
-        if dx_version = "4.09.00.0904" then dx_name = "DirectX 9c" end if
-        if dx_version = "6.00.6000" then dx_name = "DirectX 10" end if
-        if dx_version = "6.00.6001" then dx_name = "DirectX 10.1" end if
-        if dx_version = "6.00.6002" then dx_name = "DirectX 10.1" end if
-        if dx_version = "6.01.7600" then dx_name = "DirectX 11" end if
-        if dx_version = "6.01.7601" then dx_name = "DirectX 11" end if
-        if dx_version = "6.00.6002" then dx_name = "DirectX 11" end if
-        if dx_version = "6.02.8250" then dx_name = "DirectX 11.1" end if
-        if dx_version = "6.03.9600" then dx_name = "DirectX 11.2" end if
-        if dx_name = "" then dx_name = "DirectX (unknown version)" end if
-        result.WriteText "      <item>" & vbcrlf
-        result.WriteText "          <name>" & escape_xml(dx_name) & "</name>" & vbcrlf
-        result.WriteText "          <version>" & escape_xml(dx_version) & "</version>" & vbcrlf
-        result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-        result.WriteText "      </item>" & vbcrlf
-    end if
-
-
-
     if debugging > "0" then wscript.echo "Windows Media Player info" end if
     strKeyPath = "SOFTWARE\Microsoft\MediaPlayer\PlayerUpgrade"
     strValueName = "PlayerVersion"
     oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,wmp_version
     if (not isnull(wmp_version)) then
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>Windows Media Player</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(wmp_version) & "</version>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-    result.WriteText "          <url>http://windows.microsoft.com/en-us/windows/windows-media-player</url>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>Windows Media Player</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(wmp_version) & "</version>" & vbcrlf
+        result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
+        result.WriteText "          <url>http://windows.microsoft.com/en-us/windows/windows-media-player</url>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
     end if
 
 
@@ -3912,49 +3867,17 @@ if (audit_software = "y") then
     strValueName = "Version"
     oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ie_version
     if (not isnull(ie_version)) then
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>Internet Explorer</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(ie_version) & "</version>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-    result.WriteText "          <url>http://windows.microsoft.com/en-us/internet-explorer/internet-explorer-help</url>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>Internet Explorer</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(ie_version) & "</version>" & vbcrlf
+        result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
+        result.WriteText "          <url>http://windows.microsoft.com/en-us/internet-explorer/internet-explorer-help</url>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
     end if
-
-
-    if debugging > "0" then wscript.echo "Outlook Express info" end if
-    strKeyPath = "SOFTWARE\Microsoft\Outlook Express\Version info"
-    strValueName = "Current"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,oe_version
-    if (isnull(oe_version)) then
-    set colFiles = objWMIService.ExecQuery("Select * from CIM_Datafile Where Name = 'c:\\program files\\Outlook Express\\msimn.exe'",,32)
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (CIM_Datafile)" : audit_wmi_fails = audit_wmi_fails & "CIM_Datafile " : end if
-    for each objFile in colFiles
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>Outlook Express</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-    result.WriteText "          <url>http://windows.microsoft.com/en-us/windows/outlook-express</url>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    next
-    else
-    oe_version = replace(oe_version, ",", ".")
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>Outlook Express</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(oe_version) & "</version>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
-    result.WriteText "          <url>http://windows.microsoft.com/en-us/windows/outlook-express</url>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    end if
-
-
 
 
     if debugging > "0" then wscript.echo "Software info" end if
-
-
 
     result.WriteText "      <!-- start of normal software -->" & vbcrlf
     ' note that I have a system that fails when the below is attempted.
@@ -4081,92 +4004,92 @@ if (audit_software = "y") then
     reg_node = "n"
     oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
     if (not isnull(arrSubKeys)) then
-    For Each subkey In arrSubKeys
-    if subkey = "Wow6432Node" then
-    reg_node = "y"
-    end if
-    next
+        For Each subkey In arrSubKeys
+            if subkey = "Wow6432Node" then
+                reg_node = "y"
+            end if
+        next
     end if
 
 
     if (audit_win32_product = "y") then
-    if (address_width = "64" and reg_node = "y") then
-    if debugging > "0" then wscript.echo "Software for 64bit" end if
-    result.WriteText "      <!-- start of 64 #1 -->" & vbcrlf
-    ' we enumerate this WMI, that we would not otherwise
+        if (address_width = "64" and reg_node = "y") then
+            if debugging > "0" then wscript.echo "Software for 64bit (Win32_Product)" end if
+            result.WriteText "      <!-- start of 64 #1 -->" & vbcrlf
+            ' we enumerate this WMI, that we would not otherwise
+            on error resume next
+                set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
+                error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
+            on error goto 0
 
-    on error resume next
-    set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
-    error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
-    on error goto 0
+            if (error_returned <> 0) then
+                ' we had an error - skip the next part
+            else
 
-    if (error_returned <> 0) then
-    ' we had an error - skip the next part
-    else
-    on error resume next
-    for each objItem2 in colItems2
-    error_returned = Err.Number
-    error_message = Err.Message
+            on error resume next
+            for each objItem2 in colItems2
+                error_returned = Err.Number
+                error_message = Err.Message
 
-    package_name = objItem2.name
-    package_installed_by = ""
-    package_installed_on = ""
+                package_name = objItem2.name
+                package_installed_by = ""
+                package_installed_on = ""
 
-    if (cint(windows_build_number) > 5000) then
-    software_url = objItem2.URLUpdateInfo
-    software_install_source = objItem2.InstallSource
-    else
-    software_url = ""
-    software_install_source = ""
-    end if
-
-    for each objItem in colItems
-        if objItem.Message <> "" then
-            colonPos = InStr(objItem.Message,":")
-            dashPos = InStr(objItem.Message,"--")
-            message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-            if (not isNull(message_retrieved)) then
-                if (InStr(message_retrieved, package_name) = 1) then
-                    package_installed_by = objItem.User
-                    if details_to_lower = "y" then
-                        package_installed_by = lcase(package_installed_by)
-                    end if
-                    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-                    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-                    exit for
+                if (cint(windows_build_number) > 5000) then
+                    software_url = objItem2.URLUpdateInfo
+                    software_install_source = objItem2.InstallSource
                 else
-                    package_installed_by = ""
-                    package_installed_on = ""
+                    software_url = ""
+                    software_install_source = ""
                 end if
-            end if
-        end if
-    next
 
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(package_name) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(objItem2.version) & "</version>" & vbcrlf
-    result.WriteText "          <location>" & escape_xml(objItem2.InstallLocation) & "</location>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(objItem2.InstallDate) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>" & escape_xml(objItem2.Vendor) & "</publisher>" & vbcrlf
-    result.WriteText "          <install_source>" & escape_xml(software_install_source) & "</install_source>" & vbcrlf
-    result.WriteText "          <url>" & escape_xml(software_url) & "</url>" & vbcrlf
-    result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-    result.WriteText "          <installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    next
-    on error goto 0
-    end if
+                for each objItem in colItems
+                    if objItem.Message <> "" then
+                        colonPos = InStr(objItem.Message,":")
+                        dashPos = InStr(objItem.Message,"--")
+                        message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+                        if (not isNull(message_retrieved)) then
+                            if (InStr(message_retrieved, package_name) = 1) then
+                                package_installed_by = objItem.User
+                                if details_to_lower = "y" then
+                                    package_installed_by = lcase(package_installed_by)
+                                end if
+                                package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+                                package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+                                exit for
+                            else
+                                package_installed_by = ""
+                                package_installed_on = ""
+                            end if
+                        end if
+                    end if
+                next
+
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(package_name) & "</name>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(objItem2.version) & "</version>" & vbcrlf
+                result.WriteText "          <location>" & escape_xml(objItem2.InstallLocation) & "</location>" & vbcrlf
+                result.WriteText "          <install_date>" & escape_xml(objItem2.InstallDate) & "</install_date>" & vbcrlf
+                result.WriteText "          <publisher>" & escape_xml(objItem2.Vendor) & "</publisher>" & vbcrlf
+                result.WriteText "          <install_source>" & escape_xml(software_install_source) & "</install_source>" & vbcrlf
+                result.WriteText "          <url>" & escape_xml(software_url) & "</url>" & vbcrlf
+                result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+                result.WriteText "          <installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+            next
+            on error goto 0
+        end if
     end if
     result.WriteText "      <!-- end of 64 #1 -->" & vbcrlf
-    end if
+end if
 
 
     strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
     oReg.EnumKey HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
     if (not isnull(arrSubKeys)) then
-    reg_node = "y"
+        reg_node = "y"
     else
-    reg_node = "n"
+        reg_node = "n"
     end if
 
 
@@ -4174,7 +4097,7 @@ if (audit_software = "y") then
 
 
 if (reg_node = "y") then
-    if debugging > "0" then wscript.echo "Software for 64bit (registry)" end if
+    if debugging > "0" then wscript.echo "Software for 64bit (registry #1)" end if
     result.WriteText "      <!-- start of 64 #2 -->" & vbcrlf
     ' do it all over again for 32bit software installed on a 64bit machine
     ' HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
@@ -4288,11 +4211,8 @@ end if
 result.WriteText "      <!-- end of 64 #2 -->" & vbcrlf
 
 
-
-
-
 if address_width = "64" then
-    if debugging > "0" then wscript.echo "Software for 64bit (registry) #3" end if
+    if debugging > "0" then wscript.echo "Software for 64bit (registry #2)" end if
     ' do it all over again for 32bit software installed on a 64bit machine
     ' this accounts for running the script directly from a webpage on a 64bit machine
     ' HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
@@ -4303,10 +4223,10 @@ if address_width = "64" then
     Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
     if ((struser <> "") and (instr(local_net, strcomputer) = 0)) then
-    ' Username & Password provided - assume not a domain local PC.
-    Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
+        ' Username & Password provided - assume not a domain local PC.
+        Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
     else
-    Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
+        Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
     end if
 
     Set o64reg = objServices.Get("StdRegProv")
@@ -4461,22 +4381,24 @@ if (cint(windows_build_number) > 5000) then
     if debugging > "0" then wscript.echo "Hotfix info" end if
     set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
     if (not isnull(colItems2)) then
-    for each objItem2 in colItems2
-    package_installed_by = objItem2.InstalledBy
-    if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(objItem2.HotFixID) & "</name>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(objItem2.InstalledOn) & "</install_date>" & vbcrlf
-    result.WriteText "          <publisher>Microsoft</publisher>" & vbcrlf
-    result.WriteText "          <url>" & escape_xml(objItem2.Caption) & "</url>" & vbcrlf
-    result.WriteText "          <type>update</type>" & vbcrlf
-    result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-    result.WriteText "          <installed_on>" & escape_xml(objItem2.InstalledOn) & "</installed_on>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    next
+        for each objItem2 in colItems2
+            package_installed_by = objItem2.InstalledBy
+            if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(objItem2.HotFixID) & "</name>" & vbcrlf
+            result.WriteText "          <install_date>" & escape_xml(objItem2.InstalledOn) & "</install_date>" & vbcrlf
+            result.WriteText "          <publisher>Microsoft</publisher>" & vbcrlf
+            result.WriteText "          <url>" & escape_xml(objItem2.Caption) & "</url>" & vbcrlf
+            result.WriteText "          <type>update</type>" & vbcrlf
+            result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+            result.WriteText "          <installed_on>" & escape_xml(objItem2.InstalledOn) & "</installed_on>" & vbcrlf
+            result.WriteText "      </item>" & vbcrlf
+        next
     end if
-    end if
-    result.WriteText "  </software>" & vbcrlf
+end if
+
+
+result.WriteText "  </software>" & vbcrlf
 end if
 
 
