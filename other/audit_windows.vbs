@@ -4098,7 +4098,7 @@ end if
 
 if (reg_node = "y") then
     if debugging > "0" then wscript.echo "Software for 64bit (registry #1)" end if
-    result.WriteText "      <!-- start of 64 #2 -->" & vbcrlf
+    result.WriteText "      <!-- start of registry #1 -->" & vbcrlf
     ' do it all over again for 32bit software installed on a 64bit machine
     ' HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
     on error resume next
@@ -4208,7 +4208,7 @@ if (reg_node = "y") then
     next
     end if
 end if
-result.WriteText "      <!-- end of 64 #2 -->" & vbcrlf
+result.WriteText "      <!-- end of registry #1 -->" & vbcrlf
 
 
 if address_width = "64" then
@@ -4216,7 +4216,7 @@ if address_width = "64" then
     ' do it all over again for 32bit software installed on a 64bit machine
     ' this accounts for running the script directly from a webpage on a 64bit machine
     ' HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
-    result.WriteText "  <!-- end of 64 #3 -->" & vbcrlf
+    result.WriteText "  <!-- start of registry #2 -->" & vbcrlf
     Set objCtx = CreateObject("WbemScripting.SWbemNamedValueSet")
     objCtx.Add "__ProviderArchitecture", 64
     objCtx.Add "__RequiredArchitecture", True
@@ -4351,10 +4351,12 @@ if address_width = "64" then
     end if
     next
     end if
+    result.WriteText "  <!-- end of registry #2 -->" & vbcrlf
 end if
 
 if (audit_store_software = "y") then
     if debugging > "0" then wscript.echo "Win32_InstalledStoreProgram info" end if
+    result.WriteText "  <!-- start of InstalledStoreProgram -->" & vbcrlf
     set colItems = objWMIService.ExecQuery("Select * FROM Win32_InstalledStoreProgram", , 48)
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_InstalledStoreProgram)" : audit_wmi_fails = audit_wmi_fails & "Win32_InstalledStoreProgram " : end if
     if (not isnull(colItems)) then
@@ -4374,6 +4376,7 @@ if (audit_store_software = "y") then
         next
         on error goto 0
     end if
+    result.WriteText "  <!-- end of InstalledStoreProgram -->" & vbcrlf
 end if
 
 ' hotfixes
