@@ -156,7 +156,7 @@ if (! function_exists('snmp_credentials')) {
                     } else {
                         $log->message = 'Credential set for SNMPv3 ' . $from . ' not working on ' . $ip;
                         $log->command_status = 'notice';
-                        $log->command_output = $output[0];
+                        $log->command_output = @$output[0];
                         discovery_log($log);
                     }
                 }
@@ -742,11 +742,13 @@ if (! function_exists('snmp_audit')) {
             $item_start = microtime(true);
             $new_details = $get_oid_details($ip, $credentials, $details->snmp_oid);
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            foreach ($new_details as $key => $value) {
-                $details->$key = $value;
-                $log->command = $key;
-                $log->command_output = $value;
-                discovery_log($log);
+            if (!empty($new_details)) {
+                foreach ($new_details as $key => $value) {
+                    $details->$key = $value;
+                    $log->command = $key;
+                    $log->command_output = $value;
+                    discovery_log($log);
+                }
             }
             unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
             unset($new_details);
