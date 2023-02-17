@@ -2018,6 +2018,9 @@ class M_devices_components extends MY_Model
      */
     public function create_dns_entries($id = 0)
     {
+        if ($this->config->config['discovery_use_dns'] !== 'y') {
+            return array();
+        }
         if (empty($id)) {
             return array();
         }
