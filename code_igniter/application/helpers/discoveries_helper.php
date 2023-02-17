@@ -1647,10 +1647,10 @@ if (! function_exists('ip_audit')) {
                 $log->command_status = 'notice';
                 if ($credentials_ssh->credentials->username === 'root') {
                     $log->message = 'Running audit using root user.';
-                } else if (! empty($device->which_sudo) && $device->use_sudo) {
+                } else if (! empty($device->which_sudo) and !empty($device->use_sudo) and $device->use_sudo) {
                     $command = "{$device->which_sudo} " . $command;
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
-                } else if (! empty($device->which_sudo) && ! $device->use_sudo) {
+                } else if (! empty($device->which_sudo) and (empty($device->use_sudo) or !$device->use_sudo)) {
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' without sudo, as sudo attempt failed.';
                 } else if (empty($device->which_sudo)) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
