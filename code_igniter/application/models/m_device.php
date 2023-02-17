@@ -462,7 +462,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on dbus_identifier + org_id, but hit on dbus_identifier alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -523,7 +522,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on dns_fqdn + org_id, but hit on dns_fqdn alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -584,7 +582,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on dns_hostname + org_id, but hit on dns_hostname alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -645,7 +642,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on fqdn + org_id, but hit on fqdn alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -706,7 +702,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on serial + type + org_id, but hit on serial + type. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -779,7 +774,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on serial + org_id, but hit on serial alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -908,7 +902,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on sysname + org_id, but hit on sysname alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -1222,7 +1215,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on IP Address (network table) + org_id, but hit on IP (network table) alone. Check assigned_to_org in discovery.' . json_encode($details) . json_encode($row);
                     $message->command_status = 'notice';
@@ -1252,7 +1244,6 @@ class M_device extends MY_Model
                         $this->log_array($log, $log_message);
                         return $details->id;
                     } else {
-                        $log->system_id = $details->id;
                         $message = new stdClass();
                         $message->message = 'MISS on IP Address (system table) + org_id, but hit on IP (system table) alone. Check assigned_to_org in discovery.';
                         $message->command_status = 'notice';
@@ -1314,7 +1305,6 @@ class M_device extends MY_Model
                     $this->log_array($log, $log_message);
                     return $details->id;
                 } else {
-                    $log->system_id = $details->id;
                     $message = new stdClass();
                     $message->message = 'MISS on fqdn + org_id, but hit on fqdn alone. Check assigned_to_org in discovery.';
                     $message->command_status = 'notice';
@@ -1386,7 +1376,6 @@ class M_device extends MY_Model
                         $this->log_array($log, $log_message);
                         return $details->id;
                     } else {
-                        $log->system_id = $details->id;
                         $message = new stdClass();
                         $message->message = 'MISS on IP Address No Data (system table) + org_id, but hit on IP Address No Data (system table) alone. Check assigned_to_org in discovery.';
                         $message->command_status = 'notice';
@@ -1454,7 +1443,7 @@ class M_device extends MY_Model
         $CI = & get_instance();
         $CI->load->helper('log');
         foreach ($log_array as $log_item) {
-            $log_item->system_id = $log->system_id;
+            $log_item->system_id = @$log->system_id;
             $log_item->discovery_id = $log->discovery_id;
             $log_item->file = $log->file;
             $log_item->function = 'match';
