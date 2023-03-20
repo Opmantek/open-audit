@@ -4143,6 +4143,9 @@ if (!function_exists('get_details_from_oid')) {
 			case '1.3.6.1.4.1.789.2.1': $device->model = 'Filer'; $device->type = 'nas'; break;
 			case '1.3.6.1.4.1.789.2.2': $device->model = 'Net Cache'; $device->type = 'web cache'; break;
 			case '1.3.6.1.4.1.789.2.3': $device->model = 'Clustered Filer'; $device->type = 'nas'; break;
+			case '1.3.6.1.4.1.789.2.4': $device->model = 'Node'; $device->type = 'nas'; break;
+			case '1.3.6.1.4.1.789.2.5': $device->model = 'Cluster'; $device->type = 'nas'; break;
+			case '1.3.6.1.4.1.789.2.6': $device->model = 'Vserver'; $device->type = 'nas'; break;
 			case '1.3.6.1.4.1.800.3.1.1.1': $device->model = 'Alcatel OmniSwitch 5'; $device->type = ''; break;
 			case '1.3.6.1.4.1.800.3.1.1.16': $device->model = 'Alcatel OmniStack 5024'; $device->type = ''; break;
 			case '1.3.6.1.4.1.800.3.1.1.17': $device->model = 'Alcatel OmniStack 4024G'; $device->type = ''; break;
