@@ -47,10 +47,16 @@ if (! function_exists('version_padded')) {
         $pieces = array();
         $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $version);
         foreach ($pieces as $piece) {
-            if (strlen($piece) > 10) {
-                $version_padded .= $piece;
-            } else {
-                $version_padded .= mb_substr("00000000000000000000".$piece, -10);
+            $array = preg_split('/(?<=[0-9])(?=[a-z]+)/i',$piece);
+            foreach ($array as $item) {
+                $p2 = preg_split('/([a-z]+)([0-9]+)/i', $item, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+                foreach ($p2 as $p) {
+                    if (strlen($p) > 10) {
+                        $version_padded .= $p;
+                    } else {
+                        $version_padded .= mb_substr("00000000000000000000".$p, -10);
+                    }
+                }
             }
         }
         return $version_padded;
