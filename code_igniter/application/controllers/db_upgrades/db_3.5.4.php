@@ -325,8 +325,8 @@ foreach ($result as $item) {
     }
 	$scan_options = $json->nmap;
 	$scan_options = json_encode($scan_options);
-	$match_options = $json->match;
-	$match_options = json_encode($match_options);
+	$match_options = @$json->match;
+	$match_options = @json_encode($match_options);
 	$sql = 'UPDATE discoveries SET subnet = ?, ad_server = ?, ad_domain = ?, scan_options = ?, match_options = ? WHERE id = ?';
 	$data = array($subnet, $ad_server, $ad_domain, $scan_options, $match_options, $id);
 	$this->db->query($sql, $data);
