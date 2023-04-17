@@ -7381,6 +7381,7 @@ function form_factor(system_form_factor)
     if system_form_factor = "24" then system_form_factor = "Sealed-case PC"  end if
     if system_form_factor = "30" then system_form_factor = "Tablet" end if
 	if system_form_factor = "31" then system_form_factor = "Convertible" end if
+    if system_form_factor = "32" then system_form_factor = "Detachable" end if
     if system_form_factor = "35" then system_form_factor = "Mini PC" end if                                                                                                                                    
     form_factor = system_form_factor
 end function
