@@ -1,6 +1,7 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 declare(strict_types=1);
 
 $CI_INSTANCE = [];  # It keeps a ref to global CI instance
@@ -10,7 +11,6 @@ function register_ci_instance(\App\Controllers\BaseController &$_ci)
     global $CI_INSTANCE;
     $CI_INSTANCE[0] = &$_ci;
 }
-
 
 function &get_instance() # : \App\Controllers\BaseController
 {

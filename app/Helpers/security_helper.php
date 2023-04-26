@@ -1,8 +1,8 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
-declare(strict_types=1);
 
+declare(strict_types=1);
 
 /**
  * Wrap crypto_aead_*_decrypt() in a drop-dead-simple decryption interface
@@ -22,12 +22,7 @@ function simpleDecrypt(string $message = '', string $key = ''): string
     $ciphertext = mb_substr($message, 24, strlen($message), '8bit');
     $plaintext = '';
     try {
-        $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
-            $ciphertext,
-            $nonce,
-            $nonce,
-            $key
-        );
+        $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
     } catch (Exception $e) {
         $log = new \stdClass();
         $log->severity = 3;
@@ -38,7 +33,6 @@ function simpleDecrypt(string $message = '', string $key = ''): string
     }
     return $plaintext;
 }
-
 
 /**
  * Take a string and return the encrypted variant
@@ -51,11 +45,6 @@ function simpleEncrypt(string $message = '', string $key = ''): string
 {
     $key = mb_substr("00000000000000000000000000000000".$key, -32);
     $nonce = random_bytes(24);
-    $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
-        $message,
-        $nonce,
-        $nonce,
-        $key
-    );
+    $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);
     return bin2hex($nonce . $encrypted);
 }

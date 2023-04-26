@@ -1,13 +1,10 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
 declare(strict_types=1);
 
 if (!function_exists('response_create')) {
-    /**
-     * [response_create description]
-     * @return [type] [description]
-     */
     function response_create($instance = null)
     {
         error_reporting(E_ALL);
