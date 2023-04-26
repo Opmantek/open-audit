@@ -1,20 +1,9 @@
 <?php
-# Copyright © 2022 Mark Unwin <mark.unwin@gmail.com>
+# Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 declare(strict_types=1);
 
 if (!function_exists('create_links')) {
-    /**
-     * The standard link creation function for Open-AudIT.
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @return    object
-     */
     function create_links($meta, $self, $page_size)
     {
         $links = new \stdClass();
@@ -124,17 +113,6 @@ if (!function_exists('create_links')) {
 }
 
 if (!function_exists('output')) {
-    /**
-     * Output to the required format
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @return    void
-     */
     function output($instance)
     {
         if ($instance->resp->meta->id === 888888888888) {
@@ -434,9 +412,6 @@ if (!function_exists('output')) {
 
     function output_highcharts($instance)
     {
-
-        # $CI = & get_instance();
-
         switch ($instance->resp->included[0]->attributes->type) {
             case 'line':
                 $instance->resp = highcharts_line($instance->resp);

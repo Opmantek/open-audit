@@ -1,15 +1,4 @@
 <?php
-/**
- * PHP version 7.3
- *
- * @category  Config
- * @package   Open-AudIT\Config
- * @author    Mark Unwin <marku@opmantek.com>
- * @copyright 2014 Opmantek
- * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_4.2.0
- * @link      http://www.open-audit.org
- */
 
 namespace Config;
 
@@ -137,7 +126,7 @@ $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, '
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
 
-$routes->cli('cronlogrotate', 'CronLogRotate::rotate');
+$routes->cli('rotateLogs', 'Cli::rotateLogs');
 /*
  * --------------------------------------------------------------------
  * Additional Routing

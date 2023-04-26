@@ -1,7 +1,0 @@
-<documentation title="Unicode (UTF-8) encoding without BOM">
-    <standard>
-    <![CDATA[
-    Files should be saved with Unicode (UTF-8) encoding. The BOM should not be used. Unlike UTF-16 and UTF-32, there's no byte order to indicate in a UTF-8 encoded file, and the BOM can have a negative side effect in PHP of sending output, preventing the application from being able to set its own headers. Unix line endings should be used (LF).
-    ]]>
-    </standard>
-</documentation>

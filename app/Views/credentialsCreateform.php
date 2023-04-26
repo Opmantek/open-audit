@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2022 Mark Unwin <mark.unwin@gmail.com>
+# Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 ?>

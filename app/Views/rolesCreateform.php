@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2022 Mark Unwin <mark.unwin@gmail.com>
+# Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 $endpoints = array('agents','applications','attributes','baselines','charts','clouds','clusters','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','errors','fields','files','graphs','groups','integrations','invoices','invoice_items','ldap_servers','licenses','license_rules','locations','logs','networks','nmis','orgs','queue','queries','racks','reports','roles','rules','scripts','search','sessions','summaries','tasks','users','widgets');

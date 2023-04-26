@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2022 Mark Unwin <mark.unwin@gmail.com>
+# Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 declare(strict_types=1);
 
@@ -54,19 +54,6 @@ if (! function_exists('log_error')) {
 }
 
 if (! function_exists('discovery_log')) {
-      /**
-     * The database logging function for Open-AudIT. Writes logs to a table in the DB.
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @param     Object    log     An object containing details you wish to log
-     *
-     * @return    id - the id of the inserted log entry
-     */
     function discovery_log($log = null)
     {
 

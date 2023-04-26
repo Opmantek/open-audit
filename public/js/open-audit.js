@@ -1,11 +1,3 @@
-/**
-* @author Mark Unwin <marku@opmantek.com>
-*
-* @version   GIT: Open-AudIT_3.5.3
-* @copyright Copyright (c) 2014, Opmantek
-* @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-*/
-
 /* inline edit */
 $(document).ready(function () {
 
