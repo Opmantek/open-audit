@@ -67,8 +67,6 @@ abstract class BaseController extends Controller
         $this->rolesModel = new \App\Models\RolesModel();
         $this->roles = $this->rolesModel->listAll();
         $this->collections = collections_list();
-        #$this->dictionaryModel = new \App\Models\DictionaryModel();
-        #$this->dictionary = new \stdClass();
 
         $this->queries = array();
 

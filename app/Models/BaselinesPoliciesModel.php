@@ -8,13 +8,13 @@ namespace App\Models;
 
 use stdClass;
 
-class BaselinesModel extends BaseModel
+class BaselinesPoliciesModel extends BaseModel
 {
 
     public function __construct()
     {
         $this->db = db_connect();
-        $this->builder = $this->db->table('baselines');
+        $this->builder = $this->db->table('baselines_policies');
     }
 
     /**
@@ -27,10 +27,6 @@ class BaselinesModel extends BaseModel
     public function collection(object $resp): array
     {
         $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'baselines.org_id = orgs.id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -44,7 +40,7 @@ class BaselinesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'baselines');
+        return format_data($query->getResult(), 'baselines_policies');
     }
 
     /**
@@ -59,7 +55,100 @@ class BaselinesModel extends BaseModel
         if (empty($data)) {
             return false;
         }
-        $data = $this->createFieldData('baselines', $data);
+
+        if (!empty($data->table) && $data->table === 'software') {
+            $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
+            $tests = array();
+            $entry = new stdClass();
+            $entry->column = 'name';
+            $entry->operator = '=';
+            $entry->value = $data->tests->name->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'version';
+            $entry->operator = $data->tests->version->operator;
+            $entry->value = $data->tests->version->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'version_padded';
+            $entry->operator = $data->tests->version->operator;
+            $entry->value = $this->versionPadded($data->tests->version->value);
+            $tests[] = $entry;
+
+            unset($data->tests);
+            $data->tests = json_encode($tests);
+        }
+
+        if (!empty($data->table) && $data->table === 'netstat') {
+            $data->name = $data->tests->program->value . ' on ' . $data->tests->port->value . ' using ' . $data->tests->protocol->value;
+            $tests = array();
+            $entry = new stdClass();
+            $entry->column = 'protocol';
+            $entry->operator = '=';
+            $entry->value = $data->tests->protocol->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'program';
+            $entry->operator = '=';
+            $entry->value = $data->tests->program->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'port';
+            $entry->operator = '=';
+            $entry->value = $data->tests->port->value;
+            $tests[] = $entry;
+
+            unset($data->tests);
+            $data->tests = json_encode($tests);
+        }
+
+        if (!empty($data->table) && $data->table === 'user') {
+            $data->name = $data->tests->name->value;
+            $tests = array();
+            $entry = new stdClass();
+            $entry->column = 'name';
+            $entry->operator = '=';
+            $entry->value = $data->tests->name->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'status';
+            $entry->operator = '=';
+            $entry->value = $data->tests->status->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'type';
+            $entry->operator = '=';
+            $entry->value = $data->tests->type->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'password_expires';
+            $entry->operator = '=';
+            $entry->value = $data->tests->password_expires->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'password_changeable';
+            $entry->operator = '=';
+            $entry->value = $data->tests->password_changeable->value;
+            $tests[] = $entry;
+
+            $entry = new stdClass();
+            $entry->column = 'password_required';
+            $entry->operator = '=';
+            $entry->value = $data->tests->password_required->value;
+            $tests[] = $entry;
+
+            unset($data->tests);
+            $data->tests = json_encode($tests);
+        }
+        $data = $this->createFieldData('baselines_policies', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
@@ -122,22 +211,12 @@ class BaselinesModel extends BaseModel
         $org_list = array_unique($org_list);
 
         $properties = array();
-        $properties[] = 'baselines.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'baselines.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
-        if (!empty($where[0]) and !empty($where[1])) {
-            $this->builder->where($where[0], $where[1]);
-        }
-        if (!empty($where[2]) and !empty($where[3])) {
-            $this->builder->where($where[2], $where[3]);
-        }
+        $properties[] = 'baselines_policies.*';
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'baselines');
+        return format_data($query->getResult(), 'baselines_policies');
     }
 
     /**
@@ -167,7 +246,7 @@ class BaselinesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'baselines');
+        return format_data($query->getResult(), 'baselines_policies');
     }
 
     /**
@@ -177,7 +256,7 @@ class BaselinesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('baselines')) {
+        if ($this->tableReset('baselines_policies')) {
             return true;
         }
         return false;
@@ -193,7 +272,7 @@ class BaselinesModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         // Accept our client data
-        $data = $this->updateFieldData('baselines', $data);
+        $data = $this->updateFieldData('baselines_policies', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
@@ -202,8 +281,32 @@ class BaselinesModel extends BaseModel
         return true;
     }
 
+    public function versionPadded(string $version = ''): string
+    {
+        if (empty($version)) {
+            return '';
+        }
+        $version_padded = '';
+        $pieces = array();
+        $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $version);
+        foreach ($pieces as $piece) {
+            $array = preg_split('/(?<=[0-9])(?=[a-z]+)/i', $piece);
+            foreach ($array as $item) {
+                $p2 = preg_split('/([a-z]+)([0-9]+)/i', $item, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+                foreach ($p2 as $p) {
+                    if (strlen($p) > 10) {
+                        $version_padded .= $p;
+                    } else {
+                        $version_padded .= mb_substr("00000000000000000000".$p, -10);
+                    }
+                }
+            }
+        }
+        return $version_padded;
+    }
+
     /**
-     * The dictionary item for baselines
+     * The dictionary item for baselines_policies
      *
      * @return object  The stdClass object containing the dictionary
      */
@@ -211,7 +314,7 @@ class BaselinesModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'baselines';
+        $collection = 'baselines_policies';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();
@@ -223,15 +326,14 @@ class BaselinesModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
-        $dictionary->about = '<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br /><br /> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br /> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '';
 
-        $dictionary->notes = '<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br /><br /><strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br /><br /><strong>Details</strong> - Baselines can compare netstat ports, users and software.<br /><br /><strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br /><br /><strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br /><br /><strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br /><br /></p>';
+        $dictionary->notes = '';
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->attributes->baseline_id = 'The associated baseline. Links to <code>baselines.id</code>.';
         $dictionary->columns->notes = 'Any additional notes you care to make.';
         $dictionary->columns->documentation = 'Any additional documentation you need.';
         $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
