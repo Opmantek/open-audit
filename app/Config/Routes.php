@@ -37,13 +37,9 @@ $routes->collections = array('applications','attributes','baselines',
 'networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
 'rooms','rows','rules','scripts','search','sessions','summaries','tasks','users',
 'widgets');
-// $routes->collections = explode(',', config('Openaudit')->collections);
 
 # The default route
 $routes->get('/', 'Orgs::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
-
-$routes->get('/test/populateOrgs', 'Test::populateOrgs');
-$routes->get('/test/populateDevices', 'Test::populateDevices');
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character
@@ -51,10 +47,6 @@ foreach ($routes->collections as $collection) {
 
     // The capitalised controller name
     $controller = ucfirst($collection);
-
-    # create form
-    # $routes->get($collection . '/create', $controller . '::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
-    $routes->get($collection . '/create', 'Collections::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
 
     # execute
     $routes->get($collection . '/(:num)/execute', $controller . '::execute/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Execute']);
@@ -66,6 +58,9 @@ foreach ($routes->collections as $collection) {
 
     # create
     $routes->post($collection, 'Collections::create', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Create']);
+
+    # create form
+    $routes->get($collection . '/create', 'Collections::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
 
     # defaults
     $routes->get($collection . '/defaults', 'Collections::defaults/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Defaults']);
@@ -111,7 +106,7 @@ $routes->get('database/help', 'Database::help', ['filter' => \App\Filters\Sessio
 $routes->get('database/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseRead']);
 $routes->get('database', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCollection']);
 
-$routes->get('test/(:alpha)', 'Test::$1', ['filter' => \App\Filters\Session::class]);
+# $routes->get('test/(:alpha)', 'Test::$1', ['filter' => \App\Filters\Session::class]);
 
 $routes->get('logon', 'Logon::createForm', ['as' => 'logon']);
 $routes->get('logoff', 'Logon::delete', ['as' => 'logoff']);
@@ -121,7 +116,6 @@ $routes->get('logout', 'Logon::delete');
 
 $routes->post('search', 'Search::search', ['filter' => \App\Filters\Session::class, 'as' => 'search']);
 
-$routes->get('test/email', 'Test::email', ['filter' => \App\Filters\Session::class, 'as' => 'testEmail']);
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
