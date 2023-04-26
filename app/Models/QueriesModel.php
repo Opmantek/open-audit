@@ -119,6 +119,7 @@ class QueriesModel extends BaseModel
      */
     public function execute(int $id = 0, object $user = null): array
     {
+        $instance = & get_instance();
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -139,7 +140,7 @@ class QueriesModel extends BaseModel
             $type = $tables[0];
         }
         $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
-        #$sql .= ' ' . $CI->response->meta->internal->limit;
+        $sql .= ' ' . $instance->resp->meta->internal->limit;
         $query = $this->db->query($sql);
         if ($this->sqlError($this->db->error())) {
             return array();

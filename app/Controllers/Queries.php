@@ -39,6 +39,8 @@ class Queries extends BaseController
      */
     public function execute($id)
     {
+        $query = $this->queriesModel->read($this->resp->meta->id);
+        $this->resp->meta->name = $query[0]->attributes->name;
         $this->resp->data = $this->queriesModel->execute($this->resp->meta->id, $this->user);
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
@@ -52,13 +54,13 @@ class Queries extends BaseController
             } else {
                 return view('shared/header', [
                     'config' => $this->config,
-                    'dictionary' => $this->dictionaryModel->{$this->resp->meta->collection}(),
+                    'dictionary' => $this->queriesModel->dictionary(),
                     'meta' => filter_response($this->resp->meta),
                     'orgs' => filter_response($this->orgsUser),
                     'queries' => filter_response($this->queriesUser),
                     'roles' => filter_response($this->roles),
                     'user' => filter_response($this->user)]) .
-                    view($this->resp->meta->collection . ucfirst($this->resp->meta->action), ['data' => filter_response($this->resp->data)]);
+                    view($this->resp->meta->collection . ucfirst($this->resp->meta->action), ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)]);
             }
         }
     }
