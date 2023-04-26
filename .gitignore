@@ -30,6 +30,12 @@ $RECYCLE.BIN/
 # Linux
 *~
 
+# Other
+*.swp
+*.tags
+*.tags_sorted_by_file
+*.fuse_hidden*
+
 # KDE directory preferences
 .directory
 
