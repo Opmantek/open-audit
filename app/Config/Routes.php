@@ -30,7 +30,7 @@ $routes->setAutoRoute(false);
  */
 
 $routes->collections = array('applications','attributes','baselines',
-'baselines_policies','buildings','chart','clouds','clusters','collectors', 'components',
+'baselines_policies','buildings','clouds','clusters','collectors', 'components',
 'configuration','connections','credentials','dashboards','devices',
 'discoveries','discovery_log','discovery_scan_options','errors','fields','files',
 'floors','groups','help','integrations','ldap_servers','licenses','locations','logs',
@@ -93,7 +93,8 @@ foreach ($routes->collections as $collection) {
     $routes->patch($collection . '/(:num)', 'Collections::update/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Update']);
 }
 
-
+$routes->get('charts', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
+$routes->get('charts/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
 
 $routes->get('devices/create/example', 'devices::createExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExampleForm']);
 $routes->get('devices/delete/example', 'devices::deleteExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExampleForm']);
