@@ -44,6 +44,11 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
         }
+        $valid_collections = response_valid_collections();
+        if (!in_array($response->meta->collection, $valid_collections)) {
+            log_message('error', 'Invalid collection supplied (' . $response->meta->collection . '), removing.');
+            $response->meta->collection = '';
+        }
         $response->meta->id = null;
 
         # We have what the user is trying to do and to what (if any) item - check permissions
@@ -491,24 +496,20 @@ function response_get_debug($get = '', $post = '', $header = '')
     if (!empty($get) && strtolower($get) === 'true') {
         $log->summary = 'Set debug according to GET.';
         $log->detail = 'DEBUG: true';
-        define(CI_DEBUG, true);
         config('Openaudit')->log_level = 7;
         $debug = true;
-        #stdlog($log);
     }
     if (!empty($post) && strtolower($post) === 'true') {
         $log->summary = 'Set debug according to POST.';
         $log->detail = 'DEBUG: true';
         config('Openaudit')->log_level = 7;
         $debug = true;
-        #stdlog($log);
     }
     if (!empty($header) && strtolower($header) === 'true') {
         $log->summary = 'Set debug according to HEADER.';
         $log->detail = 'DEBUG: true';
         config('Openaudit')->log_level = 7;
         $debug = true;
-        #stdlog($log);
     }
     return $debug;
 }

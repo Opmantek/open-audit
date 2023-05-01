@@ -107,8 +107,6 @@ $routes->get('database/help', 'Database::help', ['filter' => \App\Filters\Sessio
 $routes->get('database/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseRead']);
 $routes->get('database', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCollection']);
 
-# $routes->get('test/(:alpha)', 'Test::$1', ['filter' => \App\Filters\Session::class]);
-
 $routes->get('logon', 'Logon::createForm', ['as' => 'logon']);
 $routes->get('logoff', 'Logon::delete', ['as' => 'logoff']);
 $routes->get('login', 'Logon::createForm');
@@ -121,7 +119,9 @@ $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, '
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
 
-$routes->cli('rotateLogs', 'Cli::rotateLogs');
+$routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
+$routes->cli('test', 'Cli::test', ['as' => 'test']);
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

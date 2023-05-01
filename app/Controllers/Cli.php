@@ -74,4 +74,149 @@ class Cli extends Controller
             $count++;
         }
     }
+
+    public function test()
+    {
+        helper('utility');
+        helper('response');
+
+        $this->usersModel = new \App\Models\UsersModel();
+        $this->user = $this->usersModel->read(1);
+        $this->attributesModel = new \App\Models\AttributesModel();
+        $read = $this->attributesModel->read(1);
+
+        $unit = new \App\Libraries\UnitTest();
+
+        // response_get_include
+
+        $urlget = 'something';
+        $post = '';
+        $collection = '';
+        $format = 'screen';
+        $test = response_get_include($urlget, $post, $collection, $format);
+        $result = $unit->run($test, '', 'response_helper::response_get_include', 'Send invalid GET "something", get "" back.');
+
+
+        $urlget = 'something';
+        $post = '';
+        $collection = 'devices';
+        $format = 'screen';
+        $test = response_get_include($urlget, $post, $collection, $format);
+        $unit->run($test, '', 'response_helper::response_get_include', 'Send invalid GET "something", with collection "devices", get "" back.');
+
+        $urlget = '';
+        $post = 'blah,processor';
+        $collection = 'devices';
+        $format = 'screen';
+        $test = response_get_include($urlget, $post, $collection, $format);
+        $unit->run($test, 'processor', 'response_helper::response_get_include', 'Send invalid POST "blah,processor" and collection "devices", get "processor" back.');
+
+        $urlget = 'bios';
+        $post = '';
+        $collection = 'devices';
+        $format = 'screen';
+        $test = response_get_include($urlget, $post, $collection, $format);
+        $unit->run($test, 'bios', 'response_helper::response_get_include', 'Send valid GET (bios) and collection "devices", get "bios" back.');
+
+        $urlget = null;
+        $post = '';
+        $collection = 'devices';
+        $format = 'screen';
+        $test = response_get_include($urlget, $post, $collection, $format);
+        $unit->run($test, implode(',', response_valid_includes()), 'response_helper::response_get_include', 'Send invalid GET (null) and collection "devices", get all includes back.');
+
+        // response_helper::response_get_limit
+
+        $urlget = null;
+        $post = '';
+        $format = 'screen';
+        $default_limit = 10;
+        $test = response_get_limit($urlget, $post, $format, $default_limit);
+        $unit->run($test, 10, 'response_helper::response_get_limit', 'Send invalid GET null and a default limit 10, get 10 back.');
+
+        $urlget = 100;
+        $post = '';
+        $format = 'screen';
+        $default_limit = 10;
+        $test = response_get_limit($urlget, $post, $format, $default_limit);
+        $unit->run($test, 100, 'response_helper::response_get_limit', 'Send valid GET limit 100, get 100 back.');
+
+        $urlget = '';
+        $post = 100;
+        $format = 'screen';
+        $default_limit = 10;
+        $test = response_get_limit($urlget, $post, $format, $default_limit);
+        $unit->run($test, 100, 'response_helper::response_get_limit', 'Send valid POST limit 100, get 100 back.');
+
+        // response_helper::response_get_debug
+
+        $urlget = 'true';
+        $post = '';
+        $header = '';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_true', 'response_helper::response_get_debug', 'Send valid GET (true), get true back.');
+
+        $urlget = '';
+        $post = 'true';
+        $header = '';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_true', 'response_helper::response_get_debug', 'Send valid POST (true), get true back.');
+
+        $urlget = '';
+        $post = '';
+        $header = 'true';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_true', 'response_helper::response_get_debug', 'Send valid HEADER (true), get true back.');
+
+        $urlget = 'false';
+        $post = '';
+        $header = '';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_false', 'response_helper::response_get_debug', 'Send valid GET (false), get false back.');
+
+        $urlget = '';
+        $post = 'false';
+        $header = '';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_false', 'response_helper::response_get_debug', 'Send valid POST (false), get false back.');
+
+        $urlget = '';
+        $post = '';
+        $header = 'false';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_false', 'response_helper::response_get_debug', 'Send valid HEADER (false), get false back.');
+
+        $urlget = 'a';
+        $post = '';
+        $header = '';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_false', 'response_helper::response_get_debug', 'Send invalid GET "a", get false back.');
+
+        $urlget = '';
+        $post = 'a';
+        $header = '';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_false', 'response_helper::response_get_debug', 'Send invalid POST "a", get false back.');
+
+        $urlget = '';
+        $post = '';
+        $header = 'a';
+        $test = response_get_debug($urlget, $post, $header);
+        $unit->run($test, 'is_false', 'response_helper::response_get_debug', 'Send invalid HEADER "a", get false back.');
+
+        // AttributesModel
+        $read = $this->attributesModel->read(1);
+        $test = $read[0]->attributes->id;
+        $unit->run($test, 'is_int', 'attributesModel::read', 'Read attribute with ID 1, get a response with ID 1 that is an integer.');
+
+        $test = $this->attributesModel->read();
+        $unit->run($test, 'is_array', 'attributesModel::read', 'Read attribute with ID \'null\', get a response with an array.');
+        $unit->run($test, 'is_empty', 'attributesModel::read', 'Read attribute with ID \'null\', get a response with an empty array.');
+
+        // try {
+        //     $test = $this->attributesModel->read('abc');
+        // } catch (Exception $e) {
+        //     print_r($e);
+        // }
+    }
 }

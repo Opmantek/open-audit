@@ -37,7 +37,7 @@ use CodeIgniter\Model;
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  * @link     http://www.open-audit.org
  */
-class Test extends Controller
+class Test extends BaseController
 {
     /**
      * Collection of objects
