@@ -618,6 +618,14 @@ if (!empty($config->modules)) {
             </div>
         </div>
         <?php } ?>
+        <?php if (!empty($_SESSION['warning'])) { ?>
+        <div class="container-fluid">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <?= $_SESSION['warning'] ?>
+                <button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <?php } ?>
         <?php if (!empty($_SESSION['success'])) { ?>
         <div class="container-fluid">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
