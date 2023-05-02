@@ -124,9 +124,8 @@ function collection_column_name(string $name = ''): string
     if ($name === 'Ad Group') {
         $name = 'AD Group';
     }
-    if ($name === 'Ip Address') {
-        $name = 'IP Address';
-    }
+    $name = str_replace('Ip Address', 'IP Address', $name);
+    $name = str_replace('Device Id', 'Device ID', $name);
     $name = __($name);
     return $name;
 }
