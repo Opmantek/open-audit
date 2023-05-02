@@ -36,6 +36,10 @@ function format_data($result, $type)
     $item->attributes = new \stdClass();
     $item->type = $type;
 
+    if (@$result[0]->id === null) {
+        return array();
+    }
+
     # format the attributes
     // $db = \Config\Database::connect();
     // $fields = $db->getFieldData($type);
