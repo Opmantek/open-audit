@@ -119,6 +119,13 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
     color: #16325c;
 }
 
+.link_button {
+    color: lightslategrey;
+    font-size: 1.2rem;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    background-color: #f8f9fa;
+}
+
 .bg-primary {
     background-color: #3bafda !important;
 }
