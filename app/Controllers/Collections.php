@@ -225,6 +225,7 @@ class Collections extends BaseController
      */
     public function read($id)
     {
+        $this->resp->meta->id = intval($this->resp->meta->id);
         $this->resp->data = $this->{$this->resp->meta->collection.'Model'}->read($this->resp->meta->id);
         $this->resp->meta->total = count($this->{$this->resp->meta->collection.'Model'}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
@@ -240,6 +241,8 @@ class Collections extends BaseController
             return true;
         } else {
             if (empty($this->resp->data)) {
+                log_message('warning', 'Invalid ID provided to read function. ID: ' . $this->resp->meta->id . ', collection: ' . $this->resp->meta->collection);
+                \Config\Services::session()->setFlashdata('warning', 'Invalid ID provided to ' . $this->resp->meta->collection . ' read function (ID: ' . $this->resp->meta->id . ')');
                 return redirect()->route($this->resp->meta->collection.'Collection');
             } else {
                 $update = false;
