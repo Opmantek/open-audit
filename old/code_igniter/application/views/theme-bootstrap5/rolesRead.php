@@ -14,9 +14,9 @@ $item_permissions = $resource->permissions;
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, false) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, false) ?>
-                            <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, false, __('AD Group')) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                            <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update, __('AD Group')) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
@@ -62,14 +62,20 @@ $item_permissions = $resource->permissions;
                         <thead>
                             <tr>
                                 <th>Endpoint</th>
-                                <th class="text-center"><?= __('Create') ?> </th>
-                                <th class="text-center"><?= __('Read') ?></th>
-                                <th class="text-center"><?= __('Update') ?></th>
-                                <th class="text-center"><?= __('Delete') ?></th>
+                                <th class="text-center"><?= __('Create') ?> <input type="checkbox" name="select_c" id="select_c" onclick="select_all_click_perms('c');"/></th>
+                                <th class="text-center"><?= __('Read') ?> <input type="checkbox" name="select_r" id="select_r" onclick="select_all_click_perms('r');"/></th>
+                                <th class="text-center"><?= __('Update') ?> <input type="checkbox" name="select_u" id="select_u" onclick="select_all_click_perms('u');"/></th>
+                                <th class="text-center"><?= __('Delete') ?> <input type="checkbox" name="select_d" id="select_d" onclick="select_all_click_perms('d');"/></th>
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($endpoints as $endpoint) { ?>
+                        <?php
+                        $disabled = 'disabled';
+                        if ($update) {
+                            $disabled = '';
+                        }
+                        foreach ($endpoints as $endpoint) {
+                            ?>
                             <tr><td><strong><?= $endpoint ?></strong></td>
                                 <?php foreach ($permissions as $permission) {
                                     $checked = '';
@@ -78,12 +84,60 @@ $item_permissions = $resource->permissions;
                                     } else {
                                         $checked = '';
                                     } ?>
-                                <td class="text-center"><input data-permission="<?= $permission ?>" name="permission.<?= $endpoint ?>" type="checkbox" value="<?= $permission ?>" <?= $checked ?> disabled></td>
+                                <td class="text-center"><input data-permission="<?= $permission ?>" name="permission.<?= $endpoint ?>" type="checkbox" value="<?= $permission ?>" <?= $checked ?> <?= $disabled ?>></td>
                                 <?php } ?>
                             </tr>
                         <?php } ?>
                         </tbody>
                     </table>
+                    <?php if ($update) { ?>
+                    <button id="send" name="send" type="button" class="btn btn-primary" onclick="javascript:sendthis();" <?= $disabled ?>><?= __('Submit') ?></button>
+                    <?php } ?>
                 </div>
             </div>
         </div>
+
+
+<script>
+function select_all_click_perms($permission) {
+    $(':checkbox').each(
+        function () {
+            if ($(this).data("permission") === $permission) {
+                this.checked = !this.checked;
+            }
+        }
+    )
+}
+
+function sendthis() {
+    var permissions = {};
+    <?php foreach ($endpoints as $point) { ?>
+    var values = $("input[name='permission.<?= $point ?>']:checked").map(function(){return (this.value);}).get();
+    var i;
+    permissions['<?= $point ?>'] = "";
+    for (i = 0; i < values.length; ++i) {
+        permissions['<?= $point ?>'] = permissions['<?= $point ?>'] + values[i];
+    }
+    <?php } ?>
+    var data = {};
+    data["data"] = {};
+    data["data"]["id"] = id;
+    data["data"]["type"] = collection;
+    data["data"]["attributes"] = {};
+    data["data"]["attributes"]["permissions"] = JSON.stringify(permissions);
+    data = JSON.stringify(data);
+    $.ajax({
+        type: "PATCH",
+        url: "<?= url_to('rolesUpdate', $data[0]->id) ?>",
+        contentType: "application/json",
+        data: {data : data},
+        success: function (data) {
+            alert( 'Saved Permissions' );
+        },
+        error: function (data) {
+            data = JSON.parse(data.responseText);
+            alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+        }
+    });
+}
+</script>
