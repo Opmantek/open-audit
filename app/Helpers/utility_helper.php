@@ -92,6 +92,12 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'dashboards') {
+        foreach ($result as $item) {
+            $item->options = json_decode($item->options);
+        }
+    }
+
     if ($type === 'users') {
         foreach ($result as $item) {
             $item->roles = json_decode($item->roles);
