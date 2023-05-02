@@ -112,3 +112,20 @@ function create_select(string $field = '', string $label = '', $items = array(),
                             </div>";
     return $return_string;
 }
+
+function create_column_name(string $name = ''): string
+{
+    $name = str_replace('.', ' ', $name);
+    $name = str_replace('_', ' ', $name);
+    $name = ucwords($name);
+    if ($name === 'Orgs Name') {
+        $name = 'Organisation';
+    }
+    if ($name === 'Ad Group') {
+        $name = 'AD Group';
+    }
+    $name = str_replace('Ip Address', 'IP Address', $name);
+    $name = str_replace('Device Id', 'Device ID', $name);
+    $name = __($name);
+    return $name;
+}
