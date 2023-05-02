@@ -98,8 +98,9 @@ class BuildingsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $locationsModel = new \App\Models\LocationsModel();
         $return = array();
-        $locations = $this->listUser();
+        $locations = $locationsModel->listUser();
         $return['locations'] = $locations;
         return $return;
     }
@@ -112,7 +113,11 @@ class BuildingsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $locationsModel = new \App\Models\LocationsModel();
+        $return = array();
+        $locations = $locationsModel->listUser();
+        $return['locations'] = $locations;
+        return $return;
     }
 
     /**
