@@ -203,7 +203,7 @@ class DevicesModel extends BaseModel
     }
 
     /**
-     * The dictionary item for devices
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

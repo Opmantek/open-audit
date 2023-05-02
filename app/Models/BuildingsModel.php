@@ -212,7 +212,7 @@ class BuildingsModel extends BaseModel
     }
 
     /**
-     * The dictionary item for buildings
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

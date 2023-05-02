@@ -241,7 +241,7 @@ class ConnectionsModel extends BaseModel
     }
 
     /**
-     * The dictionary item for applications
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

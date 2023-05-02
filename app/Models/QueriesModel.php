@@ -307,7 +307,7 @@ class QueriesModel extends BaseModel
 
 
     /**
-     * The dictionary item for attributes
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

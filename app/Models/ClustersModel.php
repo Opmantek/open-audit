@@ -379,7 +379,7 @@ class ClustersModel extends BaseModel
     }
 
     /**
-     * The dictionary item for clusters
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

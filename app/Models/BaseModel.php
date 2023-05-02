@@ -167,7 +167,6 @@ class BaseModel extends Model
                 $result[] = $sql_file[$i];
             }
         }
-        #echo "<pre>\n"; print_r($result); exit;
         return ($result);
     }
 

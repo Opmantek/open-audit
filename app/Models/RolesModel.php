@@ -209,6 +209,11 @@ class RolesModel extends BaseModel
         return true;
     }
 
+    /**
+     * The dictionary item
+     *
+     * @return object  The stdClass object containing the dictionary
+     */
     public function dictionary(): object
     {
         $instance = & get_instance();

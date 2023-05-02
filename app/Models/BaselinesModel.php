@@ -203,7 +203,7 @@ class BaselinesModel extends BaseModel
     }
 
     /**
-     * The dictionary item for baselines
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

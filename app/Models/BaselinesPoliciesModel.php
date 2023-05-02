@@ -306,7 +306,7 @@ class BaselinesPoliciesModel extends BaseModel
     }
 
     /**
-     * The dictionary item for baselines_policies
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */

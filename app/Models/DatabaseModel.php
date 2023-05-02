@@ -420,7 +420,7 @@ class DatabaseModel extends BaseModel
     }
 
     /**
-     * The dictionary item for database
+     * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
      */
