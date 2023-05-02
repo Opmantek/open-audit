@@ -24,8 +24,18 @@ include 'shared/read_functions.php';
 
                             <?= read_select('location_id_a', $resource->location_id_a, $dictionary->columns->location_id_a, $update, __('Location A'), $included['locations']) ?>
                             <?php $fields = array('device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a'); ?>
-                            <?php foreach ($fields as $field) { ?>
-                                <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update) ?>
+                            <?php foreach ($fields as $field) {
+                                $link = '';
+                                if ($field === 'device_id_a') {
+                                    $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->{'device_id_a'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                    if (!empty($resource->{$field})) {
+                                        $resource->{$field} = $resource->{$field} . ' (' . $resource->{'devices.device_name_a'} . ')';
+                                    } else {
+                                        $resource->{$field} = '';
+                                    }
+                                }
+                                ?>
+                                <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', $link) ?>
                             <?php } ?>
                             <br />
                             <div class="offset-2 col-8"><hr /></div>
@@ -35,7 +45,12 @@ include 'shared/read_functions.php';
                             <?php foreach ($fields as $field) {
                                 $link = '';
                                 if ($field === 'device_id_b') {
-                                    $link = "<a role=\"button\" class=\"btn btn-outline-secondary\" href=\"" . url_to('devicesRead', $resource->{'device_id_b'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                    $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->{'device_id_b'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                    if (!empty($resource->{$field})) {
+                                        $resource->{$field} = $resource->{$field} . ' (' . $resource->{'devices.device_name_b'} . ')';
+                                    } else {
+                                        $resource->{$field} = '';
+                                    }
                                 }
                                 ?>
                                 <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', $link) ?>

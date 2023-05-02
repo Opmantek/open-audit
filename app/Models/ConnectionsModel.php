@@ -142,8 +142,8 @@ class ConnectionsModel extends BaseModel
         $properties[] = 'orgs.name as `orgs.name`';
         $properties[] = "loc_a.name as `locations.location_name_a`";
         $properties[] = "loc_b.name as `locations.location_name_b`";
-        $properties[] = "dev_a.name as `devices.devices_name_a`";
-        $properties[] = "dev_b.name as `devices.devices_name_b`";
+        $properties[] = "dev_a.name as `devices.device_name_a`";
+        $properties[] = "dev_b.name as `devices.device_name_b`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'connections.org_id = orgs.id', 'left');
         $this->builder->join('locations loc_a', 'loc_a.id = connections.location_id_a', 'left');
@@ -187,7 +187,21 @@ class ConnectionsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
+        $properties = array();
+        $properties[] = 'connections.*';
+        $properties[] = 'orgs.name as `orgs.name`';
+        $properties[] = "loc_a.name as `locations.location_name_a`";
+        $properties[] = "loc_b.name as `locations.location_name_b`";
+        $properties[] = "dev_a.name as `devices.device_name_a`";
+        $properties[] = "dev_b.name as `devices.device_name_b`";
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'connections.org_id = orgs.id', 'left');
+        $this->builder->join('locations loc_a', 'loc_a.id = connections.location_id_a', 'left');
+        $this->builder->join('locations loc_b', 'loc_b.id = connections.location_id_b', 'left');
+        $this->builder->join('devices dev_a', 'dev_a.id = connections.device_id_a', 'left');
+        $this->builder->join('devices dev_b', 'dev_b.id = connections.device_id_b', 'left');
+        $query = $this->builder->getWhere(['connections.id' => intval($id)]);
+
         if ($this->sqlError($this->db->error())) {
             return array();
         }
