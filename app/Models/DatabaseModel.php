@@ -153,22 +153,22 @@ class DatabaseModel extends BaseModel
         }
 
         if ($db->fieldExists('application', 'applications_id')) {
-            $sql = "ALTER TABLE application RENAME applications_id TO application_id";
+            $sql = "ALTER TABLE application RENAME COLUMN applications_id TO application_id";
             $query = $db->query($sql);
         }
 
         if ($db->fieldExists('cluster', 'clusters_id')) {
-            $sql = "ALTER TABLE cluster RENAME clusters_id cluster_id";
+            $sql = "ALTER TABLE cluster RENAME COLUMN clusters_id TO cluster_id";
             $query = $db->query($sql);
         }
 
         if ($db->fieldExists('connections', 'system_id_a')) {
-            $sql = "ALTER TABLE connections RENAME system_id_a device_id_a";
+            $sql = "ALTER TABLE connections RENAME COLUMN system_id_a TO device_id_a";
             $query = $db->query($sql);
         }
 
         if ($db->fieldExists('connections', 'system_id_b')) {
-            $sql = "ALTER TABLE connections RENAME system_id_b device_id_b";
+            $sql = "ALTER TABLE connections RENAME COLUMN system_id_b TO device_id_b";
             $query = $db->query($sql);
         }
 
@@ -205,7 +205,7 @@ class DatabaseModel extends BaseModel
         $component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'discoveries', 'discovery_log', 'edit_log', 'field', 'file', 'image', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($component_tables as $table) {
             if ($db->fieldExists($table, 'system_id')) {
-                $sql = "ALTER TABLE $table RENAME system_id device_id";
+                $sql = "ALTER TABLE $table RENAME COLUMN system_id TO device_id";
                 $query = $db->query($sql);
             }
         }
