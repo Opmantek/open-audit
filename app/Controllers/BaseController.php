@@ -59,6 +59,14 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
         $this->session = \Config\Services::session();
         $this->config = new \Config\OpenAudit();
+        $this->config->oae_product = 'professional';
+
+        $this->config->enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
+
+        $this->config->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'summaries' => 'crud', 'widgets' => 'crud');
+
+        $this->config->homepage = 'orgsCollection';
+
         $this->usersModel = new \App\Models\UsersModel();
         $this->user = $this->usersModel->userValidate();
         $this->orgsModel = new \App\Models\OrgsModel();
@@ -100,6 +108,11 @@ abstract class BaseController extends Controller
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);
         // echo "<pre>\n"; echo json_encode($this->resp); exit;
+
+        if ($this->resp->meta->format === 'screen') {
+            $this->dashboardsModel = new \App\Models\DashboardsModel();
+            $this->dashboards = $this->dashboardsModel->listUser();
+        }
 
         // Load our $this->{$collection}Model
         $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->collection) . "Model";
