@@ -218,7 +218,7 @@ last_char ()
    lc=""
    str="${1}"
    slen=${#1}
-   if [ "${slen}" > "1" ]; then
+   if [ "${slen}" -gt "1" ]; then
       lcp=$((slen-1))
       lc="${str:$lcp}"
    fi
