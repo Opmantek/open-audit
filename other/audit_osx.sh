@@ -210,7 +210,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     net_connection_id="$line"
     net_speed=""
     net_adapter_type="$j"
-    connection_status=`ifconfig $line | grep status | cut -d: -f2 | sed 's/^ *//g'`
+    connection_status=`ifconfig $line 2>/dev/null | grep status | cut -d: -f2 | sed 's/^ *//g'`
     if [[ "$net_mac_address" > "" ]]; then
         echo "      <item>" >> $xml_file
         echo "          <net_index>$net_index</net_index>" >> $xml_file
@@ -250,10 +250,10 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
         fi
         # IPv6
         ip_address_v4=""
-        ip_address_v6=`ifconfig $line | grep inet6 | cut -d% -f1 | cut -d" " -f2`
+        ip_address_v6=`ifconfig $line 2>/dev/null | grep inet6 | cut -d% -f1 | cut -d" " -f2`
         if [[ "$ip_address_v6" == *":"* ]]; then
             net_index="$line"
-            ip_subnet=`ifconfig $line | grep inet6 | cut -d% -f2 | cut -d" " -f3`
+            ip_subnet=`ifconfig $line 2>/dev/null | grep inet6 | cut -d% -f2 | cut -d" " -f3`
             ip_address_v4="$ip_address_v6"
             version="6"
         fi
