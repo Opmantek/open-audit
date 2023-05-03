@@ -72,22 +72,22 @@ foreach ($routes->collections as $collection) {
     $routes->get($collection . '/help', 'Collections::help', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Help']);
 
     # import
-    $routes->post($collection . '/import', 'Collection::import', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Import']);
+    $routes->post($collection . '/import', 'Collections::import', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Import']);
 
     # import JSON
-    $routes->post($collection . '/importJSON', 'Collection::importJSON', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSON']);
+    $routes->post($collection . '/importJSON', 'Collections::importJSON', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSON']);
 
     # import form
     $routes->get($collection . '/import', 'Collections::importForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportForm']);
 
     # import JSON form
-    $routes->get($collection . '/importJSON', 'Collection::importJSONForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSONForm']);
+    $routes->get($collection . '/importJSON', 'Collections::importJSONForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSONForm']);
 
     # read
     $routes->get($collection . '/(:num)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Read']);
 
     # reset
-    $routes->post($collection . '/reset', 'Collection::reset', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Reset']);
+    $routes->post($collection . '/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Reset']);
 
     # update
     $routes->patch($collection . '/(:num)', 'Collections::update/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Update']);
