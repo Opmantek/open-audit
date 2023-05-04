@@ -143,7 +143,7 @@ class DatabaseModel extends BaseModel
         return $result;
     }
 
-    public function update()
+    public function update($id = null, $data = null): bool
     {
         $db = db_connect();
 
@@ -292,6 +292,8 @@ class DatabaseModel extends BaseModel
         //         $query = $db->query($sql);
         //     }
         // }
+
+        return true;
     }
 
     public function matchColumns($table)
