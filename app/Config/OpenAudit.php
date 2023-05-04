@@ -56,8 +56,10 @@ class OpenAudit extends BaseConfig
 
         // get the total number of devices
         $query = $db->query('SELECT count(*) as device_count FROM `devices`');
-        $result = $query->getRow();
-        $this->device_count = @intval($result->device_count);
+        if (!empty($query)) {
+            $result = $query->getRow();
+            $this->device_count = @intval($result->device_count);
+        }
 
         // if ((string) php_uname('s') === 'Windows NT') {
         //     $this->config->config['base_path'] = str_replace('\code_igniter\application\models\m_configuration.php', '', __FILE__);

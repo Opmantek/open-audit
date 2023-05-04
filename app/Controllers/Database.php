@@ -31,20 +31,4 @@ namespace App\Controllers;
 class Database extends BaseController
 {
 
-    public function upgrade()
-    {
-        $this->resp->data = $this->databaseModel->upgrade();
-        if ($this->resp->meta->format !== 'screen') {
-            output($this);
-        } else {
-            return view('shared/header', [
-                'config' => $this->config,
-                'meta' => filter_response($this->resp->meta),
-                'queries' => filter_response($this->queriesUser),
-                'roles' => filter_response($this->roles),
-                'user' => filter_response($this->user)]) .
-                view('databaseUpgrade', ['data' => filter_response($this->resp->data)]);
-        }
-        return true;
-    }
 }

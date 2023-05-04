@@ -75,6 +75,12 @@ class Cli extends Controller
         }
     }
 
+    public function upgrade()
+    {
+        $this->databaseModel = new \App\Models\DatabaseModel();
+        $this->databaseModel->update();
+    }
+
     public function test()
     {
         helper('utility');

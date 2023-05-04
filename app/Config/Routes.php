@@ -121,6 +121,7 @@ $routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::clas
 
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
 $routes->cli('test', 'Cli::test', ['as' => 'test']);
+$routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 /*
  * --------------------------------------------------------------------

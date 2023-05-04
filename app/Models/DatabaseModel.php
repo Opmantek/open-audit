@@ -146,113 +146,210 @@ class DatabaseModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         $db = db_connect();
+        echo "<pre>\n";
 
         if ($db->tableExists('agents')) {
             $sql = "DROP TABLE agents";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if ($db->fieldExists('application', 'applications_id')) {
+        if ($db->fieldExists('applications_id', 'application')) {
             $sql = "ALTER TABLE application RENAME COLUMN applications_id TO application_id";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if ($db->fieldExists('cluster', 'clusters_id')) {
+        if ($db->fieldExists('clusters_id', 'cluster')) {
             $sql = "ALTER TABLE cluster RENAME COLUMN clusters_id TO cluster_id";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if ($db->fieldExists('connections', 'system_id_a')) {
+        if ($db->fieldExists('system_id_a', 'connections')) {
             $sql = "ALTER TABLE connections RENAME COLUMN system_id_a TO device_id_a";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if ($db->fieldExists('connections', 'system_id_b')) {
+        if ($db->fieldExists('system_id_b', 'connections')) {
             $sql = "ALTER TABLE connections RENAME COLUMN system_id_b TO device_id_b";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('system') and !$db->tableExists('devices')) {
             $sql = "RENAME TABLE system TO devices";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+
+            $sql = "ALTER TABLE devices RENAME COLUMN attached_system_id TO attached_device_id";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+
+            $sql = "ALTER TABLE devices RENAME COLUMN vm_system_id TO vm_device_id";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+
+            $sql = "ALTER TABLE devices RENAME COLUMN switch_system_id TO switch_device_id";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+
+            $sql = "ALTER TABLE devices CHANGE org_id org_id int(10) unsigned NOT NULL DEFAULT 1 AFTER name";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+
+            $sql = "ALTER TABLE devices CHANGE description description text NOT NULL AFTER org_id";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+
+            $sql = "CREATE VIEW system AS SELECT * FROM devices";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('invoice')) {
             $sql = "DROP TABLE invoice";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('invoice_item')) {
             $sql = "DROP TABLE invoice_item";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if (!$db->fieldExists('locations', 'parent_id')) {
+        if ($db->tableExists('ldap_groups')) {
+            $sql = "DROP TABLE ldap_groups";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
+
+        if (!$db->fieldExists('parent_id', 'locations')) {
             $sql = "ALTER TABLE locations ADD parent_id int(10) unsigned DEFAULT '1' AFTER description";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if (!$db->fieldExists('locations', 'sub_type')) {
+        if (!$db->fieldExists('sub_type', 'locations')) {
             $sql = "ALTER TABLE locations ADD sub_type enum('location','building','floor','room','row','') DEFAULT 'location' AFTER type";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        if (!$db->fieldExists('locations', 'notes')) {
+        if (!$db->fieldExists('notes', 'locations')) {
             $sql = "ALTER TABLE locations ADD notes TEXT NOT NULL AFTER options";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
-        $component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'discoveries', 'discovery_log', 'edit_log', 'field', 'file', 'image', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discoveries', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'graph', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($component_tables as $table) {
-            if ($db->fieldExists($table, 'system_id')) {
-                $sql = "ALTER TABLE $table RENAME COLUMN system_id TO device_id";
+            if ($db->fieldExists('system_id', $table)) {
+                $sql = "ALTER TABLE `$table` RENAME COLUMN system_id TO device_id";
                 $query = $db->query($sql);
+                echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+                log_message('info', (string)$db->getLastQuery());
             }
+        }
+
+        if ($db->fieldExists('guest_system_id', 'vm')) {
+            $sql = "ALTER TABLE vm RENAME COLUMN guest_system_id guest_device_id";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('notes')) {
             $sql = "DROP TABLE notes";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('oa_change')) {
             $sql = "DROP TABLE oa_change";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('oa_temp')) {
             $sql = "DROP TABLE oa_temp";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('oa_user_sessions')) {
             $sql = "DROP TABLE oa_user_sessions";
             $query = $db->query($sql);
-        }
-
-        if ($db->tableExists('system')) {
-            $sql = "DROP TABLE system";
-            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         if ($db->tableExists('warranty')) {
             $sql = "DROP TABLE warranty";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
 
         $sql = "ALTER TABLE users CHANGE roles roles longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`roles`)) AFTER email";
         $query = $db->query($sql);
+        echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
 
         $sql = "ALTER TABLE users CHANGE orgs orgs longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`orgs`)) AFTER roles";
         $query = $db->query($sql);
+        echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
 
-        if (!$db->fieldExists('users', 'toolbar_style')) {
+        if (!$db->fieldExists('toolbar_style', 'users')) {
             $sql = "ALTER TABLE users ADD toolbar_style enum('','icon','text','icontext') NOT NULL DEFAULT 'icontext' AFTER devices_default_display_columns";
             $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
+
+        $sql = "SELECT * FROM users";
+        $query = $db->query($sql);
+        $result = $query->getResult();
+        foreach ($result as $item) {
+            if ($item->access_token === '') {
+                $sql = "UPDATE users SET access_token = '[]' WHERE id = " . intval($item->id);
+                $query = $db->query($sql);
+            }
         }
 
         $sql = "ALTER TABLE users CHANGE access_token access_token longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`access_token`)) AFTER toolbar_style";
         $query = $db->query($sql);
+        echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
+
+        $sql = "DELETE FROM roles WHERE name = 'agent'";
+        $query = $db->query($sql);
+        echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
 
 
         // if (!$db->tableExists('components')) {
