@@ -103,7 +103,10 @@ abstract class BaseController extends Controller
             }
         }
         $this->user->permissions = $userRoles;
-        // echo "<pre>\n"; echo json_encode($this->user); exit;
+        if (empty($this->user->permissions['components'])) {
+            $this->user->permissions['components'] = $this->user->permissions['devices'];
+        }
+        # echo "<pre>\n"; echo json_encode($this->user->permissions); exit;
 
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);

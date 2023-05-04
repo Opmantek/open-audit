@@ -243,6 +243,12 @@ if (!function_exists('collections_list')) {
         $collections->collectors->edition = 'Enterprise';
         $collections->collectors->orgs = 'd';
 
+        $collections->components = new stdClass();
+        $collections->components->icon = 'fa fa-desktop';
+        $collections->components->name = 'Components';
+        $collections->components->edition = 'Community';
+        $collections->components->orgs = 'd';
+
         $collections->configuration = new stdClass();
         $collections->configuration->icon = 'fa fa-sliders';
         $collections->configuration->name = 'Configuration';

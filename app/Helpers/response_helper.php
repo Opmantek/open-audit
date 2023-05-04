@@ -56,7 +56,7 @@ if (!function_exists('response_create')) {
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
-        #echo "<pre>\n"; print_r($permission_requested[$response->meta->action]); echo "\n\n\n"; print_r($instance->user->permissions); print_r($response->meta->collection); exit;
+        # echo "<pre>\n"; print_r($permission_requested[$response->meta->action]); echo "\n\n\n"; print_r($instance->user->permissions); print_r($response->meta->collection); exit;
         if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
             # the user requested to do perform an action on a collection they do not have permission to do
         }
