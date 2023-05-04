@@ -88,7 +88,6 @@ function my_comparison($asort, $bsort)
 usort($reports, 'my_comparison');
 asort($categories);
 $categories = array_unique($categories);
-$config->oae_product = 'Open-AudIT Enterprise';
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -176,7 +175,7 @@ $config->oae_product = 'Open-AudIT Enterprise';
                             <ul class="dropdown-menu" aria-labelledby="navbarDiscover">
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Clouds') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('clouds', 'r', $user, 'cloudsCollection', 'List Clouds') ?>
+                                        <?= menuItem('clouds', 'r', $user, 'cloudsCollection', 'List Clouds', '', 'Enterprise', $config->oae_product) ?>
                                         <?= menuItem('clouds', 'c', $user, 'cloudsCreateForm', 'Create Clouds', '', 'Enterprise', $config->oae_product) ?>
                                         <?= menuItem('clouds', '', $user, 'cloudsHelp', 'Learn About Clouds') ?>
                                     </ul>
@@ -453,6 +452,7 @@ $config->oae_product = 'Open-AudIT Enterprise';
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Configuration') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('configuration', 'r', $user, 'configurationCollection', 'List Configuration') ?>
+                                        <?= menuItem('configuration', 'd', $user, 'configurationDefaults', 'Default Configuration') ?>
                                     </ul>
                                 </li>
 
@@ -477,7 +477,7 @@ $config->oae_product = 'Open-AudIT Enterprise';
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('tasks', 'r', $user, 'tasksCollection', 'List Tasks', '', 'Professional', $config->oae_product) ?>
-                                        <?= menuItem('tasks', 'x', $user, 'tasksCreateForm', 'Create Tasks', '', 'Professional', $config->oae_product) ?>
+                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', 'Create Tasks', '', 'Professional', $config->oae_product) ?>
                                         <?= menuItem('tasks', '', $user, 'tasksHelp', 'Learn About Tasks') ?>
                                     </ul>
                                 </li>
@@ -497,13 +497,17 @@ $config->oae_product = 'Open-AudIT Enterprise';
                                     <ul class="dropdown-menu">
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
                                         <?= menuItem('configuration', '', $user, 'configurationDefaults', 'Configuration') ?>
+                                        <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', 'Dashboards') ?>
+                                        <?= menuItem('fields', '', $user, 'fieldsDefaults', 'Fields') ?>
                                         <?= menuItem('groups', '', $user, 'groupsDefaults', 'Groups') ?>
                                         <?= menuItem('integrations', '', $user, 'integrationsDefaults', 'Integrations') ?>
                                         <?= menuItem('locations', '', $user, 'locationsDefaults', 'Locations') ?>
                                         <?= menuItem('orgs', '', $user, 'orgsDefaults', 'Orgs') ?>
                                         <?= menuItem('queries', '', $user, 'queriesDefaults', 'Queries') ?>
                                         <?= menuItem('roles', '', $user, 'rolesDefaults', 'Roles') ?>
+                                        <?= menuItem('rules', '', $user, 'rulesDefaults', 'Rules') ?>
                                         <?= menuItem('summaries', '', $user, 'summariesDefaults', 'Summaries') ?>
+                                        <?= menuItem('users', '', $user, 'usersDefaults', 'Users') ?>
                                         <?= menuItem('widgets', '', $user, 'widgetsDefaults', 'Widgets') ?>
                                     </ul>
                                 </li>
@@ -688,12 +692,23 @@ if (!empty($config->modules)) {
 
 function menuItem($collection = '', $action = '', $user = null, $route = '', $title = '', $routeExtra = '', $productRequired = '', $productInstalled = '')
 {
+    if ($productInstalled === '') {
+        $product_installed = 'community';
+    }
+    $commercial_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'clusters' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'maps' => 'crud', 'racks' => 'crud', 'roles' => 'cu', 'rules' => 'crud', 'summaries' => 'crud', 'widgets' => 'crud');
+    $commercial_action = '';
+    if ($action === 'c') {
+        $commercial_action = 'create';
+    }
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . __($title) . "</a></li>\n";
     if (strtolower($productInstalled) === strtolower($productRequired) or
         stripos($productInstalled, 'enterprise') !== false or
         (strtolower(str_replace('Open-AudIT ', '', $productInstalled)) === strtolower($productRequired))) {
         if (get_user_permission($collection, $action, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . __($title) . "</a></li>\n";
+            if (array_key_exists($collection, $commercial_collections) and $action !== '') {
+                $return = "<li><a class=\"dropdown-item\" href=\"/omk/open-audit/" . $collection . "/" . $commercial_action . "\">" . __($title) . "</a></li>\n";
+            }
         }
     } else {
         # $return = "<li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . __($title) . "</a></li>\n";
