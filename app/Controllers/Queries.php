@@ -50,6 +50,7 @@ class Queries extends BaseController
             return true;
         } else {
             if (empty($this->resp->data)) {
+                \Config\Services::session()->setFlashdata('error', 'No data returned when running query.');
                 return redirect()->route($this->resp->meta->collection.'Collection');
             } else {
                 return view('shared/header', [
