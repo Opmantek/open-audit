@@ -58,6 +58,7 @@ class Collections extends BaseController
         } else {
             return view('shared/header', [
                 'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
                 'meta' => filter_response($this->resp->meta),
                 'queries' => filter_response($this->queriesUser),
                 'roles' => filter_response($this->roles),
@@ -74,6 +75,11 @@ class Collections extends BaseController
      */
     public function create()
     {
+        if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
+            log_message('error', 'Item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+            \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+            return redirect()->route($this->config->homepage);
+        }
         $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         if (!empty($id)) {
             if ($this->resp->meta->format !== 'screen') {
@@ -101,10 +107,16 @@ class Collections extends BaseController
      */
     public function createForm()
     {
+        if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
+            log_message('error', 'Item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+            \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+            return redirect()->route($this->config->homepage);
+        }
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
             'dictionary' => $dictionary,
             'included' => $this->resp->included,
             'meta' => filter_response($this->resp->meta),
@@ -129,6 +141,7 @@ class Collections extends BaseController
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
             'defaults' => filter_response($defaults),
             'dictionary' => $dictionary,
             'meta' => filter_response($this->resp->meta),
@@ -162,6 +175,7 @@ class Collections extends BaseController
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
             'dictionary' => $dictionary,
             'meta' => filter_response($this->resp->meta),
             'orgs' => filter_response($this->orgsUser),
@@ -207,6 +221,7 @@ class Collections extends BaseController
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
             'dictionary' => $dictionary,
             'meta' => $this->resp->meta,
             'orgs' => $this->orgsUser,
@@ -254,6 +269,7 @@ class Collections extends BaseController
                 $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
                 return view('shared/header', [
                     'config' => $this->config,
+                    'dashboards' => filter_response($this->dashboards),
                     'dictionary' => $dictionary,
                     'included' => filter_response($this->resp->included),
                     'meta' => filter_response($this->resp->meta),
