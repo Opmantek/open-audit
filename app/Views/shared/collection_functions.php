@@ -53,7 +53,7 @@ function collection_card_header(string $collection = '', string $icon = '', obje
     }
 
     $defaults_button = '';
-    if (in_array($collection, ['attributes', 'orgs', 'queries', 'roles', 'users'])) {
+    if (in_array($collection, ['attributes', 'configuration', 'dashboards', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'summaries', 'users', 'widgets'])) {
         if ($style === 'icontext') {
             $defaults_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\"><a href=\"" . url_to($collection.'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"{$icon}\"></span>" . __("Default Items") . "</a></button>";
         } else if ($style === 'icon') {
