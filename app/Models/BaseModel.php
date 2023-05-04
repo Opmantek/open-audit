@@ -17,7 +17,7 @@ class BaseModel extends Model
     {
         // $this->session = \Config\Services::session();
         // $this->uri = new \CodeIgniter\HTTP\URI(current_url(true));
-        $this->sql_file = '/Users/mark/code/open-audit-5/open-audit.sql';
+        $this->sql_file = FCPATH . '../open-audit.sql';
     }
 
 
@@ -142,7 +142,7 @@ class BaseModel extends Model
             return false;
         }
 
-        $this->sql_file = '/Users/mark/code/open-audit-5/open-audit.sql';
+        $this->sql_file = FCPATH . '../open-audit.sql';
         $sql_file = file($this->sql_file);
         for ($i=0; $i < count($sql_file); $i++) {
             if (stripos($sql_file[$i], "INSERT INTO `{$table}` VALUES") !== false) {
