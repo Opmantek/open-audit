@@ -255,7 +255,7 @@ class DashboardsModel extends BaseModel
         $dictionary->columns->sidebar = 'Do you wish to see the standard sidebar on the left.';
         $dictionary->columns->user_id = 'unused';
         $dictionary->columns->options = 'Contains a JSON object details the associated widgets and their positions.';
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->type = 'unused';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
