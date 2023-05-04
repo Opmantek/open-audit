@@ -88,7 +88,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                         </ul></div>';
     }
 
-    if (strpos($user->permissions[$collection], 'c') !== false) {
+    if (strpos($user->permissions[$collection], 'c') !== false and $collection !== 'database') {
         if ($style === 'icontext') {
             $create_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Create") . "</a>";
         } else if ($style === 'icon') {
@@ -101,7 +101,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $delete_button = "\n";
-    if (strpos($user->permissions[$collection], 'd') !== false) {
+    if (strpos($user->permissions[$collection], 'd') !== false and $collection !== 'database') {
         if ((in_array($collection, ['orgs','locations','roles']) and $id == 1)) {
             // Not allowed to delete these
         } else {
@@ -115,17 +115,26 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $collection_button = "";
+    $export_button = "";
+    $help_button = "";
     if ($style === 'icontext') {
-        $collection_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list\"></span>" . __("List") . "</a>";
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . "\" href=\"" . url_to($collection.'Collection') . "?format=json\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angle-down\"></span>" . __("Export") . "</a>";
+            $collection_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list\"></span>" . __("List") . "</a>";
+        if ($collection !== 'database') {
+            $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . "\" href=\"" . url_to($collection.'Collection') . "?format=json\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angle-down\"></span>" . __("Export") . "</a>";
+        }
         $help_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question\"></span>" . __("Help") . "</a>";
     } else if ($style === 'icon') {
         $collection_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span class=\"fa fa-list\"></span></a>";
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . "\" href=\"" . url_to($collection.'Collection') . "?format=json\"><span class=\"fa-solid fa-angle-down\"></span></a>";
+        if ($collection !== 'database') {
+            $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . "\" href=\"" . url_to($collection.'Collection') . "?format=json\"><span class=\"fa-solid fa-angle-down\"></span></a>";
+        }
         $help_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question\"></span></a>";
     } else {
         $collection_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\">" . __("List") . "</a>";
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . "\" href=\"" . url_to($collection.'Collection') . "?format=json\">" . __("Export") . "</a>";
+        if ($collection !== 'database') {
+            $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . "\" href=\"" . url_to($collection.'Collection') . "?format=json\">" . __("Export") . "</a>";
+        }
         $help_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
     }
 

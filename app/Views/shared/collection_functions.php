@@ -12,7 +12,7 @@ function collection_card_header(string $collection = '', string $icon = '', obje
     }
     $label = __($label);
 
-    if (strpos($user->permissions[$collection], 'c') !== false) {
+    if (strpos($user->permissions[$collection], 'c') !== false and $collection !== 'database') {
         if ($style === 'icontext') {
             #$create_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\"><a href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Create") . "</a></button>";
             $create_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Create") . "</a>";
