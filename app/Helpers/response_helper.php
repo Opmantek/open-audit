@@ -1887,7 +1887,7 @@ if (!function_exists('response_valid_actions')) {
      */
     function response_valid_actions()
     {
-        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'download', 'execute', 'export', 'export_form', 'help', 'import', 'import_form', 'read', 'reset', 'resetForm', 'test', 'update');
+        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'download', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'read', 'reset', 'resetForm', 'test', 'update');
     }
 }
 
@@ -1958,8 +1958,8 @@ if (!function_exists('response_valid_permissions')) {
         $permission['export'] = 'r';
         $permission['help'] = 'r';
         $permission['import'] = 'c';
-        $permission['importForm'] = 'c';
         $permission['importform'] = 'c';
+        $permission['importjson'] = 'c';
         $permission['read'] = 'r';
         $permission['reset'] = 'd';
         $permission['resetForm'] = 'd';
