@@ -39,7 +39,7 @@ $routes->collections = array('applications','attributes','baselines',
 'widgets');
 
 # The default route
-$routes->get('/', 'Orgs::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
+$routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character

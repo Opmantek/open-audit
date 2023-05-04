@@ -43,6 +43,9 @@ if (!function_exists('response_create')) {
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
+            if (empty($response->meta->collection)) {
+                $response->meta->collection = 'orgs';
+            }
         }
         $valid_collections = response_valid_collections();
         if (!in_array($response->meta->collection, $valid_collections)) {
