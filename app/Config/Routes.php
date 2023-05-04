@@ -75,13 +75,13 @@ foreach ($routes->collections as $collection) {
     $routes->post($collection . '/import', 'Collections::import', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Import']);
 
     # import JSON
-    $routes->post($collection . '/importJSON', 'Collections::importJSON', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSON']);
+    $routes->post($collection . '/importjson', 'Collections::importJSON', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSON']);
 
     # import form
     $routes->get($collection . '/import', 'Collections::importForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportForm']);
 
     # import JSON form
-    $routes->get($collection . '/importJSON', 'Collections::importJSONForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSONForm']);
+    $routes->get($collection . '/importjson', 'Collections::importJSONForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'ImportJSONForm']);
 
     # read
     $routes->get($collection . '/(:num)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Read']);
