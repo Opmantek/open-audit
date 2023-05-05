@@ -138,6 +138,16 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $help_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
     }
 
+    if ($collection === 'queries') {
+        if ($style === 'icontext') {
+            $collection_button .= "\n<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play\"></span>" . __("Execute") . "</a>";
+        } else if ($style === 'icon') {
+            $collection_button .= "\n<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span class=\"fa fa-play\"></span></a>";
+        } else {
+            $collection_button = "\n<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\">" . __("Execute") . "</a>";
+        }
+    }
+
     $return = "<div class=\"row\">
                         <div class=\"col-4 clearfix\">
                             <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>
