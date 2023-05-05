@@ -273,7 +273,7 @@ class DatabaseModel extends BaseModel
         }
 
         if ($db->fieldExists('guest_system_id', 'vm')) {
-            $sql = "ALTER TABLE vm RENAME COLUMN guest_system_id guest_device_id";
+            $sql = "ALTER TABLE `vm` RENAME COLUMN `guest_system_id` TO `guest_device_id`";
             $query = $db->query($sql);
             echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
             log_message('info', (string)$db->getLastQuery());
@@ -351,6 +351,19 @@ class DatabaseModel extends BaseModel
         echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
         log_message('info', (string)$db->getLastQuery());
 
+        $sql = "SELECT * FROM `queries`";
+        $query = $db->query($sql);
+        $result = $query->getResult();
+        foreach ($result as $item) {
+            $newsql = $item->sql;
+            $newsql = str_ireplace('.system_', '.device_', $newsql);
+            $newsql = str_ireplace('system.', 'devices.', $newsql);
+            $newsql = str_ireplace(' system ', ' devices ', $newsql);
+            $my_sql = "UPDATE queries SET `sql` = " . $db->escape($newsql) . " WHERE id = " . intval($item->id);
+            $query = $db->query($my_sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
 
         // if (!$db->tableExists('components')) {
         //     $sql = "CREATE TABLE `components` (
