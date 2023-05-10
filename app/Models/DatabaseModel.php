@@ -365,6 +365,11 @@ class DatabaseModel extends BaseModel
             log_message('info', (string)$db->getLastQuery());
         }
 
+        $sql = "UPDATE edit_log SET db_table = 'devices' WHERE db_table = 'system'";
+        $query = $db->query($sql);
+        log_message('info', (string)$db->getLastQuery());
+
+
         // if (!$db->tableExists('components')) {
         //     $sql = "CREATE TABLE `components` (
         //           `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
