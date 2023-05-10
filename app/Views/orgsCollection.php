@@ -31,7 +31,7 @@ include 'shared/collection_functions.php';
                                 foreach ($data as $item) {
                                     echo "\n                                <tr>\n"; ?>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <?= collection_button_devices(url_to('devicesCollection') . '?system.org_id=' . $item->id) . "\n" ?>
+                                    <?= collection_button_devices(url_to('devicesCollection') . '?devices.org_id=' . $item->id) . "\n" ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id') {
                                             continue;
