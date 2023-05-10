@@ -31,9 +31,8 @@ class CloudsModel extends BaseModel
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
-        # NOTE - need to add the false arguement to the below so we don't escape the `orgs.name` as `orgs`.`name` above
         $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'clouds.org_id = orgs.id', 'left');
+        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -47,7 +46,7 @@ class CloudsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'clouds');
+        return format_data($query->getResult(), $resp->meta->collection);
     }
 
     /**
