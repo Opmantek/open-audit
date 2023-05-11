@@ -30,7 +30,7 @@ class DevicesModel extends BaseModel
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
         $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'devices.org_id = orgs.id', 'left');
+        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -44,7 +44,7 @@ class DevicesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'devices');
+        return format_data($query->getResult(), $resp->meta->collection);
     }
 
     /**
