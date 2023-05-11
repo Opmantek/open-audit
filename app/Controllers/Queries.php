@@ -44,7 +44,6 @@ class Queries extends BaseController
         $this->resp->data = $this->queriesModel->execute($this->resp->meta->id, $this->user);
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
-        $this->resp->links = create_links($this->resp->meta, $this->resp->links->self, $this->config->page_size);
         if ($this->resp->meta->format !== 'screen') {
             output($this);
             return true;

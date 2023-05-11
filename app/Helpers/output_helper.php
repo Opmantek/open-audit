@@ -4,115 +4,6 @@
 
 declare(strict_types=1);
 
-if (!function_exists('create_links')) {
-    function create_links($meta, $self, $page_size)
-    {
-        $links = new \stdClass();
-        $links->self = $self;
-        if ($meta->total > 0) {
-            # next link
-            $query_parameters = $meta->query_parameters;
-            if (intval($meta->total) > intval($meta->filtered) and  (intval($meta->offset)  <  intval($meta->total))) {
-                $offset = intval($meta->offset) + intval($meta->limit);
-                $hit = false;
-                for ($i=0; $i < count($query_parameters); $i++) {
-                    if ($query_parameters[$i]->name == 'offset') {
-                        $query_parameters[$i]->value = $offset;
-                        $hit = true;
-                    }
-                }
-                if (!$hit) {
-                    $item = new stdClass();
-                    $item->name = 'offset';
-                    $item->value = $offset;
-                    $query_parameters[] = $item;
-                    unset($item);
-                }
-            }
-            $links->next =  $links->self . create_url($query_parameters);
-            unset($query_parameters);
-
-            # prev link
-            $query_parameters = $meta->query_parameters;
-            if (!empty($meta->offset)) {
-                $temp = intval($meta->limit);
-                if (empty($temp)) {
-                    $temp = $page_size;
-                }
-                if ($temp < 0) {
-                    $temp = 0;
-                }
-                $offset = intval($meta->offset - $temp);
-                if (!empty($offset)) {
-                    $hit = false;
-                    for ($i=0; $i < count($query_parameters); $i++) {
-                        if ($query_parameters[$i]->name == 'offset') {
-                            $query_parameters[$i]->value = $offset;
-                            $hit = true;
-                        }
-                    }
-                    if (!$hit) {
-                        $item = new stdClass();
-                        $item->name = 'offset';
-                        $item->value = $offset;
-                        $query_parameters[] = $item;
-                        unset($item);
-                    }
-                } else {
-                    for ($i=0; $i < count($query_parameters); $i++) {
-                        if ($query_parameters[$i]->name == 'offset') {
-                            unset($query_parameters[$i]);
-                        }
-                    }
-                }
-            }
-            $links->prev =  $links->self . create_url($query_parameters);
-            unset($query_parameters);
-
-            # first link
-            $offset = 0;
-            $query_parameters = $meta->query_parameters;
-            for ($i=0; $i < count($query_parameters); $i++) {
-                if ($query_parameters[$i]->name == 'offset') {
-                    unset($query_parameters[$i]);
-                }
-            }
-            $links->first =  $links->self . create_url($query_parameters);
-            unset($query_parameters);
-
-            # last link
-            $query_parameters = $meta->query_parameters;
-            if ($meta->total > $meta->limit) {
-                $temp = intval($meta->limit);
-                if (empty($temp)) {
-                    $temp = $page_size;
-                }
-                if ($temp < 0) {
-                    $temp = 0;
-                }
-                $offset = intval($meta->total) - intval($temp);
-                $hit = false;
-                for ($i=0; $i < count($query_parameters); $i++) {
-                    if ($query_parameters[$i]->name == 'offset') {
-                        $query_parameters[$i]->value = $offset;
-                        $hit = true;
-                    }
-                }
-                if (!$hit) {
-                    $item = new stdClass();
-                    $item->name = 'offset';
-                    $item->value = $offset;
-                    $query_parameters[] = $item;
-                    unset($item);
-                }
-            }
-            $links->last = $links->self . create_url($query_parameters);
-            unset($query_parameters);
-        }
-        return $links;
-    }
-}
-
 if (!function_exists('output')) {
     function output($instance)
     {
@@ -408,6 +299,7 @@ if (!function_exists('output')) {
         if (! empty($instance->resp->meta->collection)) {
             $instance->resp->meta->icon = icon($instance->resp->meta->collection);
         }
+        unset($instance->resp->meta->user);
         echo json_encode($instance->resp);
     }
 

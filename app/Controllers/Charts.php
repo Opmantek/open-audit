@@ -42,7 +42,6 @@ class Charts extends BaseController
         $this->resp->data = $this->chartsModel->read($this->resp);
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
-        $this->resp->links = create_links($this->resp->meta, $this->resp->links->self, $this->config->page_size);
         output($this);
         return true;
     }

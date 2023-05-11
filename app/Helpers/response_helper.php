@@ -127,8 +127,6 @@ if (!function_exists('response_create')) {
         $response->meta->timezone = config('OpenAudit')->timezone;
         $response->meta->version = 1;
         $response->meta->filter = array();
-        $response->meta->internal = new stdClass();
-        $response->meta->query_parameters = array();
         $response->meta->received_data = array();
         $response->meta->sql = array();
         $response->meta->user = $instance->user->name;
@@ -283,10 +281,10 @@ if (!function_exists('response_create')) {
             $request->getGet('sort'),
             $request->getPost('sort')
         );
-        $response->meta->internal->sort = '';
-        if ($response->meta->sort !== '') {
-            $response->meta->internal->sort = 'ORDER BY ' . $response->meta->sort;
-        }
+        // $response->meta->internal->sort = '';
+        // if ($response->meta->sort !== '') {
+        //     $response->meta->internal->sort = 'ORDER BY ' . $response->meta->sort;
+        // }
 
         // depends on version affecting URI, collection
         $response->meta->groupby = response_get_groupby(
@@ -295,10 +293,10 @@ if (!function_exists('response_create')) {
             $response->meta->collection
         );
 
-        $response->meta->internal->groupby = '';
-        if ($response->meta->groupby) {
-            $response->meta->internal->groupby = 'GROUP BY ' . $response->meta->groupby;
-        }
+        // $response->meta->internal->groupby = '';
+        // if ($response->meta->groupby) {
+        //     $response->meta->internal->groupby = 'GROUP BY ' . $response->meta->groupby;
+        // }
 
         // no dependencies - set in GET or POST
         $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
@@ -312,10 +310,10 @@ if (!function_exists('response_create')) {
         );
 
         // depends on offset
-        $response->meta->internal->limit = '';
-        if (!empty($response->meta->limit)) {
-            $response->meta->internal->limit = 'LIMIT ' . intval($response->meta->offset) . ',' . intval($response->meta->limit);
-        }
+        // $response->meta->internal->limit = '';
+        // if (!empty($response->meta->limit)) {
+        //     $response->meta->internal->limit = 'LIMIT ' . intval($response->meta->offset) . ',' . intval($response->meta->limit);
+        // }
 
         // depends on collection
         $response->meta->properties = response_get_properties(
@@ -333,15 +331,12 @@ if (!function_exists('response_create')) {
         $response->meta->properties = implode(',', $response->meta->properties);
 
         // depends on properties, collection, sub_resource
-        $response->meta->internal->properties = response_get_internal_properties($response->meta->properties, $response->meta->collection, $response->meta->sub_resource);
+        // $response->meta->internal->properties = response_get_internal_properties($response->meta->properties, $response->meta->collection, $response->meta->sub_resource);
 
         $response->meta->properties = explode(',', $response->meta->properties);
 
         // depends on query string
         $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
-
-        // depends on query string
-        $response->meta->query_parameters = response_get_query_filter($response->meta->query_string, 'query');
 
         // DO we need to add All the Orgs?
         $test = true;
@@ -369,9 +364,9 @@ if (!function_exists('response_create')) {
 
         #$response->meta->internal->filter = response_get_internal_filter($response->meta->filter, $response->meta->collection);
 
-        if ($response->meta->collection === 'devices') {
-            $response->meta->internal->join = response_get_internal_join($response->meta->filter, $response->meta->collection);
-        }
+        // if ($response->meta->collection === 'devices') {
+        //     $response->meta->internal->join = response_get_internal_join($response->meta->filter, $response->meta->collection);
+        // }
 
         $response->links = response_get_links($response->meta->collection, $response->meta->id, $response->meta->sub_resource, @$response->meta->sub_resource_id);
 
@@ -541,7 +536,7 @@ if (!function_exists('response_get_query_filter')) {
 
         // NOTE - Had to create our own parsing routine because PHP replaces .'s with underscores
         //        in incoming variable names. The unfortunate result is that we can not use a . in
-        //        a variable value when using GET (so no devices.manufacturer=Dell, for example)
+        //        a variable value when using GET (so no ?devices.manufacturer=Dell, for example)
         //        PHP Bug Report - https://bugs.php.net/bug.php?id=45272
         //        PHP Docs - https://php.net/manual/en/language.variables.external.php
 
@@ -996,184 +991,6 @@ if (!function_exists('response_get_include')) {
             #stdlog($log);
         }
         return $include;
-    }
-}
-
-if (!function_exists('response_get_internal_filter')) {
-    /**
-     * [response_get_internal_filter description]
-     * @param  [type] $filter     [description]
-     * @param  [type] $collection [description]
-     * @return [type]             [description]
-     */
-    function response_get_internal_filter($filter, $collection)
-    {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_internal_filter';
-        $log->status = 'parsing';
-        $log->summary = '';
-
-        $instance = & get_instance();
-        $reserved_words = response_valid_reserved_words();
-        $internal_filter = '';
-
-        foreach ($filter as $item) {
-            if (!in_array($item->name, $reserved_words)) {
-                // We MUST have a name like 'connections.name', not just 'name'
-                if (strpos($item->name, '.') !== false) {
-                    if ($item->operator === 'in') {
-                        $internal_filter .= ' AND ' . $item->name . ' in ' . implode(',', $item->value);
-                    } else if ($item->operator === 'not in') {
-                        $internal_filter .= ' AND ' . $item->name . ' not in ' . implode(',', $item->value);
-                    } else {
-                        $internal_filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                        // $internal_filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . $item->value;
-                    }
-                }
-            }
-        }
-        if ($collection !== 'configuration' && $collection !== 'logs') {
-            if (is_string($instance->user->org_list)) {
-                $org_list = $instance->user->org_list;
-            } else {
-                $org_list = implode(',', $instance->user->org_list);
-            }
-            if ($internal_filter !== '') {
-                $internal_filter = substr($internal_filter, 5);
-                $internal_filter = ' WHERE orgs.id IN (' . $org_list . ') AND ' . $internal_filter;
-            } else {
-                $internal_filter = ' WHERE orgs.id IN (' . $org_list . ')';
-            }
-        }
-        if ($collection === 'configuration' or $collection === 'logs') {
-            if ($internal_filter !== '') {
-                $internal_filter = ' WHERE ' . substr($internal_filter, 4);
-            } else {
-                $internal_filter = '';
-            }
-        }
-        if ($internal_filter !== '') {
-            $log->detail = 'INTERNAL FILTER: ' . json_encode($internal_filter);
-            #stdlog($log);
-        }
-        return $internal_filter;
-    }
-}
-
-if (!function_exists('response_get_internal_join')) {
-    /**
-     * [response_get_internal_join description]
-     * @param  [type] $filter     [description]
-     * @param  [type] $collection [description]
-     * @return [type]             [description]
-     */
-    function response_get_internal_join($filter, $collection)
-    {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_internal_join';
-        $log->status = 'parsing';
-        $log->summary = '';
-
-        $join = '';
-
-        if ($collection === 'devices') {
-            $valid_sub_resources = response_valid_sub_resources();
-            $used_sub_resources = array();
-            if (!empty($filter) && is_array($filter) && count($filter) > 0) {
-                foreach ($filter as $item) {
-                    if (strpos($item->name, '.') !== false) {
-                        $table = substr($item->name, 0, strpos($item->name, '.'));
-                        if (in_array($table, $valid_sub_resources) && ! in_array($table, $used_sub_resources)) {
-                            $join .= ' LEFT JOIN `' . $table . '` ON (devices.id = `' . $table . '`.system_id) ';
-                        }
-                        $used_sub_resources[] = $table;
-                    }
-                }
-            }
-        }
-        if ($collection === 'devices') {
-            if (!empty($filter) && is_array($filter) && count($filter) > 0) {
-                foreach ($filter as $item) {
-                    if (strpos($item->name, 'locations.') !== false) {
-                        $join .= ' LEFT JOIN locations ON (system.location_id = locations.id) ';
-                        break;
-                    }
-                }
-            }
-        }
-        if ($join !== '') {
-            $log->detail = 'JOIN: ' . $join;
-            #stdlog($log);
-        }
-        return $join;
-    }
-}
-
-if (!function_exists('response_get_internal_properties')) {
-    /**
-     * [response_get_internal_properties description]
-     * @param  string $properties   [description]
-     * @param  string $collection   [description]
-     * @param  string $sub_resource [description]
-     * @return [type]               [description]
-     */
-    function response_get_internal_properties($properties = '', $collection = '', $sub_resource = '')
-    {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_internal_properties';
-        $log->status = 'parsing';
-        $log->summary = '';
-
-        $internal_properties = '';
-        $db = \Config\Database::connect();
-
-        // create our internal properties list - this is what gets executed in SQL
-        if ($properties !== '*' && $properties !== $sub_resource . '.*' && $properties !== '') {
-            $temp = explode(',', $properties);
-            foreach ($temp as $property) {
-                if ($property === 'count' && $collection !== 'chart') {
-                    $internal_properties .= 'count(*) as `count`,';
-                } elseif ($property === 'devices_id') {
-                    $internal_properties .= 'devices.id as `devices_id`,';
-                } else {
-                    $internal_properties .= $property . ' AS `' . trim($property) . '`,';
-                }
-            }
-            $internal_properties = substr($internal_properties, 0, -1);
-        } else {
-            $internal_properties = $properties;
-        }
-        if ($properties === '*' or $properties === '.*') {
-            $temp = $collection;
-            if ($temp === 'devices') {
-                $temp = 'system';
-            }
-
-            // Uncomment the below to enable fully qualified column names.
-            // NOTE - this would break the current HTML templates and change the API response.
-            // Maybe enable for v2 (if ever)
-            // $fields = $db->getFieldNames($temp);
-            // for ($i=0; $i < count($fields); $i++) {
-            //     $fields[$i] = $temp . '.' . $fields[$i] . ' AS `' . $temp . '.' . $fields[$i] . '`';
-            // }
-            // $internal_properties = implode(', ', $fields);
-
-            $internal_properties = '`' . $temp . '`.*';
-        }
-        if (!empty($internal_properties)) {
-            $log->detail = 'INTERNAL PROPERTIES: ' . $internal_properties;
-            #stdlog($log);
-        }
-        return $internal_properties;
     }
 }
 

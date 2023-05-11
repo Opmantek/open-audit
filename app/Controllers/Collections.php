@@ -41,7 +41,6 @@ class Collections extends BaseController
         $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
-        $this->resp->links = create_links($this->resp->meta, $this->resp->links->self, $this->config->page_size);
 
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if (empty($this->resp->meta->properties[0]) or $this->resp->meta->properties[0] === $this->resp->meta->collection . '.*') {
@@ -246,7 +245,6 @@ class Collections extends BaseController
         $this->resp->data = $this->{$this->resp->meta->collection.'Model'}->read($this->resp->meta->id);
         $this->resp->meta->total = count($this->{$this->resp->meta->collection.'Model'}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
-        $this->resp->links = create_links($this->resp->meta, $this->resp->links->self, $this->config->page_size);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if ($this->resp->meta->collection === 'database') {
             $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->id) . "Model";
