@@ -26,9 +26,14 @@ class BaseModel extends Model
         $db = db_connect();
         $insert_data = new \stdClass();
         $instance = & get_instance();
-        if (empty($dictionary)) {
-            $dictionary = $instance->{$table.'Model'}->dictionary();
+
+        if (strpos($table, '_') !== false) {
+            $table = str_replace('_', ' ', $table);
+            $table = ucwords($table);
+            $table = str_replace(' ', '', $table);
         }
+
+        $dictionary = $instance->{$table.'Model'}->dictionary();
 
         # Our MUST have attributes
         foreach ($dictionary->attributes->create as $field) {
