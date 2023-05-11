@@ -82,23 +82,7 @@ class ComponentsModel extends BaseModel
         if (empty($data)) {
             return false;
         }
-        if (!in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
-            \Config\Services::session()->setFlashdata('error', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
-            stdlog(((object) array('code' => 'ERR-0021', 'detail' => 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.')));
-            return false;
-        }
-        if (!in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
-            \Config\Services::session()->setFlashdata('error', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category. Type is set to: ' . $data->type);
-            stdlog(((object) array('code' => 'ERR-0021', 'detail' => 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.')));
-            return false;
-        }
-        $data = $this->createFieldData('attributes', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
-        }
-        return ($this->db->insertID());
+        return false;
     }
 
     /**
@@ -110,14 +94,7 @@ class ComponentsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -226,33 +203,6 @@ class ComponentsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Some minor data cleansing, 'attributes' specific
-
-        if (isset($data->resource) and !in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
-            $error = new \stdClass();
-            $error->level = 'error';
-            $error->message = 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.';
-            $GLOBALS['stash'] = $error;
-            log_message('error', $error->message);
-            return false;
-        }
-        if (isset($data->type) and !in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
-            $error = new \stdClass();
-            $error->level = 'error';
-            $error->message = 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.';
-            $GLOBALS['stash'] = $error;
-            log_message('error', $error->message);
-            return false;
-        }
-        // Accept our client data
-        $data = $this->updateFieldData('attributes', $data);
-        # $data->blah = 123; # Our bad record for testing failing
-        // And update the record
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 
