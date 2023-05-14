@@ -74,7 +74,7 @@ if (! function_exists('discovery_log')) {
         */
 
         error_reporting(E_ALL);
-        $CI = & get_instance();
+        $db = db_connect();
 
         if (empty($log)) {
             return;
@@ -85,8 +85,8 @@ if (! function_exists('discovery_log')) {
         if (empty($log->discovery_id)) {
             $log->discovery_id = null;
         }
-        if (empty($log->system_id)) {
-            $log->system_id = null;
+        if (empty($log->device_id)) {
+            $log->device_id = null;
         }
         // ignored at present, use MySQL NOW() function
         if (empty($log->timestamp)) {
@@ -158,22 +158,22 @@ if (! function_exists('discovery_log')) {
             $log->command_output = '';
         }
 
-        if (! empty($log->message) && stripos($log->message, 'Collector - Starting discovery') === 0 && ! empty($log->discovery_id)) {
+        if (!empty($log->message) && stripos($log->message, 'Collector - Starting discovery') === 0 && ! empty($log->discovery_id)) {
             // Special clear of local discovery logs if start of a Collector discovery
             $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
             $data = array(intval($log->discovery_id));
-            $query = $CI->db->query($sql, $data);
+            $query = $db->query($sql, $data);
         }
 
-        if (! is_null($log->id)) {
+        if (!is_null($log->id)) {
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?';
             $data = array((string)$log->command, (string)$log->command_status, $log->command_time_to_execute, (string)$log->command_output, $log->id);
-            $query = $CI->db->query($sql, $data);
+            $query = $db->query($sql, $data);
             $return_id = intval($log->id);
         } else {
             $sql = '/* log_helper::discovery_log */ ' . 'INSERT INTO discovery_log VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             $data = array($log->discovery_id,
-                            $log->system_id,
+                            $log->device_id,
                             $log->severity,
                             $log->severity_text,
                             $log->pid,
@@ -185,60 +185,60 @@ if (! function_exists('discovery_log')) {
                             $log->command_status,
                             $log->command_time_to_execute,
                             $log->command_output);
-            $query = $CI->db->query($sql, $data);
-            $return_id = intval($CI->db->insert_id());
+            $query = $db->query($sql, $data);
+            $return_id = intval($db->insertID());
         }
 
         // If we are a collector, forward the log
-        if ($CI->config->config['servers'] !== '') {
-            $post_items = array();
-            $post_items[] = 'type=discovery';
-            $log->message = str_replace('Collector - ', '', $log->message);
-            $log->message = 'Collector - ' . $log->message;
-            if (stripos($log->command, 'Rules Match - ') === 0 && stripos($log->command, ', ID: ') !== false) {
-                $original_command = $log->command;
-                $temp = explode(':', $log->command);
-                $log->command = str_replace(', ID', '', $temp[0]);
-            }
-            foreach ($log as $key => $value) {
-                if ($key !== 'id' && $key !== 'system_id') {
-                    $post_items[] = $key . '=' . urlencode($value);
-                }
-            }
-            $post = implode('&', $post_items);
-            $server = json_decode($CI->config->config['servers']);
-            if (! empty($server->host) and ! empty($server->community)) {
-                $connection = curl_init($server->host . $server->community . '/index.php/input/logs');
-                curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
-                curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)');
-                curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
-                curl_setopt($connection, CURLOPT_POSTFIELDS, $post);
-                curl_exec($connection);
-                curl_close($connection);
-                if (curl_errno($connection)) {
-                    $standard_log = new stdClass();
-                    $standard_log->action = 'log_helper::discoverylog';
-                    $standard_log->function = curl_errno($connection) . ' - ' . curl_error($connection);
-                    $standard_log->summary = 'Failed to send log to ' . $server->host . $server->community . '/index.php/input/logs';
-                    $standard_log->status = 'fail';
-                    $standard_log->detail  = json_encode(curl_getinfo($connection));
-                    $standard_log->severity = 4;
-                    $standard_log->type = 'system';
-                    stdlog($standard_log);
-                }
-            }
-            $log->command = $original_command;
-            $log->message = str_replace('Collector - ', '', $log->message);
-        }
+        // if ($CI->config->config['servers'] !== '') {
+        //     $post_items = array();
+        //     $post_items[] = 'type=discovery';
+        //     $log->message = str_replace('Collector - ', '', $log->message);
+        //     $log->message = 'Collector - ' . $log->message;
+        //     if (stripos($log->command, 'Rules Match - ') === 0 && stripos($log->command, ', ID: ') !== false) {
+        //         $original_command = $log->command;
+        //         $temp = explode(':', $log->command);
+        //         $log->command = str_replace(', ID', '', $temp[0]);
+        //     }
+        //     foreach ($log as $key => $value) {
+        //         if ($key !== 'id' && $key !== 'system_id') {
+        //             $post_items[] = $key . '=' . urlencode($value);
+        //         }
+        //     }
+        //     $post = implode('&', $post_items);
+        //     $server = json_decode($CI->config->config['servers']);
+        //     if (! empty($server->host) and ! empty($server->community)) {
+        //         $connection = curl_init($server->host . $server->community . '/index.php/input/logs');
+        //         curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
+        //         curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)');
+        //         curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
+        //         curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
+        //         curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
+        //         curl_setopt($connection, CURLOPT_POSTFIELDS, $post);
+        //         curl_exec($connection);
+        //         curl_close($connection);
+        //         if (curl_errno($connection)) {
+        //             $standard_log = new stdClass();
+        //             $standard_log->action = 'log_helper::discoverylog';
+        //             $standard_log->function = curl_errno($connection) . ' - ' . curl_error($connection);
+        //             $standard_log->summary = 'Failed to send log to ' . $server->host . $server->community . '/index.php/input/logs';
+        //             $standard_log->status = 'fail';
+        //             $standard_log->detail  = json_encode(curl_getinfo($connection));
+        //             $standard_log->severity = 4;
+        //             $standard_log->type = 'system';
+        //             stdlog($standard_log);
+        //         }
+        //     }
+        //     $log->command = $original_command;
+        //     $log->message = str_replace('Collector - ', '', $log->message);
+        // }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
         if (strpos($log->message, 'Total IPs count: ') !== false) {
             $temp = @intval(@str_replace('Total IPs count: ', '', $log->message));
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_all_count` = ? WHERE id = ?';
             $data = array($temp, $log->discovery_id);
-            $CI->db->query($sql, $data);
+            $db->query($sql, $data);
         }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
@@ -246,32 +246,32 @@ if (! function_exists('discovery_log')) {
             $temp = @intval(@str_replace('Responding IPs count: ', '', $log->message));
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_responding_count` = ? WHERE id = ?';
             $data = array($temp, $log->discovery_id);
-            $CI->db->query($sql, $data);
+            $db->query($sql, $data);
         }
 
         if (strpos($log->message, 'IP scan finish on device ') !== false) {
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE id = ?';
             $data = array($log->discovery_id);
-            $CI->db->query($sql, $data);
+            $db->query($sql, $data);
         }
 
         if (strpos($log->message, 'Discovered device at ') !== false) {
             $sql = '/* log_helper::discovery_log */ ' . 'UPDATE `discoveries` SET `ip_discovered_count` = `ip_discovered_count` + 1 WHERE id = ?';
             $data = array($log->discovery_id);
-            $CI->db->query($sql, $data);
+            $db->query($sql, $data);
         }
 
         if (strpos($log->message, 'Audited device at ') !== false) {
             $sql = '/* discoveries_helper::ip_audit */ ' . 'UPDATE `discoveries` SET `ip_audited_count` = `ip_audited_count` + 1 WHERE id = ?';
             $data = array($log->discovery_id);
-            $CI->db->query($sql, $data);
+            $db->query($sql, $data);
         }
 
         // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
         if (stripos($log->message, 'Discovery has finished') !== false && ! empty($log->discovery_id)) {
             $sql = '/* log_helper::discovery_log */ ' . "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
             $data = array($log->discovery_id);
-            $query = $CI->db->query($sql, $data);
+            $query = $db->query($sql, $data);
         }
 
 
@@ -313,7 +313,7 @@ if (! function_exists('stdlog')) {
         $log['type'] = (!empty($log_details->type)) ? $log_details->type : 'access';
         $log['severity_text'] = (!empty($log_details->severity_text)) ? $log_details->severity_text : '';
         $log['pid'] = getmypid();
-        $log['user'] = get_instance()->user->name;
+        $log['user'] = (!empty(get_instance()->user->name)) ? get_instance()->user->name : '';
         $log['server'] = php_uname('n');
         $log['ip'] = (! empty($_SERVER['REMOTE_ADDR'])) ? (! empty($_SERVER['REMOTE_ADDR'])) : '127.0.0.1';
         if ($log['ip'] === true) {
