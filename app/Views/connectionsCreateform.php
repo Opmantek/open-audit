@@ -35,7 +35,7 @@ include 'shared/create_functions.php';
                                     <?= create_text_field('data[attributes][' . $field . ']', create_column_name($field), $dictionary->attributes->create) ?>
                                 <?php } ?>
 
-                                <br />
+                                <br>
                                 <div class="row">
                                     <div class="offset-2 col-8">
                                         <label for="submit" class="form-label">&nbsp;</label>
@@ -50,30 +50,30 @@ include 'shared/create_functions.php';
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
                                 <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br />";
+                                    echo "<h4 class=\"text-center\">About</h4><br>";
                                     echo html_entity_decode($dictionary->about);
                                 } ?>
                                 <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br />";
+                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
-                                <h4 class="text-center">Fields</h4><br />
+                                <h4 class="text-center">Fields</h4><br>
                                 <?php $fields = array('name', 'org_id', 'description', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed') ?>
                                 <?php foreach ($fields as $key) { ?>
-                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
                                 <hr />
 
                                 <?php $fields = array('location_id_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a') ?>
                                 <?php foreach ($fields as $key) { ?>
-                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
                                 <hr />
 
 
                                 <?php $fields = array('location_id_b', 'device_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b') ?>
                                 <?php foreach ($fields as $key) { ?>
-                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
                             </div>
                         </div>

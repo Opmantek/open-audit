@@ -46,7 +46,17 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
     border-color: #9265CE;
 }
 
+/* The listed items in the device menu, left hand side. */
+.device-menu-icon {
+  width: 18pt;
+  margin-right: 10px;
+}
 
+.section_toggle:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+    cursor: hand;
+}
 
 
 .navbar-brand {
@@ -79,12 +89,13 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 .link-secondary {
-    color: #2980b9;
+    color: #16325c !important;
+    text-decoration: none;
 }
 
-.breadcrumb > li:last-child > a {
+/*.breadcrumb > li:last-child > a {
     color: #999 !important;
-}
+}*/
 
 .second-nav {
     box-shadow: 0 1px 4px 0 #ddd;
@@ -112,8 +123,15 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 .form-control:disabled {
-    color: #6c757d;
+    /* color: #6c757d; */
+    color: #16325c;
 }
+
+/*
+.oa_breadcrumb {
+    color: #16325c !important;
+}
+*/
 
 .form-control {
     color: #16325c;
@@ -301,7 +319,8 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 a {
-    color: #3bafda;
+    /* color: #3bafda; */
+    color: --bs-primary;
     text-decoration: none;
 }
 

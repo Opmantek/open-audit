@@ -13,7 +13,7 @@ include 'shared/collection_functions.php';
                         <div class="col-8 offset-2 text-center">
                             <h1><?= ucfirst($meta->collection) ?></h1>
                             <?= $dictionary->about ?>
-                            <p>For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/<?= $meta->collection ?>">Knowledge Base</a>.<br /><br /></p>
+                            <p>For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/<?= $meta->collection ?>">Knowledge Base</a>.<br><br></p>
                         </div>
                     </div>
 

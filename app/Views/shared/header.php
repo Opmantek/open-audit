@@ -149,7 +149,7 @@ $categories = array_unique($categories);
         <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
             <div class="container-fluid">
                 <a class="navbar-brand" style="color: white;" href="/">
-                    <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Open-AudIT logo">
+                    <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
                     Open-AudIT <?= $config->display_version . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -564,10 +564,10 @@ if (!empty($config->modules)) {
                     <div class="col-3" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary" style="text-decoration: none;">Home</a></li>
-                                <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary" style="text-decoration: none;"><?= @ucfirst($meta->collection) ?></a></li>
+                                <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
+                                <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary"><?= @ucfirst($meta->collection) ?></a></li>
                             <?php if ($meta->action === 'read' and !empty($name)) { ?>
-                                <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary" style="text-decoration: none;"><?= $name ?></a></li>
+                                <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
                             <?php } ?>
                             </ol>
                         </nav>
@@ -576,13 +576,14 @@ if (!empty($config->modules)) {
                         <!-- TODO - fix the below search route -->
                         <form class="float-end" method="post" action="#">
                             <div class="btn-group" role="group">
-                                <input type="hidden" id="data[access_token]"        name="data[access_token]"        value="<?= $meta->access_token[1]; ?>">
+                                <input type="hidden" id="data[access_token]" name="data[access_token]" value="<?= $meta->access_token[1]; ?>">
                                 <label style="padding-top:5px;" for="data[attributes][value]">Search&nbsp;</label>
-                                <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control form-control-sm" placeholder="Device Name or full IP">
+                                <input type="text"   id="data[attributes][value]" name="data[attributes][value]" class="form-control form-control-sm" placeholder="Device Name or full IP">
                                 <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["system"]'>
                                 <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
                                 <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
                             </div>
+                            <!--
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
                                     <button class="btn btn-sm dropdown-toggle btn-outline-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -604,6 +605,7 @@ if (!empty($config->modules)) {
                                     </ul>
                                 </div>
                             </div>
+                            -->
                         </form>
                     </div>
                 </div>
@@ -614,7 +616,7 @@ if (!empty($config->modules)) {
         <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
                 <?php if (!empty($json)) {?>
-                    <?= 'Message: ' . $json->message . '<br />SQL: ' . $json->sql ?>
+                    <?= 'Message: ' . $json->message . '<br>SQL: ' . $json->sql ?>
                 <?php } else { ?>
                     <?= $_SESSION['error'] ?>
                 <?php } ?>

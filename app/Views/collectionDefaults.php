@@ -40,7 +40,7 @@ include 'shared/read_functions.php';
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
             <div class="card">
                 <div class="card-header">
                     <div class="row">
@@ -56,7 +56,7 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <?php foreach ($defaults as $default) { ?>
                     <pre style="word-wrap: break-word; white-space: pre-wrap;"><?= $default ?></pre>
-                    <br />
+                    <br>
                     <?php } ?>
                 </div>
             </div>

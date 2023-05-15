@@ -31,7 +31,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="menu_display" data-dictionary="<?= $dictionary->columns->menu_display ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="menu_display" data-dictionary="<?= $dictionary->columns->menu_display ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -50,7 +50,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -59,21 +59,21 @@ include 'shared/read_functions.php';
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
                         <div class="col-6">
-                            <br />
+                            <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br />
+                                    <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
                                     <?php $fields = array('name', 'org_id', 'description', 'menu_display', 'menu_category', 'sql', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br />
+                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
                                     <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                 <?php } ?>
                             </div>

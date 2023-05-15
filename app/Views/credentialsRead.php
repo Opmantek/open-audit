@@ -26,7 +26,7 @@ include 'shared/read_functions.php';
                                             <option value='windows'><?= __('Windows') ?></option>
                                         </select>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php if ($resource->type === 'snmp') {
@@ -61,7 +61,7 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.authentication_protocol" data-dictionary="<?= $dictionary->columns->authentication_protocol ?>"><span><br /></span></div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.authentication_protocol" data-dictionary="<?= $dictionary->columns->authentication_protocol ?>"><span><br></span></div>
                                     </div>
                                 </div>
 
@@ -83,7 +83,7 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.privacy_protocol" data-dictionary="<?= $dictionary->columns->privacy_protocol ?>"><span><br /></span></div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.privacy_protocol" data-dictionary="<?= $dictionary->columns->privacy_protocol ?>"><span><br></span></div>
                                     </div>
                                 </div>
 
@@ -104,7 +104,7 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.security_level" data-dictionary="<?= $dictionary->columns->security_level ?>"><span><br /></span></div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.security_level" data-dictionary="<?= $dictionary->columns->security_level ?>"><span><br></span></div>
                                     </div>
                                 </div>
 
@@ -114,21 +114,21 @@ include 'shared/read_functions.php';
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
                         <div class="col-6">
-                            <br />
+                            <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br />
+                                    <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
                                     <?php $fields = array('name', 'org_id', 'description', 'type', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br />
+                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
                                     <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                 <?php } ?>
                             </div>

@@ -123,14 +123,14 @@ if ($collection === "users") {
     $extra = "The fields 'roles' and 'orgs' are stored as JSON arrays. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a user and then go to menu -> Admin -> Database -> List Tables and click on Users. Then export to CSV.";
 }
 
-$example = '<br /><h4>Example</h4><p>Below is an example of the required csv format.<br /><br />
-The minimum required attributes for attributes are ' . $values . '.<br /><br />
-You should not include the edited_by and edited_date fields. These will be automatically set.<br /><br />
-If you include the "id" field <strong>and</strong> set it with a number, that item will be updated rather than created.<br /><br />';
+$example = '<br><h4>Example</h4><p>Below is an example of the required csv format.<br><br>
+The minimum required attributes for attributes are ' . $values . '.<br><br>
+You should not include the edited_by and edited_date fields. These will be automatically set.<br><br>
+If you include the "id" field <strong>and</strong> set it with a number, that item will be updated rather than created.<br><br>';
 if ($extra !== '') {
-    $example .= $extra . '<br /><br />';
+    $example .= $extra . '<br><br>';
 }
-$example .= 'You should use a header line containing the names of the columns you wish to populate, then your data lines below that.<br /><br />
+$example .= 'You should use a header line containing the names of the columns you wish to populate, then your data lines below that.<br><br>
 <table class="table table-striped"><tbody>' . $sample . '</tbody></table>';
 ?>
 <main class="container-fluid">
@@ -170,22 +170,22 @@ $example .= 'You should use a header line containing the names of the columns yo
                 <div class="col-6">
                     <div class="offset-2 col-8">
                         <?php if ($dictionary->about) { ?>
-                            <h4 class="text-center"><?= __('About') ?></h4><br />
+                            <h4 class="text-center"><?= __('About') ?></h4><br>
                             <?= $dictionary->about ?>
                         <?php } ?>
                         <?php if ($dictionary->notes) { ?>
-                            <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
                             <?= $dictionary->notes ?>
                         <?php } ?>
                         <?php foreach ($data->columns as $column => $value) { ?>
-                            <code><?= $column ?>: </code><?= $value ?><br /><br />
+                            <code><?= $column ?>: </code><?= $value ?><br><br>
                         <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <br />
+    <br>
 
     <div class="card">
         <div class="card-header">

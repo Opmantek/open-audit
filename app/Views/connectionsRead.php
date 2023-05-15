@@ -19,7 +19,7 @@ include 'shared/read_functions.php';
                             <?php foreach ($fields as $field) { ?>
                                 <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update) ?>
                             <?php } ?>
-                            <br />
+                            <br>
                             <div class="offset-2 col-8"><hr /></div>
 
                             <?= read_select('location_id_a', $resource->location_id_a, $dictionary->columns->location_id_a, $update, __('Location A'), $included['locations']) ?>
@@ -37,7 +37,7 @@ include 'shared/read_functions.php';
                                 ?>
                                 <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', $link) ?>
                             <?php } ?>
-                            <br />
+                            <br>
                             <div class="offset-2 col-8"><hr /></div>
 
                             <?= read_select('location_id_b', $resource->location_id_b, $dictionary->columns->location_id_b, $update, __('Location B'), $included['locations']) ?>
@@ -55,42 +55,42 @@ include 'shared/read_functions.php';
                                 ?>
                                 <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', $link) ?>
                             <?php } ?>
-                            <br />
+                            <br>
                             <div class="offset-2 col-8"><hr /></div>
 
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
                         <div class="col-6">
-                            <br />
+                            <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br />
+                                    <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br />
+                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
 
                                     <?php $fields = array('name', 'org_id', 'description', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed', 'edited_by', 'edited_date') ?>
                                     <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                     <hr />
 
                                     <?php $fields = array('location_id_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a') ?>
                                     <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                     <hr />
 
 
                                     <?php $fields = array('location_id_b', 'device_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b') ?>
                                     <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                 <?php } ?>
                             </div>

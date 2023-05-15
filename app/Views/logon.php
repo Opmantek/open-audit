@@ -73,12 +73,12 @@ header('X-Content-Type-Options: nosniff');
 
     </head>
     <body class="d-flex flex-column h-100" onload="document.form.username.focus();">
-        <br />
+        <br>
         <form class="form-horizontal" id="form" name="form" method="post" action="logon">
             <input type="hidden" name="url" id="url" value="<?= previous_url() ?>" />
             <div class="row">
                 <div class="col-8 offset-2 text-center">
-                    <br /><br />
+                    <br><br>
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -125,15 +125,15 @@ header('X-Content-Type-Options: nosniff');
 
                                     <div class="row">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                        <br />Don't forget about the Open-AudIT wiki for all your documentation.<br /><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
+                                        <br>Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
                                         </div>
                                         <?php if (!empty($config->default_network_address) and strpos($config->default_network_address, '127.0.0.1') === false and strpos($config->default_network_address, 'localhost') === false and !empty($config->default_network_address)) { ?>
                                         <span align='center'>
-                                            <br />
+                                            <br>
                                             <input type="button" class="btn btn-sm btn-primary" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" />
                                         </span>
                                         <?php } ?>
-                                        <br />&nbsp;
+                                        <br>&nbsp;
                                     </div>
                                 </div>
                             </div>

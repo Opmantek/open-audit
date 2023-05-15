@@ -212,9 +212,9 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     if ($update) {
         $return = $return . '
                                     <div class="pull-right" style="padding-left:4px;">
-                                        <button data-attribute="' . $name . '" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></button>
-                                        <button data-attribute="' . $name . '" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></button>
-                                        <button data-attribute="' . $name . '" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></button>
+                                        <button data-attribute="' . $name . '" class="btn btn-outline-secondary edit" title="' . __('Edit') . '"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></button>
+                                        <button data-attribute="' . $name . '" class="btn btn-outline-success submit" title="' . __('Submit') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></button>
+                                        <button data-attribute="' . $name . '" class="btn btn-outline-danger cancel" title="' . __('Cancel') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></button>
                                     </div>';
     }
 
@@ -223,7 +223,7 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     }
                                     $return = $return . '
                                 </div>
-                                <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br /></span></div>
+                                <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br></span></div>
                             </div>
                         </div>
                         ';
@@ -258,7 +258,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
 
     $return =  "                           <div class=\"row\" style=\"padding-top:16px;\">
                                 <div class=\"offset-2 col-8\" style=\"position:relative;\">
-                                    <label for=\"{$name}\" class=\"form-label\">{$label}</label><br />
+                                    <label for=\"{$name}\" class=\"form-label\">{$label}</label><br>
                                     <div class=\"col-7 input-group\">
                                         <select class=\"form-select\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";
     foreach ($values as $item) {
@@ -267,8 +267,14 @@ function read_select(string $name = '', string $value = '', string $dictionary =
             $selected = ' selected';
         }
         if ($item->type === 'attributes') {
+            if ($item->attributes->value === '') {
+                $selected .= ' label="none"';
+            }
             $return .= "                                            <option value=\"{$item->attributes->value}\"{$selected}>{$item->attributes->name}</option>\n";
         } else {
+            if ($item->id === '') {
+                $selected .= ' label="none"';
+            }
             $return .= "                                            <option value=\"{$item->id}\"{$selected}>{$item->attributes->name}</option>\n";
         }
     }
@@ -281,7 +287,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
                                         </div>\n";
     }
     $return .= "                                    </div>
-                                    <div class=\"form-text form-help pull-right\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br /></span></div>
+                                    <div class=\"form-text form-help pull-right\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br></span></div>
                                 </div>
                             </div>\n";
     return $return;
@@ -302,4 +308,42 @@ function read_column_name(string $name = ''): string
     $name = str_replace('Device Id', 'Device ID', $name);
     $name = __($name);
     return $name;
+}
+
+function device_panel(string $name = '', string $toolbar = '', int $device_id = 0): string
+{
+    if ($toolbar === 'icontext') {
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
+    } else if ($toolbar === 'icon') {
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "\" title=\"" . __("Close") . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
+    } else {
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
+    }
+    $panel_add_button = '';
+    if ($name === 'attachments' or $name === 'credentials') {
+        if ($toolbar === 'icontext') {
+            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+        } else if ($toolbar === 'icon') {
+            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\"><span class=\"fa fa-plus\"></span></a>";
+        } else {
+            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\">" . __("Add") . "</a>";
+        }
+    }
+    $human_name = read_column_name($name);
+    $header = '<div class="card-header">
+        <div class="row">
+            <div class="col-4 clearfix">
+                <h6 style="padding-top:10px;">' . __($human_name) . '</h6>
+            </div>
+            <div class="col-8 clearfix">
+                <div class="btn-group btn-group-sm float-end" role="group" id="device_panel_' . $name . '">
+                    <div class="page-title-right pull-right">
+                        ' . $panel_add_button . '
+                        ' . $panel_close_button . '
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+    return $header;
 }

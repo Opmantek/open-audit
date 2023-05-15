@@ -34,7 +34,7 @@ include 'shared/create_functions.php';
 
                                 <div id="options"></div>
 
-                                <br />
+                                <br>
                                 <div class="row">
                                     <div class="offset-2 col-8">
                                         <label for="submit" class="form-label">&nbsp;</label>
@@ -49,16 +49,16 @@ include 'shared/create_functions.php';
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
                                 <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br />";
+                                    echo "<h4 class=\"text-center\">About</h4><br>";
                                     echo html_entity_decode($dictionary->about);
                                 } ?>
                                 <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br />";
+                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
-                                <h4 class="text-center">Fields</h4><br />
+                                <h4 class="text-center">Fields</h4><br>
                                 <?php foreach ($dictionary->columns as $key => $value) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br /><br />";
+                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
                                 } ?>
                             </div>
                         </div>
@@ -84,7 +84,7 @@ $(document).ready(function(){
                                 \
                                 <div class="row" style="padding-top:16px;">\
                                     <div class="offset-2 col-8" style="position:relative;">\
-                                        <label for="data[attributes][credentials][security_level]" class="form-label"><?= __("Security Level") ?></label><br />\
+                                        <label for="data[attributes][credentials][security_level]" class="form-label"><?= __("Security Level") ?></label><br>\
                                         <select class="form-select data_type" name="data[attributes][credentials][security_level]" id="data[attributes][credentials][security_level]">\
                                             <option value="noAuthNoPriv">noAuthNoPriv</option>\
                                             <option value="authNoPriv">authNoPriv</option>\
@@ -95,7 +95,7 @@ $(document).ready(function(){
                                 \
                                 <div class="row" style="padding-top:16px;">\
                                     <div class="offset-2 col-8" style="position:relative;">\
-                                        <label for="data[attributes][credentials][authentication_protocol]" class="form-label"><?= __("Authentication Protocol") ?></label><br />\
+                                        <label for="data[attributes][credentials][authentication_protocol]" class="form-label"><?= __("Authentication Protocol") ?></label><br>\
                                         <select class="form-select data_type" name="data[attributes][credentials][authentication_protocol]" id="data[attributes][credentials][authentication_protocol]">\
                                             <option value="MD5">MD5</option>\
                                             <option value="SHA">SHA</option>\
@@ -107,7 +107,7 @@ $(document).ready(function(){
                                 \
                                 <div class="row" style="padding-top:16px;">\
                                     <div class="offset-2 col-8" style="position:relative;">\
-                                        <label for="data[attributes][credentials][privacy_protocol]" class="form-label"><?= __("Privacy Protocol") ?></label><br />\
+                                        <label for="data[attributes][credentials][privacy_protocol]" class="form-label"><?= __("Privacy Protocol") ?></label><br>\
                                         <select class="form-select data_type" name="data[attributes][credentials][privacy_protocol]" id="data[attributes][credentials][privacy_protocol]">\
                                             <option value="AES">AES</option>\
                                             <option value="DES">DES</option>\

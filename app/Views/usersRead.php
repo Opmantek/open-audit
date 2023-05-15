@@ -40,7 +40,7 @@ include 'shared/collection_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -61,7 +61,7 @@ include 'shared/collection_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -90,7 +90,7 @@ include 'shared/collection_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="roles" data-dictionary="<?= $dictionary->columns->roles ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="roles" data-dictionary="<?= $dictionary->columns->roles ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -100,21 +100,21 @@ include 'shared/collection_functions.php';
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
                         <div class="col-6">
-                            <br />
+                            <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br />
+                                    <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
                                     <?php $fields = array('name', 'full_name', 'org_id', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br />
+                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
                                     <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                 <?php } ?>
                             </div>
@@ -122,7 +122,7 @@ include 'shared/collection_functions.php';
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
             <div class="row">
                 <div class="col-6">
                     <div class="card">
@@ -150,7 +150,7 @@ include 'shared/collection_functions.php';
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <span class="text-center">Note - Selecting a parent will automatically provide access to its children (although it won't be shown here).<br /><br /></span>
+                                <span class="text-center">Note - Selecting a parent will automatically provide access to its children (although it won't be shown here).<br><br></span>
                                 <div class="table-responsive">
                                     <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                         <thead>

@@ -13,7 +13,7 @@ include 'shared/read_functions.php';
                         <div class="col-6">
                             <?= read_field('name', $data[0]->id, '', false) ?>
                             <?= read_field('Row Count', $data[0]->attributes->count, '', false) ?>
-                            <br /><br />
+                            <br><br>
                             <div class="col-8 offset-2">
                                 <table class="table">
                                     <tr>
@@ -38,14 +38,14 @@ include 'shared/read_functions.php';
                             </div>
                         </div>
                         <div class="col-6">
-                            <br />
+                            <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br />
+                                    <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                             </div>
@@ -53,7 +53,7 @@ include 'shared/read_functions.php';
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
             <div class="card">
                 <div class="card-header">
                     <div class="row" style="height:46px;">
