@@ -125,6 +125,11 @@ $routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 $routes->post('input/devices', 'Input::devices');
 
+
+$routes->get('devices/(:num)/(:any)', 'Devices::createSubForm/$1/$2/create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateSubForm']);
+
+
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

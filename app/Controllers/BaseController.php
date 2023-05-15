@@ -39,7 +39,7 @@ abstract class BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = ['log', 'network', 'output', 'response', 'utility', 'security'];
+    protected $helpers = ['components', 'log', 'network', 'output', 'response', 'utility', 'security'];
 
     public $response;
 

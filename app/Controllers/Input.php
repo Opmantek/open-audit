@@ -61,9 +61,9 @@ class Input extends BaseController
         $log->pid = getmypid();
         $log->file = 'Input';
         $log->function = 'devices';
-        $log->message = 'Input::devices called';
-        $log->command = 'process audit';
-        $log->command_status = '';
+        $log->message = 'Audit result submitted';
+        $log->command = '';
+        $log->command_status = 'notice';
         $log->display = 'y';
         $initial_log_id = $this->discoveryLogModel->create($log);
 
@@ -95,11 +95,14 @@ class Input extends BaseController
             // insert a new system
             $device->system->first_seen = $device->system->last_seen;
             $device->system->id = $this->devicesModel->create($device->system);
+            $log->command_status = 'fail';
+            if (!empty($device->system->id)) {
+                $log->command_status = 'success';
+                $log->device_id = $device->system->id;
+            }
             log_message('info', 'CREATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
-            $log->device_id = $device->system->id;
             $log->ip = @ip_address_from_db($device->system->ip);
             $log->message = 'CREATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
-            $log->command_status = 'success';
             $this->discoveryLogModel->create($log);
             // In the case where we inserted a new device, m_device::match will add a log entry, but have no
             // associated device_id. Update this one row.
@@ -110,11 +113,15 @@ class Input extends BaseController
             log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
             $log->message = 'UPDATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
             $log->system_id = $device->system->id;
-            $log->command_status = 'success';
             $log->ip = @ip_address_from_db($device->system->ip);
+
+            $test = $this->devicesModel->update($device->system->id, $device->system);
+            $log->command_status = 'fail';
+            if ($test) {
+                $log->command_status = 'success';
+            }
             $this->discoveryLogModel->create($log);
 
-            $this->devicesModel->update($device->system->id, $device->system);
             $db_device = $this->devicesModel->read($device->system->id);
             $device->system->first_seen = $db_device[0]->attributes->first_seen;
             $device->system->last_seen = $db_device[0]->attributes->last_seen;

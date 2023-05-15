@@ -134,7 +134,46 @@ class DevicesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $include = array();
+        $current = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        foreach ($current as $table) {
+            $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include[$table] = $result;
+            }
+        }
+
+
+        $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'cluster', 'credential', 'edit_log', 'field', 'image', 'rack_devices');
+        foreach ($no_current as $table) {
+            $sql = "SELECT * FROM `$table` WHERE device_id = ?";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include[$table] = $result;
+            }
+        }
+
+        $sql = "SELECT discovery_log.*, discoveries.name AS `discoveries.name` FROM `discovery_log` LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discovery_log.device_id = ?";
+        $query = $this->db->query($sql, $id);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['discovery_log'] = $result;
+        }
+
+        $attributesModel = new \App\Models\AttributesModel();
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
+        $include['class'] = $attributes;
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'environment']);
+        $include['environment'] = $attributes;
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'status']);
+        $include['status'] = $attributes;
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+        $include['type'] = $attributes;
+
+        return $include;
     }
 
     /**
@@ -274,8 +313,8 @@ class DevicesModel extends BaseModel
             $log->discovery_id = '';
         }
 
-        $log->message = "System update start for {$log->ip}";
-        discovery_log($log);
+        $log->message = "System update start for ID: $id";
+        #discovery_log($log);
 
         if (empty($data->discovery_id)) {
             unset($data->discovery_id);
@@ -295,7 +334,7 @@ class DevicesModel extends BaseModel
         $data->original_last_seen = $db_entry->last_seen;
         $data->original_timestamp = $db_entry->last_seen;
         if (empty($data->timestamp)) {
-            $data->timestamp = $data->last_seen;
+            $data->timestamp = @$data->last_seen;
         }
         // Get the lastest edit_log data
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE device_id = ? AND `db_table` = 'devices' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
@@ -344,13 +383,9 @@ class DevicesModel extends BaseModel
                 $update_device->$key = $value;
             }
         }
-        log_message('info', json_encode($update_device));
-        log_message('info', '');
         $update = $this->updateFieldData('devices', $update_device);
-        log_message('debug', json_encode($update));
         $this->builder->where('id', intval($id));
         $this->builder->update($update);
-        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return false;
         }
@@ -402,9 +437,9 @@ class DevicesModel extends BaseModel
         // Add a count to our chart table
         $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), ?, ?, 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
         $query = $this->db->query($sql, [$data->last_seen_by, $data->org_id]);
-        $log->message = 'System update end for '.@ip_address_from_db($data->ip);
+        $log->message = 'System update end for ID: ' . $id;
         $log->summary = 'finish function';
-        discovery_log($log);
+        #discovery_log($log);
 
         return true;
     }
