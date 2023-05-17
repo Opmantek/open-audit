@@ -163,6 +163,20 @@ class DevicesModel extends BaseModel
             $include['discovery_log'] = $result;
         }
 
+        $sql = "SELECT * FROM fields";
+        $query = $this->db->query($sql);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['fields'] = $result;
+        }
+
+        $sql = "SELECT * FROM locations";
+        $query = $this->db->query($sql);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['locations'] = format_data($result, 'locations');
+        }
+
         $attributesModel = new \App\Models\AttributesModel();
         $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
         $include['class'] = $attributes;

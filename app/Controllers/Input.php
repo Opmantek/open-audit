@@ -48,6 +48,7 @@ class Input extends BaseController
         helper('components');
         helper('device');
         helper('network');
+        helper('macaddress');
         helper('utility');
 
         $request = $this->request;
@@ -87,6 +88,10 @@ class Input extends BaseController
             $device->system->last_seen = $this->config->timestamp;
         }
 
+        if (empty($device->system->last_seen_by)) {
+            $device->system->last_seen_by = 'audit';
+        }
+
         if (!empty($device->system->os_installation_date)) {
             $device->system->os_installation_date = date("Y-m-d", strtotime($device->system->os_installation_date));
         }
@@ -100,7 +105,7 @@ class Input extends BaseController
                 $log->command_status = 'success';
                 $log->device_id = $device->system->id;
             }
-            log_message('info', 'CREATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
+            // log_message('info', 'CREATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
             $log->ip = @ip_address_from_db($device->system->ip);
             $log->message = 'CREATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
             $this->discoveryLogModel->create($log);
@@ -110,7 +115,7 @@ class Input extends BaseController
             $query = $db->query($sql, [$device->system->id, ip_address_from_db($device->system->ip), $log->pid]);
         } else {
             // update an existing system
-            log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
+            // log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
             $log->message = 'UPDATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
             $log->system_id = $device->system->id;
             $log->ip = @ip_address_from_db($device->system->ip);

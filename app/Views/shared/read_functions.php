@@ -304,23 +304,29 @@ function read_column_name(string $name = ''): string
     if ($name === 'Ad Group') {
         $name = 'AD Group';
     }
-    $name = str_replace('Ip Address', 'IP Address', $name);
+    if ($name === 'Ip') {
+        $name = 'IP';
+    }
+    $name = str_replace('Ip ', 'IP ', $name);
     $name = str_replace('Device Id', 'Device ID', $name);
     $name = __($name);
     return $name;
 }
 
-function device_panel(string $name = '', string $toolbar = '', int $device_id = 0): string
+function device_panel(string $name = '', string $toolbar = '', int $device_id = 0, string $icon = ''): string
 {
+    if (empty($icon)) {
+        $icon = base_url() . 'icons/' . $name . '.svg';
+    }
     if ($toolbar === 'icontext') {
-        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
     } else if ($toolbar === 'icon') {
-        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "\" title=\"" . __("Close") . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
     } else {
-        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
     }
     $panel_add_button = '';
-    if ($name === 'attachments' or $name === 'credentials') {
+    if ($name === 'attachments' or $name === 'credentials' or $name === 'images') {
         if ($toolbar === 'icontext') {
             $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
         } else if ($toolbar === 'icon') {
@@ -333,7 +339,9 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     $header = '<div class="card-header">
         <div class="row">
             <div class="col-4 clearfix">
-                <h6 style="padding-top:10px;">' . __($human_name) . '</h6>
+                <h6 style="padding-top:10px;">
+                <img src="' . $icon . '" alt="" style="width:30px; padding-bottom:6px; padding-right:10px;">
+                ' . __($human_name) . '</h6>
             </div>
             <div class="col-8 clearfix">
                 <div class="btn-group btn-group-sm float-end" role="group" id="device_panel_' . $name . '">

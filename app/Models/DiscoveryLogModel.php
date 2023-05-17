@@ -258,7 +258,6 @@ class DiscoveryLogModel extends BaseModel
         // And update the record
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
-        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return false;
         }

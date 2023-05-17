@@ -34,7 +34,11 @@ include 'shared/collection_functions.php';
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;
                                         }
-                                        echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                        if ($key === 'icon') {
+                                            echo "<td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\"></td>\n";
+                                        } else {
+                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                        }
                                         ?>
                                     <?php } ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
