@@ -276,10 +276,18 @@ class ComponentsModel extends BaseModel
             if ($device->os_group === 'Linux') {
                 for ($i=0; $i<count($data); $i++) {
                     if (! empty($data[$i]->valid_from_raw)) {
-                        $data[$i]->valid_from = gmdate('Y-m-d H:i:s', strtotime($data[$i]->valid_from_raw));
+                        $from = strtotime($data[$i]->valid_from_raw);
+                        $data[$i]->valid_from = '';
+                        if (!empty($from)) {
+                            $data[$i]->valid_from = gmdate('Y-m-d H:i:s', $from);
+                        }
                     }
                     if (! empty($data[$i]->valid_to_raw)) {
-                        $data[$i]->valid_to = gmdate('Y-m-d H:i:s', strtotime($data[$i]->valid_to_raw));
+                        $to = strtotime($data[$i]->valid_to_raw);
+                        $data[$i]->valid_to = '';
+                        if (!empty($to)) {
+                            $data[$i]->valid_to = gmdate('Y-m-d H:i:s', $to);
+                        }
                     }
                 }
             }
@@ -573,8 +581,8 @@ class ComponentsModel extends BaseModel
         // PAGEFILE
         if ((string)$table === 'pagefile') {
             for ($i=0; $i<count($data); $i++) {
-                $data[$i]->initial_size = abs($data[$i]->initial_size);
-                $data[$i]->max_size = abs($data[$i]->max_size);
+                $data[$i]->initial_size = abs(intval($data[$i]->initial_size));
+                $data[$i]->max_size = abs(intval($data[$i]->max_size));
             }
         }
 
@@ -923,16 +931,17 @@ class ComponentsModel extends BaseModel
             }
             if ((string)$table === 'partition') {
                 // insert an entry into the graph table
-                $used_percent = @intval(($data_item->used / $data_item->size) * 100);
-                $free_percent = @intval(100 - $used_percent);
-                if (empty($device->org_id)) {
-                    $device->org_id = 1;
-                }
                 if (!isset($data_item->used) or $data_item->used === '') {
                     $data_item->used = 0;
                 }
                 if (!isset($data_item->free) or $data_item->free === '') {
                     $data_item->free = 0;
+                }
+                $used_percent = 0;
+                $free_percent = 0;
+                if (!empty($data_item->used) and !empty($data_item->size)) {
+                    $used_percent = @intval(($data_item->used / $data_item->size) * 100);
+                    $free_percent = @intval(100 - $used_percent);
                 }
                 $sql = 'INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
                 $query = $this->db->query($sql, [intval($device->org_id), intval($device->id), "{$table}", intval($id), "{$table}", intval($used_percent), intval($free_percent), intval($data_item->used), intval($data_item->free), intval($data_item->size), "{$device->last_seen}"]);

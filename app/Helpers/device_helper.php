@@ -112,7 +112,8 @@ if (!function_exists('audit_convert')) {
                             $newitem = new stdClass();
                             foreach ($item as $key => $value) {
                                 if ($key === 'options' && $section === 'policy') {
-                                    $json = @json_decode($value);
+                                    $json = false;
+                                    $json = @json_decode((string)$value);
                                     if (!empty($json)) {
                                         $values = $json;
                                     } else {
@@ -221,6 +222,7 @@ if (! function_exists('deviceMatch')) {
         if (!empty($details->ip)) {
             $log->ip = ip_address_from_db($details->ip);
         }
+        $log->timestamp = (!empty($device->system->last_seen)) ? $device->system->last_seen : @config('OpenAudit')->timestamp;
 
         $log_message = array(); // we will store our messages until we get a devices.id, then write them to the log
 
@@ -342,7 +344,6 @@ if (! function_exists('deviceMatch')) {
         // Match based on the OMK uuid
         if (!empty($details->omk_uuid) && empty($details->id)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.omk_uuid = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->omk_uuid}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -368,7 +369,6 @@ if (! function_exists('deviceMatch')) {
         // Match based on the Google Cloud id (instance_ident)
         if (!empty($details->instance_ident) && empty($details->id)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.instance_ident = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->instance_ident}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -393,7 +393,6 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_hostname_uuid) === 'y' && empty($details->id) && ! empty($details->uuid) && ! empty($details->hostname)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.hostname = ? AND devices.uuid = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->hostname}", "{$details->uuid}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -449,7 +448,6 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_hostname_dbus) === 'y' && empty($details->id) && ! empty($details->dbus_identifier) && ! empty($details->hostname)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.hostname = ? AND devices.dbus_identifier = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->hostname}", "{$details->dbus_identifier}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -505,7 +503,6 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_hostname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->hostname) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.hostname = ? AND devices.serial = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->hostname}", "{$details->serial}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -567,7 +564,6 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_dbus) === 'y' && empty($details->id) && ! empty($details->dbus_identifier)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dbus_identifier = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->dbus_identifier}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -627,7 +623,6 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_dns_fqdn) === 'y' && empty($details->id) && ! empty($details->dns_fqdn)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dns_fqdn = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->dns_fqdn}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -687,7 +682,6 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_dns_hostname) === 'y' && empty($details->id) && ! empty($details->dns_hostname)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dns_hostname = ? AND devices.status != 'deleted' LIMIT 1";
-            
             $data = array("{$details->dns_hostname}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -835,7 +829,7 @@ if (! function_exists('deviceMatch')) {
             $message = new stdClass();
             $message->message = 'MISS on serial + type.';
             $message->command_status = 'notice';
-            $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type;
+            $message->command_output = 'Serial: ' . $details->serial . ', Type: ' . $details->type;
             $log_message[] = $message;
         } else {
             if (strtolower($match->match_serial_type) !== 'y') {

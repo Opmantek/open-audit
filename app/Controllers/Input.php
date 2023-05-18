@@ -70,6 +70,10 @@ class Input extends BaseController
 
         $input = $request->getPost('data');
         $device = audit_convert($input);
+        if (!$device) {
+            log_message('error', 'Could not convert audit submission');
+            return false;
+        }
         $id = deviceMatch($device);
         if (empty($id) && !empty($device->system->id)) {
             $id = intval($device->system->id);
@@ -111,8 +115,8 @@ class Input extends BaseController
             $this->discoveryLogModel->create($log);
             // In the case where we inserted a new device, m_device::match will add a log entry, but have no
             // associated device_id. Update this one row.
-            $sql = 'UPDATE `discovery_log` SET device_id = ?, ip = ? WHERE device_id IS NULL AND pid = ?';
-            $query = $db->query($sql, [$device->system->id, ip_address_from_db($device->system->ip), $log->pid]);
+            $sql = 'UPDATE `discovery_log` SET device_id = ? WHERE device_id IS NULL AND pid = ? AND ip = ?';
+            $query = $db->query($sql, [$device->system->id, $log->pid, ip_address_from_db($device->system->ip)]);
         } else {
             // update an existing system
             // log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
@@ -142,6 +146,9 @@ class Input extends BaseController
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $audit_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
         }
+        if ($audit_ip === '::1') {
+            $audit_ip = '127.000.000.001';
+        }
 
         // We now have a devices.id - either supplied, found or created.
         if (!empty($device->system->discovery_id)) {
@@ -158,7 +165,7 @@ class Input extends BaseController
             $sql = "DELETE FROM `discovery_log` WHERE `device_id` = ? AND (`pid` != ? or `timestamp` != ?) AND discovery_id IS NULL";
             $query = $db->query($sql, [intval($device->system->id), intval(getmypid()), $device->system->last_seen]);
         }
-        $script_version = (!empty($details->script_version)) ? $details->script_version : '';
+        $script_version = (!empty($device->system->script_version)) ? $device->system->script_version : '';
         $username = (!empty($this->user->full_name)) ? $this->user->full_name : '';
         $sql = "INSERT INTO audit_log VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
         $db->query($sql, [$device->system->id, $username, $device->system->last_seen_by, $audit_ip, '', '', $device->system->last_seen, $script_version]);
