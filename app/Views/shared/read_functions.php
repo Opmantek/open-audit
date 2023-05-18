@@ -355,3 +355,9 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     </div>';
     return $header;
 }
+
+function device_component_button_read(string $collection = '', int $id = 0): string
+{
+    $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"" . url_to('componentsRead', $id) . "?components.type=$collection\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
+    return $return;
+}

@@ -82,7 +82,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
 
                                     <?php
                                     $show = false;
-                                    $sections = array('service', 'software', 'software_key');
+                                    $sections = array('server', 'service', 'software', 'software_key');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -111,7 +111,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
 
                                     <?php
                                     $show = false;
-                                    $sections = array('certificate', 'dns', 'file', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'server', 'server_item', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
+                                    $sections = array('certificate', 'dns', 'file', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -263,11 +263,11 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?php if (!empty($included['audit_log'])) {
                                                 foreach ($included['audit_log'] as $row) { ?>
                                                 <tr>
-                                                    <td><?= $row->id ?></td>
+                                                    <?= device_component_button_read('change_log', $row->id) ?>
                                                     <td><?= $row->timestamp ?></td>
                                                     <td><?= $row->username ?></td>
                                                     <td><?= $row->type ?></td>
-                                                    <td><?= $row->ip ?></td>
+                                                    <td><?= ip_address_from_db($row->ip) ?></td>
                                                     <td><?= $row->version ?></td>
                                                 </tr>
                                                 <?php } ?>
@@ -323,7 +323,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?php if (!empty($included['change_log'])) {
                                                 foreach ($included['change_log'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('componentsRead', $row->id) . "?components.type=change_log" ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <?= device_component_button_read('change_log', $row->id) ?>
                                                     <td class="text-center"><?= $row->id ?></td>
                                                     <td><?= $row->timestamp ?></td>
                                                     <td><?= $row->db_action ?></td>
@@ -407,7 +407,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th><?= __('ID') ?></th>
+                                                    <th class="text-center"><?= __('ID') ?></th>
                                                     <th><?= __('Discovery Name') ?></th>
                                                     <th><?= __('Timestamp') ?></th>
                                                     <th><?= __('Status') ?></th>
@@ -418,7 +418,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?php if (!empty($included['discovery_log'])) {
                                                 foreach ($included['discovery_log'] as $row) { ?>
                                                 <tr>
-                                                    <td><?= $row->id ?></td>
+                                                    <?= device_component_button_read('discovery_log', $row->id) ?>
                                                     <td><?= $row->{'discoveries.name'} ?></td>
                                                     <td><?= $row->timestamp ?></td>
                                                     <?php if ($row->command_status === 'warning') { ?>
@@ -457,7 +457,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th><?= __('View') ?></th>
+                                                    <th class="text-center"><?= __('View') ?></th>
                                                     <th><?= __('On') ?></th>
                                                     <th><?= __('By') ?></th>
                                                     <th><?= __('Attribute') ?></th>
@@ -469,7 +469,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?php if (!empty($included['edit_log'])) {
                                                 foreach ($included['edit_log'] as $row) { ?>
                                                 <tr>
-                                                    <td><?= $row->id ?></td>
+                                                    <?= device_component_button_read('edit_log', $row->id) ?>
                                                     <td><?= $row->timestamp ?></td>
                                                     <td><?= $row->source ?></td>
                                                     <td><?= $row->db_column ?></td>
@@ -632,7 +632,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th><?= __('View') ?></th>
+                                                    <th class="text-center"><?= __('View') ?></th>
                                                     <th><?= __('Interface') ?></th>
                                                     <th><?= __('Index') ?></th>
                                                     <th><?= __('IP') ?></th>
@@ -646,7 +646,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?php if (!empty($included['ip'])) {
                                                 foreach ($included['ip'] as $row) { ?>
                                                 <tr>
-                                                    <td><?= $row->id ?></td>
+                                                    <?= device_component_button_read('ip', $row->id) ?>
                                                     <td><?= $row->interface ?></td>
                                                     <td><?= $row->net_index ?></td>
                                                     <td><?= ip_address_from_db($row->ip) ?></td>
@@ -727,7 +727,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="snmp_section">
-                                <?=  device_panel('SNMP', $user->toolbar_style); ?>
+                                <?=  device_panel('SNMP', $user->toolbar_style, 0, base_url() . "icons/snmp_details.svg"); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -829,6 +829,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('bios', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
+                                        <?php if (!empty($included['bios'])) { ?>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.manufacturer=" . urlencode($included['bios'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('manufacturer', $included['bios'][0]->manufacturer, '', false, '', $link) ?>
@@ -843,22 +844,1077 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?= read_field('version', $included['bios'][0]->version) ?>
                                             <?= read_field('asset_tag', $included['bios'][0]->asset_tag) ?>
                                         </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="disk_section">
+                                <?=  device_panel('disk', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Index') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Family') ?></th>
+                                                    <th><?= __('Caption') ?></th>
+                                                    <th><?= __('Serial') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Smart Status') ?></th>
+                                                    <th><?= __('Interface') ?></th>
+                                                    <th><?= __('Firmware') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['disk'])) {
+                                                foreach ($included['disk'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('disk', $row->id) ?>
+                                                    <td><?= $row->hard_drive_index ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->model_family ?></td>
+                                                    <td><?= $row->caption ?></td>
+                                                    <td><?= $row->serial ?></td>
+                                                    <td><?= number_format($row->size/1024) ?> GB</td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->interface_type ?></td>
+                                                    <td><?= $row->firmware ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="memory_section">
+                                <?=  device_panel('memory', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Bank') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('Form Factor') ?></th>
+                                                    <th><?= __('Detail') ?></th>
+                                                    <th><?= __('Serial') ?></th>
+                                                    <th><?= __('Capacity') ?></th>
+                                                    <th><?= __('Speed') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['memory'])) {
+                                                foreach ($included['memory'] as $row) { ?>
+                                                    <?php
+                                                    $size = intval($row->size);
+                                                    if ($size >= 1024) {
+                                                        $size = number_format($size / 1024) . ' GB';
+                                                    } else {
+                                                        $size = number_format($size / 1024) . ' MB';
+                                                    }
+                                                    ?>
+                                                <tr>
+                                                    <?= device_component_button_read('memory', $row->id) ?>
+                                                    <td><?= $row->bank ?></td>
+                                                    <td><?= $row->type ?></td>
+                                                    <td><?= $row->form_factor ?></td>
+                                                    <td><?= $row->detail ?></td>
+                                                    <td><?= $row->serial ?></td>
+                                                    <td><?= $size ?></td>
+                                                    <?php $speed = (!empty($row->speed)) ? number_format($row->speed) . ' MHz' : ''; ?>
+                                                    <td><?= $speed ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="module_section">
+                                <?=  device_panel('module', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center"><?= __('Index') ?></th>
+                                                    <th class="text-center"><?= __('Connected To') ?></th>
+                                                    <th><?= __('Class') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('HW Revision') ?></th>
+                                                    <th><?= __('FW Revision') ?></th>
+                                                    <th><?= __('SW Revision') ?></th>
+                                                    <th><?= __('Serial') ?></th>
+                                                    <th><?= __('Asset ID') ?></th>
+                                                    <th class="text-center"><?= __('Is FRU') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['module'])) {
+                                                foreach ($included['module'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('module', $row->id) ?>
+                                                    <td class="text-center"><?= $row->module_index ?></td>
+                                                    <td class="text-center"><?= $row->contained_in ?></td>
+                                                    <td><?= $row->class_text ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->hardware_revision ?></td>
+                                                    <td><?= $row->firmware_revision ?></td>
+                                                    <td><?= $row->software_revision ?></td>
+                                                    <td><?= $row->serial ?></td>
+                                                    <td><?= $row->asset_ident ?></td>
+                                                    <td class="text-center"><?= $row->is_fru ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="monitor_section">
+                                <?=  device_panel('monitor', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Serial') ?></th>
+                                                    <th><?= __('Manufacture Date') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Aspect Ratio') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['monitor'])) {
+                                                foreach ($included['monitor'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('monitor', $row->id) ?>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->serial ?></td>
+                                                    <td><?= $row->manufacture_date ?></td>
+                                                    <td><?= $row->size ?></td>
+                                                    <td><?= $row->aspect_ratio ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="motherboard_section">
+                                <?=  device_panel('motherboard', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <?php if (!empty($included['motherboard'])) { ?>
+                                        <div class="col-4">
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.manufacturer=" . urlencode($included['motherboard'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('manufacturer', $included['motherboard'][0]->manufacturer, '', false, '', $link) ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.model=" . urlencode($included['motherboard'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('model', $included['motherboard'][0]->model, '', false, '', $link) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('serial', $included['motherboard'][0]->serial) ?>
+                                            <?= read_field('memory_slot_count', $included['motherboard'][0]->memory_slot_count) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('processor_slot_count', $included['motherboard'][0]->processor_slot_count) ?>
+                                            <?= read_field('processor_type', $included['motherboard'][0]->processor_type) ?>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="network_section">
+                                <?=  device_panel('network', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Connection') ?></th>
+                                                    <th><?= __('MAC Address') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Speed') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('DHCP') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['network'])) {
+                                                foreach ($included['network'] as $row) { ?>
+                                                    <?php
+                                                    $speed = intval($row->speed);
+                                                    if (intval($speed) < 1000) {
+                                                        $speed = $speed . ' b/s';
+                                                    } else if ($speed > 1000 and $speed <= 1000000) {
+                                                        $speed = number_format($speed / 1000) . ' Kb/s';
+                                                    } else if ($speed > 1000000 and $speed <= 1000000000) {
+                                                        $speed = number_format($speed / 1000 / 1000) . ' Mb/s';
+                                                    } else if ($speed >= 1000000000) {
+                                                        $speed = number_format($speed / 1000 / 1000 / 1000) . ' Gb/s';
+                                                    } ?>
+                                                <tr>
+                                                    <?= device_component_button_read('network', $row->id) ?>
+                                                    <td><?= $row->connection ?></td>
+                                                    <td><?= $row->mac ?></td>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $speed ?></td>
+                                                    <td><?= $row->connection_status ?></td>
+                                                    <td><?= $row->type ?></td>
+                                                    <td><?= $row->dhcp_enabled ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="optical_section">
+                                <?=  device_panel('optical', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Mount Point') ?></th>
+                                                    <th><?= __('Device') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['optical'])) {
+                                                foreach ($included['optical'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('optical', $row->id) ?>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->mount_point ?></td>
+                                                    <td><?= $row->device ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="partition_section">
+                                <?=  device_panel('partition', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Disk') ?></th>
+                                                    <th><?= __('Index') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('Mount Point') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Free') ?></th>
+                                                    <th><?= __('Used') ?></th>
+                                                    <th><?= __('Format') ?></th>
+                                                    <th><?= __('Serial') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['partition'])) {
+                                                foreach ($included['partition'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('partition', $row->id) ?>
+                                                    <td><?= $row->hard_drive_index ?></td>
+                                                    <td><?= $row->partition_disk_index ?></td>
+                                                    <td><?= $row->type ?></td>
+                                                    <td><?= $row->mount_point ?></td>
+                                                    <td><?= number_format($row->size / 1000) ?> GB</td>
+                                                    <td><?= number_format($row->used / 1000) ?> GB</td>
+                                                    <td><?= number_format($row->free / 1000) ?> GB</td>
+                                                    <td><?= $row->format ?></td>
+                                                    <td><?= $row->serial ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="processor_section">
+                                <?=  device_panel('processor', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <?php if (!empty($included['processor'])) { ?>
+                                        <div class="col-4">
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.manufacturer=" . urlencode($included['processor'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('manufacturer', $included['processor'][0]->manufacturer, '', false, '', $link) ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.description=" . urlencode($included['processor'][0]->description) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('description', $included['processor'][0]->description, '', false, '', $link) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('speed', number_format($included['processor'][0]->speed) . ' MHz') ?>
+                                            <?= read_field('architecture', $included['processor'][0]->architecture) ?>
+                                            <?= read_field('socket', $included['processor'][0]->socket) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('physical_count', $included['processor'][0]->physical_count) ?>
+                                            <?= read_field('core_count', $included['processor'][0]->core_count) ?>
+                                            <?= read_field('logical_count', $included['processor'][0]->logical_count) ?>
+                                            <?= read_field('hyperthreading', $included['processor'][0]->hyperthreading) ?>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="radio_section">
+                                <?=  device_panel('radio', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Index') ?></th>
+                                                    <th><?= __('RX Level') ?></th>
+                                                    <th><?= __('RX Profile') ?></th>
+                                                    <th><?= __('RX Freq') ?></th>
+                                                    <th><?= __('RX Power') ?></th>
+                                                    <th><?= __('RX Bitrate') ?></th>
+                                                    <th><?= __('TX Level') ?></th>
+                                                    <th><?= __('TX Profile') ?></th>
+                                                    <th><?= __('TX Freq') ?></th>
+                                                    <th><?= __('TX Power') ?></th>
+                                                    <th><?= __('TX Bitrate') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['radio'])) {
+                                                foreach ($included['radio'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('radio', $row->id) ?>
+                                                    <td><?= $row->net_index ?></td>
+                                                    <td><?= $row->rx_level ?></td>
+                                                    <td><?= $row->rx_profile ?></td>
+                                                    <td><?= $row->rx_freq ?></td>
+                                                    <td><?= $row->rx_power ?></td>
+                                                    <td><?= $row->rx_bitrate ?></td>
+                                                    <td><?= $row->tx_level ?></td>
+                                                    <td><?= $row->tx_profile ?></td>
+                                                    <td><?= $row->tx_freq ?></td>
+                                                    <td><?= $row->tx_power ?></td>
+                                                    <td><?= $row->tx_bitrate ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="scsi_section">
+                                <?=  device_panel('scsi', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('Device') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['scsi'])) {
+                                                foreach ($included['scsi'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('scsi', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->type ?></td>
+                                                    <td><?= $row->device ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="sound_section">
+                                <?=  device_panel('sound', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Device') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['sound'])) {
+                                                foreach ($included['sound'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('sound', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->device ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="usb_section">
+                                <?=  device_panel('usb', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Class') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('Present') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('Availability') ?></th>
+                                                    <th><?= __('Error Code') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['usb'])) {
+                                                foreach ($included['usb'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('usb', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->class ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->present ?></td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->availability ?></td>
+                                                    <td><?= $row->config_manager_error_code ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="video_section">
+                                <?=  device_panel('video', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Memory') ?></th>
+                                                    <th><?= __('Device') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['video'])) {
+                                                foreach ($included['video'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('video', $row->id) ?>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->size ?></td>
+                                                    <td><?= $row->device ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="service_section">
+                                <?=  device_panel('service', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('Start Mode') ?></th>
+                                                    <th><?= __('User') ?></th>
+                                                    <th><?= __('State') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['service'])) {
+                                                foreach ($included['service'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('service', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->start_mode ?></td>
+                                                    <td><?= $row->user ?></td>
+                                                    <td><?= $row->state ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="software_section">
+                                <?=  device_panel('software', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Version') ?></th>
+                                                    <th><?= __('Publisher') ?></th>
+                                                    <th><?= __('Installed On') ?></th>
+                                                    <th><?= __('Installed By') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['software'])) {
+                                                foreach ($included['software'] as $row) { ?>
+                                                    <?php
+                                                    $install_date = $row->installed_on;
+                                                    if ($install_date === '2000-01-01 00:00:00' or $install_date === '0000-00-00 00:00:00') {
+                                                        $install_date = '';
+                                                    }
+                                                    if ($install_date === '' and !empty($key->install_date)) {
+                                                        $install_date = $key->install_date;
+                                                    }
+                                                    ?>
+                                                <tr>
+                                                    <?= device_component_button_read('software', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->version ?></td>
+                                                    <td><?= $row->publisher ?></td>
+                                                    <td><?= $install_date ?></td>
+                                                    <td><?= $row->installed_by ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="software_key_section">
+                                <?=  device_panel('software_key', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Text') ?></th>
+                                                    <th><?= __('Edition') ?></th>
+                                                    <th><?= __('Release') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['software_key'])) {
+                                                foreach ($included['software_key'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('software_key', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->string ?></td>
+                                                    <td><?= $row->edition ?></td>
+                                                    <td><?= $row->rel ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="certificate_section">
+                                <?=  device_panel('certificate', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Issuer') ?></th>
+                                                    <th><?= __('Valid From') ?></th>
+                                                    <th><?= __('Valid To') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['certificate'])) {
+                                                foreach ($included['certificate'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('certificate', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->issuer ?></td>
+                                                    <td><?= $row->valid_from ?></td>
+                                                    <td><?= $row->valid_to ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="dns_section">
+                                <?=  device_panel('dns', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('FQDN') ?></th>
+                                                    <th><?= __('IP') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['dns'])) {
+                                                foreach ($included['dns'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('dns', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->fqdn ?></td>
+                                                    <td><?= ip_address_from_db($row->ip) ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="file_section">
+                                <?=  device_panel('dns', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Directory') ?></th>
+                                                    <th><?= __('Full Name') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Last Changed') ?></th>
+                                                    <th><?= __('Owner') ?></th>
+                                                    <th><?= __('Permission') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['file'])) {
+                                                foreach ($included['file'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('file', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->directory ?></td>
+                                                    <td><?= $row->full_name ?></td>
+                                                    <td><?= $row->size ?></td>
+                                                    <td><?= $row->last_changed ?></td>
+                                                    <td><?= $row->owner ?></td>
+                                                    <td><?= $row->permission ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="log_section">
+                                <?=  device_panel('log', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('File Name') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Max Size') ?></th>
+                                                    <th><?= __('Overwrite') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['log'])) {
+                                                foreach ($included['log'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('log', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->file_name ?></td>
+                                                    <td><?= $row->file_size ?></td>
+                                                    <td><?= $row->max_file_size ?></td>
+                                                    <td><?= $row->overwrite ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="netstat_section">
+                                <?=  device_panel('netstat', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Protocol') ?></th>
+                                                    <th><?= __('IP Address') ?></th>
+                                                    <th><?= __('Port') ?></th>
+                                                    <th><?= __('Program') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['netstat'])) {
+                                                foreach ($included['netstat'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('netstat', $row->id) ?>
+                                                    <td><?= $row->protocol ?></td>
+                                                    <td><?= ip_address_from_db($row->ip) ?></td>
+                                                    <td><?= $row->port ?></td>
+                                                    <td><?= $row->program ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="nmap_section">
+                                <?=  device_panel('nmap', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Protocol') ?></th>
+                                                    <th><?= __('IP Address') ?></th>
+                                                    <th><?= __('Port') ?></th>
+                                                    <th><?= __('Program') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['nmap'])) {
+                                                foreach ($included['nmap'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('nmap', $row->id) ?>
+                                                    <td><?= $row->protocol ?></td>
+                                                    <td><?= ip_address_from_db($row->ip) ?></td>
+                                                    <td><?= $row->port ?></td>
+                                                    <td><?= $row->program ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="pagefile_section">
+                                <?=  device_panel('pagefile', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Initial Size') ?></th>
+                                                    <th><?= __('Max Size') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['pagefile'])) {
+                                                foreach ($included['pagefile'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('pagefile', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->initial_size ?></td>
+                                                    <td><?= $row->max_size ?></td>
+                                                    <td><?= $row->size ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="policy_section">
+                                <?=  device_panel('policy', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Value') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['policy'])) {
+                                                foreach ($included['policy'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('policy', $row->id) ?>
+                                                    <td><?= $row->type ?></td>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->value ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="print_queue_section">
+                                <?=  device_panel('print_queue', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Manufacturer') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('Port Name') ?></th>
+                                                    <th><?= __('Shared') ?></th>
+                                                    <th><?= __('Share Name') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['print_queue'])) {
+                                                foreach ($included['print_queue'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('print_queue', $row->id) ?>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->port_name ?></td>
+                                                    <td><?= $row->shared ?></td>
+                                                    <td><?= $row->share_name ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="route_section">
+                                <?=  device_panel('route', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Metric') ?></th>
+                                                    <th><?= __('Destination') ?></th>
+                                                    <th><?= __('Mask') ?></th>
+                                                    <th><?= __('Gateway') ?></th>
+                                                    <th><?= __('Protocol') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['route'])) {
+                                                foreach ($included['route'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('route', $row->id) ?>
+                                                    <td><?= $row->metric ?></td>
+                                                    <td><?= $row->destination ?></td>
+                                                    <td><?= $row->mask ?></td>
+                                                    <td><?= $row->next_hop ?></td>
+                                                    <td><?= $row->protocol ?></td>
+                                                    <td><?= $row->type ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php if (!empty($included['server'])) { ?>
+                            <div style="display:none;" id="server_section">
+
+                                <?php foreach ($included['server'] as $row) { ?>
+                                <div style="margin-bottom:20px;" class="card" id="<?= $row->name ?>_section">
+                                    <?php $icon = base_url() . 'icons/' . $row->type . '.svg'; ?>
+                                    <?= device_panel($row->name, $user->toolbar_style, 0, $icon); ?>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.type=" . urlencode($row->type) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?= read_field('type', $row->type, '', false, '', $link) ?>
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.name=" . urlencode($row->name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?= read_field('Name', $row->name, '', false, '', $link) ?>
+                                            </div>
+                                            <div class="col-4">
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version=" . urlencode($row->version) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?= read_field('version', $row->version, '', false, '', $link) ?>
+                                                <?php if ($row->type === 'web') {
+                                                    $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version_string=" . urlencode($row->version_string) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                    echo read_field('version_string', $row->version_string, '', false, '', $link);
+                                                } else if ($row->type === 'database') {
+                                                    $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.status=" . urlencode($row->status) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                    echo read_field('status', $row->status, '', false, '', $link);
+                                                } ?>
+                                            </div>
+                                            <div class="col-4">
+                                                <?= read_field('IP', $row->ip) ?>
+                                                <?= read_field('port', $row->port) ?>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <?php if ($row->type === 'web') { ?>
+                                                                <th class="text-center"><?= __('View') ?></th>
+                                                                <th><?= __('Name') ?></th>
+                                                                <th><?= __('Description') ?></th>
+                                                                <th><?= __('Internal ID') ?></th>
+                                                                <th><?= __('IP') ?></th>
+                                                                <th><?= __('Hostname') ?></th>
+                                                                <th><?= __('Port') ?></th>
+                                                                <th><?= __('Status') ?></th>
+                                                                <th><?= __('Instance') ?></th>
+                                                                <th><?= __('Path') ?></th>
+                                                            <?php } else if ($row->type === 'database') { ?>
+                                                                <th class="text-center"><?= __('View') ?></th>
+                                                                <th><?= __('Name') ?></th>
+                                                                <th><?= __('Internal ID') ?></th>
+                                                                <th><?= __('Instance') ?></th>
+                                                                <th><?= __('Path') ?></th>
+                                                                <th><?= __('Size') ?></th>
+                                                            <?php } ?>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <?php if (!empty($included['server_item'])) {
+                                                        foreach ($included['server_item'] as $server_item) {
+                                                            if ($server_item->parent_name == $row->name) {
+                                                                if ($row->type === 'web') { ?>
+                                                                    <tr>
+                                                                        <?= device_component_button_read('server_item', $server_item->id) ?>
+                                                                        <td><?= $server_item->name ?></td>
+                                                                        <td><?= $server_item->description ?></td>
+                                                                        <td><?= $server_item->id_internal ?></td>
+                                                                        <td><?= $server_item->ip ?></td>
+                                                                        <td><?= $server_item->hostname ?></td>
+                                                                        <td><?= $server_item->port ?></td>
+                                                                        <td><?= $server_item->status ?></td>
+                                                                        <td><?= $server_item->instance ?></td>
+                                                                        <td><?= $server_item->path ?></td>
+                                                                    </tr>
+                                                                <?php } else if ($row->type === 'database') { ?>
+                                                                    <tr>
+                                                                        <?= device_component_button_read('server_item', $server_item->id) ?>
+                                                                        <td><?= $server_item->name ?></td>
+                                                                        <td><?= $server_item->id_internal ?></td>
+                                                                        <td><?= $server_item->instance ?></td>
+                                                                        <td><?= $server_item->path ?></td>
+                                                                        <td><?= $server_item->size ?></td>
+                                                                    </tr>
+                                                                <?php } ?>
+                                                            <?php } ?>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+                            <?php } ?>
 
 
 
