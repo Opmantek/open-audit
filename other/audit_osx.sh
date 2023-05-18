@@ -313,7 +313,7 @@ fi
 echo "  <memory>" >> $xml_file
 if [ "$processor_architecture" == "arm64" ]; then
     memory_type=$(system_profiler SPMemoryDataType | grep Type | cut -d: -f2 | sed 's/^ *//g')
-    memory_capacity=$system_pc_memory
+    memory_capacity=$(expr "$system_pc_memory" / 1024)
 
     echo "      <item>" >> $xml_file
     echo "          <bank>1</bank>" >> $xml_file
