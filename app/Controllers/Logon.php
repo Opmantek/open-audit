@@ -75,7 +75,11 @@ class Logon extends Controller
         $user = $this->logonModel->logon($username, $password);
         if ($user) {
             $this->session->set('user_id', $user->id);
-            return redirect()->to(site_url('orgs'));
+            if (!empty($_POST['url'])) {
+                header('Location: ' . $_POST['url']);
+                exit;
+            }
+            return redirect()->to(url_to('home'));
         }
         log_message('error', json_encode($user));
         return redirect()->to(site_url('logon'));

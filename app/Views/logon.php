@@ -75,7 +75,7 @@ header('X-Content-Type-Options: nosniff');
     <body class="d-flex flex-column h-100" onload="document.form.username.focus();">
         <br>
         <form class="form-horizontal" id="form" name="form" method="post" action="logon">
-            <input type="hidden" name="url" id="url" value="<?= previous_url() ?>" />
+            <input type="hidden" name="url" id="url" value="<?= @$_SESSION['url'] ?>" />
             <div class="row">
                 <div class="col-8 offset-2 text-center">
                     <br><br>
