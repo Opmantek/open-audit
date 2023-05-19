@@ -33,9 +33,9 @@ $routes->collections = array('applications','attributes','baselines',
 'baselines_policies','buildings','clouds','clusters','collectors', 'components',
 'configuration','connections','credentials','dashboards','devices',
 'discoveries','discovery_log','discovery_scan_options','errors','fields','files',
-'floors','groups','help','integrations','ldap_servers','licenses','locations','logs',
+'floors','groups','integrations','ldap_servers','licenses','locations','logs',
 'networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
-'rooms','rows','rules','scripts','search','sessions','summaries','tasks','users',
+'rooms','rows','rules','scripts','search','summaries','tasks','users',
 'widgets');
 
 # The default route
