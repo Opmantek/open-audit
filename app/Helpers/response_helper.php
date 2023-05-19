@@ -44,7 +44,7 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
             if (empty($response->meta->collection)) {
-                $response->meta->collection = config('OpenAudit')->homepage;
+                $response->meta->collection = (!empty(config('OpenAudit')->homepage)) ? config('OpenAudit')->homepage : 'orgs';
             }
         }
         $valid_collections = response_valid_collections();
