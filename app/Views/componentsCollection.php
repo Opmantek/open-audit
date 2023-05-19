@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
+$user->permissions['components'] = '';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -14,14 +15,12 @@ include 'shared/collection_functions.php';
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
+                                    <th data-orderable="false" class="text-center"><?= __('View Device') ?></th>
+                                    <?php foreach ($data[0]->attributes as $key => $value) {
+                                        if ($key === 'id' or $key === 'orgs.id' or $key === 'devices.id' or $key === 'device_id') {
                                             continue;
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
-                                    <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
                             </thead>
@@ -29,16 +28,14 @@ include 'shared/collection_functions.php';
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
-                                    <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
+                                    <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('componentsRead', $item->id) ?>?components.type=<?= $item->type ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                    <?= collection_button_read('devices', $item->attributes->device_id) ?>
+                                    <?php foreach ($data[0]->attributes as $key => $value) {
+                                        if ($key === 'id' or $key === 'orgs.id' or $key === 'devices.id' or $key === 'device_id') {
                                             continue;
                                         }
                                         echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         ?>
-                                    <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>

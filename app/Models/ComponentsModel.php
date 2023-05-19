@@ -25,40 +25,43 @@ class ComponentsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = array();
         $table = '';
         for ($i=0; $i < count($resp->meta->filter); $i++) {
-            if ($resp->meta->filter[$i]->name === 'type') {
+            if ($resp->meta->filter[$i]->name === 'type' or $resp->meta->filter[$i]->name === 'components.type') {
                 $table = $resp->meta->filter[$i]->value;
-                $this->builder = $this->db->table($table);
                 $properties[] = $table . '.*';
-                unset($resp->meta->filter[$i]);
-                $resp->meta->filter = array_values($resp->meta->filter);
             }
+        }
+        if ($table === '') {
+            // TODO - fix this, we just choose bios by default
+            $table = 'bios';
+            $this->builder = 'bios';
+            $properties[] = 'bios.*';
+        }
+        $orgs = array();
+        for ($i=0; $i < count($resp->meta->filter); $i++) {
             if ($resp->meta->filter[$i]->name === 'components.org_id') {
                 $resp->meta->filter[$i]->name = 'devices.org_id';
+                $orgs = $resp->meta->filter[$i]->value;
             }
         }
-        $properties[] = "devices.name as `devices.name`";
-        $properties[] = "devices.id as `devices.id`";
-        # NOTE - need to add the false arguement to the below so we don't escape the `orgs.name` as `orgs`.`name` above
-        $this->builder->select($properties, false);
-        $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
+        $device_sql = '';
+        for ($i=0; $i < count($resp->meta->filter); $i++) {
+            if ($resp->meta->filter[$i]->name === 'components.device_id') {
+                $device_sql = " AND `$table`.device_id = " . intval($resp->meta->filter[$i]->value);
             }
         }
-        $this->builder->orderBy($resp->meta->sort);
-        # $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $this->builder->limit(10);
-        $query = $this->builder->get();
+
+        $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) $device_sql";
+        $query = $this->db->query($sql, [implode(',', $orgs)]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'components');
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // echo "<pre>";
+        // print_r(format_data($query->getResult(), $table));
+        // exit;
+        return format_data($query->getResult(), $table);
     }
 
     /**
@@ -118,28 +121,7 @@ class ComponentsModel extends BaseModel
      */
     public function listUser($where = array()): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
-
-        $properties = array();
-        $properties[] = 'attributes.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'attributes.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
-        if (!empty($where[0]) and !empty($where[1])) {
-            $this->builder->where($where[0], $where[1]);
-        }
-        if (!empty($where[2]) and !empty($where[3])) {
-            $this->builder->where($where[2], $where[3]);
-        }
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'attributes');
+        return [];
     }
 
     /**
@@ -154,6 +136,59 @@ class ComponentsModel extends BaseModel
             return array();
         }
         return $query->getResult();
+    }
+
+    /**
+     * Read an individual item from the database, by ID
+     *
+     * @param  int $id The ID of the requested item
+     *
+     * @return array   The array containing the requested item
+     */
+    public function read(int $id = 0): array
+    {
+        $instance = get_instance();
+        foreach ($instance->resp->meta->filter as $filter) {
+            if ($filter->name === 'components.type' or $filter->name === 'type') {
+                $type = $filter->value;
+            }
+        }
+        $tables = $this->db->listTables();
+        if (!in_array($type, $tables)) {
+            return [];
+        }
+        $sql = "SELECT * FROM `$type` WHERE id = ?";
+        $query = $this->db->query($sql, [$id]);
+        log_message('error', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        return format_data($query->getResult(), $type);
+    }
+
+    /**
+     * Reset a table
+     *
+     * @return bool Did it work or not?
+     */
+    public function reset(string $table = ''): bool
+    {
+        if ($this->tableReset('attributes')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update an individual item in the database
+     *
+     * @param  object  $data The data attributes
+     *
+     * @return bool    true || false depending on success
+     */
+    public function update($id = null, $data = null): bool
+    {
+        return true;
     }
 
     public function upsert(string $table = '', object $device = null, array $data = null, object $log = null, array $match_columns = null): bool
@@ -746,11 +781,11 @@ class ComponentsModel extends BaseModel
                 if (!isset($virtual_machine->uuid) or $virtual_machine->uuid === '') {
                     $virtual_machine->uuid = '';
                 } else {
-                    $sql = "SELECT `device`.`id` AS `device`, `device`.`icon` FROM `device` WHERE LOWER(`uuid`) = LOWER(?) AND `device`.`status` = 'production'";
+                    $sql = "SELECT id, icon FROM devices WHERE LOWER(`uuid`) = LOWER(?) AND status = 'production'";
                     $query = $this->db->query($sql, [$virtual_machine->uuid]);
                     if ($query->getNumRows() > 0) {
                         $row = $query->row();
-                        $virtual_machine->guest_system_id = $row->system_id;
+                        $virtual_machine->guest_system_id = $row->id;
                         $virtual_machine->icon = $row->icon;
                         $sql = 'UPDATE devices SET devices.vm_server_name = ?, devices.vm_device_id = ? WHERE devices.id = ?';
                         $query = $this->db->query($sql, ["{$device->hostname}", "{$device->id}", $virtual_machine->guest_system_id]);
@@ -1040,47 +1075,6 @@ class ComponentsModel extends BaseModel
     }
 
     /**
-     * Read an individual item from the database, by ID
-     *
-     * @param  int $id The ID of the requested item
-     *
-     * @return array   The array containing the requested item
-     */
-    public function read(int $id = 0): array
-    {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'attributes');
-    }
-
-    /**
-     * Reset a table
-     *
-     * @return bool Did it work or not?
-     */
-    public function reset(string $table = ''): bool
-    {
-        if ($this->tableReset('attributes')) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Update an individual item in the database
-     *
-     * @param  object  $data The data attributes
-     *
-     * @return bool    true || false depending on success
-     */
-    public function update($id = null, $data = null): bool
-    {
-        return true;
-    }
-
-    /**
      * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
@@ -1089,17 +1083,17 @@ class ComponentsModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'attributes';
+        $collection = '';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
-        $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
-        $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
-        $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
+        $dictionary->attributes->collection = array();
+        $dictionary->attributes->create = array();
+        $dictionary->attributes->fields = array();
+        $dictionary->attributes->fieldsMeta = array();
+        $dictionary->attributes->update = array();
 
         $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.</p>';
 

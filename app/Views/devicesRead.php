@@ -1819,7 +1819,6 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
 
                             <?php if (!empty($included['server'])) { ?>
                             <div style="display:none;" id="server_section">
-
                                 <?php foreach ($included['server'] as $row) { ?>
                                 <div style="margin-bottom:20px;" class="card" id="<?= $row->name ?>_section">
                                     <?php $icon = base_url() . 'icons/' . $row->type . '.svg'; ?>
@@ -1916,6 +1915,264 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                             </div>
                             <?php } ?>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="share_section">
+                                <?=  device_panel('share', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Path') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Permissions') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['share'])) {
+                                                foreach ($included['share'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('share', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->path ?></td>
+                                                    <td><?= $row->size ?></td>
+                                                    <td><?= $row->permissions ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="task_section">
+                                <?=  device_panel('task', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('State') ?></th>
+                                                    <th><?= __('Task') ?></th>
+                                                    <th><?= __('Next Run') ?></th>
+                                                    <th><?= __('Last Run') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['task'])) {
+                                                foreach ($included['task'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('task', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->state ?></td>
+                                                    <td><?= $row->task ?></td>
+                                                    <td><?= $row->next_run ?></td>
+                                                    <td><?= $row->last_run ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="user_section">
+                                <?=  device_panel('user', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <?php if ($resource->os_group === 'Windows') { ?>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Caption') ?></th>
+                                                    <th><?= __('Disabled') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('Password Expires') ?></th>
+                                                    <th><?= __('Password Last Changed') ?></th>
+                                                    <th><?= __('Last Logon') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                </tr>
+                                                <?php } else { ?>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('SID') ?></th>
+                                                    <th><?= __('SSH Key') ?></th>
+                                                    <th><?= __('Full Name') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('Password Required') ?></th>
+                                                    <th><?= __('Password Disabled') ?></th>
+                                                    <th><?= __('Password Expires') ?></th>
+                                                    <th><?= __('Home') ?></th>
+                                                    <th><?= __('Shell') ?></th>
+                                                </tr>
+                                                <?php } ?>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['user'])) {
+                                                foreach ($included['user'] as $row) { ?>
+                                                    <?php if (!empty($row->password_last_changed) and $row->password_last_changed === '2000-01-01 00:00:00') {
+                                                        $row->password_last_changed = '';
+                                                    } ?>
+                                                    <?php if (!empty($row->last_logon) and $row->last_logon === '2000-01-01 00:00:00') {
+                                                        $row->last_logon = '';
+                                                    } ?>
+                                                    <?php if ($row->keys === '[]') {
+                                                        $row->keys = '';
+                                                    } ?>
+                                                    <?php if (!empty($row->keys)) {
+                                                        $row->keys = 'Click View for details';
+                                                    } ?>
+                                                    <?php if ($resource->os_group === 'Windows') { ?>
+                                                    <tr>
+                                                        <?= device_component_button_read('user', $row->id) ?>
+                                                        <td><?= $row->name ?></td>
+                                                        <td><?= $row->caption ?></td>
+                                                        <td><?= $row->disabled ?></td>
+                                                        <td><?= $row->status ?></td>
+                                                        <td><?= $row->type ?></td>
+                                                        <td><?= $row->password_expires ?></td>
+                                                        <td><?= $row->password_last_changed ?></td>
+                                                        <td><?= $row->last_logon ?></td>
+                                                        <td><?= $row->status ?></td>
+                                                    </tr>
+                                                    <?php } else { ?>
+                                                    <tr>
+                                                        <?= device_component_button_read('user', $row->id) ?>
+                                                        <td><?= $row->name ?></td>
+                                                        <td><?= $row->sid ?></td>
+                                                        <td><?= $row->keys ?></td>
+                                                        <td><?= $row->full_name ?></td>
+                                                        <td><?= $row->status ?></td>
+                                                        <td><?= $row->password_required ?></td>
+                                                        <td><?= $row->password_disabled ?></td>
+                                                        <td><?= $row->password_expires ?></td>
+                                                        <td><?= $row->home ?></td>
+                                                        <td><?= $row->shell ?></td>
+                                                    </tr>
+                                                    <?php } ?>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="user_group_section">
+                                <?=  device_panel('user_group', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('SID') ?></th>
+                                                    <th><?= __('Members') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['user_group'])) {
+                                                foreach ($included['user_group'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('user_group', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->sid ?></td>
+                                                    <td><?= $row->members ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="variable_section">
+                                <?=  device_panel('variable', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Program') ?></th>
+                                                    <th><?= __('Value') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['variable'])) {
+                                                foreach ($included['variable'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('variable', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->program ?></td>
+                                                    <td style="word-wrap:break-word; min-width:160px; max-width:160px; white-space:normal;"><?= $row->value ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="vm_section">
+                                <?=  device_panel('vm', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th><?= __('View Device') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Type') ?></th>
+                                                    <th><?= __('Memory') ?></th>
+                                                    <th><?= __('CPU') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('UUID') ?></th>
+                                                    <th><?= __('Config File') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['vm'])) {
+                                                foreach ($included['vm'] as $row) { ?>
+                                                    <?php if ($row->icon !== '') {
+                                                        $row->icon = '<img src="' . base_url() . 'device_images/' . $key->{'icon'} . '.svg" alt="' . $key->{'icon'} . '" style="width:24px;">';
+                                                    } ?>
+                                                <tr>
+                                                    <?= device_component_button_read('vm', $row->id) ?>
+                                                    <td><?= $row->icon ?></td>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->type ?></td>
+                                                    <td><?= $row->memory_count ?></td>
+                                                    <td><?= $row->cpu_count ?></td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->uuid ?></td>
+                                                    <td><?= $row->config_file ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
 
 
