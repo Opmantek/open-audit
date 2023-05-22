@@ -328,7 +328,11 @@ class DevicesModel extends BaseModel
         }
 
         $log->message = "System update start for ID: $id";
-        #discovery_log($log);
+        if (!empty($data->last_seen_by)) {
+            $source = $data->last_seen_by;
+        } else {
+            $source = 'user';
+        }
 
         if (empty($data->discovery_id)) {
             unset($data->discovery_id);
@@ -347,8 +351,11 @@ class DevicesModel extends BaseModel
         $data->original_last_seen_by = $db_entry->last_seen_by;
         $data->original_last_seen = $db_entry->last_seen;
         $data->original_timestamp = $db_entry->last_seen;
+        if (empty($data->timestamp) and !empty($data->last_seen)) {
+            $data->timestamp = $data->last_seen;
+        }
         if (empty($data->timestamp)) {
-            $data->timestamp = @$data->last_seen;
+            $data->timestamp = config('Openaudit')->timestamp;
         }
         // Get the lastest edit_log data
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE device_id = ? AND `db_table` = 'devices' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
@@ -372,15 +379,11 @@ class DevicesModel extends BaseModel
                         }
                     }
                     // calculate the weight
-                    $weight = intval(weight($data->last_seen_by));
+                    $weight = intval(weight($source));
                     if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
-                        // $update = new stdClass();
-                        // $update->key = $key;
-                        // $update->value = $value;
-                        // $update_device[] = $update;
                         $update_device->$key = $value;
                         $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
-                        $query = $this->db->query($sql, [0, $id, $data->last_seen_by, $weight, $key, $data->timestamp, $value, $previous_value]);
+                        $query = $this->db->query($sql, [0, $id, $source, $weight, $key, $data->timestamp, $value, $previous_value]);
                     } else {
                         // We have an existing edit_log entry with a more important change - don't touch the `devices`.`$key` value
                     }
@@ -390,10 +393,6 @@ class DevicesModel extends BaseModel
         // Add our non-edit_log compared attributes to the data to be updated
         foreach ($data as $key => $value) {
             if ($key !== 'id' && in_array($key, $disallowed_fields)) {
-                // $update = new stdClass();
-                // $update->key = $key;
-                // $update->value = (string)$value;
-                // $update_device[] = $update;
                 $update_device->$key = $value;
             }
         }
@@ -448,13 +447,15 @@ class DevicesModel extends BaseModel
             $row = $query->getRow();
             $data->org_id = $row->org_id;
         }
-        // Add a count to our chart table
-        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), ?, ?, 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
-        $query = $this->db->query($sql, [$data->last_seen_by, $data->org_id]);
+        // Add a count to our chart table, if source is not from a user change
+        if ($source !== 'user') {
+            $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), ?, ?, 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+            $query = $this->db->query($sql, [$source, $data->org_id]);
+        }
+
         $log->message = 'System update end for ID: ' . $id;
         $log->summary = 'finish function';
         #discovery_log($log);
-
         return true;
     }
 
