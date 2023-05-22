@@ -259,9 +259,9 @@ class UsersModel extends BaseModel
 
             if (!empty($user)) {
                 $temp = bin2hex(openssl_random_pseudo_bytes(30));
+                $user->access_token = $temp;
                 $access_token[] = $temp;
                 $access_token = array_slice($access_token, -intval(config('Openaudit')->access_token_count));
-                $user->access_token = $access_token;
                 $userdata = array('user_id' => $user->id, 'access_token' => $access_token);
                 $session->set($userdata);
                 return $user;
