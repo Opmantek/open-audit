@@ -157,7 +157,7 @@ $(document).ready(function () {
                 // alert($type + ' deleted.');
                 // toast = '<div class="container-fluid"><div class="alert alert-success alert-dismissible fade show" role="alert">' + $type + ' deleted.<button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button></div></div>'
                 // $('#credentials_section').append(toast);
-                $("#liveToastSuccess-header").text("Update Succeeded");
+                $("#liveToastSuccess-header").text("Delete Succeeded");
                 $("#liveToastSuccess-body").text($type + " has been deleted.");
                 var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
                 var toastList = toastElList.map(function(toastEl) {
