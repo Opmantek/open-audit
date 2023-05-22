@@ -141,6 +141,40 @@ $(document).ready(function () {
         });
     });
 
+    /* Delete Component links */
+    $('.delete_component_link').click(function (e) {
+        if (confirm("Are you sure?\nThis will permanently DELETE this entry for " + $(this).attr('data-component_type') + ".") !== true) {
+            return;
+        }
+        var $type = $(this).attr('data-component_type');
+        var $id = $(this).attr('data-id');
+        var $url = baseurl + '/components/' + $type + '/' + $id;
+        $.ajax({
+            type: 'DELETE',
+            url: $url,
+            dataType: 'json',
+            success: function(data, textStatus) { 
+                // alert($type + ' deleted.');
+                // toast = '<div class="container-fluid"><div class="alert alert-success alert-dismissible fade show" role="alert">' + $type + ' deleted.<button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button></div></div>'
+                // $('#credentials_section').append(toast);
+                $("#liveToastSuccess-header").text("Update Succeeded");
+                $("#liveToastSuccess-body").text($type + " has been deleted.");
+                var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                var toastList = toastElList.map(function(toastEl) {
+                    return new bootstrap.Toast(toastEl)
+                });
+                toastList.forEach(toast => toast.show());
+                $("#components_" + $type + "_" + $id).remove();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("errorThrown: " + errorThrown);
+                console.log(JSON.stringify(jqXHR));
+                alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
+                return false; }
+        });
+    });
+
     /* Toasts for the various feature / edition items */
     $('.toastEnterprise').on('click', function() {
         var toastElList = [].slice.call(document.querySelectorAll('.toast-ent'));

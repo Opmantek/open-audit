@@ -328,11 +328,11 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     $panel_add_button = '';
     if ($name === 'attachments' or $name === 'credentials' or $name === 'images') {
         if ($toolbar === 'icontext') {
-            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
         } else if ($toolbar === 'icon') {
-            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\"><span class=\"fa fa-plus\"></span></a>";
+            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus\"></span></a>";
         } else {
-            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('devicesCreateSubForm', $device_id, $name) . "\">" . __("Add") . "</a>";
+            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\">" . __("Add") . "</a>";
         }
     }
     $human_name = read_column_name($name);

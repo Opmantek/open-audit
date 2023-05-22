@@ -217,24 +217,24 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <td><?= __('Download') ?></td>
-                                                    <td><?= __('Name') ?></td>
-                                                    <td><?= __('Filename') ?></td>
-                                                    <td><?= __('Edited By') ?></td>
-                                                    <td><?= __('Edited Date') ?></td>
-                                                    <td><?= __('Delete') ?></td>
+                                                    <th class="text-center"><?= __('Download') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Filename') ?></th>
+                                                    <th><?= __('Edited By') ?></th>
+                                                    <th><?= __('Edited Date') ?></th>
+                                                    <th class="text-center"><?= __('Delete') ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <?php if (!empty($included['attachments'])) {
-                                                foreach ($included['attachments'] as $row) { ?>
-                                                <tr>
-                                                    <td><?= $row->id ?></td>
+                                            <?php if (!empty($included['attachment'])) {
+                                                foreach ($included['attachment'] as $row) { ?>
+                                                <tr id="components_attachment_<?= $row->id ?>">
+                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="fa-solid fa-download"></span></button></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>
                                                     <td><?= $row->edited_date ?></td>
-                                                    <td><?= $row->id ?></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="attachment" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -380,17 +380,17 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                     <th><?= __('Description') ?></th>
-                                                    <th><?= __('Delete') ?></th>
+                                                    <th class="text-center"><?= __('Delete') ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             <?php if (!empty($included['credential'])) {
                                                 foreach ($included['credential'] as $row) { ?>
-                                                <tr>
+                                                <tr id="components_credential_<?= $row->id ?>">
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->description ?></td>
-                                                    <td><?= $row->id ?></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="credential" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

@@ -52,10 +52,6 @@ abstract class BaseController extends Controller
         parent::initController($request, $response, $logger);
         register_ci_instance($this);
 
-        // echo "<pre>";
-        // print_r($response);
-        // exit;
-
         // Preload any models, libraries, etc, here.
         $this->session = \Config\Services::session();
         $this->config = new \Config\OpenAudit();
@@ -81,6 +77,9 @@ abstract class BaseController extends Controller
         $router = \Config\Services::router();
         $this->controller = $router->controllerName();
         $this->method = $router->methodName();
+
+        // echo $this->controller . ' :: ' . $this->method;
+        // exit;
 
         // The dictionary items
         $this->dictionary = new \stdClass();

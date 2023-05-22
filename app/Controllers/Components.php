@@ -30,5 +30,32 @@ namespace App\Controllers;
  */
 class Components extends BaseController
 {
+    public function createForm($type, $device_id)
+    {
+        $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
+        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $this->resp->meta->id = $device_id;
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'dictionary' => $dictionary,
+            'included' => $this->resp->included,
+            'meta' => filter_response($this->resp->meta),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'orgs' => filter_response($this->orgsUser),
+            'user' => filter_response($this->user)]) .
+            view($this->resp->meta->collection . ucfirst($this->resp->meta->action) . ucfirst($type));
+    }
 
+    public function delete($type, $id)
+    {
+        $this->resp->meta->sub_resource = $type;
+        if ($this->{'componentsModel'}->delete($id)) {
+            \Config\Services::session()->setFlashdata('success', 'Item deleted.');
+        } else {
+            \Config\Services::session()->setFlashdata('error', 'Item not deleted.');
+        }
+        output($this);
+    }
 }

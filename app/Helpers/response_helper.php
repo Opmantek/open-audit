@@ -235,27 +235,34 @@ if (!function_exists('response_create')) {
 
         // If we're creating data (POST), we should have an access token (configuration depending)
         if (!empty($response->meta->received_data)) {
+            $session = \Config\Services::session();
             if ($response->meta->request_method === 'POST' && ! empty(config('OpenAudit')->access_token_enable) && config('OpenAudit')->access_token_enable === 'y') {
                 $response->errors = array();
                 $instance->response = $response;
                 if (empty($response->meta->received_data->access_token)) {
                     log_error('ERR-0034', $response->meta->collection . ':' . $response->meta->action);
                     #$instance->session->set_flashdata('error', $response->errors[0]->detail);
+                    log_message('error', 'No access token provided when creating ' . $response->meta->collection);
                     if ($response->meta->format !== 'screen') {
                         output();
                         exit();
                     } else {
-                        redirect($response->meta->collection);
+                        redirect(url_to($response->meta->collection.'Collection'));
                         exit();
                     }
-                } else if (!in_array($response->meta->received_data->access_token, $instance->user->access_token)) {
+                # } else if (!in_array($response->meta->received_data->access_token, $instance->user->access_token)) {
+                } else if (!in_array($response->meta->received_data->access_token, $session->get('access_token'))) {
+                    log_message('error', 'Invalid access token provided when creating ' . $response->meta->collection);
+                    log_message('error', 'Provided: ' . $response->meta->received_data->access_token);
+                    log_message('error', 'User:    ' . json_encode($instance->user->access_token));
+                    log_message('error', 'Session: ' . json_encode($session->get('access_token')));
                     #log_error('ERR-0035', $response->meta->collection . ':' . $response->meta->action);
                     #$instance->session->set_flashdata('error', $response->errors[0]->detail);
                     if ($response->meta->format !== 'screen') {
                         output();
                         exit();
                     } else {
-                        redirect($response->meta->collection);
+                        redirect(url_to($response->meta->collection.'Collection'));
                         exit();
                     }
                 }
@@ -789,7 +796,7 @@ if (!function_exists('response_get_id')) {
         } else {
             $actions = response_valid_actions();
             $collections = response_valid_collections();
-            $no_org_id = array('chart', 'configuration', 'database', 'errors', 'help', 'logs', 'nmis', 'reports', 'roles', 'search', 'sessions');
+            $no_org_id = array('chart', 'components', 'configuration', 'database', 'errors', 'help', 'logs', 'nmis', 'reports', 'roles', 'search', 'sessions');
             if (!in_array($id, $actions)) {
                 // Our 'id' is a string, but not an action - therefore it's a name
                 if ($collection === 'database') {
@@ -1645,7 +1652,7 @@ if (!function_exists('response_get_sub_resource_id')) {
         $sub_resource_id = '';
 
         if (!empty($uri)) {
-            $sub_resource_id = intval((string)urldecode($uri));
+            $sub_resource_id = $uri;
             $log->summary = 'Set sub_resource_id according to URI.';
         }
         if (!empty($get)) {

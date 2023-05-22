@@ -60,13 +60,19 @@ foreach ($routes->collections as $collection) {
     $routes->post($collection, 'Collections::create', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Create']);
 
     # create form
-    $routes->get($collection . '/create', 'Collections::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
+    if ($collection !== 'components') {
+        // NOTE - We have a specific route for components below
+        $routes->get($collection . '/create', 'Collections::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
+    }
 
     # defaults
     $routes->get($collection . '/defaults', 'Collections::defaults/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Defaults']);
 
     # delete
-    $routes->delete($collection . '/(:num)', 'Collections::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Delete']);
+    if ($collection !== 'components') {
+        // NOTE - We have a specific route for components below
+        $routes->delete($collection . '/(:num)', 'Collections::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Delete']);
+    }
 
     # help
     $routes->get($collection . '/help', 'Collections::help', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Help']);
@@ -125,10 +131,8 @@ $routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 $routes->post('input/devices', 'Input::devices');
 
-
-$routes->get('devices/(:num)/(:any)', 'Devices::createSubForm/$1/$2/create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateSubForm']);
-
-
+$routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
+$routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
 
 /*
  * --------------------------------------------------------------------

@@ -57,10 +57,7 @@ class ComponentsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
-        // echo "<pre>";
-        // print_r(format_data($query->getResult(), $table));
-        // exit;
+        # log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         return format_data($query->getResult(), $table);
     }
 
@@ -76,6 +73,69 @@ class ComponentsModel extends BaseModel
         if (empty($data)) {
             return false;
         }
+        log_message('error', json_encode($data));
+        $device_ids = array();
+        if (!empty($data->device_id)) {
+            $device_ids[] = $data->device_id;
+        } else if (!empty($data->ids)) {
+            $device_ids = explode(',', $data->ids);
+        } else {
+            log_message('error', 'No device IDs or ID provided to components::create.');
+            log_message('error', json_encode($data));
+        }
+
+        if (($data->component_type === 'credential') and (empty($data->name) or empty($data->type) or empty($data->credentials))) {
+            log_message('error', 'Insufficient details supplied to create credential.');
+            \Config\Services::session()->setFlashdata('error', 'Insufficient details supplied to create credential.');
+            if (!empty($data->device_id)) {
+                redirect()->route('devicesRead', [$data->device_id]);
+            } else {
+                redirect()->route('devicesCollection');
+            }
+            return false;
+        }
+
+        $instance = & get_instance();
+        if ($data->component_type === 'credential') {
+            foreach ($device_ids as $id) {
+                // we only store a SINGLE credential set of each type per device - delete any existing
+                $sql ='DELETE FROM `credential` WHERE `device_id` = ? AND `type` = ?';
+                $this->db->query($sql, [intval($id), (string)$data->type]);
+
+                if (!empty($data->credentials) && is_string($data->credentials)) {
+                    $data->credentials = simpleEncrypt($data->credentials, config('Encryption')->key);
+                } else {
+                    $data->credentials = simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
+                }
+                $sql = "INSERT INTO `credential` VALUES (null, ?, 'y', ?, ?, ?, ?, ?, NOW())";
+                $query = $this->db->query($sql, [$id, $data->name, $data->description, $data->type, $data->credentials, $instance->user->full_name]);
+
+                if ($error = $this->sqlError($this->db->error())) {
+                    \Config\Services::session()->setFlashdata('error', json_encode($error));
+                    return false;
+                }
+                $id = (intval($this->db->insertID()));
+                redirect()->route('devicesRead', [$data->device_id]);
+                return $id;
+            }
+        }
+        if ($data->component_type === 'attachment') {
+            if (empty($_FILES['attachment'])) {
+                log_message('error', 'No uploaded file attachment');
+                redirect()->route('devicesRead', [$data->device_id]);
+                return false;
+            }
+            $target = '../app/Attachments/' . $data->device_id . '_' . basename($_FILES['attachment']['name']);
+            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                $sql = "INSERT INTO `attachment` VALUES (null, ?, ?, ?, ?, NOW())";
+                $query = $this->db->query($sql, [$data->device_id, $data->name, $target, $instance->user->full_name]);
+                $id = (intval($this->db->insertID()));
+                redirect()->route('devicesRead', [$data->device_id]);
+                return $id;
+            } else {
+                log_message('error', 'Cannot move the uploaded attachment to $target.');
+            }
+        }
         return false;
     }
 
@@ -88,7 +148,20 @@ class ComponentsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        return false;
+        $instance = get_instance();
+        $type = $instance->resp->meta->sub_resource;
+        if ($type !== 'credential' and $type !== 'attachment') {
+            return false;
+        }
+        if ($type === 'attachment') {
+            $sql = "SELECT * FROM attachment WHERE id = ?";
+            $query = $this->db->query($sql, [$id]);
+            $data = $query->getResult();
+            unlink($data[0]->filename);
+        }
+        $sql = "DELETE FROM $type WHERE id = ?";
+        $query = $this->db->query($sql, [$id]);
+        return true;
     }
 
     /**
@@ -173,9 +246,9 @@ class ComponentsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('attributes')) {
-            return true;
-        }
+        // if ($this->tableReset($table)) {
+        //     return true;
+        // }
         return false;
     }
 

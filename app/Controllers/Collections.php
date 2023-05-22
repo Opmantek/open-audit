@@ -82,18 +82,30 @@ class Collections extends BaseController
         $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         if (!empty($id)) {
             if ($this->resp->meta->format !== 'screen') {
+                #log_message('debug', 'Item in ' . $this->resp->meta->collection . ' created, returning JSON.');
                 $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id);
                 output($this);
                 return true;
             } else {
-                \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
-                return redirect()->route($this->resp->meta->collection.'Read', [$id]);
+                #log_message('debug', 'Item in ' . $this->resp->meta->collection . ' created.');
+                if ($this->resp->meta->collection !== 'components') {
+                    \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                    return redirect()->route($this->resp->meta->collection.'Read', [$id]);
+                } else {
+                    \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
+                    if (!empty($this->resp->meta->received_data->attributes->device_id)) {
+                        return redirect()->route('devicesRead', [$this->resp->meta->received_data->attributes->device_id]);
+                    } else {
+                        return redirect()->route('devicesCollection');
+                    }
+                }
             }
         } else {
             if ($this->resp->meta->format !== 'screen') {
                 output($this);
                 return true;
             } else {
+                log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
                 return redirect()->route($this->resp->meta->collection.'Collection');
             }
         }
@@ -250,6 +262,9 @@ class Collections extends BaseController
             $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->id) . "Model";
             $IdModel = new $namespace;
             $dictionary =  $IdModel->dictionary();
+        }
+        if ($this->resp->meta->collection === 'components' and $this->resp->data[0]->type === 'attachment') {
+            return $this->response->download($this->resp->data[0]->attributes->filename, null);
         }
         if ($this->resp->meta->format !== 'screen') {
             output($this);
