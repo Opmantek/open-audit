@@ -12,7 +12,7 @@ include 'shared/create_functions.php';
                     <div class="row">
                         <div class="col-6">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
-                                <input type="hidden" value="<?= $meta->access_token[0]; ?>" id="data[access_token]" name="data[access_token]" />
+                                <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][description]', __('Description'), $dictionary->attributes->create) ?>

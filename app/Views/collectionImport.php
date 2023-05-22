@@ -142,7 +142,7 @@ $example .= 'You should use a header line containing the names of the columns yo
             <div class="row">
                 <div class="col-md-6">
                     <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Import') ?>" accept-charset="utf-8" enctype="multipart/form-data">
-                        <input type="hidden" value="<?= $meta->access_token[0]; ?>" id="data[access_token]" name="data[access_token]" />
+                        <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                         <div class="row" style="padding-top:16px">
                             <div class="offset-2 col-8">
                                 <label for="file_import" class="form-label"><?= __('File Import') ?></label><br>
