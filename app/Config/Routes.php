@@ -41,7 +41,7 @@ $routes->collections = array('applications','attributes','baselines',
 # The default route
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
 
-# These will take precedence over the below routes
+# These will match and then take precedence over the below routes
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
 $routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
 
