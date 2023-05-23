@@ -121,7 +121,8 @@ class ComponentsModel extends BaseModel
         }
         if ($data->component_type === 'attachment') {
             if (empty($_FILES['attachment'])) {
-                log_message('error', 'No uploaded file attachment');
+                log_message('error', 'No uploaded file attachment.');
+                \Config\Services::session()->setFlashdata('error', 'No uploaded file attachment.');
                 redirect()->route('devicesRead', [$data->device_id]);
                 return false;
             }
@@ -133,8 +134,67 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
                 return $id;
             } else {
-                log_message('error', 'Cannot move the uploaded attachment to $target.');
+                log_message('error', "Cannot move the uploaded attachment to $target.");
+                \Config\Services::session()->setFlashdata('error', "Cannot move the uploaded attachment to $target.");
             }
+        }
+        if ($data->component_type === 'image') {
+            if (empty($_FILES['attachment'])) {
+                log_message('error', 'No uploaded image attachment');
+                \Config\Services::session()->setFlashdata('error', 'No uploaded image attachment.');
+                redirect()->route('devicesRead', [$data->device_id]);
+                return false;
+            }
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
+                mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images');
+            }
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
+                log_message('error', 'Custom Images directory does not exist and cannot be created.');
+                \Config\Services::session()->setFlashdata('error', 'Custom Images directory does not exist and cannot be created. Check filesystem permissions.');
+                redirect()->route('devicesRead', [$data->device_id]);
+                return false;
+            }
+            $filename = (string)basename($_FILES['attachment']['name']);
+            // Ensure we only accept JPG, PNG and SVG files
+            if (function_exists('mime_content_type')) {
+                $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
+            } else {
+                $mime_type = '';
+            }
+            // $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
+            // $extensions = array('jpg', 'jpeg', 'png', 'svg');
+            // disabled SVG because of XSS issues when requesting the direct image
+            $filetypes = array('image/png', 'image/jpeg', '');
+            $extensions = array('jpg', 'jpeg', 'png');
+            $temp = explode('.', $filename);
+            $extension = strtolower($temp[count($temp)-1]);
+            if (!in_array($mime_type, $filetypes) or !in_array($extension, $extensions)) {
+                unlink($_FILES['attachment']['tmp_name']);
+                log_message('warning', 'Only jpg, png and svg files are accepted (' . $extension . ') (' . $mime_type . ')');
+                \Config\Services::session()->setFlashdata('warning', 'Only jpg, jpeg and png files are accepted (' . $extension . ') (' . $mime_type . ')');
+                redirect()->route('devicesRead', [$data->device_id]);
+                return false;
+            }
+            $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
+            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
+                $this->db->query($sql, [$data->device_id, $data->name, $filename, $data->orientation, $instance->user->full_name]);
+                return (intval($this->db->insertID()));
+            } else {
+                log_message('error', "Cannot move the uploaded image file to $target.");
+                \Config\Services::session()->setFlashdata('warning', "Cannot move the uploaded image file to $target.");
+                return false;
+            }
+        }
+        if ($sub_resource === 'application') {
+            $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
+            $this->db->query($sql, [intval($data->device_id), intval($data->applications_id), $instance->user->full_name]);
+            return (intval($this->db->insertID()));
+        }
+        if ($sub_resource === 'cluster') {
+            $sql = "INSERT INTO cluster VALUES (NULL, ?, ?, ?, 'y', ?, NOW())";
+            $this->db->query($sql, [intval($data->device_id), intval($data->clusters_id), $data->role, $instance->user->full_name]);
+            return (intval($this->db->insertID()));
         }
         return false;
     }
