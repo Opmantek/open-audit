@@ -9,6 +9,7 @@ include 'shared/collection_functions.php';
                     <?= collection_card_header($meta->collection, $meta->icon, $user, $meta->name) ?>
                 </div>
                 <div class="card-body">
+                    <?php if (!empty($data)) { ?>
                     <table class="table table-striped dataTable">
                         <thead>
                             <tr>
@@ -50,6 +51,7 @@ include 'shared/collection_functions.php';
                             } ?>
                         </tbody>
                     </table>
+                    <?php } ?>
                 </div>
             </div>
         </main>
