@@ -41,6 +41,10 @@ $routes->collections = array('applications','attributes','baselines',
 # The default route
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
 
+# These will take precedence over the below routes
+$routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
+$routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
+
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character
     $collection = trim($collection);
@@ -60,19 +64,13 @@ foreach ($routes->collections as $collection) {
     $routes->post($collection, 'Collections::create', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Create']);
 
     # create form
-    if ($collection !== 'components') {
-        // NOTE - We have a specific route for components below
-        $routes->get($collection . '/create', 'Collections::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
-    }
+    $routes->get($collection . '/create', 'Collections::createForm', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CreateForm']);
 
     # defaults
     $routes->get($collection . '/defaults', 'Collections::defaults/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Defaults']);
 
     # delete
-    if ($collection !== 'components') {
-        // NOTE - We have a specific route for components below
-        $routes->delete($collection . '/(:num)', 'Collections::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Delete']);
-    }
+    $routes->delete($collection . '/(:num)', 'Collections::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Delete']);
 
     # help
     $routes->get($collection . '/help', 'Collections::help', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Help']);
@@ -131,8 +129,7 @@ $routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 $routes->post('input/devices', 'Input::devices');
 
-$routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
-$routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
+
 
 /*
  * --------------------------------------------------------------------
