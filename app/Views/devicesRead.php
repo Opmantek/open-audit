@@ -1771,7 +1771,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     <td><?= $row->description ?></td>
                                                     <td><?= $row->port_name ?></td>
                                                     <td><?= $row->shared ?></td>
-                                                    <td><?= $row->share_name ?></td>
+                                                    <td><?= $row->shared_name ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -1924,6 +1924,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                 <tr>
                                                     <th class="text-center"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
+                                                    <th><?= __('Description') ?></th>
                                                     <th><?= __('Path') ?></th>
                                                     <th><?= __('Size') ?></th>
                                                     <th><?= __('Permissions') ?></th>
@@ -1935,9 +1936,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                 <tr>
                                                     <?= device_component_button_read('share', $row->id) ?>
                                                     <td><?= $row->name ?></td>
+                                                    <td><?= $row->description ?></td>
                                                     <td><?= $row->path ?></td>
                                                     <td><?= $row->size ?></td>
-                                                    <td><?= $row->permissions ?></td>
+                                                    <td><?= $row->users ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

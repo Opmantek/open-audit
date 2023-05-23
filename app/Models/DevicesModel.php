@@ -198,7 +198,12 @@ class DevicesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $include = array();
+        $attributesModel = new \App\Models\AttributesModel();
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+        $include['type'] = $attributes;
+
+        return $include;
     }
 
     /**

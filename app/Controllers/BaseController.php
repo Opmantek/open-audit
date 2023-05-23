@@ -78,9 +78,6 @@ abstract class BaseController extends Controller
         $this->controller = $router->controllerName();
         $this->method = $router->methodName();
 
-        // echo $this->controller . ' :: ' . $this->method;
-        // exit;
-
         // The dictionary items
         $this->dictionary = new \stdClass();
         $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . @$this->resp->meta->collection . '">Knowledge Base</a>.';
@@ -94,11 +91,7 @@ abstract class BaseController extends Controller
         $this->dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
         if (empty($this->user) and $this->controller === '\App\Controllers\Input') {
-            // We are receiving input from an audit result
-            $this->networksModel = new \App\Models\NetworksModel;
-            $this->devicesModel = new \App\Models\DevicesModel();
-            $this->discoveryLogModel = new \App\Models\DiscoveryLogModel();
-            $this->componentsModel = new \App\Models\ComponentsModel();
+            // We are receiving input from an audit result, no need for $user, et al.
             return;
         }
 
@@ -124,11 +117,9 @@ abstract class BaseController extends Controller
         if (empty($this->user->permissions['components'])) {
             $this->user->permissions['components'] = $this->user->permissions['devices'];
         }
-        # echo "<pre>\n"; echo json_encode($this->user->permissions); exit;
 
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);
-        // echo "<pre>\n"; echo json_encode($this->resp); exit;
 
         if ($this->resp->meta->format === 'screen') {
             $this->dashboardsModel = new \App\Models\DashboardsModel();

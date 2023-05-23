@@ -1540,9 +1540,6 @@ if (! function_exists('deviceMatch')) {
             $message->command_output = '';
             $log_message[] = $message;
         }
-        // foreach ($log_message as $log) {
-        //     log_message('warning', $log->message);
-        // }
         log_array($log, $log_message);
         unset($log);
         $message->command_output = '';
@@ -1560,7 +1557,6 @@ function log_array($log, $log_array)
         $log_item->function = 'match';
         $log_item->severity = 7;
         $log_item->ip = @$log->ip;
-        // log_message('debug', json_encode($log_item));
         $DiscoveryLog->create($log_item);
     }
 }
@@ -1842,7 +1838,6 @@ function audit_format_system($parameters)
             } else {
                 stdlog($log);
             }
-            log_message('warning', 'IP supplied in hostname, setting device IP.');
         }
         $input->hostname = '';
     }
@@ -1865,13 +1860,11 @@ function audit_format_system($parameters)
     }
 
     if (empty($input->ip) or $input->ip === '0.0.0.0' or $input->ip === '000.000.000.000') {
-        log_message('warning', 'IP supplied is 0, unsetting.');
         unset($input->ip);
     }
 
     if (!empty($input->ip) && filter_var($input->ip, FILTER_VALIDATE_IP)) {
         $input->ip = ip_address_to_db($input->ip);
-        log_message('warning', 'IP supplied converting to DB format: ' . $input->ip);
     }
 
     if (empty($input->mac_address) or $input->mac_address === '00:00:00:00:00:00') {
@@ -1884,7 +1877,6 @@ function audit_format_system($parameters)
 
     // because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
     if (!empty($input->uuid) and !empty($input->serial) and stripos($input->serial, 'vmware-') !== false and !empty($input->os_name) and stripos($input->os_name, 'windows') !== false) {
-        log_message('warning', 'VMware serial converting to UUID');
         // serial is taken from Win32_ComputerSystemProduct.IdentifyingNumber
         // Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
         // audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1

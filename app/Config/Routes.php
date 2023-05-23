@@ -44,6 +44,7 @@ $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::
 # These will match and then take precedence over the below routes
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
 $routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
+$routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character
