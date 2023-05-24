@@ -230,6 +230,20 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     return $return;
 }
 
+function read_text_box(string $name = '', string $value = '')
+{
+    $return = '
+                        <div class="row" style="padding-top:16px;">
+                            <div class="offset-2 col-8" style="position:relative;">
+                                <label for="' . $name . '" class="form-label">' . $name . '</label>
+                                <div class="input-group">
+                                    <textarea class="form-control" disabled rows="8">' . $value . '</textarea>
+                                </div>
+                            </div>
+                        </div>';
+    return $return;
+}
+
 function read_select(string $name = '', string $value = '', string $dictionary = '', bool $update = false, string $label = '', array $values = array()): string
 {
 

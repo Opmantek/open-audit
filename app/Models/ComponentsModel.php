@@ -57,7 +57,7 @@ class ComponentsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        # log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         return format_data($query->getResult(), $table);
     }
 
@@ -292,7 +292,7 @@ class ComponentsModel extends BaseModel
         }
         $sql = "SELECT * FROM `$type` WHERE id = ?";
         $query = $this->db->query($sql, [$id]);
-        log_message('error', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -930,7 +930,7 @@ class ComponentsModel extends BaseModel
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND `$table`.`device_id` = ?";
         $query = $this->db->query($sql, [$device->id]);
-        // log_message('info', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $db_result = $query->getResult();
 
         $alert = false;
@@ -1060,7 +1060,7 @@ class ComponentsModel extends BaseModel
                 $sql = "INSERT INTO `{$table}` ( {$set_fields} ) VALUES ( {$set_values} ) ";
                 $query = $this->db->query($sql, $temp);
                 $id = $this->db->insertID();
-                // log_message('info', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+                // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
 
                 // these are our special rules - currently only for netstat
                 $special = true;

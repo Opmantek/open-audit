@@ -22,8 +22,16 @@ $user->permissions['components'] = '';
                         echo "\n                    <div class=\"col-4\">";
                         if ($data[0]->type === 'user' and $key === 'keys') {
                             $resource->{$key} = html_entity_decode($resource->{$key});
+                            echo read_text_box($key, $resource->{$key});
+                        } else if ($data[0]->type === 'share' and $key === 'users') {
+                            $resource->{$key} = html_entity_decode($resource->{$key});
+                            echo read_text_box($key, $resource->{$key});
+                        } else if ($data[0]->type === 'policy' and $key === 'options') {
+                            $resource->{$key} = html_entity_decode($resource->{$key});
+                            echo read_text_box($key, $resource->{$key});
+                        } else {
+                            echo read_field($key, $resource->{$key});
                         }
-                        echo read_field($key, $resource->{$key});
                         echo "</div>\n";
                     } ?>
                     </div>

@@ -10,7 +10,7 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
+                        <table class="table table-striped table-hover dataTable" data-order='[[3,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>

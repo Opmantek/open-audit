@@ -143,7 +143,7 @@ class QueriesModel extends BaseModel
         $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         $sql .= ' LIMIT ' . $instance->resp->meta->limit;
         $query = $this->db->query($sql);
-        #log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }

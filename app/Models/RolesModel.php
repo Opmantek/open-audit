@@ -36,7 +36,7 @@ class RolesModel extends BaseModel
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
-        // log_message('info', str_replace("\n", " ", (string)$this->db->getLastQuery()) . "\n");
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
