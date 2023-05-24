@@ -353,7 +353,7 @@ if (!function_exists('response_create')) {
             }
         }
 
-        if ($test and !in_array($response->meta->collection, ['configuration', 'database', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
+        if ($test and !in_array($response->meta->collection, ['configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
             $item = new stdClass();
             $item->name = 'orgs.id';
             if ($response->meta->collection !== 'orgs') {
@@ -1285,6 +1285,9 @@ if (!function_exists('response_get_permission_ca')) {
         $perm_collection = $collection;
         if ($collection === 'baselines_policies') {
             $perm_collection = 'baselines';
+        }
+        if ($collection === 'discovery_log') {
+            $perm_collection = 'discoveries';
         }
         if ($collection === 'integrations_log') {
             $perm_collection = 'integrations';
