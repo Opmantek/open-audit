@@ -217,7 +217,7 @@ class RackDevicesModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'applications';
+        $collection = 'rack_devices';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();
