@@ -692,11 +692,8 @@ if (!empty($config->modules)) {
         </div>
 <?php
 
-function menuItem($collection = '', $action = '', $user = null, $route = '', $title = '', $routeExtra = '', $productRequired = '', $productInstalled = '')
+function menuItem($collection = '', $action = '', $user = null, $route = '', $title = '', $routeExtra = '', $productRequired = '', $productInstalled = 'community')
 {
-    if ($productInstalled === '') {
-        $product_installed = 'community';
-    }
     $commercial_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'clusters' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'maps' => 'crud', 'racks' => 'crud', 'roles' => 'cu', 'rules' => 'crud', 'summaries' => 'crud', 'widgets' => 'crud');
     $commercial_action = '';
     if ($action === 'c') {
@@ -708,7 +705,7 @@ function menuItem($collection = '', $action = '', $user = null, $route = '', $ti
         (strtolower(str_replace('Open-AudIT ', '', $productInstalled)) === strtolower($productRequired))) {
         if (get_user_permission($collection, $action, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . __($title) . "</a></li>\n";
-            if (array_key_exists($collection, $commercial_collections) and $action !== '') {
+            if (array_key_exists($collection, $commercial_collections) and stripos($commercial_collections[$collection], $action) !== false) {
                 $return = "<li><a class=\"dropdown-item\" href=\"/omk/open-audit/" . $collection . "/" . $commercial_action . "\">" . __($title) . "</a></li>\n";
             }
         }
