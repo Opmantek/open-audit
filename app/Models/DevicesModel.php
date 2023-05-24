@@ -27,20 +27,37 @@ class DevicesModel extends BaseModel
     public function collection(object $resp): array
     {
         $properties = $resp->meta->properties;
+        for ($i=0; $i < count($properties); $i++) {
+            if (strpos($properties[$i], 'devices.') === false) {
+                $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
+            }
+        }
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $joined_tables = array();
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
+            $joined_table = explode('.', $filter->name);
+            if (count($joined_table) === 2 and $joined_table[0] !== 'devices' and $joined_table[0] !== 'system') {
+                $joined_tables[] = $joined_table[0];
+            }
+        }
+        $joined_tables = array_unique($joined_tables);
+        if (!empty($joined_tables)) {
+            foreach ($joined_tables as $joined_table) {
+                $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
+            }
         }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
+        // log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
