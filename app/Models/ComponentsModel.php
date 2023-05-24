@@ -33,10 +33,10 @@ class ComponentsModel extends BaseModel
             }
         }
         if ($table === '') {
-            // TODO - fix this, we just choose bios by default
-            $table = 'bios';
-            $this->builder = 'bios';
-            $properties[] = 'bios.*';
+            // TODO - fix this, we just choose processor by default
+            $table = 'processor';
+            $this->builder = 'processor';
+            $properties[] = 'processor.*';
         }
         $orgs = array();
         for ($i=0; $i < count($resp->meta->filter); $i++) {
