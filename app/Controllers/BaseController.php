@@ -117,6 +117,12 @@ abstract class BaseController extends Controller
         if (empty($this->user->permissions['components'])) {
             $this->user->permissions['components'] = $this->user->permissions['devices'];
         }
+        if (empty($this->user->permissions['discovery_log'])) {
+            $this->user->permissions['discovery_log'] = $this->user->permissions['discoveries'];
+        }
+        if (empty($this->user->permissions['rack_devices'])) {
+            $this->user->permissions['rack_devices'] = $this->user->permissions['racks'];
+        }
 
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);
@@ -127,7 +133,13 @@ abstract class BaseController extends Controller
         }
 
         // Load our $this->{$collection}Model
-        $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->collection) . "Model";
+        $collection = ucfirst($this->resp->meta->collection);
+        if (strpos($collection, '_') !== false) {
+            $collection = str_replace('_', ' ', $collection);
+            $collection = ucwords($collection);
+            $collection = str_replace(' ', '', $collection);
+        }
+        $namespace = "\\App\\Models\\" . $collection . "Model";
         $this->{strtolower($this->resp->meta->collection) . "Model"} = new $namespace;
 
         if ($this->resp->meta->format === 'screen') {
