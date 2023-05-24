@@ -25,8 +25,14 @@ class DiscoveryLogModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        $instance = & get_instance();
+        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $org_list = array_unique($org_list);
+
         $properties = $resp->meta->properties;
         $this->builder->select($properties);
+        $this->builder->join('discoveries', 'discovery_log.discovery_id = discoveries.id', 'left');
+
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -34,13 +40,13 @@ class DiscoveryLogModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
+        $this->builder->whereIn('discoveries.org_id', $org_list);
         $this->builder->orderBy($resp->meta->sort);
         if (!empty($resp->meta->groupby)) {
             $this->builder->groupBy($resp->meta->groupby);
         }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
-        $error = $this->db->error();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
