@@ -129,6 +129,7 @@ $routes->cli('test', 'Cli::test', ['as' => 'test']);
 $routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 $routes->post('input/devices', 'Input::devices');
+$routes->get('queue/start', 'Queue::start');
 
 
 

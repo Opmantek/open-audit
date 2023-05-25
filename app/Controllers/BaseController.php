@@ -94,6 +94,10 @@ abstract class BaseController extends Controller
             // We are receiving input from an audit result, no need for $user, et al.
             return;
         }
+        if (empty($this->user) and $this->controller === '\App\Controllers\Queue' and $this->method === 'start') {
+            // We are starting the queue, no need for $user, et al.
+            return;
+        }
 
         // Map the user to roles to collections
         $userRoles = array();
