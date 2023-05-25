@@ -170,11 +170,67 @@ class NetworksModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
+        // $query = $this->builder->getWhere(['id' => intval($id)]);
+        // if ($this->sqlError($this->db->error())) {
+        //     return array();
+        // }
+        // $result = $query->getResult();
+        $instance = & get_instance();
+        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $org_list = implode(',', $org_list);
+
+        $sql = "SELECT networks.*, COUNT(DISTINCT devices.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN devices ON (devices.id = ip.device_id AND devices.org_id IN ($org_list)) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN locations ON (networks.location_id = locations.id) WHERE networks.id = ?";
+        $query = $this->db->query($sql, [$id]);
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        if (empty($query)) {
             return array();
         }
-        return format_data($query->getResult(), 'networks');
+        $result = $query->getResult();
+
+        $network = network_details($result[0]->network);
+        $result[0]->ip_total_count = @intval($network->hosts_total);
+        $result[0]->ip_available_count = $result[0]->ip_total_count - $result[0]->device_count;
+
+        // Get the DHCP Servers for this network
+        $sql = "SELECT DISTINCT(network.dhcp_server) FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac) WHERE devices.org_id IN ({$org_list}) AND network.dhcp_server != '' ORDER BY network.dhcp_server";
+        $dhcp_result = $this->db->query($sql)->getResult();
+        $dhcp_servers = array();
+        foreach ($dhcp_result as $dhcp_entry) {
+            if (@ip_address_to_db($dhcp_entry->dhcp_server) >= @ip_address_to_db($network->host_min) and @ip_address_to_db($dhcp_entry->dhcp_server) <= @ip_address_to_db($network->host_max)) {
+                $dhcp_servers[] = $dhcp_entry->dhcp_server;
+            }
+        }
+        $dhcp_servers = array_unique($dhcp_servers);
+        $result[0]->dhcp_servers = implode(', ', $dhcp_servers);
+
+        // Get the DNS Servers for this network
+        $sql = "SELECT DISTINCT(network.dns_server) FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac) WHERE devices.org_id IN ({$org_list}) AND network.dns_server != '' ORDER BY network.dns_server";
+        $dns_result = $this->db->query($sql)->getResult();
+        $dns_servers = array();
+        foreach ($dns_result as $dns_entry) {
+            $dns_items = explode(',', $dns_entry->dns_server);
+            foreach ($dns_items as $dns_item) {
+                if (@ip_address_to_db(trim($dns_item)) >= @ip_address_to_db($network->host_min) && @ip_address_to_db(trim($dns_item)) <= @ip_address_to_db($network->host_max)) {
+                    $dns_servers[] = $dns_item;
+                }
+            }
+        }
+        $dns_servers = array_unique($dns_servers);
+        $result[0]->dns_servers = implode(', ', $dns_servers);
+
+        // Get the Gateways for this network
+        $sql = "SELECT DISTINCT(route.next_hop) FROM devices LEFT JOIN route ON (route.device_id = devices.id AND route.current= 'y') WHERE devices.org_id IN ({$org_list}) AND route.next_hop != '' AND route.next_hop != '0.0.0.0' ORDER BY route.next_hop";
+        $gateway_result = $this->db->query($sql)->getResult();
+        $gateways = array();
+        foreach ($gateway_result as $gateway) {
+            if (@ip_address_to_db($gateway->next_hop) >= @ip_address_to_db($network->host_min) && @ip_address_to_db($gateway->next_hop) <= @ip_address_to_db($network->host_max)) {
+                $gateways[] = $gateway->next_hop;
+            }
+        }
+        $gateways = array_unique($gateways);
+        $result[0]->gateways = implode(', ', $gateways);
+
+        return format_data($result, 'networks');
     }
 
     /**
