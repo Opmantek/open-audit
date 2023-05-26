@@ -83,8 +83,8 @@ class DiscoveriesModel extends BaseModel
         } else {
             $data->devices_assigned_to_location = intval($data->devices_assigned_to_location);
         }
-        if (isset($data->system_id)) {
-            $data->system_id = intval($data->system_id);
+        if (isset($data->device_id)) {
+            $data->device_id = intval($data->device_id);
         }
         if (! empty($data->discard)) {
             if ($data->discard !== 'n' && $data->discard !== 'y') {
@@ -329,7 +329,7 @@ class DiscoveriesModel extends BaseModel
                     log_message('error', 'Discovery not created - invalid subnet attribute supplied (' . $data->subnet . ').');
                     return;
                 }
-                $network = new stdClass();
+                $network = new \stdClass();
                 $network->name = $temp->network . '/' . $temp->network_slash;
                 $network->network = $temp->network . '/' . $temp->network_slash;
                 $network->org_id = (!empty($data->devices_assigned_to_org)) ? intval($data->devices_assigned_to_org) : intval($data->org_id);
@@ -381,6 +381,105 @@ class DiscoveriesModel extends BaseModel
         return true;
     }
 
+
+    /**
+     * Take a discovery ID and optionally a device ID
+     * Return an array of credentials in the order of device specific, device previously worked, discovery associated
+     * IE: discovery.org_id (and children) = orgs.id = credentials.org_id
+     * @param  [type] $system_id    system.id
+     * @param  [type] $discovery_id discoveries.id
+     * @param  [type] $ip_address   The IP of the device in question (for logging)
+     * @return [type]               [description]
+     */
+    public function getDeviceDiscoveryCredentials(int $device_id = 0, int $discovery_id = 0, string $ip_address = ''): array
+    {
+        $instance = & get_instance();
+        $credentialsModel = new \App\Models\CredentialsModel();
+        helper('security');
+        $credentials = array();
+
+        if (empty($discovery_id)) {
+            return array();
+        }
+
+        $retrieved_types = array();
+        // set up a log object
+        $log = new stdClass();
+        $log->discovery_id = $discovery_id;
+        $log->file = 'm_device';
+        $log->function = 'get_device_discovery_credentials';
+        $log->ip = $ip_address;
+        $log->message = 'Credentials retrieved for: ';
+        $log->pid = getmypid();
+        $log->severity = 7;
+        $log->command_status = 'notice';
+        $log->system_id = $system_id;
+        $log->timestamp = null;
+        // Get the discovery details
+        $result = $this->read($discovery_id);
+        $discovery = $result[0]->attributes;
+        $org_id = (!empty($discovery->org_id)) ? intval($discovery->org_id) : 1;
+        // Device specific credentials
+        $sql = 'SELECT * FROM `credential` WHERE `device_id` = ?';
+        $result = $this->db->query($sql, [$device_id])->getResult();
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+            }
+            $credentials = $result;
+            $retrieved_types[] = 'Device specific';
+        }
+        // Previous working credentials
+        $sql = 'SELECT `credentials` FROM `devices` WHERE id = ?';
+        $result = $this->db->query($sql, $system_id)->getResult();
+        // $result[0]->credentials is a string. A JSON encoded array of integers referring to credentials.id
+        if (!empty($result[0]->credentials)) {
+            $temp = @json_decode($result[0]->credentials);
+            if (!empty($temp)) {
+                $id_list = implode(', ', $temp);
+                $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE id IN (" . $id_list . ')';
+                $result = $this->db->query($sql)->getResult();
+                if (! empty($result)) {
+                    for ($i=0; $i < count($result); $i++) {
+                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                    }
+                }
+                $credentials = array_merge($credentials, $result);
+            }
+            $retrieved_types[] = 'Device previously working';
+        }
+        unset($temp);
+
+        // Discovery associated credentials
+        // get our Orgs List
+        $temp = $instance->orgsModel->getUserDescendants([$org_id], $instance->orgs);
+        $temp[] = $org_id;
+        $org_list = implode(', ', $temp);
+        unset($temp);
+        // And now get any credentials
+        $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ')';
+        $result = $this->db->query($sql)->getResult();
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+            }
+            $credentials = array_merge($credentials, $result);
+            $retrieved_types[] = 'Discovery related';
+        }
+        if (count($credentials) === 0) {
+            $log->message = 'No credentials retrieved.';
+            $log->severity = 5;
+            $log->command_status = 'warning';
+            #discovery_log($log);
+            $instance->discoveryLogModel->create($log);
+        } else {
+            $log->message = $log->message . implode(', ', $retrieved_types) . '.';
+            #discovery_log($log);
+            $instance->discoveryLogModel->create($log);
+        }
+        return $credentials;
+    }
+
     /**
      * Return an array containing arrays of related items to be stored in resp->included
      *
@@ -427,6 +526,233 @@ class DiscoveriesModel extends BaseModel
     }
 
 
+    public function issuesRead(int $id = 0): array
+    {
+        $issues = array();
+
+        # Windows issues from Linx
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.device_id IN (select device_id from discovery_log a where message LIKE '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command using winexe-static-2' AND discoveries.id = " . $id;
+        $issues = $this->db->query($sql)->getResult();
+
+        # Windows issues from Windows
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.device_id IN (select device_id from discovery_log a where message LIKE '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command' AND discoveries.id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        # Invalid SSH Credentials
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%SSH detected but no valid SSH credentials%' AND discoveries.id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        # Invalid SNMP credentials
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%SNMP detected, but no valid SNMP credentials%' AND discoveries.id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        # No management protcols and an unknown or unidentified device
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%No management protocols%' AND (devices.type = 'unknown' OR devices.type = 'unclassified') AND discoveries.id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        # Could not copy audit result back to server
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%Could not SCP GET to%' AND command_status = 'fail' AND discoveries.id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        # Invalid result XML
+        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail' AND discoveries.id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        foreach ($issues as $issue) {
+            // Derive the description and action
+            $issue = $this->issueMap($issue);
+            // Format the IP
+            if (!empty($issue->{'devices.ip'})) {
+                $issue->padded_ip = $issue->{'devices.ip'};
+                $issue->{'devices.ip'} = ip_address_from_db($issue->{'devices.ip'});
+            }
+        }
+        return $issues;
+    }
+    public function issuesCollection(int $user_id = 0): array
+    {
+
+        $instance = & get_instance();
+
+        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $org_list[] = 1;
+        $org_list = array_unique($org_list);
+
+        $issues = array();
+
+        # Windows issues, limited to the 50 most recent rows
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, discovery_log.timestamp AS `timestamp`, command_output AS `output`
+        FROM discovery_log
+            LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id)
+            LEFT JOIN devices ON (discovery_log.device_id = devices.id)
+        WHERE
+            (discovery_log.device_id IN (select device_id from discovery_log a where message like '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command using winexe-static-2' ) OR
+            (discovery_log.device_id IN (select device_id from discovery_log a where message like '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command')
+        AND discoveries.org_id IN (" . implode(',', $org_list) . ") GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
+        $issues = $this->db->query($sql)->getResult();
+
+        # Other issues, limited to the 50 most recent rows
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, discovery_log.timestamp AS `timestamp`, `message` AS `output`
+        FROM discovery_log
+            LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id)
+            LEFT JOIN devices ON (discovery_log.device_id = devices.id)
+        WHERE
+            (discovery_log.message LIKE '%SSH detected but no valid SSH credentials%') OR
+            (discovery_log.message LIKE '%SNMP detected, but no valid SNMP credentials%') OR
+            (discovery_log.message LIKE '%No management protocols%' AND (devices.type = 'unknown' OR devices.type = 'unclassified')) OR
+            (discovery_log.message LIKE '%Could not SCP GET to%' AND command_status = 'fail') OR
+            (discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail') OR
+            (discovery_log.message LIKE 'No credentials array passed to%') OR
+            (discovery_log.message LIKE 'No valid credentials for%')
+        AND discoveries.org_id IN (" . implode(',', $org_list) . ") GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
+        $result = $this->db->query($sql)->getResult();
+        $issues = array_merge($issues, $result);
+
+        // Refine the issue list to the latest discovery_log.id per device
+        // $issue_devices[$device_id] = $discovery_log.id
+        // We want the highest discovery_log.id per device_id
+        $issue_devices = array();
+        foreach ($issues as $issue) {
+            if (empty($issue_devices[$issue->{'devices.id'}]) or $issue_devices[$issue->{'devices.id'}] < $issue->{'discovery_log.id'}) {
+                $issue_devices[$issue->{'devices.id'}] = $issue->{'discovery_log.id'};
+            }
+        }
+
+        // Select only items from $issues where they match discovery_log.id from $issue_devices
+        $new_issues = array();
+        for ($i=0; $i < count($issues); $i++) {
+            if ($issue_devices[$issues[$i]->{'devices.id'}] === $issues[$i]->{'discovery_log.id'}) {
+                $new_issues[] = $issues[$i];
+            }
+        }
+        $issues = $new_issues;
+
+        for ($i=0; $i < count($issues); $i++) {
+            // Derive the description and action
+            $issues[$i] = $this->issue_map($issues[$i]);
+            // Format the IP
+            if (!empty($issues[$i]->{'devices.ip'})) {
+                $issues[$i]->{'devices.ip_padded'} = ip_address_to_db($issues[$i]->{'devices.ip'});
+                $issues[$i]->{'devices.ip'} = ip_address_from_db($issues[$i]->{'devices.ip'});
+            }
+            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
+            if (!empty($issues[$i]->description)) {
+                $issues[$i]->description = str_replace('../help', 'help', $issues[$i]->description);
+            }
+        }
+        return $issues;
+    }
+
+    public function issueMap(object $issue): object
+    {
+        if (empty($issue)) {
+            return new \stdclass();
+        }
+        if ($issue->output === '["ERROR: Failed to open connection - NT_STATUS_LOGON_FAILURE"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_IO_TIMEOUT"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="../help/discovery_issues/2">here</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="../help/discovery_issues/3">here</a>.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_NO_LOGON_SERVERS') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="../help/discovery_issues/4">here</a>.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_CONNECTION_REFUSED') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Is the Windows firewall restricting incoming connections? Check <a href="../help/discovery_issues/5">here</a>.'; #We would try disabling the Windows Firewall, testing and seeing if it works. Then be sure to reenable the firewall. If it did work, create a new firewall rule to allow this connection.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_NETLOGON_NOT_STARTED') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Is the network logon service is running on the target machine? Check <a href="../help/discovery_issues/6">here</a>.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_ACCOUNT_EXPIRED') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'The credentials have expired. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+        } else if (strpos($issue->{'output'}, 'NT_STATUS_INVALID_PARAMETER') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="../help/discovery_issues/2">here</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: UploadService failed - NT_STATUS_ACCESS_DENIED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="../help/discovery_issues/3">here</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_CANT_WAIT."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Most likely you are trying to audit a 32bit Windows machine. We support 64bit only for discovery (it\'s a winexe thing). You can copy the audit script to the target and run it manually until such time as you decommission the 32bit machine. Check <a href="../help/discovery_issues/7">here</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: Failed to install service winexesvc - NT_STATUS_ACCESS_DENIED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'This likely means the user account being used does not have sufficient rights on the target machine. It may also be that the ADMIN$ share is not available on the target machine. Check <a href="../help/discovery_issues/7">here</a>.';
+            $issue->action = 'add credentials';
+        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_PLUGPLAY_NO_DEVICE."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="../help/discovery_issues/4">here</a>.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'STATUS_SHARING_VIOLATION') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'This may be an issue on some Windows 7 and 2008 machines. We suggest a disk defrag on the target machine as a first step. See this <a href="https://support.microsoft.com/en-us/topic/-status-sharing-violation-error-message-when-you-try-to-open-a-highly-fragmented-file-on-a-computer-that-is-running-windows-7-or-windows-server-2008-r2-be899c3b-8c5a-c883-ce0d-055d258a9178" target="_blank">link</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: CreateService failed. NT_STATUS_ACCESS_DENIED."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It appears that the winexesvc.exe file has been copied to the target but the service could not be registered. Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="../help/discovery_issues/8">here</a>.';
+            $issue->action = '';
+        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_NOT_SUPPORTED"]') {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'Most likely this is a result of attempting to connect using SMB2 to a Windows machine that only has SMB1 enabled. You should be using SMB2 as Microsoft has deprecated SMB1 due to security vulnerabilities.';
+            $issue->action = '';
+        } else if ($issue->output ==='["",""]') {
+            # Windows connection from Windows Open-AudIT server
+            $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="../help/discovery_issues/1">here</a>.';
+            $issue->action = 'add credentials';
+        } else if (strpos($issue->{'output'}, 'SSH detected but no valid SSH credentials') !== false) {
+            # SSH connection from Open-AudIT server
+            $issue->description = 'Check you have valid SSH credentials and that the Open-AudIT server IP is allowed to connect.';
+            $issue->action = 'add credentials';
+        } else if (strpos($issue->{'output'}, 'SNMP detected, but no valid SNMP credentials') !== false) {
+            # SNMP connection from Open-AudIT server
+            $issue->description = 'Check you have valid SNMP credentials and that the Open-AudIT server IP is allowed to connect.';
+            $issue->action = 'add credentials';
+        } else if (strpos($issue->{'output'}, 'No management protocols for') !== false) {
+            # No management protcols and an unknown or unidentified device
+            $issue->description = 'There are no open management ports to this device. This may be an issue or it may be a device of a type we cannot audit (in this case, please set the device type).';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'Could not SCP GET to') !== false) {
+            $issue->description = 'Could not copy audit result from target to Open-AudIT Server. Check directory permissions.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'Could not convert audit result from XML') !== false) {
+            $issue->description = 'The audit result contains invalid XML. Please check the file. Consider increasing the configuration item discovery_ssh_timeout.';
+            $issue->action = '';
+        } else if (strpos($issue->{'output'}, 'No credentials array passed to') !== false) {
+            $issue->description = 'Ensure you have credentials for this type.';
+            $issue->action = 'add credentials';
+        } else {
+            $issue->description = 'Unknown';
+            $issue->action = '';
+        }
+        return $issue;
+    }
     /**
      * Read the entire collection from the database that the user is allowed to read
      *
@@ -473,6 +799,36 @@ class DiscoveriesModel extends BaseModel
     }
 
     /**
+     * [queue description]
+     * @param  int $id The ID of the discovery to start
+     * @return bool True on success, false on failure
+     */
+    public function queue(int $id = 0): bool
+    {
+        $item = $this->read($id);
+        $discovery = $item[0];
+        if (empty($discovery)) {
+            return false;
+        }
+        $instance = & get_instance();
+        $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
+        $this->db->query($sql, [$id]);
+        $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
+        $this->db->query($sql, [$id]);
+        $data = new \stdClass();
+        $data->type = $discovery->attributes->type;
+        $data->name = $discovery->attributes->name;
+        $data->org_id = $discovery->attributes->org_id;
+        $data->discovery_id = $id;
+        $temp = $instance->queueModel->create($data);
+        if (!empty($temp)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Read an individual item from the database, by ID
      *
      * @param  int $id The ID of the requested item
@@ -492,6 +848,118 @@ class DiscoveriesModel extends BaseModel
         $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
         return $result;
     }
+
+
+    /**
+     * Read an individual item from the database, by ID and populate scan_options and match_options with upstream defaults
+     *
+     * @param  int $id The ID of the requested item
+     * @return array The array of requested items
+     */
+    public function readForDiscovery(int $id = 0): array
+    {
+        $result = $this->builder->getWhere(['id' => intval($id)])->getResult();
+        if (empty($result)) {
+            log_message('error', 'Bad ID provided to readForDiscovery (' . $id . ').');
+            return array();
+        }
+
+        if (empty($result[0]->subnet) and $result[0]->type === 'subnet' and $result[0]->name === 'Default Discovery') {
+            $ips = server_ip();
+            $ips = explode(',', $ips);
+            $subnet = '';
+            foreach ($ips as $ip) {
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) and !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+                    $ip = explode('.', $ip);
+                    $ip[3] = 0;
+                    $ip = implode('.', $ip);
+                    $subnet = $ip . '/24';
+                    break;
+                }
+            }
+            $sql = "UPDATE discoveries SET subnet = ?, description = 'Automatically created default discovery for $subnet.' WHERE id = ?";
+            $this->db->query($sql, [$subnet, $id]);
+            $result[0]->subnet = $subnet;
+        }
+        if (empty($result[0]->scan_options)) {
+            $result[0]->scan_options = new \stdClass();
+        }
+        if (is_string($result[0]->scan_options)) {
+            $result[0]->scan_options = json_decode($result[0]->scan_options);
+        }
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = new \stdClass();
+        }
+        if (is_string($result[0]->match_options)) {
+            $result[0]->match_options = json_decode($result[0]->match_options);
+        }
+        if (!isset($result[0]->scan_options->id) or !is_numeric($result[0]->scan_options->id)) {
+            if (!empty(config('Openaudit')->discovery_default_scan_option)) {
+                $result[0]->scan_options->id = intval(config('Openaudit')->discovery_default_scan_option);
+            } else {
+                $result[0]->scan_options->id = 1;
+            }
+        }
+        $sql = "SELECT * FROM discovery_scan_options WHERE id = ?";
+        $options = $this->db->query($sql, [$result[0]->scan_options->id])->getResult();
+        $discovery_scan_options = $options[0];
+        unset($discovery_scan_options->id);
+        unset($discovery_scan_options->name);
+        unset($discovery_scan_options->org_id);
+        unset($discovery_scan_options->description);
+        unset($discovery_scan_options->options);
+        unset($discovery_scan_options->edited_by);
+        unset($discovery_scan_options->edited_date);
+        if (empty($discovery_scan_options->command_options)) {
+            $discovery_scan_options->command_options = new \stdClass();
+        }
+        if (is_string($discovery_scan_options->command_options)) {
+            $discovery_scan_options->command_options = json_decode($discovery_scan_options->command_options);
+        }
+        unset($discovery_scan_options->command_options);
+        foreach ($discovery_scan_options as $key => $value) {
+            if (empty($result[0]->scan_options->{$key}) && isset($discovery_scan_options->{$key})) {
+                $result[0]->scan_options->{$key} = $discovery_scan_options->{$key};
+            }
+        }
+
+        if (empty($result[0]->match_options)) {
+            $result[0]->match_options = '{}';
+        }
+        if (is_string($result[0]->match_options)) {
+            $result[0]->match_options =json_decode($result[0]->match_options);
+        }
+        foreach (config('Openaudit') as $key => $value) {
+            if (strpos($key, 'match_') !== false) {
+                if (empty($result[0]->match_options->{$key}) && ! empty($CI->config->config->{$key})) {
+                    $result[0]->match_options->{$key} = $CI->config->config->{$key};
+                }
+            }
+        }
+        if (!empty(config('Openaudit')->discovery_ip_exclude)) {
+            // Account for users adding multiple spaces which would be converted to multiple comma's.
+            $exclude_ip = preg_replace('!\s+!', ' ', config('Openaudit')->discovery_ip_exclude);
+            // Convert spaces to comma's
+            $exclude_ip = str_replace(' ', ',', $exclude_ip);
+            if (!empty($result[0]->scan_options->exclude_ip)) {
+                $result[0]->scan_options->exclude_ip .= ',' . $exclude_ip;
+            } else {
+                $result[0]->scan_options->exclude_ip = $exclude_ip;
+            }
+        }
+        // Ensure we only have valid characters of digit, dot, slash, dash and comma in attribute
+        if (! preg_match('/^[\d,\.,\/,\-,\,]*$/', $result[0]->scan_options->exclude_ip)) {
+            $result[0]->scan_options->exclude_ip = '';
+        }
+
+        if ($result[0]->status === 'failed') {
+            $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' or `message` LIKE 'IP % not responding, ignoring.' or `ip` = '127.0.0.1') AND discovery_id = ?) AND discovery_id = ? GROUP BY `ip`) AND discovery_id = ?";
+            $result[0]->last_logs_for_failed_devices = $this->db->query($sql, [$id, $id, $id])->getResult();
+        }
+        $result = $this->format_data($result, 'discoveries');
+        return ($result);
+    }
+
 
     /**
      * Reset a table
@@ -515,28 +983,7 @@ class DiscoveriesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Some minor data cleansing, 'attributes' specific
-
-        if (isset($data->resource) and !in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
-            $error = new \stdClass();
-            $error->level = 'error';
-            $error->message = 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.';
-            $GLOBALS['stash'] = $error;
-            log_message('error', $error->message);
-            return false;
-        }
-        if (isset($data->type) and !in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
-            $error = new \stdClass();
-            $error->level = 'error';
-            $error->message = 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.';
-            $GLOBALS['stash'] = $error;
-            log_message('error', $error->message);
-            return false;
-        }
-        // Accept our client data
         $data = $this->updateFieldData('discoveries', $data);
-        # $data->blah = 123; # Our bad record for testing failing
-        // And update the record
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
@@ -555,11 +1002,11 @@ class DiscoveriesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'discoveries';
-        $dictionary = new stdClass();
+        $dictionary = new \stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \stdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
@@ -586,7 +1033,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
         $dictionary->columns->ad_server = 'The Active Directory server to retrieve a list of subnets from.';
         $dictionary->columns->ad_domain = 'The Active Directory domain to retrieve a list of subnets from.';
-        $dictionary->columns->system_id = 'Used internally when discovering a single device. Links to <code>system.id</code>.';
+        $dictionary->columns->device_id = 'Used internally when discovering a single device. Links to <code>devices.id</code>.';
         $dictionary->columns->device_count = 'The number of devices found by this discovery.';
         $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
         $dictionary->columns->discard = 'Used internally when discovering a single device.';
