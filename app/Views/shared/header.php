@@ -692,7 +692,7 @@ if (!empty($config->modules)) {
         </div>
 <?php
 
-function menuItem($collection = '', $action = '', $user = null, $route = '', $title = '', $routeExtra = '', $productRequired = '', $productInstalled = 'community')
+function menuItem($collection = '', $action = '', $user = null, $route = '', $title = '', $routeExtra = '', $productRequired = 'community', $productInstalled = 'community')
 {
     $commercial_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'clusters' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'maps' => 'crud', 'racks' => 'crud', 'roles' => 'cu', 'rules' => 'crud', 'summaries' => 'crud', 'widgets' => 'crud');
     $commercial_action = '';
@@ -710,7 +710,6 @@ function menuItem($collection = '', $action = '', $user = null, $route = '', $ti
             }
         }
     } else {
-        # $return = "<li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . __($title) . "</a></li>\n";
         $return = "<li><a class=\"dropdown-item greyout toast" . $productRequired . "\" href=\"#\">" . __($title) . "</a></li>\n";
     }
     return $return;

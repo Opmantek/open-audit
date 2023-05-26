@@ -88,9 +88,30 @@ function format_data($result, $type)
         }
     }
 
+    foreach ($result as $item) {
+        foreach ($item as $key => $value) {
+            if (is_null($value)) {
+                $item->$key = '';
+            }
+        }
+    }
+
     if ($type === 'dashboards') {
         foreach ($result as $item) {
             $item->options = json_decode($item->options);
+        }
+    }
+
+    if ($type === 'discoveries') {
+        foreach ($result as $item) {
+            $item->scan_options = json_decode($item->scan_options);
+            $item->match_options = json_decode($item->match_options);
+        }
+    }
+
+    if ($type === 'roles') {
+        foreach ($result as $item) {
+            $item->permissions = json_decode($item->permissions);
         }
     }
 
@@ -98,12 +119,6 @@ function format_data($result, $type)
         foreach ($result as $item) {
             $item->roles = json_decode($item->roles);
             $item->orgs = json_decode($item->orgs);
-        }
-    }
-
-    if ($type === 'roles') {
-        foreach ($result as $item) {
-            $item->permissions = json_decode($item->permissions);
         }
     }
 

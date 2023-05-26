@@ -436,5 +436,43 @@ if (! function_exists('dns_validate')) {
     }
 }
 
+function check_ip($ip_address = '')
+{
+    // supply a standard ip address - 192.168.1.1
+    // supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
+    // returns true if ip is contained in a subnet, false otherwise
+    // TODO - we should take an OrgID (or 1 if not exists)
+
+    if (empty($this->config->blessed_subnets_use) or trim(strtolower($this->config->blessed_subnets_use)) !== 'y') {
+        return true;
+    }
+    if (empty($ip_address)) {
+        return false;
+    }
+    if ($ip_address === '127.0.0.1' or $ip_address === '127.0.1.1') {
+        return true;
+    }
+    if ($ip_address === '::1') {
+        return true;
+    }
+    // TODO - IPv6 support
+    if (stripos($ip_address, ':') !== false) {
+        return true;
+    }
+    $sql = "SELECT COUNT(id) AS count FROM networks WHERE ((-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1)) OR network = '" . $ip_address . "/32')";
+    $query = $this->db->query($sql, array((string)$ip_address));
+    if (!empty($this->db->error())) {
+        log_message('error', json_encode($this->db->error()));
+        return false;
+    }
+    $result = $query->getResult();
+    if (intval($result[0]->count) > 0) {
+        return true;
+    } else {
+        log_message('warning', 'IP not in the list of blessed subnets (supplied IP: ' . $ip_address . ')');
+        return false;
+    }
+}
+
 /* End of file network_helper.php */
 /* Location: ./system/application/helpers/network_helper.php */

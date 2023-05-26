@@ -74,6 +74,7 @@ class Collections extends BaseController
      */
     public function create()
     {
+        $this->networksModel = new \App\Models\NetworksModel();
         if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
             log_message('error', 'Item in ' . $this->resp->meta->collection . ' needs a commercial license.');
             \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
