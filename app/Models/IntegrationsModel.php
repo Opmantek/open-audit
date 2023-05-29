@@ -1563,7 +1563,7 @@ class IntegrationsModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->create = array('name', 'org_id', 'attributes', 'fields'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
