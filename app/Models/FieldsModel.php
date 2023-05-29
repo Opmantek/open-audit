@@ -220,10 +220,10 @@ class FieldsModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'placement', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','type'); # We MUST have each of these present and assigned a value
-        $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
-        $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
-        $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
+        $dictionary->attributes->create = array('name', 'org_id', 'type');
+        $dictionary->attributes->fields = $this->db->getFieldNames($collection);
+        $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
+        $dictionary->attributes->update = $this->updateFields($collection);
 
         $dictionary->about = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />' . $instance->dictionary->link. '<br /><br /></p>';
 
