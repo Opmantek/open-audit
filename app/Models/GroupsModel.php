@@ -131,7 +131,7 @@ class GroupsModel extends BaseModel
         }
                 
         $query = $this->db->query($sql);
-        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $result = format_data($query->getResult(), 'devices');
         return $result;
     }

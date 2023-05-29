@@ -352,9 +352,9 @@ class DiscoveriesModel extends BaseModel
         $data->match_options = json_encode($data->match_options);
 
         $data = $this->createFieldData('discoveries', $data);
-        log_message('debug', json_encode($data));
+        // log_message('debug', json_encode($data));
         $this->builder->insert($data);
-        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return false;

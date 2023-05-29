@@ -181,7 +181,7 @@ class NetworksModel extends BaseModel
 
         $sql = "SELECT networks.*, COUNT(DISTINCT devices.id) as `device_count`, orgs.id AS `orgs.id`, orgs.name AS `org_name`, clouds.id AS `clouds.id`, clouds.name AS `clouds.name`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN devices ON (devices.id = ip.device_id AND devices.org_id IN ($org_list)) LEFT JOIN orgs ON (networks.org_id = orgs.id) LEFT JOIN clouds ON (networks.cloud_id = clouds.id) LEFT JOIN locations ON (networks.location_id = locations.id) WHERE networks.id = ?";
         $query = $this->db->query($sql, [$id]);
-        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if (empty($query)) {
             return array();
         }
