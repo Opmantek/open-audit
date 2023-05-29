@@ -27,13 +27,12 @@ class BaseModel extends Model
         $insert_data = new \stdClass();
         $instance = & get_instance();
 
-        if (strpos($table, '_') !== false) {
-            $table = str_replace('_', ' ', $table);
-            $table = ucwords($table);
-            $table = str_replace(' ', '', $table);
-        }
-
-        $dictionary = $instance->{$table.'Model'}->dictionary();
+        // if (strpos($table, '_') !== false) {
+        //     $table = str_replace('_', ' ', $table);
+        //     $table = ucwords($table);
+        //     $table = str_replace(' ', '', $table);
+        // }
+        $dictionary = $instance->{strtolower($table).'Model'}->dictionary();
 
         # Our MUST have attributes
         foreach ($dictionary->attributes->create as $field) {
