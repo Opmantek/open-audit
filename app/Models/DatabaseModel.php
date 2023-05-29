@@ -241,6 +241,20 @@ class DatabaseModel extends BaseModel
             log_message('info', (string)$db->getLastQuery());
         }
 
+        if (!$db->fieldExists('refresh', 'ldap_servers')) {
+            $sql = "ALTER TABLE ldap_servers DROP refresh";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
+
+        if (!$db->fieldExists('refreshed', 'ldap_servers')) {
+            $sql = "ALTER TABLE ldap_servers DROP refreshed";
+            $query = $db->query($sql);
+            echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
+
         if (!$db->fieldExists('parent_id', 'locations')) {
             $sql = "ALTER TABLE locations ADD parent_id int(10) unsigned DEFAULT '1' AFTER description";
             $query = $db->query($sql);

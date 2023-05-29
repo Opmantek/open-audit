@@ -1959,8 +1959,6 @@ CREATE TABLE `ldap_servers` (
   `use_roles` enum('y','n') NOT NULL DEFAULT 'n',
   `dn_account` varchar(200) NOT NULL DEFAULT '',
   `dn_password` varchar(250) NOT NULL DEFAULT '',
-  `refresh` int(10) unsigned NOT NULL DEFAULT 24,
-  `refreshed` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
