@@ -28,11 +28,14 @@ class LocationsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        $instance = & get_instance();
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
+        $properties[] = "COUNT(DISTINCT devices.id) AS `device_count`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $this->builder->join('devices', $resp->meta->collection . '.id = devices.location_id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -41,12 +44,32 @@ class LocationsModel extends BaseModel
             }
         }
         $this->builder->orderBy($resp->meta->sort);
+        $this->builder->groupBy('locations.id');
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
+        if (!empty($instance->resp->meta->requestor)) {
+            $this->builder->where('devices.oae_manage', 'y');
+        }
         $query = $this->builder->get();
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
         return format_data($query->getResult(), $resp->meta->collection);
+    }
+
+    /**
+     * Return the locations direct buildings
+     *
+     * @param  int $id The ID of the location
+     *
+     * @return array   The list of buildings
+     *
+     */
+    public function children(int $id = 0): array
+    {
+        $sql = 'SELECT buildings.*, orgs.name AS `orgs.name`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.location_id = ? GROUP BY buildings.id';
+        $result = $this->db->query($sql, [$id]);
+        return format_data($query->getResult(), 'buildings');
     }
 
     /**
@@ -61,13 +84,41 @@ class LocationsModel extends BaseModel
         if (empty($data)) {
             return false;
         }
+        $instance = & get_instance();
         $data = $this->createFieldData('locations', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return false;
         }
-        return ($this->db->insertID());
+        $id = $this->db->insertID();
+
+        $user = 'system';
+        if (!empty($instance->user->full_name)) {
+            $user = $instance->user->full_name;
+        }
+
+        $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', '', ?, NOW())";
+        $this->db->query($sql, [$data->org_id, $id, $user]);
+        $building_id = $this->db->insertID();
+
+        if (!empty($building_id)) {
+            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', ?, NOW())";
+            $this->db->query($sql, [$data->org_id, $building_id, $user]);
+            $floor_id = $this->db->insertID();
+        }
+
+        if (!empty($floor_id)) {
+            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default Room', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
+            $this->db->query($sql, [$data->org_id, $floor_id, $user]);
+            $room_id = $this->db->insertID();
+        }
+
+        if (!empty($room_id)) {
+            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
+            $this->db->query($sql, [$data->org_id, $room_id, $user]);
+        }
+        return intval($id);
     }
 
     /**
@@ -97,7 +148,11 @@ class LocationsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $attributesModel = new \App\Models\AttributesModel();
+        $include = array();
+        $types = $attributesModel->listUser(['attributes.resource', 'locations', 'attributes.type', 'type']);
+        $include['types'] = $types;
+        return $include;
     }
 
     /**
@@ -108,7 +163,14 @@ class LocationsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        if (empty(config('Openaudit')->maps_api_key)) {
+            \Config\Services::session()->setFlashdata('warning', 'Google Maps API key required to retrieve lat/long and display map. See <a href="https://community.opmantek.com/display/opCommon/Google+Maps+API+Key" target="_blank">here</a>.');
+        }
+        $attributesModel = new \App\Models\AttributesModel();
+        $include = array();
+        $types = $attributesModel->listUser(['attributes.resource', 'locations', 'attributes.type', 'type']);
+        $include['types'] = $types;
+        return $include;
     }
 
 
@@ -166,7 +228,16 @@ class LocationsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
+        $properties = array();
+        $properties[] = 'locations.*';
+        $properties[] = 'orgs.name as `orgs.name`';
+        $properties[] = 'orgs.id as `orgs.id`';
+        $properties[] = 'clouds.name as `clouds.name`';
+        $properties[] = 'clouds.id as `clouds.id`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'locations.org_id = orgs.id', 'left');
+        $this->builder->join('clouds', 'locations.cloud_id = clouds.id', 'left');
+        $query = $this->builder->getWhere(['locations.id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -219,23 +290,43 @@ class LocationsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
-        $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
-        $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
-        $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
+        $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'type', 'address', 'city', 'state', 'country', 'device_count');
+        $dictionary->attributes->create = array('name','org_id');
+        $dictionary->attributes->fields = $this->db->getFieldNames($collection);
+        $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
+        $dictionary->attributes->update = $this->updateFields($collection);
 
-        $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.</p>';
+        $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br /><br />You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br /><br />If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/images/map_icons<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a \'device\', valid <i>types</i> are: \'class\', \'environment\', \'status\' and \'type\'. If the <i>resource</i> is \'locations\' or \'orgs\' the only valid <i>type</i> is \'type\'. If the <i>resource</i> is a \'query\' the only valid <i>type</i> is \'menu_category\'.</p>';
+        $dictionary->notes = '<p>The <code>type</code> of the location will assign its icon.<br /><br /></p>';
 
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->resource = 'The foreign table to reference. Should be one of: devices, locations, orgs or queries.';
-        $dictionary->columns->type = 'The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.';
-        $dictionary->columns->name = 'The text that is displayed.';
-        $dictionary->columns->value = 'The value that is stored for this particular item.';
+        $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->description = $instance->dictionary->description;
+        $dictionary->columns->type = 'What is the type of this location. Allowable types held in attributes table.';
+        $dictionary->columns->room = 'The locations room.';
+        $dictionary->columns->suite = 'The locations suite.';
+        $dictionary->columns->level = 'The locations level.';
+        $dictionary->columns->address = 'The locations address.';
+        $dictionary->columns->suburb = 'The locations suburb.';
+        $dictionary->columns->city = 'The locations city.';
+        $dictionary->columns->district = 'The locations district.';
+        $dictionary->columns->region = 'The locations region.';
+        $dictionary->columns->area = 'The locations area.';
+        $dictionary->columns->state = 'The locations state.';
+        $dictionary->columns->postcode = 'The locations postcode.';
+        $dictionary->columns->country = 'The locations country.';
+        $dictionary->columns->tags = 'unused';
+        $dictionary->columns->phone = 'The locations phone.';
+        $dictionary->columns->picture = 'unused';
+        $dictionary->columns->external_ident = 'The externally referenced location ID. Usually populated by Cloud audits.';
+        $dictionary->columns->options = 'unused';
+        $dictionary->columns->latitude = 'The locations latitude.';
+        $dictionary->columns->longitude = 'The locations longitude.';
+        $dictionary->columns->geo = 'An optional GeoCode';
+        $dictionary->columns->cloud_id = 'The Cloud that owns this item. Links to <code>clouds.id</code>. ';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
