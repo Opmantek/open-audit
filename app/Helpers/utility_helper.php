@@ -115,6 +115,13 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'rules') {
+        foreach ($result as $item) {
+            $item->inputs = json_decode($item->inputs);
+            $item->outputs = json_decode($item->outputs);
+        }
+    }
+
     if ($type === 'users') {
         foreach ($result as $item) {
             $item->roles = json_decode($item->roles);

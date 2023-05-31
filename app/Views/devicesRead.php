@@ -410,7 +410,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     <th class="text-center"><?= __('ID') ?></th>
                                                     <th><?= __('Discovery Name') ?></th>
                                                     <th><?= __('Timestamp') ?></th>
-                                                    <th><?= __('Status') ?></th>
+                                                    <th class="text-center"><?= __('Status') ?></th>
                                                     <th><?= __('Message') ?></th>
                                                 </tr>
                                             </thead>

@@ -71,7 +71,7 @@ if (empty($id)) {
     // In the case where we inserted a new device, m_device::match will add a log entry, but have no
     // associated device_id. Update this one row.
     $sql = 'UPDATE `discovery_log` SET device_id = ? WHERE device_id IS NULL AND pid = ? AND ip = ?';
-    $query = $db->query($sql, [$device->system->id, $log->pid, ip_address_from_db($device->system->ip)]);
+    $query = $db->query($sql, [$device->system->id, $log->pid, @ip_address_from_db($device->system->ip)]);
 } else {
     // update an existing system
     // log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
@@ -130,3 +130,6 @@ foreach ($device as $key => $value) {
         $this->componentsModel->upsert($key, $device->system, $device->{$key}, $log);
     }
 }
+
+$rulesModel = new \App\Models\RulesModel();
+$rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
