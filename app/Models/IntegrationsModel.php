@@ -97,7 +97,7 @@ class IntegrationsModel extends BaseModel
         }
         $id = $this->db->insertID();
         $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
-        $instance->discoveriesModel = new \App\Models\DiscoveriesModel;
+        $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
 
         if ($integration->attributes->discovery_run === 'y') {
             $discovery = new stdClass();
@@ -114,7 +114,7 @@ class IntegrationsModel extends BaseModel
             $query = $this->db->query($sql, [$discovery_id, $integration->id]);
         }
 
-        $instance->fieldsModel = new \App\Models\FieldsModel;
+        $instance->fieldsModel = new \App\Models\FieldsModel();
         if (!empty($integration->attributes->fields)) {
             foreach ($integration->attributes->fields as $field) {
                 if ($field->internal_field_name === '' or strpos($field->internal_field_name, 'fields.') === 0) {
