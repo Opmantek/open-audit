@@ -80,7 +80,7 @@ class CloudsModel extends BaseModel
         # $id = intval($this->db->insertID());
         # The discovery
         // $instance = & get_instance();
-        // $instance->discoveriesModel = new \App\Models\DiscoveriesModel;
+        // $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
         // $discovery = new stdClass();
         // $discovery->type = 'cloud';
         // $discovery->name = 'Discovery for ' . $data->name;
