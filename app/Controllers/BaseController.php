@@ -39,7 +39,7 @@ abstract class BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = ['components', 'device', 'log', 'network', 'output', 'response', 'utility', 'security'];
+    protected $helpers = ['components', 'device', 'network', 'output', 'response', 'utility', 'security'];
 
     public $response;
 
@@ -50,6 +50,8 @@ abstract class BaseController extends Controller
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
+
+        // Register the instance so we can call it from models, et al.
         register_ci_instance($this);
 
         // Preload any models, libraries, etc, here.
@@ -77,18 +79,6 @@ abstract class BaseController extends Controller
         $router = \Config\Services::router();
         $this->controller = $router->controllerName();
         $this->method = $router->methodName();
-
-        // The dictionary items
-        $this->dictionary = new \stdClass();
-        $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . @$this->resp->meta->collection . '">Knowledge Base</a>.';
-        $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
-        $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
-        $this->dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
-        $this->dictionary->description = 'Your description of this item.';
-        $this->dictionary->options = 'A JSON object containing collection specific options.';
-        $this->dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
-        $this->dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
-        $this->dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
         if (empty($this->user) and $this->controller === '\App\Controllers\Input') {
             // We are receiving input from an audit result, no need for $user, et al.
@@ -131,10 +121,17 @@ abstract class BaseController extends Controller
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);
 
-        if ($this->resp->meta->format === 'screen') {
-            $this->dashboardsModel = new \App\Models\DashboardsModel();
-            $this->dashboards = $this->dashboardsModel->listUser();
-        }
+        // The dictionary items
+        $this->dictionary = new \stdClass();
+        $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . @$this->resp->meta->collection . '">Knowledge Base</a>.';
+        $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
+        $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
+        $this->dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
+        $this->dictionary->description = 'Your description of this item.';
+        $this->dictionary->options = 'A JSON object containing collection specific options.';
+        $this->dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
+        $this->dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
+        $this->dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
         // Load our $this->{$collection}Model
         $collection = ucfirst($this->resp->meta->collection);
@@ -150,6 +147,8 @@ abstract class BaseController extends Controller
             $this->resp->meta->icon = $this->collections->{$this->resp->meta->collection}->icon;
             $this->queriesUser = $this->queriesModel->listUser();
             $this->orgsUser = $this->orgsModel->listUser($this->user);
+            $this->dashboardsModel = new \App\Models\DashboardsModel();
+            $this->dashboards = $this->dashboardsModel->listUser();
         }
     }
 }
