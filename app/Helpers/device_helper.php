@@ -15,6 +15,8 @@ if (!function_exists('audit_convert')) {
         $log->function = 'audit_convert';
         $log->command = '';
 
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+
         if (is_string($input)) {
             // See if we have stringified JSON
             $json = html_entity_decode($input);
@@ -81,7 +83,8 @@ if (!function_exists('audit_convert')) {
                     $log->message = 'Could not convert string to XML';
                     $log->command_status = 'fail';
                     $log->command_output = $error->message . ' at ' . $error->line . ', column ' . $error->column . ', with code ' . $error->code;
-                    discovery_log($log);
+                    $discoveryLogModel->create($log);
+                    log_message('error', $error->message . ' at ' . $error->line . ', column ' . $error->column . ', with code ' . $error->code);
                 }
                 return false;
             }
@@ -148,15 +151,10 @@ if (!function_exists('audit_convert')) {
         if (is_string($input)) {
             // We have a string that could not be converted
             $log->severity = 5;
-            if (!empty($parameters->discovery_id)) {
-                $log->message = 'Could not convert string to JSON or XML';
-                $log->command_status = 'fail';
-                discovery_log($log);
-            } else {
-                $log->summary = 'Could not convert string to JSON or XML';
-                $log->status = 'fail';
-                stdlog($log);
-            }
+            $log->message = 'Could not convert string to JSON or XML';
+            $log->command_status = 'fail';
+            $discoveryLogModel->create($log);
+            log_message('error', 'Could not convert string to JSON or XML');
             return false;
         } else {
             if (!empty($audit->system->discovery_id)) {
@@ -172,13 +170,8 @@ if (!function_exists('audit_convert')) {
 
         $log->severity = 7;
         $log->message = 'Audit converted';
-        if (!empty($log->discovery_id)) {
-            $log->command_status = 'success';
-            discovery_log($log);
-        } else {
-            $log->status = 'success';
-            #stdlog($log);
-        }
+        $log->command_status = 'success';
+        $discoveryLogModel->create($log);
         return $input;
     }
 }
@@ -1691,6 +1684,7 @@ function audit_format_system($parameters)
 {
     $db = db_connect();
     $config = new \Config\OpenAudit();
+    $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
     if (!empty($parameters->log)) {
         $log = $parameters->log;
@@ -1741,11 +1735,7 @@ function audit_format_system($parameters)
             $log->ip = $input->ip;
             $log->command_status = 'fail';
             $log->severity = 4;
-            if (!empty($log->discovery_id)) {
-                discovery_log($log);
-            } else {
-                stdlog($log);
-            }
+            $discoveryLogModel->create($log);
             $input->id = '';
         }
     }
@@ -1813,11 +1803,7 @@ function audit_format_system($parameters)
             unset($temp);
             $log->message = 'FQDN supplied in hostname, converting.';
             $log->command_output = 'Hostname: ' . $input->hostname . ' Domain: ' .  $input->domain;
-            if (!empty($log->discovery_id)) {
-                discovery_log($log);
-            } else {
-                stdlog($log);
-            }
+            $discoveryLogModel->create($log);
         }
     }
 
@@ -1827,11 +1813,7 @@ function audit_format_system($parameters)
             $input->ip = $input->hostname;
             $log->message = 'IP supplied in hostname, setting device IP.';
             $log->command_output = 'IP: ' . $input->ip;
-            if (!empty($log->discovery_id)) {
-                discovery_log($log);
-            } else {
-                stdlog($log);
-            }
+            $discoveryLogModel->create($log);
         }
         $input->hostname = '';
     }
@@ -1841,11 +1823,7 @@ function audit_format_system($parameters)
     if (empty($input->fqdn) && ! empty($input->hostname) && ! empty($input->domain)) {
         $input->fqdn = $input->hostname . '.' . $input->domain;
         $log->message = 'No FQDN, but hostname and domain supplied, setting FQDN.';
-        if (!empty($log->discovery_id)) {
-            discovery_log($log);
-        } else {
-            stdlog($log);
-        }
+        $discoveryLogModel->create($log);
     }
 
     if (isset($input->os_name)) {
@@ -1882,11 +1860,7 @@ function audit_format_system($parameters)
         $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-'. substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
         $log->message = 'Windows VMware style serial detected, creating vm_uuid.';
         $log->command_output .= ' -> ' . $input->vm_uuid;
-        if (!empty($log->discovery_id)) {
-            discovery_log($log);
-        } else {
-            stdlog($log);
-        }
+        $discoveryLogModel->create($log);
         $log->command_output = '';
     }
 
