@@ -63,12 +63,12 @@ class AttributesModel extends BaseModel
         }
         if (!in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
             \Config\Services::session()->setFlashdata('error', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
-            stdlog(((object) array('code' => 'ERR-0021', 'detail' => 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.')));
+            log_message('warning', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
             return false;
         }
         if (!in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
             \Config\Services::session()->setFlashdata('error', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category. Type is set to: ' . $data->type);
-            stdlog(((object) array('code' => 'ERR-0021', 'detail' => 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.')));
+            log_message('warning', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.');
             return false;
         }
         $data = $this->createFieldData('attributes', $data);
