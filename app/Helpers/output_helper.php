@@ -107,6 +107,14 @@ if (!function_exists('output')) {
         //     unset($instance->resp->meta->timing);
         // }
 
+        $message = strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
+
+        if ($instance->resp->meta->action === 'create' or $instance->resp->meta->action === 'update' or $instance->resp->meta->action === 'delete') {
+            log_message('notice', $message);
+        } else {
+            // log_message('debug', $message);
+        }
+
         switch ($instance->resp->meta->format) {
             case 'screen':
                 output_screen($instance);
@@ -157,18 +165,14 @@ if (!function_exists('output')) {
                 break;
         }
 
-        $log = new stdClass();
-        $log->object = $instance->resp->meta->collection;
-        $log->function = strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action);
-        $log->severity = 7;
-        if ($instance->resp->meta->action === 'create' or $instance->resp->meta->action === 'update' or $instance->resp->meta->action === 'delete') {
-            $log->severity = 5;
-        }
-        $log->status = @$instance->resp->meta->header;
-        $log->summary = 'finish';
-        $log->type = 'access';
-        $log->detail = json_encode($instance->resp->meta);
-        # stdLog($log);
+
+        // $message = strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta);
+
+        // if ($instance->resp->meta->action === 'create' or $instance->resp->meta->action === 'update' or $instance->resp->meta->action === 'delete') {
+        //     log_message('notice', $message);
+        // } else {
+        //     log_message('debug', $message);
+        // }
     }
 
     /**
@@ -787,11 +791,11 @@ if (!function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        if ((string) $CI->config->config['download_reports'] === 'y') {
-            header('Content-Type: text/html');
-            header('Content-Disposition: attachment;filename="'.$CI->resp->meta->heading.'.html"');
-            header('Cache-Control: max-age=0');
-        }
+        // if ((string) config('Openaudit')->download_reports === 'y') {
+        //     header('Content-Type: text/html');
+        //     header('Content-Disposition: attachment;filename="'.$CI->resp->meta->heading.'.html"');
+        //     header('Cache-Control: max-age=0');
+        // }
     }
 
     function output_table()
@@ -817,11 +821,11 @@ if (!function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        if ((string) $CI->config->config['download_reports'] === 'y') {
-            header('Content-Type: text/html');
-            header('Content-Disposition: attachment;filename="'.$CI->resp->meta->heading.'.html"');
-            header('Cache-Control: max-age=0');
-        }
+        // if ((string) $CI->config->config['download_reports'] === 'y') {
+        //     header('Content-Type: text/html');
+        //     header('Content-Disposition: attachment;filename="'.$CI->resp->meta->heading.'.html"');
+        //     header('Cache-Control: max-age=0');
+        // }
     }
 
     function sort_attributes($a, $b)
