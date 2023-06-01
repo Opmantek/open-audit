@@ -24,11 +24,7 @@ function simpleDecrypt(string $message = '', string $key = ''): string
     try {
         $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
     } catch (Exception $e) {
-        $log = new \stdClass();
-        $log->severity = 3;
-        $log->summary = 'simpleDecrypt error';
-        $log->detail = json_encode($e);
-        stdlog($log);
+        log_message('error', 'simpleDecrypt error: ' . json_encode($e));
         return '';
     }
     return $plaintext;
