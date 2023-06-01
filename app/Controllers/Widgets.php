@@ -19,20 +19,20 @@ namespace App\Controllers;
  */
 
 /**
- * Base Object Summaries
+ * Base Object Widgets
  *
  * @access   public
  * @category Object
- * @package  Open-AudIT\Controller\Summaries
+ * @package  Open-AudIT\Controller\Widgets
  * @author   Mark Unwin <mark.unwin@firstwave.com>
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  * @link     http://www.open-audit.org
  */
-class Summaries extends BaseController
+class Widgets extends BaseController
 {
 
     /**
-     * Execute a summary
+     * Execute a widget
      *
      * @access public
      * @return void
@@ -41,9 +41,9 @@ class Summaries extends BaseController
     {
         $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . '::' . $instance->resp->meta->id . ' by user ' . @$instance->user->full_name . "\n";
         log_message('notice', $message);
-        $query = $this->summariesModel->read($this->resp->meta->id);
-        $this->resp->meta->name = $query[0]->attributes->name;
-        $this->resp->data = $this->summariesModel->execute($this->resp->meta->id, $this->user);
+        $widget = $this->widgetsModel->read($this->resp->meta->id);
+        $this->resp->meta->name = $widget[0]->attributes->name;
+        $this->resp->data = $this->widgetsModel->execute($this->resp->meta->id, $this->user);
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
         if ($this->resp->meta->format !== 'screen') {
@@ -51,12 +51,12 @@ class Summaries extends BaseController
             return true;
         } else {
             if (empty($this->resp->data)) {
-                \Config\Services::session()->setFlashdata('error', 'No data returned when running summary.');
+                \Config\Services::session()->setFlashdata('error', 'No data returned when executing widget.');
                 return redirect()->route($this->resp->meta->collection.'Collection');
             } else {
                 return view('shared/header', [
                     'config' => $this->config,
-                    'dictionary' => $this->queriesModel->dictionary(),
+                    'dictionary' => $this->widgetsModel->dictionary(),
                     'meta' => filter_response($this->resp->meta),
                     'orgs' => filter_response($this->orgsUser),
                     'queries' => filter_response($this->queriesUser),
