@@ -23,7 +23,7 @@ namespace App\Controllers;
  *
  * @access   public
  * @category Object
- * @package  Open-AudIT\Controller\Orgs
+ * @package  Open-AudIT\Controller\Database
  * @author   Mark Unwin <mark.unwin@firstwave.com>
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  * @link     http://www.open-audit.org
