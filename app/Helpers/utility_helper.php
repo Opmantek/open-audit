@@ -21,7 +21,7 @@ function &get_instance() # : \App\Controllers\BaseController
 function format_data($result, $type)
 {
     if (empty($result)) {
-        log_message('error', 'No data provided to format_data function from '. debug_backtrace()[1]['class'] . ' : ' . debug_backtrace()[1]['function'] . ' for ' . $type);
+        log_message('debug', 'No data provided to format_data function from '. debug_backtrace()[1]['class'] . '::' . debug_backtrace()[1]['function'] . ' for ' . $type);
         return array();
     }
 

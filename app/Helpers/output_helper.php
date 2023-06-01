@@ -107,13 +107,13 @@ if (!function_exists('output')) {
         //     unset($instance->resp->meta->timing);
         // }
 
-        $message = strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
+        // $message = strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
 
-        if ($instance->resp->meta->action === 'create' or $instance->resp->meta->action === 'update' or $instance->resp->meta->action === 'delete') {
-            log_message('notice', $message);
-        } else {
-            // log_message('debug', $message);
-        }
+        // if ($instance->resp->meta->action === 'create' or $instance->resp->meta->action === 'update' or $instance->resp->meta->action === 'delete') {
+        //     log_message('notice', $message);
+        // } else {
+        //     log_message('debug', $message);
+        // }
 
         switch ($instance->resp->meta->format) {
             case 'screen':

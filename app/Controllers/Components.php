@@ -32,8 +32,6 @@ class Components extends BaseController
 {
     public function createForm($type, $device_id)
     {
-        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . "\n";
-        log_message('debug', $message);
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         $this->resp->meta->id = $device_id;
@@ -52,8 +50,6 @@ class Components extends BaseController
 
     public function delete($type, $id)
     {
-        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . '::' . $this->resp->meta->id . ' by user ' . @$this->user->full_name . "\n";
-        log_message('notice', $message);
         $this->resp->meta->sub_resource = $type;
         if ($this->{'componentsModel'}->delete($id)) {
             \Config\Services::session()->setFlashdata('success', 'Item deleted.');

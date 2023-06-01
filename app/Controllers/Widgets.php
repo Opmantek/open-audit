@@ -39,8 +39,6 @@ class Widgets extends BaseController
      */
     public function execute($id)
     {
-        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . '::' . $this->resp->meta->id . ' by user ' . @$this->user->full_name . "\n";
-        log_message('notice', $message);
         $widget = $this->widgetsModel->read($this->resp->meta->id);
         $this->resp->meta->name = $widget[0]->attributes->name;
         $this->resp->data = $this->widgetsModel->execute($this->resp->meta->id, $this->user);

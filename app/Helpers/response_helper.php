@@ -418,7 +418,7 @@ if (!function_exists('response_get_data')) {
             }
         }
         if (!empty($received_data)) {
-            log_message('notice', $summary . ' RECEIVED DATA: ' . json_encode($received_data));
+            log_message('debug', $summary);
         }
         return $received_data;
     }
@@ -590,6 +590,7 @@ if (!function_exists('response_get_format')) {
     function response_get_format($get = '', $post = '', $header = '')
     {
         $format = 'json';
+        $summary = '';
         if (strpos((string)$header, 'application/json') !== false) {
             $format = 'json';
             $summary = "Set format according to HEADERS ($format).";
@@ -1123,7 +1124,8 @@ if (!function_exists('response_get_permission_id')) {
      */
     function response_get_permission_id($user, $collection, $action, $received_data, $id)
     {
-        $instance = & get_instance();
+        #$instance = & get_instance();
+        $db = db_connect();
         $collections = array('charts', 'configuration', 'database', 'errors', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
 
         if (empty($id) or intval($id) === 888888888888 or in_array($collection, $collections)) {
@@ -1131,17 +1133,47 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
-        if (!$instance->m_users->get_user_collection_org_permission($collection, $id)) {
-            log_message('warning', 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id);
+        if ($collection === 'help') {
+            // Always allow a user to view help
+            return true;
+        }
+        if ($collection === 'users' && $id === $user->id) {
+            // Always allow a user to view their own user item
+            return true;
+        }
+
+        $org_list = explode(',', $user->org_list);
+
+        if ($collection === 'orgs') {
+            $sql = 'SELECT `orgs`.`id` AS org_id FROM orgs WHERE id = ?';
+            $result = $db->query($sql, [$id])->getResult();
+            if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+                return false;
+            }
+        }
+
+        if ($collection === 'baselines_policies') {
+            $sql = 'SELECT `orgs`.`id` AS org_id FROM `baselines_policies` LEFT JOIN `baselines` ON (`baselines_policies`.`baseline_id` = `baselines`.`id`) LEFT JOIN `orgs` ON (`baselines`.`org_id` = `orgs`.`id`) WHERE `baselines_policies`.`id` = ?';
+            $result = $db->query($sql, [$id])->getResult();
+            if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+                return false;
+            }
+        }
+
+        // TODO - Components?
+
+        $sql = "SELECT `{$collection}`.`org_id` AS org_id FROM `{$collection}` WHERE `id` = ?";
+        $result = $db->query($sql, [$id])->getResult();
+        if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
             return false;
         }
+
         // check (if we're supplying data) that the OrgID is one we are allowed to supply
         if ($action === 'create' or $action === 'update' or $action === 'import' or $action === 'delete') {
-            $temp = explode(',', $user->org_list);
             // org_id
             if (!empty($received_data->org_id)) {
                 $allowed = false;
-                foreach ($temp as $key => $value) {
+                foreach ($org_list as $key => $value) {
                     if ($received_data->org_id === $value) {
                         $allowed = true;
                     }
@@ -1154,7 +1186,7 @@ if (!function_exists('response_get_permission_id')) {
             // devices_assigned_to_org
             if (!empty($received_data->devices_assigned_to_org)) {
                 $allowed = false;
-                foreach ($temp as $key => $value) {
+                foreach ($org_list as $key => $value) {
                     if ($received_data->devices_assigned_to_org === $value) {
                         $allowed = true;
                     }
@@ -1165,7 +1197,7 @@ if (!function_exists('response_get_permission_id')) {
                 }
             }
         }
-        log_message('warning', 'User permitted to perform ' . $action . ' on OrgID ' . @$received_data->org_id);
+        log_message('debug', 'User permitted to perform ' . $action . ' on OrgID ' . @$received_data->org_id);
         return true;
     }
 }

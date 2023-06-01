@@ -38,8 +38,6 @@ class Groups extends BaseController
      */
     public function execute($id)
     {
-        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . '::' . $this->resp->meta->id . ' by user ' . @$this->user->full_name . "\n";
-        log_message('debug', $message);
         $query = $this->groupsModel->read($this->resp->meta->id);
         $this->resp->meta->name = $query[0]->attributes->name;
         $this->resp->data = $this->groupsModel->execute($this->resp->meta->id, $this->user);

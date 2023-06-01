@@ -121,6 +121,28 @@ abstract class BaseController extends Controller
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);
 
+        $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $this->user->full_name;
+        if (!empty($this->resp->meta->received_data)) {
+            $data = json_encode($this->resp->meta->received_data);
+            if ($this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') {
+                $data = json_decode($data);
+                $data->attributes->credentials = 'Removed for logging';
+                $data = json_encode($data);
+            }
+            if ($this->resp->meta->collection === 'integrations') {
+                $data = json_decode($data);
+                $data->attributes->attributes = 'Removed for logging';
+                $data = json_encode($data);
+            }
+            if ($this->resp->meta->collection === 'users') {
+                $data = json_decode($data);
+                $data->attributes->password = 'Removed for logging';
+                $data = json_encode($data);
+            }
+            $message .= ':' . $data;
+        }
+        log_message('info', $message);
+
         // The dictionary items
         $this->dictionary = new \stdClass();
         $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . @$this->resp->meta->collection . '">Knowledge Base</a>.';
