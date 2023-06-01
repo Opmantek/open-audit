@@ -40,6 +40,23 @@ if (!$update or $resource->editable !== 'y') {
                                     <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                 <?php } ?>
+                                <?php if ($resource->name === 'log_level') { ?>
+                                <p>
+                                    You can enable error logging by setting a threshold over zero. The threshold determines what gets logged. Any values below or equal to the threshold will be logged. Threshold options are:<br>
+                                    <ol start="0">
+                                        <li>Disables logging - Error logging <b>turned off</b>.</li>
+                                        <li>Emergency Messages - System is unusable.</li>
+                                        <li>Alert Messages - Action Must Be Taken Immediately.</li>
+                                        <li>Critical Messages - Application component unavailable, unexpected exception.</li>
+                                        <li>Runtime Errors - Don't need immediate action, but should be monitored.</li>
+                                        <li>Warnings - Exceptional occurrences that are not errors, <b>the default</b>.</li>
+                                        <li>Notices - Normal but significant events.</li>
+                                        <li>Info - Interesting events, like user logging in, etc.</li>
+                                        <li>Debug - Detailed debug information.</li>
+                                        <li>All Messages.</li>
+                                    </ol>
+                                </p>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
