@@ -8,15 +8,6 @@ if (!function_exists('response_create')) {
     function response_create($instance = null)
     {
         error_reporting(E_ALL);
-
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_create';
-        $log->status = 'creating response object';
-        $log->summary = '';
-
         $request = \Config\Services::request();
         $uri = $request->getUri();
         $uri->setSilent();
@@ -41,6 +32,28 @@ if (!function_exists('response_create')) {
         $response->meta = new stdClass();
         $response->meta->action = strtolower($instance->method);
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
+        $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
+
+        // no dependencies - set in GET or POST or HEADERS or CLI
+        $get_format = $request->getGet('format');
+        if ($response->meta->request_method === 'CLI') {
+            // Check if we've been passed a format on the CLI
+            foreach ($uri->getPath() as $segment) {
+                if (strpos($segment, 'format=') !== false) {
+                    $get_format = str_replace('format=', '', $segment);
+                }
+            }
+            // Set format to JSON if nothing or invalid format passed
+            if ($get_format !== 'json' and $get_format !== 'highcharts' and $get_format !== 'csv') {
+                $get_format = 'json';
+            }
+        }
+        $response->meta->format = response_get_format(
+            $get_format,
+            $request->getPost('format'),
+            $request->header('Accept')
+        );
+
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
             if (empty($response->meta->collection)) {
@@ -56,9 +69,24 @@ if (!function_exists('response_create')) {
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
-        # echo "<pre>\n"; print_r($permission_requested[$response->meta->action]); echo "\n\n\n"; print_r($instance->user->permissions); print_r($response->meta->collection); exit;
+
         if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
-            # the user requested to do perform an action on a collection they do not have permission to do
+            $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
+            log_message('warning', $message);
+            if ($response->meta->format === 'json') {
+                $response->meta->header = 'HTTP/1.1 403 Forbidden';
+                $response->errors = array();
+                $response->errors[] = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
+                header($response->meta->header);
+                echo json_encode($response);
+                exit();
+            } else {
+                \Config\Services::session()->setFlashdata('error', $message);
+                header('Location: '.base_url());
+                exit();
+            }
+        } else {
+            log_message('debug', 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', and has permission to do so.');
         }
         $instance->user->org_list = response_get_org_list($instance, $response->meta->collection);
 
@@ -75,7 +103,6 @@ if (!function_exists('response_create')) {
         }
         $response->meta->debug = false;
         $response->meta->filtered = '';
-        $response->meta->format = '';
         $response->meta->groupby = '';
         $response->meta->header = 'HTTP/1.1 200 OK';
         // $response->meta->ids = null; // Only set below if it contains data
@@ -87,7 +114,6 @@ if (!function_exists('response_create')) {
         // NOTE see response_get_query_filter for why we do the below with the query string
         $response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         $response->meta->query_string = str_replace('&amp;', '&', $response->meta->query_string);
-        $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
         if (is_cli()) {
             $response->meta->request_method = 'CLI';
         }
@@ -138,52 +164,10 @@ if (!function_exists('response_create')) {
             $request->header('debug')
         );
 
-        // no dependencies - set in GET or POST or HEADERS or CLI
-        $get_format = $request->getGet('format');
-        if ($response->meta->request_method === 'CLI') {
-            // Check if we've been passed a format on the CLI
-            foreach ($uri->getPath() as $segment) {
-                if (strpos($segment, 'format=') !== false) {
-                    $get_format = str_replace('format=', '', $segment);
-                }
-            }
-            // Set format to JSON if nothing or invalid format passed
-            if ($get_format !== 'json' and $get_format !== 'highcharts' and $get_format !== 'csv') {
-                $get_format = 'json';
-            }
-        }
-        $response->meta->format = response_get_format(
-            $get_format,
-            $request->getPost('format'),
-            $request->header('Accept')
-        );
-
-        // no dependencies - set in GET or POST or HEADERS
-        // $response->meta->current = response_get_current($request->getGet('current'), $request->getPost('current'));
-
-        // depends on version affecting URI - set in URI or POST
-
-        // $response->meta->collection = response_get_collection($uri->getSegment(1));
-
         // Set the heading based on the collection
         $response->meta->heading = ucfirst($response->meta->collection);
 
-        // depends on version affecting URI, collection, request_method, format
-        if ($response->meta->collection === 'search' && $response->meta->request_method !== 'POST') {
-            // Redirect as we only accept POSTs for /search
-            log_error('ERR-0007', 'search:' . $response->meta->request_method);
-            if ($response->meta->format !== 'screen') {
-                $response->errors = array();
-                return($response);
-            } else {
-                redirect()->back()->with('devices', $response->errors[0]->detail);
-                exit();
-            }
-        }
-
-        $instance->user->org_list = response_get_org_list($instance, $response->meta->collection);
-
-        // depends on version affecting URI, collection - set in URI or POST
+        // depends on collection - set in URI or POST
         $response->meta->id = response_get_id(
             html_entity_decode(urldecode($uri->getSegment(2))),
             $response->meta->collection,
@@ -230,9 +214,6 @@ if (!function_exists('response_create')) {
             $response->meta->sub_resource_id = intval($request->getGet('sub_resource_id'));
         }
 
-        // depends on id, ids, recevied_data, request_method, sub_resource and sub_resource_id
-        // $response->meta->action = response_get_action($resp);
-
         // If we're creating data (POST), we should have an access token (configuration depending)
         if (!empty($response->meta->received_data)) {
             $session = \Config\Services::session();
@@ -240,14 +221,14 @@ if (!function_exists('response_create')) {
                 $response->errors = array();
                 $instance->response = $response;
                 if (empty($response->meta->received_data->access_token)) {
-                    log_error('ERR-0034', $response->meta->collection . ':' . $response->meta->action);
-                    #$instance->session->set_flashdata('error', $response->errors[0]->detail);
+                    \Config\Services::session()->setFlashdata('error', 'No access token provided when creating ' . $response->meta->collection . ', refresh the form and try again.');
                     log_message('error', 'No access token provided when creating ' . $response->meta->collection);
                     if ($response->meta->format !== 'screen') {
                         output();
                         exit();
                     } else {
-                        redirect(url_to($response->meta->collection.'Collection'));
+                        \Config\Services::session()->setFlashdata('error', $message);
+                        header('Location: ' . url_to($response->meta->collection.'Collection'));
                         exit();
                     }
                 # } else if (!in_array($response->meta->received_data->access_token, $instance->user->access_token)) {
@@ -256,13 +237,12 @@ if (!function_exists('response_create')) {
                     log_message('error', 'Provided: ' . $response->meta->received_data->access_token);
                     log_message('error', 'User:    ' . json_encode($instance->user->access_token));
                     log_message('error', 'Session: ' . json_encode($session->get('access_token')));
-                    #log_error('ERR-0035', $response->meta->collection . ':' . $response->meta->action);
-                    #$instance->session->set_flashdata('error', $response->errors[0]->detail);
                     if ($response->meta->format !== 'screen') {
                         output();
                         exit();
                     } else {
-                        redirect(url_to($response->meta->collection.'Collection'));
+                        \Config\Services::session()->setFlashdata('error', 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.');
+                        header('Location: ' . url_to($response->meta->collection.'Collection'));
                         exit();
                     }
                 }
@@ -288,10 +268,6 @@ if (!function_exists('response_create')) {
             $request->getGet('sort'),
             $request->getPost('sort')
         );
-        // $response->meta->internal->sort = '';
-        // if ($response->meta->sort !== '') {
-        //     $response->meta->internal->sort = 'ORDER BY ' . $response->meta->sort;
-        // }
 
         // depends on version affecting URI, collection
         $response->meta->groupby = response_get_groupby(
@@ -299,11 +275,6 @@ if (!function_exists('response_create')) {
             $request->getPost('groupby'),
             $response->meta->collection
         );
-
-        // $response->meta->internal->groupby = '';
-        // if ($response->meta->groupby) {
-        //     $response->meta->internal->groupby = 'GROUP BY ' . $response->meta->groupby;
-        // }
 
         // no dependencies - set in GET or POST
         $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
@@ -315,12 +286,6 @@ if (!function_exists('response_create')) {
             $response->meta->format,
             config('OpenAudit')->page_size
         );
-
-        // depends on offset
-        // $response->meta->internal->limit = '';
-        // if (!empty($response->meta->limit)) {
-        //     $response->meta->internal->limit = 'LIMIT ' . intval($response->meta->offset) . ',' . intval($response->meta->limit);
-        // }
 
         // depends on collection
         $response->meta->properties = response_get_properties(
@@ -337,15 +302,12 @@ if (!function_exists('response_create')) {
         }
         $response->meta->properties = implode(',', $response->meta->properties);
 
-        // depends on properties, collection, sub_resource
-        // $response->meta->internal->properties = response_get_internal_properties($response->meta->properties, $response->meta->collection, $response->meta->sub_resource);
-
         $response->meta->properties = explode(',', $response->meta->properties);
 
         // depends on query string
         $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
 
-        // DO we need to add All the Orgs?
+        // Do we need to add All the Orgs?
         $test = true;
         foreach ($response->meta->filter as $filter) {
             if ($response->meta->collection === 'orgs' and ($filter->name === 'id' or $filter->name === 'orgs.id')) {
@@ -369,59 +331,44 @@ if (!function_exists('response_create')) {
             $response->meta->filter[] = $item;
         }
 
-        #$response->meta->internal->filter = response_get_internal_filter($response->meta->filter, $response->meta->collection);
+        // $permission = response_get_permission_ca($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id, $instance->usersModel);
 
-        // if ($response->meta->collection === 'devices') {
-        //     $response->meta->internal->join = response_get_internal_join($response->meta->filter, $response->meta->collection);
+        // if (!$permission) {
+        //     $message = 'User denied permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action;
+        //     if ($response->meta->format === 'json') {
+        //         $response->meta->header = 'HTTP/1.1 403 Forbidden';
+        //         $response->errors = array();
+        //         $response->errors[] = $message;
+        //         header($response->meta->header);
+        //         echo json_encode($response);
+        //         exit;
+        //     } else {
+        //         \Config\Services::session()->setFlashdata('error', $message);
+        //         header('Location: ' . url_to($response->meta->collection.'Collection'));
+        //     }
+        //     redirect('/');
         // }
-
-        $response->links = response_get_links($response->meta->collection, $response->meta->id, $response->meta->sub_resource, @$response->meta->sub_resource_id);
-
-        $permission = response_get_permission_ca($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id, $instance->usersModel);
-
-        if (!$permission) {
-            if ($response->meta->format === 'json') {
-                $response->meta->header = 'HTTP/1.1 403 Forbidden';
-                $response->errors = array();
-                $response->errors[] = getError('ERR-0007', 'response_helper');
-                header($response->meta->header);
-                echo json_encode($response);
-                exit;
-            } else {
-                $instance->session->set_flashdata('error', 'Permission denied for collection / action.');
-                redirect($response->meta->collection);
-            }
-            redirect('/');
-        }
 
         $permission = response_get_permission_id($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
 
         if (!$permission) {
+            $message = 'User denied permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action . ' on item because of OrgID.';
             if ($response->meta->format === 'json') {
                 $response->meta->header = 'HTTP/1.1 403 Forbidden';
                 $response->errors = array();
-                $response->errors[] = getError('ERR-0007', 'response_helper');
+                $response->errors[] = $message;
                 header($response->meta->header);
                 echo json_encode($response);
                 exit;
             } else {
-                $instance->session->set_flashdata('error', 'Permission denied for OrgID.');
-                redirect($response->meta->collection);
+                \Config\Services::session()->setFlashdata('error', $message);
+                header('Location: ' . url_to($response->meta->collection.'Collection'));
             }
             redirect('/');
         }
         if (!empty($instance->response->logs)) {
             $response->logs = $instance->response->logs;
         }
-
-        // Unused
-        // $external = new stdCLass();
-        // $external->meta = $response->meta;
-        // $external->user = $instance->user;
-        // $sql = "INSERT INTO external VALUES (null, '', ?, '')";
-        // $data = json_encode($external);
-        // $query = $instance->db->query($sql, $data);
-
         return $response;
     }
 }
@@ -434,30 +381,20 @@ if (!function_exists('response_get_data')) {
      */
     function response_get_data($request_method = '')
     {
-        $log = new \stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_data';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $data_supplied_by = '';
         $received_data = array();
 
         if ($request_method === 'POST') {
             if (!empty($_POST['data']) && is_array($_POST['data'])) {
-                $log->summary = 'Set received data according to POST (form).';
+                $summary = 'Set received data according to POST (form).';
                 $received_data = $_POST['data'];
                 $received_data = json_encode($received_data);
                 $received_data = json_decode($received_data);
-                $log->detail = 'Data has been supplied via POST HTML form.';
                 $data_supplied_by = 'form';
             } else if (!empty($_POST['data'])) {
-                $log->summary = 'Set received data according to POST (json).';
+                $summary = 'Set received data according to POST (json).';
                 // This is straight JSON submitted data in a string
                 $received_data = @json_decode($_POST['data']);
-                $log->detail = 'Data has been supplied via POST json.';
                 $data_supplied_by = 'json';
             }
         }
@@ -468,7 +405,7 @@ if (!function_exists('response_get_data')) {
             if (empty($data_object)) {
                 // do nothing
             } else {
-                $log->summary = 'Set received data according to PATCH.';
+                $summary = 'Set received data according to PATCH.';
                 $received_data = new stdClass();
                 if (!empty($data_object->data)) {
                     $received_data = $data_object->data;
@@ -481,8 +418,7 @@ if (!function_exists('response_get_data')) {
             }
         }
         if (!empty($received_data)) {
-            $log->detail = 'RECEIVED DATA: ' . json_encode($received_data);
-            stdlog($log);
+            log_message('notice', $summary . ' RECEIVED DATA: ' . json_encode($received_data));
         }
         return $received_data;
     }
@@ -490,31 +426,27 @@ if (!function_exists('response_get_data')) {
 
 function response_get_debug($get = '', $post = '', $header = '')
 {
-    $log = new stdClass();
-    $log->severity = 7;
-    $log->type = 'system';
-    $log->object = 'response_helper';
-    $log->function = 'response_helper::response_get_debug';
-    $log->status = 'parsing';
-    $log->summary = '';
     $debug = false;
     if (!empty($get) && strtolower($get) === 'true') {
-        $log->summary = 'Set debug according to GET.';
-        $log->detail = 'DEBUG: true';
-        config('Openaudit')->log_level = 7;
+        $summary = 'Set debug TRUE according to GET.';
+        config('Openaudit')->log_level = 9;
+        config('Logger')->threshold = 9;
         $debug = true;
     }
     if (!empty($post) && strtolower($post) === 'true') {
-        $log->summary = 'Set debug according to POST.';
-        $log->detail = 'DEBUG: true';
-        config('Openaudit')->log_level = 7;
+        $summary = 'Set debug TRUE according to POST.';
+        config('Openaudit')->log_level = 9;
+        config('Logger')->threshold = 9;
         $debug = true;
     }
     if (!empty($header) && strtolower($header) === 'true') {
-        $log->summary = 'Set debug according to HEADER.';
-        $log->detail = 'DEBUG: true';
-        config('Openaudit')->log_level = 7;
+        $summary = 'Set debug TRUE according to HEADER.';
+        config('Openaudit')->log_level = 9;
+        config('Logger')->threshold = 9;
         $debug = true;
+    }
+    if ($debug) {
+        log_message('debug', $summary);
     }
     return $debug;
 }
@@ -527,14 +459,6 @@ if (!function_exists('response_get_query_filter')) {
      */
     function response_get_query_filter($query_string, $type = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_filter';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $instance = & get_instance();
         $reserved_words = response_valid_reserved_words();
         $filter = array();
@@ -651,9 +575,9 @@ if (!function_exists('response_get_query_filter')) {
                 }
             }
         }
-        // if (!empty($filter)) {
-        //     $log->detail = strtoupper($type) .': ' . json_encode($filter);
-        // }
+        if (!empty($filter)) {
+            log_message('debug', strtoupper($type) .': ' . json_encode($filter));
+        }
         return $filter;
     }
 }
@@ -665,40 +589,29 @@ if (!function_exists('response_get_format')) {
      */
     function response_get_format($get = '', $post = '', $header = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_format';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $format = 'json';
-
         if (strpos((string)$header, 'application/json') !== false) {
             $format = 'json';
-            $log->summary = 'Set format according to HEADERS.';
+            $summary = "Set format according to HEADERS ($format).";
         }
         if (strpos((string)$header, 'html') !== false) {
             $format = 'screen';
-            $log->summary = 'Set format according to HEADERS.';
+            $summary = "Set format according to HEADERS ($format).";
         }
         if (!empty($get)) {
             $format = $get;
-            $log->summary = 'Set format according to GET.';
+            $summary = "Set format according to GET ($get).";
         }
         if (!empty($post)) {
             $format = $post;
-            $log->summary = 'Set format according to POST.';
+            $summary = "Set format according to POST ($post).";
         }
         $valid_formats = response_valid_formats();
         if (!in_array($format, $valid_formats)) {
-            $log->summary = 'Set format to json, because unknown format: ' . $format;
-            $log->status = 'warning';
+            $summary = 'Set format to json, because unknown format: ' . $format;
             $format = 'json';
         }
-        $log->detail = 'FORMAT: ' . $format;
-        #stdlog($log);
+        log_message('debug', $summary);
         return $format;
     }
 }
@@ -711,49 +624,42 @@ if (!function_exists('response_get_groupby')) {
      */
     function response_get_groupby($get = '', $post = '', $collection = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_groupby';
-        $log->status = 'parsing';
-        $log->summary = '';
-
-        #$instance = & get_instance();
         $db = db_connect();
         $groupby = '';
 
         if (!empty($get)) {
             $groupby = $get;
-            $log->summary = 'Set groupby according to GET.';
+            $summary = "Set groupby according to GET ($get).";
         }
         if (!empty($post)) {
             $groupby = $post;
-            $log->summary = 'Set groupby according to POST.';
+            $summary = "Set groupby according to POST ($post).";
+        }
+        if ($groupby !== '') {
+            log_message('debug', 'GroupBy: ' . $summary);
         }
         if (!empty($groupby)) {
             if (strpos($groupby, '.') !== false) {
                 $temp = explode('.', $groupby);
                 if (!$db->fieldExists($temp[1], $temp[0])) {
                     $groupby = '';
-                    $log->detail = "Invalid groupby supplied ({$groupby}), removed.";
-                    #stdlog($log);
+                    $summary = "Invalid groupby supplied ({$groupby}), removed.";
+                    log_message('debug', 'GroupBy: ' . $summary);
                 } else {
                     $groupby = $temp[0] . '.' . $temp[1];
                 }
             } else {
                 if (!$db->fieldExists($groupby, $temp)) {
                     $groupby = '';
-                    $log->detail = "Invalid groupby supplied ({$groupby}), removed.";
-                    #stdlog($log);
+                    $summary = "Invalid groupby supplied ({$groupby}), removed.";
+                    log_message('debug', 'GroupBy: ' . $summary);
                 } else {
                     $groupby = $temp . '.' . $groupby;
                 }
             }
         }
         if ($groupby !== '') {
-            $log->detail = 'GROUPBY: ' . $groupby;
-            #stdlog($log);
+            log_message('debug', 'GroupBy: ' . $groupby);
         }
         return $groupby;
     }
@@ -769,29 +675,16 @@ if (!function_exists('response_get_id')) {
      */
     function response_get_id($id = '', $collection = '', $org_list = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_id';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $db = db_connect();
 
         $instance = & get_instance();
 
         if (empty($id)) {
-            $log->summary = 'No ID provided, returning NULL.';
-            $log->detail = 'ID: null';
-            #stdlog($log);
+            // log_message('debug', 'No ID provided, returning NULL.');
             return null;
         }
         if (is_numeric($id)) {
-            // we have a number, return that
-            $log->summary = 'Number ID provided, returning integer.';
-            $log->detail = 'ID: ' . intval($id);
-            #stdlog($log);
+            log_message('debug', "Numeric ID provided, returning integer (" . intval($id) . ").");
             return intval($id);
         } else {
             $actions = response_valid_actions();
@@ -800,100 +693,83 @@ if (!function_exists('response_get_id')) {
             if (!in_array($id, $actions)) {
                 // Our 'id' is a string, but not an action - therefore it's a name
                 if ($collection === 'database') {
-                    // $tables = $db->listTables();
-                    // // add an entry for devices collection <-> system table
-                    // $tables[] = 'devices';
-                    // $log->summary = 'ID to Name match in database';
-                    // if (!in_array($id, $tables)) {
-                    //     $log->summary = 'No ID to Name match in database';
-                    //     $id = null;
-                    // }
+                    $tables = $db->listTables();
+                    if (!in_array($id, $tables)) {
+                        log_message('warning', 'No ID to Name match in database.');
+                        $id = null;
+                    }
+                    log_message('debug', "ID to Name match in database (Provided ID: $id).");
                 } else if ($collection === 'configuration') {
-                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM `configuration` WHERE name = ? ORDER BY id DESC LIMIT 1";
-                    $data = array($id);
-                    $query = $db->query($sql, $data);
-                    $result = $query->getResult();
+                    // configuration
+                    $sql = "SELECT id FROM `configuration` WHERE name = ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
-                        $log->summary = 'ID to Name match in configuration';
+                        log_message('debug', "ID to Name match in configuration (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        $log->summary = 'No ID to Name match in configuration';
+                        log_message('warning', 'No ID to Name match in configuration.');
                         $id = null;
                     }
                 } else if ($collection === 'devices') {
                     // devices
-                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $data = array($id);
-                    $query = $instance->db->query($sql, $data);
-                    $result = $query->result();
+                    $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $result = $instance->db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
-                        $log->summary = 'ID to Name match in devices';
+                        log_message('debug', "ID to Name match in devices (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        $log->summary = 'No ID to Name match in devices';
+                        log_message('warning', 'No ID to Name match in devices.');
                         $id = null;
                     }
                 } else if ($collection === 'users') {
                     // Special case the username as we may be given user.name@domain.com for LDAP user, but we only use user.name in users.name
-                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM users WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $sql = "SELECT id FROM users WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
                     $temp = explode('@', $id);
                     $data = array($temp[0]);
                     unset($temp);
-                    $query = $instance->db->query($sql, $data);
-                    $result = $query->result();
+                    $result = $instance->db->query($sql, $data)->getResult();
                     if (!empty($result)) {
-                        $log->summary = 'ID to Name match in users';
+                        log_message('debug', "ID to Name match in users (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        $log->summary = 'No ID to Name match in users';
+                        log_message('warning', 'No ID to Name match in users.');
                         $id = null;
                     }
                 } else if ($collection === 'orgs') {
                     // orgs.id, not *.org_id
-                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM orgs WHERE name LIKE ? AND id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $data = array($id);
-                    $query = $instance->db->query($sql, $data);
-                    $result = $query->result();
+                    $sql = "SELECT id FROM orgs WHERE name LIKE ? AND id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $result = $instance->db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
-                        $log->summary = 'ID to Name match in orgs';
+                        log_message('debug', "ID to Name match in orgs (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        $log->summary = 'No ID to Name match in orgs';
+                        log_message('warning', 'No ID to Name match in orgs.');
                         $id = null;
                     }
                 } else if ($collection === 'baselines_policies') {
                     // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
-                    $sql = '/* response_helper::response_get_id */ ' . "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $data = array($id);
-                    $query = $instance->db->query($sql, $data);
-                    $result = $query->result();
+                    $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $result = $instance->db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
-                        $log->summary = 'ID to Name match in baselines_policies';
+                        log_message('debug', "ID to Name match in baselines_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        $log->summary = 'No ID to Name match in baselines_policies';
+                        log_message('warning', 'No ID to Name match in baselines_policies.');
                         $id = null;
                     }
                 } else if (in_array($collection, $no_org_id)) {
-                    $log->summary = 'No ID required for ' . $collection;
+                    log_message('debug', 'No ID required for ' . $collection);
                     $id = 1;
                 } else if (in_array($collection, $collections)) {
-                    $sql = '/* response_helper::response_get_id */ ' . "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $data = array($id);
-                    $query = $instance->db->query($sql, $data);
-                    $result = $query->result();
+                    $sql = "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $result = $instance->db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
-                        $log->summary = 'ID to Name match in ' . $collection;
+                        log_message('debug', "ID to Name match in $collection (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        $log->summary = 'No ID to Name match in ' . $collection;
+                        log_message('warning', "No ID to Name match in $collection.");
                         $id = null;
                     }
-                }
-                $log->detail = 'ID: ' . @$id;
-                #stdlog($log);
-                if (empty($id)) {
-                    #log_error('ERR-0046');
                 }
                 return $id;
             }
@@ -909,23 +785,15 @@ if (!function_exists('response_get_ids')) {
      */
     function response_get_ids($get = '', $post = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_ids';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $device_ids = '';
 
         if (!empty($get)) {
             $device_ids = $get;
-            $log->summary = 'Set IDs according to GET.';
+            log_message('debug', 'Set IDs according to GET (' . $get . ').');
         }
         if (!empty($post)) {
             $device_ids = $post;
-            $log->summary = 'Set IDs according to POST.';
+            log_message('debug', 'Set IDs according to POST (' . $post . ').');
         }
         if ($device_ids !== '') {
             // Remove a trailing comma if we have one
@@ -940,8 +808,6 @@ if (!function_exists('response_get_ids')) {
             // Join by comma's
             $device_ids = implode(',', $temp);
             unset($temp);
-            $log->detail = 'IDS: ' . $device_ids;
-            #stdlog($log);
         }
         return $device_ids;
     }
@@ -956,14 +822,6 @@ if (!function_exists('response_get_include')) {
      */
     function response_get_include($get = '', $post = '', $collection = '', $format = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_include';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $include = '';
         $valid_includes = response_valid_includes();
 
@@ -974,11 +832,11 @@ if (!function_exists('response_get_include')) {
 
         if (!empty($get)) {
             $include = $get;
-            $log->summary = 'Set include according to GET. ';
+            log_message('debug', 'Set include according to GET (' . $get . ').');
         }
         if (!empty($post)) {
             $include = $post;
-            $log->sumary = 'Set include according to POST. ';
+            log_message('debug', 'Set include according to POST (' . $post . ').');
         }
         if (($format === 'screen' && empty($include)) or $include === '*' or $include === 'all') {
             $include = implode(',', $valid_includes);
@@ -993,10 +851,6 @@ if (!function_exists('response_get_include')) {
                 $include = implode(',', $temp);
             }
         }
-        if ($include !== '') {
-            $log->detail = "INCLUDE: {$include}";
-            #stdlog($log);
-        }
         return $include;
     }
 }
@@ -1009,35 +863,23 @@ if (!function_exists('response_get_limit')) {
      */
     function response_get_limit($get = '', $post = '', $format = '', $default_limit = 1000)
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_limit';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $limit = 0;
 
         if (!empty($get)) {
             $limit = intval($get);
-            $log->summary = 'Set limit according to GET.';
+            log_message('debug', 'Set include according to GET (' . $limit . ').');
         }
         if (!empty($post)) {
             $limit = intval($post);
-            $log->summary = 'Set limit according to POST.';
+            log_message('debug', 'Set include according to POST (' . $limit . ').');
         }
         if ($format === 'screen' && empty($limit)) {
             $limit = intval($default_limit);
-            $log->summary = 'Set limit according to SCREEN default.';
+            // log_message('debug', 'Set include according to SCREEN DEFAULT (' . $limit . ').');
         }
         if ($format === 'json' && empty($limit)) {
             $limit = intval($default_limit);
-            $log->summary = 'Set limit according to JSON default.';
-        }
-        if (!empty($limit)) {
-            $log->detail = 'LIMIT: ' . $limit;
-            #stdlog($log);
+            // log_message('debug', 'Set include according to JSON DEFAULT (' . $limit . ').');
         }
         return $limit;
     }
@@ -1081,29 +923,15 @@ if (!function_exists('response_get_offset')) {
      */
     function response_get_offset($get = '', $post = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_offset';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $offset = 0;
 
         if (!empty($get)) {
             $offset = intval($get);
-            $log->summary = 'Set offset according to GET.';
-            #stdlog($log);
+            log_message('debug', 'Set offset according to GET (' . $offset . ').');
         }
         if (!empty($post)) {
             $offset = intval($post);
-            $log->summary = 'Set offset according to POST.';
-            #stdlog($log);
-        }
-        if (!empty($offset)) {
-            $log->detail = 'OFFSET: ' . $offset;
-            #stdlog($log);
+            log_message('debug', 'Set offset according to POST (' . $offset . ').');
         }
         return $offset;
     }
@@ -1118,22 +946,11 @@ if (!function_exists('response_get_org_list')) {
      */
     function response_get_org_list($instance, $collection = '')
     {
-        #echo "<pre>|n"; print_r($instance->orgsModel); echo "</pre>\n"; exit;
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_org_list';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         #$instance = & get_instance();
         $org_list = array();
 
         if (empty($collection) or empty($instance->user)) {
-            $log->severity = 5;
-            $log->detail = 'Either no collection or no user supplied.';
-            #stdlog($log);
+            log_message('error', 'Either no collection or no user supplied.');
             return;
         }
         switch ($collection) {
@@ -1168,8 +985,8 @@ if (!function_exists('response_get_org_list')) {
             case 'search':
             case 'tasks':
             case 'users':
-                $log->summary = 'Set org_list according to ' . $collection . ' for DESCENDANTS.';
                 $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+                log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
                 break;
 
             case 'configuration':
@@ -1180,8 +997,8 @@ if (!function_exists('response_get_org_list')) {
             case 'san':
             case 'test':
             case 'util':
-                $log->summary = 'Set org_list according to ' . $collection . ' for USER.';
                 $org_list = $instance->user->orgs;
+                log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
                 break;
 
             case 'attributes':
@@ -1197,17 +1014,17 @@ if (!function_exists('response_get_org_list')) {
             case 'scripts':
             case 'summaries':
             case 'widgets':
-                $log->summary = 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS.';
                 $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
                 $org_list = array_unique(array_merge($org_list, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
                 $org_list[] = 1;
                 $org_list = array_unique($org_list);
                 asort($org_list);
+                log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
                 break;
 
             default:
-                $log->summary = 'Set org_list according to ' . $collection . ' for USER DEFAULT.';
                 $org_list = $instance->user->orgs;
+                log_message('debug', 'Set org_list according to ' . $collection . ' for USER DEFAULT (' . implode(', ', $org_list) . ').');
                 break;
         }
         $org_list = implode(',', $org_list);
@@ -1227,32 +1044,22 @@ if (!function_exists('response_get_permission_ca')) {
      */
     function response_get_permission_ca($user = null, $collection = '', $action = '', $received_data = null, $id = null, $usersModel = null)
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_permission_ca';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $instance = & get_instance();
         $permissions = response_valid_permissions($collection);
-        $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action;
 
         if (empty($instance->roles) && intval(config('Openaudit')->internal_version) >= 20160904) {
             return true;
         }
 
         if (empty($user->orgs)) {
+            log_message('error', 'User has no permissions on any orgs. User: ' . json_encode($user));
             $instance->session->unset_userdata('user_id');
-            $instance->session->set_flashdata('error', 'User has no permissions on any orgs.');
+            \Config\Services::session()->setFlashdata('error', 'User has no permissions on any orgs.');
             redirect('logon');
         }
 
         if (empty($user) or empty($collection) or empty($action)) {
-            $log->severity = 4;
-            $log->details = 'Cannot retrieve permission, missing attribute';
-            #stdlog($log);
+            log_message('critical', 'Cannot retrieve permission, missing attribute.');
             return false;
         }
 
@@ -1296,14 +1103,10 @@ if (!function_exists('response_get_permission_ca')) {
             $perm_collection = 'integrations';
         }
         // if (!$usersModel->get_user_permission($user->id, $perm_collection, $permissions[$action]) and config('Openaudit')->internal_version >= '20160904') {
-        //     log_error('ERR-0015', $collection . ':' . $permissions[$action]);
-        //     $log->details = 'User not permitted to perform ' . $action . ' on ' . $collection;
-        //     $log->severity = 5;
-        //     #stdlog($log);
+        //     log_message('warning', 'User not permitted to perform ' . $action . ' on ' . $collection);
         //     return false;
         // }
-        $log->summary = 'User permitted to perform ' . $action . ' on ' . $collection;
-        #stdlog($log);
+        log_message('debug', 'User permitted to perform ' . $action . ' on ' . $collection);
         return true;
     }
 }
@@ -1320,31 +1123,18 @@ if (!function_exists('response_get_permission_id')) {
      */
     function response_get_permission_id($user, $collection, $action, $received_data, $id)
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_permission_id';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $instance = & get_instance();
-        $log->detail = 'COLLECTION: ' . @$collection . ' ACTION: ' . @$action . ' ID: ' . @$id;
         $collections = array('charts', 'configuration', 'database', 'errors', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
 
         if (empty($id) or intval($id) === 888888888888 or in_array($collection, $collections)) {
-            $log->summary = 'User permitted to access ' . $collection;
-            #stdlog($log);
+            log_message('debug', 'User permitted to access ' . $collection);
             return true;
         }
 
-        // if (!$instance->m_users->get_user_collection_org_permission($collection, $id)) {
-        //     log_error('ERR-0018', $collection . ':' . $action);
-        //     $log->severity = 5;
-        //     $log->summary = 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
-        //     #stdlog($log);
-        //     return false;
-        // }
+        if (!$instance->m_users->get_user_collection_org_permission($collection, $id)) {
+            log_message('warning', 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id);
+            return false;
+        }
         // check (if we're supplying data) that the OrgID is one we are allowed to supply
         if ($action === 'create' or $action === 'update' or $action === 'import' or $action === 'delete') {
             $temp = explode(',', $user->org_list);
@@ -1357,10 +1147,7 @@ if (!function_exists('response_get_permission_id')) {
                     }
                 }
                 if (!$allowed) {
-                    log_error('ERR-0018', $collection . ':' . $action);
-                    $log->severity = 5;
-                    $log->summary = 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
-                    #stdlog($log);
+                    log_message('warning', 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id);
                     return false;
                 }
             }
@@ -1373,16 +1160,12 @@ if (!function_exists('response_get_permission_id')) {
                     }
                 }
                 if (!$allowed) {
-                    log_error('ERR-0018', $collection . ':' . $action);
-                    $log->severity = 5;
-                    $log->summary = 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id;
-                    #stdlog($log);
+                    log_message('warning', 'User not permitted to perform ' . $action . ' on ' . $collection . ' ID ' . $id);
                     return false;
                 }
             }
-            $log->summary = 'User permitted to perform ' . $action . ' on OrgID ' . @$received_data->org_id;
         }
-        #stdlog($log);
+        log_message('warning', 'User permitted to perform ' . $action . ' on OrgID ' . @$received_data->org_id);
         return true;
     }
 }
@@ -1397,69 +1180,53 @@ if (!function_exists('response_get_properties')) {
      */
     function response_get_properties($collection = '', $action = '', $sub_resource = '', $get = '', $post = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_properties';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $db = db_connect();
         $properties = '';
-
-        if ($sub_resource === 'devices') {
-            $sub_resource = 'system';
-        }
-
-        $table = $collection;
-        if ($table === 'devices') {
-            $table = 'system';
-        }
+        $summary = '';
 
         if (!empty($get)) {
             $properties = $get;
-            $log->summary = 'Set properties according to GET.';
+            $summary = "Set properties according to GET.";
             // Allow for format of properties=["id", "name", "status"]
             if ($temp = json_decode($properties)) {
+                $summary = "Set properties according to GET JSON.";
                 $properties = implode(',', $temp);
-                $log->summary = 'Set properties according to GET JSON.';
             }
         }
         if (!empty($post)) {
             $properties = $post;
-            $log->summary = 'Set properties according to POST.';
+            $summary = "Set properties according to POST.";
             // Allow for format of properties=["id", "name", "status"]
             if ($temp = json_decode($properties)) {
                 $properties = implode(',', $temp);
-                $log->summary = 'Set properties according to POST JSON.';
+                $summary = 'Set properties according to POST JSON.';
             }
         }
         if ($collection === 'devices') {
             if ($action === 'collection' && ($properties === 'default' or $properties === '') && ($sub_resource === '' or $sub_resource === 'system')) {
                 if ($properties === 'default') {
-                    $log->summary = 'Set properties to config DEFAULT.';
+                    $summary = 'Set properties to config DEFAULT.';
                     $properties = $instance->config->config['devices_default_retrieve_columns'];
                 } else {
                     if (!empty($instance->user->devices_default_display_columns)) {
-                        $log->summary = 'Set properties to user default.';
+                        $summary = 'Set properties to user default.';
                         $properties = $instance->user->devices_default_display_columns;
                     } else if (!empty($instance->config['devices_default_display_columns'])) {
-                        $log->summary = 'Set properties to config default.';
+                        $summary = 'Set properties to config default.';
                         $properties = $instance->config->devices_default_display_columns;
                     } else {
-                        $log->summary = 'Set properties to default because neither user nor config are set.';
+                        $summary = 'Set properties to default because neither user nor config are set.';
                         $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
                     }
                 }
             } else if ($action === 'collection' && $sub_resource !== '') {
-                $log->summary = 'Set properties to ALL.';
+                $summary = 'Set properties to ALL.';
                 $properties = $sub_resource . '.*';
             }
         }
         if ($properties === 'all' or $properties === '*') {
-            $properties = $table . '.' . implode(','.$table.'.', $db->getFieldNames($table));
-            $log->summary = 'Set properties to TABLE ALL.';
+            $properties = $collection . '.' . implode(','.$collection.'.', $db->getFieldNames($collection));
+            $summary = 'Set properties to TABLE ALL.';
         }
 
         if (!empty($properties) and $properties !== $sub_resource . '.*') {
@@ -1469,33 +1236,28 @@ if (!function_exists('response_get_properties')) {
                 if (strpos($properties[$i], '.') !== false) {
                     $temp = explode('.', $properties[$i]);
                     if (!$db->tableExists($temp[0])) {
-                        $log->detail = 'Invalid property supplied (' . htmlentities($db->escapeString($properties[$i])) . '), removed.';
+                        log_message('warning', 'Invalid property supplied (' . (string)$properties[$i] . '), removed.');
                         unset($properties[$i]);
-                        #stdlog($log);
                     } else if (!$db->fieldExists($temp[1], $temp[0])) {
-                        $log->detail = 'Invalid property supplied (' . htmlentities($db->escapeString($properties[$i])) . '), removed.';
+                        log_message('warning', 'Invalid property supplied (' . (string)$properties[$i] . '), removed.');
                         unset($properties[$i]);
-                        #stdlog($log);
                     }
                 } else {
-                    if (!$db->tableExists($table)) {
-                        $log->detail = 'Invalid property supplied (' . htmlentities($db->escapeString($properties[$i])) . '), removed.';
+                    if (!$db->tableExists($collection)) {
+                        log_message('warning', 'Invalid property supplied (' . (string)$properties[$i] . '), removed.');
                         unset($properties[$i]);
-                        #stdlog($log);
-                    } else if (!$db->fieldExists($properties[$i], $table)) {
-                        $log->detail = 'Invalid property supplied (' . htmlentities($db->escapeString($properties[$i])) . '), removed.';
+                    } else if (!$db->fieldExists($properties[$i], $collection)) {
+                        log_message('warning', 'Invalid property supplied (' . (string)$properties[$i] . '), removed.');
                         unset($properties[$i]);
-                        #stdlog($log);
                     }
                 }
             }
             $properties = implode(',', $properties);
         }
 
-        #if ($properties === '' && $collection !== 'devices') {
         if ($properties === '') {
             $properties = $collection . '.*';
-            $log->summary = 'Set properties according to NON-DEVICES DEFAULT.';
+            $summary = "Set properties to $properties.";
         }
         // perform some simple data cleansing
         if (is_array($properties)) {
@@ -1506,11 +1268,10 @@ if (!function_exists('response_get_properties')) {
         $properties = preg_replace('/[^A-Za-z0-9\.\_\,\*]/', '', $properties);
         if ($temp !== $properties) {
             // something was filtered
-            $log->summary = 'Set properties according to FILTERING.';
+            $summary = 'Set properties according to FILTERING.';
         }
         if (!empty($properties)) {
-            $log->detail = 'PROPERTIES: ' . $properties;
-            #stdlog($log);
+            log_message('debug', $summary);
         }
         return $properties;
     }
@@ -1524,24 +1285,16 @@ if (!function_exists('response_get_sort')) {
      */
     function response_get_sort($collection = '', $get = '', $post = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_sort';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $db = db_connect();
         $sort = '';
 
         if (!empty($get)) {
             $sort = $get;
-            $log->summary = 'Set sort according to GET.';
+            $summary = 'Set sort according to GET';
         }
         if (! empty($post)) {
             $sort = $post;
-            $log->summary = 'Set sort according to POST.';
+            $summary = 'Set sort according to POST';
         }
         $sort = str_replace('+', '', $sort);
         if (!empty($sort)) {
@@ -1562,8 +1315,7 @@ if (!function_exists('response_get_sort')) {
                     $temp[1] = $field;
                 }
                 if (!$db->fieldExists($temp[1], $temp[0])) {
-                    $log->severity = 5;
-                    $log->summary = 'Invalid sort attribute supplied (' . htmlentities($properties[$i]) . '), removed.';
+                    log_message('warning', 'Invalid sort attribute supplied (' . $properties[$i] . '), removed.');
                     unset($properties[$i]);
                 } else {
                     if (substr($properties[$i], 0, 1) === '-') {
@@ -1576,8 +1328,7 @@ if (!function_exists('response_get_sort')) {
             $sort = implode(',', $properties);
         }
         if (!empty($sort)) {
-            $log->detail = 'SORT: ' . $sort;
-            #stdlog($log);
+            log_message('debug', $summary . " ($properties).");
         }
         return $sort;
     }
@@ -1592,27 +1343,19 @@ if (!function_exists('response_get_sub_resource')) {
      */
     function response_get_sub_resource($get = '', $post = '', $uri = '', $collection = '', $format = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_sub_resource';
-        $log->status = 'parsing';
-        $log->summary = '';
-
         $sub_resource = '';
 
         if (!empty($get)) {
             $sub_resource = $get;
-            $log->summary = 'Set sub_resource according to GET.';
+            $summary = 'Set sub_resource according to GET';
         }
         if (!empty($post)) {
             $sub_resource = $post;
-            $log->summary = 'Set sub_resource according to POST.';
+            $summary = 'Set sub_resource according to POST';
         }
         if (!empty($uri)) {
             $sub_resource = $uri;
-            $log->summary = 'Set sub_resource according to URI.';
+            $summary = 'Set sub_resource according to URI';
         }
         if (!empty($sub_resource) && $collection === 'devices') {
             $valid_sub_resources = response_valid_sub_resources();
@@ -1629,8 +1372,7 @@ if (!function_exists('response_get_sub_resource')) {
             }
         }
         if (!empty($sub_resource)) {
-            $log->detail = 'SUB_RESOURCE: ' . $sub_resource;
-            #stdlog($log);
+            log_message('debug', $summary . " ($sub_resource).");
         }
         return $sub_resource;
     }
@@ -1644,69 +1386,25 @@ if (!function_exists('response_get_sub_resource_id')) {
      */
     function response_get_sub_resource_id($uri = '', $get = '', $post = '')
     {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->type = 'system';
-        $log->object = 'response_helper';
-        $log->function = 'response_helper::response_get_sub_resource_id';
-        $log->status = 'parsing';
-        $log->summary = '';
 
         $sub_resource_id = '';
 
         if (!empty($uri)) {
             $sub_resource_id = $uri;
-            $log->summary = 'Set sub_resource_id according to URI.';
+            $summary = 'Set sub_resource_id according to URI';
         }
         if (!empty($get)) {
             $sub_resource_id = intval($get);
-            $log->summary = 'Set sub_resource_id according to GET.';
+            $summary = 'Set sub_resource_id according to GET';
         }
         if (!empty($post)) {
             $sub_resource_id = intval($post);
-            $log->summary = 'Set sub_resource_id according to POST.';
+            $summary = 'Set sub_resource_id according to POST';
         }
         if (!empty($sub_resource_id)) {
-            $log->detail = 'SUB_RESOURCE_ID: ' . $sub_resource_id;
-            #stdlog($log);
+            log_message('debug', $summary . "($sub_resource_id).");
         }
         return $sub_resource_id;
-    }
-}
-
-if (!function_exists('response_get_version')) {
-    /**
-     * Determine if the user specifically requested an API version. If so, adjust the URI.
-     * @return int The version number, defaults to 1
-     */
-    function response_get_version($uri_segments = null, $accept_header = '')
-    {
-        // FUNCTION NOT USED
-        // Only version 1 is available
-        return 1;
-    }
-}
-
-if (!function_exists('response_set_uri')) {
-    /**
-     * Determine if the user specifically requested a version. If so, adjust the URI.
-     * @return array The URI after removing any API version items
-     */
-    function response_set_uri($uri_segments = null)
-    {
-        if (!empty($uri_segments[1]) && is_array($uri_segments) && ($uri_segments[1] === 'api' or $uri_segments[1] === 'v1' or $uri_segments[1] === 'v2')) {
-            if ($uri_segments[1] === 'api') {
-                unset($uri_segments[1]);
-                unset($uri_segments[2]);
-            } else if ($uri_segments[1] === 'v1') {
-                unset($uri_segments[1]);
-            } else if ($uri_segments[1] === 'v2') {
-                unset($uri_segments[1]);
-            }
-        }
-        array_unshift($uri_segments, '');
-        $filtered_segments = array_values($uri_segments);
-        return $filtered_segments;
     }
 }
 
