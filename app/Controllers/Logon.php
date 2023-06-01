@@ -49,7 +49,6 @@ class Logon extends Controller
 
     public function create()
     {
-        log_message('error', 'logon::create');
         $this->session = \Config\Services::session();
         $this->logonModel = new \App\Models\LogonModel();
 
