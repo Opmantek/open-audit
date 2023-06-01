@@ -466,6 +466,12 @@ if (!function_exists('collections_list')) {
         $collections->scripts->edition = 'Professional';
         $collections->scripts->orgs = 'b';
 
+        $collections->search = new stdClass();
+        $collections->search->icon = 'fa fa-desktop';
+        $collections->search->name = 'Search';
+        $collections->search->edition = 'Community';
+        $collections->search->orgs = 'd';
+
         $collections->summaries = new stdClass();
         $collections->summaries->icon = 'fa fa-pie-chart';
         $collections->summaries->name = 'Summaries';

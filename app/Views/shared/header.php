@@ -574,12 +574,12 @@ if (!empty($config->modules)) {
                     </div>
                     <div class="col-9 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
                         <!-- TODO - fix the below search route -->
-                        <form class="float-end" method="post" action="#">
+                        <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>">
                             <div class="btn-group" role="group">
-                                <input type="hidden" id="data[access_token]" name="data[access_token]" value="<?= $meta->access_token[1]; ?>">
+                                <input type="hidden" id="data[access_token]" name="data[access_token]" value="<?= $meta->access_token; ?>">
                                 <label style="padding-top:5px;" for="data[attributes][value]">Search&nbsp;</label>
-                                <input type="text"   id="data[attributes][value]" name="data[attributes][value]" class="form-control form-control-sm" placeholder="Device Name or full IP">
-                                <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["system"]'>
+                                <input type="text"   id="data[attributes][value]" name="data[attributes][value]" class="form-control form-control-sm" placeholder="Device Name or IP">
+                                <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["devices"]'>
                                 <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
                                 <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
                             </div>

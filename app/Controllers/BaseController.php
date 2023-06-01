@@ -117,6 +117,9 @@ abstract class BaseController extends Controller
         if (empty($this->user->permissions['rack_devices'])) {
             $this->user->permissions['rack_devices'] = $this->user->permissions['racks'];
         }
+        if (empty($this->user->permissions['search'])) {
+            $this->user->permissions['search'] = $this->user->permissions['devices'];
+        }
 
         // Setup our request hash (meta, data, errors, included, et al)
         $this->resp = response_create($this);
