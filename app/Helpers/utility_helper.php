@@ -122,6 +122,12 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'tasks') {
+        foreach ($result as $item) {
+            $item->options = @json_decode($item->options);
+        }
+    }
+
     if ($type === 'users') {
         foreach ($result as $item) {
             $item->roles = json_decode($item->roles);
@@ -151,6 +157,63 @@ function format_data($result, $type)
     }
     return $return;
 }
+
+if (!function_exists('my_json_decode')) {
+    function my_json_decode(string $string = '')
+    {
+        if (empty($string)) {
+            # TODO - log an error
+            return '';
+        }
+
+        if (stripos($string, '\"') !== false) {
+            $string = str_replace('\"', '"', $string);
+        }
+
+        $json = @json_decode($string);
+        $error_message = '';
+
+        switch (json_last_error()) {
+            case JSON_ERROR_NONE:
+                break; # No errors
+
+            case JSON_ERROR_DEPTH:
+                $error_message = 'Maximum stack depth exceeded';
+                break;
+
+            case JSON_ERROR_STATE_MISMATCH:
+                $error_message = 'Underflow or the modes mismatch';
+                break;
+
+            case JSON_ERROR_CTRL_CHAR:
+                $error_message = 'Unexpected control character found';
+                break;
+
+            case JSON_ERROR_SYNTAX:
+                $error_message = 'Syntax error, malformed JSON';
+                break;
+
+            case JSON_ERROR_UTF8:
+                $error_message = 'Malformed UTF-8 characters, possibly incorrectly encoded';
+                break;
+
+            default:
+                $error_message = 'Unknown error';
+                break;
+        }
+
+        if (!empty($error_message)) {
+            log_message('error', strtolower(__METHOD__), $error_message);
+        }
+
+        if (!empty($json)) {
+            return $json;
+        } else {
+            return '';
+        }
+    }
+}
+
 
 if (!function_exists('collections_list')) {
     /**
