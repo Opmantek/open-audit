@@ -32,7 +32,7 @@ class Summaries extends BaseController
 {
 
     /**
-     * Execute a query
+     * Execute a summary
      *
      * @access public
      * @return void
