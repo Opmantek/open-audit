@@ -30,20 +30,20 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
                             <?php if ($resource->type === 'snmp') {
-                                echo read_field('credentials.community', '', $dictionary->columns->community, $update, __('Community String'));
+                                echo read_field('credentials.community', '', $dictionary->columns->community, $update, __('Community String'), '', '', 'password');
                             } else if ($resource->type === 'ssh') {
                                 echo read_field('credentials.username', $resource->credentials->username, $dictionary->columns->username, $update, __('Username'));
-                                echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'));
+                                echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'), '', '', 'password');
                             } else if ($resource->type === 'windows') {
                                 echo read_field('credentials.username', $resource->credentials->username, $dictionary->columns->username, $update, __('Username'));
-                                echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'));
+                                echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'), '', '', 'password');
                             } else if ($resource->type === 'ssh_key') {
                                 echo read_field('credentials.username', $resource->credentials->username, $dictionary->columns->username, $update, __('Username'));
-                                echo read_field('credentials.ssh_key', '', $dictionary->columns->ssh_key, $update, __('SSH Key'));
-                                echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Key Password (optional)'));
-                                echo read_field('credentials.sudo_password', '', $dictionary->columns->sudo_password, $update, __('Sudo Password (optional)'));
+                                echo read_field('credentials.ssh_key', '', $dictionary->columns->ssh_key, $update, __('SSH Key'), '', '', 'password');
+                                echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Key Password (optional)'), '', '', 'password');
+                                echo read_field('credentials.sudo_password', '', $dictionary->columns->sudo_password, $update, __('Sudo Password (optional)'), '', '', 'password');
                             } else if ($resource->type === 'snmp_v3') {
-                                echo read_field('credentials.authentication_passphrase', '', $dictionary->columns->authentication_passphrase, $update, __('Authentication Passphrase')); ?>
+                                echo read_field('credentials.authentication_passphrase', '', $dictionary->columns->authentication_passphrase, $update, __('Authentication Passphrase'), '', '', 'password'); ?>
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
@@ -65,7 +65,7 @@ include 'shared/read_functions.php';
                                     </div>
                                 </div>
 
-                                <?php echo read_field('credentials.privacy_passphrase', '', $dictionary->columns->privacy_passphrase, $update, __('Privacy Passphrase')); ?>
+                                <?php echo read_field('credentials.privacy_passphrase', '', $dictionary->columns->privacy_passphrase, $update, __('Privacy Passphrase'), '', '', 'password'); ?>
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">

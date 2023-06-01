@@ -16,7 +16,7 @@ include 'shared/collection_functions.php';
 
                             <?= read_field('full_name', $resource->full_name, $dictionary->columns->full_name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('password', '*removed*', $dictionary->columns->password, $update) ?>
+                            <?= read_field('password', '', $dictionary->columns->password, $update, '', '', '', 'password') ?>
                             <?= read_field('email', $resource->email, $dictionary->columns->email, $update) ?>
 
                             <div class="row" style="padding-top:16px;">
@@ -231,5 +231,13 @@ include 'shared/collection_functions.php';
 $(document).ready(function() {
     $("#lang").val("<?= $resource->lang ?>");
     $("#toolbar_style").val("<?= $resource->toolbar_style ?>");
+
+    <?php if (isset($resource->password)) {
+        if ($resource->password !== '') { ?>
+            $("#password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+        <?php } else { ?>
+            $("#password").attr("placeholder", "<?= __("has not been set") ?>");
+        <?php }
+    } ?>
 });
 </script>
