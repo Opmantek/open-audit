@@ -189,14 +189,8 @@ if (! function_exists('deviceMatch')) {
         $db = db_connect();
 
         if (empty($device) or (empty($log) and empty($discovery_id))) {
-            // $mylog = new stdClass();
-            // $mylog->severity = 4;
-            // $mylog->status = 'fail';
-            // $mylog->message = 'Function match called without correct params object';
-            // $mylog->file = 'm_device';
-            // $mylog->function = 'match';
-            // stdlog($mylog);
-            // return false;
+            log_message('error', 'Function match called without correct params object');
+            return false;
         }
 
         // we are searching for a devices.id.
