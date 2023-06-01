@@ -38,7 +38,7 @@ class Collections extends BaseController
      */
     public function collection()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . "\n";
         log_message('debug', $message);
         $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
@@ -74,7 +74,7 @@ class Collections extends BaseController
      */
     public function create()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
+        $message = 'ACCESS: ' . strtolower(this->resp->meta->collection) . '::' . strtolower(this->resp->meta->action) . ' by user ' . @this->user->full_name . ', response: ' . json_encode(this->resp->meta) . "\n";
         log_message('notice', $message);
         $this->networksModel = new \App\Models\NetworksModel();
         if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
@@ -121,7 +121,7 @@ class Collections extends BaseController
      */
     public function createForm()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower(this->resp->meta->collection) . '::' . strtolower(this->resp->meta->action) . ' by user ' . @this->user->full_name . "\n";
         log_message('debug', $message);
         if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
             log_message('error', 'Item in ' . $this->resp->meta->collection . ' needs a commercial license.');
@@ -150,7 +150,7 @@ class Collections extends BaseController
      */
     public function defaults()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower(this->resp->meta->collection) . '::' . strtolower(this->resp->meta->action) . ' by user ' . @$this->user->full_name . "\n";
         log_message('debug', $message);
         $this->baseModel = new \App\Models\BaseModel();
         $defaults = $this->baseModel->tableDefaults($this->resp->meta->collection);
@@ -175,7 +175,7 @@ class Collections extends BaseController
      */
     public function delete()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . '::' . $instance->resp->meta->id . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . '::' . $this->resp->meta->id . ' by user ' . @$this->user->full_name . "\n";
         log_message('notice', $message);
         if ($this->{$this->resp->meta->collection.'Model'}->delete($this->resp->meta->id)) {
             \Config\Services::session()->setFlashdata('success', 'Item in ' . $this->resp->meta->collection . ' deleted.');
@@ -192,7 +192,7 @@ class Collections extends BaseController
      */
     public function help()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . "\n";
         log_message('debug', $message);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
@@ -214,7 +214,7 @@ class Collections extends BaseController
      */
     public function import()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . ', response: ' . json_encode($this->resp->meta) . "\n";
         log_message('notice', $message);
         $file = $this->request->getFile('file_import');
         if (!$file->isValid()) {
@@ -240,7 +240,7 @@ class Collections extends BaseController
      */
     public function importForm()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . "\n";
         log_message('debug', $message);
         $this->databaseModel = new \App\Models\DatabaseModel();
         $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
@@ -266,7 +266,7 @@ class Collections extends BaseController
      */
     public function read($id)
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . '::' . $instance->resp->meta->id . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . '::' . $this->resp->meta->id . ' by user ' . @$this->user->full_name . "\n";
         log_message('debug', $message);
         if ($this->resp->meta->collection !== 'database') {
             $this->resp->meta->id = intval($this->resp->meta->id);
@@ -320,7 +320,7 @@ class Collections extends BaseController
      */
     public function reset()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . ', response: ' . json_encode($this->resp->meta) . "\n";
         log_message('warning', $message);
         $this->{$this->resp->meta->collection.'Model'}->reset();
         return redirect()->route($this->resp->meta->collection.'Collection');
@@ -333,7 +333,7 @@ class Collections extends BaseController
      */
     public function update()
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . ' by user ' . @$this->user->full_name . ', response: ' . json_encode($this->resp->meta) . "\n";
         log_message('notice', $message);
         if ($this->{$this->resp->meta->collection.'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
             output($this);

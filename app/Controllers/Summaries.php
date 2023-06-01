@@ -39,7 +39,7 @@ class Summaries extends BaseController
      */
     public function execute($id)
     {
-        $message = 'ACCESS: ' . strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . '::' . $instance->resp->meta->id . ' by user ' . @$instance->user->full_name . "\n";
+        $message = 'ACCESS: ' . strtolower($this->resp->meta->collection) . '::' . strtolower($this->resp->meta->action) . '::' . $this->resp->meta->id . ' by user ' . @$this->user->full_name . "\n";
         log_message('notice', $message);
         $query = $this->summariesModel->read($this->resp->meta->id);
         $this->resp->meta->name = $query[0]->attributes->name;
