@@ -61,31 +61,6 @@ class OpenAudit extends BaseConfig
             $this->device_count = @intval($result->device_count);
         }
 
-        // if ((string) php_uname('s') === 'Windows NT') {
-        //     $this->config->config['base_path'] = str_replace('\code_igniter\application\models\m_configuration.php', '', __FILE__);
-        // } else {
-        //     $this->config->config['base_path'] = str_replace('/code_igniter/application/models/m_configuration.php', '', __FILE__);
-        // }
-
-        // $this->load->helper('network');
-        // $this->config->config['ip'] = server_ip();
-        // $this->config->config['is_ssl'] = is_ssl();
-
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $is_secure = false;
-            if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') {
-                $is_secure = true;
-            } elseif (!empty($_SERVER['HTTPS_X_FORWARDED_PROTO']) && $_SERVER['HTTPS_X_FORWARDED_PROTO'] === 'https') {
-                $is_secure = true;
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
-                $is_secure = true;
-            }
-            $this->base_url = $is_secure ? 'https' : 'http';
-            $this->base_url .= '://'.$_SERVER['HTTP_HOST'];
-            $this->base_url .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
-            $this->base_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-        } else {
-            $this->base_url = 'http://localhost/';
-        }
+        config('Logger')->threshold = intval($this->log_level);
     }
 }
