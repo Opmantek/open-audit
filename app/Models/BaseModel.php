@@ -39,11 +39,7 @@ class BaseModel extends Model
             if (!isset($data->{$field}) or $data->{$field} === '') {
                 $session = \Config\Services::session();
                 $session->setFlashdata('error', "Object in {$table} could not be created, no {$field} supplied.");
-                $log = new \stdClass();
-                $log->severity = 3;
-                $log->summary = 'Create is missing a mandatory field';
-                $log->detail = "m_{$table}::create Missing field: {$field}";
-                stdlog($log);
+                log_message('warning', "Object in {$table} could not be created, no {$field} supplied.");
                 return false;
             }
         }
@@ -110,12 +106,9 @@ class BaseModel extends Model
     {
         if (!empty($error['code'])) {
             $error['sql'] = str_replace("\n", " ", (string)$this->db->getLastQuery());
-            $log = new \stdClass();
-            $log->severity = 3;
-            $log->summary = 'SQL Error';
-            $log->detail = json_encode($error);
-            stdlog($log);
             $GLOBALS['stash'] = $error;
+            log_message('error', 'SQL Error: ' . json_encode(error));
+            log_message('error', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             return $error;
         }
         return false;
