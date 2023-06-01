@@ -267,7 +267,7 @@ class UsersModel extends BaseModel
                 return $user;
             } else {
                 // the user_id stored in the session does not exist
-                stdlog('ERR-0015', 'm_users:validate Bad session data');
+                log_message('warning', 'userValidate Bad session data, user_id in session does not exist.');
                 if ($instance->resp->meta->format === 'json') {
                     echo json_encode($instance->resp);
                     echo '{["error":"Bad session UserID."]}';
