@@ -122,6 +122,12 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'scripts') {
+        foreach ($result as $item) {
+            $item->options = @json_decode($item->options);
+        }
+    }
+
     if ($type === 'tasks') {
         foreach ($result as $item) {
             $item->options = @json_decode($item->options);

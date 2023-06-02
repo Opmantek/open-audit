@@ -120,6 +120,8 @@ $routes->get('logout', 'Logon::delete');
 
 $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
 
+$routes->get('scripts/(:num)/download', 'Scripts::download/$1');
+
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
