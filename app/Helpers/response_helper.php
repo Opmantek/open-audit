@@ -331,24 +331,6 @@ if (!function_exists('response_create')) {
             $response->meta->filter[] = $item;
         }
 
-        // $permission = response_get_permission_ca($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id, $instance->usersModel);
-
-        // if (!$permission) {
-        //     $message = 'User denied permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action;
-        //     if ($response->meta->format === 'json') {
-        //         $response->meta->header = 'HTTP/1.1 403 Forbidden';
-        //         $response->errors = array();
-        //         $response->errors[] = $message;
-        //         header($response->meta->header);
-        //         echo json_encode($response);
-        //         exit;
-        //     } else {
-        //         \Config\Services::session()->setFlashdata('error', $message);
-        //         header('Location: ' . url_to($response->meta->collection.'Collection'));
-        //     }
-        //     redirect('/');
-        // }
-
         $permission = response_get_permission_id($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
 
         if (!$permission) {
@@ -360,11 +342,9 @@ if (!function_exists('response_create')) {
                 header($response->meta->header);
                 echo json_encode($response);
                 exit;
-            } else {
-                \Config\Services::session()->setFlashdata('error', $message);
-                header('Location: ' . url_to($response->meta->collection.'Collection'));
             }
-            redirect('/');
+            header('Location: ' . url_to('home'));
+            exit;
         }
         if (!empty($instance->response->logs)) {
             $response->logs = $instance->response->logs;
@@ -1056,7 +1036,8 @@ if (!function_exists('response_get_permission_ca')) {
             log_message('error', 'User has no permissions on any orgs. User: ' . json_encode($user));
             $instance->session->unset_userdata('user_id');
             \Config\Services::session()->setFlashdata('error', 'User has no permissions on any orgs.');
-            redirect('logon');
+            header('Location: ' . url_to('logon'));
+            exit;
         }
 
         if (empty($user) or empty($collection) or empty($action)) {
@@ -1164,7 +1145,12 @@ if (!function_exists('response_get_permission_id')) {
 
         $sql = "SELECT `{$collection}`.`org_id` AS org_id FROM `{$collection}` WHERE `id` = ?";
         $result = $db->query($sql, [$id])->getResult();
-        if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+        if (count($result) === 0) {
+            \Config\Services::session()->setFlashdata('error', 'Requested item does not exist (' . $collection . '::' . intval($id) . ').');
+            return false;
+        }
+        if (!in_array($result[0]->org_id, $org_list)) {
+            \Config\Services::session()->setFlashdata('error', 'Requested item belongs to an Org this user has no permission on.');
             return false;
         }
 
