@@ -27,7 +27,7 @@ function format_data($result, $type)
 
     $return = array();
 
-    if (! is_array($result)) {
+    if (!is_array($result)) {
         $item = $result;
         $result = array($item);
     }
@@ -142,8 +142,8 @@ function format_data($result, $type)
             $item->id = intval($entry->id);
         } else if (!empty($entry->{$type.".id"})) {
             $item->id = intval($entry->{$type.".id"});
-        } else if (!empty($entry->{'system.id'})) {
-            $item->id = intval($entry->{'system.id'});
+        } else if (!empty($entry->{'devices.id'})) {
+            $item->id = intval($entry->{'devices.id'});
         } else if ($type == 'errors') {
             $item->id = $entry->code;
         }
