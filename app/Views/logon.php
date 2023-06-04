@@ -54,15 +54,15 @@ header('X-Content-Type-Options: nosniff');
             {
                 var testWin = navigator.userAgent.match(/Windows NT/i);
                 if (testWin) {
-                    location.href = "<?= $config->oa_web_folder ?>index.php/util/audit_my_pc/windows";
+                    location.href = "<?= $config->oa_web_folder ?>index.php/scripts/windows/download";
                 }
                 var testLin = navigator.userAgent.match(/Linux /i);
                 if (testLin) {
-                    location.href = "<?= $config->oa_web_folder ?>index.php/util/audit_my_pc/linux";
+                    location.href = "<?= $config->oa_web_folder ?>index.php/scripts/linux/download";
                 }
                 var testOsx = navigator.userAgent.match(/Mac OS X/i);
                 if (testOsx) {
-                    location.href = "<?= $config->oa_web_folder ?>index.php/util/audit_my_pc/osx";
+                    location.href = "<?= $config->oa_web_folder ?>index.php/scripts/osx/download";
                 }
             }
             <?php if (intval($config->device_count) === 0) { ?>

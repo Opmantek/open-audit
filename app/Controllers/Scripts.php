@@ -32,7 +32,12 @@ class Scripts extends BaseController
 {
     public function download($id)
     {
-        $id = intval($id);
+        if (empty($this->scriptsModel)) {
+            $this->scriptsModel = new \App\Models\scriptsModel();
+        }
+        if (!is_numeric($id)) {
+            $id = $this->scriptsModel->getByOs($id);
+        }
         $scriptContents = $this->scriptsModel->download($id);
         if ($scriptContents === false) {
             \Config\Services::session()->setFlashdata('danger', 'Cannot download script, please contact your Open-AudIT administrator.');

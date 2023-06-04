@@ -48,6 +48,11 @@ class ScriptsModel extends BaseModel
                 $source_name = 'audit_osx_' . $timestamp . '.sh';
                 break;
             
+            case 'osx':
+                $audit_script = 'audit_osx.sh';
+                $source_name = 'audit_osx_' . $timestamp . '.sh';
+                break;
+            
             case 'windows':
                 $audit_script = 'audit_windows.vbs';
                 $source_name = 'audit_windows_' . $timestamp . '.vbs';
@@ -66,9 +71,9 @@ class ScriptsModel extends BaseModel
         }
         if ($audit_script !== '') {
             if (php_uname('s') == 'Windows NT') {
-                $source = FCPATH . '..\\other\\' . '\\scripts\\' . $source_name;
+                $source = FCPATH . '..\\other\\scripts\\' . $source_name;
             } else {
-                $source = FCPATH . '../other/' . '/scripts/' . $source_name;
+                $source = FCPATH . '../other/scripts/' . $source_name;
             }
             $sql = "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
             $result = $this->db->query($sql)->getResult();
@@ -260,6 +265,51 @@ class ScriptsModel extends BaseModel
         return true;
     }
 
+    public function getByOs(string $os = ''): int|false
+    {
+        switch (strtolower($os)) {
+            case 'aix':
+                $audit_script = 'audit_aix.sh';
+                break;
+            
+            case 'vmkernel':
+            case 'vmware':
+                $audit_script = 'audit_esxi.sh';
+                break;
+            
+            case 'linux':
+                $audit_script = 'audit_linux.sh';
+                break;
+            
+            case 'darwin':
+                $audit_script = 'audit_osx.sh';
+                break;
+            
+            case 'osx':
+                $audit_script = 'audit_osx.sh';
+                break;
+            
+            case 'windows':
+                $audit_script = 'audit_windows.vbs';
+                break;
+            
+            case 'sunos':
+                $audit_script = 'audit_solaris.sh';
+                break;
+            
+            default:
+                $audit_script = '';
+                break;
+        }
+        $sql = "SELECT * FROM scripts WHERE based_on = ? LIMIT 1";
+        $query = $this->db->query($sql, [$audit_script])->getResult();
+        if (empty($query[0]->id)) {
+            // Invalid OS
+            log_message('error', "Invalid OS provided to ScriptsModel::getByOs ($os).");
+            return false;
+        }
+        return intval($query[0]->id);
+    }
 
     public function download(int $id = 0): string|false
     {

@@ -88,6 +88,10 @@ abstract class BaseController extends Controller
             // We are starting the queue, no need for $user, et al.
             return;
         }
+        if (empty($this->user) and $this->controller === '\App\Controllers\Scripts' and $this->method === 'download') {
+            // Anyone can download a script
+            return;
+        }
 
         // Map the user to roles to collections
         $userRoles = array();
