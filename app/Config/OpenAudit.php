@@ -24,7 +24,7 @@ class OpenAudit extends BaseConfig
             }
         }
 
-        if ($this->page_size === 0) {
+        if (empty($this->page_size)) {
             $this->page_size = 1000;
         }
 
