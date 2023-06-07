@@ -189,8 +189,8 @@ class ClustersModel extends BaseModel
             $guests = $query->getResult();
             foreach ($guests as &$guest) {
                 $guest->details = json_decode($guest->details);
-                if (!empty($guest->details->guest_system_id)) {
-                    $sql = "SELECT id, hostname, ip, os_family, icon FROM devices WHERE id = " . intval($guest->details->guest_system_id);
+                if (!empty($guest->details->guest_device_id)) {
+                    $sql = "SELECT id, hostname, ip, os_family, icon FROM devices WHERE id = " . intval($guest->details->guest_device_id);
                     $query = $this->db->query($sql);
                     $details = $query->getResult();
                     $guest->hostname = $details[0]->hostname;
@@ -198,7 +198,7 @@ class ClustersModel extends BaseModel
                     $guest->os_family = $details[0]->os_family;
                     $guest->icon = $details[0]->icon;
 
-                    $sql = "SELECT GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) ORDER BY JSON_EXTRACT(components.details, '$.name') ASC SEPARATOR ', ') AS `servers` FROM components WHERE components.type = 'server' AND components.device_id = " . intval($guest->details->guest_system_id);
+                    $sql = "SELECT GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) ORDER BY JSON_EXTRACT(components.details, '$.name') ASC SEPARATOR ', ') AS `servers` FROM components WHERE components.type = 'server' AND components.device_id = " . intval($guest->details->guest_device_id);
                     $query = $this->db->query($sql);
                     $details = $query->getResult();
                     $guest->servers = $details[0]->servers;
@@ -221,7 +221,7 @@ class ClustersModel extends BaseModel
                         components.id AS `components.id`,
                         JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.status')) AS `vm.status`, 
                         if (devices.icon != '', devices.icon, JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.icon'))) AS `vm.icon`, 
-                        JSON_EXTRACT(components.details, '$.guest_system_id') AS `vm.devices_id`, 
+                        JSON_EXTRACT(components.details, '$.guest_device_id') AS `vm.devices_id`,
                         JSON_EXTRACT(components.details, '$.cpu_count') AS `vm.cpu_count`, 
                         JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.memory_count')) AS `vm.memory_count`, 
                         JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) AS `vm.name`
@@ -388,11 +388,11 @@ class ClustersModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'clusters';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'purpose', 'status', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

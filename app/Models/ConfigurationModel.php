@@ -149,11 +149,11 @@ class ConfigurationModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'configuration';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'value', 'description');
         $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

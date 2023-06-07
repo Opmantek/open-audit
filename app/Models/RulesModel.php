@@ -64,7 +64,7 @@ class RulesModel extends BaseModel
         if (is_array($data->inputs) or is_object($data->inputs)) {
             $new_inputs = array();
             foreach ($data->inputs as $input) {
-                $item = new stdClass();
+                $item = new \StdClass();
                 foreach ($input as $key => $value) {
                     $item->{$key} = $value;
                 }
@@ -76,7 +76,7 @@ class RulesModel extends BaseModel
         if (is_array($data->outputs) or is_object($data->outputs)) {
             $new_outputs = array();
             foreach ($data->outputs as $output) {
-                $item = new stdClass();
+                $item = new \StdClass();
                 foreach ($output as $key => $value) {
                     $item->{$key} = $value;
                 }
@@ -117,18 +117,15 @@ class RulesModel extends BaseModel
      * @param  [type] $parameters MUST contain either a device ID or a device object, SHOULD contain an action, default is to update, SHOULD contain a discovery ID for logging
      * @return [type]             [description]
      */
-    public function execute(object $device = null, int $discovery_id = 0, string $action = 'update', int $id = 0): false|object
+    public function execute(object $device = null, int $discovery_id = 0, string $action = 'update', int $id = 0)
     {
         log_message('debug', 'RulesExecute called.');
+        $item_start = microtime(true);
+        helper('macaddress');
 
         if (empty($id) && empty($device)) {
-            log_message('error', 'RulesExecute called, but no device object or device id passed.');
-            return false;
-        }
-
-        if (empty($id) && empty($device->id)) {
-            log_message('error', 'RulesExecute called, but no \$device->id or device \$id passed.');
-            return false;
+            log_message('error', 'RulesExecute called, but no $device object or $id passed.');
+            return;
         }
 
         $instance = & get_instance();
@@ -138,13 +135,12 @@ class RulesModel extends BaseModel
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
         $log = new \stdClass();
-        $log->discovery_id = $discovery_id;
         $log->message = 'Running rules::execute function.';
-        $item_start = microtime(true);
         $log->severity = 7;
         $log->command_status = 'notice';
         $log->file = 'm_rules';
         $log->function = 'execute';
+        $log->command = 'Device Update ';
 
         $device_sub = array();
         if (!empty($device)) {
@@ -152,6 +148,8 @@ class RulesModel extends BaseModel
             $log->command_output = json_encode($device);
             $log->command = 'Device Input ';
         }
+        $log->command .= "($action).";
+
         if (!empty($id)) {
             // Get our device
             $log->command_output = "Device ID supplied: {$id}";
@@ -186,7 +184,7 @@ class RulesModel extends BaseModel
                 $log->command_status = 'fail';
                 $log->message = "Could not retrieve data from devices table for ID: $id. Not running Rules function.";
                 $discoveryLogModel->create($log);
-                return false;
+                return $device;
             }
             // Get the first MAC Address because there is no mac stored in 'devices'
             $sql = "SELECT `mac` FROM `network` WHERE device_id = ? and current = 'y' and `mac` != '' order by `mac` limit 1";
@@ -195,25 +193,23 @@ class RulesModel extends BaseModel
                 $device->mac_address = $result[0]->mac;
             }
         }
-        $log->ip = '';
-        if (!empty($device->ip)) {
-            $log->ip = ip_address_from_db($device->ip);
+
+        // Log down here because we may not have been passed a $device
+        $log->discovery_id = (!empty($discovery_id)) ? $discovery_id : '';
+        if (empty($log->discovery_id) and !empty($device->discovery_id)) {
+            $log->discovery_id = $device->discovery_id;
         }
-        $log->device_id = '';
-        if (!empty($device->id)) {
-            $log->device_id = $device->id;
-            $id = $device->id;
-        }
+        $log->device_id = (!empty($device->id)) ? intval($device->id) : '';
+        $log->ip = (!empty($device->ip)) ? ip_address_from_db($device->ip) : '';
+        $discoveryLogModel->create($log);
+
+        $id = (!empty($device->id)) ? $device->id : '';
         // Discovery ID for logging
         if (empty($discovery_id)) {
             if (!empty($device->discovery_id)) {
                 $discovery_id = $device->discovery_id;
             }
         }
-        // Action - default of update
-        $log->command .= "($action).";
-
-        $discoveryLogModel->create($log);
 
         // NOTE - don't set the id or last_seen_by here as we test if empty after rules
         //        have been run and only update if not empty (after adding id and last_seen_by).
@@ -288,7 +284,7 @@ class RulesModel extends BaseModel
             $rule->outputs = json_decode($rule->outputs);
             foreach ($rule->inputs as $input) {
                 if (!$this->db->tableExists($input->table)) {
-                    $l = new stdClass();
+                    $l = new \StdClass();
                     $l->command_status = 'error';
                     $l->discovery_id = $log->discovery_id;
                     $l->ip = $log->ip;
@@ -313,7 +309,7 @@ class RulesModel extends BaseModel
 
         // Special case the MAC as we might have it in the device entry, but not network table yet
         if (!empty($device->mac_address) and empty($device_sub['network'])) {
-            $item = new stdClass();
+            $item = new \StdClass();
             $item->mac = $device->mac_address;
             $device_sub['network'] = array($item);
         }
@@ -323,7 +319,7 @@ class RulesModel extends BaseModel
                 $input_count = count($rule->inputs);
             } else {
                 // Log an error, but continue
-                $l = new stdClass();
+                $l = new \StdClass();
                 $l->command_status = 'error';
                 $l->discovery_id = $log->discovery_id;
                 $l->ip = $log->ip;
@@ -567,7 +563,7 @@ class RulesModel extends BaseModel
                     }
                 }
                 if ($hit >= $input_count) {
-                    $attributes = new stdClass();
+                    $attributes = new \StdClass();
                     foreach ($rule->outputs as $output) {
                         switch ($output->value_type) {
                             case 'string':
@@ -615,7 +611,7 @@ class RulesModel extends BaseModel
             if ($action == 'update') {
                 $newdevice->last_seen_by = 'rules';
                 $devicesModel = new \App\Models\DevicesModel();
-                $devicesModel->update($newdevice);
+                $devicesModel->update($newdevice->id, $newdevice);
                 return false;
             } else {
                 return $device;
@@ -770,11 +766,11 @@ class RulesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'rules';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

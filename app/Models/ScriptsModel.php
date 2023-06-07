@@ -360,7 +360,7 @@ class ScriptsModel extends BaseModel
             $sql = "SELECT * FROM files WHERE `path` NOT LIKE '/%'";
         }
         $result = $this->db->query($sql)->getResult();
-        $options = new stdClass();
+        $options = new \StdClass();
         $options->files = array();
         if (!empty($result)) {
             foreach ($result as $item) {
@@ -546,11 +546,11 @@ class ScriptsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'scripts';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'based_on', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','options','based_on');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

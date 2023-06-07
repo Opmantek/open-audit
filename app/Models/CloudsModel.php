@@ -81,7 +81,7 @@ class CloudsModel extends BaseModel
         # The discovery
         // $instance = & get_instance();
         // $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
-        // $discovery = new stdClass();
+        // $discovery = new \StdClass();
         // $discovery->type = 'cloud';
         // $discovery->name = 'Discovery for ' . $data->name;
         // $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
@@ -198,7 +198,7 @@ class CloudsModel extends BaseModel
         if (!empty($cloud[0]->options)) {
             $cloud[0]->options = json_decode($cloud[0]->options);
         } else {
-            $cloud[0]->options = new stdClass();
+            $cloud[0]->options = new \StdClass();
             $cloud[0]->options->ssh = 'y';
             $cloud[0]->options->wmi = 'y';
             $cloud[0]->options->snmp = 'n';
@@ -239,12 +239,12 @@ class CloudsModel extends BaseModel
         }
 
         if (!empty($data->credentials)) {
-            $received_credentials = new stdClass();
+            $received_credentials = new \StdClass();
             foreach ($data->credentials as $key => $value) {
                     $received_credentials->$key = $value;
             }
             $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key));
-            $new_credentials = new stdClass();
+            $new_credentials = new \StdClass();
             foreach ($existing_credentials as $key => $value) {
                 if (!empty($received_credentials->$key)) {
                     $new_credentials->$key = $received_credentials->$key;
@@ -280,11 +280,11 @@ class CloudsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'clouds';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','credentials','options'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

@@ -21,10 +21,10 @@ class DatabaseModel extends BaseModel
         $return = array();
         $tables = $db->listTables();
         foreach ($tables as $table) {
-            $item = new stdClass();
+            $item = new \StdClass();
             $item->type = 'database';
             $item->id = $table;
-            $item->attributes = new stdClass();
+            $item->attributes = new \StdClass();
             
             $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
             $query = $db->query($sql);
@@ -49,10 +49,10 @@ class DatabaseModel extends BaseModel
                 $item->attributes->org_id_row = false;
             }
 
-            if ($db->fieldExists('system_id', $table)) {
-                $item->attributes->system_id_row = true;
+            if ($db->fieldExists('device_id', $table)) {
+                $item->attributes->device_id_row = true;
             } else {
-                $item->attributes->system_id_row = false;
+                $item->attributes->device_id_row = false;
             }
             $return[] = $item;
         }
@@ -558,10 +558,10 @@ class DatabaseModel extends BaseModel
     public function dictionary(): object
     {
         $collection = 'database';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
-        $dictionary->attributes = new stdClass();
+        $dictionary->columns = new \StdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'count');
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();

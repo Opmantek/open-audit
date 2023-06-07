@@ -219,11 +219,11 @@ class RolesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'roles';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'ad_group', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','permissions'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

@@ -218,11 +218,11 @@ class FilesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'files';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'path', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','path');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

@@ -261,11 +261,11 @@ class GroupsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'fields';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','sql');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

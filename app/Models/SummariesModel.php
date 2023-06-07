@@ -158,10 +158,10 @@ class SummariesModel extends BaseModel
         }
         if (empty($result)) {
             $result = array();
-            $item = new stdClass();
+            $item = new \StdClass();
             $item->id = 0;
             $item->type = 'summaries';
-            $item->attributes = new stdClass();
+            $item->attributes = new \StdClass();
             $item->attributes->id = 0;
             $item->attributes->count = 0;
             $item->attributes->name = '';
@@ -298,11 +298,11 @@ class SummariesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'summaries';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','table','column','menu_category');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

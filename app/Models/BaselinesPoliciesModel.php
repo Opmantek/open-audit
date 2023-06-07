@@ -59,19 +59,19 @@ class BaselinesPoliciesModel extends BaseModel
         if (!empty($data->table) && $data->table === 'software') {
             $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
             $tests = array();
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'name';
             $entry->operator = '=';
             $entry->value = $data->tests->name->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'version';
             $entry->operator = $data->tests->version->operator;
             $entry->value = $data->tests->version->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'version_padded';
             $entry->operator = $data->tests->version->operator;
             $entry->value = $this->versionPadded($data->tests->version->value);
@@ -84,19 +84,19 @@ class BaselinesPoliciesModel extends BaseModel
         if (!empty($data->table) && $data->table === 'netstat') {
             $data->name = $data->tests->program->value . ' on ' . $data->tests->port->value . ' using ' . $data->tests->protocol->value;
             $tests = array();
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'protocol';
             $entry->operator = '=';
             $entry->value = $data->tests->protocol->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'program';
             $entry->operator = '=';
             $entry->value = $data->tests->program->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'port';
             $entry->operator = '=';
             $entry->value = $data->tests->port->value;
@@ -109,37 +109,37 @@ class BaselinesPoliciesModel extends BaseModel
         if (!empty($data->table) && $data->table === 'user') {
             $data->name = $data->tests->name->value;
             $tests = array();
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'name';
             $entry->operator = '=';
             $entry->value = $data->tests->name->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'status';
             $entry->operator = '=';
             $entry->value = $data->tests->status->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'type';
             $entry->operator = '=';
             $entry->value = $data->tests->type->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'password_expires';
             $entry->operator = '=';
             $entry->value = $data->tests->password_expires->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'password_changeable';
             $entry->operator = '=';
             $entry->value = $data->tests->password_changeable->value;
             $tests[] = $entry;
 
-            $entry = new stdClass();
+            $entry = new \StdClass();
             $entry->column = 'password_required';
             $entry->operator = '=';
             $entry->value = $data->tests->password_required->value;
@@ -315,11 +315,11 @@ class BaselinesPoliciesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'baselines_policies';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

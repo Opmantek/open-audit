@@ -217,11 +217,11 @@ class DashboardsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'dashboards';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description');
         $dictionary->attributes->create = array('name','org_id', 'options', 'sidebar');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

@@ -96,7 +96,7 @@ class TasksModel extends BaseModel
         } else if (!empty($data->options)) {
             $data->options = json_encode($data->options);
         } else {
-            $data->options = new stdClass();
+            $data->options = new \StdClass();
             $data->options = json_encode($data->options);
         }
         if (!empty($data->minute) && is_array($data->minute)) {
@@ -287,11 +287,11 @@ class TasksModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'tasks';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

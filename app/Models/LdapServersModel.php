@@ -214,11 +214,11 @@ class LdapServersModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'ldap_servers';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','lang','host','port','secure','domain','type','version','use_auth','use_roles','refresh');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

@@ -25,7 +25,7 @@ class ChartsModel extends BaseModel
         # use the sub_resource as the first preference for the type
         $count = 0;
         if (!empty($instance->resp->meta->sub_resource)) {
-            $filter = new stdClass();
+            $filter = new \StdClass();
             $filter->name = 'what';
             $filter->operator = '=';
             $filter->value = $instance->resp->meta->sub_resource;
@@ -40,7 +40,7 @@ class ChartsModel extends BaseModel
             }
         }
         if ($count == 0) {
-            $filter = new stdClass();
+            $filter = new \StdClass();
             $filter->name = 'what';
             $filter->operator = '=';
             $filter->value = 'audit';
@@ -56,7 +56,7 @@ class ChartsModel extends BaseModel
             }
         }
         if ($count == 0) {
-            $filter = new stdClass();
+            $filter = new \StdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
             $temp = config('Openaudit')->graph_days;
@@ -77,7 +77,7 @@ class ChartsModel extends BaseModel
             }
         }
         if ($count == 0) {
-            $filter = new stdClass();
+            $filter = new \StdClass();
             $filter->name = 'end';
             $filter->operator = '=<';
             $filter->value = (string)date('Y-m-d');
@@ -279,7 +279,7 @@ class ChartsModel extends BaseModel
             }
         } else {
             $result = array();
-            $item = new stdClass();
+            $item = new \StdClass();
             $item->date = $resp->meta->internal->end;
             $item->timestamp = strtotime($resp->meta->internal->end);
             $item->count = 0;
@@ -323,11 +323,11 @@ class ChartsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'buildings';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'locations.name', 'description', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name', 'org_id', 'location_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
