@@ -68,15 +68,15 @@ function create_select(string $field = '', string $label = '', $items = array(),
     if (empty($items)) {
         # No items passed, assuming a bool y|n.
         $items = array();
-        $select = new stdClass();
+        $select = new \StdClass();
         $select->id = 'n';
-        $select->attributes = new stdClass();
+        $select->attributes = new \StdClass();
         $select->attributes->name = 'No';
         $items[] = $select;
         unset($select);
-        $select = new stdClass();
+        $select = new \StdClass();
         $select->id = 'y';
-        $select->attributes = new stdClass();
+        $select->attributes = new \StdClass();
         $select->attributes->name = 'Yes';
         $items[] = $select;
     }

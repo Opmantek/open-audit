@@ -138,7 +138,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $help_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
     }
 
-    if ($collection === 'queries') {
+    if ($collection === 'queries' or $collection === 'discoveries') {
         if ($style === 'icontext') {
             $collection_button .= "\n<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play\"></span>" . __("Execute") . "</a>";
         } else if ($style === 'icon') {
@@ -255,17 +255,17 @@ function read_select(string $name = '', string $value = '', string $dictionary =
     if (empty($values)) {
         # No values passed, assuming a bool y|n.
         $values = array();
-        $select = new stdClass();
+        $select = new \StdClass();
         $select->id = 'n';
         $select->type = '';
-        $select->attributes = new stdClass();
+        $select->attributes = new \StdClass();
         $select->attributes->name = __('No');
         $values[] = $select;
         unset($select);
-        $select = new stdClass();
+        $select = new \StdClass();
         $select->id = 'y';
         $select->type = '';
-        $select->attributes = new stdClass();
+        $select->attributes = new \StdClass();
         $select->attributes->name = __('Yes');
         $values[] = $select;
     }
