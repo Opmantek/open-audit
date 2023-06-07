@@ -160,7 +160,7 @@ abstract class BaseController extends Controller
         $this->dictionary->options = 'A JSON object containing collection specific options.';
         $this->dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
         $this->dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
-        $this->dictionary->system_id = 'The id of the linked device. Links to <code>system.id</code>';
+        $this->dictionary->device_id = 'The id of the linked device. Links to <code>devices.id</code>';
 
         // Load our $this->{$collection}Model
         $collection = ucfirst($this->resp->meta->collection);
