@@ -56,7 +56,7 @@ if ($collection === "files") {
 
 if ($collection === "groups") {
     $sample = ' <tr><td>"org_id","name","description","sql","expose"</td></tr>
-                <tr><td>"1","Test Group","Ubuntu Machines","SELECT DISTINCT(system.id) FROM system WHERE @filter AND os_family LIKE \'Ubuntu\'","y"</td></tr>';
+                <tr><td>"1","Test Group","Ubuntu Machines","SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND os_family LIKE \'Ubuntu\'","y"</td></tr>';
 }
 
 if ($collection === "ldap_servers") {
@@ -90,8 +90,8 @@ if ($collection === "orgs") {
 
 if ($collection === "queries") {
     $sample = ' <tr><td>"name","org_id","menu_display","menu_category",sql"</td></tr>
-                <tr><td>"Linux Device Hardware","1","y","Hardware",SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.manufacturer AS `devices.manufacturer`, devices.model AS `devices.model`, devices.serial AS `devices.serial`, devices.os_family AS `devices.os_family`, devices.memory_count AS `devices.memory_count`, devices.form_factor AS `devices.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = devices.id AND processor.current = \'y\') WHERE @filter AND devices.os_group = \'Linux\' ORDER BY devices.name"</td></tr>
-                <tr><td>"Hardware - Device","1","y","Hardware",SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.manufacturer AS `devices.manufacturer`, devices.model AS `devices.model`, devices.serial AS `devices.serial`, devices.os_family AS `devices.os_family`, devices.asset_number AS `devices.asset_number` FROM system WHERE @filter"</td></tr>';
+                <tr><td>"Linux Device Hardware","1","y","Hardware",SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.manufacturer AS `devices.manufacturer`, devices.model AS `devices.model`, devices.serial AS `devices.serial`, devices.os_family AS `devices.os_family`, devices.memory_count AS `devices.memory_count`, devices.form_factor AS `devices.form_factor`, processor.description AS `processor.description` FROM devices LEFT JOIN processor ON (processor.device_id = devices.id AND processor.current = \'y\') WHERE @filter AND devices.os_group = \'Linux\' ORDER BY devices.name"</td></tr>
+                <tr><td>"Hardware - Device","1","y","Hardware",SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.manufacturer AS `devices.manufacturer`, devices.model AS `devices.model`, devices.serial AS `devices.serial`, devices.os_family AS `devices.os_family`, devices.asset_number AS `devices.asset_number` FROM devices WHERE @filter"</td></tr>';
 }
 
 if ($collection === "roles") {
