@@ -684,7 +684,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_system_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('switch_system_id', $resource->switch_device_id, '', $update, '', $link) ?>
+                                            <?= read_field('switch_device_id', $resource->switch_device_id, '', $update, '', $link) ?>
                                             <?= read_field('switch_port', $resource->switch_port, '', $update, '') ?>
                                         </div>
                                         <div class="col-4">
