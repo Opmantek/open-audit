@@ -77,8 +77,8 @@ class DiscoveryLogModel extends BaseModel
         if (empty($data->device_id)) {
             $data->device_id = null;
         }
-        if (!empty($data->system_id)) {
-            $data->device_id = intval($data->system_id);
+        if (!empty($data->device_id)) {
+            $data->device_id = intval($data->device_id);
         }
         $data->severity = @intval($data->severity);
         if (empty($data->severity)) {
@@ -86,6 +86,9 @@ class DiscoveryLogModel extends BaseModel
         }
         if (empty($data->ip)) {
             $data->ip = '';
+        }
+        if (empty($data->file)) {
+            $data->file = '';
         }
         switch (intval($data->severity)) {
             // NOTE - 0 is not used and will never be hit because of the empty test above
@@ -156,15 +159,15 @@ class DiscoveryLogModel extends BaseModel
             $log = $newdata;
             $post_items = array();
             $post_items[] = 'type=discovery';
-            $log->message = str_replace('Collector - ', '', $log->message);
+            $log->message = str_replace('Collector - ', '', $data->message);
             $log->message = 'Collector - ' . $log->message;
-            if (stripos($log->command, 'Rules Match - ') === 0 && stripos($log->command, ', ID: ') !== false) {
-                $original_command = $log->command;
-                $temp = explode(':', $log->command);
+            if (stripos($data->command, 'Rules Match - ') === 0 && stripos($data->command, ', ID: ') !== false) {
+                $original_command = $data->command;
+                $temp = explode(':', $data->command);
                 $log->command = str_replace(', ID', '', $temp[0]);
             }
-            foreach ($log as $key => $value) {
-                if ($key !== 'id' && $key !== 'system_id') {
+            foreach ($data as $key => $value) {
+                if ($key !== 'id' && $key !== 'device_id') {
                     $post_items[] = $key . '=' . urlencode($value);
                 }
             }
@@ -185,43 +188,41 @@ class DiscoveryLogModel extends BaseModel
                     log_message('error', json_encode(curl_getinfo($connection)));
                 }
             }
-            $log->command = $original_command;
-            $log->message = str_replace('Collector - ', '', $log->message);
         }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
         if (strpos($data->message, 'Total IPs count: ') !== false) {
-            $temp = @intval(@str_replace('Total IPs count: ', '', $log->message));
+            $temp = @intval(@str_replace('Total IPs count: ', '', $data->message));
             $sql = 'UPDATE `discoveries` SET `ip_all_count` = ? WHERE `id` = ?';
-            $this->db->query($sql, [$temp, $log->discovery_id]);
+            $this->db->query($sql, [$temp, $data->discovery_id]);
         }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
         if (strpos($data->message, 'Responding IPs count: ') !== false) {
-            $temp = @intval(@str_replace('Responding IPs count: ', '', $log->message));
+            $temp = @intval(@str_replace('Responding IPs count: ', '', $data->message));
             $sql = 'UPDATE `discoveries` SET `ip_responding_count` = ? WHERE `id` = ?';
-            $this->db->query($sql, [$temp, $log->discovery_id]);
+            $this->db->query($sql, [$temp, $data->discovery_id]);
         }
 
         if (strpos($data->message, 'IP scan finish on device ') !== false) {
             $sql = 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE `id` = ?';
-            $this->db->query($sql, [$log->discovery_id]);
+            $this->db->query($sql, [$data->discovery_id]);
         }
 
         if (strpos($data->message, 'Discovered device at ') !== false) {
             $sql = 'UPDATE `discoveries` SET `ip_discovered_count` = `ip_discovered_count` + 1 WHERE `id` = ?';
-            $this->db->query($sql, [$log->discovery_id]);
+            $this->db->query($sql, [$data->discovery_id]);
         }
 
         if (strpos($data->message, 'Audited device at ') !== false) {
             $sql = 'UPDATE `discoveries` SET `ip_audited_count` = `ip_audited_count` + 1 WHERE `id` = ?';
-            $this->db->query($sql, [$log->discovery_id]);
+            $this->db->query($sql, [$data->discovery_id]);
         }
 
         // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
         if (stripos($data->message, 'Discovery has finished') !== false and !empty($log->discovery_id)) {
             $sql = "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
-            $this->db->query($sql, [$log->discovery_id]);
+            $this->db->query($sql, [$data->discovery_id]);
         }
 
         return $id;
@@ -354,11 +355,11 @@ class DiscoveryLogModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'discovery_log';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'parent_name', 'type', 'ad_group', 'device_count');
         $dictionary->attributes->create = array(); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

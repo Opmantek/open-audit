@@ -30,5 +30,23 @@ namespace App\Controllers;
  */
 class Discoveries extends BaseController
 {
-
+    /**
+     * Execute a discovery
+     *
+     * @access public
+     * @return void
+     */
+    public function execute($id)
+    {
+        $this->discoveriesModel->queue(intval($id));
+        $this->queueModel = new \App\Models\QueueModel();
+        $this->queueModel->start();
+        if ($this->resp->meta->format !== 'screen') {
+            // TODO
+            return true;
+        } else {
+            \Config\Services::session()->setFlashdata('error', 'Discovery started.');
+            return redirect()->route('discoveriesRead', [$id]);
+        }
+    }
 }

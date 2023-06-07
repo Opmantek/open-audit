@@ -7,7 +7,7 @@ declare(strict_types=1);
 if (!function_exists('get_details_from_oid')) {
     function get_details_from_oid(string $oid = ''): object
     {
-        $device = new stdClass();
+        $device = new \StdClass();
         switch ($oid) {
             case '1.3.6.1.4.1.10418.16.1.1': $device->model = 'Cyclades ACS 6016'; $device->type = 'kvm'; break;
             case '1.3.6.1.4.1.10923': $device->model = 'Juniper Ericsson-GGSN'; $device->type = 'router'; break;

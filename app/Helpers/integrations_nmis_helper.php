@@ -409,7 +409,7 @@ if (!function_exists('integrations_pre')) {
         }
 
         $sql = "/* integrations_nmis_helper::pre */ " . 'UPDATE integrations SET additional_items = ? WHERE id = ?';
-        $additional_items = new stdClass();
+        $additional_items = new \StdClass();
         $additional_items->pollers = $pollers;
         $additional_items->groups = $groups;
         $additional_items->roles = $roles;
@@ -807,7 +807,7 @@ if (!function_exists('integrations_create')) {
 
         // loop over our devices and send them to be created
         foreach ($devices as $device) {
-            $device->polling_policy = new stdClass();
+            $device->polling_policy = new \StdClass();
             $device->polling_policy->collect = 1;
             $device->polling_policy->group = $device->configuration->group;
             $device->polling_policy->netType = $device->configuration->netType;
@@ -1321,7 +1321,7 @@ if (!function_exists('integrations_post')) {
         }
 
         $sql = "/* integrations_nmis_helper::post */ " . 'UPDATE integrations SET additional_items = ? WHERE id = ?';
-        $additional_items = new stdClass();
+        $additional_items = new \StdClass();
         $additional_items->pollers = $pollers;
         $additional_items->groups = $groups;
         $additional_items->roles = $roles;

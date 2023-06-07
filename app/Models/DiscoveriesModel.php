@@ -386,7 +386,7 @@ class DiscoveriesModel extends BaseModel
      * Take a discovery ID and optionally a device ID
      * Return an array of credentials in the order of device specific, device previously worked, discovery associated
      * IE: discovery.org_id (and children) = orgs.id = credentials.org_id
-     * @param  [type] $system_id    system.id
+     * @param  [type] $device_id    devices.id
      * @param  [type] $discovery_id discoveries.id
      * @param  [type] $ip_address   The IP of the device in question (for logging)
      * @return [type]               [description]
@@ -395,6 +395,7 @@ class DiscoveriesModel extends BaseModel
     {
         $instance = & get_instance();
         $credentialsModel = new \App\Models\CredentialsModel();
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         helper('security');
         $credentials = array();
 
@@ -404,7 +405,7 @@ class DiscoveriesModel extends BaseModel
 
         $retrieved_types = array();
         // set up a log object
-        $log = new stdClass();
+        $log = new \StdClass();
         $log->discovery_id = $discovery_id;
         $log->file = 'm_device';
         $log->function = 'get_device_discovery_credentials';
@@ -413,7 +414,7 @@ class DiscoveriesModel extends BaseModel
         $log->pid = getmypid();
         $log->severity = 7;
         $log->command_status = 'notice';
-        $log->system_id = $system_id;
+        $log->device_id = $device_id;
         $log->timestamp = null;
         // Get the discovery details
         $result = $this->read($discovery_id);
@@ -424,14 +425,14 @@ class DiscoveriesModel extends BaseModel
         $result = $this->db->query($sql, [$device_id])->getResult();
         if (!empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
             }
             $credentials = $result;
             $retrieved_types[] = 'Device specific';
         }
         // Previous working credentials
         $sql = 'SELECT `credentials` FROM `devices` WHERE id = ?';
-        $result = $this->db->query($sql, $system_id)->getResult();
+        $result = $this->db->query($sql, $device_id)->getResult();
         // $result[0]->credentials is a string. A JSON encoded array of integers referring to credentials.id
         if (!empty($result[0]->credentials)) {
             $temp = @json_decode($result[0]->credentials);
@@ -441,7 +442,7 @@ class DiscoveriesModel extends BaseModel
                 $result = $this->db->query($sql)->getResult();
                 if (! empty($result)) {
                     for ($i=0; $i < count($result); $i++) {
-                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
                     }
                 }
                 $credentials = array_merge($credentials, $result);
@@ -461,7 +462,7 @@ class DiscoveriesModel extends BaseModel
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
+                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
             }
             $credentials = array_merge($credentials, $result);
             $retrieved_types[] = 'Discovery related';
@@ -471,11 +472,11 @@ class DiscoveriesModel extends BaseModel
             $log->severity = 5;
             $log->command_status = 'warning';
             #discovery_log($log);
-            $instance->discoveryLogModel->create($log);
+            $discoveryLogModel->create($log);
         } else {
             $log->message = $log->message . implode(', ', $retrieved_types) . '.';
             #discovery_log($log);
-            $instance->discoveryLogModel->create($log);
+            $discoveryLogModel->create($log);
         }
         return $credentials;
     }
@@ -811,16 +812,18 @@ class DiscoveriesModel extends BaseModel
             return false;
         }
         $instance = & get_instance();
+        $queueModel = new \App\Models\QueueModel();
         $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
         $this->db->query($sql, [$id]);
         $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
         $this->db->query($sql, [$id]);
         $data = new \stdClass();
         $data->type = $discovery->attributes->type;
-        $data->name = $discovery->attributes->name;
-        $data->org_id = $discovery->attributes->org_id;
-        $data->discovery_id = $id;
-        $temp = $instance->queueModel->create($data);
+        $data->details = new \stdClass();
+        $data->details->name = $discovery->attributes->name;
+        $data->details->org_id = $discovery->attributes->org_id;
+        $data->details->discovery_id = $id;
+        $temp = $queueModel->create($data);
         if (!empty($temp)) {
             return true;
         } else {
@@ -956,7 +959,7 @@ class DiscoveriesModel extends BaseModel
             $sql = "SELECT * FROM `discovery_log` WHERE `id` IN (SELECT MAX(`id`) FROM `discovery_log` WHERE `ip` NOT IN (SELECT DISTINCT(`ip`) FROM discovery_log WHERE (`command_status` = 'device complete' or `message` LIKE 'IP % not responding, ignoring.' or `ip` = '127.0.0.1') AND discovery_id = ?) AND discovery_id = ? GROUP BY `ip`) AND discovery_id = ?";
             $result[0]->last_logs_for_failed_devices = $this->db->query($sql, [$id, $id, $id])->getResult();
         }
-        $result = $this->format_data($result, 'discoveries');
+        // $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
 

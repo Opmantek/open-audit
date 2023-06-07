@@ -62,11 +62,11 @@ class QueueModel extends BaseModel
     public function create($data = null): int|false
     {
         if (empty($data->details) or empty($data->type)) {
-            log_message('error', 'Empty type or details supplied.');
+            log_message('error', 'Empty type or details supplied to QueueModel::create.');
             return false;
         }
         if (is_string($data->details)) {
-            $data->details = json_decode($details);
+            $data->details = json_decode($data->details);
         }
         $org_id = (!empty($data->details->org_id)) ? intval($data->details->org_id) : 1;
         $name = (!empty($data->details->name)) ? $data->details->name : '';
@@ -74,7 +74,7 @@ class QueueModel extends BaseModel
         $sql = "LOCK TABLES queue WRITE";
         $this->db->query($sql);
         $sql = "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
-        $this->db->query($sql, [$name, $type, $org_id, $details]);
+        $this->db->query($sql, [$name, $data->type, $org_id, $details]);
         $result = $this->db->insertID();
         $sql = "UNLOCK TABLES";
         $query = $this->db->query($sql);
@@ -223,11 +223,16 @@ class QueueModel extends BaseModel
     public function start()
     {
         if (php_uname('s') === 'Windows NT') {
-            $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php util queue";
+            $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . " index.php queue start";
             log_message('debug', $command);
             pclose(popen($command, 'r'));
+        } else if (php_uname('s') === 'Darwin') {
+            $command = 'php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
+            log_message('debug', $command);
+            @exec($command);
         } else {
-            $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+            // $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+            $command = 'nohup php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
             log_message('debug', $command);
             @exec($command);
         }
@@ -243,11 +248,11 @@ class QueueModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'attributes';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

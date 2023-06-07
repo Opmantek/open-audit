@@ -10,10 +10,11 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
+                        <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
+                                    <th data-orderable="false" class="text-center"><?= __('Execute') ?></th>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;
@@ -30,6 +31,7 @@ include 'shared/collection_functions.php';
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
+                                    <?= collection_button_execute($meta->collection, intval($item->id)) ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;

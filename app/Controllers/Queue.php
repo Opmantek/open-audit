@@ -35,79 +35,64 @@ class Queue extends BaseController
         $pid = getmypid();
         $this->db = db_connect();
 
-        $auditlogModel = new \App\Models\AuditLogModel();
+        #$auditlogModel = new \App\Models\AuditLogModel();
         $integrationsModel = new \App\Models\IntegrationsModel();
 
-        $this->load->model('m_credentials');
-        $this->load->model('m_device');
-        $this->load->model('m_devices');
-        $this->load->model('m_devices_components');
-        $this->load->model('m_discoveries');
-        $this->load->model('m_integrations');
-        $this->load->model('m_networks');
-        $this->load->model('m_orgs');
-        $this->load->model('m_queue');
-        $this->load->model('m_rules');
-        $this->load->model('m_scripts');
+        $this->componentsModel = new \App\Models\ComponentsModel();
+        $this->credentialsModel = new \App\Models\CredentialsModel();
+        $this->devicesModel = new \App\Models\DevicesModel();
+        $this->discoveriesModel = new \App\Models\DiscoveriesModel();
+        #$this->integrationsModel = new \App\Models\IntegrationsModel();
+        $this->networksModel = new \App\Models\NetworksModel();
+        $this->orgsModel = new \App\Models\OrgsModel();
+        $this->queueModel = new \App\Models\QueueModel();
+        $this->rulesModel = new \App\Models\RulesModel();
+        $this->scriptsModel = new \App\Models\ScriptsModel();
 
-        $this->load->helper('audit');
-        $this->load->helper('discoveries');
-        $this->load->helper('mac');
-        $this->load->helper('mac_model');
-        $this->load->helper('network');
-        $this->load->helper('security');
-        $this->load->helper('snmp');
-        $this->load->helper('snmp_model');
-        $this->load->helper('snmp_oid');
-        $this->load->helper('ssh');
-        $this->load->helper('wmi');
-
-        $this->m_configuration->load();
+        helper('components');
+        helper('device');
+        helper('discoveries');
+        #helper('integrations_nmis');
+        helper('mac_model');
+        helper('network');
+        helper('security');
+        helper('snmp');
+        helper('snmp_model');
+        helper('snmp_oid');
+        helper('ssh');
+        helper('utility');
+        helper('wmi');
 
         $debug = false;
         $microtime = microtime(true);
-        if ($debug) {
-            log_message('debug', "$microtime Starting queue with pid $pid at microtime $microtime");
-        }
+        log_message('debug', "$microtime Starting queue with pid $pid at microtime $microtime");
 
         // queue count is the number of registered processes
         // queue limit is set by the user
         // check it config['queue_count'] > config['queue_limit']
-        if ($debug) {
-            log_message('debug', "$microtime Initial Queue Count: " . $this->config->queue_count . " Initial Queue Limit: " . $this->config->queue_limit);
-        }
+        log_message('debug', "$microtime Initial Queue Count: " . config('Openaudit')->queue_count . " Initial Queue Limit: " . config('Openaudit')->queue_limit);
 
-        if (intval($this->config->queue_count) >= intval($this->config->queue_limit)) {
-            if ($debug) {
-                log_message('debug', "$microtime QueueCount: " . $this->config->queue_count . " Limit: " . $this->config->queue_limit . " EXITING.");
-            }
+        if (intval(config('Openaudit')->queue_count) >= intval(config('Openaudit')->queue_limit)) {
+            log_message('debug', "$microtime QueueCount: " . config('Openaudit')->queue_count . " Limit: " . config('Openaudit')->queue_limit . " EXITING.");
             exit;
         }
         // Increase the queue count in the config table
         $sql = "UPDATE `configuration` SET `value` = `value` + 1 WHERE `name` = 'queue_count'";
         $this->db->query($sql);
-        if ($debug) {
-            log_message('debug', $microtime . " " . $sql);
-        }
+        log_message('debug', $microtime . " " . $sql);
+
         // POP an item off the queue
-        $this->load->model('m_queue');
         while (true) {
-            if ($debug) {
-                log_message('debug', $microtime . " Sleeping for 2 seconds.");
-            }
+            log_message('debug', $microtime . " Sleeping for 2 seconds.");
             sleep(2);
-            if ($debug) {
-                log_message('debug', $microtime . " Done sleeping.");
-            }
-            $item = $queueModel->pop();
-            if ($debug) {
-                log_message('debug', $microtime . " POPed item " . json_encode($item));
-            }
+            log_message('debug', $microtime . " Done sleeping.");
+
+            $item = $this->queueModel->pop();
+            log_message('debug', $microtime . " POPed item " . json_encode($item));
+
             if (!empty($item->details) && is_string($item->details)) {
                 $details = @json_decode($item->details);
-                if ($debug) {
-                    log_message('debug', $microtime . " POPed item details " . json_encode($details));
-                }
+                log_message('debug', $microtime . " POPed item details " . json_encode($details));
             }
 
             // If we don't get an item, there's nothing left to do so exit.
@@ -115,91 +100,73 @@ class Queue extends BaseController
                 // Remove the queue count
                 $sql = "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
-                if ($debug) {
-                    log_message('debug', $microtime . " " . $sql . ' EXITING - EMPTY QUEUE');
-                }
+                log_message('debug', $microtime . " " . $sql . ' EXITING - EMPTY QUEUE');
                 break;
             }
             if ($details === false) {
                 // Remove the queue count
                 $sql = "UPDATE `configuration` SET `value` = '0' WHERE `name` = 'queue_count'";
                 $this->db->query($sql);
-                if ($debug) {
-                    log_message('debug', $microtime . " " . $sql . ' EXITING - BAD DETAILS');
-                }
+                log_message('debug', $microtime . " " . $sql . ' EXITING - BAD DETAILS');
                 break;
             }
 
             // Spawn another process
-            if (php_uname('s') !== 'Windows NT') {
-                $command = 'nohup php ' . $this->config->base_path . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
-                if ($debug) {
-                    log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
-                }
-                @exec($command);
-            } else {
-                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php util queue";
-                if ($debug) {
-                    log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
-                }
+            if (php_uname('s') === 'Windows NT') {
+                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . " index.php queue start";
+                @exec($command, $output);
+                log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
                 pclose(popen($command, 'r'));
+            } else if (php_uname('s') === 'Darwin') {
+                $command = 'php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
+                @exec($command, $output);
+                log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
+            } else {
+                $command = 'nohup php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
+                @exec($command, $output);
+                log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
             }
 
             if ($item->type === 'subnet') {
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Discovering subnet as per type.");
-                }
+                log_message('debug', $microtime . " " . "Discovering subnet as per type.");
                 discover_subnet($details);
             }
 
             if ($item->type === 'seed') {
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Discovering seed as per type.");
-                }
+                log_message('debug', $microtime . " " . "Discovering seed as per type.");
                 discover_subnet($details);
             }
 
-            if ($item->type === 'active directory') {
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Scanning AD as per type.");
-                }
-                discover_ad($details);
-            }
+            #if ($item->type === 'active directory') {
+            #    log_message('debug', $microtime . " " . "Scanning AD as per type.");
+            #    discover_ad($details);
+            #}
 
             if ($item->type === 'ip_scan') {
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type.");
-                }
+                log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type.");
                 $result = ip_scan($details);
-                $result = json_encode($result);
+
                 if (!empty($result)) {
-                    if ($debug) {
-                        log_message('debug', $microtime . " " . "Creating queue item for ip_audit for " . $details->ip);
-                    }
-                    $queue_item = new stdClass();
-                    $queue_item->ip = $details->ip;
-                    $queue_item->discovery_id = $details->discovery_id;
-                    $queue_item->details = $result;
-                    $this->m_queue->create('ip_audit', $queue_item);
+                    $result['ip'] = $details->ip;
+                    $result['discovery_id'] = $details->discovery_id;
+                    log_message('debug', $microtime . " " . "Creating queue item for ip_audit for " . $details->ip);
+                    $queue_item = new \stdClass();
+                    $queue_item->details = json_encode($result);
+                    $queue_item->type = 'ip_audit';
+                    $this->queueModel->create($queue_item);
                 }
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type COMPLETED.");
-                }
+                log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type COMPLETED.");
             }
 
             if ($item->type === 'ip_audit') {
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Auditing IP " . $details->ip . " as per type.");
-                }
+                log_message('debug', $microtime . " " . "Auditing IP " . $details->ip . " as per type.");
                 $result = ip_audit($details);
-                if ($debug) {
-                    log_message('debug', $microtime . " " . "Auditing IP " . $details->ip . " as per type COMPLETED.");
-                }
+                log_message('debug', $microtime . " " . "Auditing IP " . $details->ip . " as per type COMPLETED.");
             }
 
-            if ($item->type === 'integrations') {
-                $integrationsModel->execute($details->integrations_id);
-            }
+            #if ($item->type === 'integrations') {
+            #    $integrationsModel->execute($details->integrations_id);
+            #}
         }
     }
 }

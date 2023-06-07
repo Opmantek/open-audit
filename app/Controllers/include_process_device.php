@@ -29,7 +29,7 @@ $log->command_status = 'notice';
 $log->display = 'y';
 $initial_log_id = $this->discoveryLogModel->create($log);
 
-$id = deviceMatch($device);
+$id = deviceMatch($device->system);
 if (empty($id) && !empty($device->system->id)) {
     $id = intval($device->system->id);
 }
@@ -76,7 +76,7 @@ if (empty($id)) {
     // update an existing system
     // log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
     $log->message = 'UPDATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
-    $log->system_id = $device->system->id;
+    $log->device_id = $device->system->id;
     $log->ip = @ip_address_from_db($device->system->ip);
 
     $test = $this->devicesModel->update($device->system->id, $device->system);
@@ -127,7 +127,7 @@ $db->query($sql, [$device->system->id, $username, $device->system->last_seen_by,
 
 foreach ($device as $key => $value) {
     if ($key !== 'system' && $key !== 'audit_wmi_fail' && $key !== 'dns') {
-        $this->componentsModel->upsert($key, $device->system, $device->{$key}, $log);
+        $this->componentsModel->upsert($key, $device->system, $device->{$key});
     }
 }
 

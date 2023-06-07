@@ -110,6 +110,70 @@ class OrgsModel extends BaseModel
     }
 
     /**
+     * [get_ascendant description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function getAscendant(int $id = 0)
+    {
+        $org_list = array();
+        if (empty($this->orgs)) {
+            $sql = 'SELECT * FROM orgs';
+            $this->orgs = $this->db->query($sql)->getResult();
+        }
+        foreach ($this->orgs as $org) {
+            if (intval($org->id) === $id && intval($org->parent_id) !== $id) {
+                $org_list[] = intval($org->parent_id);
+                foreach ($this->getAscendant($org->parent_id) as $org) {
+                    $org_list[] = intval($org);
+                }
+            }
+        }
+        return($org_list);
+    }
+
+    /**
+     * [get_ascendants description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function getAscendants(int $id = 0)
+    {
+        $orgs = $this->getAscendant($id);
+        for ($i=0; $i < count($orgs); $i++) {
+            if (intval($orgs[$i]) === $id) {
+                unset($orgs[$i]);
+            }
+        }
+        sort($orgs);
+        return $orgs;
+    }
+
+    /**
+     * [get_descendants description]
+     * @param  integer $id [description]
+     * @return [type]      [description]
+     */
+    public function getDescendants($id = 0)
+    {
+        $id = intval($id);
+        $org_list = array();
+        if (empty($this->orgs)) {
+            $sql = 'SELECT * FROM orgs';
+            $this->orgs = $this->db->query($sql)->getResult();
+        }
+        foreach ($this->orgs as $org) {
+            if (intval($org->parent_id) === $id && intval($org->id) !== 1) {
+                $org_list[] = intval($org->id);
+                foreach ($this->getDescendants($org->id) as $org) {
+                    $org_list[] = intval($org);
+                }
+            }
+        }
+        return($org_list);
+    }
+
+    /**
      * getUserAscendants get the parent Orgs for a user.orgs array
      * @param  array  $userOrgs    An array of orgs.id
      * @param  array  $orgs        The global list of all orgs in the database. Usually retrieved in BaseController
@@ -203,8 +267,12 @@ class OrgsModel extends BaseModel
     public function listAll(): array
     {
         $sql = 'SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT devices.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN devices ON (orgs.id = devices.org_id) GROUP BY orgs.id';
-        $query = $this->db->query($sql);
-        return $query->getResult();
+        $orgs = $this->db->query($sql)->getResult();
+        foreach ($orgs as $org) {
+            $org->id = intval($org->id);
+            $org->parent_id = intval($org->parent_id);
+        }
+        return $orgs;
     }
 
     public function import(array $csv = null)
@@ -356,11 +424,11 @@ class OrgsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'orgs';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'parent_name', 'type', 'ad_group', 'device_count');
         $dictionary->attributes->create = array('name','parent_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

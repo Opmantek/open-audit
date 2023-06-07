@@ -76,8 +76,8 @@ function format_data($result, $type)
                     unset($item->$temp_name);
                 }
             }
-            if (strrpos($key, 'system_id') === strlen($key)-9) {
-                $item->{'system.id'} = intval($value);
+            if (strrpos($key, 'device_id') === strlen($key)-9) {
+                $item->{'devices.id'} = intval($value);
             }
             if (strrpos($key, 'org_id') === strlen($key)-6) {
                 $item->{'orgs.id'} = intval($value);
@@ -228,275 +228,275 @@ if (!function_exists('collections_list')) {
      */
     function collections_list()
     {
-        $collections = new stdClass();
+        $collections = new \StdClass();
 
-        $collections->applications = new stdClass();
+        $collections->applications = new \StdClass();
         # FIX ME
         $collections->applications->icon = 'fa fa-th-list';
         $collections->applications->name = 'Applications';
         $collections->applications->edition = 'Enterprise';
         $collections->applications->orgs = 'd';
 
-        $collections->attributes = new stdClass();
+        $collections->attributes = new \StdClass();
         $collections->attributes->icon = 'fa fa-list-ul';
         $collections->attributes->name = 'Attributes';
         $collections->attributes->edition = 'Community';
         $collections->attributes->orgs = 'b';
 
-        $collections->baselines = new stdClass();
+        $collections->baselines = new \StdClass();
         $collections->baselines->icon = 'fa fa-line-chart';
         $collections->baselines->name = 'Baselines';
         $collections->baselines->edition = 'Enterprise';
         $collections->baselines->orgs = 'd';
 
-        $collections->baselines_policies = new stdClass();
+        $collections->baselines_policies = new \StdClass();
         $collections->baselines_policies->icon = 'fa fa-area-chart';
         $collections->baselines_policies->name = 'Baselines Policies';
         $collections->baselines_policies->edition = 'Enterprise';
         $collections->baselines_policies->orgs = 'd';
 
-        $collections->buildings = new stdClass();
+        $collections->buildings = new \StdClass();
         $collections->buildings->icon = 'fa fa-building-o';
         $collections->buildings->name = 'Buildings';
         $collections->buildings->edition = 'Enterprise';
         $collections->buildings->orgs = 'd';
 
-        $collections->clouds = new stdClass();
+        $collections->clouds = new \StdClass();
         $collections->clouds->icon = 'fa fa-cloud';
         $collections->clouds->name = 'Clouds';
         $collections->clouds->edition = 'Enterprise';
         $collections->clouds->orgs = 'd';
 
-        $collections->clusters = new stdClass();
+        $collections->clusters = new \StdClass();
         $collections->clusters->icon = 'fa fa-cubes';
         $collections->clusters->name = 'Clusters';
         $collections->clusters->edition = 'Professional';
         $collections->clusters->orgs = 'd';
 
-        $collections->collectors = new stdClass();
+        $collections->collectors = new \StdClass();
         $collections->collectors->icon = 'fa fa-cogs';
         $collections->collectors->name = 'Collectors';
         $collections->collectors->edition = 'Enterprise';
         $collections->collectors->orgs = 'd';
 
-        $collections->components = new stdClass();
+        $collections->components = new \StdClass();
         $collections->components->icon = 'fa fa-desktop';
         $collections->components->name = 'Components';
         $collections->components->edition = 'Community';
         $collections->components->orgs = 'd';
 
-        $collections->configuration = new stdClass();
+        $collections->configuration = new \StdClass();
         $collections->configuration->icon = 'fa fa-sliders';
         $collections->configuration->name = 'Configuration';
         $collections->configuration->edition = 'Community';
         $collections->configuration->orgs = 'u';
 
-        $collections->connections = new stdClass();
+        $collections->connections = new \StdClass();
         $collections->connections->icon = 'fa fa-link';
         $collections->connections->name = 'Connections';
         $collections->connections->edition = 'Community';
         $collections->connections->orgs = 'd';
 
-        $collections->credentials = new stdClass();
+        $collections->credentials = new \StdClass();
         $collections->credentials->icon = 'fa fa-shield';
         $collections->credentials->name = 'Credentials';
         $collections->credentials->edition = 'Community';
         $collections->credentials->orgs = 'd';
 
-        $collections->dashboards = new stdClass();
+        $collections->dashboards = new \StdClass();
         $collections->dashboards->icon = 'fa fa-dashboard';
         $collections->dashboards->name = 'Dashboards';
         $collections->dashboards->edition = 'Enterprise';
         $collections->dashboards->orgs = 'b';
 
-        $collections->database = new stdClass();
+        $collections->database = new \StdClass();
         $collections->database->icon = 'fa fa-database';
         $collections->database->name = 'Database';
         $collections->database->edition = 'Community';
         $collections->database->orgs = 'u';
 
-        $collections->devices = new stdClass();
+        $collections->devices = new \StdClass();
         $collections->devices->icon = 'fa fa-desktop';
         $collections->devices->name = 'Devices';
         $collections->devices->edition = 'Community';
         $collections->devices->orgs = 'd';
 
-        $collections->discoveries = new stdClass();
+        $collections->discoveries = new \StdClass();
         $collections->discoveries->icon = 'fa fa-binoculars';
         $collections->discoveries->name = 'Discoveries';
         $collections->discoveries->edition = 'Community';
         $collections->discoveries->orgs = 'd';
 
-        $collections->discovery_log = new stdClass();
+        $collections->discovery_log = new \StdClass();
         $collections->discovery_log->icon = 'fa fa-terminal';
         $collections->discovery_log->name = 'Discovery Log';
         $collections->discovery_log->edition = 'Community';
         $collections->discovery_log->orgs = 'd';
 
-        $collections->discovery_scan_options = new stdClass();
+        $collections->discovery_scan_options = new \StdClass();
         $collections->discovery_scan_options->icon = 'fa fa-random';
         $collections->discovery_scan_options->name = 'Scan Options';
         $collections->discovery_scan_options->edition = 'Enterprise';
         $collections->discovery_scan_options->orgs = 'b';
 
-        $collections->fields = new stdClass();
+        $collections->fields = new \StdClass();
         $collections->fields->icon = 'fa fa-comments-o';
         $collections->fields->name = 'Fields';
         $collections->fields->edition = 'Community';
         $collections->fields->orgs = 'b';
 
-        $collections->files = new stdClass();
+        $collections->files = new \StdClass();
         $collections->files->icon = 'fa fa-file-image-o';
         $collections->files->name = 'Files';
         $collections->files->edition = 'Enterprise';
         $collections->files->orgs = 'b';
 
-        $collections->floors = new stdClass();
+        $collections->floors = new \StdClass();
         $collections->floors->icon = 'fa fa-sort-numeric-desc';
         $collections->floors->name = 'Floors';
         $collections->floors->edition = 'Enterprise';
         $collections->floors->orgs = 'd';
 
-        $collections->groups = new stdClass();
+        $collections->groups = new \StdClass();
         $collections->groups->icon = 'fa fa-tags';
         $collections->groups->name = 'Groups';
         $collections->groups->edition = 'Community';
         $collections->groups->orgs = 'b';
 
-        $collections->help = new stdClass();
+        $collections->help = new \StdClass();
         $collections->help->icon = 'fa fa-question';
         $collections->help->name = 'Help';
         $collections->help->edition = 'Community';
         $collections->help->orgs = 'u';
 
-        $collections->integrations = new stdClass();
+        $collections->integrations = new \StdClass();
         $collections->integrations->icon = 'fa fa-exchange';
         $collections->integrations->name = 'Integrations';
         $collections->integrations->edition = 'Enterprise';
         $collections->integrations->orgs = 'd';
 
-        $collections->ldap_servers = new stdClass();
+        $collections->ldap_servers = new \StdClass();
         # FIX ME
         $collections->ldap_servers->icon = 'fa fa-key';
         $collections->ldap_servers->name = 'LDAP Servers';
         $collections->ldap_servers->edition = 'Community';
         $collections->ldap_servers->orgs = 'd';
 
-        $collections->licenses = new stdClass();
+        $collections->licenses = new \StdClass();
         $collections->licenses->icon = 'fa fa-leanpub';
         $collections->licenses->name = 'Licenses';
         $collections->licenses->edition = 'Community';
         $collections->licenses->orgs = 'd';
 
-        $collections->locations = new stdClass();
+        $collections->locations = new \StdClass();
         $collections->locations->icon = 'fa fa-building';
         $collections->locations->name = 'Locations';
         $collections->locations->edition = 'Community';
         $collections->locations->orgs = 'd';
 
-        $collections->logs = new stdClass();
+        $collections->logs = new \StdClass();
         $collections->logs->icon = 'fa fa-bars';
         $collections->logs->name = 'Logs';
         $collections->logs->edition = 'Community';
         $collections->logs->orgs = 'd';
 
-        $collections->maps = new stdClass();
+        $collections->maps = new \StdClass();
         $collections->maps->icon = 'fa fa-map-o';
         $collections->maps->name = 'Maps';
         $collections->maps->edition = 'Professional';
         $collections->maps->orgs = 'd';
 
-        $collections->networks = new stdClass();
+        $collections->networks = new \StdClass();
         $collections->networks->icon = 'fa fa-wifi';
         $collections->networks->name = 'Networks';
         $collections->networks->edition = 'Community';
         $collections->networks->orgs = 'd';
 
-        $collections->orgs = new stdClass();
+        $collections->orgs = new \StdClass();
         $collections->orgs->icon = 'fa fa-bank';
         $collections->orgs->name = 'Organisations';
         $collections->orgs->edition = 'Community';
         $collections->orgs->orgs = 'd';
 
-        $collections->queries = new stdClass();
+        $collections->queries = new \StdClass();
         $collections->queries->icon = 'fa fa-table';
         $collections->queries->name = 'Queries';
         $collections->queries->edition = 'Community';
         $collections->queries->orgs = 'b';
 
-        $collections->rack_devices = new stdClass();
+        $collections->rack_devices = new \StdClass();
         $collections->rack_devices->icon = 'fa fa-desktop';
         $collections->rack_devices->name = 'Rack Devices';
         $collections->rack_devices->edition = 'Enterprise';
         $collections->rack_devices->orgs = 'd';
 
-        $collections->racks = new stdClass();
+        $collections->racks = new \StdClass();
         $collections->racks->icon = 'fa fa-film';
         $collections->racks->name = 'Racks';
         $collections->racks->edition = 'Enterprise';
         $collections->racks->orgs = 'd';
 
-        $collections->reports = new stdClass();
+        $collections->reports = new \StdClass();
         $collections->reports->icon = 'fa fa-table';
         $collections->reports->name = 'Reports';
         $collections->reports->edition = 'Professional';
         $collections->reports->orgs = 'b';
 
-        $collections->roles = new stdClass();
+        $collections->roles = new \StdClass();
         $collections->roles->icon = 'fa fa-lock';
         $collections->roles->name = 'Roles';
         $collections->roles->edition = 'Community';
         $collections->roles->orgs = 'b';
 
-        $collections->rooms = new stdClass();
+        $collections->rooms = new \StdClass();
         $collections->rooms->icon = 'fa fa-plus-square-o';
         $collections->rooms->name = 'Rooms';
         $collections->rooms->edition = 'Enterprise';
         $collections->rooms->orgs = 'd';
 
-        $collections->rows = new stdClass();
+        $collections->rows = new \StdClass();
         $collections->rows->icon = 'fa fa-hashtag';
         $collections->rows->name = 'Rows';
         $collections->rows->edition = 'Enterprise';
         $collections->rows->orgs = 'd';
 
-        $collections->rules = new stdClass();
+        $collections->rules = new \StdClass();
         $collections->rules->icon = 'fa fa-map-signs';
         $collections->rules->name = 'Rules';
         $collections->rules->edition = 'Enterprise';
         $collections->rules->orgs = 'b';
 
-        $collections->scripts = new stdClass();
+        $collections->scripts = new \StdClass();
         $collections->scripts->icon = 'fa fa-code';
         $collections->scripts->name = 'Scripts';
         $collections->scripts->edition = 'Professional';
         $collections->scripts->orgs = 'b';
 
-        $collections->search = new stdClass();
+        $collections->search = new \StdClass();
         $collections->search->icon = 'fa fa-desktop';
         $collections->search->name = 'Search';
         $collections->search->edition = 'Community';
         $collections->search->orgs = 'd';
 
-        $collections->summaries = new stdClass();
+        $collections->summaries = new \StdClass();
         $collections->summaries->icon = 'fa fa-pie-chart';
         $collections->summaries->name = 'Summaries';
         $collections->summaries->edition = 'Professional';
         $collections->summaries->orgs = 'b';
 
-        $collections->tasks = new stdClass();
+        $collections->tasks = new \StdClass();
         $collections->tasks->icon = 'fa fa-clock-o';
         $collections->tasks->name = 'Tasks';
         $collections->tasks->edition = 'Professional';
         $collections->tasks->orgs = 'd';
 
-        $collections->users = new stdClass();
+        $collections->users = new \StdClass();
         $collections->users->icon = 'fa fa-users';
         $collections->users->name = 'Users';
         $collections->users->edition = 'Community';
         $collections->users->orgs = 'd';
 
-        $collections->widgets = new stdClass();
+        $collections->widgets = new \StdClass();
         $collections->widgets->icon = 'fa fa-bar-chart';
         $collections->widgets->name = 'Widgets';
         $collections->widgets->edition = 'Professional';

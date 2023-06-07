@@ -77,7 +77,7 @@ class DevicesModel extends BaseModel
             return false;
         }
 
-        $parameters = new stdClass();
+        $parameters = new \StdClass();
         $parameters->input = $data;
         if (!empty($data->discovery_id)) {
             $parameters->discovery_id = intval($data->discovery_id);
@@ -140,6 +140,78 @@ class DevicesModel extends BaseModel
         if ($this->db->affectedRows() !== 1) {
             return false;
         }
+        return true;
+    }
+
+    public function setIdentification(int $id = 0): bool
+    {
+        $identification = '';
+        $sql = 'SELECT * FROM `devices` WHERE `id` = ?';
+        $result = $this->db->query($sql, [$id])->getResult();
+        if (!empty($result)) {
+            $device = $result[0];
+        } else {
+            return false;
+        }
+        // Based on type
+        if ($device->type !== 'unknown' && $device->type !== 'unclassified') {
+            if ($device->type === 'computer' && $device->class !== '') {
+                $identification = ucfirst($device->class);
+            } else if ($device->type === 'computer' && $device->os_group !== '') {
+                $identification = 'Computer running ' . $device->os_group;
+            } else {
+                if ($device->type !== 'iphone' && $device->type !== 'ipod' && $device->type !== 'ipad') {
+                    $identification = ucfirst($device->type);
+                } else {
+                    $identification = $device->type;
+                }
+            }
+        }
+        // Add the manufactuer
+        if ($device->manufacturer !== '') {
+            if ($identification !== '') {
+                $identification .= ' from ' . $device->manufacturer;
+            } else {
+                $identification = 'Vendor: ' . $device->manufacturer;
+            }
+        }
+        // Only resort to the Nmap ports if we have to
+        if ($identification === '') {
+            $sql = "SELECT * FROM nmap WHERE device_id = ? and current = 'y'";
+            $nmap_ports = $this->db->query($sql, [$id])->getResult();
+            if (!empty($nmap_ports)) {
+                foreach ($nmap_ports as $port) {
+                    if ($port->program === 'ssh') {
+                        $identification = 'Device running SSH';
+                    }
+                    if ($port->program === 'snmp') {
+                        if ($identification === '') {
+                            $identification = 'Device running SNMP';
+                        } else {
+                            $identification .= ' and SNMP';
+                        }
+                    }
+                    if ($port->program === 'msrpc') {
+                        if ($identification === '') {
+                            $identification = 'Device running WMI (likely a Windows computer)';
+                        } else {
+                            $identification .= ' and WMI (likely a Windows computer)';
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($identification)) {
+            if (empty($device->type) or $device->type === 'unknown') {
+                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = ? WHERE `id` = ?";
+            } else {
+                $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
+            }
+        } else {
+            $identification = 'No information could be retrieved.';
+            $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
+        }
+        $query = $this->db->query($sql, [$identification, $id]);
         return true;
     }
 
@@ -318,7 +390,7 @@ class DevicesModel extends BaseModel
             return false;
         }
 
-        $log = new stdClass();
+        $log = new \StdClass();
         $log->severity = 7;
         $log->file = 'DevicesModel';
         $log->function = 'DevicesModel::update';
@@ -451,7 +523,7 @@ class DevicesModel extends BaseModel
         if ($query->getNumRows() > 0) {
             $row = $query->getRow();
             $temp_vm_id = $row->{'vm.id'};
-            $data->vm_system_id = $row->{'vm.system_id'};
+            $data->vm_device_id = $row->{'vm.device_id'};
             $data->vm_server_name = $row->{'devices.hostname'};
             $sql = "SELECT icon, 'vm' FROM devices WHERE id = ?";
             $query = $this->db->query($sql, [$id]);
@@ -491,27 +563,28 @@ class DevicesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'devices';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
 
-        $dictionary->about = '<p>Devices.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        #$dictionary->about = '<p>Devices.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Devices.<br /><br /></p>';
 
         $dictionary->notes = '';
 
         $dictionary->product = 'community';
-        $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->edited_by = $instance->dictionary->edited_by;
-        $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+        $dictionary->columns->id = ''; #$instance->dictionary->id;
+        $dictionary->columns->name = ''; #$instance->dictionary->name;
+        $dictionary->columns->description = ''; #$instance->dictionary->description;
+        $dictionary->columns->org_id = ''; #$instance->dictionary->org_id;
+        $dictionary->columns->edited_by = ''; #$instance->dictionary->edited_by;
+        $dictionary->columns->edited_date = ''; #$instance->dictionary->edited_date;
         return $dictionary;
     }
 }

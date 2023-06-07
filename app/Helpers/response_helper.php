@@ -28,8 +28,8 @@ if (!function_exists('response_create')) {
         //     parse_str(substr(strrchr($_SERVER['REQUEST_URI'], '?'), 1), $_GET);
         // }
 
-        $response = new stdClass();
-        $response->meta = new stdClass();
+        $response = new \StdClass();
+        $response->meta = new \StdClass();
         $response->meta->action = strtolower($instance->method);
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
         $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
@@ -92,7 +92,7 @@ if (!function_exists('response_create')) {
 
 
 
-        $response->links = new stdClass();
+        $response->links = new \StdClass();
         $response->included = array();
         $response->logs = array();
 
@@ -316,7 +316,7 @@ if (!function_exists('response_create')) {
         }
 
         if ($test and !in_array($response->meta->collection, ['configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
-            $item = new stdClass();
+            $item = new \StdClass();
             $item->name = 'orgs.id';
             if ($response->meta->collection !== 'orgs') {
                 $item->name = $response->meta->collection . '.' . 'org_id';
@@ -331,7 +331,16 @@ if (!function_exists('response_create')) {
             $response->meta->filter[] = $item;
         }
 
-        $permission = response_get_permission_id($instance->user, $response->meta->collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
+        $collection = $response->meta->collection;
+        if ($collection === 'components') {
+            foreach ($response->meta->filter as $fitler) {
+                if ($filter->name === 'components.type') {
+                    $collection = $filter->value;
+                }
+            }
+        }
+
+        $permission = response_get_permission_id($instance->user, $collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
 
         if (!$permission) {
             $message = 'User denied permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action . ' on item because of OrgID.';
@@ -386,7 +395,7 @@ if (!function_exists('response_get_data')) {
                 // do nothing
             } else {
                 $summary = 'Set received data according to PATCH.';
-                $received_data = new stdClass();
+                $received_data = new \StdClass();
                 if (!empty($data_object->data)) {
                     $received_data = $data_object->data;
                 } else {
@@ -457,7 +466,7 @@ if (!function_exists('response_get_query_filter')) {
 
         if (!empty($query_string)) {
             foreach (explode('&', $query_string) as $item) {
-                $query = new stdClass();
+                $query = new \StdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
                 $query->function = 'where';
@@ -878,7 +887,7 @@ if (!function_exists('response_get_links')) {
     function response_get_links($collection = '', $id = '', $sub_resource = '', $sub_resource_id = '')
     {
         $instance = & get_instance();
-        $links = new stdClass();
+        $links = new \StdClass();
         $links->self = base_url() . '/index.php/' . $collection;
         if (!is_null($id)) {
             $links->self .= '/' . $id;
@@ -1141,10 +1150,17 @@ if (!function_exists('response_get_permission_id')) {
             }
         }
 
-        // TODO - Components?
+        if (in_array($collection, response_valid_collections())) {
+            $sql = "SELECT `{$collection}`.`org_id` AS org_id FROM `{$collection}` WHERE `id` = ?";
+            $result = $db->query($sql, [$id])->getResult();
+        }
 
-        $sql = "SELECT `{$collection}`.`org_id` AS org_id FROM `{$collection}` WHERE `id` = ?";
-        $result = $db->query($sql, [$id])->getResult();
+        if (!in_array($collection, response_valid_collections())) {
+            $sql = "SELECT devices.org_id AS org_id FROM `{$collection}` LEFT JOIN devices ON {$collection}.device_id = devices.id WHERE {$collection}.id = ?";
+            $result = $db->query($sql, [$id])->getResult();
+        }
+
+
         if (count($result) === 0) {
             \Config\Services::session()->setFlashdata('error', 'Requested item does not exist (' . $collection . '::' . intval($id) . ').');
             return false;

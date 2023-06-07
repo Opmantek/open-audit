@@ -324,7 +324,17 @@ class ComponentsModel extends BaseModel
         return true;
     }
 
-    public function upsert(string $table = '', object $device = null, array $data = null, object $log = null, array $match_columns = null): bool
+    public function updateMissingInterfaces($device_id)
+    {
+        $sql = "SELECT ip.id, network.net_index FROM network LEFT JOIN ip ON (network.device_id = ip.device_id AND network.mac = ip.mac) WHERE network.device_id = ? AND ip.net_index = '' AND network.net_index != ''";
+        $result = $this->db->query($sql, [$device_id])->getResult();
+        foreach ($result as $line) {
+            $sql = 'UPDATE ip SET net_index = ? WHERE id = ?';
+            $query = $this->db->query($sql, [$line->net_index, $line->id]);
+        }
+    }
+
+    public function upsert(string $table = '', object $device = null, array $data = null, array $match_columns = null): bool
     {
         $instance = & get_instance();
         if (empty($table)) {
@@ -380,7 +390,7 @@ class ComponentsModel extends BaseModel
         $log->pid = getmypid();
         $log->severity = 7;
         $log->severity_text = '';
-        $log->system_id = @intval($device->id);
+        $log->device_id = @intval($device->id);
         $log->timestamp = null;
 
         $create_change_log = true;
@@ -596,7 +606,7 @@ class ComponentsModel extends BaseModel
                 }
                 // ensure we add the network to the networks list
                 if (!empty($data[$i]->network)) {
-                    $network = new stdClass();
+                    $network = new \StdClass();
                     $network->name = $data[$i]->network;
                     $network->org_id = 1;
                     if (!empty($device->org_id)) {
@@ -902,8 +912,8 @@ class ComponentsModel extends BaseModel
                 if (!isset($virtual_machine->group)) {
                     $virtual_machine->group = '';
                 }
-                if (!isset($virtual_machine->guest_system_id)) {
-                    $virtual_machine->guest_system_id = 0;
+                if (!isset($virtual_machine->guest_device_id)) {
+                    $virtual_machine->guest_device_id = 0;
                 }
                 if (!isset($virtual_machine->icon)) {
                     $virtual_machine->icon = '';
@@ -918,10 +928,10 @@ class ComponentsModel extends BaseModel
                     $query = $this->db->query($sql, [$virtual_machine->uuid]);
                     if ($query->getNumRows() > 0) {
                         $row = $query->row();
-                        $virtual_machine->guest_system_id = $row->id;
+                        $virtual_machine->guest_device_id = $row->id;
                         $virtual_machine->icon = $row->icon;
                         $sql = 'UPDATE devices SET devices.vm_server_name = ?, devices.vm_device_id = ? WHERE devices.id = ?';
-                        $query = $this->db->query($sql, ["{$device->hostname}", "{$device->id}", $virtual_machine->guest_system_id]);
+                        $query = $this->db->query($sql, ["{$device->hostname}", "{$device->id}", $virtual_machine->guest_device_id]);
                     }
                 }
             }
@@ -1217,11 +1227,11 @@ class ComponentsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = '';
-        $dictionary = new stdClass();
+        $dictionary = new \StdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \StdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array();
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();

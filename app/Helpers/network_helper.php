@@ -93,7 +93,7 @@ if (! function_exists('network_details')) {
     function network_details($ip)
     {
         $my_net_info = rtrim($ip);
-        $details = new stdClass();
+        $details = new \StdClass();
 
         if (! preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}(( ([0-9]{1,3}\.){3}[0-9]{1,3})|(\/[0-9]{1,2}))$/', $my_net_info)) {
             $details->error = "Error - invalid input";
@@ -189,7 +189,7 @@ if (! function_exists('network_details')) {
         #tr("HostMax: "  .bintodq($bin_last)."<br />");
         #tr("Hosts/Net: ".$host_total." $special"."<br />");
 
-        $details = new stdClass();
+        $details = new \StdClass();
         $details->error = '';
         $details->address = $dq_host;
         $details->netmask = bintodq($bin_nmask);
@@ -375,24 +375,19 @@ if (! function_exists('dns_validate')) {
     function dns_validate($details)
     {
         if (!isset($details)) {
-            # no object passed
+            log_message('error', 'No object passed to network_helper::dns_validate.');
             return;
         }
         if (empty($details->ip)) {
-            // $log->command_status = 'fail';
-            // $log->severity = 4;
-            // $log->message = 'No IP passed to network_helper::dns_validate.';
-            // discovery_log($log);
+            log_message('error', 'No IP passed to network_helper::dns_validate.');
             return $details;
         }
         if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
-            // $log->command_status = 'fail';
-            // $log->severity = 4;
-            // $log->message = 'Invalid IP passed to network_helper::dns_validate.';
-            // discovery_log($log);
+            log_message('error', 'Invalid IP passed to network_helper::dns_validate.');
             return $details;
         }
-        $log = new stdClass();
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+        $log = new \StdClass();
         $log->ip = $details->ip;
         $log->severity = 7;
         $log->command_status = 'notice';
@@ -406,73 +401,71 @@ if (! function_exists('dns_validate')) {
                 $details->dns_fqdn = strtolower($details->dns_hostname);
                 $log->message = 'Set DNS FQDN for ' . $details->ip . ' in network_helper::dns_validate';
                 $log->command_output = $details->dns_fqdn;
-                discovery_log($log);
+                $discoveryLogModel->create($log);
 
                 $temp = explode(".", $details->dns_hostname);
                 $details->dns_hostname = $temp[0];
                 unset($temp[0]);
                 $log->message = 'Set DNS hostname for ' . $details->ip . ' in network_helper::dns_validate';
                 $log->command_output = $details->dns_hostname;
-                discovery_log($log);
+                $discoveryLogModel->create($log);
 
                 $details->dns_domain = implode(".", $temp);
                 unset($temp);
                 $log->message = 'Set DNS domain for ' . $details->ip . ' in network_helper::dns_validate';
                 $log->command_output = $details->dns_domain;
-                discovery_log($log);
+                $discoveryLogModel->create($log);
             } else {
                 # we got an ip address back from DNS, remove it
                 $details->dns_hostname = '';
                 $log->message = 'Received IP, not hostname for ' . $details->ip . ' in network_helper::dns_validate';
                 $log->command_output = $details->hostname;
-                discovery_log($log);
+                $discoveryLogModel->create($log);
             }
         } else {
             $log->message = 'DNS returned a hostname only for ' . $details->ip . ' in network_helper::dns_validate';
             $log->command_output = $details->dns_hostname;
-            discovery_log($log);
+            $discoveryLogModel->create($log);
         }
         return $details;
     }
 }
 
-function check_ip($ip_address = '')
+/**
+ * Read the collection from the database
+ *
+ * @param  string $ip_address A standard IP, a list of comma separated subnets or an empty string
+ * @return bool               Returns true if ip is contained in a subnet, false otherwise
+ */
+function check_ip(string $ip = ''): bool
 {
-    // supply a standard ip address - 192.168.1.1
-    // supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
-    // returns true if ip is contained in a subnet, false otherwise
-    // TODO - we should take an OrgID (or 1 if not exists)
-
-    if (empty($this->config->blessed_subnets_use) or trim(strtolower($this->config->blessed_subnets_use)) !== 'y') {
-        return true;
-    }
-    if (empty($ip_address)) {
+    if (empty($ip)) {
         return false;
     }
-    if ($ip_address === '127.0.0.1' or $ip_address === '127.0.1.1') {
+    if (empty(config('Openaudit')->blessed_subnets_use) or trim(strtolower(config('Openaudit')->blessed_subnets_use)) !== 'y') {
         return true;
     }
-    if ($ip_address === '::1') {
+    if ($ip === '127.0.0.1' or $ip === '127.0.1.1') {
+        return true;
+    }
+    if ($ip === '::1') {
         return true;
     }
     // TODO - IPv6 support
-    if (stripos($ip_address, ':') !== false) {
+    if (stripos($ip, ':') !== false) {
         return true;
     }
-    $sql = "SELECT COUNT(id) AS count FROM networks WHERE ((-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1)) OR network = '" . $ip_address . "/32')";
-    $query = $this->db->query($sql, array((string)$ip_address));
-    if (!empty($this->db->error())) {
-        log_message('error', json_encode($this->db->error()));
+    $db = db_connect();
+    $sql = "SELECT COUNT(id) AS count FROM networks WHERE ((-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1)) OR network = '" . $ip . "/32')";
+    $result = $db->query($sql, [$ip])->getResult();
+    if (!empty($db->error())) {
+        log_message('error', json_encode($db->error()));
         return false;
     }
-    $result = $query->getResult();
     if (intval($result[0]->count) > 0) {
         return true;
     } else {
-        log_message('warning', 'IP not in the list of blessed subnets (supplied IP: ' . $ip_address . ')');
+        log_message('warning', 'IP not in the list of blessed subnets (supplied IP: ' . $ip . ')');
         return false;
     }
 }
-
-/* End of file network_helper.php */
-/* Location: ./system/application/helpers/network_helper.php */
