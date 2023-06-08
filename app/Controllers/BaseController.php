@@ -54,6 +54,10 @@ abstract class BaseController extends Controller
         // Register the instance so we can call it from models, et al.
         register_ci_instance($this);
 
+        $router = \Config\Services::router();
+        $this->controller = $router->controllerName();
+        $this->method = $router->methodName();
+
         // Preload any models, libraries, etc, here.
         $this->session = \Config\Services::session();
         $this->config = new \Config\OpenAudit();
@@ -68,17 +72,17 @@ abstract class BaseController extends Controller
         $this->usersModel = new \App\Models\UsersModel();
         $this->user = $this->usersModel->userValidate();
         $this->orgsModel = new \App\Models\OrgsModel();
-        $this->orgs = $this->orgsModel->listAll();
+        # $this->orgs = $this->orgsModel->listAll();
         $this->queriesModel = new \App\Models\QueriesModel();
         $this->rolesModel = new \App\Models\RolesModel();
         $this->roles = $this->rolesModel->listAll();
         $this->collections = collections_list();
 
-        $this->queries = array();
+        if (config('Openaudit')->internal_version > 20230614) {
+            $this->orgs = $this->orgsModel->listAll();
+        }
 
-        $router = \Config\Services::router();
-        $this->controller = $router->controllerName();
-        $this->method = $router->methodName();
+        $this->queries = array();
 
         if (empty($this->user) and $this->controller === '\App\Controllers\Input') {
             // We are receiving input from an audit result, no need for $user, et al.
@@ -123,6 +127,15 @@ abstract class BaseController extends Controller
         }
         if (empty($this->user->permissions['search'])) {
             $this->user->permissions['search'] = $this->user->permissions['devices'];
+        }
+
+        if (intval($this->config->internal_version) < intval($this->config->appVersion)) {
+            if ($router->controllerName() !== '\App\Controllers\Database' and $router->methodName() !== 'update') {
+                header('Location: ' . url_to('databaseUpdate'));
+                exit;
+            } else {
+                return;
+            }
         }
 
         // Setup our request hash (meta, data, errors, included, et al)

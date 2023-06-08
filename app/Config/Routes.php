@@ -46,6 +46,44 @@ $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', 
 $routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
 $routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
 
+$routes->get('charts', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
+$routes->get('charts/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
+
+$routes->get('devices/create/example', 'devices::createExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExampleForm']);
+$routes->get('devices/delete/example', 'devices::deleteExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExampleForm']);
+$routes->post('devices/create/example', 'devices::createExample', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExample']);
+$routes->post('devices/delete/example', 'devices::deleteExample', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExample']);
+$routes->delete('devices/delete/example', 'devices::deleteExample', ['filter' => \App\Filters\Session::class]);
+
+$routes->get('database/update', 'Database::update', ['filter' => \App\Filters\Session::class, 'as' => 'databaseUpdate']);
+$routes->get('database/compare', 'Database::compare', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCompare']);
+$routes->get('database/help', 'Database::help', ['filter' => \App\Filters\Session::class, 'as' => 'databaseHelp']);
+$routes->get('database/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseRead']);
+$routes->get('database', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCollection']);
+
+$routes->get('logon', 'Logon::createForm', ['as' => 'logon']);
+$routes->get('logoff', 'Logon::delete', ['as' => 'logoff']);
+$routes->get('login', 'Logon::createForm');
+$routes->post('logon', 'Logon::create');
+$routes->get('logout', 'Logon::delete');
+
+$routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
+
+$routes->get('scripts/(:any)/download', 'Scripts::download/$1');
+
+$routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
+$routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
+$routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
+
+$routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
+$routes->cli('test', 'Cli::test', ['as' => 'test']);
+$routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
+
+$routes->post('input/devices', 'Input::devices');
+$routes->post('input/logs', 'Input::logs');
+$routes->cli('queue/start', 'Queue::start');
+
+
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character
     $collection = trim($collection);
@@ -98,41 +136,6 @@ foreach ($routes->collections as $collection) {
     $routes->patch($collection . '/(:num)', 'Collections::update/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Update']);
 }
 
-$routes->get('charts', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
-$routes->get('charts/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
-
-$routes->get('devices/create/example', 'devices::createExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExampleForm']);
-$routes->get('devices/delete/example', 'devices::deleteExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExampleForm']);
-$routes->post('devices/create/example', 'devices::createExample', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExample']);
-$routes->post('devices/delete/example', 'devices::deleteExample', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExample']);
-$routes->delete('devices/delete/example', 'devices::deleteExample', ['filter' => \App\Filters\Session::class]);
-
-$routes->get('database/update', 'Database::update', ['filter' => \App\Filters\Session::class, 'as' => 'databaseUpdate']);
-$routes->get('database/help', 'Database::help', ['filter' => \App\Filters\Session::class, 'as' => 'databaseHelp']);
-$routes->get('database/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseRead']);
-$routes->get('database', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCollection']);
-
-$routes->get('logon', 'Logon::createForm', ['as' => 'logon']);
-$routes->get('logoff', 'Logon::delete', ['as' => 'logoff']);
-$routes->get('login', 'Logon::createForm');
-$routes->post('logon', 'Logon::create');
-$routes->get('logout', 'Logon::delete');
-
-$routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
-
-$routes->get('scripts/(:any)/download', 'Scripts::download/$1');
-
-$routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
-$routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
-$routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
-
-$routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
-$routes->cli('test', 'Cli::test', ['as' => 'test']);
-$routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
-
-$routes->post('input/devices', 'Input::devices');
-$routes->post('input/logs', 'Input::logs');
-$routes->cli('queue/start', 'Queue::start');
 
 
 

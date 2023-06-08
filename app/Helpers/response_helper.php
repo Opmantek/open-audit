@@ -1510,6 +1510,7 @@ if (!function_exists('response_valid_permissions')) {
         $permission['bulkUpdateForm'] = 'u';
         $permission['bulkupdateform'] = 'u';
         $permission['collection'] = 'r';
+        $permission['compare'] = 'r';
         $permission['create'] = 'c';
         $permission['createForm'] = 'c';
         $permission['createform'] = 'c';

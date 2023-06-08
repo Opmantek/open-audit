@@ -459,6 +459,7 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Database') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('database', 'r', $user, 'databaseCollection', 'List Database Tables') ?>
+                                        <?= menuItem('database', 'r', $user, 'databaseCompare', 'Compare Database Schema') ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('LDAP Servers') ?></a>
@@ -717,7 +718,7 @@ function menuItem($collection = '', $action = '', $user = null, $route = '', $ti
 
 function get_user_permission($collection, $action, $user)
 {
-    if (strpos($user->permissions[$collection], $action) !== false) {
+    if (!empty($user->permissions[$collection]) and strpos($user->permissions[$collection], $action) !== false) {
         return true;
     }
     return false;

@@ -88,7 +88,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                         </ul></div>';
     }
 
-    if (strpos($user->permissions[$collection], 'c') !== false and $collection !== 'database') {
+    if ($collection !== 'database' and strpos($user->permissions[$collection], 'c') !== false) {
         if ($style === 'icontext') {
             $create_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Create") . "</a>";
         } else if ($style === 'icon') {
@@ -101,7 +101,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $delete_button = "\n";
-    if (strpos($user->permissions[$collection], 'd') !== false and $collection !== 'database') {
+    if ($collection !== 'database' and strpos($user->permissions[$collection], 'd') !== false) {
         if ((in_array($collection, ['orgs','locations','roles']) and $id == 1)) {
             // Not allowed to delete these
         } else {

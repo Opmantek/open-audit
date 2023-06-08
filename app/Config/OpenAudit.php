@@ -10,6 +10,7 @@ class OpenAudit extends BaseConfig
 {
     public function __construct()
     {
+        $this->appVersion = 20230615;
         $this->microtime = microtime(true);
 
         parent::__construct();
@@ -55,10 +56,12 @@ class OpenAudit extends BaseConfig
         $this->server_os = php_uname('s');
 
         // get the total number of devices
-        $query = $db->query('SELECT count(*) as device_count FROM `devices`');
-        if (!empty($query)) {
-            $result = $query->getRow();
-            $this->device_count = @intval($result->device_count);
+        if ($this->internal_version > 20230614) {
+            $query = $db->query('SELECT count(*) as device_count FROM `devices`');
+            if (!empty($query)) {
+                $result = $query->getRow();
+                $this->device_count = @intval($result->device_count);
+            }
         }
 
         config('Logger')->threshold = intval($this->log_level);
