@@ -28,4 +28,4 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 
 $output .= "Upgrade database to 4.1.1 completed.\n\n";
 config('Openaudit')->internal_version = 20210512;
-config('Openaudit')->display_version = '4.3.1';
+config('Openaudit')->display_version = '4.1.1';
