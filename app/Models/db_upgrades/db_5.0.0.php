@@ -10,7 +10,7 @@ if ($db->tableExists('agents')) {
 }
 
 if ($db->fieldExists('applications_id', 'application')) {
-    $sql = "ALTER TABLE `application` RENAME COLUMN `application_id` TO `application_id`";
+    $sql = "ALTER TABLE `application` RENAME COLUMN `applications_id` TO `application_id`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

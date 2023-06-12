@@ -196,6 +196,35 @@ class DatabaseModel extends BaseModel
         return true;
     }
 
+    public function updateForm()
+    {
+        $db = db_connect();
+        $instance = & get_instance();
+        $result = new \stdClass();
+        if (php_uname('s') === 'Windows NT') {
+            exec('echo. |WMIC OS Get Caption', $output);
+            if (isset($output[1])) {
+                $result->operating_system = $output[1];
+            } else {
+                $result->operating_system = 'unknown (You must run Apache as an administrator on Windows to determine this)';
+            }
+        } else {
+            $result->operating_system = php_uname('s');
+        }
+
+        $result->current_version = config('Openaudit')->display_version;
+        $result->new_version = config('Openaudit')->displayVersion;
+        $result->hostname = php_uname('n');
+        $result->database_platform = $db->getPlatform();
+        $result->database_version = $db->getVersion();
+        $result->web_server = (!empty(getenv("SERVER_SOFTWARE"))) ? getenv("SERVER_SOFTWARE") : '';
+        $result->web_server = (empty($result->web_server) and !empty(php_sapi_name())) ? php_sapi_name() : '';
+        $result->php_version = phpversion();
+
+        return $result;
+    }
+
+
     public function matchColumns($table)
     {
         $match_columns = array();

@@ -11,6 +11,7 @@ class OpenAudit extends BaseConfig
     public function __construct()
     {
         $this->appVersion = 20230615;
+        $this->displayVersion = '5.0.0';
         $this->microtime = microtime(true);
 
         parent::__construct();

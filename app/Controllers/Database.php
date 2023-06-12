@@ -30,25 +30,38 @@ namespace App\Controllers;
  */
 class Database extends BaseController
 {
-    public function update()
+
+    public function update($action)
     {
         $this->databaseModel = new \App\Models\DatabaseModel();
-        $output = $this->databaseModel->update();
         $meta = new \StdClass();
         $meta->collection = 'database';
-        $meta->action = 'update';
+        $meta->action = 'updateForm';
         $meta->access_token = '';
         $meta->icon = 'fa fa-database';
-        $errors = array();
-        \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
-        return view('shared/header', [
-            'config' => $this->config,
-            'dashboards' => filter_response($this->dashboards),
-            'meta' => filter_response($meta),
-            'queries' => array(),
-            'roles' => filter_response($this->roles),
-            'user' => filter_response($this->user)]) .
-            view('databaseUpdate', ['data' => filter_response($this->data)]);
+        if ($action !== 'post') {
+            $this->data = $this->databaseModel->updateForm();
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'meta' => filter_response($meta),
+                'queries' => array(),
+                'roles' => filter_response($this->roles),
+                'user' => filter_response($this->user)]) .
+                view('databaseUpdateForm', ['data' => filter_response($this->data)]);
+        } else {
+            $output = $this->databaseModel->update();
+            $errors = array();
+            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'meta' => filter_response($meta),
+                'queries' => array(),
+                'roles' => filter_response($this->roles),
+                'user' => filter_response($this->user)]) .
+                view('databaseUpdate', ['data' => filter_response($this->data)]);
+        }
     }
 
 
@@ -157,6 +170,21 @@ class Database extends BaseController
             $body_output .= "<br /><br />\n";
         }
         $output .= "<h2>Inserts: {$total_inserts} Deletes: {$total_deletes}</h2>\n<br /><br />\n" . $body_output;
-        echo $output;
+        # echo $output;
+
+        $meta = new \StdClass();
+        $meta->collection = 'database';
+        $meta->action = 'read';
+        $meta->access_token = '';
+        $meta->icon = 'fa fa-database';
+
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($meta),
+            'queries' => array(),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('databaseSchemaCompare', ['data' => $output]);
     }
 }
