@@ -78,6 +78,11 @@ abstract class BaseController extends Controller
         $this->roles = $this->rolesModel->listAll();
         $this->collections = collections_list();
 
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
+
         if (config('Openaudit')->internal_version > 20230614) {
             $this->orgs = $this->orgsModel->listAll();
         }
