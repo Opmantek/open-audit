@@ -21,51 +21,50 @@ $header = str_replace(PHP_EOL, "", $header);
 header("Content-Security-Policy: {$header}");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
-// if (intval($config->internal_version) < intval($config->web_internal_version) && $meta->include !== 'v_database_update' && $meta->include !== 'v_database_update_form') {
-//     redirect('database?action=update');
-// }
-// Define our constans for use in htmlspecialchars
-if (!defined('CHARSET')) {
-    define('CHARSET', 'UTF-8');
-    define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+
+
+$langFile = APPPATH . 'views/lang/en.inc';
+$user->lang = 'fr';
+if (!empty($user->lang)) {
+    $langFile = APPPATH . 'views/lang/' . $user->lang . '.inc';
 }
-include('lang_en.inc');
-// lang translation function
+include($langFile);
 if (!function_exists('__')) {
     function __($word)
     {
-        // Learning-Mode
-        // Only for Developers !!!!
-        $language_learning_mode = 0;
+        $language_learning_mode = true;
         $language_file = APPPATH . 'views/lang/en.inc';
-
-        $word = (string) $word;
-
+        $word = (string)$word;
         if (isset($GLOBALS['lang'][$word])) {
             return $GLOBALS['lang'][$word];
         } else {
-            // Learning-Mode
-            if ($language_learning_mode === 1 && isset($word) && $word !== '') {
+            if ($language_learning_mode === true and !empty($word)) {
                 if (is_writable($language_file)) {
-                    // Deleting
-                    $buffer = '';
-                    $handle = fopen($language_file, 'r');
-                    while (!feof($handle)) {
-                        $line = fgets($handle, 4096);
-                        if (!preg_match('/\?>/', $line)) {
-                            $buffer .= $line;
+                    unset($lang_array);
+                    $lang_array = file($language_file);
+                    $lang_array = array_unique($lang_array);
+                    $match = '$GLOBALS["lang"]["' . $word . '"]="' . $word . "\";\n";
+                    if (!in_array($match, $lang_array)) {
+                        $lang_array[] = $match;
+                        sort($lang_array, SORT_NATURAL | SORT_FLAG_CASE);
+                        for ($i=0; $i < count($lang_array); $i++) {
+                            if ($lang_array[$i] === '') {
+                                unset($lang_array[$i]);
+                            }
+                            if ($lang_array[$i] === '<?php' or $lang_array[$i] === "<?php\n") {
+                                unset($lang_array[$i]);
+                            }
                         }
+                        $lang_array = array_unique($lang_array);
+                        $file_contents = "<?php\n" . implode("", $lang_array);
+                        $handle = fopen($language_file, 'w');
+                        fwrite($handle, $file_contents);
+                        fclose($handle);
                     }
-                    fclose($handle);
-                    // Writing new Variables
-                    $handle = fopen($language_file, 'w+');
-                    fwrite($handle, $buffer.''."\$GLOBALS[\"lang\"][\"$word\"]=\"$word\";\n?>");
-                    fclose($handle);
                 } else {
                     die("Language-Learning-Mode, but $language_file not writeable");
                 }
             }
-
             return $word;
         }
     }
@@ -140,7 +139,7 @@ $categories = array_unique($categories);
             }
             ?>
             var web_folder = '<?= base_url() ?>';
-            var device_auto_delete = '<?= $config->device_auto_delete; ?>';
+            var device_auto_delete = '<?= config('Openaudit')->device_auto_delete; ?>';
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -150,7 +149,7 @@ $categories = array_unique($categories);
             <div class="container-fluid">
                 <a class="navbar-brand" style="color: white;" href="/">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
-                    Open-AudIT <?= $config->display_version . "\n" ?>
+                    Open-AudIT <?= config('Openaudit')->display_version . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
@@ -160,7 +159,7 @@ $categories = array_unique($categories);
                                 <?php if (!empty($dashboards)) { ?>
                                     <?php foreach ($dashboards as $dashboard) {
                                         if ($dashboard->type === 'dashboards') {
-                                            if ($config->oae_product === 'enterprise' or $config->oae_product === 'professional') {
+                                            if (config('Openaudit')->oae_product === 'enterprise' or config('Openaudit')->oae_product === 'professional') {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
@@ -175,51 +174,51 @@ $categories = array_unique($categories);
                             <ul class="dropdown-menu" aria-labelledby="navbarDiscover">
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Clouds') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('clouds', 'r', $user, 'cloudsCollection', 'List Clouds', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('clouds', 'c', $user, 'cloudsCreateForm', 'Create Clouds', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('clouds', '', $user, 'cloudsHelp', 'Learn About Clouds') ?>
+                                        <?= menuItem('clouds', 'r', $user, 'cloudsCollection', __('List') . ' ' . __('Clouds'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('clouds', 'c', $user, 'cloudsCreateForm', __('Create') . ' ' . __('Clouds'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('clouds', '', $user, 'cloudsHelp', __('Learn About') . ' ' . __('Clouds')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Credentials') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('credentials', 'r', $user, 'credentialsCollection', 'List Credentials') ?>
-                                        <?= menuItem('credentials', 'c', $user, 'credentialsCreateForm', 'Create Credentials') ?>
-                                        <?= menuItem('credentials', '', $user, 'credentialsHelp', 'Learn About Credentials') ?>
+                                        <?= menuItem('credentials', 'r', $user, 'credentialsCollection', __('List') . ' ' . __('Credentials')) ?>
+                                        <?= menuItem('credentials', 'c', $user, 'credentialsCreateForm', __('Create') . ' ' . __('Credentials')) ?>
+                                        <?= menuItem('credentials', '', $user, 'credentialsHelp', __('Learn About') . ' ' . __('Credentials')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Discoveries') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('discoveries', 'r', $user, 'discoveriesCollection', 'List Discoveries') ?>
-                                        <?= menuItem('discoveries', 'c', $user, 'discoveriesCreateForm', 'Create Discoveries') ?>
-                                        <?= menuItem('discoveries', 'c', $user, 'discoveriesImportForm', 'Import Discoveries') ?>
+                                        <?= menuItem('discoveries', 'r', $user, 'discoveriesCollection', __('List') . ' ' . __('Discoveries')) ?>
+                                        <?= menuItem('discoveries', 'c', $user, 'discoveriesCreateForm', __('Create') . ' ' . __('Discoveries')) ?>
+                                        <?= menuItem('discoveries', 'c', $user, 'discoveriesImportForm', __('Import') . ' ' . __('Discoveries')) ?>
                                         <li><hr class="dropdown-divider"></li>
-                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', 'Global Discovery Options', '?configuration.name=likediscovery_') ?>
-                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', 'Discovery Match Options', '?configuration.name=likematch_') ?>
-                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', 'Discovery Change Logs', '?configuration.name=likecreate_change_log') ?>
-                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', 'Discovery Data Retention', '?configuration.name=likedelete_noncurrent') ?>
+                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Global Discovery Options'), '?configuration.name=likediscovery_') ?>
+                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Discovery Match Options'), '?configuration.name=likematch_') ?>
+                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Discovery Change Logs'), '?configuration.name=likecreate_change_log') ?>
+                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Discovery Data Retention'), '?configuration.name=likedelete_noncurrent') ?>
                                         <li><a class="dropdown-item dropdown-toggle second-level-dropdown-toggle" href="#"><?= __('Discovery Scan Options') ?></a>
                                             <ul class="dropdown-menu">
-                                                <?= menuItem('discovery_scan_options', 'r', $user, 'discovery_scan_optionsCollection', 'List Discovery Scan Options', '', 'Enterprise', $config->oae_product) ?>
-                                                <?= menuItem('discovery_scan_options', 'c', $user, 'discovery_scan_optionsCreate', 'Create Discovery Scan Options', '', 'Enterprise', $config->oae_product) ?>
+                                                <?= menuItem('discovery_scan_options', 'r', $user, 'discovery_scan_optionsCollection', __('List') . ' ' . __('Discovery Scan Options'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                                <?= menuItem('discovery_scan_options', 'c', $user, 'discovery_scan_optionsCreate', __('Create') . ' ' . __('Discovery Scan Options'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
                                                 <li><a class="dropdown-item" href="<?= url_to('discovery_scan_optionsHelp') ?>"><?= __('Learn About') . ' ' . __('Discovery Scan Options') ?></a></li>
                                             </ul>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', 'Schedule Discoveries', '?type=discoveries', 'Professional', $config->oae_product) ?>
+                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Schedule') . ' ' . __('Discoveries'), '?type=discoveries', 'Professional', config('Openaudit')->oae_product) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Files') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('files', 'r', $user, 'filesCollection', 'List Files') ?>
-                                        <?= menuItem('files', 'c', $user, 'filesCreateForm', 'Create Files', '', 'Professional', $config->oae_product) ?>
-                                        <?= menuItem('files', '', $user, 'filesHelp', 'Learn About Files') ?>
+                                        <?= menuItem('files', 'r', $user, 'filesCollection', __('List') . ' ' . __('Files')) ?>
+                                        <?= menuItem('files', 'c', $user, 'filesCreateForm', __('Create') . ' ' . __('Files'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('files', '', $user, 'filesHelp', __('Learn About') . ' ' . __('Files')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Scripts') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('scripts', 'r', $user, 'scriptsCollection', 'List Scripts') ?>
-                                        <?= menuItem('scripts', 'c', $user, 'scriptsCreateForm', 'Create Scripts') ?>
-                                        <?= menuItem('scripts', '', $user, 'scriptsHelp', 'Learn About Scripts') ?>
+                                        <?= menuItem('scripts', 'r', $user, 'scriptsCollection', __('List') . ' ' . __('Scripts')) ?>
+                                        <?= menuItem('scripts', 'c', $user, 'scriptsCreateForm', __('Create') . ' ' . __('Scripts')) ?>
+                                        <?= menuItem('scripts', '', $user, 'scriptsHelp', __('Learn About') . ' ' . __('Scripts')) ?>
                                     </ul>
                                 </li>
                             </ul>
@@ -236,7 +235,7 @@ $categories = array_unique($categories);
                                 foreach ($reports as $report) {
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
-                                            if ($config->oae_license !== 'commercial') {
+                                            if (config('Openaudit')->oae_license !== 'commercial') {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('queriesExecute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
@@ -248,7 +247,7 @@ $categories = array_unique($categories);
                                 }
                                 echo "                            </ul>\n";
                             } ?>
-<?php if ($config->oae_license !== 'commercial') { ?>
+<?php if (config('Openaudit')->oae_license !== 'commercial') { ?>
                                 <li><a class="dropdown-item greyout toastProfessional" href="#"><?= __('Schedule Reports'); ?></a></li>
                                 <li><a class="dropdown-item greyout toastProfessional" href="#"><?= __('MultiReport'); ?></a></li>
 <?php } else { ?>
@@ -263,182 +262,182 @@ $categories = array_unique($categories);
                             <ul class="dropdown-menu" aria-labelledby="navbarManage">
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Applications') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('applications', 'r', $user, 'applicationsCollection', 'List Applications', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('applications', 'c', $user, 'applicationsCreateForm', 'Create Applications', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('applications', '', $user, 'applicationsHelp', 'Learn About Applications') ?>
+                                        <?= menuItem('applications', 'r', $user, 'applicationsCollection', __('List') . ' ' . __('Applications'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('applications', 'c', $user, 'applicationsCreateForm', __('Create') . ' ' . __('Applications'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('applications', '', $user, 'applicationsHelp', __('Learn About') . ' ' . __('Applications')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Attributes') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('attributes', 'r', $user, 'attributesCollection', 'List Attributes') ?>
-                                        <?= menuItem('attributes', 'c', $user, 'attributesCreateForm', 'Create Attributes') ?>
-                                        <?= menuItem('attributes', 'c', $user, 'attributesImportForm', 'Import Attributes') ?>
-                                        <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Default Attributes') ?>
-                                        <?= menuItem('attributes', '', $user, 'attributesHelp', 'Learn About Attributes') ?>
+                                        <?= menuItem('attributes', 'r', $user, 'attributesCollection', __('List') . ' ' . __('Attributes')) ?>
+                                        <?= menuItem('attributes', 'c', $user, 'attributesCreateForm', __('Create') . ' ' . __('Attributes')) ?>
+                                        <?= menuItem('attributes', 'c', $user, 'attributesImportForm', __('Import') . ' ' . __('Attributes')) ?>
+                                        <?= menuItem('attributes', '', $user, 'attributesDefaults', __('Default') . ' ' . __('Attributes')) ?>
+                                        <?= menuItem('attributes', '', $user, 'attributesHelp', __('Learn About') . ' ' . __('Attributes')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Baselines') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('baselines', 'r', $user, 'baselinesCollection', 'List Baselines', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('baselines', 'c', $user, 'baselinesCreateForm', 'Create Baselines', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('baselines', '', $user, 'baselinesHelp', 'Learn About Baselines') ?>
+                                        <?= menuItem('baselines', 'r', $user, 'baselinesCollection', __('List') . ' ' . __('Baselines'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('baselines', 'c', $user, 'baselinesCreateForm', __('Create') . ' ' . __('Baselines'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('baselines', '', $user, 'baselinesHelp', __('Learn About') . ' ' . __('Baselines')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Clusters') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('clusters', 'r', $user, 'clustersCollection', 'List Clusters', '', 'Professional', $config->oae_product) ?>
-                                        <?= menuItem('clusters', 'c', $user, 'clustersCreateForm', 'Create Clusters', '', 'Professional', $config->oae_product) ?>
-                                        <?= menuItem('clusters', '', $user, 'clustersHelp', 'Learn About Clusters') ?>
+                                        <?= menuItem('clusters', 'r', $user, 'clustersCollection', __('List') . ' ' . __('Clusters'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('clusters', 'c', $user, 'clustersCreateForm', __('Create') . ' ' . __('Clusters'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('clusters', '', $user, 'clustersHelp', __('Learn About') . ' ' . __('Clusters')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Connections') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('connections', 'r', $user, 'connectionsCollection', 'List Connections') ?>
-                                        <?= menuItem('connections', 'c', $user, 'connectionsCreateForm', 'Create Connections') ?>
-                                        <?= menuItem('connections', '', $user, 'connectionsHelp', 'Learn About Connections') ?>
+                                        <?= menuItem('connections', 'r', $user, 'connectionsCollection', __('List') . ' ' . __('Connections')) ?>
+                                        <?= menuItem('connections', 'c', $user, 'connectionsCreateForm', __('Create') . ' ' . __('Connections')) ?>
+                                        <?= menuItem('connections', '', $user, 'connectionsHelp', __('Learn About') . ' ' . __('Connections')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Dashboards') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('dashboards', 'r', $user, 'dashboardsCollection', 'List Dashboards') ?>
-                                        <?= menuItem('dashboards', 'c', $user, 'dashboardsCreateForm', 'Create Dashboards', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', 'Default Dashboards') ?>
-                                        <?= menuItem('dashboards', '', $user, 'dashboardsHelp', 'Learn About Dashboards') ?>
+                                        <?= menuItem('dashboards', 'r', $user, 'dashboardsCollection', __('List') . ' ' . __('Dashboards')) ?>
+                                        <?= menuItem('dashboards', 'c', $user, 'dashboardsCreateForm', __('Create') . ' ' . __('Dashboards'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', __('Default') . ' ' . __('Dashboards')) ?>
+                                        <?= menuItem('dashboards', '', $user, 'dashboardsHelp', __('Learn About') . ' ' . __('Dashboards')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Devices') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('devices', 'r', $user, 'devicesCollection', 'List Devices') ?>
-                                        <?= menuItem('devices', 'c', $user, 'devicesCreateForm', 'Import Devices from Audit Script Result') ?>
-                                        <?= menuItem('devices', 'c', $user, 'nmisCreateForm', 'Import Devices from NMIS') ?>
+                                        <?= menuItem('devices', 'r', $user, 'devicesCollection', __('List') . ' ' . __('Devices')) ?>
+                                        <?= menuItem('devices', 'c', $user, 'devicesCreateForm', __('Import') . ' ' . __('Devices') . ' ' . __('from Audit Script Result')) ?>
+                                        <?= menuItem('devices', 'c', $user, 'nmisCreateForm', __('Import') . ' ' . __('Devices') . ' ' . __('from NMIS')) ?>
                                         <li><hr class="dropdown-divider"></li>
-                                        <?= menuItem('devices', 'c', $user, 'devicesCreateExampleForm', 'Import Example Devices') ?>
-                                        <?= menuItem('devices', 'c', $user, 'devicesDeleteExampleForm', 'Delete Example Devices') ?>
+                                        <?= menuItem('devices', 'c', $user, 'devicesCreateExampleForm', __('Import') . ' ' . __('Example Devices')) ?>
+                                        <?= menuItem('devices', 'c', $user, 'devicesDeleteExampleForm', __('Delete') . ' ' . __('Example Devices')) ?>
                                         <li><hr class="dropdown-divider"></li>
-                                        <?= menuItem('configuration', 'u', $user, 'configurationCollection', 'Configure Change Logs', '?configuration.name=likecreate_change_log') ?>
-                                        <?= menuItem('configuration', 'u', $user, 'configurationCollection', 'Configure Data Retention', '?configuration.name=likedelete_non_current') ?>
+                                        <?= menuItem('configuration', 'u', $user, 'configurationCollection', __('Configure') . ' ' . __('Change Logs'), '?configuration.name=likecreate_change_log') ?>
+                                        <?= menuItem('configuration', 'u', $user, 'configurationCollection', __('Configure') . ' ' . __('Data Retention'), '?configuration.name=likedelete_non_current') ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Fields') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('fields', 'r', $user, 'fieldsCollection', 'List Fields') ?>
-                                        <?= menuItem('fields', 'c', $user, 'fieldsCreateForm', 'Create Fields') ?>
-                                        <?= menuItem('fields', 'c', $user, 'fieldsImportForm', 'Import Fields') ?>
-                                        <?= menuItem('fields', '', $user, 'fieldsDefaults', 'Default Fields') ?>
-                                        <?= menuItem('fields', '', $user, 'fieldsHelp', 'Learn About Fields') ?>
+                                        <?= menuItem('fields', 'r', $user, 'fieldsCollection', __('List') . ' ' . __('Fields')) ?>
+                                        <?= menuItem('fields', 'c', $user, 'fieldsCreateForm', __('Create') . ' ' . __('Fields')) ?>
+                                        <?= menuItem('fields', 'c', $user, 'fieldsImportForm', __('Import') . ' ' . __('Fields')) ?>
+                                        <?= menuItem('fields', '', $user, 'fieldsDefaults', __('Default') . ' ' . __('Fields')) ?>
+                                        <?= menuItem('fields', '', $user, 'fieldsHelp', __('Learn About') . ' ' . __('Fields')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Groups') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('groups', 'r', $user, 'groupsCollection', 'List Groups') ?>
-                                        <?= menuItem('groups', 'c', $user, 'groupsCreateForm', 'Create Groups') ?>
-                                        <?= menuItem('groups', 'c', $user, 'groupsImportForm', 'Import Groups') ?>
-                                        <?= menuItem('groups', '', $user, 'groupsDefaults', 'Default Groups') ?>
-                                        <?= menuItem('groups', '', $user, 'groupsHelp', 'Learn About Groups') ?>
+                                        <?= menuItem('groups', 'r', $user, 'groupsCollection', __('List') . ' ' . __('Groups')) ?>
+                                        <?= menuItem('groups', 'c', $user, 'groupsCreateForm', __('Create') . ' ' . __('Groups')) ?>
+                                        <?= menuItem('groups', 'c', $user, 'groupsImportForm', __('Import') . ' ' . __('Groups')) ?>
+                                        <?= menuItem('groups', '', $user, 'groupsDefaults', __('Default') . ' ' . __('Groups')) ?>
+                                        <?= menuItem('groups', '', $user, 'groupsHelp', __('Learn About') . ' ' . __('Groups')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Integrations') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('integrations', 'r', $user, 'integrationsCollection', 'List Integrations', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('integrations', 'c', $user, 'integrationsCreateForm', 'Create Integrations', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('integrations', '', $user, 'integrationsDefaults', 'Default Integrations') ?>
-                                        <?= menuItem('integrations', '', $user, 'integrationsHelp', 'Learn About Integrations') ?>
+                                        <?= menuItem('integrations', 'r', $user, 'integrationsCollection', __('List') . ' ' . __('Integrations'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('integrations', 'c', $user, 'integrationsCreateForm', __('Create') . ' ' . __('Integrations'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('integrations', '', $user, 'integrationsDefaults', __('Default') . ' ' . __('Integrations')) ?>
+                                        <?= menuItem('integrations', '', $user, 'integrationsHelp', __('Learn About') . ' ' . __('Integrations')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Licenses') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('licenses', 'r', $user, 'licensesCollection', 'List Licenses') ?>
-                                        <?= menuItem('licenses', 'c', $user, 'licensesCreateForm', 'Create Licenses') ?>
-                                        <?= menuItem('licenses', 'c', $user, 'licensesImportForm', 'Import Licenses') ?>
-                                        <?= menuItem('licenses', '', $user, 'licensesHelp', 'Learn About Licenses') ?>
+                                        <?= menuItem('licenses', 'r', $user, 'licensesCollection', __('List') . ' ' . __('Licenses')) ?>
+                                        <?= menuItem('licenses', 'c', $user, 'licensesCreateForm', __('Create') . ' ' . __('Licenses')) ?>
+                                        <?= menuItem('licenses', 'c', $user, 'licensesImportForm', __('Import') . ' ' . __('Licenses')) ?>
+                                        <?= menuItem('licenses', '', $user, 'licensesHelp', __('Learn About') . ' ' . __('Licenses')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Locations') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('locations', 'r', $user, 'locationsCollection', 'List Locations') ?>
-                                        <?= menuItem('locations', 'c', $user, 'locationsCreateForm', 'Create Locations') ?>
-                                        <?= menuItem('locations', 'c', $user, 'locationsImportForm', 'Import Locations') ?>
-                                        <?= menuItem('locations', '', $user, 'locationsDefaults', 'Default Locations') ?>
-                                        <?= menuItem('locations', '', $user, 'locationsHelp', 'Learn About Locations') ?>
+                                        <?= menuItem('locations', 'r', $user, 'locationsCollection', __('List') . ' ' . __('Locations')) ?>
+                                        <?= menuItem('locations', 'c', $user, 'locationsCreateForm', __('Create') . ' ' . __('Locations')) ?>
+                                        <?= menuItem('locations', 'c', $user, 'locationsImportForm', __('Import') . ' ' . __('Locations')) ?>
+                                        <?= menuItem('locations', '', $user, 'locationsDefaults', __('Default') . ' ' . __('Locations')) ?>
+                                        <?= menuItem('locations', '', $user, 'locationsHelp', __('Learn About') . ' ' . __('Locations')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Networks') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('networks', 'r', $user, 'networksCollection', 'List Networks') ?>
-                                        <?= menuItem('networks', 'c', $user, 'networksCreateForm', 'Create Networks') ?>
-                                        <?= menuItem('networks', 'c', $user, 'networksImportForm', 'Import Networks') ?>
-                                        <?= menuItem('networks', '', $user, 'networksHelp', 'Learn About Networks') ?>
+                                        <?= menuItem('networks', 'r', $user, 'networksCollection', __('List') . ' ' . __('Networks')) ?>
+                                        <?= menuItem('networks', 'c', $user, 'networksCreateForm', __('Create') . ' ' . __('Networks')) ?>
+                                        <?= menuItem('networks', 'c', $user, 'networksImportForm', __('Import') . ' ' . __('Networks')) ?>
+                                        <?= menuItem('networks', '', $user, 'networksHelp', __('Learn About') . ' ' . __('Networks')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Orgs') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('orgs', 'r', $user, 'orgsCollection', 'List Orgs') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'orgsCreateForm', 'Create Orgs') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'orgsImportForm', 'Import Orgs') ?>
-                                        <?= menuItem('orgs', '', $user, 'orgsDefaults', 'Default Orgs') ?>
-                                        <?= menuItem('orgs', '', $user, 'orgsHelp', 'Learn About Orgs') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'orgsCollection', __('List') . ' ' . __('Orgs')) ?>
+                                        <?= menuItem('orgs', 'c', $user, 'orgsCreateForm', __('Create') . ' ' . __('Orgs')) ?>
+                                        <?= menuItem('orgs', 'c', $user, 'orgsImportForm', __('Import') . ' ' . __('Orgs')) ?>
+                                        <?= menuItem('orgs', '', $user, 'orgsDefaults', __('Default') . ' ' . __('Orgs')) ?>
+                                        <?= menuItem('orgs', '', $user, 'orgsHelp', __('Learn About') . ' ' . __('Orgs')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Queries') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('queries', 'r', $user, 'queriesCollection', 'List Queries') ?>
-                                        <?= menuItem('queries', 'c', $user, 'queriesCreateForm', 'Create Queries') ?>
-                                        <?= menuItem('queries', 'c', $user, 'queriesImportForm', 'Import Queries') ?>
-                                        <?= menuItem('queries', '', $user, 'queriesDefaults', 'Default Queries') ?>
-                                        <?= menuItem('queries', '', $user, 'queriesHelp', 'Learn About Queries') ?>
+                                        <?= menuItem('queries', 'r', $user, 'queriesCollection', __('List') . ' ' . __('Queries')) ?>
+                                        <?= menuItem('queries', 'c', $user, 'queriesCreateForm', __('Create') . ' ' . __('Queries')) ?>
+                                        <?= menuItem('queries', 'c', $user, 'queriesImportForm', __('Import') . ' ' . __('Queries')) ?>
+                                        <?= menuItem('queries', '', $user, 'queriesDefaults', __('Default') . ' ' . __('Queries')) ?>
+                                        <?= menuItem('queries', '', $user, 'queriesHelp', __('Learn About') . ' ' . __('Queries')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Racks') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('racks', 'r', $user, 'racksCollection', 'List Racks') ?>
-                                        <?= menuItem('racks', 'c', $user, 'racksCreateForm', 'Create Racks') ?>
-                                        <?= menuItem('racks', 'c', $user, 'racksImportForm', 'Import Racks') ?>
-                                        <?= menuItem('racks', '', $user, 'racksHelp', 'Learn About Racks') ?>
+                                        <?= menuItem('racks', 'r', $user, 'racksCollection', __('List') . ' ' . __('Racks')) ?>
+                                        <?= menuItem('racks', 'c', $user, 'racksCreateForm', __('Create') . ' ' . __('Racks')) ?>
+                                        <?= menuItem('racks', 'c', $user, 'racksImportForm', __('Import') . ' ' . __('Racks')) ?>
+                                        <?= menuItem('racks', '', $user, 'racksHelp', __('Learn About') . ' ' . __('Racks')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Roles') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('roles', 'r', $user, 'rolesCollection', 'List Roles') ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', 'Create Roles', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', 'Import Roles', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('roles', '', $user, 'rolesDefaults', 'Default Roles') ?>
-                                        <?= menuItem('roles', '', $user, 'rolesHelp', 'Learn About Roles') ?>
+                                        <?= menuItem('roles', 'r', $user, 'rolesCollection', __('List') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('roles', '', $user, 'rolesDefaults', __('Default') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', '', $user, 'rolesHelp', __('Learn About') . ' ' . __('Roles')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Rules') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('rules', 'r', $user, 'rulesCollection', 'List Rules') ?>
-                                        <?= menuItem('rules', 'c', $user, 'rulesCreateForm', 'Create Rules', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('rules', 'c', $user, 'rulesImportForm', 'Import Rules', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('rules', '', $user, 'rulesDefaults', 'Default Rules') ?>
-                                        <?= menuItem('rules', '', $user, 'rulesHelp', 'Learn About Rules') ?>
+                                        <?= menuItem('rules', 'r', $user, 'rulesCollection', __('List') . ' ' . __('Rules')) ?>
+                                        <?= menuItem('rules', 'c', $user, 'rulesCreateForm', __('Create') . ' ' . __('Rules'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('rules', 'c', $user, 'rulesImportForm', __('Import') . ' ' . __('Rules'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('rules', '', $user, 'rulesDefaults', __('Default') . ' ' . __('Rules')) ?>
+                                        <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Summaries') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('summaries', 'r', $user, 'summariesCollection', 'List Summaries') ?>
-                                        <?= menuItem('summaries', 'c', $user, 'summariesCreateForm', 'Create Summaries') ?>
-                                        <?= menuItem('summaries', 'c', $user, 'summariesImportForm', 'Import Summaries') ?>
-                                        <?= menuItem('summaries', '', $user, 'summariesDefaults', 'Default Summaries') ?>
-                                        <?= menuItem('summaries', '', $user, 'summariesHelp', 'Learn About Summaries') ?>
+                                        <?= menuItem('summaries', 'r', $user, 'summariesCollection', __('List') . ' ' . __('Summaries')) ?>
+                                        <?= menuItem('summaries', 'c', $user, 'summariesCreateForm', __('Create') . ' ' . __('Summaries')) ?>
+                                        <?= menuItem('summaries', 'c', $user, 'summariesImportForm', __('Import') . ' ' . __('Summaries')) ?>
+                                        <?= menuItem('summaries', '', $user, 'summariesDefaults', __('Default') . ' ' . __('Summaries')) ?>
+                                        <?= menuItem('summaries', '', $user, 'summariesHelp', __('Learn About') . ' ' . __('Summaries')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Users') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('users', 'r', $user, 'usersCollection', 'List Users') ?>
-                                        <?= menuItem('users', 'c', $user, 'usersCreateForm', 'Create Users') ?>
-                                        <?= menuItem('users', 'c', $user, 'usersImportForm', 'Import Users') ?>
-                                        <?= menuItem('users', '', $user, 'usersDefaults', 'Default Users') ?>
-                                        <?= menuItem('users', '', $user, 'usersHelp', 'Learn About Users') ?>
+                                        <?= menuItem('users', 'r', $user, 'usersCollection', __('List') . ' ' . __('Users')) ?>
+                                        <?= menuItem('users', 'c', $user, 'usersCreateForm', __('Create') . ' ' . __('Users')) ?>
+                                        <?= menuItem('users', 'c', $user, 'usersImportForm', __('Import') . ' ' . __('Users')) ?>
+                                        <?= menuItem('users', '', $user, 'usersDefaults', __('Default') . ' ' . __('Users')) ?>
+                                        <?= menuItem('users', '', $user, 'usersHelp', __('Learn About') . ' ' . __('Users')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Widgets') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('widgets', 'r', $user, 'widgetsCollection', 'List Widgets') ?>
-                                        <?= menuItem('widgets', 'c', $user, 'widgetsCreateForm', 'Create Widgets', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('widgets', 'c', $user, 'widgetsImportForm', 'Import Widgets', '', 'Enterprise', $config->oae_product) ?>
-                                        <?= menuItem('widgets', '', $user, 'widgetsDefaults', 'Default Widgets') ?>
-                                        <?= menuItem('widgets', '', $user, 'widgetsHelp', 'Learn About Widgets') ?>
+                                        <?= menuItem('widgets', 'r', $user, 'widgetsCollection', __('List') . ' ' . __('Widgets')) ?>
+                                        <?= menuItem('widgets', 'c', $user, 'widgetsCreateForm', __('Create') . ' ' . __('Widgets'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('widgets', 'c', $user, 'widgetsImportForm', __('Import') . ' ' . __('Widgets'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('widgets', '', $user, 'widgetsDefaults', __('Default') . ' ' . __('Widgets')) ?>
+                                        <?= menuItem('widgets', '', $user, 'widgetsHelp', __('Learn About') . ' ' . __('Widgets')) ?>
                                     </ul>
                                 </li>
                             </ul>
@@ -451,35 +450,29 @@ $categories = array_unique($categories);
                             <ul class="dropdown-menu" aria-labelledby="navbarAdmin">
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Configuration') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', 'List Configuration') ?>
+                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('List') . ' ' . __('Configuration')) ?>
                                         <?= menuItem('configuration', 'd', $user, 'configurationDefaults', 'Default Configuration') ?>
                                     </ul>
                                 </li>
 
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Database') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('database', 'r', $user, 'databaseCollection', 'List Database Tables') ?>
+                                        <?= menuItem('database', 'r', $user, 'databaseCollection', __('List') . ' ' . __('Database Tables')) ?>
                                         <?= menuItem('database', 'r', $user, 'databaseCompare', 'Compare Database Schema') ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('LDAP Servers') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('ldap_servers', 'r', $user, 'ldap_serversCollection', 'List LDAP Servers') ?>
-                                        <?= menuItem('ldap_servers', 'c', $user, 'ldap_serversCreateForm', 'Create LDAP Servers') ?>
-                                        <?= menuItem('ldap_servers', '', $user, 'ldap_serversHelp', 'Learn About LDAP Servers') ?>
-                                    </ul>
-                                </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Logs') ?></a>
-                                    <ul class="dropdown-menu">
-                                        <?= menuItem('logs', 'r', $user, 'logsCollection', 'View Access Logs', '?logs.type=access') ?>
-                                        <?= menuItem('logs', 'r', $user, 'logsCollection', 'View System Logs', '?logs.type=system') ?>
+                                        <?= menuItem('ldap_servers', 'r', $user, 'ldap_serversCollection', __('List') . ' ' . __('LDAP Servers')) ?>
+                                        <?= menuItem('ldap_servers', 'c', $user, 'ldap_serversCreateForm', __('Create') . ' ' . __('LDAP Servers')) ?>
+                                        <?= menuItem('ldap_servers', '', $user, 'ldap_serversHelp', __('Learn About') . ' ' . __('LDAP Servers')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('tasks', 'r', $user, 'tasksCollection', 'List Tasks', '', 'Professional', $config->oae_product) ?>
-                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', 'Create Tasks', '', 'Professional', $config->oae_product) ?>
-                                        <?= menuItem('tasks', '', $user, 'tasksHelp', 'Learn About Tasks') ?>
+                                        <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('List') . ' ' . __('Tasks'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Create') . ' ' . __('Tasks'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('tasks', '', $user, 'tasksHelp', __('Learn About') . ' ' . __('Tasks')) ?>
                                     </ul>
                                 </li>
                             </ul>
@@ -518,8 +511,8 @@ $categories = array_unique($categories);
                             <a class="nav-link dropdown-toggle" href="#" id="navbarModules" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Modules') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarModules">
 <?php
-if (!empty($config->modules)) {
-    $modules = json_decode($config->modules);
+if (!empty(config('Openaudit')->modules)) {
+    $modules = json_decode(config('Openaudit')->modules);
     foreach ($modules as $modules) {
         if (!empty($modules->installed)) {
             $url = $modules->link;
@@ -536,10 +529,10 @@ if (!empty($config->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if ($config->oae_license === 'none') { ?>
-                                <li><a class="dropdown-item" href='<?= $config->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
+<?php if (config('Openaudit')->oae_license === 'none') { ?>
+                                <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
 <?php } ?>
-                                <li><a class="dropdown-item" href='<?= $config->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
+                                <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
                                 <li><a class="dropdown-item buy_more_licenses" href='#'><?= __('Buy More Licenses')?></a></li>
                             </ul>
                         </li>
@@ -595,7 +588,7 @@ if (!empty($config->modules)) {
                                     if (!empty($dashboards)) {
                                         foreach ($dashboards as $dashboard) {
                                             if ($dashboard->type === 'dashboards') {
-                                                if ($config->oae_product === 'Open-AudIT Enterprise' or $config->oae_product === 'Open-AudIT Professional') {
+                                                if (config('Openaudit')->oae_product === 'Open-AudIT Enterprise' or config('Openaudit')->oae_product === 'Open-AudIT Professional') {
                                                     echo "                                    <li><a class=\"dropdown-item\" href=\"" . url_to('DashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
                                                 } else {
                                                     echo "                                    <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
@@ -700,18 +693,21 @@ function menuItem($collection = '', $action = '', $user = null, $route = '', $ti
     if ($action === 'c') {
         $commercial_action = 'create';
     }
-    $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . __($title) . "</a></li>\n";
+    $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
     if (strtolower($productInstalled) === strtolower($productRequired) or
         stripos($productInstalled, 'enterprise') !== false or
         (strtolower(str_replace('Open-AudIT ', '', $productInstalled)) === strtolower($productRequired))) {
         if (get_user_permission($collection, $action, $user)) {
-            $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . __($title) . "</a></li>\n";
+            $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
             if (array_key_exists($collection, $commercial_collections) and stripos($commercial_collections[$collection], $action) !== false) {
-                $return = "<li><a class=\"dropdown-item\" href=\"/omk/open-audit/" . $collection . "/" . $commercial_action . "\">" . __($title) . "</a></li>\n";
+                $return = "<li><a class=\"dropdown-item\" href=\"/omk/open-audit/" . $collection . "/" . $commercial_action . "\">" . $title . "</a></li>\n";
+            }
+            if ($action === '') {
+                $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "\">" . $title . "</a></li>\n";
             }
         }
     } else {
-        $return = "<li><a class=\"dropdown-item greyout toast" . $productRequired . "\" href=\"#\">" . __($title) . "</a></li>\n";
+        $return = "<li><a class=\"dropdown-item greyout toast" . $productRequired . "\" href=\"#\">" . $title . "</a></li>\n";
     }
     return $return;
 }
