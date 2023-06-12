@@ -106,7 +106,7 @@ include 'shared/create_functions.php';
 
 <script>
 $(document).ready(function () {
-    $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= $config->discovery_default_scan_option ?>);
+    $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= config('Openaudit')->discovery_default_scan_option ?>);
     $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").append($('<option>', { value: '', text: ''}));
     $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").val("");
     $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").append($('<option>', { value: '', text: ''}));
