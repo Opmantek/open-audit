@@ -181,7 +181,23 @@ class SummariesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $attributesModel = new \App\Models\AttributesModel();
+        $return = array();
+        $return['menu_category'] = $attributesModel->listUser(['attributes.resource', 'queries', 'attributes.type', 'menu_category']);
+        $tables = $this->db->listTables();
+        foreach ($tables as $table) {
+            $result = array();
+            $item = new \StdClass();
+            $item->id = $table;
+            $item->type = 'tables';
+            $item->attributes = new \StdClass();
+            $item->attributes->id = $table;
+            $item->attributes->name = $table;
+            $item->attributes->value = $table;
+            $return['tables'][] = $item;
+            unset($item);
+        }
+        return $return;
     }
 
     /**
