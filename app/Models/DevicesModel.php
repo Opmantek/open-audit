@@ -442,9 +442,9 @@ class DevicesModel extends BaseModel
                 }
             }
         }
-        $data->original_last_seen_by = $db_entry->last_seen_by;
-        $data->original_last_seen = $db_entry->last_seen;
-        $data->original_timestamp = $db_entry->last_seen;
+        $data->original_last_seen_by = (!empty($db_entry->last_seen_by)) ? $db_entry->last_seen_by : '';
+        $data->original_last_seen = (!empty($db_entry->last_seen)) ? $db_entry->last_seen : '';
+        $data->original_timestamp = (!empty($db_entry->last_seen)) ? $db_entry->last_seen : '';
         if (empty($data->timestamp) and !empty($data->last_seen)) {
             $data->timestamp = $data->last_seen;
         }
