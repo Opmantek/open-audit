@@ -238,6 +238,31 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = 'UPDATE `rules` SET inputs = REPLACE(`inputs`, \'"table":"system"\', \'"table":"devices"\'), outputs = REPLACE(`outputs`, \'"table":"system"\', \'"table":"devices"\')';
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = 'INSERT INTO `rules` VALUES (null,\'LENOVO to Lenovo for Manufacturer\',1,\'Change the manufacturer from LENOVO to Lenovo.\',100,\'[{\"attribute\":\"manufacturer\",\"operator\":\"li\",\"table\":\"devices\",\"value\":\"LENOVO\"}]\',\'[{\"attribute\":\"manufacturer\",\"table\":\"devices\",\"value\":\"Lenovo\",\"value_type\":\"string\"}]\',\'system\',\'2001-01-01 00:00:00\')';
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE summaries SET `table` = 'devices' WHERE `table` = 'system'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = 'UPDATE `summaries` SET extra_columns = REPLACE(`extra_columns`, "system.", "devices.")';
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `devices` SET `manufacturer` = 'Lenovo' WHERE `manufacturer` LIKE '%LENOVO%'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 // if (!$db->tableExists('components')) {
 //     $sql = "CREATE TABLE `components` (
 //           `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

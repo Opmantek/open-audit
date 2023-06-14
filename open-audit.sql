@@ -3188,6 +3188,7 @@ INSERT INTO `rules` VALUES (53,'Form Factor based on Manufacturer (like innotek 
 INSERT INTO `rules` VALUES (54,'Manufacturer change HP to Hewlett Packard',1,'Set manufacturer to Hewlett Packard if we receive HP.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"eq\",\"table\":\"devices\",\"value\":\"HP\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"devices\",\"value\":\"Hewlett Packard\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (55,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based on model.',100,'[{\"attribute\":\"model\",\"operator\":\"li\",\"table\":\"devices\",\"value\":\"RP-5AC-Gen2\"}]','[{\"attribute\":\"type\",\"table\":\"devices\",\"value\":\"wireless link\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (56,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"devices\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"devices\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (57,'LENOVO to Lenovo for Manufacturer',1,'Change the manufacturer from LENOVO to Lenovo.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"li\",\"table\":\"devices\",\"value\":\"LENOVO\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"devices\",\"value\":\"Lenovo\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 
