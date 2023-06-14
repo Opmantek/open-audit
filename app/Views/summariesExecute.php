@@ -9,49 +9,29 @@ include 'shared/collection_functions.php';
                     <?= collection_card_header($meta->collection, $meta->icon, $user, $meta->name) ?>
                 </div>
                 <div class="card-body">
-                    <?php if (!empty($data)) { ?>
                     <table class="table table-striped dataTable">
                         <thead>
                             <tr>
-                                <?php foreach ($data[0]->attributes as $key => $value) {
-                                    if (strrpos($key, 'ip_padded') === strlen($key)-9) {
-                                        continue;
-                                    } ?>
-                                <th><?= collection_column_name($key) ?></th>
-                                <?php } ?>
+                                <th class="text-center"><?= __('Details') ?></th>
+                                <th><?= __('Name') ?></th>
+                                <th class="text-center"><?= __('Count') ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($data)) {
                                 foreach ($data as $item) {
-                                    echo "<tr>\n";
-                                    foreach ($data[0]->attributes as $key => $value) {
-                                        if (strrpos($key, 'ip_padded') === strlen($key)-9) {
-                                            continue;
-                                        }
-                                        if (strpos($key, '.id') !== false and strpos($key, '.identification') === false) {
-                                            $collection = substr($key, 0, strpos($key, '.'));
-                                            if ($collection === 'system') {
-                                                $collection = 'devices';
-                                            }
-                                            echo collection_button_read($collection, $item->id);
-                                        } else if ((strrpos($key, 'ip') === strlen($key)-2)) {
-                                            $padded_key = substr($key, 0, strpos($key, 'ip')) . 'ip_padded';
-                                            if (!empty($item->attributes->{$padded_key})) {
-                                                echo '            <td><span style="display:none;">' . $item->attributes->{$padded_key} . '</span>' . $item->attributes->{$key} . "</td>\n";
-                                            } else {
-                                                echo "<td>" . $item->attributes->{$key} . "</td>\n";
-                                            }
-                                        } else {
-                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
-                                        }
+                                    if (empty($item->attributes->name)) {
+                                        $item->attributes->name = '-';
                                     }
-                                    echo "</tr>\n";
+                                    echo "<tr>
+                                        <td class=\"text-center\"><a class=\"btn btn-sm btn-primary\" href=\"" . $item->attributes->link . "\"><span class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>\n
+                                        <td>" . ucwords($item->attributes->name) . "</td>
+                                        <td class=\"text-center\">" . $item->attributes->count . "</td>
+                                    </tr>\n";
                                 }
                             } ?>
                         </tbody>
                     </table>
-                    <?php } ?>
                 </div>
             </div>
         </main>
