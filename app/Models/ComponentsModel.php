@@ -1170,10 +1170,10 @@ class ComponentsModel extends BaseModel
         // we have also unset any items that were inserted (from the audit set above) from the db set
         // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         if (count($db_result) > 0 and $alert and $create_change_log) {
-            $log->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($device->ip).' ('.$name.')';
-            $log->severity = 7;
-            $log->command_status = 'notice';
-            discovery_log($log);
+            // $log->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($device->ip).' ('.$name.')';
+            // $log->severity = 7;
+            // $log->command_status = 'notice';
+            // discovery_log($log);
         }
 
         foreach ($db_result as $db_item) {
