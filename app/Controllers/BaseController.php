@@ -63,10 +63,6 @@ abstract class BaseController extends Controller
         $this->config = new \Config\OpenAudit();
         $this->config->oae_product = 'professional';
 
-        $this->config->enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
-
-        $this->config->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'summaries' => 'crud', 'widgets' => 'crud');
-
         $this->config->homepage = 'orgsCollection';
 
         $this->usersModel = new \App\Models\UsersModel();
@@ -196,6 +192,24 @@ abstract class BaseController extends Controller
             $this->orgsUser = $this->orgsModel->listUser($this->user);
             $this->dashboardsModel = new \App\Models\DashboardsModel();
             $this->dashboards = $this->dashboardsModel->listUser();
+        }
+
+        if ($this->resp->meta->format === 'screen' and $this->resp->meta->action !== 'help') {
+            $action = $this->resp->meta->permission_requested[$this->resp->meta->action];
+            #if (!empty($this->config->enterprise_collections[$this->resp->meta->collection]) and strpos($this->config->enterprise_collections[$this->resp->meta->collection], $action) !== false) {
+            if (!empty(config('Openaudit')->enterprise_collections[$this->resp->meta->collection]) and strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], $action) !== false) {
+                log_message('info', 'License to do ' . $this->resp->meta->action . ' on ' . $this->resp->meta->collection . ' is required.');
+                \Config\Services::session()->setFlashdata('error', 'This feature is limited to Enterprise licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+
+            if (!empty(config('Openaudit')->professional_collections[$this->resp->meta->collection]) and strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], $action) !== false) {
+                log_message('info', 'License to do ' . $this->resp->meta->action . ' on ' . $this->resp->meta->collection . ' is required.');
+                \Config\Services::session()->setFlashdata('error', 'This feature is limited to Professional licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
         }
     }
 }

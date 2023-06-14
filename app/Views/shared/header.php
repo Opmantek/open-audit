@@ -174,8 +174,8 @@ $categories = array_unique($categories);
                             <ul class="dropdown-menu" aria-labelledby="navbarDiscover">
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Clouds') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('clouds', 'r', $user, 'cloudsCollection', __('List') . ' ' . __('Clouds'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('clouds', 'c', $user, 'cloudsCreateForm', __('Create') . ' ' . __('Clouds'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('clouds', 'r', $user, 'cloudsCollection', __('List') . ' ' . __('Clouds')) ?>
+                                        <?= menuItem('clouds', 'c', $user, 'cloudsCreateForm', __('Create') . ' ' . __('Clouds')) ?>
                                         <?= menuItem('clouds', '', $user, 'cloudsHelp', __('Learn About') . ' ' . __('Clouds')) ?>
                                     </ul>
                                 </li>
@@ -198,19 +198,19 @@ $categories = array_unique($categories);
                                         <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Discovery Data Retention'), '?configuration.name=likedelete_noncurrent') ?>
                                         <li><a class="dropdown-item dropdown-toggle second-level-dropdown-toggle" href="#"><?= __('Discovery Scan Options') ?></a>
                                             <ul class="dropdown-menu">
-                                                <?= menuItem('discovery_scan_options', 'r', $user, 'discovery_scan_optionsCollection', __('List') . ' ' . __('Discovery Scan Options'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                                <?= menuItem('discovery_scan_options', 'c', $user, 'discovery_scan_optionsCreate', __('Create') . ' ' . __('Discovery Scan Options'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                                <?= menuItem('discovery_scan_options', 'r', $user, 'discovery_scan_optionsCollection', __('List') . ' ' . __('Discovery Scan Options')) ?>
+                                                <?= menuItem('discovery_scan_options', 'c', $user, 'discovery_scan_optionsCreate', __('Create') . ' ' . __('Discovery Scan Options')) ?>
                                                 <li><a class="dropdown-item" href="<?= url_to('discovery_scan_optionsHelp') ?>"><?= __('Learn About') . ' ' . __('Discovery Scan Options') ?></a></li>
                                             </ul>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Schedule') . ' ' . __('Discoveries'), '?type=discoveries', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Schedule') . ' ' . __('Discoveries'), '?type=discoveries') ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Files') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('files', 'r', $user, 'filesCollection', __('List') . ' ' . __('Files')) ?>
-                                        <?= menuItem('files', 'c', $user, 'filesCreateForm', __('Create') . ' ' . __('Files'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('files', 'c', $user, 'filesCreateForm', __('Create') . ' ' . __('Files')) ?>
                                         <?= menuItem('files', '', $user, 'filesHelp', __('Learn About') . ' ' . __('Files')) ?>
                                     </ul>
                                 </li>
@@ -262,8 +262,8 @@ $categories = array_unique($categories);
                             <ul class="dropdown-menu" aria-labelledby="navbarManage">
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Applications') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('applications', 'r', $user, 'applicationsCollection', __('List') . ' ' . __('Applications'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('applications', 'c', $user, 'applicationsCreateForm', __('Create') . ' ' . __('Applications'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('applications', 'r', $user, 'applicationsCollection', __('List') . ' ' . __('Applications')) ?>
+                                        <?= menuItem('applications', 'c', $user, 'applicationsCreateForm', __('Create') . ' ' . __('Applications')) ?>
                                         <?= menuItem('applications', '', $user, 'applicationsHelp', __('Learn About') . ' ' . __('Applications')) ?>
                                     </ul>
                                 </li>
@@ -278,15 +278,15 @@ $categories = array_unique($categories);
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Baselines') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('baselines', 'r', $user, 'baselinesCollection', __('List') . ' ' . __('Baselines'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('baselines', 'c', $user, 'baselinesCreateForm', __('Create') . ' ' . __('Baselines'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('baselines', 'r', $user, 'baselinesCollection', __('List') . ' ' . __('Baselines')) ?>
+                                        <?= menuItem('baselines', 'c', $user, 'baselinesCreateForm', __('Create') . ' ' . __('Baselines')) ?>
                                         <?= menuItem('baselines', '', $user, 'baselinesHelp', __('Learn About') . ' ' . __('Baselines')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Clusters') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('clusters', 'r', $user, 'clustersCollection', __('List') . ' ' . __('Clusters'), '', 'Professional', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('clusters', 'c', $user, 'clustersCreateForm', __('Create') . ' ' . __('Clusters'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('clusters', 'r', $user, 'clustersCollection', __('List') . ' ' . __('Clusters')) ?>
+                                        <?= menuItem('clusters', 'c', $user, 'clustersCreateForm', __('Create') . ' ' . __('Clusters')) ?>
                                         <?= menuItem('clusters', '', $user, 'clustersHelp', __('Learn About') . ' ' . __('Clusters')) ?>
                                     </ul>
                                 </li>
@@ -300,7 +300,7 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Dashboards') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('dashboards', 'r', $user, 'dashboardsCollection', __('List') . ' ' . __('Dashboards')) ?>
-                                        <?= menuItem('dashboards', 'c', $user, 'dashboardsCreateForm', __('Create') . ' ' . __('Dashboards'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('dashboards', 'c', $user, 'dashboardsCreateForm', __('Create') . ' ' . __('Dashboards')) ?>
                                         <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', __('Default') . ' ' . __('Dashboards')) ?>
                                         <?= menuItem('dashboards', '', $user, 'dashboardsHelp', __('Learn About') . ' ' . __('Dashboards')) ?>
                                     </ul>
@@ -338,8 +338,8 @@ $categories = array_unique($categories);
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Integrations') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('integrations', 'r', $user, 'integrationsCollection', __('List') . ' ' . __('Integrations'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('integrations', 'c', $user, 'integrationsCreateForm', __('Create') . ' ' . __('Integrations'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('integrations', 'r', $user, 'integrationsCollection', __('List') . ' ' . __('Integrations')) ?>
+                                        <?= menuItem('integrations', 'c', $user, 'integrationsCreateForm', __('Create') . ' ' . __('Integrations')) ?>
                                         <?= menuItem('integrations', '', $user, 'integrationsDefaults', __('Default') . ' ' . __('Integrations')) ?>
                                         <?= menuItem('integrations', '', $user, 'integrationsHelp', __('Learn About') . ' ' . __('Integrations')) ?>
                                     </ul>
@@ -398,8 +398,8 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Roles') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('roles', 'r', $user, 'rolesCollection', __('List') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles')) ?>
                                         <?= menuItem('roles', '', $user, 'rolesDefaults', __('Default') . ' ' . __('Roles')) ?>
                                         <?= menuItem('roles', '', $user, 'rolesHelp', __('Learn About') . ' ' . __('Roles')) ?>
                                     </ul>
@@ -407,8 +407,8 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Rules') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('rules', 'r', $user, 'rulesCollection', __('List') . ' ' . __('Rules')) ?>
-                                        <?= menuItem('rules', 'c', $user, 'rulesCreateForm', __('Create') . ' ' . __('Rules'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('rules', 'c', $user, 'rulesImportForm', __('Import') . ' ' . __('Rules'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('rules', 'c', $user, 'rulesCreateForm', __('Create') . ' ' . __('Rules')) ?>
+                                        <?= menuItem('rules', 'c', $user, 'rulesImportForm', __('Import') . ' ' . __('Rules')) ?>
                                         <?= menuItem('rules', '', $user, 'rulesDefaults', __('Default') . ' ' . __('Rules')) ?>
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
                                     </ul>
@@ -434,8 +434,8 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Widgets') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('widgets', 'r', $user, 'widgetsCollection', __('List') . ' ' . __('Widgets')) ?>
-                                        <?= menuItem('widgets', 'c', $user, 'widgetsCreateForm', __('Create') . ' ' . __('Widgets'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('widgets', 'c', $user, 'widgetsImportForm', __('Import') . ' ' . __('Widgets'), '', 'Enterprise', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('widgets', 'c', $user, 'widgetsCreateForm', __('Create') . ' ' . __('Widgets')) ?>
+                                        <?= menuItem('widgets', 'c', $user, 'widgetsImportForm', __('Import') . ' ' . __('Widgets')) ?>
                                         <?= menuItem('widgets', '', $user, 'widgetsDefaults', __('Default') . ' ' . __('Widgets')) ?>
                                         <?= menuItem('widgets', '', $user, 'widgetsHelp', __('Learn About') . ' ' . __('Widgets')) ?>
                                     </ul>
@@ -470,8 +470,8 @@ $categories = array_unique($categories);
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('List') . ' ' . __('Tasks'), '', 'Professional', config('Openaudit')->oae_product) ?>
-                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Create') . ' ' . __('Tasks'), '', 'Professional', config('Openaudit')->oae_product) ?>
+                                        <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('List') . ' ' . __('Tasks')) ?>
+                                        <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Create') . ' ' . __('Tasks')) ?>
                                         <?= menuItem('tasks', '', $user, 'tasksHelp', __('Learn About') . ' ' . __('Tasks')) ?>
                                     </ul>
                                 </li>
@@ -684,30 +684,19 @@ if (!empty(config('Openaudit')->modules)) {
                 </div>
             </div>
         </div>
+
 <?php
 
-function menuItem($collection = '', $action = '', $user = null, $route = '', $title = '', $routeExtra = '', $productRequired = 'community', $productInstalled = 'community')
+function menuItem($collection = '', $permission = '', $user = null, $route = '', $title = '', $routeExtra = '')
 {
-    $commercial_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'clusters' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'maps' => 'crud', 'racks' => 'crud', 'roles' => 'cu', 'rules' => 'crud', 'summaries' => 'crud', 'widgets' => 'crud');
-    $commercial_action = '';
-    if ($action === 'c') {
-        $commercial_action = 'create';
-    }
+    // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
-    if (strtolower($productInstalled) === strtolower($productRequired) or
-        stripos($productInstalled, 'enterprise') !== false or
-        (strtolower(str_replace('Open-AudIT ', '', $productInstalled)) === strtolower($productRequired))) {
-        if (get_user_permission($collection, $action, $user)) {
-            $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
-            if (array_key_exists($collection, $commercial_collections) and stripos($commercial_collections[$collection], $action) !== false) {
-                $return = "<li><a class=\"dropdown-item\" href=\"/omk/open-audit/" . $collection . "/" . $commercial_action . "\">" . $title . "</a></li>\n";
-            }
-            if ($action === '') {
-                $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "\">" . $title . "</a></li>\n";
-            }
-        }
-    } else {
-        $return = "<li><a class=\"dropdown-item greyout toast" . $productRequired . "\" href=\"#\">" . $title . "</a></li>\n";
+    if (!empty(config('Openaudit')->enterprise_collections[$collection]) and strpos(config('Openaudit')->enterprise_collections[$collection], $permission) !== false) {
+        $return = "<li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $title . "</a></li>\n";
+    } else if (!empty(config('Openaudit')->professional_collections[$collection]) and strpos(config('Openaudit')->professional_collections[$collection], $permission) !== false) {
+        $return = "<li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $title . "</a></li>\n";
+    } else if (get_user_permission($collection, $permission, $user)) {
+        $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
     }
     return $return;
 }

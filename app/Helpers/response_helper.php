@@ -89,6 +89,7 @@ if (!function_exists('response_create')) {
             log_message('debug', 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', and has permission to do so.');
         }
         $instance->user->org_list = response_get_org_list($instance, $response->meta->collection);
+        $response->meta->permission_requested = $permission_requested;
 
 
 
