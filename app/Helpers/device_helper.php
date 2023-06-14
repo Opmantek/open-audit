@@ -14,6 +14,7 @@ if (!function_exists('audit_convert')) {
         $log->file = 'audit_helper';
         $log->function = 'audit_convert';
         $log->command = '';
+        $log->message = '';
 
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
@@ -154,8 +155,8 @@ if (!function_exists('audit_convert')) {
                 unset($input);
                 $input = $audit;
                 $log->ip = (!empty($input->system->ip)) ? $input->system->ip : '';
-                $log->discovery_id = (!empty($input->system->discovery_id)) ? intval($input->system->discovery_id) : '';
-                $log->device_id = (!empty($input->system->id)) ? intval($input->system->id) : '';
+                $log->discovery_id = (!empty($input->system->discovery_id)) ? intval($input->system->discovery_id) : null;
+                $log->device_id = (!empty($input->system->id)) ? intval($input->system->id) : null;
                 if (!empty($log->discovery_id) or !empty($log->device_id)) {
                     $log->message = 'Successfully converted audit result from XML.';
                     $discoveryLogModel->create($log);
@@ -197,11 +198,12 @@ if (! function_exists('deviceMatch')) {
             log_message('error', 'Function deviceMatch called without device object.');
             return false;
         }
+        $details->id = '';
 
-        if (empty($log) and empty($discovery_id)) {
-            log_message('error', 'Function deviceMatch called without log object or discovery id.');
-            return false;
-        }
+        // if (empty($log) and empty($discovery_id)) {
+        //     log_message('error', 'Function deviceMatch called without log object or discovery id.');
+        //     return false;
+        // }
 
         // we are searching for a devices.id.
         // $details = @$device->details;
@@ -215,7 +217,7 @@ if (! function_exists('deviceMatch')) {
         if (!empty($discovery_id)) {
             $log->discovery_id = $discovery_id;
         }
-        if (empty($log->discovery_id and !empty($details->discovery_id))) {
+        if (empty($log->discovery_id) and !empty($details->discovery_id)) {
             $log->discovery_id = $details->discovery_id;
         }
         $log->file = 'device_helper';
@@ -1554,7 +1556,7 @@ function log_array($log, $log_array)
     foreach ($log_array as $log_item) {
         $log_item->device_id = @$log->device_id;
         $log_item->discovery_id = @$log->discovery_id;
-        $log_item->file = 'devices_helper';
+        $log_item->file = 'device_helper';
         $log_item->function = 'match';
         $log_item->severity = 7;
         $log_item->ip = @$log->ip;
