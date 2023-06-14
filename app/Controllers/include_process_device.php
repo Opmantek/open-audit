@@ -94,7 +94,7 @@ if (empty($id)) {
 $log = new \stdClass();
 $log->id = $initial_log_id;
 $log->device_id = $device->system->id;
-$log->ip = ip_address_from_db($device->system->ip);
+$log->ip = (!empty($device->system->ip)) ? ip_address_from_db($device->system->ip) : '';
 $this->discoveryLogModel->update($initial_log_id, $log);
 
 $audit_ip = '127.000.000.001';
