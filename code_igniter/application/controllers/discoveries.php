@@ -470,7 +470,7 @@ class Discoveries extends MY_Controller
         if ( ! empty($this->config->config['discovery_override_nmap']) && $this->config->config['discovery_override_nmap'] === 'y') {
             return;
         }
-        $command_string = 'which nmap1 2>/dev/null';
+        $command_string = 'which nmap 2>/dev/null';
         $output = shell_exec($command_string);
         if (!empty($output)) {
             $command_string = 'ls -lh `which nmap` | cut -d" " -f1 | cut -c4';
