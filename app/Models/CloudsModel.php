@@ -75,23 +75,23 @@ class CloudsModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return false;
         }
-        return ($this->db->insertID());
+        $id = intval($this->db->insertID());
 
-        # $id = intval($this->db->insertID());
         # The discovery
-        // $instance = & get_instance();
-        // $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
-        // $discovery = new \StdClass();
-        // $discovery->type = 'cloud';
-        // $discovery->name = 'Discovery for ' . $data->name;
-        // $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
-        // $discovery->org_id = $data->org_id;
-        // $discovery->discard = 'n';
-        // $discovery->complete = 'n';
-        // $discovery->subnet = '';
-        // $discovery->cloud_id = $id;
-        // $discovery->cloud_name = $data->name;
-        // $instance->discoveriesModel->create($discovery);
+        $discoveriesModel = new \App\Models\DiscoveriesModel();
+        $discovery = new \StdClass();
+        $discovery->type = 'cloud';
+        $discovery->name = 'Discovery for ' . $data->name;
+        $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
+        $discovery->org_id = $data->org_id;
+        $discovery->discard = 'n';
+        $discovery->complete = 'n';
+        $discovery->subnet = '';
+        $discovery->cloud_id = $id;
+        $discovery->cloud_name = $data->name;
+        $discoveriesModel->create($discovery);
+
+        return ($id);
     }
 
     /**
