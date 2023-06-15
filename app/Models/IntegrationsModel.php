@@ -1163,7 +1163,7 @@ class IntegrationsModel extends BaseModel
         $properties[] = 'integrations.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'attributes.org_id = orgs.id', 'left');
+        $this->builder->join('orgs', 'integrations.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $org_list);
         if (!empty($where[0]) and !empty($where[1])) {
             $this->builder->where($where[0], $where[1]);
@@ -1486,7 +1486,7 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns = new \StdClass();
 
         $dictionary->attributes = new \StdClass();
-        $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'last_run', 'orgs.name');
         $dictionary->attributes->create = array('name', 'org_id', 'attributes', 'fields'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -1508,8 +1508,8 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->group_id = 'The group that provides a list of devices for the integration.';
         $dictionary->columns->last_run = 'The last time this integration was run.';
         $dictionary->columns->status = 'The status of this integration';
-        $dictionary->columns->edited_by = $CI->temp_dictionary->edited_by;
-        $dictionary->columns->edited_date = $CI->temp_dictionary->edited_date;
+        $dictionary->columns->edited_by = $instance->dictionary->edited_by;
+        $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
         $dictionary->columns->attributes = new \StdClass();
         $dictionary->columns->attributes->url = 'The URL of the external system.';
