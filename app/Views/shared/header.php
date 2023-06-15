@@ -23,16 +23,16 @@ header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 
 
-$langFile = APPPATH . 'views/lang/en.inc';
-$user->lang = 'fr';
+$langFile = APPPATH . 'Views/lang/en.inc';
+$user->lang = 'en';
 if (!empty($user->lang)) {
-    $langFile = APPPATH . 'views/lang/' . $user->lang . '.inc';
+    $langFile = APPPATH . 'Views/lang/' . $user->lang . '.inc';
 }
 include($langFile);
 if (!function_exists('__')) {
     function __($word)
     {
-        $language_learning_mode = true;
+        $language_learning_mode = false;
         $language_file = APPPATH . 'views/lang/en.inc';
         $word = (string)$word;
         if (isset($GLOBALS['lang'][$word])) {
@@ -147,7 +147,7 @@ $categories = array_unique($categories);
         <!-- Menu -->
         <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
             <div class="container-fluid">
-                <a class="navbar-brand" style="color: white;" href="/">
+                <a class="navbar-brand" style="color: white;" href="<?= base_url() ?>">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
                     Open-AudIT <?= config('Openaudit')->display_version . "\n" ?>
                 </a>
@@ -589,7 +589,7 @@ if (!empty(config('Openaudit')->modules)) {
                                         foreach ($dashboards as $dashboard) {
                                             if ($dashboard->type === 'dashboards') {
                                                 if (config('Openaudit')->oae_product === 'Open-AudIT Enterprise' or config('Openaudit')->oae_product === 'Open-AudIT Professional') {
-                                                    echo "                                    <li><a class=\"dropdown-item\" href=\"" . url_to('DashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
+                                                    echo "                                    <li><a class=\"dropdown-item\" href=\"/omk/open-audit/dashboards/" . $dashboard->id . "/execute\">" . $dashboard->attributes->name . "</a></li>\n";
                                                 } else {
                                                     echo "                                    <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
                                                 }
@@ -689,6 +689,9 @@ if (!empty(config('Openaudit')->modules)) {
 
 function menuItem($collection = '', $permission = '', $user = null, $route = '', $title = '', $routeExtra = '')
 {
+    if (empty($permission)) {
+        return "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
+    }
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
     if (!empty(config('Openaudit')->enterprise_collections[$collection]) and strpos(config('Openaudit')->enterprise_collections[$collection], $permission) !== false) {
