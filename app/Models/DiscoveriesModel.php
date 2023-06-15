@@ -371,6 +371,10 @@ class DiscoveriesModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
+        // Delete any associated tasks
+        $sql = "DELETE FROM tasks WHERE sub_resource_id = ? and type = 'discoveries'";
+        $result = $this->db->query($sql, [$id]);
+        // Delete the discovery itself
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return false;
