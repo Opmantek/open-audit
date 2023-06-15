@@ -150,6 +150,7 @@ class ScriptsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
+    // public function create($data = null): int|false
     public function create($data = null)
     {
         if (empty($data)) {
@@ -265,7 +266,8 @@ class ScriptsModel extends BaseModel
         return true;
     }
 
-    public function getByOs(string $os = ''): int|false
+    // public function getByOs(string $os = ''): string|false
+    public function getByOs(string $os = '')
     {
         switch (strtolower($os)) {
             case 'aix':
@@ -311,6 +313,7 @@ class ScriptsModel extends BaseModel
         return intval($query[0]->id);
     }
 
+    // public function download(int $id = 0): string|false
     public function download(int $id = 0): string|false
     {
         $instance = & get_instance();

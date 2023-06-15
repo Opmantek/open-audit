@@ -54,7 +54,8 @@ class NetworksModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null): int|false
+    // public function create($data = null): int|false
+    public function create($data = null)
     {
         if (empty($data)) {
             return false;
@@ -271,7 +272,8 @@ class NetworksModel extends BaseModel
      *
      * @return bool    true || false depending on success
      */
-    public function upsert($data = null): int|false
+    // public function upsert($data = null): int|false
+    public function upsert($data = null)
     {
         if (empty($data) or (empty($data->network) and empty($data->name))) {
             return false;

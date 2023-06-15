@@ -60,7 +60,7 @@ class OrgsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null): int|false
+    public function create($data = null)
     {
         if (empty($data)) {
             return false;

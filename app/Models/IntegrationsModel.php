@@ -56,7 +56,8 @@ class IntegrationsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create(object $data = null): int|false
+    // public function create(object $data = null): int|false
+    public function create(object $data = null)
     {
         if (empty($data)) {
             return false;
@@ -1197,7 +1198,8 @@ class IntegrationsModel extends BaseModel
      * @param  int $id The ID of the integration to start
      * @return bool True on success, false on failure
      */
-    public function queue(int $id = 0): int|bool
+    // public function queue(int $id = 0): int|bool
+    public function queue(int $id = 0)
     {
         $item = $this->read($id);
         $integration = $item[0];
