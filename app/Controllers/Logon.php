@@ -71,14 +71,47 @@ class Logon extends Controller
             return redirect()->to(site_url('logon'));
         }
 
+        $http_accept = (!empty($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '';
+        $format = '';
+        log_message('error', 'HTTP_ACCEPT: ' . $http_accept);
+        if (strpos($http_accept, 'application/json') !== false) {
+            $format = 'json';
+        }
+        if (strpos($http_accept, 'html') !== false) {
+            $format = 'screen';
+        }
+        if (isset($_GET['format'])) {
+            $format = $_GET['format'];
+        }
+        if (isset($_POST['format'])) {
+            $format = $_POST['format'];
+        }
+        if ($format == '') {
+            $format = 'json';
+        }
+
         $user = $this->logonModel->logon($username, $password);
         if ($user) {
             $this->session->set('user_id', $user->id);
-            if (!empty($_POST['url'])) {
-                header('Location: ' . $_POST['url']);
+            if ($format !== 'json') {
+                if (!empty($_POST['url'])) {
+                    header('Location: ' . $_POST['url']);
+                    exit;
+                }
+                return redirect()->to(url_to('home'));
+            } else {
+                if (!empty($user->id)) {
+                    $user->id = intval($user->id);
+                }
+                if (!empty($user->org_id)) {
+                    $user->org_id = intval($user->org_id);
+                }
+                if (!empty($user->roles)) {
+                    $user->roles = json_decode($user->roles);
+                }
+                print_r(json_encode($user));
                 exit;
             }
-            return redirect()->to(url_to('home'));
         }
         log_message('error', json_encode($user));
         return redirect()->to(site_url('logon'));
