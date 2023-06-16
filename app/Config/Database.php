@@ -106,5 +106,14 @@ class Database extends Config
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }
+        if (file_exists(APPPATH . 'Config/Database.json')) {
+            $file_contents = file_get_contents(APPPATH . 'Config/Database.json');
+            $json = json_decode($file_contents);
+            if (!empty($json)) {
+                foreach ($json as $key => $value) {
+                    $this->default[$key] = $value;
+                }
+            }
+        }
     }
 }

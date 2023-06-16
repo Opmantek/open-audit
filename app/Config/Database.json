@@ -1,0 +1,7 @@
+{
+    "hostname": "127.0.0.1",
+    "database": "openaudit",
+    "username": "openaudit",
+    "password": "openauditpassword",
+    "port": 3306
+}
