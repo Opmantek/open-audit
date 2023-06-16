@@ -12,8 +12,12 @@ class Session implements FilterInterface
     {
         $session = \Config\Services::session();
         if (empty($session->get('user_id'))) {
-            \Config\Services::session()->setFlashdata('url', $_SERVER['REQUEST_URI']);
-            return redirect()->to(site_url('logon'));
+            $usersModel = new \App\Models\UsersModel();
+            $user = $usersModel->userValidate();
+            if (empty($user)) {
+                \Config\Services::session()->setFlashdata('url', $_SERVER['REQUEST_URI']);
+                return redirect()->to(site_url('logon'));
+            }
         }
     }
 
