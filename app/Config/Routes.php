@@ -84,6 +84,8 @@ $routes->post('input/devices', 'Input::devices');
 $routes->post('input/logs', 'Input::logs');
 $routes->cli('queue/start', 'Queue::start');
 
+$routes->get('reports', 'Reports::Collection', ['filter' => \App\Filters\Session::class, 'as' => 'reportsCollection']);
+
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character
