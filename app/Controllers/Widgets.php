@@ -42,6 +42,7 @@ class Widgets extends BaseController
         $widget = $this->widgetsModel->read($this->resp->meta->id);
         $this->resp->meta->name = $widget[0]->attributes->name;
         $this->resp->data = $this->widgetsModel->execute($this->resp->meta->id, $this->user);
+        $this->resp->included = $widget;
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
         if ($this->resp->meta->format !== 'screen') {

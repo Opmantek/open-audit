@@ -17,6 +17,22 @@ class WidgetsModel extends BaseModel
         $this->builder = $this->db->table('widgets');
     }
 
+    function cmp_name($a, $b) {
+        if (!empty($a->name) and !empty($b->name)) {
+            return strcmp(strtolower((string)$a->name), strtolower((string)$b->name));
+        } else {
+            return;
+        }
+    }
+
+    function cmp_timestamp($a, $b) {
+        if (!empty($a->timestamp) and !empty($b->timestamp)) {
+            return strcmp(strtolower((string)$a->timestamp), strtolower((string)$b->timestamp));
+        } else {
+            return;
+        }
+    }
+
     /**
      * Read the collection from the database
      *
@@ -141,6 +157,172 @@ class WidgetsModel extends BaseModel
     }
 
     /**
+     * [line_data description]
+     * @param  [type] $widget   [description]
+     * @param  [type] $org_list [description]
+     * @return [type]           [description]
+     */
+    private function lineData($widget, $org_list) {
+        if (!empty($widget->sql)) {
+            $sql = $widget->sql;
+            if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
+                // These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
+            } else {
+                $filter = "devices.org_id IN ({$org_list})";
+                if ( ! empty($CI->response->meta->requestor)) {
+                    $filter = "devices.org_id IN ({$org_list}) AND devices.oae_manage = 'y'";
+                }
+                $sql = str_replace('@filter', $filter, $sql);
+            }
+            $result = $this->db->query($sql)->getResult();
+            if ( ! empty($result)) {
+                foreach ($result as $row) {
+                    $row->timestamp = strtotime($row->date);
+                }
+                usort($result, array($this,'cmp_timestamp'));
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->link = $widget->link;
+                    if (isset($result[$i]->name)) {
+                        $result[$i]->link = str_ireplace('@name', $result[$i]->name, $result[$i]->link);
+                    }
+                    if (isset($result[$i]->description)) {
+                        $result[$i]->link = str_ireplace('@description', $result[$i]->description, $result[$i]->link);
+                    }
+                    if (isset($result[$i]->ternary)) {
+                        $result[$i]->link = str_ireplace('@ternary', $result[$i]->ternary, $result[$i]->link);
+                    }
+                    if (isset($result[$i]->date)) {
+                        $result[$i]->link = str_ireplace('@date', $result[$i]->date, $result[$i]->link);
+                    }
+                    if (isset($result[$i]->timestamp)) {
+                        $result[$i]->link = str_ireplace('@timestamp', $result[$i]->timestamp, $result[$i]->link);
+                    }
+                }
+
+                if (count($result) < 2) {
+                    $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
+                    $begin = new \DateTime( $start );
+                    $finish = date('Y-m-d', strtotime('+1 days'));
+                    $end = new \DateTime($finish);
+                    $interval = new \DateInterval('P1D');
+                    $period = new \DatePeriod($begin, $interval, $end);
+                } else {
+                    $start = date('Y-m-d', strtotime($result[0]->date));
+                    $begin = new \DateTime( $start );
+                    $i = count($result)-1;
+                    $end = new \DateTime($result[$i]->date);
+                    $interval = \DateInterval::createFromDateString('1 day');
+                    $period = new \DatePeriod($begin, $interval, $end);
+                }
+
+                foreach ( $period as $dt ) {
+                    $the_date = $dt->format('Y-m-d');
+                    $add_row = true;
+                    for ($i=0; $i < count($result); $i++) {
+                        if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
+                            $add_row = false;
+                            $result[$i]->timestamp = strtotime($the_date);
+                        }
+                    }
+                    if ($add_row) {
+                        $row = new \stdClass();
+                        $row->timestamp = strtotime($the_date);
+                        $row->date = $the_date;
+                        $row->count = 0;
+                        $row->link = '';
+                        $result[] = $row;
+                    }
+                }
+
+            } else {
+                $item = new \stdClass();
+                $item->timestamp = strtotime(date('Y-m-d'));
+                $item->date = date('Y-m-d');
+                $item->count = 0;
+                $item->link = '';
+                $result[] = $item;
+            }
+            usort($result, array($this,'cmp_timestamp'));
+            return $result;
+        }
+
+        if (empty($widget->sql)) {
+            if ($widget->primary === 'system') {
+                $widget->primary = 'devices';
+            }
+            $device_tables = array('bios','devices','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
+            if (!in_array($widget->primary, $device_tables)) {
+                return false;
+            }
+            $sql = "SELECT DATE(change_log.timestamp) AS `date`, count(DATE(change_log.timestamp)) AS `count`  FROM change_log LEFT JOIN devices ON (devices.id = change_log.device_id) WHERE @filter AND change_log.timestamp >= DATE_SUB(CURDATE(), INTERVAL " . intval($widget->limit) . " DAY) AND change_log.db_table = '" . $widget->primary . "'  AND change_log.db_action = '" . $widget->secondary . "' GROUP BY DATE(change_log.timestamp)";
+            $filter = "devices.org_id IN (" . $org_list . ")";
+            if (!empty($instance->resp->meta->requestor)) {
+                $filter = "devices.org_id IN (" . $org_list . ") AND devices.oae_manage = 'y'";
+            }
+            if (!empty($widget->where)) {
+                $sql .= " AND " . $widget->where;
+            }
+            $sql = str_replace('@filter', $filter, $sql);
+            $result = $this->db->query($sql)->getResult();
+            if (!empty($result)) {
+                foreach ($result as $row) {
+                    if (empty($widget->link)) {
+                        $row->name = strtotime($row->date);
+                        #$row->link = 'devices?sub_resource=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
+                        $row->link = 'components?components.type=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
+                    } else {
+                        $row->link = $widget->link;
+                        if (isset($row->name)) {
+                            $row->link = str_ireplace('@name', $row->name, $row->link);
+                        }
+                        if (isset($row->description)) {
+                            $row->link = str_ireplace('@description', $row->description, $row->link);
+                        }
+                        if (isset($row->ternary)) {
+                            $row->link = str_ireplace('@ternary', $row->ternary, $row->link);
+                        }
+                        if (isset($row->date)) {
+                            $row->link = str_ireplace('@date', $row->date, $row->link);
+                        }
+                        if (isset($row->timestamp)) {
+                            $row->link = str_ireplace('@timestamp', $row->timestamp, $row->link);
+                        }
+                    }
+                }
+            }
+            $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
+            $begin = new \DateTime($start);
+            $finish = date('Y-m-d', strtotime('+1 days'));
+            $end = new \DateTime($finish);
+            $interval = new \DateInterval('P1D');
+            $period = new \DatePeriod($begin, $interval, $end);
+
+            foreach ( $period as $dt ) {
+                $the_date = $dt->format('Y-m-d');
+                $add_row = true;
+                if (!empty($result)) {
+                    for ($i=0; $i < count($result); $i++) {
+                        if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
+                            $add_row = false;
+                            $result[$i]->timestamp = strtotime($the_date);
+                        }
+                    }
+                }
+                if ($add_row) {
+                    $row = new \stdClass();
+                    $row->timestamp = strtotime($the_date);
+                    $row->date = $the_date;
+                    $row->count = 0;
+                    $row->link = '';
+                    $result[] = $row;
+                }
+            }
+            usort($result, array($this,'cmp_timestamp'));
+            return $result;
+        }
+    }
+
+    /**
      * Read the entire collection from the database that the user is allowed to read
      *
      * @return array  An array of formatted entries
@@ -194,7 +376,6 @@ class WidgetsModel extends BaseModel
      */
     private function pieData(object $widget, $org_list)
     {
-        log_message('debug', 'WIDGET: ' . json_encode($widget));
         $device_tables = array('bios','connections','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
 
         $other_tables = array('agents','attributes','collectors','connections','credentials','dashboards','discoveries','fields','files','groups','ldap_servers','licenses','locations','networks','orgs','queries','scripts','summaries','tasks','users','widgets');
@@ -220,7 +401,6 @@ class WidgetsModel extends BaseModel
         $instance = & get_instance();
 
         if (!empty($widget->sql)) {
-            log_message('debug', 'SQL not empty');
             // remove excessive white space and line breaks
             $sql = preg_replace('/\s+/u', ' ', $widget->sql);
             if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
@@ -286,7 +466,7 @@ class WidgetsModel extends BaseModel
                                 $ternary . ' AS `ternary`, ' .
                                 " COUNT(" . $primary . ') AS `count`, ' .
                                 " FROM devices LEFT JOIN " . $primary_table .
-                                " ON (system.id = " . $primary_table . '.device_id' .
+                                " ON (devices.id = " . $primary_table . '.device_id' .
                                 " AND " . $primary_table . ".current = 'y' ) " .
                                 " WHERE @filter GROUP BY " . preg_replace($pattern, "", $group_by);
             $filter = "devices.org_id in (" . $org_list . ")";
@@ -335,9 +515,10 @@ class WidgetsModel extends BaseModel
                 $limit = intval($widget->limit);
                 $sql .= ' ORDER BY `count` DESC LIMIT ' . $limit;
             }
+        } else {
+            log_message('debug', 'Widget definition is bad. Widget: ' . json_encode($widget));
         }
 
-        log_message('debug', $sql);
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
             for ($i=0; $i < count($result); $i++) {
@@ -460,11 +641,11 @@ class WidgetsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'widgets';
-        $dictionary = new \StdClass();
+        $dictionary = new \stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new \stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new \stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'orgs.name', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','org_id','type');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
@@ -473,7 +654,7 @@ class WidgetsModel extends BaseModel
 
         $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>The primary and optional secondary items should be fully qualified - ie, system.type or software.name.<br /><br /></p>';
+        $dictionary->notes = '<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br /><br /></p>';
 
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;
@@ -495,9 +676,9 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
-        $dictionary->valid_columns = array('bios.current','bios.description','bios.manufacturer','bios.version','disk.current','disk.description','disk.interface_type','disk.manufacturer','disk.model','disk.model_family','disk.partition_count','disk.status','disk.version','ip.cidr','ip.current','ip.netmask','ip.network','ip.version','log.current','log.file_name','log.name','memory.current','memory.detail','memory.form_factor','memory.size','memory.speed','memory.type','module.class_text','module.current','module.description','monitor.aspect_ratio','monitor.current','monitor.description','monitor.manufacturer','monitor.model','monitor.size','motherboard.current','motherboard.manufacturer','motherboard.memory_slot_count','motherboard.model','motherboard.processor_slot_count','network.connection_status','network.current','network.dhcp_enabled','network.dhcp_server','network.dns_domain','network.dns_server','network.manufacturer','network.model','network.type','optical.current','optical.model','optical.mount_point','pagefile.current','pagefile.max_size','pagefile.name','pagefile_initial_size','partition.bootable','partition.current','partition.description','partition.format','partition.mount_point','partition.mount_type','partition.name','partition.type','print_queue.color','print_queue.current','print_queue.duplex','print_queue.location','print_queue.manufacturer','print_queue.model','print_queue.port_name','print_queue.shared','print_queue.status','print_queue.type','processor.architecture','processor.core_count','processor.current','processor.description','processor.logical_count','processor.manufacturer','processor.physical_count','processor.socket','route.current','route.destination','route.mask','route.next_hop','route.type','server.current','server.description','server.edition','server.full_name','server.name','server.status','server.type','server.version','server.version_string','server_item.current','server_item.type','service.current','service.executable','service.name','service.start_mode','service.state','service.user','share.current','share.name','share.path','software.current','software.install_source','software.name','software_key.current','software_key.edition','software_key.name','software_key.rel','software_key.string','sound.current','sound.manufacturer','sound.model','system.class','system.cloud_id','system.contact_name','system.environment','system.form_factor','system.function','system.icon','system.instance_provider', 'system.instance_state', 'system.instance_type','system.invoice_id','system.last_seen_by','system.lease_expiry_date','system.location_id','system.location_latitude','system.location_level','system.location_longitude','system.location_rack','system.location_rack_position','system.location_rack_size','system.location_room','system.location_suite','system.manufacturer','system.memory_count','system.model','system.oae_manage','system.org_id','system.os_bit','system.os_family','system.os_group','system.os_installation_date','system.os_name','system.os_version','system.owner','system.patch_panel','system.printer_color','system.printer_duplex','system.printer_port_name','system.printer_shared','system.printer_shared_name','system.processor_count','system.purchase_amount','system.purchase_cost_center','system.purchase_date','system.purchase_invoice','system.purchase_order_number','system.purchase_service_contract_number','system.purchase_vendor','system.service_network','system.service_number','system.service_plan','system.service_provider','system.service_type','system.snmp_oid','system.status','system.sysContact','system.sysDescr','system.sysLocation','system.sysObjectID','system.type','system.wall_port','system.warranty_duration','system.warranty_expires','system.warranty_type','user.current','user.domain','user.password_changeable','user.password_required','user.status','user.type','user_group.current','user_group.name','video.current','video.manufacturer','video.model','video.size','vm.current','vm.cpu_count','vm.memory_count','vm.status','windows.active_directory_ou','windows.boot_device','windows.build_number','windows.client_site_name','windows.country_code','windows.current','windows.domain_controller_address','windows.domain_controller_name','windows.domain_role','windows.domain_short','windows.id_number','windows.install_directory','windows.language','windows.organisation','windows.part_of_domain','windows.registered_user','windows.service_pack','windows.time_caption','windows.time_daylight','windows.version','windows.workgroup');
+        $dictionary->valid_columns = array('bios.current','bios.description','bios.manufacturer','bios.version','disk.current','disk.description','disk.interface_type','disk.manufacturer','disk.model','disk.model_family','disk.partition_count','disk.status','disk.version','ip.cidr','ip.current','ip.netmask','ip.network','ip.version','log.current','log.file_name','log.name','memory.current','memory.detail','memory.form_factor','memory.size','memory.speed','memory.type','module.class_text','module.current','module.description','monitor.aspect_ratio','monitor.current','monitor.description','monitor.manufacturer','monitor.model','monitor.size','motherboard.current','motherboard.manufacturer','motherboard.memory_slot_count','motherboard.model','motherboard.processor_slot_count','network.connection_status','network.current','network.dhcp_enabled','network.dhcp_server','network.dns_domain','network.dns_server','network.manufacturer','network.model','network.type','optical.current','optical.model','optical.mount_point','pagefile.current','pagefile.max_size','pagefile.name','pagefile_initial_size','partition.bootable','partition.current','partition.description','partition.format','partition.mount_point','partition.mount_type','partition.name','partition.type','print_queue.color','print_queue.current','print_queue.duplex','print_queue.location','print_queue.manufacturer','print_queue.model','print_queue.port_name','print_queue.shared','print_queue.status','print_queue.type','processor.architecture','processor.core_count','processor.current','processor.description','processor.logical_count','processor.manufacturer','processor.physical_count','processor.socket','route.current','route.destination','route.mask','route.next_hop','route.type','server.current','server.description','server.edition','server.full_name','server.name','server.status','server.type','server.version','server.version_string','server_item.current','server_item.type','service.current','service.executable','service.name','service.start_mode','service.state','service.user','share.current','share.name','share.path','software.current','software.install_source','software.name','software_key.current','software_key.edition','software_key.name','software_key.rel','software_key.string','sound.current','sound.manufacturer','sound.model','devices.class','devices.cloud_id','devices.contact_name','devices.environment','devices.form_factor','devices.function','devices.icon','devices.instance_provider', 'devices.instance_state', 'devices.instance_type','devices.invoice_id','devices.last_seen_by','devices.lease_expiry_date','devices.location_id','devices.location_latitude','devices.location_level','devices.location_longitude','devices.location_rack','devices.location_rack_position','devices.location_rack_size','devices.location_room','devices.location_suite','devices.manufacturer','devices.memory_count','devices.model','devices.oae_manage','devices.org_id','devices.os_bit','devices.os_family','devices.os_group','devices.os_installation_date','devices.os_name','devices.os_version','devices.owner','devices.patch_panel','devices.printer_color','devices.printer_duplex','devices.printer_port_name','devices.printer_shared','devices.printer_shared_name','devices.processor_count','devices.purchase_amount','devices.purchase_cost_center','devices.purchase_date','devices.purchase_invoice','devices.purchase_order_number','devices.purchase_service_contract_number','devices.purchase_vendor','devices.service_network','devices.service_number','devices.service_plan','devices.service_provider','devices.service_type','devices.snmp_oid','devices.status','devices.sysContact','devices.sysDescr','devices.sysLocation','devices.sysObjectID','devices.type','devices.wall_port','devices.warranty_duration','devices.warranty_expires','devices.warranty_type','user.current','user.domain','user.password_changeable','user.password_required','user.status','user.type','user_group.current','user_group.name','video.current','video.manufacturer','video.model','video.size','vm.current','vm.cpu_count','vm.memory_count','vm.status','windows.active_directory_ou','windows.boot_device','windows.build_number','windows.client_site_name','windows.country_code','windows.current','windows.domain_controller_address','windows.domain_controller_name','windows.domain_role','windows.domain_short','windows.id_number','windows.install_directory','windows.language','windows.organisation','windows.part_of_domain','windows.registered_user','windows.service_pack','windows.time_caption','windows.time_daylight','windows.version','windows.workgroup');
 
-        $dictionary->valid_tables = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
+        $dictionary->valid_tables = array('bios','devices','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
 
         return $dictionary;
     }
