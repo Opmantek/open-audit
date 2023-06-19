@@ -1060,7 +1060,7 @@ if (! function_exists('ip_audit')) {
         if ($ip_scan->wmi_status === 'true') {
             $log->message = 'Testing Windows credentials for ' . $device->ip;
             $discoveryLogModel->create($log);
-            $credentials_windows = windows_credentials($device->ip, $credentials, $log);
+            $credentials_windows = windows_credentials($device->ip, $credentials, $discovery->id);
         } else {
             $credentials_windows = false;
         }
@@ -1075,7 +1075,7 @@ if (! function_exists('ip_audit')) {
         }
 
         if ($ip_scan->wmi_status === 'true' and $credentials_windows) {
-            $windows_details = wmi_audit($device->ip, $credentials_windows, null, $discovery->id);
+            $windows_details = wmi_audit($device->ip, $credentials_windows, $discovery->id);
             if (!empty($windows_details)) {
                 $device->last_seen_by = 'windows';
                 $device->audits_ip = '127.0.0.1';
@@ -1407,7 +1407,7 @@ if (! function_exists('ip_audit')) {
                 // Unix or Windows default - Remotely run script on target device
                 // Copy the audit script to admin$
                 $copy = false;
-                $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $log);
+                $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $discovery->id);
                 $output = false;
                 if ($copy) {
                     $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
@@ -1477,13 +1477,7 @@ if (! function_exists('ip_audit')) {
                     // no need to delete the remote file
                 } else {
                     // delete the remote audit result
-                    $parameters = new \StdClass();
-                    $parameters->discovery_id = $discovery->id;
-                    $parameters->ip = $device->ip;
-                    $parameters->share = 'admin$';
-                    $parameters->file = end($temp);
-                    $parameters->credentials = $credentials_windows;
-                    delete_windows_result($parameters);
+                    delete_windows_result($device->ip, $credentials_windows, 'admin$', end($temp), $discovery->id);
                 }
             } else {
                 $log->severity = 3;
