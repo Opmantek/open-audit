@@ -1760,10 +1760,10 @@ if (! function_exists('ip_audit')) {
 
         // Run our rules to update the device attributes
         if (!empty($audit)) {
-            log_message('debug', 'rulesModel::execute because $audit exists');
+            log_message('debug', 'rulesModel::execute because $audit script result exists');
             $instance->rulesModel->execute($audit->system, intval($discovery->id), 'return', intval($audit->system->id));
         } else {
-            log_message('debug', 'rulesModel::execute because $audit does not exist');
+            log_message('debug', 'rulesModel::execute because $audit script result does not exist');
             $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
         }
 
@@ -1815,8 +1815,6 @@ if (! function_exists('ip_audit')) {
                 $instance->devicesModel->update($audit->system->id, $audit->system);
                 $log->device_id = $audit->system->id;
             }
-        } else {
-            log_message('error', 'Something went wrong - $audit is empty.');
         }
 
         $sql = 'UPDATE `discovery_log` SET device_id = ? WHERE discovery_id = ? and ip = ?';
@@ -1833,8 +1831,7 @@ if (! function_exists('ip_audit')) {
 
         if ($audit) {
             foreach ($audit as $key => $value) {
-                #if ($key !== 'system' and $key !== 'audit_wmi_fail' and $key !== 'dns') {
-                if ($key === 'processor') {
+                if ($key !== 'system' and $key !== 'audit_wmi_fail' and $key !== 'dns') {
                     $instance->componentsModel->upsert($key, $audit->system, $value);
                 }
             }
