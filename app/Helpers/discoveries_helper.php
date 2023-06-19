@@ -882,6 +882,7 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Update the current log entries with our new device';
             $log->command = str_replace("\n", " ", (string)$db->getLastQuery());
             $discoveryLogModel->create($log);
+            unset($log->command, $log->command_time_to_execute, $log->command_error_message);
         }
 
         $credentials = array();
