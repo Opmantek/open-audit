@@ -554,8 +554,8 @@ if (! function_exists('ssh_audit')) {
         foreach ($credentials as $credential) {
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
             $ssh->setTimeout(10);
-            log_message('debug', 'Testing credentials named: ' . $credential->name);
             if ($credential->type === 'ssh_key') {
+                log_message('debug', 'Testing credentials named: ' . $credential->name);
                 if (!empty($credential->credentials->password)) {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
                 } else {
@@ -580,6 +580,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                 }
             } else if ($credential->type === 'ssh') {
+                log_message('debug', 'Testing credentials named: ' . $credential->name);
                 if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
