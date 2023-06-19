@@ -608,6 +608,7 @@ class ComponentsModel extends BaseModel
                 if (!empty($data[$i]->network)) {
                     $network = new \StdClass();
                     $network->name = $data[$i]->network;
+                    $network->network = $data[$i]->network;
                     $network->org_id = 1;
                     if (!empty($device->org_id)) {
                         $network->org_id = intval($device->org_id);
