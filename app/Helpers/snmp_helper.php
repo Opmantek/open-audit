@@ -788,7 +788,7 @@ if (!function_exists('snmp_audit')) {
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
 
-            if (stripos($temp, 'board=') !== false) {
+            if (!empty($temp) and stripos($temp, 'board=') !== false) {
                 $temp = explode(' ', $temp);
                 foreach ($temp as $item) {
                     if (stripos($item, 'board=') !== false) {
@@ -1007,7 +1007,7 @@ if (!function_exists('snmp_audit')) {
                 $discoveryLogModel->create($log);
                 unset($log->id, $log->command, $log->command_time_to_execute);
 
-                if (strpos(strtolower($temp), 'counter32') !== false) {
+                if (!empty($temp) and strpos(strtolower($temp), 'counter32') !== false) {
                     $details->type = 'network printer';
                     // printer duplex
                     $details->printer_duplex = '';
