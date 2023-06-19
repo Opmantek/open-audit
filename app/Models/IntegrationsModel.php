@@ -54,13 +54,12 @@ class IntegrationsModel extends BaseModel
      *
      * @param  object $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null    The Integer ID of the newly created item, or false
      */
-    // public function create(object $data = null): int|false
-    public function create(object $data = null)
+    public function create(object $data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (!empty($data->attributes)) {
             if (!is_string($data->attributes)) {
@@ -94,7 +93,7 @@ class IntegrationsModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         $id = $this->db->insertID();
         $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
@@ -1198,8 +1197,7 @@ class IntegrationsModel extends BaseModel
      * @param  int $id The ID of the integration to start
      * @return bool True on success, false on failure
      */
-    // public function queue(int $id = 0): int|bool
-    public function queue(int $id = 0)
+    public function queue(int $id = 0): bool
     {
         $item = $this->read($id);
         $integration = $item[0];

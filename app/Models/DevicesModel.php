@@ -71,10 +71,10 @@ class DevicesModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
 
         $parameters = new \StdClass();
@@ -105,7 +105,7 @@ class DevicesModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         $id = $this->db->insertID();
         // Set the device icon

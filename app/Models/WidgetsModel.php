@@ -17,7 +17,8 @@ class WidgetsModel extends BaseModel
         $this->builder = $this->db->table('widgets');
     }
 
-    function cmp_name($a, $b) {
+    public function cmp_name($a, $b)
+    {
         if (!empty($a->name) and !empty($b->name)) {
             return strcmp(strtolower((string)$a->name), strtolower((string)$b->name));
         } else {
@@ -25,7 +26,8 @@ class WidgetsModel extends BaseModel
         }
     }
 
-    function cmp_timestamp($a, $b) {
+    public function cmp_timestamp($a, $b)
+    {
         if (!empty($a->timestamp) and !empty($b->timestamp)) {
             return strcmp(strtolower((string)$a->timestamp), strtolower((string)$b->timestamp));
         } else {
@@ -70,10 +72,10 @@ class WidgetsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (!empty($data->sql)) {
             if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
@@ -96,7 +98,7 @@ class WidgetsModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }
@@ -162,20 +164,22 @@ class WidgetsModel extends BaseModel
      * @param  [type] $org_list [description]
      * @return [type]           [description]
      */
-    private function lineData($widget, $org_list) {
+    private function lineData($widget, $org_list)
+    {
+        $instance = & get_instance();
         if (!empty($widget->sql)) {
             $sql = $widget->sql;
             if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
                 // These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
             } else {
                 $filter = "devices.org_id IN ({$org_list})";
-                if ( ! empty($CI->response->meta->requestor)) {
+                if (!empty($instance->resp->meta->requestor)) {
                     $filter = "devices.org_id IN ({$org_list}) AND devices.oae_manage = 'y'";
                 }
                 $sql = str_replace('@filter', $filter, $sql);
             }
             $result = $this->db->query($sql)->getResult();
-            if ( ! empty($result)) {
+            if (!empty($result)) {
                 foreach ($result as $row) {
                     $row->timestamp = strtotime($row->date);
                 }
@@ -201,21 +205,21 @@ class WidgetsModel extends BaseModel
 
                 if (count($result) < 2) {
                     $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
-                    $begin = new \DateTime( $start );
+                    $begin = new \DateTime($start);
                     $finish = date('Y-m-d', strtotime('+1 days'));
                     $end = new \DateTime($finish);
                     $interval = new \DateInterval('P1D');
                     $period = new \DatePeriod($begin, $interval, $end);
                 } else {
                     $start = date('Y-m-d', strtotime($result[0]->date));
-                    $begin = new \DateTime( $start );
+                    $begin = new \DateTime($start);
                     $i = count($result)-1;
                     $end = new \DateTime($result[$i]->date);
                     $interval = \DateInterval::createFromDateString('1 day');
                     $period = new \DatePeriod($begin, $interval, $end);
                 }
 
-                foreach ( $period as $dt ) {
+                foreach ($period as $dt) {
                     $the_date = $dt->format('Y-m-d');
                     $add_row = true;
                     for ($i=0; $i < count($result); $i++) {
@@ -233,7 +237,6 @@ class WidgetsModel extends BaseModel
                         $result[] = $row;
                     }
                 }
-
             } else {
                 $item = new \stdClass();
                 $item->timestamp = strtotime(date('Y-m-d'));
@@ -297,7 +300,7 @@ class WidgetsModel extends BaseModel
             $interval = new \DateInterval('P1D');
             $period = new \DatePeriod($begin, $interval, $end);
 
-            foreach ( $period as $dt ) {
+            foreach ($period as $dt) {
                 $the_date = $dt->format('Y-m-d');
                 $add_row = true;
                 if (!empty($result)) {

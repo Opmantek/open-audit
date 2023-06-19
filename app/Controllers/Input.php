@@ -34,13 +34,6 @@ use CodeIgniter\HTTP\RequestInterface;
 class Input extends BaseController
 {
 
-    // protected $request;
-
-    // public function __construct(RequestInterface $request)
-    // {
-    //     $this->request = $request;
-    // }
-
     public function devices()
     {
         # TODO - check for allowed network

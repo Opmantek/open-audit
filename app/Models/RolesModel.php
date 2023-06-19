@@ -50,10 +50,10 @@ class RolesModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (empty($data->ad_group) && ! empty($data->name)) {
             $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
@@ -78,7 +78,7 @@ class RolesModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }

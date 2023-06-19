@@ -53,16 +53,16 @@ class UsersModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         $data = $this->createFieldData('users', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }
@@ -254,7 +254,7 @@ class UsersModel extends BaseModel
             }
         }
         $ip = '';
-        if (!empty($_SERVER['REMOTE_ADDR']) && ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' OR $_SERVER['REMOTE_ADDR'] === '127.0.1.1' OR $_SERVER['REMOTE_ADDR'] === '::1')) {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' or $_SERVER['REMOTE_ADDR'] === '127.0.1.1' or $_SERVER['REMOTE_ADDR'] === '::1')) {
             $ip = '127.0.0.1';
         }
         if (!empty($_SERVER['HTTP_UUID'])) {

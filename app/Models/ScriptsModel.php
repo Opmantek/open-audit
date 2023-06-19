@@ -150,11 +150,10 @@ class ScriptsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    // public function create($data = null): int|false
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (!empty($data->options) and is_string($data->options)) {
             $data->options = json_decode($data->options);
@@ -242,7 +241,7 @@ class ScriptsModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }
@@ -266,8 +265,7 @@ class ScriptsModel extends BaseModel
         return true;
     }
 
-    // public function getByOs(string $os = ''): string|false
-    public function getByOs(string $os = '')
+    public function getByOs(string $os = ''): ?string
     {
         switch (strtolower($os)) {
             case 'aix':
@@ -308,25 +306,24 @@ class ScriptsModel extends BaseModel
         if (empty($query[0]->id)) {
             // Invalid OS
             log_message('error', "Invalid OS provided to ScriptsModel::getByOs ($os).");
-            return false;
+            return null;
         }
         return intval($query[0]->id);
     }
 
-    // public function download(int $id = 0): string|false
-    public function download(int $id = 0): string|false
+    public function download(int $id = 0): ?string
     {
         $instance = & get_instance();
         $result = $this->read($id);
         $data = $result[0]->attributes;
         if (empty($data)) {
             log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
-            return false;
+            return null;
         }
         $filename = FCPATH . '../other/' . $data->based_on;
         if (!file_exists($filename)) {
             log_message('error', "Script does not exist on filesystem for $filename.");
-            return false;
+            return null;
         }
         $file = file_get_contents($filename);
         $options = $data->options;

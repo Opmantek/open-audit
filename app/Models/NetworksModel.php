@@ -54,17 +54,16 @@ class NetworksModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    // public function create($data = null): int|false
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         $data = $this->createFieldData('networks', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }
@@ -272,11 +271,10 @@ class NetworksModel extends BaseModel
      *
      * @return bool    true || false depending on success
      */
-    // public function upsert($data = null): int|false
-    public function upsert($data = null)
+    public function upsert($data = null): ?int
     {
         if (empty($data) or (empty($data->network) and empty($data->name))) {
-            return false;
+            return null;
         }
         $data->network = (empty($data->network)) ? $data->name : $data->network;
         $data->name = (empty($data->name)) ? $data->network : $data->name;
@@ -289,11 +287,12 @@ class NetworksModel extends BaseModel
             $id = $this->create($data);
             if (!empty($id)) {
                 return $id;
+            } else {
+                return null;
             }
-            return true;
         } else {
             // This network exists, return false
-            return false;
+            return null;
         }
     }
 

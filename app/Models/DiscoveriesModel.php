@@ -357,7 +357,7 @@ class DiscoveriesModel extends BaseModel
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }

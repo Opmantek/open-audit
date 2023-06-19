@@ -68,10 +68,10 @@ class ComponentsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         log_message('error', json_encode($data));
         $device_ids = array();

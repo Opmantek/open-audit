@@ -56,10 +56,10 @@ class CredentialsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (! empty($data->credentials) && is_string($data->credentials)) {
             $data->credentials = simpleEncrypt($data->credentials, config('Encryption')->key);
@@ -70,7 +70,7 @@ class CredentialsModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return (intval($this->db->insertID()));
     }
@@ -93,102 +93,6 @@ class CredentialsModel extends BaseModel
         }
         return true;
     }
-
-
-    /**
-     * Take a discovery ID and optionally a device ID
-     * Return an array of credentials in the order of device specific, device previously worked, discovery associated
-     * IE: discovery.org_id (and children) = orgs.id = credentials.org_id
-     * @param  [type] $device_id    devices.id
-     * @param  [type] $discovery_id discoveries.id
-     * @param  [type] $ip_address   The IP of the device in question (for logging)
-     * @return [type]               [description]
-     */
-    // public function getDeviceDiscoveryCredentials($device_id = 0, $discovery_id = 0, $ip_address = '')
-    // {
-    //     if (empty($discovery_id) and empty($device_id)) {
-    //         return array();
-    //     }
-    //     $instance = & get_instance();
-    //     $discoveryLogModel = new \App\Models\DiscoveryLogModel();
-    //     $credentials = array();
-    //     $retrieved_types = array();
-    //     // set up a log object
-    //     $log = new \StdClass();
-    //     $log->discovery_id = $discovery_id;
-    //     $log->file = 'm_device';
-    //     $log->function = 'get_device_discovery_credentials';
-    //     $log->ip = $ip_address;
-    //     $log->message = 'Credentials retrieved for: ';
-    //     $log->pid = getmypid();
-    //     $log->severity = 7;
-    //     $log->command_status = 'notice';
-    //     $log->device_id = $device_id;
-    //     $log->timestamp = null;
-    //     // Get the discovery details
-    //     $discovery = $instance->discoveriesModel->read(intval($discovery_id))[0]->attributes;
-    //     $org_id = 1;
-    //     if (! empty($discovery->org_id)) {
-    //         $org_id = intval($discovery->org_id);
-    //     }
-    //     // Device specific credentials
-    //     $sql = 'SELECT * FROM `credential` WHERE `device_id` = ?';
-    //     $result = $this->db->query($sql, [$device_id])->getResult();
-    //     if (!empty($result)) {
-    //         for ($i=0; $i < count($result); $i++) {
-    //             $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
-    //         }
-    //         $credentials = $result;
-    //         $retrieved_types[] = 'Device specific';
-    //     }
-    //     // Previous working credentials
-    //     $sql = 'SELECT `credentials` FROM `devices` WHERE id = ?';
-    //     $result = $this->db->query($sql, [$device_id])->getResult();
-    //     // $result[0]->credentials is a string. A JSON encoded array of integers referring to credentials.id
-    //     if (!empty($result[0]->credentials)) {
-    //         $temp = @json_decode($result[0]->credentials);
-    //         if (!empty($temp)) {
-    //             $id_list = implode(', ', $temp);
-    //             $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE id IN (" . $id_list . ')';
-    //             $result = $this->db->query($sql)->getResult();
-    //             if (!empty($result)) {
-    //                 for ($i=0; $i < count($result); $i++) {
-    //                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
-    //                 }
-    //             }
-    //             $credentials = array_merge($credentials, $result);
-    //         }
-    //         $retrieved_types[] = 'Device previously working';
-    //     }
-    //     unset($temp);
-
-    //     // Discovery associated credentials
-    //     // get our Orgs List
-    //     $temp = $instance->orgsModel->getDescendants($org_id);
-    //     $temp[] = $org_id;
-    //     $org_list = implode(', ', $temp);
-    //     unset($temp);
-    //     // And now get any credentials
-    //     $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ')';
-    //     $result = $this->db->query($sql)->getResult();
-    //     if (!empty($result)) {
-    //         for ($i=0; $i < count($result); $i++) {
-    //             $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
-    //         }
-    //         $credentials = array_merge($credentials, $result);
-    //         $retrieved_types[] = 'Discovery related';
-    //     }
-    //     if (count($credentials) === 0) {
-    //         $log->message = 'No credentials retrieved.';
-    //         $log->severity = 5;
-    //         $log->command_status = 'warning';
-    //         $discoveryLogModel->create($log);
-    //     } else {
-    //         $log->message = $log->message . implode(', ', $retrieved_types) . '.';
-    //         $discoveryLogModel->create($log);
-    //     }
-    //     return $credentials;
-    // }
 
     /**
      * Return an array containing arrays of related items to be stored in resp->included

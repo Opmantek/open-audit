@@ -59,12 +59,11 @@ class QueueModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    // public function create($data = null): int|false
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data->details) or empty($data->type)) {
             log_message('error', 'Empty type or details supplied to QueueModel::create.');
-            return false;
+            return null;
         }
         if (is_string($data->details)) {
             $data->details = json_decode($data->details);
@@ -83,7 +82,7 @@ class QueueModel extends BaseModel
             return $result;
         } else {
             log_message('error', 'Could not create queue item.');
-            return false;
+            return null;
         }
     }
 

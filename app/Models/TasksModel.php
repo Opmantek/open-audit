@@ -84,10 +84,10 @@ class TasksModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (!empty($data->options) and is_string($data->options)) {
             $data->options = str_replace('\"', '"', $data->options);
@@ -121,7 +121,7 @@ class TasksModel extends BaseModel
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }

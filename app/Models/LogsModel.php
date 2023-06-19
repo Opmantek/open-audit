@@ -54,12 +54,11 @@ class Logs extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    // public function create($data = null): int|false
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         $router = \Config\Services::router();
         if (empty($data)) {
-            return false;
+            return null;
         }
         $data->severity = intval($data->severity);
         if (empty($data->severity)) {
@@ -133,7 +132,7 @@ class Logs extends BaseModel
         $data = $this->createFieldData('logs', $data);
         $this->builder->insert($data);
         if ($this->sqlError($this->db->error())) {
-            return false;
+            return null;
         }
         return ($this->db->insertID());
     }

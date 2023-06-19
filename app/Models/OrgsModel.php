@@ -60,10 +60,10 @@ class OrgsModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (empty($data->ad_group) && !empty($data->name)) {
             $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
