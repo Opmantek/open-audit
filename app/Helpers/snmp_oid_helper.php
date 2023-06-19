@@ -7,7 +7,7 @@ declare(strict_types=1);
 if (!function_exists('get_manufacturer_from_oid')) {
 
 	function get_manufacturer_from_oid($oid) {
-
+		$oid = (string)$oid;
 		if (strpos($oid, '.') !== false) {
 			if (substr($oid, 0, 1) == ".") { $oid = substr($oid, 1, strlen($oid)); }
 			$temp = explode('.', $oid);
