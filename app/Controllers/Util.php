@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use CodeIgniter\Controller;
+
 use Google\Cloud\Compute\V1\InstancesClient;
 
 /**
