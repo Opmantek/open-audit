@@ -292,14 +292,10 @@ if (!function_exists('output')) {
 
     function output_json($instance)
     {
-        $instance->response->removeHeader('Content-Type');
         header('Content-Type: application/json');
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
         header("Expires: 0");
-        #header($instance->resp->meta->header);
-        #header('HTTP/1.1 400 Bad Request');
-        #http_response_code(400);
         if (! empty($instance->resp->meta->collection)) {
             $instance->resp->meta->icon = icon($instance->resp->meta->collection);
         }
