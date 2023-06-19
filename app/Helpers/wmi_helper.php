@@ -1060,6 +1060,7 @@ if (!function_exists('wmi_audit')) {
         if ($wmi_result['status'] === 0) {
             if (!empty($wmi_result['output'][1])) {
                 $details->os_group = 'Windows';
+                $details->os_name = $wmi_result['output'][1];
                 if (stripos($details->os_name, ' 95') !== false) {
                     $details->os_family = 'Windows 95';
                 }
@@ -1105,7 +1106,6 @@ if (!function_exists('wmi_audit')) {
                 if (stripos($details->os_name, '2019') !== false) {
                     $details->os_family = 'Windows 2019';
                 }
-                $details->os_name = $wmi_result['output'][1];
                 $details->os_name = str_replace('®', '', $details->os_name);
                 $details->os_name = trim(substr($details->os_name, 0, stripos($details->os_name, '|')));
             }
