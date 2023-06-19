@@ -78,9 +78,8 @@ defined('EXIT_DATABASE')       || define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-$host = '';
-if (!empty($_SERVER['HTTP_HOST'])){
-    $host = $_SERVER['HTTP_HOST'];
-}
+$host = (!empty($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost';
+
 $base = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://'.$host.dirname($_SERVER['SCRIPT_NAME']) : 'http://'.$host.dirname($_SERVER['SCRIPT_NAME']);
-defined('BASEURL') || define('BASEURL', $base); 
+
+defined('BASEURL') || define('BASEURL', $base);
