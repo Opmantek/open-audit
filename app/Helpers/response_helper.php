@@ -1248,7 +1248,7 @@ if (!function_exists('response_get_properties')) {
                     if (!empty($instance->user->devices_default_display_columns)) {
                         $summary = 'Set properties to user default.';
                         $properties = $instance->user->devices_default_display_columns;
-                    } else if (!empty($instance->config['devices_default_display_columns'])) {
+                    } else if (!empty(config('Openaudit')->devices_default_display_columns)) {
                         $summary = 'Set properties to config default.';
                         $properties = config('Openaudit')->devices_default_display_columns;
                     } else {
