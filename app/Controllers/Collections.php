@@ -122,17 +122,23 @@ class Collections extends BaseController
         }
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
-        return view('shared/header', [
-            'config' => $this->config,
-            'dashboards' => filter_response($this->dashboards),
-            'dictionary' => $dictionary,
-            'included' => $this->resp->included,
-            'meta' => filter_response($this->resp->meta),
-            'queries' => filter_response($this->queriesUser),
-            'roles' => filter_response($this->roles),
-            'orgs' => filter_response($this->orgsUser),
-            'user' => filter_response($this->user)]) .
-            view($this->resp->meta->collection . ucfirst($this->resp->meta->action));
+        if ($this->resp->meta->format !== 'screen') {
+            $this->resp->dictionary = $dictionary;
+            output($this);
+            return true;
+        } else {
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'dictionary' => $dictionary,
+                'included' => $this->resp->included,
+                'meta' => filter_response($this->resp->meta),
+                'queries' => filter_response($this->queriesUser),
+                'roles' => filter_response($this->roles),
+                'orgs' => filter_response($this->orgsUser),
+                'user' => filter_response($this->user)]) .
+                view($this->resp->meta->collection . ucfirst($this->resp->meta->action));
+        }
     }
 
     /**
@@ -171,6 +177,12 @@ class Collections extends BaseController
             \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not deleted.');
         }
         output($this);
+    }
+
+    public function dictionary($model)
+    {
+        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        echo json_encode($dictionary);
     }
 
     /**

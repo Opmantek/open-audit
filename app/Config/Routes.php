@@ -114,6 +114,9 @@ foreach ($routes->collections as $collection) {
     # delete
     $routes->delete($collection . '/(:num)', 'Collections::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Delete']);
 
+    # dictionary
+    $routes->get($collection . '/dictionary', 'Collections::dictionary/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Dictionary']);
+
     # help
     $routes->get($collection . '/help', 'Collections::help', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Help']);
 

@@ -186,7 +186,7 @@ if (!function_exists('response_create')) {
         $response->meta->received_data = response_get_data($response->meta->request_method);
 
         if (!empty($response->meta->received_data->id)) {
-            if ($response->meta->collection !== 'database' && $response->meta->collection !== 'configuration') {
+            if ($response->meta->collection !== 'database' && $response->meta->collection !== 'configuration' and $response->meta->received_data->id !== 'dictionary') {
                 $response->meta->id = intval($response->meta->received_data->id);
             }
         }
@@ -1141,6 +1141,7 @@ if (!function_exists('response_get_permission_id')) {
             if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
                 return false;
             }
+            return true;
         }
 
         if ($collection === 'baselines_policies') {
@@ -1218,6 +1219,7 @@ if (!function_exists('response_get_properties')) {
         $db = db_connect();
         $properties = '';
         $summary = '';
+        $instance = & get_instance();
 
         if (!empty($get)) {
             $properties = $get;
@@ -1241,14 +1243,14 @@ if (!function_exists('response_get_properties')) {
             if ($action === 'collection' && ($properties === 'default' or $properties === '') && ($sub_resource === '' or $sub_resource === 'system')) {
                 if ($properties === 'default') {
                     $summary = 'Set properties to config DEFAULT.';
-                    $properties = $instance->config->config['devices_default_retrieve_columns'];
+                    $properties = config('Openaudit')->devices_default_retrieve_columns;
                 } else {
                     if (!empty($instance->user->devices_default_display_columns)) {
                         $summary = 'Set properties to user default.';
                         $properties = $instance->user->devices_default_display_columns;
                     } else if (!empty($instance->config['devices_default_display_columns'])) {
                         $summary = 'Set properties to config default.';
-                        $properties = $instance->config->devices_default_display_columns;
+                        $properties = config('Openaudit')->devices_default_display_columns;
                     } else {
                         $summary = 'Set properties to default because neither user nor config are set.';
                         $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
@@ -1450,7 +1452,7 @@ if (!function_exists('response_valid_actions')) {
      */
     function response_valid_actions()
     {
-        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'download', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'read', 'reset', 'resetForm', 'test', 'update');
+        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'dictionary', 'download', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'read', 'reset', 'resetForm', 'test', 'update');
     }
 }
 
@@ -1517,6 +1519,7 @@ if (!function_exists('response_valid_permissions')) {
         $permission['createform'] = 'c';
         $permission['defaults'] = 'r';
         $permission['delete'] = 'd';
+        $permission['dictionary'] = 'r';
         $permission['download'] = 'r';
         $permission['execute'] = 'u';
         $permission['export'] = 'r';
