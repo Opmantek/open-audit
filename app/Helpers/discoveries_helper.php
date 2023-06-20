@@ -1412,7 +1412,7 @@ if (! function_exists('ip_audit')) {
                 $output = false;
                 if ($copy) {
                     $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
-                    $output = execute_windows($device->ip, $credentials_windows, $command, $log);
+                    $output = execute_windows($device->ip, $credentials_windows, $command, $discovery->id);
                     if (empty($output)) {
                         $log->severity = 3;
                         $log->command_time_to_execute = '';
