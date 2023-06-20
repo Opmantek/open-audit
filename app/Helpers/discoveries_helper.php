@@ -882,8 +882,8 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Update the current log entries with our new device';
             $log->command = str_replace("\n", " ", (string)$db->getLastQuery());
             $discoveryLogModel->create($log);
-            unset($log->command, $log->command_time_to_execute, $log->command_error_message);
         }
+        unset($log->command, $log->command_time_to_execute, $log->command_error_message);
 
         $credentials = array();
         $credentials = $instance->discoveriesModel->getDeviceDiscoveryCredentials(@intval($device->id), $discovery->id, $device->ip);
@@ -1120,9 +1120,9 @@ if (! function_exists('ip_audit')) {
                 $log->command_time_to_execute = $command_end - $command_start;
                 $log->command = str_replace("\n", " ", (string)$db->getLastQuery());
                 $discoveryLogModel->create($log);
-                unset($log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             }
         }
+        unset($log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
 
         // See if we have a Mac Address for the device's IP
         if (!empty($network_interfaces) and empty($device->mac_address)) {
@@ -1166,8 +1166,8 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Update the previous log entries with our new device_id';
             $log->command = str_replace("\n", " ", (string)$db->getLastQuery());
             $discoveryLogModel->create($log);
-            unset($log->command, $log->command_time_to_execute, $log->command_error_message);
         }
+        unset($log->command, $log->command_time_to_execute, $log->command_error_message);
 
         // grab some timestamps
         $sql = "SELECT first_seen, last_seen FROM devices WHERE id = ?";
