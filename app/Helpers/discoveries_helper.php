@@ -1450,7 +1450,7 @@ if (! function_exists('ip_audit')) {
                         $copy = true;
                     }
                 } else {
-                    $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $log);
+                    $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $discovery->id);
                 }
                 if ($copy === true) {
                     $audit_result = file_get_contents($destination);
