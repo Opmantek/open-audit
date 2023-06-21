@@ -72,11 +72,21 @@ class Collections extends BaseController
      */
     public function create()
     {
-        $this->networksModel = new \App\Models\NetworksModel();
-        if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
-            log_message('error', 'Item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-            \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-            return redirect()->route($this->config->homepage);
+        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
+            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise') {
+                log_message('debug', config('Openaudit')->oae_product);
+                log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
+                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
+                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+                return redirect()->route($this->config->homepage);
+            }
+        }
+        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
+            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise' and config('Openaudit')->oae_product !== 'professional') {
+                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
+                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+                return redirect()->route($this->config->homepage);
+            }
         }
         $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         if (!empty($id)) {
@@ -115,10 +125,21 @@ class Collections extends BaseController
      */
     public function createForm()
     {
-        if (array_key_exists($this->resp->meta->collection, $this->config->enterprise_collections) or array_key_exists($this->resp->meta->collection, $this->config->professional_collections)) {
-            log_message('error', 'Item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-            \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-            return redirect()->route($this->config->homepage);
+        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
+            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise') {
+                log_message('debug', config('Openaudit')->oae_product);
+                log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
+                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
+                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+                return redirect()->route($this->config->homepage);
+            }
+        }
+        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
+            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise' and config('Openaudit')->oae_product !== 'professional') {
+                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
+                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+                return redirect()->route($this->config->homepage);
+            }
         }
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
