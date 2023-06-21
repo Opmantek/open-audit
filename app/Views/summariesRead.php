@@ -44,9 +44,6 @@ include 'shared/read_functions.php';
                     </div>
                 </div>
             </div>
-            <pre>
-                <?= print_r($resource) ?>
-            </pre>
         </main>
 
 <script>
