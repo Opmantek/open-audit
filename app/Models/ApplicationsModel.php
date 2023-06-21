@@ -106,8 +106,8 @@ class ApplicationsModel extends BaseModel
         $properties[] = 'devices.ip';
         $properties[] = 'devices.description';
         $this->builder->select($properties, false);
-        $this->builder->join('applications_components', 'applications_components.applications_id = applications.id', 'left');
-        $this->builder->join('devices', 'applications_components.devices_id = devices.id', 'left');
+        $this->builder->join('application', 'application.application_id = applications.id', 'left');
+        $this->builder->join('devices', 'application.device_id = devices.id', 'left');
         $this->builder->where('applications.id', $id);
         $this->builder->whereIn('devices.org_id', $org_list);
         $query = $this->builder->get();
@@ -127,7 +127,11 @@ class ApplicationsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $instance = & get_instance();
+        $orgsModel = new \App\Models\OrgsModel();
+        $included['orgs'] = $orgsModel->listUser($instance->user);
+        return $included;
     }
 
     /**
