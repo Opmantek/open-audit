@@ -675,7 +675,6 @@ if (!function_exists('response_get_id')) {
             return null;
         }
         if (is_numeric($id)) {
-            log_message('debug', "Numeric ID provided, returning integer (" . intval($id) . ").");
             return intval($id);
         } else {
             $actions = response_valid_actions();
@@ -1201,7 +1200,7 @@ if (!function_exists('response_get_permission_id')) {
                 }
             }
         }
-        log_message('debug', 'User permitted to perform ' . $action . ' on OrgID ' . @$received_data->org_id);
+        log_message('debug', 'User permitted to perform ' . $action . ' on ' . $collection . '::' . $id);
         return true;
     }
 }
@@ -1407,9 +1406,11 @@ if (!function_exists('response_get_sub_resource')) {
                 }
                 $sub_resource = implode(',', $temp);
             }
-        }
-        if (!empty($sub_resource)) {
-            log_message('debug', $summary . " ($sub_resource).");
+            if (!empty($sub_resource)) {
+                log_message('debug', $summary . " ($sub_resource).");
+            }
+        } else {
+            $sub_resource = '';
         }
         return $sub_resource;
     }
