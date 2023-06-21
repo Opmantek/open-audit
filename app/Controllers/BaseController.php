@@ -48,6 +48,7 @@ abstract class BaseController extends Controller
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
+
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
@@ -61,7 +62,6 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
         $this->session = \Config\Services::session();
         $this->config = new \Config\OpenAudit();
-        $this->config->oae_product = 'professional';
 
         $this->config->homepage = 'orgsCollection';
 
@@ -139,9 +139,10 @@ abstract class BaseController extends Controller
             }
         }
 
-        // Setup our request hash (meta, data, errors, included, et al)
+        # Parse the input and create our response
         $this->resp = response_create($this);
 
+        # log this request
         $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $this->user->full_name;
         if (!empty($this->resp->meta->received_data)) {
             $data = json_encode($this->resp->meta->received_data);
@@ -162,7 +163,18 @@ abstract class BaseController extends Controller
             }
             $message .= ':' . $data;
         }
-        log_message('info', $message);
+        if (!empty($this->resp->meta->requestor)) {
+            # The request is from the commercial code. Do not bother logging requests for reports, dashboards and widgets
+            if (($this->resp->meta->collection === 'dashboards' and $this->resp->meta->action === 'collection') or
+                ($this->resp->meta->collection === 'reports' and $this->resp->meta->action === 'collection') or
+                ($this->resp->meta->collection === 'widgets' and $this->resp->meta->action === 'collection') or
+                ($this->resp->meta->collection === 'widgets' and $this->resp->meta->action === 'execute')) {
+                $message = '';
+            }
+        }
+        if ($message !== '') {
+            log_message('info', $message);
+        }
 
         // The dictionary items
         $this->dictionary = new \stdClass();
