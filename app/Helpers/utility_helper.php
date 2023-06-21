@@ -54,20 +54,20 @@ function format_data($result, $type)
     $names = array('id', 'free', 'used', 'size', 'speed', 'total', 'col_order', 'access_level', 'count');
     foreach ($result as $item) {
         foreach ($item as $key => $value) {
-            $temp = explode('.', $key);
+            $temp = explode('.', (string)$key);
             $column = $temp[0];
             if (in_array($column, $names)) {
                 // If we have one of the above named columns, it is an integer
                 $item->$key = intval($value);
-            } elseif ((strrpos($key, '_id') === strlen($key)-3) or
-                        (strrpos($key, '_count') === strlen($key)-6) or
-                        (strrpos($key, '_percent') === strlen($key)-8) or
-                        (strrpos($key, '_size') === strlen($key)-5)) {
+            } elseif ((strrpos((string)$key, '_id') === strlen((string)$key)-3) or
+                        (strrpos((string)$key, '_count') === strlen((string)$key)-6) or
+                        (strrpos((string)$key, '_percent') === strlen((string)$key)-8) or
+                        (strrpos((string)$key, '_size') === strlen((string)$key)-5)) {
                 // If the name of the key ends with any of the above, it is an integer
                 $item->$key = intval($value);
-            } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
-                    (strrpos($key, 'next_hop') === strlen($key)-8) or
-                    (strrpos($key, 'destination') === strlen($key)-11)) {
+            } elseif ((strrpos((string)$key, 'ip') === strlen((string)$key)-2) or
+                    (strrpos((string)$key, 'next_hop') === strlen((string)$key)-8) or
+                    (strrpos((string)$key, 'destination') === strlen((string)$key)-11)) {
                 $temp_name = $key . '_padded';
                 $item->$temp_name = ip_address_from_db($value);
                 $item->$temp_name = ip_address_to_db($item->$temp_name);
@@ -76,13 +76,13 @@ function format_data($result, $type)
                     unset($item->$temp_name);
                 }
             }
-            if (strrpos($key, 'device_id') === strlen($key)-9) {
+            if (strrpos((string)$key, 'device_id') === strlen((string)$key)-9) {
                 $item->{'devices.id'} = intval($value);
             }
-            if (strrpos($key, 'org_id') === strlen($key)-6) {
+            if (strrpos((string)$key, 'org_id') === strlen((string)$key)-6) {
                 $item->{'orgs.id'} = intval($value);
             }
-            if (strrpos($key, 'location_id') === strlen($key)-11) {
+            if (strrpos((string)$key, 'location_id') === strlen((string)$key)-11) {
                 $item->{'locations.id'} = intval($value);
             }
         }
