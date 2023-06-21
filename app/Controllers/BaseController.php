@@ -198,8 +198,9 @@ abstract class BaseController extends Controller
         $namespace = "\\App\\Models\\" . $collection . "Model";
         $this->{strtolower($this->resp->meta->collection) . "Model"} = new $namespace;
 
+        $this->resp->meta->icon = $this->collections->{strtolower($this->resp->meta->collection)}->icon;
+
         if ($this->resp->meta->format === 'screen') {
-            $this->resp->meta->icon = $this->collections->{$this->resp->meta->collection}->icon;
             $this->queriesUser = $this->queriesModel->listUser();
             $this->orgsUser = $this->orgsModel->listUser($this->user);
             $this->dashboardsModel = new \App\Models\DashboardsModel();
