@@ -223,33 +223,46 @@ class DevicesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $instance = & get_instance();
+        $resp_include = array();
+        if (!empty($instance->resp->meta->include) and $instance->resp->meta->include !== 'all') {
+            $resp_include = explode(',', $instance->resp->meta->include);
+        }
+        log_message('debug', 'Include: ' . json_encode($resp_include));
+
         $include = array();
         $current = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($current as $table) {
-            $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
-            $query = $this->db->query($sql, $id);
-            $result = $query->getResult();
-            if (!empty($result)) {
-                $include[$table] = $result;
+            if (empty($resp_include) or in_array($table, $resp_include)) {
+                $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
+                $query = $this->db->query($sql, $id);
+                $result = $query->getResult();
+                if (!empty($result)) {
+                    $include[$table] = $result;
+                }
             }
         }
-
 
         $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'cluster', 'credential', 'edit_log', 'field', 'image', 'rack_devices');
         foreach ($no_current as $table) {
-            $sql = "SELECT * FROM `$table` WHERE device_id = ?";
-            $query = $this->db->query($sql, $id);
-            $result = $query->getResult();
-            if (!empty($result)) {
-                $include[$table] = $result;
+            if (empty($resp_include) or in_array($table, $resp_include)) {
+                $sql = "SELECT * FROM `$table` WHERE device_id = ?";
+                $query = $this->db->query($sql, $id);
+                $result = $query->getResult();
+                if (!empty($result)) {
+                    $include[$table] = $result;
+                }
             }
         }
 
-        $sql = "SELECT discovery_log.*, discoveries.name AS `discoveries.name` FROM `discovery_log` LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discovery_log.device_id = ?";
-        $query = $this->db->query($sql, $id);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['discovery_log'] = $result;
+
+        if (empty($resp_include) or in_array('discovery_log', $resp_include)) {
+            $sql = "SELECT discovery_log.*, discoveries.name AS `discoveries.name` FROM `discovery_log` LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discovery_log.device_id = ?";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['discovery_log'] = $result;
+            }
         }
 
         $orgsModel = new \App\Models\OrgsModel();
@@ -257,18 +270,22 @@ class DevicesModel extends BaseModel
         $user = $instance->user;
         $orgsList = implode(',', $orgsModel->getUserDescendants(explode(',', $user->org_list)));
 
-        $sql = "SELECT * FROM fields WHERE org_id IN (" . $orgsList . ")";
-        $query = $this->db->query($sql);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['fields'] = $result;
+        if (empty($resp_include) or in_array('field', $resp_include)) {
+            $sql = "SELECT * FROM fields WHERE org_id IN (" . $orgsList . ")";
+            $query = $this->db->query($sql);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['fields'] = $result;
+            }
         }
 
-        $sql = "SELECT * FROM locations WHERE org_id IN (" . $orgsList . ")";
-        $query = $this->db->query($sql);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['locations'] = format_data($result, 'locations');
+        if (empty($resp_include) or in_array('locations', $resp_include)) {
+            $sql = "SELECT * FROM locations WHERE org_id IN (" . $orgsList . ")";
+            $query = $this->db->query($sql);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['locations'] = format_data($result, 'locations');
+            }
         }
 
         $attributesModel = new \App\Models\AttributesModel();
