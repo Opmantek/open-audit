@@ -296,7 +296,11 @@ class Collections extends BaseController
         if ($this->resp->meta->collection === 'components' and $this->resp->data[0]->type === 'attachment') {
             return $this->response->download($this->resp->data[0]->attributes->filename, null);
         }
+
         if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->collection === 'devices' or !empty($this->resp->meta->requestor)) {
+                $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
+            }
             output($this);
             return true;
         } else {
