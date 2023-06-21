@@ -35,7 +35,11 @@ class LocationsModel extends BaseModel
         $properties[] = "COUNT(DISTINCT devices.id) AS `device_count`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        $this->builder->join('devices', $resp->meta->collection . '.id = devices.location_id', 'left');
+        if (!empty($instance->resp->meta->requestor)) {
+            $this->builder->join('devices', $resp->meta->collection . '.id = devices.location_id and devices.oae_manage = "y"', 'left');
+        } else {
+            $this->builder->join('devices', $resp->meta->collection . '.id = devices.location_id', 'left');
+        }
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -46,9 +50,6 @@ class LocationsModel extends BaseModel
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->groupBy('locations.id');
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        if (!empty($instance->resp->meta->requestor)) {
-            $this->builder->where('devices.oae_manage', 'y');
-        }
         $query = $this->builder->get();
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
