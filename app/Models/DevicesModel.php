@@ -252,14 +252,19 @@ class DevicesModel extends BaseModel
             $include['discovery_log'] = $result;
         }
 
-        $sql = "SELECT * FROM fields";
+        $orgsModel = new \App\Models\OrgsModel();
+        $instance = & get_instance();
+        $user = $instance->user;
+        $orgsList = implode(',', $orgsModel->getUserDescendants(explode(',', $user->org_list)));
+
+        $sql = "SELECT * FROM fields WHERE org_id IN (" . $orgsList . ")";
         $query = $this->db->query($sql);
         $result = $query->getResult();
         if (!empty($result)) {
             $include['fields'] = $result;
         }
 
-        $sql = "SELECT * FROM locations";
+        $sql = "SELECT * FROM locations WHERE org_id IN (" . $orgsList . ")";
         $query = $this->db->query($sql);
         $result = $query->getResult();
         if (!empty($result)) {
