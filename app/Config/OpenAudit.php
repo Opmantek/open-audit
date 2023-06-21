@@ -26,6 +26,14 @@ class OpenAudit extends BaseConfig
             }
         }
 
+        if (stripos($this->oae_product, 'enterprise')) {
+            $this->oae_product = 'enterprise';
+        } else if (stripos($this->oae_product, 'professional')) {
+            $this->oae_product = 'professional';
+        } else {
+            $this->oae_product = 'community';
+        }
+
         if (empty($this->page_size)) {
             $this->page_size = 1000;
         }
