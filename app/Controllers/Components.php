@@ -48,7 +48,7 @@ class Components extends BaseController
             view($this->resp->meta->collection . ucfirst($this->resp->meta->action) . ucfirst($type));
     }
 
-    public function delete($type, $id)
+    public function delete($id, $type)
     {
         $this->resp->meta->sub_resource = $type;
         if ($this->{'componentsModel'}->delete($id)) {

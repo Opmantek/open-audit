@@ -241,7 +241,7 @@ class ComponentsModel extends BaseModel
     {
         $instance = get_instance();
         $type = $instance->resp->meta->sub_resource;
-        if ($type !== 'credential' and $type !== 'attachment') {
+        if ($type !== 'credential' and $type !== 'attachment' and $type !== 'application') {
             return false;
         }
         if ($type === 'attachment') {
@@ -250,7 +250,7 @@ class ComponentsModel extends BaseModel
             $data = $query->getResult();
             unlink($data[0]->filename);
         }
-        $sql = "DELETE FROM $type WHERE id = ?";
+        $sql = "DELETE FROM `$type` WHERE id = ?";
         $query = $this->db->query($sql, [$id]);
         return true;
     }
