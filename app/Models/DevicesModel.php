@@ -27,7 +27,8 @@ class DevicesModel extends BaseModel
     public function collection(object $resp): array
     {
         $properties = $resp->meta->properties;
-        for ($i=0; $i < count($properties); $i++) {
+        $count = count($properties);
+        for ($i=0; $i < $count; $i++) {
             if (strpos($properties[$i], 'devices.') === false) {
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
@@ -489,7 +490,8 @@ class DevicesModel extends BaseModel
                     $previous_value = $db_entry->{$key};
                     // get the current weight from the edit_log
                     $previous_weight = 10000;
-                    for ($i=0; $i < count($edit_log); $i++) {
+                    $count = count($edit_log);
+                    for ($i=0; $i < $count; $i++) {
                         if ($edit_log[$i]->db_column === $key) {
                             $previous_weight = intval($edit_log[$i]->weight);
                         }

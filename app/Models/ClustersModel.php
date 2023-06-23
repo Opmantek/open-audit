@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class ClustersModel extends BaseModel
 {
@@ -239,7 +239,8 @@ class ClustersModel extends BaseModel
             $sql = preg_replace('!\s+!', ' ', $sql);
             $query = $this->db->query($sql);
             $result = $query->getResult();
-            for ($i=0; $i < count($result); $i++) {
+            $count = count($result);
+            for ($i=0; $i < $count; $i++) {
                     $result[$i]->{'guest.id'} = '';
                     $result[$i]->{'guest.name'} = '';
                     $result[$i]->{'guest.os_family'} = '';

@@ -141,7 +141,8 @@ class BaseModel extends Model
 
         $this->sql_file = FCPATH . '../open-audit.sql';
         $sql_file = file($this->sql_file);
-        for ($i=0; $i < count($sql_file); $i++) {
+        $count = count($sql_file);
+        for ($i=0; $i < $count; $i++) {
             if (stripos($sql_file[$i], "INSERT INTO `{$table}` VALUES") !== false) {
                 $db->query($sql_file[$i]);
                 if ($this->sqlError($db->error())) {
@@ -159,7 +160,8 @@ class BaseModel extends Model
     {
         $result = array();
         $sql_file = file($this->sql_file);
-        for ($i=0; $i < count($sql_file); $i++) {
+        $count = count($sql_file);
+        for ($i=0; $i < $count; $i++) {
             if (stripos($sql_file[$i], "INSERT INTO `{$table}` VALUES") !== false) {
                 $result[] = $sql_file[$i];
             }
