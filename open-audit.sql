@@ -118,7 +118,7 @@ CREATE TABLE `attributes` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=206 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,211 +127,214 @@ CREATE TABLE `attributes` (
 
 LOCK TABLES `attributes` WRITE;
 /*!40000 ALTER TABLE `attributes` DISABLE KEYS */;
-INSERT INTO `attributes` VALUES (1,1,'devices','class','','','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (2,1,'devices','class','Desktop','desktop','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (3,1,'devices','class','Hypervisor','hypervisor','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (4,1,'devices','class','Laptop','laptop','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (5,1,'devices','class','Server','server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (6,1,'devices','class','Tablet','tablet','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (7,1,'devices','class','Virtual Desktop','virtual desktop','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (8,1,'devices','class','Virtual Server','virtual server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (9,1,'devices','class','Workstation','workstation','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (10,1,'devices','environment','Development','dev','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (11,1,'devices','environment','Disaster Recovery','dr','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (12,1,'devices','environment','Evaluation','eval','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (13,1,'devices','environment','Pre-Production','pre-prod','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (14,1,'devices','environment','Production','production','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (15,1,'devices','environment','Testing','test','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (16,1,'devices','environment','Training','train','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (17,1,'devices','environment','User Acceptance Testing','uat','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (18,1,'devices','status','Deleted','deleted','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (19,1,'devices','status','Lost','lost','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (20,1,'devices','status','Maintenance','maintenance','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (21,1,'devices','status','Production','production','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (22,1,'devices','status','Retired','retired','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (23,1,'devices','status','Unallocated','unallocated','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (24,1,'devices','type','Access Control','access control','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (25,1,'devices','type','Access Point','access point','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (26,1,'devices','type','Access Server','access server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (27,1,'devices','type','Access Token','access token','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (28,1,'devices','type','ADSL Modem','adsl modem','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (29,1,'devices','type','Alarm','alarm','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (30,1,'devices','type','Android','android','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (31,1,'devices','type','Application Accelerator','application accelerator','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (32,1,'devices','type','Bar Code Reader','bar code reader','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (33,1,'devices','type','BDSL Modem','bdsl modem','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (34,1,'devices','type','Bridge','bridge','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (35,1,'devices','type','Broadband Router','broadband router','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (36,1,'devices','type','Building Management','building management','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (37,1,'devices','type','Cable Modem','cable modem','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (38,1,'devices','type','Cell Phone','cell phone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (39,1,'devices','type','Chassis','chassis','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (40,1,'devices','type','Cisco Module','cisco module','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (41,1,'devices','type','Computer','computer','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (42,1,'devices','type','DSL Modem','dsl modem','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (43,1,'devices','type','DSLAM','dslam','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (44,1,'devices','type','Environment Monitor','environment monitor','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (45,1,'devices','type','Firewall','firewall','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (46,1,'devices','type','Game Console','game console','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (47,1,'devices','type','Gateway','gateway','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (48,1,'devices','type','General Purpose','general purpose','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (49,1,'devices','type','Hub','hub','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (50,1,'devices','type','IP Phone','ip phone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (51,1,'devices','type','iPad','ipad','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (52,1,'devices','type','iPhone','iphone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (53,1,'devices','type','iPod','ipod','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (54,1,'devices','type','Keyboard, Video, Mouse switch','kvm','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (55,1,'devices','type','Load Balancer','load balancer','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (56,1,'devices','type','Media Device','media device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (57,1,'devices','type','Mobile Modem','mobile modem','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (58,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (59,1,'devices','type','NAS (Network Attached Storage)','nas','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (60,1,'devices','type','Network Device','network device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (61,1,'devices','type','Network IDS (Intrusion Detection)','network ids','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (62,1,'devices','type','Network Printer','network printer','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (63,1,'devices','type','Network Scanner','network scanner','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (64,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (65,1,'devices','type','PBX','pbx','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (66,1,'devices','type','PDA','pda','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (67,1,'devices','type','Phone','phone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (68,1,'devices','type','Point of Sale','point of sale','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (69,1,'devices','type','Power Device','power device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (70,1,'devices','type','Power Distribution Unit','pdu','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (71,1,'devices','type','Print Server','print server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (72,1,'devices','type','Printer','printer','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (73,1,'devices','type','Projector','projector','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (74,1,'devices','type','Proxy Server','proxy server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (75,1,'devices','type','Proxy','proxy','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (76,1,'devices','type','Remote Access Controller (ILO / RSA)','remote access controller','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (77,1,'devices','type','Remote Management','remote management','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (78,1,'devices','type','Router','router','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (79,1,'devices','type','SAN (Storage Area Network)','san','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (80,1,'devices','type','Satellite Phone','satellite phone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (81,1,'devices','type','Satellite Receiver','satellite receiver','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (82,1,'devices','type','Scanner','scanner','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (83,1,'devices','type','Security Camera','security camera','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (84,1,'devices','type','Security Misc','security misc','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (85,1,'devices','type','Serial to Ethernet Adapter','serial to ethernet','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (86,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (87,1,'devices','type','Smart Phone','smart phone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (88,1,'devices','type','Specialized','specialized','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (89,1,'devices','type','Storage Misc','storage misc','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (90,1,'devices','type','Switch','switch','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (91,1,'devices','type','Tablet','tablet','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (92,1,'devices','type','Tape Library','tape library','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (93,1,'devices','type','Telecom Misc','telecom misc','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (94,1,'devices','type','Terminal Server','terminal server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (95,1,'devices','type','Terminal','terminal','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (96,1,'devices','type','Time Clock','time clock','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (97,1,'devices','type','Unclassified','unclassified','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (98,1,'devices','type','Unknown','unknown','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (99,1,'devices','type','UPS (Uninterruptible Power Supply)','ups','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (100,1,'devices','type','Video Conference','video conference','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (101,1,'devices','type','Video Wall','video wall','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (102,1,'devices','type','VoIP Adapter','voip adapter','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (103,1,'devices','type','VoIP Gateway','voip gateway','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (104,1,'devices','type','VoIP Phone','voip phone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (105,1,'devices','type','VPN Terminator','vpn terminator','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (106,1,'devices','type','WAN Accelerator','wan accelerator','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (107,1,'devices','type','WAP (Wireless Access Point)','wap','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (108,1,'devices','type','WDM (Wavelength Division Multiplexer)','wdm','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (109,1,'devices','type','Web Cache','web cache','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (110,1,'devices','type','Web Camera','webcam','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (111,1,'devices','type','Wireless Link','wireless link','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (112,1,'devices','type','Wireless Router','wireless router','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (113,1,'locations','type','Airforce','Airforce','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (114,1,'locations','type','Airport','Airport','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (115,1,'locations','type','Ambulance Station','Ambulance Station','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (116,1,'locations','type','Army','Army','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (117,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (118,1,'locations','type','Cloud Region','Cloud Region','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (119,1,'locations','type','Cloud Zone','Cloud Zone','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (120,1,'locations','type','Cloud','Cloud','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (121,1,'locations','type','Conference Center','Conference Center','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (122,1,'locations','type','Court House','Court House','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (123,1,'locations','type','Data Center','Data Center','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (124,1,'locations','type','Depot','Depot','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (125,1,'locations','type','District','District','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (126,1,'locations','type','Doctors Office','Doctors Office','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (127,1,'locations','type','Embassy','Embassy','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (128,1,'locations','type','Factory','Factory','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (129,1,'locations','type','Fire Station','Fire Station','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (130,1,'locations','type','Guard','Guard','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (131,1,'locations','type','Head Office','Head Office','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (132,1,'locations','type','High School','High School','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (133,1,'locations','type','Hospital','Hospital','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (134,1,'locations','type','Hotel','Hotel','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (135,1,'locations','type','House','House','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (136,1,'locations','type','Library','Library','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (137,1,'locations','type','Light House','Light House','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (138,1,'locations','type','Marina','Marina','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (139,1,'locations','type','Mobile Phone Tower','Mobile Phone Tower','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (140,1,'locations','type','Motel','Motel','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (141,1,'locations','type','Navy','Navy','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (142,1,'locations','type','Newsagent','Newsagent','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (143,1,'locations','type','Nursing Home','Nursing Home','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (144,1,'locations','type','Observatory','Observatory','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (145,1,'locations','type','Office','Office','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (146,1,'locations','type','Oil Rig','Oil Rig','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (147,1,'locations','type','Police','Police','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (148,1,'locations','type','Power Plant','Power Plant','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (149,1,'locations','type','Power Substation','Power Substation','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (150,1,'locations','type','Prison','Prison','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (151,1,'locations','type','Radio Station','Radio Station','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (152,1,'locations','type','Regional','Regional','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (153,1,'locations','type','Resort','Resort','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (154,1,'locations','type','Retail','Retail','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (155,1,'locations','type','School','School','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (156,1,'locations','type','Security','Security','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (157,1,'locations','type','Stadium','Stadium','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (158,1,'locations','type','Train Station','Train Station','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (159,1,'locations','type','Travel Agency','Travel Agency','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (160,1,'locations','type','TV Station','TV Station','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (161,1,'locations','type','University','University','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (162,1,'locations','type','Warehouse','Warehouse','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (163,1,'locations','type','Workshop','Workshop','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (164,1,'orgs','type','Agency','agency','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (165,1,'orgs','type','Association','association','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (166,1,'orgs','type','Authority','authority','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (167,1,'orgs','type','Board','board','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (168,1,'orgs','type','Body','body','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (169,1,'orgs','type','Bureau','bureau','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (170,1,'orgs','type','Business','business','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (171,1,'orgs','type','Centre','centre','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (172,1,'orgs','type','Charity','charity','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (173,1,'orgs','type','Commission','commission','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (174,1,'orgs','type','Committee','committee','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (175,1,'orgs','type','Corporation','corporation','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (176,1,'orgs','type','Council','council','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (177,1,'orgs','type','Court','court','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (178,1,'orgs','type','Department','department','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (179,1,'orgs','type','Directorate','directorate','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (180,1,'orgs','type','Division','division','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (181,1,'orgs','type','Foundation','foundation','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (182,1,'orgs','type','Government Owned Corporation','government owned corporation','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (183,1,'orgs','type','Government','government','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (184,1,'orgs','type','Group','group','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (185,1,'orgs','type','Institute','institute','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (186,1,'orgs','type','Office','office','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (187,1,'orgs','type','Ombudsman','ombudsman','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (188,1,'orgs','type','Organisation','organisation','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (189,1,'orgs','type','Project','project','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (190,1,'orgs','type','Regulator','regulator','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (191,1,'orgs','type','Scheme','scheme','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (192,1,'orgs','type','Section','section','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (193,1,'orgs','type','Service','service','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (194,1,'orgs','type','Tribunal','tribunal','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (195,1,'orgs','type','Trust','trust','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (196,1,'queries','menu_category','','','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (197,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (198,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (199,1,'queries','menu_category','Discovery','Discovery','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (200,1,'queries','menu_category','Hardware','Hardware','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (201,1,'queries','menu_category','Network','Network','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (202,1,'queries','menu_category','Other','Other','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (203,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (204,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (205,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','','','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Desktop','desktop','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Hypervisor','hypervisor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Laptop','laptop','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Server','server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Tablet','tablet','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Virtual Desktop','virtual desktop','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Virtual Server','virtual server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','class','Workstation','workstation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Development','dev','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Disaster Recovery','dr','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Evaluation','eval','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Pre-Production','pre-prod','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Production','production','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Testing','test','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','Training','train','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','environment','User Acceptance Testing','uat','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','status','Deleted','deleted','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','status','Lost','lost','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','status','Maintenance','maintenance','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','status','Production','production','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','status','Retired','retired','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','status','Unallocated','unallocated','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Access Control','access control','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Access Point','access point','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Access Server','access server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Access Token','access token','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','ADSL Modem','adsl modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Alarm','alarm','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Android','android','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Application Accelerator','application accelerator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Bar Code Reader','bar code reader','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','BDSL Modem','bdsl modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Bridge','bridge','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Broadband Router','broadband router','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Building Management','building management','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Cable Modem','cable modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Cell Phone','cell phone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Chassis','chassis','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Cisco Module','cisco module','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Computer','computer','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','DSL Modem','dsl modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','DSLAM','dslam','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Environment Monitor','environment monitor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Firewall','firewall','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Game Console','game console','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Gateway','gateway','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','General Purpose','general purpose','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Hub','hub','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','IoT Sensor','iot sensor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','IP Phone','ip phone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','iPad','ipad','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','iPhone','iphone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','iPod','ipod','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Keyboard, Video, Mouse switch','kvm','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Load Balancer','load balancer','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Media Device','media device','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Mobile Modem','mobile modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','NAS (Network Attached Storage)','nas','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Device','network device','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network IDS (Intrusion Detection)','network ids','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Printer','network printer','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Scanner','network scanner','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','OT Sensor','ot sensor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','PBX','pbx','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','PDA','pda','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Phone','phone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Point of Sale','point of sale','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Power Device','power device','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Power Distribution Unit','pdu','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Print Server','print server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Printer','printer','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Projector','projector','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Proxy Server','proxy server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Proxy','proxy','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Remote Access Controller (ILO / RSA)','remote access controller','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Remote Management','remote management','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Router','router','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','SAN (Storage Area Network)','san','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Satellite Phone','satellite phone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Satellite Receiver','satellite receiver','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Scanner','scanner','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Security Camera','security camera','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Security Misc','security misc','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Sensor','sensor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Serial to Ethernet Adapter','serial to ethernet','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Smart Phone','smart phone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Specialized','specialized','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Storage Misc','storage misc','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Switch','switch','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Tablet','tablet','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Tape Library','tape library','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Telecom Misc','telecom misc','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Terminal Server','terminal server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Terminal','terminal','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Time Clock','time clock','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Unclassified','unclassified','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Unknown','unknown','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','UPS (Uninterruptible Power Supply)','ups','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Video Conference','video conference','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Video Wall','video wall','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VoIP Adapter','voip adapter','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VoIP Gateway','voip gateway','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VoIP Phone','voip phone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VPN Terminator','vpn terminator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAN Accelerator','wan accelerator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAP (Wireless Access Point)','wap','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WDM (Wavelength Division Multiplexer)','wdm','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Web Cache','web cache','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Web Camera','webcam','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Wireless Link','wireless link','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Wireless Router','wireless router','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Airforce','Airforce','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Airport','Airport','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Ambulance Station','Ambulance Station','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Army','Army','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud Region','Cloud Region','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud Zone','Cloud Zone','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Cloud','Cloud','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Conference Center','Conference Center','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Court House','Court House','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Data Center','Data Center','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Depot','Depot','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','District','District','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Doctors Office','Doctors Office','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Embassy','Embassy','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Factory','Factory','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Fire Station','Fire Station','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Guard','Guard','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Head Office','Head Office','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','High School','High School','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Hospital','Hospital','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Hotel','Hotel','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','House','House','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Library','Library','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Light House','Light House','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Marina','Marina','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Mobile Phone Tower','Mobile Phone Tower','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Motel','Motel','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Navy','Navy','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Newsagent','Newsagent','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Nursing Home','Nursing Home','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Observatory','Observatory','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Office','Office','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Oil Rig','Oil Rig','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Police','Police','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Power Plant','Power Plant','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Power Substation','Power Substation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Prison','Prison','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Radio Station','Radio Station','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Regional','Regional','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Resort','Resort','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Retail','Retail','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','School','School','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Security','Security','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Stadium','Stadium','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Train Station','Train Station','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Travel Agency','Travel Agency','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','TV Station','TV Station','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','University','University','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Warehouse','Warehouse','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Workshop','Workshop','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Agency','agency','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Association','association','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Authority','authority','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Board','board','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Body','body','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Bureau','bureau','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Business','business','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Centre','centre','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Charity','charity','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Commission','commission','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Committee','committee','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Corporation','corporation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Council','council','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Court','court','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Department','department','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Directorate','directorate','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Division','division','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Foundation','foundation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Government Owned Corporation','government owned corporation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Government','government','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Group','group','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Institute','institute','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Office','office','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Ombudsman','ombudsman','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Organisation','organisation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Project','project','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Regulator','regulator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Scheme','scheme','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Section','section','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Service','service','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Tribunal','tribunal','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Trust','trust','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','','','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Discovery','Discovery','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Hardware','Hardware','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Network','Network','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Other','Other','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -494,7 +497,7 @@ CREATE TABLE `buildings` (
   KEY `location_id` (`location_id`),
   CONSTRAINT `buildings_location_id` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE CASCADE,
   CONSTRAINT `buildings_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -790,7 +793,7 @@ CREATE TABLE `configuration` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -799,169 +802,169 @@ CREATE TABLE `configuration` (
 
 LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
-INSERT INTO `configuration` VALUES (1,'access_token_count','20','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.');
-INSERT INTO `configuration` VALUES (2,'access_token_enable','y','bool','y','system','2000-01-01 00:00:00','Should we enable access tokens for CSRF mitigation.');
-INSERT INTO `configuration` VALUES (3,'blessed_subnets_use','y','bool','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
-INSERT INTO `configuration` VALUES (4,'collector_check_minutes','5','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
-INSERT INTO `configuration` VALUES (5,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
-INSERT INTO `configuration` VALUES (6,'create_change_log_bios','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the bios table.');
-INSERT INTO `configuration` VALUES (7,'create_change_log_certificate','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the Certificate table.');
-INSERT INTO `configuration` VALUES (8,'create_change_log_disk','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the disk table.');
-INSERT INTO `configuration` VALUES (9,'create_change_log_dns','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the dns table.');
-INSERT INTO `configuration` VALUES (10,'create_change_log_file','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the file table.');
-INSERT INTO `configuration` VALUES (11,'create_change_log_ip','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the ip table.');
-INSERT INTO `configuration` VALUES (12,'create_change_log_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the log table.');
-INSERT INTO `configuration` VALUES (13,'create_change_log_memory','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the memory table.');
-INSERT INTO `configuration` VALUES (14,'create_change_log_module','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the module table.');
-INSERT INTO `configuration` VALUES (15,'create_change_log_monitor','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the monitor table.');
-INSERT INTO `configuration` VALUES (16,'create_change_log_motherboad','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the motherboard table.');
-INSERT INTO `configuration` VALUES (17,'create_change_log_netstat','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table.');
-INSERT INTO `configuration` VALUES (18,'create_change_log_netstat_well_known','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table and the port is 1023 or lower.');
-INSERT INTO `configuration` VALUES (19,'create_change_log_netstat_registered','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table and the port is in the range of 1024 to 49151.');
-INSERT INTO `configuration` VALUES (20,'create_change_log_netstat_dynamic','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table and the port is 49152 or greater.');
-INSERT INTO `configuration` VALUES (21,'create_change_log_network','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the network table.');
-INSERT INTO `configuration` VALUES (22,'create_change_log_nmap','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the nmap table.');
-INSERT INTO `configuration` VALUES (23,'create_change_log_optical','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the optical table.');
-INSERT INTO `configuration` VALUES (24,'create_change_log_pagefile','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the pagefile table.');
-INSERT INTO `configuration` VALUES (25,'create_change_log_partition','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the partition table.');
-INSERT INTO `configuration` VALUES (26,'create_change_log_policy','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the policy table.');
-INSERT INTO `configuration` VALUES (27,'create_change_log_print_queue','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the print_queue table.');
-INSERT INTO `configuration` VALUES (28,'create_change_log_processor','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the processor table.');
-INSERT INTO `configuration` VALUES (29,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.');
-INSERT INTO `configuration` VALUES (30,'create_change_log_route','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the route table.');
-INSERT INTO `configuration` VALUES (31,'create_change_log_san','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the san table.');
-INSERT INTO `configuration` VALUES (32,'create_change_log_scsi','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the scsi table.');
-INSERT INTO `configuration` VALUES (33,'create_change_log_server','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the server table.');
-INSERT INTO `configuration` VALUES (34,'create_change_log_server_item','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the server_item table.');
-INSERT INTO `configuration` VALUES (35,'create_change_log_service','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the service table.');
-INSERT INTO `configuration` VALUES (36,'create_change_log_share','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the share table.');
-INSERT INTO `configuration` VALUES (37,'create_change_log_software','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the software table.');
-INSERT INTO `configuration` VALUES (38,'create_change_log_software_key','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the software_key table.');
-INSERT INTO `configuration` VALUES (39,'create_change_log_sound','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the sound table.');
-INSERT INTO `configuration` VALUES (40,'create_change_log_task','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the task table.');
-INSERT INTO `configuration` VALUES (41,'create_change_log_usb','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the USB table.');
-INSERT INTO `configuration` VALUES (42,'create_change_log_user','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the user table.');
-INSERT INTO `configuration` VALUES (43,'create_change_log_user_group','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the user_group table.');
-INSERT INTO `configuration` VALUES (44,'create_change_log_variable','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the variable table.');
-INSERT INTO `configuration` VALUES (45,'create_change_log_video','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the video table.');
-INSERT INTO `configuration` VALUES (46,'create_change_log_vm','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the vm table.');
-INSERT INTO `configuration` VALUES (47,'create_change_log_windows','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the windows table.');
-INSERT INTO `configuration` VALUES (48,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
-INSERT INTO `configuration` VALUES (49,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
-INSERT INTO `configuration` VALUES (50,'default_network_address','','text','y','system','2000-01-01 00:00:00','The URL used by external devices to talk to Open-AudIT.');
-INSERT INTO `configuration` VALUES (51,'delete_noncurrent','n','bool','y','system','2000-01-01 00:00:00','Should we delete all non-current data.');
-INSERT INTO `configuration` VALUES (52,'delete_noncurrent_bios','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current bios data.');
-INSERT INTO `configuration` VALUES (53,'delete_noncurrent_certificate','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current Certificate data.');
-INSERT INTO `configuration` VALUES (54,'delete_noncurrent_disk','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current disk data.');
-INSERT INTO `configuration` VALUES (55,'delete_noncurrent_dns','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current dns data.');
-INSERT INTO `configuration` VALUES (56,'delete_noncurrent_file','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current file data.');
-INSERT INTO `configuration` VALUES (57,'delete_noncurrent_ip','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current ip data.');
-INSERT INTO `configuration` VALUES (58,'delete_noncurrent_log','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current log data.');
-INSERT INTO `configuration` VALUES (59,'delete_noncurrent_memory','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current memory data.');
-INSERT INTO `configuration` VALUES (60,'delete_noncurrent_module','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current module data.');
-INSERT INTO `configuration` VALUES (61,'delete_noncurrent_monitor','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current monitor data.');
-INSERT INTO `configuration` VALUES (62,'delete_noncurrent_motherboard','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current motherboard data.');
-INSERT INTO `configuration` VALUES (63,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current netstat data.');
-INSERT INTO `configuration` VALUES (64,'delete_noncurrent_network','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current network data.');
-INSERT INTO `configuration` VALUES (65,'delete_noncurrent_nmap','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current nmap data.');
-INSERT INTO `configuration` VALUES (66,'delete_noncurrent_optical','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current optical data.');
-INSERT INTO `configuration` VALUES (67,'delete_noncurrent_pagefile','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current pagefile data.');
-INSERT INTO `configuration` VALUES (68,'delete_noncurrent_partition','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current partition data.');
-INSERT INTO `configuration` VALUES (69,'delete_noncurrent_policy','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current policy data.');
-INSERT INTO `configuration` VALUES (70,'delete_noncurrent_print_queue','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current print_queue data.');
-INSERT INTO `configuration` VALUES (71,'delete_noncurrent_processor','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current processor data.');
-INSERT INTO `configuration` VALUES (72,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
-INSERT INTO `configuration` VALUES (73,'delete_noncurrent_route','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current route data.');
-INSERT INTO `configuration` VALUES (74,'delete_noncurrent_san','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current san data.');
-INSERT INTO `configuration` VALUES (75,'delete_noncurrent_scsi','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current scsi data.');
-INSERT INTO `configuration` VALUES (76,'delete_noncurrent_server','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current server data.');
-INSERT INTO `configuration` VALUES (77,'delete_noncurrent_server_item','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current server_item data.');
-INSERT INTO `configuration` VALUES (78,'delete_noncurrent_service','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current service data.');
-INSERT INTO `configuration` VALUES (79,'delete_noncurrent_share','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current share data.');
-INSERT INTO `configuration` VALUES (80,'delete_noncurrent_software','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current software data.');
-INSERT INTO `configuration` VALUES (81,'delete_noncurrent_software_key','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current software_key data.');
-INSERT INTO `configuration` VALUES (82,'delete_noncurrent_sound','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current sound data.');
-INSERT INTO `configuration` VALUES (83,'delete_noncurrent_task','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current task data.');
-INSERT INTO `configuration` VALUES (84,'delete_noncurrent_usb','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current USB data.');
-INSERT INTO `configuration` VALUES (85,'delete_noncurrent_user','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current user data.');
-INSERT INTO `configuration` VALUES (86,'delete_noncurrent_user_group','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current user_group data.');
-INSERT INTO `configuration` VALUES (87,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current variable data.');
-INSERT INTO `configuration` VALUES (88,'delete_noncurrent_video','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current video data.');
-INSERT INTO `configuration` VALUES (89,'delete_noncurrent_vm','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current vm data.');
-INSERT INTO `configuration` VALUES (90,'delete_noncurrent_windows','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current windows data.');
-INSERT INTO `configuration` VALUES (91,'device_auto_delete','n','bool','y','system','2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
-INSERT INTO `configuration` VALUES (92,'devices_default_display_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, display these columns.');
-INSERT INTO `configuration` VALUES (93,'devices_default_group_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status','text','y','system','2000-01-01 00:00:00','When requesting a group of devices, retrieve and display these columns.');
-INSERT INTO `configuration` VALUES (94,'devices_default_retrieve_columns','devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, provide these columns.');
-INSERT INTO `configuration` VALUES (95,'discovery_default_scan_option','1','number','y','system','2000-01-01 00:00:00','The default discovery options for Nmap.');
-INSERT INTO `configuration` VALUES (96,'discovery_ip_exclude','','text','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
-INSERT INTO `configuration` VALUES (97,'discovery_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
-INSERT INTO `configuration` VALUES (98,'discovery_linux_script_directory','/tmp/','text','y','system','2000-01-01 00:00:00','The directory the script is copied into on the target device.');
-INSERT INTO `configuration` VALUES (99,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
-INSERT INTO `configuration` VALUES (100,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
-INSERT INTO `configuration` VALUES (101,'discovery_override_nmap','n','bool','y','system','2000-01-01 00:00:00','Override the detction of Nmap to enable discoveries.');
-INSERT INTO `configuration` VALUES (102,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
-INSERT INTO `configuration` VALUES (103,'discovery_route_retrieve_limit','500','number','y','system','2000-01-01 00:00:00','When discovering a device using SNMP, do not retrieve the route table if it contains more than this number of entries.');
-INSERT INTO `configuration` VALUES (104,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
-INSERT INTO `configuration` VALUES (105,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma seperated for multiple paths.');
-INSERT INTO `configuration` VALUES (106,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
-INSERT INTO `configuration` VALUES (107,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
-INSERT INTO `configuration` VALUES (108,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (109,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
-INSERT INTO `configuration` VALUES (110,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
-INSERT INTO `configuration` VALUES (111,'display_version','4.4.2','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
-INSERT INTO `configuration` VALUES (112,'download_reports','y','bool','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.');
-INSERT INTO `configuration` VALUES (113,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
-INSERT INTO `configuration` VALUES (114,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
-INSERT INTO `configuration` VALUES (115,'gui_trim_characters','25','number','y','system','2000-01-01 00:00:00','When showing a table of information in the web GUI, replace characters greater than this with \"...\".');
-INSERT INTO `configuration` VALUES (116,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (117,'internal_version','20230615','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
-INSERT INTO `configuration` VALUES (118,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
-INSERT INTO `configuration` VALUES (119,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
-INSERT INTO `configuration` VALUES (120,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
-INSERT INTO `configuration` VALUES (121,'log_retain_level_2','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 2.');
-INSERT INTO `configuration` VALUES (122,'log_retain_level_3','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 3.');
-INSERT INTO `configuration` VALUES (123,'log_retain_level_4','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 4.');
-INSERT INTO `configuration` VALUES (124,'log_retain_level_5','90','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 5.');
-INSERT INTO `configuration` VALUES (125,'log_retain_level_6','30','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 6.');
-INSERT INTO `configuration` VALUES (126,'log_retain_level_7','7','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 7.');
-INSERT INTO `configuration` VALUES (127,'maps_api_key','','text','y','system','2000-01-01 00:00:00','The API key for Google Maps.');
-INSERT INTO `configuration` VALUES (128,'maps_url','/omk/open-audit/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
-INSERT INTO `configuration` VALUES (129,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
-INSERT INTO `configuration` VALUES (130,'match_fqdn','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
-INSERT INTO `configuration` VALUES (131,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
-INSERT INTO `configuration` VALUES (132,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.');
-INSERT INTO `configuration` VALUES (133,'match_hostname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
-INSERT INTO `configuration` VALUES (134,'match_hostname_dbus','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and dbus id.');
-INSERT INTO `configuration` VALUES (135,'match_hostname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
-INSERT INTO `configuration` VALUES (136,'match_hostname_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and UUID.');
-INSERT INTO `configuration` VALUES (137,'match_ip','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip.');
-INSERT INTO `configuration` VALUES (138,'match_ip_no_data','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip if we have an existing device with no data.');
-INSERT INTO `configuration` VALUES (139,'match_mac','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its mac address.');
-INSERT INTO `configuration` VALUES (140,'match_mac_vmware','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if its a known likely duplicate from VMware.');
-INSERT INTO `configuration` VALUES (141,'match_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial number.');
-INSERT INTO `configuration` VALUES (142,'match_serial_type','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial and type.');
-INSERT INTO `configuration` VALUES (143,'match_sysname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName.');
-INSERT INTO `configuration` VALUES (144,'match_sysname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName and serial.');
-INSERT INTO `configuration` VALUES (145,'match_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
-INSERT INTO `configuration` VALUES (146,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed FirstWave modules.');
-INSERT INTO `configuration` VALUES (147,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
-INSERT INTO `configuration` VALUES (148,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
-INSERT INTO `configuration` VALUES (149,'oae_license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (150,'oae_location','','text','y','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (151,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
-INSERT INTO `configuration` VALUES (152,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (153,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (154,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');
-INSERT INTO `configuration` VALUES (155,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
-INSERT INTO `configuration` VALUES (156,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
-INSERT INTO `configuration` VALUES (157,'queue_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should run.');
-INSERT INTO `configuration` VALUES (158,'queue_count','0','number','n','system','2000-01-01 00:00:00','The current number of concurrent device scans running.');
-INSERT INTO `configuration` VALUES (159,'rss_enable','y','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
-INSERT INTO `configuration` VALUES (160,'rss_url','https://community.opmantek.com/rss/OA.xml','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
-INSERT INTO `configuration` VALUES (161,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
-INSERT INTO `configuration` VALUES (162,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
-INSERT INTO `configuration` VALUES (163,'uuid',UUID(),'text','n','system','2023-05-04 07:07:45','The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (NULL,'access_token_count','20','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.');
+INSERT INTO `configuration` VALUES (NULL,'access_token_enable','y','bool','y','system','2000-01-01 00:00:00','Should we enable access tokens for CSRF mitigation.');
+INSERT INTO `configuration` VALUES (NULL,'blessed_subnets_use','y','bool','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
+INSERT INTO `configuration` VALUES (NULL,'collector_check_minutes','5','number','y','Administrator','2023-04-26 14:29:40','The default check interval for collectors.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_bios','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the bios table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_certificate','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the Certificate table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_disk','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the disk table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_dns','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the dns table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_file','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the file table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_ip','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the ip table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the log table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_memory','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the memory table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_module','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the module table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_monitor','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the monitor table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_motherboad','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the motherboard table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_netstat','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_netstat_dynamic','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table and the port is 49152 or greater.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_netstat_registered','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table and the port is in the range of 1024 to 49151.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_netstat_well_known','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the netstat table and the port is 1023 or lower.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_network','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the network table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_nmap','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the nmap table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_optical','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the optical table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_pagefile','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the pagefile table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_partition','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the partition table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_policy','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the policy table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_print_queue','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the print_queue table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_processor','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the processor table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_radio','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the radio table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_route','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the route table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_san','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the san table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_scsi','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the scsi table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_server','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the server table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_server_item','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the server_item table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_service','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the service table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_share','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the share table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_software','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the software table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_software_key','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the software_key table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_sound','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the sound table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_task','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the task table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_usb','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the USB table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_user','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the user table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_user_group','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the user_group table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_variable','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the variable table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_video','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the video table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_vm','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the vm table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_windows','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the windows table.');
+INSERT INTO `configuration` VALUES (NULL,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
+INSERT INTO `configuration` VALUES (NULL,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
+INSERT INTO `configuration` VALUES (NULL,'default_network_address','','text','y','system','2000-01-01 00:00:00','The URL used by external devices to talk to Open-AudIT.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent','n','bool','y','system','2000-01-01 00:00:00','Should we delete all non-current data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_bios','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current bios data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_certificate','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current Certificate data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_disk','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current disk data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_dns','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current dns data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_file','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current file data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_ip','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current ip data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_log','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current log data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_memory','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current memory data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_module','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current module data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_monitor','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current monitor data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_motherboard','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current motherboard data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current netstat data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_network','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current network data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_nmap','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current nmap data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_optical','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current optical data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_pagefile','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current pagefile data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_partition','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current partition data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_policy','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current policy data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_print_queue','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current print_queue data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_processor','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current processor data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_radio','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current radio data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_route','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current route data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_san','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current san data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_scsi','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current scsi data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_server','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current server data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_server_item','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current server_item data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_service','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current service data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_share','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current share data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_software','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current software data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_software_key','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current software_key data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_sound','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current sound data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_task','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current task data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_usb','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current USB data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_user','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current user data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_user_group','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current user_group data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current variable data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_video','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current video data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_vm','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current vm data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_windows','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current windows data.');
+INSERT INTO `configuration` VALUES (NULL,'device_auto_delete','n','bool','y','system','2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
+INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, display these columns.');
+INSERT INTO `configuration` VALUES (NULL,'devices_default_group_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status','text','y','system','2000-01-01 00:00:00','When requesting a group of devices, retrieve and display these columns.');
+INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns','devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, provide these columns.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_default_scan_option','1','number','y','system','2000-01-01 00:00:00','The default discovery options for Nmap.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_ip_exclude','','text','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_directory','/tmp/','text','y','system','2000-01-01 00:00:00','The directory the script is copied into on the target device.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_override_nmap','n','bool','y','system','2000-01-01 00:00:00','Override the detction of Nmap to enable discoveries.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_route_retrieve_limit','500','number','y','system','2000-01-01 00:00:00','When discovering a device using SNMP, do not retrieve the route table if it contains more than this number of entries.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma seperated for multiple paths.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
+INSERT INTO `configuration` VALUES (NULL,'display_version','5.0.0','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL,'download_reports','n','bool','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.');
+INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
+INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
+INSERT INTO `configuration` VALUES (NULL,'gui_trim_characters','25','number','y','system','2000-01-01 00:00:00','When showing a table of information in the web GUI, replace characters greater than this with \"...\".');
+INSERT INTO `configuration` VALUES (NULL,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
+INSERT INTO `configuration` VALUES (NULL,'internal_version','20230615','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_2','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 2.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_3','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 3.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_4','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 4.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_5','90','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 5.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_6','30','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 6.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_7','7','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 7.');
+INSERT INTO `configuration` VALUES (NULL,'maps_api_key','','text','y','system','2000-01-01 00:00:00','Your API key for Google Maps.');
+INSERT INTO `configuration` VALUES (NULL,'maps_url','/omk/open-audit/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
+INSERT INTO `configuration` VALUES (NULL,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
+INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
+INSERT INTO `configuration` VALUES (NULL,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.');
+INSERT INTO `configuration` VALUES (NULL,'match_fqdn','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname_dbus','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and dbus id.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and UUID.');
+INSERT INTO `configuration` VALUES (NULL,'match_ip','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip.');
+INSERT INTO `configuration` VALUES (NULL,'match_ip_no_data','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip if we have an existing device with no data.');
+INSERT INTO `configuration` VALUES (NULL,'match_mac','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its mac address.');
+INSERT INTO `configuration` VALUES (NULL,'match_mac_vmware','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if its a known likely duplicate from VMware.');
+INSERT INTO `configuration` VALUES (NULL,'match_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial number.');
+INSERT INTO `configuration` VALUES (NULL,'match_serial_type','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial and type.');
+INSERT INTO `configuration` VALUES (NULL,'match_sysname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName.');
+INSERT INTO `configuration` VALUES (NULL,'match_sysname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its SNMP sysName and serial.');
+INSERT INTO `configuration` VALUES (NULL,'match_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
+INSERT INTO `configuration` VALUES (NULL,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed FirstWave modules.');
+INSERT INTO `configuration` VALUES (NULL,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
+INSERT INTO `configuration` VALUES (NULL,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
+INSERT INTO `configuration` VALUES (NULL,'oae_license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','y','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
+INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');
+INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
+INSERT INTO `configuration` VALUES (NULL,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
+INSERT INTO `configuration` VALUES (NULL,'queue_count','0','number','n','system','2000-01-01 00:00:00','The current number of concurrent device scans running.');
+INSERT INTO `configuration` VALUES (NULL,'queue_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should run.');
+INSERT INTO `configuration` VALUES (NULL,'rss_enable','y','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
+INSERT INTO `configuration` VALUES (NULL,'rss_url','https://community.opmantek.com/rss/OA.xml','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
+INSERT INTO `configuration` VALUES (NULL,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
+INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
+INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1087,7 +1090,7 @@ CREATE TABLE `dashboards` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1304,7 +1307,7 @@ CREATE TABLE `discoveries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1395,7 +1398,7 @@ CREATE TABLE `discovery_scan_options` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1570,7 +1573,7 @@ CREATE TABLE `fields` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1684,7 +1687,7 @@ CREATE TABLE `floors` (
   KEY `building_id` (`building_id`),
   CONSTRAINT `floors_building_id` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`id`) ON DELETE CASCADE,
   CONSTRAINT `floors_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1750,7 +1753,7 @@ CREATE TABLE `groups` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1759,22 +1762,22 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,1,'All Devices','All the devices a user is authorised to view.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (2,1,'Apple Computers','Devices with type = computer and os_family like OSX.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND (os_family LIKE \'%osx\' OR os_family LIKE \'%macos%\')','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (3,1,'Centos Computers','Devices with type = computer and os_family like Centos.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_family LIKE \'centos\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (4,1,'Computers','Devices with type = computer.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (5,1,'Debian Computers','Devices with type = computer and os_family like Debian.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_family LIKE \'%debian%\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (6,1,'Linux Computers','Devices with type = computer and os_group like Linux.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_group LIKE \'linux\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (7,1,'Open-AudIT Enterprise Managed Devices','Devices Managed by Open-AudIT Enterprise.','SELECT distinct(devices.id) FROM devices WHERE @filter AND devices.status = \'production\' and oae_manage = \'y\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (8,1,'Printers','Devices with type = printer.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type LIKE \'%printer%\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (9,1,'Public IP Devices','Devices with a public IP address and a status of production.','SELECT distinct(devices.id) FROM devices LEFT JOIN ip ON (ip.device_id = devices.id AND ip.current = \'y\') WHERE @filter AND ((( ip.ip > \'000.000.000.000\' AND ip.ip < \'010.000.000.000\' ) OR ( ip.ip > \'010.255.255.255\' AND ip.ip < \'169.254.0.0\' ) OR ( ip.ip > \'169.254.255.255\' AND ip.ip < \'172.016.000.000\' ) OR ( ip.ip > \'172.31.255.255\' AND ip.ip < \'192.168.000.000\' ) OR ip.ip > \'192.168.255.255\' ) OR ( ( devices.ip > \'000.000.000.000\' AND devices.ip < \'010.000.000.000\' ) OR ( devices.ip > \'010.255.255.255\' AND devices.ip < \'169.254.0.0\' ) OR ( devices.ip > \'169.254.255.255\' AND devices.ip < \'172.016.000.000\' ) OR ( devices.ip > \'172.31.255.255\' AND devices.ip < \'192.168.000.000\' ) OR devices.ip > \'192.168.255.255\' )) AND devices.status = \'production\' AND ip.version = 4','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (10,1,'RedHat Computers','Devices with type = computer and os_family like RedHat.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_family LIKE \'redhat\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (11,1,'Routers','Devices with type = router.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'router\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (12,1,'Switches','Devices with type = switch.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'switch\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (13,1,'Virtual Hosts','Devices with class = hypervisor.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.class = \'hypervisor\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (14,1,'Windows Computers','Devices with type = computer and os_group like Windows.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_group LIKE \'windows\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (15,1,'Windows Servers','Devices with type = computer and os_name like Windows Server.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_name LIKE \'%windows%server%\'','','y','system','2000-01-01 00:00:00');
-INSERT INTO `groups` VALUES (16,1,'Windows Workstations','Devices with type = computer and os_name like Windows and os_name not like Server.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND devices.os_name LIKE \'%windows%\' AND devices.os_name NOT LIKE \'%server%\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'All Devices','All the devices a user is authorised to view.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Apple Computers','Devices with type = computer and os_family like OSX.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND (os_family LIKE \'%osx\' OR os_family LIKE \'%macos%\')','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Centos Computers','Devices with type = computer and os_family like Centos.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_family LIKE \'centos\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Computers','Devices with type = computer.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Debian Computers','Devices with type = computer and os_family like Debian.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_family LIKE \'%debian%\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Linux Computers','Devices with type = computer and os_group like Linux.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_group LIKE \'linux\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Open-AudIT Enterprise Managed Devices','Devices Managed by Open-AudIT Enterprise.','SELECT distinct(devices.id) FROM devices WHERE @filter AND devices.status = \'production\' and oae_manage = \'y\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Printers','Devices with type = printer.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type LIKE \'%printer%\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Public IP Devices','Devices with a public IP address and a status of production.','SELECT distinct(devices.id) FROM devices LEFT JOIN ip ON (ip.device_id = devices.id AND ip.current = \'y\') WHERE @filter AND ((( ip.ip > \'000.000.000.000\' AND ip.ip < \'010.000.000.000\' ) OR ( ip.ip > \'010.255.255.255\' AND ip.ip < \'169.254.0.0\' ) OR ( ip.ip > \'169.254.255.255\' AND ip.ip < \'172.016.000.000\' ) OR ( ip.ip > \'172.31.255.255\' AND ip.ip < \'192.168.000.000\' ) OR ip.ip > \'192.168.255.255\' ) OR ( ( devices.ip > \'000.000.000.000\' AND devices.ip < \'010.000.000.000\' ) OR ( devices.ip > \'010.255.255.255\' AND devices.ip < \'169.254.0.0\' ) OR ( devices.ip > \'169.254.255.255\' AND devices.ip < \'172.016.000.000\' ) OR ( devices.ip > \'172.31.255.255\' AND devices.ip < \'192.168.000.000\' ) OR devices.ip > \'192.168.255.255\' )) AND devices.status = \'production\' AND ip.version = 4','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'RedHat Computers','Devices with type = computer and os_family like RedHat.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_family LIKE \'redhat\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Routers','Devices with type = router.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'router\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Switches','Devices with type = switch.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'switch\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Virtual Hosts','Devices with class = hypervisor.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.class = \'hypervisor\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Windows Computers','Devices with type = computer and os_group like Windows.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_group LIKE \'windows\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Windows Servers','Devices with type = computer and os_name like Windows Server.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND os_name LIKE \'%windows%server%\'','','y','system','2000-01-01 00:00:00');
+INSERT INTO `groups` VALUES (NULL,1,'Windows Workstations','Devices with type = computer and os_name like Windows and os_name not like Server.','SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.type = \'computer\' AND devices.os_name LIKE \'%windows%\' AND devices.os_name NOT LIKE \'%server%\'','','y','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1852,7 +1855,7 @@ CREATE TABLE `integrations` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1861,7 +1864,7 @@ CREATE TABLE `integrations` (
 
 LOCK TABLES `integrations` WRITE;
 /*!40000 ALTER TABLE `integrations` DISABLE KEYS */;
-INSERT INTO `integrations` VALUES (1,'Default NMIS Integration',1,'','nmis','{\"pollers\":[],\"groups\":[],\"roles\":[],\"customers\":[],\"business_services\":[]}','{\"password\":\"\",\"url\":\"http://localhost/omk/\",\"username\":\"\"}',0,'y',0,'y','[]','[]','n',2,'y','[{\"default_value\":\"\",\"external_field_name\":\"configuration.version\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.snmp_version\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.community\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_community\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.username\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_security_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_authentication_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authprotocol\",\"external_field_type\":\"lower\",\"internal_field_name\":\"credentials.snmp_v3_authentication_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_privacy_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privprotocol\",\"external_field_type\":\"lower\",\"internal_field_name\":\"credentials.snmp_v3_privacy_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmiusername\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_username\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmipassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_password\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.businessService\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_business_service\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"server_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_poller\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.notes\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_notes\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"y\",\"external_field_name\":\"\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_manage\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.sysDescr\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.sysDescr\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"Default Location\",\"external_field_name\":\"configuration.location\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.locations_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.customer\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_customer\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.active\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_active\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.collect\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_collect\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"automatic\",\"external_field_name\":\"configuration.model\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_model\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"wan\",\"external_field_name\":\"configuration.netType\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_netType\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"true\",\"external_field_name\":\"configuration.ping\",\"external_field_type\":\"bool\",\"internal_field_name\":\"fields.nmis_ping\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"161\",\"external_field_name\":\"configuration.port\",\"external_field_type\":\"integer\",\"internal_field_name\":\"fields.nmis_port\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.display_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"Open-AudIT\",\"external_field_name\":\"configuration.group\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_group\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.host\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.ip\",\"matching_attribute\":\"y\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"uuid\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.omk_uuid\",\"matching_attribute\":\"y\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.roleType\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_role\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.serviceStatus\",\"external_field_type\":\"capitalise\",\"internal_field_name\":\"system.environment\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"cluster_id\",\"external_field_type\":\"text\",\"internal_field_name\":\"system.nmis_poller_uuid\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.NMIS\",\"priority\" : \"internal\",\"internal_field_name\" : \"fields.activated_NMIS\",\"external_field_type\" : \"integer\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.opConfig\",\"priority\" : \"internal\",\"external_field_type\" : \"integer\",\"internal_field_name\" : \"fields.activated_opConfig\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.opEvents\",\"internal_field_name\" : \"fields.activated_opEvents\",\"priority\" : \"internal\",\"external_field_type\" : \"integer\"}]','',0,'all','','nmis_manage',0,'attribute','y',0,'y',0,'y','n','','2000-01-01 00:00:00',0,'system',NOW());
+INSERT INTO `integrations` VALUES (1,'Default NMIS Integration',1,'','nmis','{\"pollers\":[],\"groups\":[],\"roles\":[],\"customers\":[],\"business_services\":[]}','{\"password\":\"\",\"url\":\"http://localhost/omk/\",\"username\":\"\"}',0,'y',0,'y','[]','[]','n',2,'y','[{\"default_value\":\"\",\"external_field_name\":\"configuration.version\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.snmp_version\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.community\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_community\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.username\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_security_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_authentication_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authprotocol\",\"external_field_type\":\"lower\",\"internal_field_name\":\"credentials.snmp_v3_authentication_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_privacy_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privprotocol\",\"external_field_type\":\"lower\",\"internal_field_name\":\"credentials.snmp_v3_privacy_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmiusername\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_username\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmipassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_password\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.businessService\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_business_service\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"server_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_poller\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.notes\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_notes\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"y\",\"external_field_name\":\"\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_manage\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.sysDescr\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.sysDescr\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"Default Location\",\"external_field_name\":\"configuration.location\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.locations_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.customer\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_customer\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.active\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_active\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.collect\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_collect\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"automatic\",\"external_field_name\":\"configuration.model\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_model\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"wan\",\"external_field_name\":\"configuration.netType\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_netType\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"true\",\"external_field_name\":\"configuration.ping\",\"external_field_type\":\"bool\",\"internal_field_name\":\"fields.nmis_ping\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"161\",\"external_field_name\":\"configuration.port\",\"external_field_type\":\"integer\",\"internal_field_name\":\"fields.nmis_port\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.display_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"Open-AudIT\",\"external_field_name\":\"configuration.group\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_group\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.host\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.ip\",\"matching_attribute\":\"y\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"uuid\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.omk_uuid\",\"matching_attribute\":\"y\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.roleType\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_role\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.serviceStatus\",\"external_field_type\":\"capitalise\",\"internal_field_name\":\"devices.environment\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"cluster_id\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_poller_uuid\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.NMIS\",\"priority\" : \"internal\",\"internal_field_name\" : \"fields.activated_NMIS\",\"external_field_type\" : \"integer\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.opConfig\",\"priority\" : \"internal\",\"external_field_type\" : \"integer\",\"internal_field_name\" : \"fields.activated_opConfig\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.opEvents\",\"internal_field_name\" : \"fields.activated_opEvents\",\"priority\" : \"internal\",\"external_field_type\" : \"integer\"}]','',0,'all','','nmis_manage',0,'attribute','y',0,'y',0,'y','n','','2000-01-01 00:00:00',0,'system',NOW());
 /*!40000 ALTER TABLE `integrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2051,7 +2054,7 @@ CREATE TABLE `locations` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2524,7 +2527,7 @@ CREATE TABLE `orgs` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2744,7 +2747,7 @@ CREATE TABLE `queries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2982,7 +2985,7 @@ CREATE TABLE `roles` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2991,10 +2994,10 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3021,7 +3024,7 @@ CREATE TABLE `rooms` (
   KEY `floor_id` (`floor_id`),
   CONSTRAINT `rooms_floor_id` FOREIGN KEY (`floor_id`) REFERENCES `floors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `rooms_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3092,7 +3095,7 @@ CREATE TABLE `rows` (
   KEY `room_id` (`room_id`),
   CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
   CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3123,7 +3126,7 @@ CREATE TABLE `rules` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3247,7 +3250,7 @@ CREATE TABLE `scripts` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3256,13 +3259,13 @@ CREATE TABLE `scripts` (
 
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
-INSERT INTO `scripts` VALUES (1,'audit_aix.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system','2000-01-01 00:00:00');
-INSERT INTO `scripts` VALUES (2,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system','2000-01-01 00:00:00');
-INSERT INTO `scripts` VALUES (3,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system','2000-01-01 00:00:00');
-INSERT INTO `scripts` VALUES (4,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system','2000-01-01 00:00:00');
-INSERT INTO `scripts` VALUES (5,'audit_esxi.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit ESXi config.','audit_esxi.sh','','system','2000-01-01 00:00:00');
-INSERT INTO `scripts` VALUES (6,'audit_solaris.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Solaris config.','audit_solaris.sh','','system','2000-01-01 00:00:00');
-INSERT INTO `scripts` VALUES (7,'audit_hpux.sh',1,'{\"submit_online\":\"n\",\"create_file\":\"y\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit HPUX config.','audit_hpux.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_aix.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_esxi.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit ESXi config.','audit_esxi.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Solaris config.','audit_solaris.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_hpux.sh',1,'{\"submit_online\":\"n\",\"create_file\":\"y\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit HPUX config.','audit_hpux.sh','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3584,7 +3587,7 @@ CREATE TABLE `summaries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3593,19 +3596,19 @@ CREATE TABLE `summaries` (
 
 LOCK TABLES `summaries` WRITE;
 /*!40000 ALTER TABLE `summaries` DISABLE KEYS */;
-INSERT INTO `summaries` VALUES (1,'Device Classes',1,'Device','y','devices','class','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (2,'Device Status',1,'Device','y','devices','status','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (3,'Device Types',1,'Device','y','devices','type','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (4,'DNS Domains',1,'Network','y','devices','dns_domain','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (5,'Form Factors',1,'Device','y','devices','form_factor','devices.form_factor,devices.class','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (6,'Manufacturers',1,'Device','y','devices','manufacturer','devices.model','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (7,'Operating System Families',1,'Device','y','devices','os_family','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (8,'Server Types',1,'Server','y','server','type','server.name,server.full_name,server.version,server.edition,server.status','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (9,'Services',1,'Software','y','service','name','service.name,service.state','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (10,'Software',1,'Software','y','software','name','software.name,software.version','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (11,'Software Keys',1,'Software','y','software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (12,'Active Directory OUs',1,'Network','y','windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (13,'Operating System Names',1,'Device','y','devices','os_name','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Device Classes',1,'Device','y','devices','class','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Device Status',1,'Device','y','devices','status','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Device Types',1,'Device','y','devices','type','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'DNS Domains',1,'Network','y','devices','dns_domain','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Form Factors',1,'Device','y','devices','form_factor','devices.form_factor,devices.class','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Manufacturers',1,'Device','y','devices','manufacturer','devices.model','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Operating System Families',1,'Device','y','devices','os_family','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Server Types',1,'Server','y','server','type','server.name,server.full_name,server.version,server.edition,server.status','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Services',1,'Software','y','service','name','service.name,service.state','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Software',1,'Software','y','software','name','software.name,software.version','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Software Keys',1,'Software','y','software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Active Directory OUs',1,'Network','y','windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (NULL,'Operating System Names',1,'Device','y','devices','os_name','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `summaries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3832,7 +3835,7 @@ CREATE TABLE `users` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3978,7 +3981,7 @@ CREATE TABLE `widgets` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
