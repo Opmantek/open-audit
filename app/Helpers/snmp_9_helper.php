@@ -124,5 +124,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         unset($i_array);
     }
 
+    # Cisco NxOS serial
+    if (empty($details->serial)) {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.369.1.1.1");
+        $details->serial = str_replace('VDH=', '', $details->serial);
+    }
+
     return($details);
 };
