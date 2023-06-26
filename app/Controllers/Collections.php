@@ -319,18 +319,46 @@ class Collections extends BaseController
                 return redirect()->route($this->config->homepage);
             }
         }
+        // Account for old style collection JSON export
+        if (!empty($this->resp->meta->received_data->json->data)) {
+            $data = $this->resp->meta->received_data->json->data;
+            unset($this->resp->meta->received_data->json->data);
+            $this->resp->meta->received_data->json = array();
+            foreach ($data as $item) {
+                $this->resp->meta->received_data->json[] = $item;
+            }
+        }
+        // Account for old style singular JSON export
+        if (!is_array($this->resp->meta->received_data->json)) {
+            $this->resp->meta->received_data->json = array($this->resp->meta->received_data->json);
+        }
+        $id = array();
         foreach ($this->resp->meta->received_data->json as $item) {
-            $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+            if (empty($item->attributes)) {
+                // Account for old style individual JSON export
+                $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item);
+            } else {
+                $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+            }
         }
         if (!empty($id)) {
             if ($this->resp->meta->format !== 'screen') {
-                $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id);
+                if (count($id) > 1) {
+                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection();
+                } else {
+                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id[0]);
+                }
                 output($this);
                 return true;
             } else {
                 if ($this->resp->meta->collection !== 'components') {
-                    \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
-                    return redirect()->route($this->resp->meta->collection.'Read', [$id]);
+                    if (count($id) > 1) {
+                        \Config\Services::session()->setFlashdata('success', "Items in {$this->resp->meta->collection} created successfully.");
+                        return redirect()->route($this->resp->meta->collection.'Collection');
+                    } else {
+                        \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                        return redirect()->route($this->resp->meta->collection.'Read', [$id[0]]);
+                    }
                 } else {
                     \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
                     if (!empty($this->resp->meta->received_data->attributes->device_id)) {
