@@ -16,6 +16,27 @@ if ($db->fieldExists('applications_id', 'application')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','IoT Device','iot device','system','2000-01-01 00:00:00')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','IoT Sensor','iot sensor','system','2000-01-01 00:00:00')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','OT Sensor','ot sensor','system','2000-01-01 00:00:00')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Sensor','sensor','system','2000-01-01 00:00:00')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
 if ($db->fieldExists('clusters_id', 'cluster')) {
     $sql = "ALTER TABLE `cluster` RENAME COLUMN `clusters_id` TO `cluster_id`";
     $query = $db->query($sql);
