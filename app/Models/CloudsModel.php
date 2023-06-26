@@ -78,7 +78,8 @@ class CloudsModel extends BaseModel
         $id = intval($this->db->insertID());
 
         # The discovery
-        $discoveriesModel = new \App\Models\DiscoveriesModel();
+        $instance = & get_instance();
+        $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
         $discovery = new \StdClass();
         $discovery->type = 'cloud';
         $discovery->name = 'Discovery for ' . $data->name;
@@ -89,7 +90,7 @@ class CloudsModel extends BaseModel
         $discovery->subnet = '';
         $discovery->cloud_id = $id;
         $discovery->cloud_name = $data->name;
-        $discoveriesModel->create($discovery);
+        $instance->discoveriesModel->create($discovery);
 
         return ($id);
     }
@@ -103,6 +104,10 @@ class CloudsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
+        // Delete any related discoveries
+        $sql = "DELETE FROM discoveries WHERE cloud_id = ?";
+        $this->db->query($sql, [$id]);
+
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return false;
@@ -121,7 +126,10 @@ class CloudsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $sql = "SELECT * FROM cloud_log WHERE cloud_id = ?";
+        $included['cloud_log'] = $this->db->query($sql, [$id])->getResult();
+        return $included;
     }
 
     /**
