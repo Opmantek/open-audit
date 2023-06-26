@@ -376,7 +376,8 @@ class ComponentsModel extends BaseModel
             return false;
         }
         if (empty($data)) {
-            log_message('warning', 'ComponentsModel::upsert - No data supplied for ' . @$table);
+            // Removed logging because not all device types supply all data, so no data is a valid situation.
+            // log_message('warning', 'ComponentsModel::upsert - No data supplied for ' . @$table);
             return false;
         }
         $name = @$device->name;
@@ -577,85 +578,87 @@ class ComponentsModel extends BaseModel
         if ((string)$table === 'ip') {
             $count = count($data);
             for ($i=0; $i < $count; $i++) {
-                // some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-                $data[$i]->mac = strtolower($data[$i]->mac);
-                // As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
-                // We use this to test and not pad the MAC address if set
-                if (!isset($data[$i]->type)) {
-                    $data[$i]->type = '';
-                }
-                if (!isset($data[$i]->version) or $data[$i]->version !== '6') {
-                    $data[$i]->version = 4;
-                }
-                // If we have a CIDR, but no netmask, create it
-                if ($data[$i]->version === 4 and !empty($data[$i]->cidr) and empty($data[$i]->netmask)) {
-                    $temp_network = network_details($data[$i]->ip . '/' . $data[$i]->cidr);
-                    $data[$i]->netmask = @$temp_network->netmask;
-                }
-                // Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
-                if ($data[$i]->version === 4 and (empty($data[$i]->netmask) or $data[$i]->netmask === '0.0.0.0')) {
-                    $data[$i]->netmask = '255.255.255.0';
-                }
-                // new DERIVED column `name`
-                if (!empty($data[$i]->ip)) {
-                    $data[$i]->name = $data[$i]->ip;
-                }
-                // calculate the network this address is on
-                if ($data[$i]->version === 4 and !empty($data[$i]->ip)) {
-                    $temp_long = ip2long($data[$i]->netmask);
-                    $temp_base = ip2long('255.255.255.255');
-                    $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
-                    $temp_net = network_details($data[$i]->ip . '/' . $temp_subnet);
-                    if (isset($temp_net->network) and $temp_net->network !== '') {
-                        $data[$i]->network = $temp_net->network . '/' . $temp_subnet;
-                    } else {
-                        $data[$i]->network = '';
+                if (!empty($data[$i])) {
+                    // some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
+                    $data[$i]->mac = strtolower($data[$i]->mac);
+                    // As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
+                    // We use this to test and not pad the MAC address if set
+                    if (!isset($data[$i]->type)) {
+                        $data[$i]->type = '';
                     }
-                    if (isset($temp_net->network_slash) and $temp_net->network_slash !== '') {
-                        $data[$i]->cidr = $temp_net->network_slash;
-                    } else {
-                        $data[$i]->cidr = '';
+                    if (!isset($data[$i]->version) or $data[$i]->version !== '6') {
+                        $data[$i]->version = 4;
                     }
-                    unset($temp_long);
-                    unset($temp_base);
-                    unset($temp_subnet);
-                    unset($temp_net);
-                }
-                if ($data[$i]->type !== 'bonded') {
-                    if (isset($data[$i]->mac) and $data[$i]->mac !== '') {
-                        $mymac = explode(':', $data[$i]->mac);
-                        $count = count($mymac);
-                        for ($j = 0; $j < $count; $j++) {
-                            $mymac[$j] = mb_substr('00'.$mymac[$j], -2);
+                    // If we have a CIDR, but no netmask, create it
+                    if ($data[$i]->version === 4 and !empty($data[$i]->cidr) and empty($data[$i]->netmask)) {
+                        $temp_network = network_details($data[$i]->ip . '/' . $data[$i]->cidr);
+                        $data[$i]->netmask = @$temp_network->netmask;
+                    }
+                    // Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
+                    if ($data[$i]->version === 4 and (empty($data[$i]->netmask) or $data[$i]->netmask === '0.0.0.0')) {
+                        $data[$i]->netmask = '255.255.255.0';
+                    }
+                    // new DERIVED column `name`
+                    if (!empty($data[$i]->ip)) {
+                        $data[$i]->name = $data[$i]->ip;
+                    }
+                    // calculate the network this address is on
+                    if ($data[$i]->version === 4 and !empty($data[$i]->ip)) {
+                        $temp_long = ip2long($data[$i]->netmask);
+                        $temp_base = ip2long('255.255.255.255');
+                        $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
+                        $temp_net = network_details($data[$i]->ip . '/' . $temp_subnet);
+                        if (isset($temp_net->network) and $temp_net->network !== '') {
+                            $data[$i]->network = $temp_net->network . '/' . $temp_subnet;
+                        } else {
+                            $data[$i]->network = '';
                         }
-                        if ($count > 0) {
-                            $data[$i]->mac = implode(':', $mymac);
+                        if (isset($temp_net->network_slash) and $temp_net->network_slash !== '') {
+                            $data[$i]->cidr = $temp_net->network_slash;
+                        } else {
+                            $data[$i]->cidr = '';
+                        }
+                        unset($temp_long);
+                        unset($temp_base);
+                        unset($temp_subnet);
+                        unset($temp_net);
+                    }
+                    if ($data[$i]->type !== 'bonded') {
+                        if (isset($data[$i]->mac) and $data[$i]->mac !== '') {
+                            $mymac = explode(':', $data[$i]->mac);
+                            $count = count($mymac);
+                            for ($j = 0; $j < $count; $j++) {
+                                $mymac[$j] = mb_substr('00'.$mymac[$j], -2);
+                            }
+                            if ($count > 0) {
+                                $data[$i]->mac = implode(':', $mymac);
+                            }
                         }
                     }
-                }
-                // ensure we have the correctly padded ip v4 address
-                if ($data[$i]->version === 4) {
-                    $data[$i]->ip = ip_address_to_db($data[$i]->ip);
-                }
-                if (!isset($data[$i]->ip) or $data[$i]->ip === '') {
-                    unset($data[$i]);
-                }
-                // ensure we add the network to the networks list
-                if (!empty($data[$i]->network)) {
-                    $network = new \StdClass();
-                    $network->name = $data[$i]->network;
-                    $network->network = $data[$i]->network;
-                    $network->org_id = 1;
-                    if (!empty($device->org_id)) {
-                        $network->org_id = intval($device->org_id);
+                    // ensure we have the correctly padded ip v4 address
+                    if ($data[$i]->version === 4) {
+                        $data[$i]->ip = ip_address_to_db($data[$i]->ip);
                     }
-                    $network->location_id = 1;
-                    if (!empty($device->location_id)) {
-                        $network->location_id = intval($device->location_id);
+                    if (!isset($data[$i]->ip) or $data[$i]->ip === '') {
+                        unset($data[$i]);
                     }
-                    $network->description = 'Inserted from audit result.';
-                    # TODO
-                    $instance->networksModel->upsert($network);
+                    // ensure we add the network to the networks list
+                    if (!empty($data[$i]->network)) {
+                        $network = new \StdClass();
+                        $network->name = $data[$i]->network;
+                        $network->network = $data[$i]->network;
+                        $network->org_id = 1;
+                        if (!empty($device->org_id)) {
+                            $network->org_id = intval($device->org_id);
+                        }
+                        $network->location_id = 1;
+                        if (!empty($device->location_id)) {
+                            $network->location_id = intval($device->location_id);
+                        }
+                        $network->description = 'Inserted from audit result.';
+                        # TODO
+                        $instance->networksModel->upsert($network);
+                    }
                 }
             }
             if ($device->type === 'computer' and !empty($device->os_group) and $device->os_group === 'VMware') {
