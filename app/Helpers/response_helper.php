@@ -332,11 +332,24 @@ if (!function_exists('response_create')) {
             $response->meta->filter[] = $item;
         }
 
-        $collection = $response->meta->collection;
-        if ($collection === 'components') {
-            foreach ($response->meta->filter as $fitler) {
+        if ($response->meta->collection === 'components' and $response->meta->action === 'delete') {
+            foreach ($response->meta->filter as $filter) {
                 if ($filter->name === 'components.type') {
-                    $collection = $filter->value;
+                    $item = new \stdClass();
+                    $item->component_type = $filter->value;
+                    $response->meta->received_data[] = $item;
+                    unset($item);
+                }
+            }
+        }
+
+        $collection = $response->meta->collection;
+        if ($collection === 'components' and $response->meta->action !== 'create' and $response->meta->action !== 'delete') {
+            if (!empty($response->meta->filter)) {
+                foreach ($response->meta->filter as $fitler) {
+                    if ($filter->name === 'components.type') {
+                        $collection = $filter->value;
+                    }
                 }
             }
         }
@@ -1149,6 +1162,16 @@ if (!function_exists('response_get_permission_id')) {
             if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
                 return false;
             }
+        }
+
+        if ($collection === 'components') {
+            $component = $received_data[0]->component_type;
+            $sql = "SELECT $component.*, devices.id, devices.org_id FROM $component LEFT JOIN devices ON ($component.device_id = devices.id) WHERE $component.id = $id";
+            $result = $db->query($sql, [$id])->getResult();
+            if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+                return false;
+            }
+            return true;
         }
 
         if (in_array($collection, response_valid_collections())) {

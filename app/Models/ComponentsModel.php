@@ -70,22 +70,21 @@ class ComponentsModel extends BaseModel
             $result = $query->getResult();
             return format_data($result, $table);
         } else {
-            $dbResult = array();
             foreach ($tables as $table) {
                 if (empty($device_id)) {
-                    $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?)";
+                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?)";
                 } else {
-                    $sql = "SELECT '$table' AS `ourtype`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) AND devices.id = $device_id";
+                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) AND devices.id = $device_id";
                 }
                 $query = $this->db->query($sql, [implode(',', $orgs)]);
+                log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
                 if ($this->sqlError($this->db->error())) {
                     return array();
                 }
-                $dbResult[] = $query->getResult();
-            }
-            foreach ($dbResult as $key => $value) {
-                if (!empty($value)) {
-                    $result[] = format_data($value, $value[0]->ourtype);
+                foreach ($query->getResult() as $value) {
+                    if (!empty($value)) {
+                        $result[] = format_data($value, $value->table);
+                    }
                 }
             }
             return $result;
@@ -110,7 +109,8 @@ class ComponentsModel extends BaseModel
             $device_ids[] = $data->device_id;
         } else if (!empty($data->ids)) {
             $device_ids = explode(',', $data->ids);
-        } else {
+        }
+        if (empty($device_ids)) {
             log_message('error', 'No device IDs or ID provided to components::create.');
             log_message('error', json_encode($data));
         }
@@ -120,9 +120,8 @@ class ComponentsModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', 'Insufficient details supplied to create credential.');
             if (!empty($data->device_id)) {
                 redirect()->route('devicesRead', [$data->device_id]);
-            } else {
-                redirect()->route('devicesCollection');
             }
+            redirect()->route('devicesCollection');
             return false;
         }
 
@@ -217,12 +216,12 @@ class ComponentsModel extends BaseModel
                 return false;
             }
         }
-        if ($sub_resource === 'application') {
+        if ($data->component_type === 'application') {
             $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
             $this->db->query($sql, [intval($data->device_id), intval($data->applications_id), $instance->user->full_name]);
             return (intval($this->db->insertID()));
         }
-        if ($sub_resource === 'cluster') {
+        if ($data->component_type === 'cluster') {
             $sql = "INSERT INTO cluster VALUES (NULL, ?, ?, ?, 'y', ?, NOW())";
             $this->db->query($sql, [intval($data->device_id), intval($data->clusters_id), $data->role, $instance->user->full_name]);
             return (intval($this->db->insertID()));
@@ -241,7 +240,7 @@ class ComponentsModel extends BaseModel
     {
         $instance = get_instance();
         $type = $instance->resp->meta->sub_resource;
-        if ($type !== 'credential' and $type !== 'attachment') {
+        if ($type !== 'credential' and $type !== 'attachment' and $type !== 'application') {
             return false;
         }
         if ($type === 'attachment') {
@@ -250,7 +249,7 @@ class ComponentsModel extends BaseModel
             $data = $query->getResult();
             unlink($data[0]->filename);
         }
-        $sql = "DELETE FROM $type WHERE id = ?";
+        $sql = "DELETE FROM `$type` WHERE id = ?";
         $query = $this->db->query($sql, [$id]);
         return true;
     }

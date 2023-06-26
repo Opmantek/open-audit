@@ -27,7 +27,8 @@ class DevicesModel extends BaseModel
     public function collection(object $resp): array
     {
         $properties = $resp->meta->properties;
-        for ($i=0; $i < count($properties); $i++) {
+        $count = count($properties);
+        for ($i=0; $i < $count; $i++) {
             if (strpos($properties[$i], 'devices.') === false) {
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
@@ -246,7 +247,7 @@ class DevicesModel extends BaseModel
         $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'cluster', 'credential', 'edit_log', 'field', 'image', 'rack_devices');
         foreach ($no_current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
-                $sql = "SELECT * FROM `$table` WHERE device_id = ?";
+                $sql = "SELECT `$table`.*, devices.name AS `devices.name` FROM `$table` LEFT JOIN devices ON (`$table`.device_id = devices.id) WHERE device_id = ?";
                 $query = $this->db->query($sql, $id);
                 $result = $query->getResult();
                 if (!empty($result)) {
@@ -255,6 +256,12 @@ class DevicesModel extends BaseModel
             }
         }
 
+        $sql = "SELECT application.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (application.application_id = applications.id) WHERE application.device_id = ?";
+        $query = $this->db->query($sql, $id);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['application'] = $result;
+        }
 
         if (empty($resp_include) or in_array('discovery_log', $resp_include)) {
             $sql = "SELECT discovery_log.*, discoveries.name AS `discoveries.name` FROM `discovery_log` LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discovery_log.device_id = ?";
@@ -489,7 +496,8 @@ class DevicesModel extends BaseModel
                     $previous_value = $db_entry->{$key};
                     // get the current weight from the edit_log
                     $previous_weight = 10000;
-                    for ($i=0; $i < count($edit_log); $i++) {
+                    $count = count($edit_log);
+                    for ($i=0; $i < $count; $i++) {
                         if ($edit_log[$i]->db_column === $key) {
                             $previous_weight = intval($edit_log[$i]->weight);
                         }

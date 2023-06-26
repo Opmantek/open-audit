@@ -43,7 +43,7 @@ $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::
 
 # These will match and then take precedence over the below routes
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
-$routes->delete('components/(:any)/(:num)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
+$routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
 $routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
 
 $routes->get('charts', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
