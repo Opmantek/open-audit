@@ -394,6 +394,9 @@ if (!function_exists('response_get_data')) {
                 $received_data = json_encode($received_data);
                 $received_data = json_decode($received_data);
                 $data_supplied_by = 'form';
+                if (!empty($received_data->json) and is_string($received_data->json)) {
+                    $received_data->json = json_decode($received_data->json);
+                }
             } else if (!empty($_POST['data'])) {
                 $summary = 'Set received data according to POST (json).';
                 // This is straight JSON submitted data in a string
@@ -1551,6 +1554,7 @@ if (!function_exists('response_valid_permissions')) {
         $permission['import'] = 'c';
         $permission['importform'] = 'c';
         $permission['importjson'] = 'c';
+        $permission['importjsonform'] = 'c';
         $permission['read'] = 'r';
         $permission['reset'] = 'd';
         $permission['resetForm'] = 'd';

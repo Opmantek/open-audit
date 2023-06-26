@@ -145,6 +145,10 @@ if (!function_exists('output')) {
                 output_json($instance);
                 break;
 
+            case 'json_data':
+                output_json($instance);
+                break;
+
             case 'rss':
                 output_rss($instance);
                 break;
@@ -286,7 +290,11 @@ if (!function_exists('output')) {
         header("Pragma: no-cache");
         header("Expires: 0");
         unset($instance->resp->meta->user);
-        echo json_encode($instance->resp);
+        if ($instance->resp->meta->format === 'json') {
+            echo json_encode($instance->resp);
+        } else {
+            echo json_encode($instance->resp->data);
+        }
     }
 
     function output_highcharts($instance)

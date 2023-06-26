@@ -274,6 +274,85 @@ class Collections extends BaseController
     }
 
     /**
+     * Provide a html form to upload multiple items
+     *
+     * @return void
+     */
+    public function importJSONForm()
+    {
+        $this->databaseModel = new \App\Models\DatabaseModel();
+        $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
+        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'dictionary' => $dictionary,
+            'meta' => $this->resp->meta,
+            'orgs' => $this->orgsUser,
+            'queries' => $this->queriesUser,
+            'roles' => $this->roles,
+            'user' => $this->user ]) .
+            view('collectionImportJsonForm', ['data' => $dictionary]);
+        return;
+    }
+
+    /**
+     * Accept a POST, use the JSON to create the item
+     *
+     * @return void
+     */
+    public function importJSON()
+    {
+        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
+            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise') {
+                log_message('debug', config('Openaudit')->oae_product);
+                log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
+                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
+                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+                return redirect()->route($this->config->homepage);
+            }
+        }
+        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
+            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise' and config('Openaudit')->oae_product !== 'professional') {
+                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
+                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
+                return redirect()->route($this->config->homepage);
+            }
+        }
+        foreach ($this->resp->meta->received_data->json as $item) {
+            $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+        }
+        if (!empty($id)) {
+            if ($this->resp->meta->format !== 'screen') {
+                $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id);
+                output($this);
+                return true;
+            } else {
+                if ($this->resp->meta->collection !== 'components') {
+                    \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                    return redirect()->route($this->resp->meta->collection.'Read', [$id]);
+                } else {
+                    \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
+                    if (!empty($this->resp->meta->received_data->attributes->device_id)) {
+                        return redirect()->route('devicesRead', [$this->resp->meta->received_data->attributes->device_id]);
+                    } else {
+                        return redirect()->route('devicesCollection');
+                    }
+                }
+            }
+        } else {
+            if ($this->resp->meta->format !== 'screen') {
+                output($this);
+                return true;
+            } else {
+                log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+                return redirect()->route($this->resp->meta->collection.'Collection');
+            }
+        }
+    }
+
+
+    /**
      * Read a single item
      *
      * @access public
