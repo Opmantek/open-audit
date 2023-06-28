@@ -3765,6 +3765,20 @@ if (audit_software = "y") then
         result.WriteText "      </item>" & vbcrlf
     end if
 
+    if debugging > "0" then wscript.echo "Internet Explorer info" end if
+    strKeyPath = "SOFTWARE\Microsoft\Internet Explorer"
+    strValueName = "svcVersion"
+    oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ie_version
+    if (not isnull(ie_version)) then
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>Internet Explorer</name>" & vbcrlf
+        result.WriteText "          <version>" & escape_xml(ie_version) & "</version>" & vbcrlf
+        result.WriteText "          <install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+        result.WriteText "          <publisher>Microsoft Corporation</publisher>" & vbcrlf
+        result.WriteText "          <url>http://windows.microsoft.com/en-us/internet-explorer/internet-explorer-help</url>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
+    end if
+
     if debugging > "0" then wscript.echo "Software info" end if
 
     result.WriteText "      <!-- start of normal software -->" & vbcrlf
