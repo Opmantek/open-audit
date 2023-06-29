@@ -54,21 +54,25 @@ class DiscoveriesModel extends BaseModel
      *
      * @param  object $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|false    The Integer ID of the newly created item, or null
      */
-    public function create($data = null)
+    public function create($data = null): ?int
     {
         $instance = & get_instance();
+        $instance->networksModel = new \App\Models\NetworksModel();
+
         if (empty($data)) {
-            return false;
+            return null;
         }
         if (empty($data->type)) {
             log_message('error', 'No type provided to DiscoveriesModel::create.');
-            return false;
+            \Config\Services::session()->setFlashdata('error', 'Missing type provided to Discoveries::Create.');
+            return null;
         }
         if ($data->type !== 'subnet' && $data->type !== 'active directory' && $data->type !== 'cloud' && $data->type !== 'integration' && $data->type !== 'seed') {
             log_message('error', 'Invalid type provided to Discoveries::create (' . $data->type . ')');
-            return false;
+            \Config\Services::session()->setFlashdata('error', 'Invalid type provided to Discoveries::Create.');
+            return null;
         }
         if (empty(config('Openaudit')->discovery_default_scan_option)) {
             config('Openaudit')->discovery_default_scan_option = 1;
@@ -267,7 +271,7 @@ class DiscoveriesModel extends BaseModel
             if (empty($data->subnet)) {
                 \Config\Services::session()->setFlashdata('error', 'Missing or invalid subnet provided to Discoveries::Create.');
                 log_message('error', 'Missing or invalid subnet provided to Discoveries::create.');
-                return false;
+                return null;
             } else {
                 $data->description = 'Subnet - ' . $data->subnet;
             }
@@ -279,7 +283,7 @@ class DiscoveriesModel extends BaseModel
                 }
                 \Config\Services::session()->setFlashdata('error', 'Object in discoveries could not be created - no ' . $temp . ' supplied.');
                 log_message('error', 'Object in discoveries could not be created - no ' . $temp . ' supplied.');
-                return false;
+                return null;
             } else {
                 $data->description = 'Active Directory - ' . $data->ad_domain;
             }
@@ -287,7 +291,7 @@ class DiscoveriesModel extends BaseModel
             if (empty($data->seed_ip)) {
                 \Config\Services::session()->setFlashdata('error', 'Missing or invalid field: seed_ip');
                 log_message('error', 'Missing or invalid field: seed_ip');
-                return false;
+                return null;
             }
             if (empty($data->seed_restrict_to_subnet)) {
                 $data->seed_restrict_to_subnet = 'y';
@@ -327,7 +331,7 @@ class DiscoveriesModel extends BaseModel
                 if (! empty($temp->error)) {
                     \Config\Services::session()->setFlashdata('error', 'Discovery not created - invalid subnet attribute supplied.');
                     log_message('error', 'Discovery not created - invalid subnet attribute supplied (' . $data->subnet . ').');
-                    return;
+                    return null;
                 }
                 $network = new \stdClass();
                 $network->name = $temp->network . '/' . $temp->network_slash;
@@ -514,18 +518,16 @@ class DiscoveriesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        // $scanOptionsModel = new \App\Models\DiscoveryScanOptionsModel();
-        // $scanOptions = $scanOptionsModel->listUser();
-        // $include['discovery_scan_options'] = $scanOptions;
-
-        $sql = "SELECT * FROM discovery_scan_options";
-        $query = $this->db->query($sql);
         $include = array();
-        $include['discovery_scan_options'] = $query->getResult();
+
+        $scanOptionsModel = new \App\Models\DiscoveryScanOptionsModel();
+        $include['discovery_scan_options'] = $scanOptionsModel->listUser();
+
+        $collectorsModel = new \App\Models\CollectorsModel();
+        $include['collectors'] = $collectorsModel->listUser();
 
         $locationsModel = new \App\Models\LocationsModel();
-        $locations = $locationsModel->listUser();
-        $include['locations'] = $locations;
+        $include['locations'] = $locationsModel->listUser();
 
         return $include;
     }
