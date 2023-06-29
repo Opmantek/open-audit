@@ -35,6 +35,35 @@ use Google\Cloud\Compute\V1\InstancesClient;
 class Util extends Controller
 {
 
+    public function subnetSize()
+    {
+        // NOTE #1 - We cannot restrict the source (like the Google function below) because it is called from the client browser.
+        // NOTE #2 - it would be nice do run the below, but unsure that Windows would handle 2>/dev/null
+        // nmap -n -sL $subnet 2>/dev/null | grep "^Nmap done" | awk '{print $3}'
+        if (!empty($_POST['subnet'])) {
+            $subnet = $_POST['subnet'];
+        } else {
+            return;
+        }
+        # filter out all characters not in the $chars list
+        $chars = "0123456789-./";
+        $pattern = "/[^" . preg_quote($chars, "/") . "]/";
+        $subnet = preg_replace($pattern, '', $subnet);
+        # now run the command
+        $command = "nmap -n -sL " . $subnet;
+        exec($command, $output, $return_var);
+        $count = 0;
+        if ($return_var === 0) {
+            foreach ($output as $line) {
+                if (stripos($line, 'Nmap scan report for') === 0) {
+                    $count = $count + 1;
+                }
+            }
+        }
+        echo $count;
+        return;
+    }
+
     public function google()
     {
         if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
