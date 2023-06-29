@@ -247,13 +247,8 @@ $categories = array_unique($categories);
                                 }
                                 echo "                            </ul>\n";
                             } ?>
-<?php if (config('Openaudit')->oae_license !== 'commercial') { ?>
-                                <li><a class="dropdown-item greyout toastProfessional" href="#"><?= __('Schedule Reports'); ?></a></li>
-                                <li><a class="dropdown-item greyout toastProfessional" href="#"><?= __('MultiReport'); ?></a></li>
-<?php } else { ?>
-                                <li><a class="dropdown-item" href="<?= url_to('tasksCollection') ?>"><?= __('Schedule Reports'); ?></a></li>
-                                <li><a class="dropdown-item" href="<?= url_to('home') ?>/multi_report"><?= __('MultiReport'); ?></a></li>
-<?php } ?>
+                                <?= menuItem('tasks', 'r', $user, '', __('Schedule') . ' ' . __('Reports')) ?>
+                                <?= menuItem('tasks', 'r', $user, '', __('MultiReport')) ?>
                             </ul>
                         </li>
 

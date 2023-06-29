@@ -33,7 +33,7 @@ $routes->collections = array('applications','attributes','baselines',
 'baselines_policies','buildings','clouds','clusters','collectors', 'components',
 'configuration','connections','credentials','dashboards','devices',
 'discoveries','discovery_log','discovery_scan_options','errors','fields','files',
-'floors','groups','integrations','ldap_servers','licenses','locations','logs',
+'floors','groups','integrations','ldap_servers','licenses','locations',
 'networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
 'rooms','rows','rules','scripts','summaries','tasks','users',
 'widgets');
@@ -81,7 +81,6 @@ $routes->cli('test', 'Cli::test', ['as' => 'test']);
 $routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 $routes->post('input/devices', 'Input::devices');
-$routes->post('input/logs', 'Input::logs');
 $routes->cli('queue/start', 'Queue::start');
 
 $routes->get('reports', 'Reports::Collection', ['filter' => \App\Filters\Session::class, 'as' => 'reportsCollection']);
@@ -142,10 +141,6 @@ foreach ($routes->collections as $collection) {
     # update
     $routes->patch($collection . '/(:num)', 'Collections::update/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Update']);
 }
-
-
-
-
 
 /*
  * --------------------------------------------------------------------
