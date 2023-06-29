@@ -304,7 +304,7 @@ class IntegrationsModel extends BaseModel
                     unset($exploded_url);
                 }
                 if ($device->system->ip === '127.0.0.1' or $device->system->ip === '127.0.1.1') {
-                    $ip = explode(',', config{'Openaudit')->ip);
+                    $ip = explode(',', config('Openaudit')->ip);
                     if (!empty($ip[0])) {
                         $device->system->ip = $ip[0];
                     }
