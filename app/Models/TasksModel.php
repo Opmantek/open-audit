@@ -46,7 +46,7 @@ class TasksModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        $result = format_data($query->getResult(), $resp->meta->collection);
+        $result = $query->getResult();
         for ($i=0; $i < count($result); $i++) {
             // SubResources
             if ($this->db->tableExists($result[$i]->type)) {
@@ -74,7 +74,7 @@ class TasksModel extends BaseModel
                 }
             }
         }
-        return $result;
+        return format_data($result, 'tasks');
     }
 
     /**
