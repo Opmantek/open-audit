@@ -238,11 +238,11 @@ if (!function_exists('response_create')) {
                     log_message('error', 'Provided: ' . $response->meta->received_data->access_token);
                     log_message('error', 'User:    ' . json_encode($instance->user->access_token));
                     log_message('error', 'Session: ' . json_encode($session->get('access_token')));
+                    \Config\Services::session()->setFlashdata('error', 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.');
                     if ($response->meta->format !== 'screen') {
                         output();
                         exit();
                     } else {
-                        \Config\Services::session()->setFlashdata('error', 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.');
                         header('Location: ' . url_to($response->meta->collection.'Collection'));
                         exit();
                     }
