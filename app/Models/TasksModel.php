@@ -115,7 +115,7 @@ class TasksModel extends BaseModel
             $data->day_of_week = implode(',', $data->day_of_week);
         }
         if (empty($data->uuid)) {
-            $data->uuid = $this->config->config['uuid'];
+            $data->uuid = config('Openaudit')->uuid;
         }
         $data = $this->createFieldData('tasks', $data);
         $this->builder->insert($data);
