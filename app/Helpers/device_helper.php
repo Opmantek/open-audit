@@ -570,8 +570,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -629,8 +629,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -688,8 +688,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -748,8 +748,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -808,8 +808,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -880,8 +880,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1008,8 +1008,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1309,8 +1309,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     if (!empty($details->device_id)) {
                         $log->device_id = $details->id;
@@ -1320,7 +1320,7 @@ if (! function_exists('deviceMatch')) {
                     $message = new \StdClass();
                     $message->message = 'HIT on IP Address (network table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', ID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . @$this->config->config['discovery_use_org_id_match'] . ', Potential OrgID: ' . $row->org_id;
+                    $message->command_output = 'IP: ' . $details->ip . ', ID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . config('Openaudit')->discovery_use_org_id_match . ', Potential OrgID: ' . $row->org_id;
                     $log_message[] = $message;
                     log_array($log, $log_message);
                     return intval($details->id);
@@ -1342,8 +1342,8 @@ if (! function_exists('deviceMatch')) {
                 $row = $query->getRow();
                 if (!empty($row->id)) {
                     if ((empty($details->org_id)) or
-                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                        (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                        (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                         $details->id = $row->id;
                         $log->device_id = $details->id;
                         $message = new \StdClass();
@@ -1403,8 +1403,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                    (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1474,8 +1474,8 @@ if (! function_exists('deviceMatch')) {
                 $row = $query->getRow();
                 if (!empty($row->id)) {
                     if ((empty($details->org_id)) or
-                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($this->config->config['discovery_use_org_id_match']) and $this->config->config['discovery_use_org_id_match'] === 'y') or
-                        (empty($this->config->config['discovery_use_org_id_match']) or $this->config->config['discovery_use_org_id_match'] === 'n')) {
+                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
+                        (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
                         $details->id = $row->id;
                         $log->device_id = $details->id;
                         $message = new \StdClass();
