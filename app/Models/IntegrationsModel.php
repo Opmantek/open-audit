@@ -282,7 +282,7 @@ class IntegrationsModel extends BaseModel
                 // The (possibly) remote system has itself as a device, see if we can determine an actual IP
                 if (stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or stripos($integration->attributes->attributes->url, 'localhost') !== false) {
                     // We're talking to ourselves
-                    $ip = explode(',', $this->config->config['ip']);
+                    $ip = explode(',', config('Openaudit')->ip);
                     if (!empty($ip[0])) {
                         $device->system->ip = $ip[0];
                     }
@@ -304,7 +304,7 @@ class IntegrationsModel extends BaseModel
                     unset($exploded_url);
                 }
                 if ($device->system->ip === '127.0.0.1' or $device->system->ip === '127.0.1.1') {
-                    $ip = explode(',', $this->config->config['ip']);
+                    $ip = explode(',', config{'Openaudit')->ip);
                     if (!empty($ip[0])) {
                         $device->system->ip = $ip[0];
                     }
@@ -520,7 +520,7 @@ class IntegrationsModel extends BaseModel
             if (php_uname('s') !== 'Windows NT') {
                 // TODO - not cloud compatible because no 'instance' on the command line
                 $instance = '';
-                $command = 'php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
+                $command = 'php ' . APPPPATH . '../public/open-audit/index.php util queue > /dev/null 2>&1 &';
                 if (php_uname('s') === 'Linux') {
                     $command = 'nohup ' . $command;
                 }
@@ -1104,7 +1104,7 @@ class IntegrationsModel extends BaseModel
                                     break;
 
                                 case 'datetime_now':
-                                    $newdevice = $this->setValue($newdevice, $field->external_field_name, $this->config->config['timestamp']);
+                                    $newdevice = $this->setValue($newdevice, $field->external_field_name, config('Openaudit')->timestamp);
                                     break;
 
                                 case 'datetime_Y-m-d H:i:s':
@@ -1113,7 +1113,7 @@ class IntegrationsModel extends BaseModel
                                     break;
 
                                 case 'date_now':
-                                    $value = date_create_from_format("Y-m-d", $this->config->config['timestamp']);
+                                    $value = date_create_from_format("Y-m-d", config('Openaudit')->timestamp);
                                     $newdevice = $this->setValue($newdevice, $field->external_field_name, $value);
                                     break;
 
