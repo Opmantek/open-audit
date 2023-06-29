@@ -164,7 +164,34 @@ class TasksModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $include = array();
+        $instance = & get_instance();
+
+        $baselinesModel = new \App\Models\BaselinesModel();
+        $include['baselines'] = $baselinesModel->listUser();
+
+        $collectorsModel = new \App\Models\CollectorsModel();
+        $include['collectors'] = $collectorsModel->listUser();
+
+        $cloudsModel = new \App\Models\CloudsModel();
+        $include['clouds'] = $cloudsModel->listUser();
+
+        $discoveriesModel = new \App\Models\DiscoveriesModel();
+        $include['discoveries'] = $discoveriesModel->listUser();
+
+        $groupsModel = new \App\Models\GroupsModel();
+        $include['groups'] = $groupsModel->listUser();
+
+        $integrationsModel = new \App\Models\IntegrationsModel();
+        $include['integrations'] = $integrationsModel->listUser();
+
+        $queriesModel = new \App\Models\QueriesModel();
+        $include['queries'] = $queriesModel->listUser();
+
+        $summariesModel = new \App\Models\SummariesModel();
+        $include['summaries'] = $summariesModel->listUser();
+
+        return $include;
     }
 
 

@@ -175,7 +175,7 @@ class GroupsModel extends BaseModel
         $properties[] = 'groups.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'fields.org_id = orgs.id', 'left');
+        $this->builder->join('orgs', 'groups.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $org_list);
         if (!empty($where[0]) and !empty($where[1])) {
             $this->builder->where($where[0], $where[1]);
