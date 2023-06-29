@@ -295,6 +295,55 @@ class TasksModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
+        if (!empty($data->options)) {
+            $received = new \stdClass();
+            if (gettype($data->options) === 'object' or gettype($data->options) === 'array') {
+                foreach ($data->options as $key => $value) {
+                        $received->$key = $value;
+                }
+            }
+            $existing = new \stdClass();
+            if (!empty($data->id)) {
+                $select = 'SELECT * FROM tasks WHERE id = ?';
+                $result = $this->db->query($select, array($data->id))->getResult();
+                if (empty($result)) {
+                    // ID provided, but does not exist
+                    return null;
+                }
+                if (!empty($result[0]->options)) {
+                    $existing = json_decode($result[0]->options);
+                }
+            }
+            $new = new \stdClass();
+            foreach ($existing as $existing_key => $existing_value) {
+                if (isset($received->$existing_key)) {
+                    $new->$existing_key = $received->$existing_key;
+                } else {
+                    $new->$existing_key = $existing->$existing_key;
+                }
+            }
+            $data->options = (string)json_encode($new);
+        }
+        if (! empty($data->{'minute[]'}) && is_array($data->{'minute[]'})) {
+            $data->minute = implode(',', $data->{'minute[]'});
+            unset($data->{'minute[]'});
+        }
+        if (! empty($data->{'hour[]'}) && is_array($data->{'hour[]'})) {
+            $data->hour = implode(',', $data->{'hour[]'});
+            unset($data->{'hour[]'});
+        }
+        if (! empty($data->{'day_of_month[]'}) && is_array($data->{'day_of_month[]'})) {
+            $data->day_of_month = implode(',', $data->{'day_of_month[]'});
+            unset($data->{'day_of_month[]'});
+        }
+        if (! empty($data->{'month[]'}) && is_array($data->{'month[]'})) {
+            $data->month = implode(',', $data->{'month[]'});
+            unset($data->{'month[]'});
+        }
+        if (! empty($data->{'day_of_week[]'}) && is_array($data->{'day_of_week[]'})) {
+            $data->day_of_week = implode(',', $data->{'day_of_week[]'});
+            unset($data->{'day_of_week[]'});
+        }
         $data = $this->updateFieldData('tasks', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);

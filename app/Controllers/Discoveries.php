@@ -38,12 +38,13 @@ class Discoveries extends BaseController
      */
     public function execute($id)
     {
+        $id = intval($id);
         $this->discoveriesModel->queue(intval($id));
         $this->queueModel = new \App\Models\QueueModel();
         $this->queueModel->start();
         if ($this->resp->meta->format !== 'screen') {
-            // TODO
-            return true;
+            $this->resp->data = $this->discoveriesModel->read($id);
+            output($this);
         } else {
             \Config\Services::session()->setFlashdata('error', 'Discovery started.');
             return redirect()->route('discoveriesRead', [$id]);
