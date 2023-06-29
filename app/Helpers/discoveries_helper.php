@@ -324,6 +324,7 @@ if (! function_exists('discover_subnet')) {
             $discoveryLogModel->create($log);
             // NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
             $log->message = 'Discovery has finished.';
+            $log->discovery_id = intval($discovery->id);
             $log->command = '';
             $log->command_output = '';
             $log->command_status = 'finished';
@@ -2112,12 +2113,13 @@ if (! function_exists('discovery_check_finished')) {
             $result = $query->getResult();
             if (!empty($result[0]->count)) {
                 $count = intval($result[0]->count);
-                $sql = 'SELECT ip_responding_count, status FROM `discoveries` WHERE `id` = ?';
+                $sql = 'SELECT `ip_responding_count`, `status` FROM `discoveries` WHERE `id` = ?';
                 $result = $db->query($sql, [$id])->getResult();
                 $device_count = intval($result[0]->ip_responding_count);
                 $status = $result[0]->status;
-                if ($count === $device_count and $status !== 'complete') {
+                if ($count >= $device_count and $status !== 'complete') {
                     // NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
+                    $log->discovery_id = $id;
                     $log->message = 'Discovery has finished.';
                     $log->command = '';
                     $log->command_output = '';
@@ -2135,7 +2137,7 @@ if (! function_exists('discovery_check_finished')) {
             foreach ($result as $discovery) {
                 if (intval($discovery->ip_responding_count) === intval($discovery->count) and $discovery->status !== 'complete') {
                     // NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
-                    $log->discovery_id = intval($discovery->id);
+                    $log->discovery_id = $id;
                     $log->message = 'Discovery has finished.';
                     $log->command = '';
                     $log->command_output = '';
@@ -2334,6 +2336,7 @@ if (! function_exists('discover_ad')) {
         }
         // NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
         $log->severity = 6;
+        $log->discovery_id = intval($discovery_id);
         $log->message = 'Discovery has finished.';
         $log->command = '';
         $log->command_output = '';
