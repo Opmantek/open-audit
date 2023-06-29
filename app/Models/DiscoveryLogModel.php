@@ -220,7 +220,7 @@ class DiscoveryLogModel extends BaseModel
         }
 
         // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
-        if (stripos($data->message, 'Discovery has finished') !== false and !empty($log->discovery_id)) {
+        if (stripos($data->message, 'Discovery has finished.') !== false and !empty($data->discovery_id)) {
             $sql = "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
             $this->db->query($sql, [$data->discovery_id]);
         }
