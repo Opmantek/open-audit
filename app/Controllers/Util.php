@@ -10,6 +10,18 @@ use CodeIgniter\Controller;
 
 use Google\Cloud\Compute\V1\InstancesClient;
 
+use Google\Protobuf;
+
+use Google\Service\Compute;
+use Google\Client;
+
+use Google\Cloud\Compute\V1\GetZoneRequest;
+use Google\Cloud\Compute\V1\ListZonesRequest;
+use Google\Cloud\Compute\V1\Zone;
+use Google\Cloud\Compute\V1\ZoneList;
+
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -69,40 +81,106 @@ class Util extends Controller
         if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
             exit;
         }
+        // echo "<pre>";
+
         $response = new stdClass();
-        $credentials = @$this->input->post('credentials');
+        $credentials = $_POST['credentials'];
         if (empty($credentials)) {
+            log_message('error', 'A request for the Google API was received, but no credentials we present in the POST.');
             $response->errors = array();
-            $error = new stdClass();
-            $error->code = 400;
-            $error->detail = "A request was sent to the Google API, but no credentials were in the POST.";
-            $error->status = "HTTP/1.1 400 Bad Request";
-            $error->title = "No credentials supplied to util/google.";
-            $response->errors[] = $error;
+            $response->errors[] = 'A request for the Google API was received, but no credentials we present in the POST.';
+            $response->meta->header = 'HTTP/1.1 400 Bad Request';
+            header($response->meta->header);
             print_r(json_encode($response));
             return;
         }
-        #set_include_path('/usr/local/open-audit/code_igniter/application/third_party/google-api-php-client-2.2.3/vendor');
-        #require_once "autoload.php";
 
-        // $instances = new InstancesClient();
-        // foreach ($instances->list_('[MY_PROJECT_ID]', 'us-west1') as $instance) {
-        //     print($instance->getName() . PHP_EOL);
-        // }
+        $credentials = json_decode($credentials, true);
 
+        $client = new \Google\Client(['credentials' => $credentials]);
 
-        $client = new Google_Client();
-        $client->setAuthConfig($credentials);
         $scope = array("https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform.read-only","https://www.googleapis.com/auth/cloudplatformprojects","https://www.googleapis.com/auth/cloudplatformprojects.readonly");
         $client->addScope($scope);
         $httpClient = $client->authorize();
-        $response = $httpClient->get('https://cloudresourcemanager.googleapis.com/v1/projects');
 
-        $projects = array();
-        if ($response->getBody()) {
-            $temp = json_decode($response->getBody());
-            $projects = $temp->projects;
+        $service = new Compute($client);
+        $zones = $service->zones->listZones($credentials['project_id']);
+        $ourZones = array();
+        foreach ($zones->items as $zone) {
+            $ourZones[] = (['id' => $zone->id, 'status' => $zone->status, 'name' => $zone->name, 'region' => $zone->region]);
         }
+        #print_r($zones);
+        #exit;
+
+        $instances = new InstancesClient(['credentials' => $credentials]);
+
+        $ourInstances = $instances->aggregatedList($credentials['project_id']);
+        foreach ($ourInstances->iteratePages() as $page) {
+            #echo json_encode($page) . "\n\n";
+            foreach ($page as $key => $element) {
+                echo json_encode($element);
+            }
+        }
+        exit;
+        foreach ($ourZones as $zone) {
+            log_message('error', 'Getting for zone: ' . $zone['name']);
+            $ourInstances = $instances->list($credentials['project_id'], $zone['name']);
+            foreach ($ourInstances->iterateAllElements() as $element) {
+                echo json_encode($element);
+                echo "\n\n";
+            }
+        }
+        exit;
+        // $response = $instances->listInstances($credentials->project_id, 'us-central1-a');
+        // print_r($response);
+        // exit;
+
+
+
+        #print_r($zones);
+        exit;
+
+        // foreach ($ourZones as $zone) {
+        //     foreach ($instances->list_($credentials->project_id, $zone) as $instance) {
+        //         print($instance->getName() . PHP_EOL);
+        //     }
+        // }
+        $instancesClient = new InstancesClient(['credentials' => $credentials]);
+        $allInstances = $instancesClient->aggregatedList($credentials->project_id);
+        print_r($allInstances);
+        exit;
+
+        printf('All instances for %s' . PHP_EOL, $credentials->project_id);
+        foreach ($allInstances as $zone => $zoneInstances) {
+            $instances = $zoneInstances->getInstances();
+            if (count($instances) > 0) {
+                printf('Zone - %s' . PHP_EOL, $zone);
+                foreach ($instances as $instance) {
+                    printf(' - %s' . PHP_EOL, $instance->getName());
+                }
+            }
+        }
+    
+
+        exit;
+
+
+        // $client->setAuthConfig($credentials);
+        // $scope = array("https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform.read-only","https://www.googleapis.com/auth/cloudplatformprojects","https://www.googleapis.com/auth/cloudplatformprojects.readonly");
+        // $client->addScope($scope);
+        // $httpClient = $client->authorize();
+        // $response = $httpClient->get('https://cloudresourcemanager.googleapis.com/v1/projects');
+        // print_r($response);
+        // exit;
+
+        // $projects = array();
+        // if ($response->getBody()) {
+        //     $temp = json_decode($response->getBody());
+        //     $projects = $temp->projects;
+        // }
+        // log_message('error', print_r($projects));
+
+            $projects = array($credentials->project_id => new \StdClass());
 
         foreach ($projects as &$project) {
             $project->instances = array();
@@ -216,6 +294,8 @@ class Util extends Controller
                     }
                 }
             }
+        } else {
+            log_message('error', "no projects");
         }
 
         header('Content-Type: application/json');

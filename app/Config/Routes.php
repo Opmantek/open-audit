@@ -86,6 +86,7 @@ $routes->cli('queue/start', 'Queue::start');
 $routes->get('reports', 'Reports::Collection', ['filter' => \App\Filters\Session::class, 'as' => 'reportsCollection']);
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
+$routes->post('util/google', 'Util::google');
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character
