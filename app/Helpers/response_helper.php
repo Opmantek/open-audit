@@ -72,11 +72,11 @@ if (!function_exists('response_create')) {
 
         if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
             $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
+            $response->errors = array();
+            $response->errors[] = $message;
+            $response->meta->header = 'HTTP/1.1 403 Forbidden';
             log_message('warning', $message);
             if ($response->meta->format === 'json') {
-                $response->meta->header = 'HTTP/1.1 403 Forbidden';
-                $response->errors = array();
-                $response->errors[] = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
                 header($response->meta->header);
                 echo json_encode($response);
                 exit();
@@ -218,13 +218,15 @@ if (!function_exists('response_create')) {
         // If we're creating data (POST), we should have an access token (configuration depending)
         if (!empty($response->meta->received_data)) {
             $session = \Config\Services::session();
-            if ($response->meta->request_method === 'POST' && ! empty(config('OpenAudit')->access_token_enable) && config('OpenAudit')->access_token_enable === 'y') {
+            if ($response->meta->request_method === 'POST' && !empty(config('OpenAudit')->access_token_enable) && config('OpenAudit')->access_token_enable === 'y') {
                 $response->errors = array();
-                $instance->response = $response;
                 if (empty($response->meta->received_data->access_token)) {
-                    \Config\Services::session()->setFlashdata('error', 'No access token provided when creating ' . $response->meta->collection . ', refresh the form and try again.');
-                    log_message('error', 'No access token provided when creating ' . $response->meta->collection);
+                    $message = 'No access token provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
+                    log_message('error', $message);
+                    $response->errors[] = $message;
+                    $response->meta->header = 'HTTP/1.1 400 Bad Request';
                     if ($response->meta->format !== 'screen') {
+                        header($response->meta->header);
                         output();
                         exit();
                     } else {
@@ -234,15 +236,16 @@ if (!function_exists('response_create')) {
                     }
                 # } else if (!in_array($response->meta->received_data->access_token, $instance->user->access_token)) {
                 } else if (!in_array($response->meta->received_data->access_token, $session->get('access_token'))) {
-                    log_message('error', 'Invalid access token provided when creating ' . $response->meta->collection);
-                    log_message('error', 'Provided: ' . $response->meta->received_data->access_token);
-                    log_message('error', 'User:    ' . json_encode($instance->user->access_token));
-                    log_message('error', 'Session: ' . json_encode($session->get('access_token')));
-                    \Config\Services::session()->setFlashdata('error', 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.');
+                    $message = 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
+                    log_message('error', $message);
+                    $response->errors[] = $message;
+                    $response->meta->header = 'HTTP/1.1 400 Bad Request';
                     if ($response->meta->format !== 'screen') {
+                        header($response->meta->header);
                         output();
                         exit();
                     } else {
+                        \Config\Services::session()->setFlashdata('error', $message);
                         header('Location: ' . url_to($response->meta->collection.'Collection'));
                         exit();
                     }
@@ -358,16 +361,19 @@ if (!function_exists('response_create')) {
 
         if (!$permission) {
             $message = 'User denied permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action . ' on item because of OrgID.';
-            if ($response->meta->format === 'json') {
-                $response->meta->header = 'HTTP/1.1 403 Forbidden';
-                $response->errors = array();
-                $response->errors[] = $message;
+            log_message('warning', $message);
+            $response->meta->header = 'HTTP/1.1 403 Forbidden';
+            $response->errors = array();
+            $response->errors[] = $message;
+            if ($response->meta->format !== 'screen') {
                 header($response->meta->header);
-                echo json_encode($response);
-                exit;
+                output();
+                exit();
+            } else {
+                \Config\Services::session()->setFlashdata('error', $message);
+                header('Location: ' . url_to($response->meta->collection.'Collection'));
+                exit();
             }
-            header('Location: ' . url_to('home'));
-            exit;
         }
         if (!empty($instance->response->logs)) {
             $response->logs = $instance->response->logs;
