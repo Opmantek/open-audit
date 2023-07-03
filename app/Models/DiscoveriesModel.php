@@ -507,6 +507,9 @@ class DiscoveriesModel extends BaseModel
         $query = $this->db->query($sql, [$id]);
         $include['discovery_log'] = $query->getResult();
 
+        $discovery_scan_optionsModel = new \App\Models\DiscoveryScanOptionsModel();
+        $include['discovery_scan_options'] = $discovery_scan_optionsModel->listUser();
+
         return $include;
     }
 
@@ -854,7 +857,9 @@ class DiscoveriesModel extends BaseModel
         $sql = "SELECT discovery_scan_options.name from discovery_scan_options where id = ?";
         $query = $this->db->query($sql, [$result[0]->attributes->scan_options->id]);
         $dco = $query->getResult();
-        $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
+        if (!empty($dco)) {
+            $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
+        }
         return $result;
     }
 
@@ -911,7 +916,20 @@ class DiscoveriesModel extends BaseModel
         }
         $sql = "SELECT * FROM discovery_scan_options WHERE id = ?";
         $options = $this->db->query($sql, [$result[0]->scan_options->id])->getResult();
-        $discovery_scan_options = $options[0];
+        if (!empty($options)) {
+            $discovery_scan_options = $options[0];
+        } else {
+            if (!empty(config('Openaudit')->discovery_default_scan_option)) {
+                $sql = "SELECT * FROM discovery_scan_options WHERE id = ?";
+                $options = $this->db->query($sql, [config('Openaudit')->discovery_default_scan_option])->getResult();
+                $discovery_scan_options = $options[0];
+            }
+            if (empty($options)) {
+                $sql = "SELECT * FROM discovery_scan_options ORDER BY id LIMIT 1";
+                $options = $this->db->query($sql, [1])->getResult();
+                $discovery_scan_options = $options[0];
+            }
+        }
         unset($discovery_scan_options->id);
         unset($discovery_scan_options->name);
         unset($discovery_scan_options->org_id);
@@ -992,6 +1010,325 @@ class DiscoveriesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
+        $error = new \stdClass();
+        $error->level = 'error';
+        $error->message = '';
+
+
+        if ( ! empty($data->subnet)) {
+            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
+                $error->message = 'Discovery could not be updated - invalid Subnet supplied (' . $data->subnet . ').';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $data->description = 'Subnet - ' . $data->subnet;
+            }
+        }
+
+        if (isset($data->ad_domain)) {
+            $data->description = 'Active Directory - ' . $data->ad_domain;
+        }
+
+        if (isset($data->ad_server)) {
+            if (filter_var($data->ad_server, FILTER_VALIDATE_IP) === false && $data->ad_server !== '') {
+                $error->message = 'Discovery could not be updated - invalid ad_server supplied (should be an IP Address).';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            }
+        }
+
+        if (isset($data->seed_ip)) {
+            if (filter_var($data->seed_ip, FILTER_VALIDATE_IP) === false && $data->seed_ip !== '') {
+                $error->message = 'Discovery could not be updated - invalid seed_ip supplied (should be an IP Address).';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            }
+        }
+
+        if (isset($data->seed_restrict_to_subnet)) {
+            if ($data->seed_restrict_to_subnet !== 'y' && $data->seed_restrict_to_subnet !== 'n' && $data->seed_restrict_to_subnet !== '') {
+                $error->message = 'Discovery could not be updated - invalid seed_restrict_to_subnet supplied (should be y or n).';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            }
+        }
+
+        if (isset($data->seed_restrict_to_private)) {
+            if ($data->seed_restrict_to_private !== 'y' && $data->seed_restrict_to_private !== 'n' && $data->seed_restrict_to_private !== '') {
+                $error->message = 'Discovery could not be updated - invalid seed_restrict_to_private supplied (should be y or n).';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            }
+        }
+
+        if (isset($data->devices_assigned_to_org)) {
+            if ( ! is_int($data->devices_assigned_to_org) && ! is_numeric($data->devices_assigned_to_org) && $data->devices_assigned_to_org !== '') {
+                $error->message = 'Discovery could not be updated - invalid devices_assigned_to_org supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                if ( ! empty($data->devices_assigned_to_org)) {
+                    $data->devices_assigned_to_org = intval($data->devices_assigned_to_org);
+                }
+            }
+        }
+
+        if (isset($data->devices_assigned_to_location)) {
+            if ( ! is_int($data->devices_assigned_to_location) && ! is_numeric($data->devices_assigned_to_location) && $data->devices_assigned_to_location !== '') {
+                $error->message = 'Discovery could not be updated - invalid devices_assigned_to_location supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                if ( ! empty($data->devices_assigned_to_location)) {
+                    $data->devices_assigned_to_location = intval($data->devices_assigned_to_location);
+                }
+            }
+        }
+
+        $db_scan_options = new \stdClass();
+        $result = $this->db->query('SELECT * FROM discoveries WHERE id = ?', array($id))->getResult();
+        $db_discovery = $result[0];
+        if (empty($db_discovery->scan_options)) {
+            $db_discovery->scan_options = new \stdClass();
+        }
+        if (is_string($db_discovery->scan_options)) {
+            $db_scan_options = json_decode($db_discovery->scan_options);
+        }
+        if (empty($db_discovery->match_options)) {
+            $db_discovery->match_options = new \stdClass();
+        }
+        if (is_string($db_discovery->match_options)) {
+            $db_match_options = json_decode($db_discovery->match_options);
+        }
+
+        if (isset($data->scan_options->id)) {
+            if (isset($data->scan_options->id) && $data->scan_options->id !== '' && ! is_numeric($data->scan_options->id)) {
+                $error->message = 'Invalid field data supplied for scan_options::id (non-numeric)';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                if ( ! empty($data->scan_options->id)) {
+                    $select = "SELECT id FROM discovery_scan_options";
+                    $result = $this->db->query($select)->getResult();
+                    $ids = array();
+                    foreach ($result as $item) {
+                        $ids[] = $item->id;
+                    }
+                    if ( ! in_array($data->scan_options->id, $ids)) {
+                        $error->message = 'Invalid ID supplied for scan_options::id (non-numeric)';
+                        log_message('error', $error->message);
+                        $GLOBALS['stash'] = $error;
+                        return false;
+                    } else {
+                        $db_scan_options->id = intval($data->scan_options->id);
+                    }
+                } else {
+                    $db_scan_options->id = 0;
+                }
+            }
+        }
+
+        $all_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'open|filtered', 'ping', 'script_timeout', 'service_version', 'snmp_timeout', 'ssh_ports', 'ssh_timeout', 'tcp_ports', 'timeout', 'timing', 'udp_ports', 'wmi_timeout');
+
+        if (isset($data->scan_options->ping)) {
+            if ($data->scan_options->ping !== 'y' && $data->scan_options->ping !== 'n' && $data->scan_options->ping !== '') {
+                $error->message = 'Discovery could not be updated - invalid ping value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->ping = $data->scan_options->ping;
+            }
+        }
+        if (isset($data->scan_options->service_version)) {
+            if ($data->scan_options->service_version !== 'y' && $data->scan_options->service_version !== 'n' && $data->scan_options->service_version !== '') {
+                $error->message = 'Discovery could not be updated - invalid service_version value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->service_version = $data->scan_options->service_version;
+            }
+        }
+        if (isset($data->scan_options->{'open|filtered'})) {
+            if ($data->scan_options->{'open|filtered'} !== 'y' && $data->scan_options->{'open|filtered'} !== 'n' && $data->scan_options->{'open|filtered'} !== '') {
+                $error->message =  'Discovery could not be updated - invalid open|filtered value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->{'open|filtered'} = $data->scan_options->{'open|filtered'};
+            }
+        }
+        if (isset($data->scan_options->filtered)) {
+            if ($data->scan_options->filtered !== 'y' && $data->scan_options->filtered !== 'n' && $data->scan_options->filtered !== '') {
+                $error->message = 'Discovery could not be updated - invalid filtered value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->filtered = $data->scan_options->filtered;
+            }
+        }
+        if (isset($data->scan_options->timeout)) {
+            if (! is_int($data->scan_options->timeout) && ! is_numeric($data->scan_options->timeout) && $data->scan_options->timeout !== '') {
+                $error->message = 'Discovery could not be updated - invalid timeout value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->timeout = intval($db_scan_options->timeout);
+                $db_scan_options->timeout = $data->scan_options->timeout;
+            }
+        }
+        if (isset($data->scan_options->timing)) {
+            if (! is_int($data->scan_options->timing) && ! is_numeric($data->scan_options->timing) && $data->scan_options->timing !== '') {
+                $error->message = 'Discovery could not be updated - invalid timing value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->timing = intval($db_scan_options->timing);
+                $db_scan_options->timing = $data->scan_options->timing;
+            }
+        }
+        if (isset($data->scan_options->nmap_tcp_ports)) {
+            if (! is_int($data->scan_options->nmap_tcp_ports) && ! is_numeric($data->scan_options->nmap_tcp_ports) && $data->scan_options->nmap_tcp_ports !== '') {
+                $error->message = 'Discovery could not be updated - invalid nmap_tcp_ports value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->nmap_tcp_ports = intval($db_scan_options->nmap_tcp_ports);
+                $db_scan_options->nmap_tcp_ports = $data->scan_options->nmap_tcp_ports;
+            }
+        }
+        if (isset($data->scan_options->nmap_udp_ports)) {
+            if (! is_int($data->scan_options->nmap_udp_ports) && ! is_numeric($data->scan_options->nmap_udp_ports) && $data->scan_options->nmap_udp_ports !== '') {
+                $error->message = 'Discovery could not be updated - invalid nmap_udp_ports value supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->nmap_udp_ports = intval($db_scan_options->nmap_udp_ports);
+                $db_scan_options->nmap_udp_ports = $data->scan_options->nmap_udp_ports;
+            }
+        }
+        if (isset($data->scan_options->tcp_ports)) {
+            if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->tcp_ports)) {
+                $error->message = 'Discovery could not be updated - invalid tcp_ports supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->tcp_ports = $data->scan_options->tcp_ports;
+            }
+        }
+        if (isset($data->scan_options->udp_ports)) {
+            if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->udp_ports)) {
+                $error->message = 'Discovery could not be updated - invalid udp_ports supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->udp_ports = $data->scan_options->udp_ports;
+            }
+        }
+        if (isset($data->scan_options->exclude_tcp_ports)) {
+            if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->exclude_tcp_ports)) {
+                // Invalid Exclude TCP ports
+                $error->message = 'Discovery could not be updated - invalid exclude_tcp_ports supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->exclude_tcp_ports = $data->scan_options->exclude_tcp_ports;
+            }
+        }
+        if (isset($data->scan_options->exclude_udp_ports)) {
+            if (! preg_match('/^[\d,\/,\/-]*$/', $data->scan_options->exclude_udp_ports)) {
+                // Invalid Exclude TCP ports
+                $error->message = 'Discovery could not be updated - invalid exclude_udp_ports supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->exclude_udp_ports = $data->scan_options->exclude_udp_ports;
+            }
+        }
+        if (isset($data->scan_options->exclude_ip)) {
+            $data->scan_options->exclude_ip = str_replace(' ', ',', $data->scan_options->exclude_ip);
+            if (! preg_match('/^[\d,\.,\/,\-,\,]*$/', $data->scan_options->exclude_ip)) {
+                $error->message = 'Discovery could not be updated - invalid exclude_ip supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->exclude_ip = $data->scan_options->exclude_ip;
+            }
+        }
+        if (isset($data->scan_options->ssh_ports)) {
+            $data->scan_options->ssh_ports = str_replace(' ', ',', $data->scan_options->ssh_ports);
+            if (! preg_match('/^[\d,\/,-]*$/', $data->scan_options->ssh_ports)) {
+                $error->message = 'Discovery could not be updated - invalid ssh_ports supplied.';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return false;
+            } else {
+                $db_scan_options->ssh_ports = $data->scan_options->ssh_ports;
+            }
+        }
+
+        if (! empty($data->match_options)) {
+            $all_options = array('match_dbus', 'match_dns_fqdn', 'match_dns_hostname', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+            foreach ($all_options as $option) {
+                if (isset($data->match_options->{$option})) {
+                    if ($data->match_options->{$option} !== 'y' && $data->match_options->{$option} !== 'n' && $data->match_options->{$option} !== '') {
+                        $error->message =  'Discovery could not be updated - invalid match value supplied.';
+                        log_message('error', $error->message);
+                        $GLOBALS['stash'] = $error;
+                        return false;
+                    } else {
+                        $db_match_options->{$option} = $data->match_options->{$option};
+                    }
+                }
+            }
+            foreach ($all_options as $option) {
+                if (! isset($db_match_options->{$option})) {
+                    $db_match_options->{$option} = '';
+                }
+            }
+            $data->match_options = json_encode($db_match_options);
+        }
+
+        if (! empty($data->scan_options)) {
+            // If we were given any attributes, they should now be incorporated into db_scan_options.
+            $data->scan_options = json_encode($db_scan_options);
+        }
+
+        if (! empty($data->killed)) {
+            unset($data->killed);
+            $log = new \stdClass();
+            $log->discovery_id = $data->id;
+            $log->system_id = null;
+            $log->timestamp = $this->config->config['timestamp'];
+            $log->severity = 6;
+            $log->function = 'logs';
+            $log->command_status = 'logs';
+            $log->pid = getmypid();
+            $log->message = 'Discovery process has been manually stopped.';
+            discovery_log($log);
+        }
+
+
         $data = $this->updateFieldData('discoveries', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
