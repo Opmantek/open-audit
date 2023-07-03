@@ -459,7 +459,9 @@ class Collections extends BaseController
             output($this);
         } else {
             $this->response->setStatusCode(400);
-            print_r(json_encode($GLOBALS['stash']));
+            if (!empty($GLOBALS['stash'])) {
+                print_r(json_encode($GLOBALS['stash']));
+            }
         }
         return;
     }

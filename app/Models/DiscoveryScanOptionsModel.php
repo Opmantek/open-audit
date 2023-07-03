@@ -211,7 +211,7 @@ class DiscoveryScanOptionsModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'applications';
+        $collection = 'discovery_scan_options';
         $dictionary = new \StdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new \StdClass();
