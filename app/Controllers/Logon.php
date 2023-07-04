@@ -73,7 +73,6 @@ class Logon extends Controller
 
         $http_accept = (!empty($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '';
         $format = '';
-        log_message('error', 'HTTP_ACCEPT: ' . $http_accept);
         if (strpos($http_accept, 'application/json') !== false) {
             $format = 'json';
         }
