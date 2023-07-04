@@ -277,18 +277,16 @@ if (!function_exists('output')) {
             }
         }
 
+        $instance->response->setContentType('text/csv');
+        $instance->response->noCache();
+        $instance->response->setHeader('Content-Disposition', 'attachment;filename="' . $filename . '.csv"');
         echo $output_csv;
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-        header('Cache-Control: max-age=0');
     }
 
     function output_json($instance)
     {
-        header('Content-Type: application/json');
-        header("Cache-Control: no-cache, no-store, must-revalidate");
-        header("Pragma: no-cache");
-        header("Expires: 0");
+        $instance->response->setContentType('application/json');
+        $instance->response->noCache();
         unset($instance->resp->meta->user);
         if ($instance->resp->meta->format === 'json') {
             echo json_encode($instance->resp);
@@ -313,10 +311,8 @@ if (!function_exists('output')) {
                 break;
         }
 
-        header('Content-Type: application/json');
-        header("Cache-Control: no-cache, no-store, must-revalidate");
-        header("Pragma: no-cache");
-        header("Expires: 0");
+        $instance->response->setContentType('application/json');
+        $instance->response->noCache();
         #echo str_replace('"function(event){location.href = this.options.url;}"', 'function(event){ location.href = this.options.url;},', json_encode($output, JSON_PRETTY_PRINT));;
         echo json_encode($instance->resp, JSON_PRETTY_PRINT);
     }
@@ -506,9 +502,9 @@ if (!function_exists('output')) {
         }
         $output .=  "</" . $instance->resp->meta->collection . ">\n";
         if ((string) $instance->config->config['download_reports'] === 'y') {
-            header('Content-Type: text/xml');
-            header('Content-Disposition: attachment;filename="' . $filename . '.xml"');
-            header('Cache-Control: max-age=0');
+            $instance->response->setContentType('text/xml');
+            $instance->response->noCache();
+            $instance->response->setHeader('Content-Disposition', 'attachment;filename="' . $filename . '.xml"');
             echo $output;
         } else {
             echo "<pre>" . htmlentities($output) . "</pre>";
@@ -557,11 +553,6 @@ if (!function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        // if ((string) config('Openaudit')->download_reports === 'y') {
-        //     header('Content-Type: text/html');
-        //     header('Content-Disposition: attachment;filename="'.$CI->resp->meta->heading.'.html"');
-        //     header('Cache-Control: max-age=0');
-        // }
     }
 
     function output_table()
@@ -587,11 +578,6 @@ if (!function_exists('output')) {
         }
         $table .= "</tbody></table>";
         echo $table;
-        // if ((string) $CI->config->config['download_reports'] === 'y') {
-        //     header('Content-Type: text/html');
-        //     header('Content-Disposition: attachment;filename="'.$CI->resp->meta->heading.'.html"');
-        //     header('Cache-Control: max-age=0');
-        // }
     }
 
     function sort_attributes($a, $b)
