@@ -143,7 +143,8 @@ abstract class BaseController extends Controller
         $this->resp = response_create($this);
 
         # log this request
-        $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $this->user->full_name;
+        $log_user = (!empty($this->user->full_name)) ? $this->user->full_name : $this->user->name;
+        $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $log_user;
         if (!empty($this->resp->meta->received_data)) {
             $data = json_encode($this->resp->meta->received_data);
             if ($this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') {
