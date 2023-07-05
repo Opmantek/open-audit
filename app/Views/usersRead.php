@@ -94,6 +94,31 @@ include 'shared/collection_functions.php';
                                 </div>
                             </div>
 
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <label for="orgs" class="form-label"><?= __('Orgs') ?></label>
+                                    <div class="input-group">
+                                     <select multiple size="6" class="form-select" id="orgs" name="orgs" disabled>
+                                        <?php foreach ($orgs as $org) {
+                                            $selected = '';
+                                            if (in_array(intval($org->id), $resource->orgs)) {
+                                                $selected = 'selected';
+                                            }
+                                            echo '<option value="' . $org->id . "\" $selected >" . __($org->attributes->name) . "</option>\n";
+                                            } ?>
+                                    </select>
+                                        <?php if ($update) { ?>
+                                        <div class="pull-right" style="padding-left:4px;">
+                                            <div data-attribute="orgs" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="orgs" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="orgs" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="orgs" data-dictionary="<?= $dictionary->columns->orgs ?>"><span><br></span></div>
+                                </div>
+                            </div>
+
                             <?php // TODO - dashboard and default display columns ?>
 
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
@@ -111,120 +136,19 @@ include 'shared/collection_functions.php';
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'full_name', 'org_id', 'edited_by', 'edited_date') ?>
                                 <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
+                                <?php $do_not_show = array('id', 'dashboard_id', 'active', 'ldap', 'type', 'devices_default_display_columns', 'access_token', 'edited_by', 'edited_date'); ?>
+                                <?php foreach ($dictionary->columns as $key => $value) {
+                                    if (!in_array($key, $do_not_show)) {
+                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                    }
+                                } ?>
                                 <?php } ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
-            <div class="row">
-                <div class="col-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-2 clearfix">
-                                        <h6 style="padding-top:10px;"><?= __('Organisations') ?></h6>
-                                </div>
-                                <div class="col-4">
-                                </div>
-                                <div class="col-6">
-                                    <div class="btn-group btn-group-sm float-end" role="group">
-                                        <div class="page-title-right">
-                                        <?php if ($user->toolbar_style === 'icontext') { ?>
-                                            <button type="button" class="btn btn-light mb-2" title="<?= __('Edit') ?>"><a href="#"><span style="margin-right:6px;" class="fa fa-edit"></span><?= __("Edit") ?></a></button>
-                                        <?php } else if ($user->toolbar_style === 'icon') { ?>
-                                            <button type="button" class="btn btn-light mb-2" title="<?= __('Edit') ?>"><a href="#"><span class="fa fa-edit"></span></a></button>
-                                        <?php } else { ?>
-                                            <button type="button" class="btn btn-light mb-2" title="<?= __('Edit') ?>"><a href="#"><?= __("Edit") ?></a></button>
-                                        <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <span class="text-center">Note - Selecting a parent will automatically provide access to its children (although it won't be shown here).<br><br></span>
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
-                                        <thead>
-                                            <tr>
-                                                <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
-                                                <th><?= __('Name') ?></th>
-                                                <th><?= __('Parent') ?></th>
-                                                <?php if ($update) { ?>
-                                                <th data-orderable="false" class="text-center"><?= __('Grant Permission') ?></th>
-                                                <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php
-                                        foreach ($orgs as $org) {
-                                            $checked = '';
-                                            if (in_array($org->id, $resource->orgs)) {
-                                                $checked = 'checked';
-                                            } ?>
-                                            <tr>
-                                                <?= collection_button_read('orgs', $org->id) ?>
-                                                <td><?= $org->attributes->name ?></td>
-                                                <td><?= $org->attributes->parent_name ?></td>
-                                                <?php if ($update) { ?>
-                                                    <td class="text-center"><input name="orgs" title="orgs" type="checkbox" value="<?= $org->id ?>" <?= $checked ?> disabled></td>
-                                                <?php } ?>
-                                            </tr>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row" style="height:46px;">
-                                <div class="col-12 clearfix">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <h6 style="padding-top:10px;"><?= __('Roles') ?></h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
-                                        <thead>
-                                            <tr>
-                                                <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
-                                                <th><?= __('Name') ?></th>
-                                                <th><?= __('Description') ?></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php foreach ($included as $role) {
-                                            if ($role->type === 'roles') { ?>
-                                            <tr>
-                                                <?= collection_button_read('roles', $role->id) ?>
-                                                <td><?= $role->attributes->name ?></td>
-                                                <td><?= $role->attributes->description ?></td>
-                                            </tr>
-                                            <?php }
-                                        } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </main>
 
 <script>

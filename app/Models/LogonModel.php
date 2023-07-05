@@ -33,7 +33,6 @@ class LogonModel extends Model
         $sql = "SELECT * FROM orgs";
         $orgs = $db->query($sql)->getResult();
 
-
         // Auth against any configured LDAP servers
         if (!empty($ldapServers)) {
             log_message('debug', 'LDAP Servers in database, validating user against.');
@@ -204,7 +203,6 @@ class LogonModel extends Model
                             // \Config\Services::session()->setFlashdata('warning',  $message);
                             continue;
                         }
-
                         // get the roles groups and match
                         $ad_users_groups = array();
                         if ($ldap->type === 'active directory') {
@@ -281,7 +279,6 @@ class LogonModel extends Model
                                 }
                             }
                         }
-
                         if (!empty($user->roles) && ! empty($user->orgs)) {
                             $user->roles = json_encode($user->roles);
                             $user->orgs = json_encode($user->orgs);
@@ -344,25 +341,38 @@ class LogonModel extends Model
             }
         }
 
-
-
-
-
-
-
         $db = db_connect();
         $sql = "SELECT * FROM users WHERE name = ? and active = 'y'";
         $query = $db->query($sql, [$username]);
         $result = $query->getResult();
-        // TODO _ REMOVE THIS
-        return $result[0];
-        if (!empty($result[0]->password)) {
-            if (password_verify($password, $result[0]->password)) {
-                $result[0]->password = '';
-                return $result[0];
-            } else {
-                return false;
+        if (!empty($result)) {
+            // New style password
+            foreach ($result as $db_user) {
+                if (password_verify($password, $db_user->password)) {
+                    $db_user->password = '';
+                    return $db_user;
+                }
+            }
+            // Old style password
+            foreach ($result as $db_user) {
+                // get the salt from the front of the hash
+                $salt = substr($db_user->password, 0, 64);
+                // the SHA256 from the end of the hash
+                $valid_hash = substr($db_user->password, 64, 64);
+                // hash the password being tested
+                $test_hash = hash('sha256', $salt.$password);
+                // if the hashes are exactly the same, the password is valid
+                if ($test_hash === $valid_hash) {
+                    // A match - update the password to the new style
+                    $sql = "UPDATE users SET `password` = ? WHERE id = ?";
+                    $db->query($sql, [password_hash($password, PASSWORD_DEFAULT), $db_user->id]);
+                    $message = 'ACCESS:users:update:' . $db_user->id . ':' . $db_user->full_name . ':{"password":"removed for logging"}';
+                    log_message('info', $message);
+                    $db_user->password = '';
+                    return $db_user;
+                }
             }
         }
+        return false;
     }
 }

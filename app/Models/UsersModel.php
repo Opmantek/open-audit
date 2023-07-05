@@ -58,6 +58,13 @@ class UsersModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (!is_string($data->roles)) {
+            $data->roles = json_encode($data->roles);
+        }
+        if (!is_string($data->orgs)) {
+            $data->orgs = json_encode($data->orgs);
+        }
+        $data->password = password_hash($data->password, PASSWORD_DEFAULT);
         $data = $this->createFieldData('users', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
@@ -107,7 +114,12 @@ class UsersModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $rolesModel = new \App\Models\RolesModel;
+        $included = array();
+        $included['roles'] = $rolesModel->listUser();
+        $dashboardsModel = new \App\Models\DashboardsModel;
+        $included['dashboards'] = $dashboardsModel->listUser();
+        return $included;
     }
 
     /**
@@ -396,23 +408,21 @@ class UsersModel extends BaseModel
 
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
+        $dictionary->columns->name = 'The name given to this user (used to login). Ideally it should be unique.';
         $dictionary->columns->full_name = 'The actual full name of this user.';
-        $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.';
         $dictionary->columns->password = 'A hashed password that enables logon when using application authentication.';
-        $dictionary->columns->full_name = 'The complete first name, last name fo this user.';
         $dictionary->columns->email = 'The users email address.';
         $dictionary->columns->lang = 'The language to translate the web interface into for the user.';
-        $dictionary->columns->active = "Is this account active? If set to 'n', the user cannot logon.";
+        $dictionary->columns->toolbar_style = 'Icon only, text only or icon and text.';
         $dictionary->columns->roles = 'A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.';
-        $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>.';
+        $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.';
+        $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.';
+        $dictionary->columns->active = "Is this account active? If set to 'n', the user cannot logon.";
         $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
         $dictionary->columns->type = "Can be 'user' or 'collector'.";
         $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.';
         $dictionary->columns->access_token = 'Internal JSON array of valid access tokens for this user.';
-        $dictionary->columns->toolbar_style = 'Icon only, text only or icon and text.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
