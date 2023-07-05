@@ -153,7 +153,7 @@ class RolesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return $query->getResult();
+        return format_data($query->getResult(), 'roles');
     }
 
     /**
