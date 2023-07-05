@@ -109,11 +109,11 @@ $categories = array_unique($categories);
         <script src="<?= base_url('js/open-audit.js') ?>"></script>
 
         <!-- CSS -->
-        <link href="<?= base_url('css/inter.css') ?>"                     rel="stylesheet">
-        <link href="<?= base_url('css/bootstrap.css') ?>"             rel="stylesheet">
+        <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/bootstrap.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
-        <link href="<?= base_url('css/font-awesome.css') ?>"              rel="stylesheet">
-        <link href="<?= base_url('css/open-audit.css') ?>"                rel="stylesheet">
+        <link href="<?= base_url('css/font-awesome.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
         <!--
         <link href="//fonts.googleapis.com/css?family=Nunito"             rel="stylesheet">
