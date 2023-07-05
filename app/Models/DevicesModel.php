@@ -286,7 +286,7 @@ class DevicesModel extends BaseModel
             }
         }
 
-        if (empty($resp_include) or in_array('locations', $resp_include)) {
+        if (empty($resp_include) or in_array('location', $resp_include)) {
             $sql = "SELECT * FROM locations WHERE org_id IN (" . $orgsList . ")";
             $query = $this->db->query($sql);
             $result = $query->getResult();
