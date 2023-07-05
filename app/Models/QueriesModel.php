@@ -173,7 +173,13 @@ class QueriesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $attributesModel = new \App\Models\AttributesModel();
+        $return = array();
+        $attributes = $attributesModel->listUser(['attributes.resource', 'queries', 'attributes.type', 'menu_category']);
+        # $included['attributes'] = format_data($attributes, 'attributes');
+        $included['attributes'] = $attributes;
+        return $included;
     }
 
     /**
@@ -323,7 +329,7 @@ class QueriesModel extends BaseModel
 
         $dictionary->attributes = new \StdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
-        $dictionary->attributes->create = array('name','sql'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->create = array('name', 'sql', 'menu_display', 'menu_category', 'org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
