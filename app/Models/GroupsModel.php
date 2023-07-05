@@ -260,7 +260,7 @@ class GroupsModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'fields';
+        $collection = 'groups';
         $dictionary = new \StdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new \StdClass();
