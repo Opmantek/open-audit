@@ -102,7 +102,7 @@ class BaseModel extends Model
         if (!empty($error['code'])) {
             $error['sql'] = str_replace("\n", " ", (string)$this->db->getLastQuery());
             $GLOBALS['stash'] = $error;
-            log_message('error', 'SQL Error: ' . json_encode(error));
+            log_message('error', 'SQL Error: ' . json_encode($error));
             log_message('error', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             return $error;
         }
