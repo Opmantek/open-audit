@@ -30,5 +30,24 @@ namespace App\Controllers;
  */
 class Integrations extends BaseController
 {
-
+    /**
+     * Execute an Integration
+     *
+     * @access public
+     * @return void
+     */
+    public function execute($id)
+    {
+        $id = intval($id);
+        $this->integrationsModel->queue(intval($id));
+        $this->queueModel = new \App\Models\QueueModel();
+        $this->queueModel->start();
+        if ($this->resp->meta->format !== 'screen') {
+            $this->resp->data = $this->integrationsModel->read($id);
+            output($this);
+        } else {
+            \Config\Services::session()->setFlashdata('error', 'Discovery started.');
+            return redirect()->route('integrationsRead', [$id]);
+        }
+    }
 }

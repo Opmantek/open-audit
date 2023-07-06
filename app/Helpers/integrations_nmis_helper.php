@@ -13,22 +13,30 @@ if (!function_exists('generate_token')) {
         $files = array ('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
         foreach ($files as $file) {
             if (file_exists($file)) {
+                log_message('debug', 'Parsing config file: ' . $file);
                 $json = file_get_contents($file);
                 break;
             }
         }
         if (empty($json)) {
+            log_message('error', 'Could not parse config file.');
             return false;
         }
         $json = @json_decode($json);
         $bin = @$json->{'directories'}->{'<omk_base>'} . '/bin/';
         $token = @$json->{'authentication'}->{'auth_token_key'}[0];
         if (empty($token)) {
+            log_message('error', 'Config file attribute auth_token_key is empty');
             return false;
+        }
+        if ($json->{'authentication'}->{'auth_method_1'} !== 'token' and $json->{'authentication'}->{'auth_method_2'} !== 'token' and $json->{'authentication'}->{'auth_method_3'} !== 'token') {
+            $message = 'One of the auth methods must be set to token for NMIS integrations to work without a username and password.';
+            log_message('error', $message);
         }
         $files = array('/usr/local/open-audit/other/generate_auth_token.pl', $bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
         foreach ($files as $file) {
             if (file_exists($file)) {
+                log_message('debug', 'Using ' . $file . ' to generate token.');
                 $command = $file;
                 break;
             }
@@ -38,6 +46,9 @@ if (!function_exists('generate_token')) {
             exec($command, $output, $return_var);
             if (!empty($output)) {
                 $user_token = trim($output[0]);
+                log_message('debug', 'Token generated is: ' . $user_token);
+            } else {
+                log_message('error', 'Command to generate token failed. Command: ' . $command);
             }
         }
         return $user_token;
@@ -459,6 +470,12 @@ if (!function_exists('integrations_collection')) {
         // Using token auth for local NMIS
         if (empty($integration->attributes->attributes->username) and empty($integration->attributes->attributes->password) and (stripos($url, 'localhost') or strpos($url, '127.0.0.1') or strpos($url, '127.0.1.1'))) {
             $token = generate_token();
+            if (empty($token)) {
+                $message = '[integrations_collection] Could not generate token.';
+                log_message('error', $message);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
+            }
             $login_url = $url . '/login/' . $token;
         } else {
             $form_fields = array(
@@ -482,36 +499,46 @@ if (!function_exists('integrations_collection')) {
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
             if ($integration->debug) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_collection] Logged on to NMIS.')";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $message = '[integrations_collection] Logged on to NMIS.';
+                log_message('debug', $message);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
             }
         } else {
             if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
                 // bad credentials
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check Username and Password.')";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $message = '[integrations_collection] Could not logon to NMIS, check Username and Password.';
+                log_message('error', $message);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
             } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check URL.')";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $message = '[integrations_collection] Could not logon to NMIS, check URL.';
+                log_message('error', $message);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
             } else if (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] Could not logon to NMIS, check URL.')";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $message = '[integrations_collection] Could not logon to NMIS, check URL.';
+                log_message('error', $message);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
             } else {
                 // Something went awry
+                log_message('error', $login_url);
                 $message = '[integrations_collection] Could not logon to NMIS, output: ' . (string)$output . '.';
+                log_message('error', $message);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $db->query($sql, [$integration->id, microtime(true), $message]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
@@ -569,7 +596,10 @@ if (!function_exists('integrations_collection')) {
             $db->query($sql, [$integration->id, microtime(true)]);
         }
         foreach ($external_devices as $device) {
-            $device->configuration->systemStatus = @strtolower($device->configuration->systemStatus);
+            $device->configuration->systemStatus = '';
+            if (!empty($device->configuration->systemStatus)) {
+                $device->configuration->systemStatus = strtolower($device->configuration->systemStatus);
+            }
             if (empty($device->configuration->location) or $device->configuration->location === 'default') {
                 $device->configuration->location = 'Default Location';
             }
@@ -816,14 +846,17 @@ if (!function_exists('integrations_create')) {
                 return array();
             } else {
                 if ($integration->debug) {
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_create] Sent device data: " . json_encode($device) . "')";
-                    $db->query($sql, [$integration->id, microtime(true)]);
+                    $message = '[integrations_create] Sent device data: ' . json_encode($device);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $db->query($sql, [$integration->id, microtime(true)], $message);
                 }
             }
             $external_device = @json_decode($output);
             if (empty($external_device)) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] No JSON in result from NMIS. Result: ' . (string)$output)";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $message = '[integrations_create] No JSON in result from NMIS. Result: ' . (string)$output;
+                log_message('error', $message);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
                 curl_close($ch);
                 unlink($ckfile);
                 return array();
@@ -833,16 +866,16 @@ if (!function_exists('integrations_create')) {
                     $message = '[integrations_create] Device ' . $device->configuration->host . ' created in NMIS.';
                     $count = count($external_devices);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
-                    $db->query($sql, [$integration->id, microtime(true)]);
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
                     if ($integration->debug) {
                         $message = '[integrations_create] Received device creation data: ' . $output;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
-                        $db->query($sql, [$integration->id, microtime(true)]);
+                        $db->query($sql, [$integration->id, microtime(true), $message]);
                     }
                 } else {
                     $message = '[integrations_create] Error: ' . $external_device->error;
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
-                    $db->query($sql, [$integration->id, microtime(true)]);
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
                 }
             }
         }

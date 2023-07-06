@@ -134,7 +134,7 @@ class IntegrationsModel extends BaseModel
                         $field->type = 'varchar';
                         $field->values = @$field->default_value;
                         $field->group_id = 1;
-                        $field->placement = 'system';
+                        $field->placement = 'devices';
                         $instance->fieldsModel->create($field);
                     }
                 }
@@ -185,6 +185,7 @@ class IntegrationsModel extends BaseModel
         if (empty($id)) {
             return false;
         }
+        $timer_start = microtime(true);
         $instance = & get_instance();
 
         $log = new \StdClass();
@@ -278,13 +279,13 @@ class IntegrationsModel extends BaseModel
 
         // Check retrieved devices for 'localhost' or '127.0.0.1' which may or may not be this Open-AudIT server
         foreach ($external_formatted_devices as $device) {
-            if ($device->system->ip === '127.0.0.1' or $device->system->ip === '127.0.1.1' or $device->system->ip === 'localhost') {
+            if ($device->devices->ip === '127.0.0.1' or $device->devices->ip === '127.0.1.1' or $device->devices->ip === 'localhost') {
                 // The (possibly) remote system has itself as a device, see if we can determine an actual IP
                 if (stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or stripos($integration->attributes->attributes->url, 'localhost') !== false) {
                     // We're talking to ourselves
                     $ip = explode(',', config('Openaudit')->ip);
                     if (!empty($ip[0])) {
-                        $device->system->ip = $ip[0];
+                        $device->devices->ip = $ip[0];
                     }
                     unset($ip);
                 } else {
@@ -295,18 +296,18 @@ class IntegrationsModel extends BaseModel
                     $host = $exploded_host[0];
                     if (filter_var($host, FILTER_VALIDATE_IP) === false) {
                         // we have a name that must be DNS resolvable
-                        $device->system->ip = gethostbyname($host);
+                        $device->devices->ip = gethostbyname($host);
                     } else {
-                        $device->system->ip = $host;
+                        $device->devices->ip = $host;
                     }
                     unset($host);
                     unset($exploded_host);
                     unset($exploded_url);
                 }
-                if ($device->system->ip === '127.0.0.1' or $device->system->ip === '127.0.1.1') {
+                if ($device->devices->ip === '127.0.0.1' or $device->devices->ip === '127.0.1.1') {
                     $ip = explode(',', config('Openaudit')->ip);
                     if (!empty($ip[0])) {
-                        $device->system->ip = $ip[0];
+                        $device->devices->ip = $ip[0];
                     }
                     unset($ip);
                 }
@@ -323,6 +324,7 @@ class IntegrationsModel extends BaseModel
         foreach ($integration->attributes->fields as $field) {
             if ($field->matching_attribute === 'y') {
                 $field_name = str_replace('system.', 'match_', $field->internal_field_name);
+                $field_name = str_replace('devices.', 'match_', $field->internal_field_name);
                 $parameters->match->{$field_name} = 'y';
             }
         }
@@ -336,25 +338,25 @@ class IntegrationsModel extends BaseModel
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
 
-            $message = 'DEVICE - ' . json_encode($device->system);
+            $message = 'DEVICE - ' . json_encode($device->devices);
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
         }
 
         foreach ($external_formatted_devices as $device) {
-            $device->system->last_seen_by = 'integrations';
-            $device->system->org_id = $integration->attributes->org_id;
-            $parameters->details = $device->system;
-            $id = deviceMatch($device->system, 0, $parameters->match);
+            $device->devices->last_seen_by = 'integrations';
+            $device->devices->org_id = $integration->attributes->org_id;
+            $parameters->details = $device->devices;
+            $id = deviceMatch($device->devices, 0, $parameters->match);
             if (!empty($id)) {
                 // We matched an existing device
-                $device->system->id = $id;
-                $message = 'Device match found, ID: ' . $id . ' for ' . $device->system->name;
+                $device->devices->id = $id;
+                $message = 'Device match found, ID: ' . $id . ' for ' . $device->devices->name;
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             } else {
                 // No existing device
-                $message = 'No device match found for ' . $device->system->name;
+                $message = 'No device match found for ' . $device->devices->name;
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             }
@@ -378,7 +380,7 @@ class IntegrationsModel extends BaseModel
             foreach ($external_formatted_devices as $device) {
                 foreach ($locations as $location) {
                     if (!empty($device->locations->name) && $device->locations->name === $location->name) {
-                        $device->system->location_id = $location->id;
+                        $device->devices->location_id = $location->id;
                         break;
                     }
                 }
@@ -393,46 +395,47 @@ class IntegrationsModel extends BaseModel
             $create = 0;
             $device_ids = array();
             foreach ($external_formatted_devices as $device) {
-                if (!empty($device->system->id)) {
+                if (!empty($device->devices->id)) {
                     // Update
-                    $device_ids[] = intval($device->system->id);
+                    $device_ids[] = intval($device->devices->id);
                     $temp_device = new \StdClass();
-                    $temp_device->id = $device->system->id;
+                    $temp_device->id = $device->devices->id;
                     $temp_device->last_seen_by = 'integrations';
                     // If this is the FIRST time we have integrated this device
                     // IE, the existing device we have matched in the database doesn't have an omk_uuid
                     // then we should use all external attributes, disregarding the priority
                     $sql = "SELECT omk_uuid FROM devices WHERE id = ?";
-                    $result = $this->db->query($sql, [intval($device->system->id)])->getResult();
+                    $result = $this->db->query($sql, [intval($device->devices->id)])->getResult();
                     foreach ($integration->attributes->fields as $field) {
                         if (($field->priority === 'external' or (empty($result[0]->uuid) and $integration->attributes->type === 'nmis')) and strpos($field->internal_field_name, 'devices.') !== false) {
                             // a regular field in Open-AudIT that we should update
                             $system_field = str_replace('devices.', '', $field->internal_field_name);
-                            if (!empty($device->system->{$system_field})) { # TODO - something better than not empty
-                                $temp_device->{$system_field} = $device->system->{$system_field};
+                            if (!empty($device->devices->{$system_field})) { # TODO - something better than not empty
+                                $temp_device->{$system_field} = $device->devices->{$system_field};
                             }
                         }
                     }
-                    $message = 'Updating device ID: ' . $device->system->id . ' for ' . $device->system->name . ' in Open-AudIT.';
+                    $message = 'Updating device ID: ' . $device->devices->id . ' for ' . $device->devices->name . ' in Open-AudIT.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     $devicesModel->update($temp_device);
                     $update++;
-                    $device->system->ip = ip_address_from_db($device->system->ip);
+                    $device->devices->ip = ip_address_from_db($device->devices->ip);
                     $discover_devices[] = $device;
                 } else {
                     // insert
-                    $device->system->id = $devicesModel->insert($device->system);
-                    if (!empty($device->system->id)) {
-                        $message = 'Device Created internally ID: ' . $device->system->id . ', ' . $device->system->name;
+                    log_message('debug', json_encode($device->devices));
+                    $device->devices->id = $devicesModel->create($device->devices);
+                    if (!empty($device->devices->id)) {
+                        $message = 'Device Created internally ID: ' . $device->devices->id . ', ' . $device->devices->name;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                         $query = $this->db->query($sql, [$integration->id, microtime(true), $message]);
                         $create++;
-                        $device_ids[] = intval($device->system->id);
-                        $device->system->ip = ip_address_from_db($device->system->ip);
+                        $device_ids[] = intval($device->devices->id);
+                        $device->devices->ip = ip_address_from_db($device->devices->ip);
                         $discover_devices[] = $device;
                     } else {
-                        $message = 'Could not create device ' . $device->system->name;
+                        $message = 'Could not create device ' . $device->devices->name;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
                         $query = $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     }
@@ -460,7 +463,7 @@ class IntegrationsModel extends BaseModel
         // Run Rules
         if ($integration->attributes->create_internal_from_external === 'y' or $integration->attributes->update_internal_from_external === 'y') {
             foreach ($external_formatted_devices as $device) {
-                $rulesModel->execute(null, $integration->attributes->discovery_id, 'update', intval($device->system->id));
+                $rulesModel->execute(null, $integration->attributes->discovery_id, 'update', intval($device->devices->id));
             }
         }
 
@@ -484,23 +487,23 @@ class IntegrationsModel extends BaseModel
             // put each device in the queue
             $count = 0;
             foreach ($discover_devices as $device) {
-                if (filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
-                    $message = 'Add ' . $device->system->name . ' to discovery queue.';
+                if (filter_var($device->devices->ip, FILTER_VALIDATE_IP)) {
+                    $message = 'Add ' . $device->devices->name . ' to discovery queue.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
 
                     $item = new \StdClass();
-                    $item->ip = ip_address_from_db($device->system->ip);
+                    $item->ip = ip_address_from_db($device->devices->ip);
                     $item->discovery_id = intval($integration->attributes->discovery_id);
                     $details = json_encode($item);
                     unset($item);
-                    $queneModel->create('ip_scan', $details);
+                    $queueModel->create('ip_scan', $details);
                     $count = $count + 1;
-                    $message = 'IP ' . $device->system->ip . ' responding, adding to device list.';
+                    $message = 'IP ' . $device->devices->ip . ' responding, adding to device list.';
                     $sql = "INSERT INTO discovery_log VALUES (null, ?, ?, NOW(), 7, 'debug', ?, ?, 'm_integrations', 'execute', ?, '', 'notice', 0, '')";
-                    $query = $this->db->query($sql, [$integration->attributes->discovery_id, $device->system->id, getmypid(), $device->system->ip, $message]);
+                    $query = $this->db->query($sql, [$integration->attributes->discovery_id, $device->devices->id, getmypid(), $device->devices->ip, $message]);
                 } else {
-                    $message = 'Not adding ' . $device->system->name . ' to discovery queue - no IP.';
+                    $message = 'Not adding ' . $device->devices->name . ' to discovery queue - no IP.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
                     $query = $this->db->query($sql, [$integration->id, microtime(true), $message]);
                 }
@@ -616,6 +619,7 @@ class IntegrationsModel extends BaseModel
             foreach ($integration->attributes->fields as $field) {
                 if ($field->matching_attribute === 'y') {
                     $field_name = str_replace('system.', 'match_', $field->internal_field_name);
+                    $field_name = str_replace('devices.', 'match_', $field->internal_field_name);
                     $parameters->match->{$field_name} = 'y';
                 }
             }
@@ -627,23 +631,23 @@ class IntegrationsModel extends BaseModel
             }
 
             foreach ($external_created_devices as $device) {
-                $parameters->details = $device->system;
-                $device->system->id = deviceMatch($device->system);
-                if (!empty($device->system->id)) {
+                $parameters->details = $device->devices;
+                $device->devices->id = deviceMatch($device->devices);
+                if (!empty($device->devices->id)) {
                     if ($integration->debug) {
-                        $message = 'Found device with ID: ' . $device->system->id . ' for ' . $device->system->name;
+                        $message = 'Found device with ID: ' . $device->devices->id . ' for ' . $device->devices->name;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                         $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     }
                 } else {
-                    $message = 'No match found for - ' . json_encode($device->system);
+                    $message = 'No match found for - ' . json_encode($device->devices);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
                 }
-                $temp_device = $device->system;
+                $temp_device = $device->devices;
                 $temp_device->last_seen_by = 'integrations';
                 if (!empty($temp_device->id)) {
-                    $message = 'Updating internal device ID: ' . $device->system->id . ' for ' . $device->system->name;
+                    $message = 'Updating internal device ID: ' . $device->devices->id . ' for ' . $device->devices->name;
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     if ($integration->debug) {
@@ -657,7 +661,7 @@ class IntegrationsModel extends BaseModel
                     }
                     $this->m_device->update($temp_device);
                 } else {
-                    $message = 'No internal device ID returned for ' . $device->system->name . ', not updating internal device.';
+                    $message = 'No internal device ID returned for ' . $device->devices->name . ', not updating internal device.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
                     $query = $this->db->query($sql, [$integration->id, microtime(true), $message]);
                 }
@@ -692,7 +696,7 @@ class IntegrationsModel extends BaseModel
                                             $hit = true;
                                             if ($integration->debug) {
                                                 // TODO - ip not seeing in logs
-                                                $message = "Updating {$local_device->system->ip} because {$ifield->external_field_name} == $test";
+                                                $message = "Updating {$local_device->devices->ip} because {$ifield->external_field_name} == $test";
                                                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                                                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
                                             }
@@ -812,20 +816,20 @@ class IntegrationsModel extends BaseModel
             $external_formatted_devices[] = $newdevice;
         }
 
-        # Ensure we have an IP in system.ip
+        # Ensure we have an IP in devices.ip
         foreach ($external_formatted_devices as $device) {
-            if (isset($device->system->ip) and !empty($device->system->ip)) {
-                if (!filter_var($device->system->ip, FILTER_VALIDATE_IP)) {
-                    if (strpos('.', $device->system->ip) !== false) {
-                        $device->system->dns_fqdn = $device->system->ip;
+            if (isset($device->devices->ip) and !empty($device->devices->ip)) {
+                if (!filter_var($device->devices->ip, FILTER_VALIDATE_IP)) {
+                    if (strpos('.', $device->devices->ip) !== false) {
+                        $device->devices->dns_fqdn = $device->devices->ip;
                     } else {
-                        $device->system->dns_hostname = $device->system->ip;
+                        $device->devices->dns_hostname = $device->devices->ip;
                     }
-                    $device->system->ip = gethostbyname($device->system->ip);
+                    $device->devices->ip = gethostbyname($device->devices->ip);
                 }
-                $fqdn = @gethostbyaddr($device->system->ip);
-                if (empty($device->system->dns_fqdn) and strpos($fqdn, '.') !== false) {
-                    $device->system->dns_fqdn = $fqdn;
+                $fqdn = @gethostbyaddr($device->devices->ip);
+                if (empty($device->devices->dns_fqdn) and strpos($fqdn, '.') !== false) {
+                    $device->devices->dns_fqdn = $fqdn;
                 }
             }
         }
@@ -938,7 +942,7 @@ class IntegrationsModel extends BaseModel
                 $device->fields = new \StdClass();
                 foreach ($custom_fields as $custom_field) {
                     foreach ($fields as $field) {
-                        if ($field->name === $custom_field->internal_field_name and intval($field->system_id) === intval($device->id)) {
+                        if ($field->name === $custom_field->internal_field_name and intval($field->device_id) === intval($device->id)) {
                             $device->fields->{$custom_field->internal_field_name} = $field->value;
                         }
                     }
@@ -982,7 +986,7 @@ class IntegrationsModel extends BaseModel
             if (is_array($credentials)) {
                 foreach ($devices as $device) {
                     foreach ($credentials as $credential) {
-                        if (intval($credential->system_id) === intval($device->id)) {
+                        if (intval($credential->device_id) === intval($device->id)) {
                             $credential->credentials = json_decode(simpleDecrypt($credential->credentials));
                             foreach ($credential->credentials as $key => $value) {
                                 $device->credentials->{$credential->type . '_' . $key} = $value;
@@ -1015,7 +1019,22 @@ class IntegrationsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $include = array();
+        $sql = "SELECT * FROM integrations_log WHERE integrations_id = ?";
+        $result = $this->db->query($sql, [$id])->getResult();
+        $include['integrations_log'] = format_data($result, 'integrations_log');
+
+        $sql = "SELECT `devices` FROM integrations WHERE id = ?";
+        $data = array(intval($id));
+        $result = $this->db->query($sql, [$id])->getResult();
+        $device_ids = @json_decode($result[0]->devices);
+        if (!empty($device_ids)) {
+            $sql = "SELECT id, name, ip, type, fqdn FROM devices WHERE id IN (" . implode(',', $device_ids) . ")";
+            $devices = $this->db->query($sql)->getResult();
+            $include['devices'] = format_data($devices, 'devices');
+        }
+
+        return $include;
     }
 
     /**
@@ -1056,6 +1075,7 @@ class IntegrationsModel extends BaseModel
                         $newdevice = $this->setValue($newdevice, $field->external_field_name, $field->default_value);
                     } else {
                         $value = $this->getValue($internal_device, str_replace('system.', '', $field->internal_field_name));
+                        $value = $this->getValue($internal_device, str_replace('devices.', '', $field->internal_field_name));
                         if (empty($value) and (string)$field->default_value !== '') {
                             $value = $field->default_value;
                         }
@@ -1212,15 +1232,13 @@ class IntegrationsModel extends BaseModel
         $this->db->query($sql, [$id]);
         // Queue the item
         $queueModel = new \App\Models\QueueModel();
-        $instance = & get_instance();
-        $instance->queueModel = new \App\Models\QueueModel();
-        $queue_item = new \stdClass();
-        $queue_item->details = new \stdClass();
-        $queue_item->details->name = $integration->attributes->name;
-        $queue_item->details->org_id = $integration->attributes->org_id;
-        $queue_item->details->integrations_id = $id;
-        $queue_item->type = 'integrations';
-        $temp = $queueModel->create($queue_item);
+        $data = new \stdClass();
+        $data->details = new \stdClass();
+        $data->details->name = $integration->attributes->name;
+        $data->details->org_id = $integration->attributes->org_id;
+        $data->details->integrations_id = $id;
+        $data->type = 'integrations';
+        $temp = $queueModel->create($data);
         if (!empty($temp)) {
             return true;
         } else {
@@ -1309,7 +1327,7 @@ class IntegrationsModel extends BaseModel
                 // do have credentials from externally, insert those - regardless of priority
                 // If we have priority for the external, delete any existing and insert external creds
                 $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE device_id = ? AND type = 'snmp'";
-                $data = array(intval($device->system->id));
+                $data = array(intval($device->devices->id));
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
@@ -1319,20 +1337,20 @@ class IntegrationsModel extends BaseModel
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                    $this->db->query($sql, [$device->system->id, 'SNMP from ' . $integration->attributes->type, '', $credentials]);
+                    $this->db->query($sql, [$device->devices->id, 'SNMP from ' . $integration->attributes->type, '', $credentials]);
                 } else {
                     if ($cred_fields->snmp_community === 'external') {
-                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'snmp'";
-                        $this->db->query($sql, [intval($device->system->id)]);
+                        $sql = "DELETE FROM credential WHERE device_id = ? AND type = 'snmp'";
+                        $this->db->query($sql, [intval($device->devices->id)]);
                         $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                        $this->db->query($sql, [$device->system->id, 'SNMP from ' . $integration->attributes->type, '', $credentials]);
+                        $this->db->query($sql, [$device->devices->id, 'SNMP from ' . $integration->attributes->type, '', $credentials]);
                     }
                 }
             }
 
             if (!empty($device->credentials->windows_username)) {
                 $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE device_id = ? AND type = 'windows'";
-                $data = array(intval($device->system->id));
+                $data = array(intval($device->devices->id));
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
@@ -1343,20 +1361,20 @@ class IntegrationsModel extends BaseModel
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                    $this->db->query($sql, [$device->system->id, 'Windows from ' . $integration->attributes->type, '', $credentials]);
+                    $this->db->query($sql, [$device->devices->id, 'Windows from ' . $integration->attributes->type, '', $credentials]);
                 } else {
                     if ($cred_fields->windows_username === 'external' or $cred_fields->windows_password === 'external') {
-                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'windows'";
-                        $this->db->query($sql, [intval($device->system->id)]);
+                        $sql = "DELETE FROM credential WHERE device_id = ? AND type = 'windows'";
+                        $this->db->query($sql, [intval($device->devices->id)]);
                         $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
-                        $this->db->query($sql, [$device->system->id, 'Windows from ' . $integration->attributes->type, '', $credentials]);
+                        $this->db->query($sql, [$device->devices->id, 'Windows from ' . $integration->attributes->type, '', $credentials]);
                     }
                 }
             }
 
             if (!empty($device->credentials->authentication_passphrase) or !empty($device->credentials->privacy_passphrase)) {
                 $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE device_id = ? AND type = 'snmp_v3'";
-                $data = array(intval($device->system->id));
+                $data = array(intval($device->devices->id));
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
@@ -1377,20 +1395,20 @@ class IntegrationsModel extends BaseModel
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
-                    $this->db->query($sql, [$device->system->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials]);
+                    $this->db->query($sql, [$device->devices->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials]);
                 } else {
                     if ($cred_fields->authentication_passphrase === 'external' or $cred_fields->security_name === 'external') {
-                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'snmp_v3'";
-                        $this->db->query($sql, [intval($device->system->id)]);
+                        $sql = "DELETE FROM credential WHERE device_id = ? AND type = 'snmp_v3'";
+                        $this->db->query($sql, [intval($device->devices->id)]);
                         $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
-                        $this->db->query($sql, [$device->system->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials]);
+                        $this->db->query($sql, [$device->devices->id, 'SNMPv3 from ' . $integration->attributes->type, '', $credentials]);
                     }
                 }
             }
 
             if (!empty($device->credentials->ssh_username)) {
                 $sql = "SELECT COUNT(*) AS `count` FROM credential WHERE device_id = ? AND type = 'ssh'";
-                $data = array(intval($device->system->id));
+                $data = array(intval($device->devices->id));
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
@@ -1401,13 +1419,13 @@ class IntegrationsModel extends BaseModel
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
-                    $this->db->query($sql, [$device->system->id, 'SSH from ' . $integration->attributes->type, '', $credentials]);
+                    $this->db->query($sql, [$device->devices->id, 'SSH from ' . $integration->attributes->type, '', $credentials]);
                 } else {
                     if ($cred_fields->windows_username === 'external' or $cred_fields->windows_password === 'external') {
-                        $sql = "DELETE FROM credential WHERE system_id = ? AND type = 'ssh'";
-                        $this->db->query($sql, [intval($device->system->id)]);
+                        $sql = "DELETE FROM credential WHERE device_id = ? AND type = 'ssh'";
+                        $this->db->query($sql, [intval($device->devices->id)]);
                         $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
-                        $this->db->query($sql, [$device->system->id, 'SSH from ' . $integration->attributes->type, '', $credentials]);
+                        $this->db->query($sql, [$device->devices->id, 'SSH from ' . $integration->attributes->type, '', $credentials]);
                     }
                 }
             }
@@ -1421,8 +1439,7 @@ class IntegrationsModel extends BaseModel
         $all_fields = $query->getResult();
         foreach ($devices as $device) {
             $sql = "SELECT * FROM field WHERE device_id = ?";
-            $query = $this->db->query($sql, [$device->system->id]);
-            $device_fields = $query->result();
+            $device_fields = $this->db->query($sql, [$device->devices->id])->getResult();
             foreach ($integration->attributes->fields as $field) {
                 if ($field->priority === 'external' and (strpos($field->internal_field_name, 'fields.') !== false or $field->internal_field_name === '')) {
                     // a custom field in Open-AudIT that we should update
@@ -1451,10 +1468,10 @@ class IntegrationsModel extends BaseModel
                     if (!$device_field_id) {
                         // Insert a new field
                         $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
-                        $this->db->query($sql, [$device->system->id, $id, $device->fields->{$field_name}]);
+                        $this->db->query($sql, [$device->devices->id, $id, $device->fields->{$field_name}]);
                         // Insert an edit log
-                        $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was created', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
-                        $this->db->query($sql, [$device->system->id, $field_name, $device->fields->{$field_name}, $value]);
+                        $sql = "INSERT INTO edit_log (user_id, device_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was created', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
+                        $this->db->query($sql, [$device->devices->id, $field_name, $device->fields->{$field_name}, $value]);
                     } else {
                         // We already have the field associated to the device, check if the value has changed befofe updating
                         if ((string)$value !== (string)$device->fields->{$field_name}) {
@@ -1462,8 +1479,8 @@ class IntegrationsModel extends BaseModel
                             $sql = "UPDATE field SET value = ? WHERE id = ?";
                             $query = $this->db->query($sql, [$device->fields->{$field_name}, $device_field_id]);
                             // Insert an edit log
-                            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was updated', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
-                            $this->db->query($sql, [$device->system->id, $field_name, $device->fields->{$field_name}, $value]);
+                            $sql = "INSERT INTO edit_log (user_id, device_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was updated', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";
+                            $this->db->query($sql, [$device->devices->id, $field_name, $device->fields->{$field_name}, $value]);
                         }
                     }
                 }
