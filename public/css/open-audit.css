@@ -190,6 +190,16 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
     border-color: #8cc152;
     color: #fff;
 }
+
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 1.25rem 1rem;
+}
+
+
 /*
 .btn-default {
     border-color: #aab2bd !important;

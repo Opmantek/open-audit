@@ -115,14 +115,6 @@ $categories = array_unique($categories);
         <link href="<?= base_url('css/font-awesome.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
-        <!--
-        <link href="//fonts.googleapis.com/css?family=Nunito"             rel="stylesheet">
-        <link href="<?= base_url('css/google-fonts.css') ?>" rel="stylesheet" type="text/css"/>
-        <link href="<?= base_url('css/prismjs.bundle.css') ?>" rel="stylesheet" type="text/css"/>
-        <link href="<?= base_url('css/datatables.bundle.css') ?>" rel="stylesheet" type="text/css"/>
-        <link href="<?= base_url('css/plugins.bundle.css') ?>" rel="stylesheet" type="text/css"/>
-        -->
-
         <!-- Open-AudIT specific items -->
         <script>
             <?php
@@ -609,7 +601,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <?php } else { ?>
                     <?= $_SESSION['error'] ?>
                 <?php } ?>
-                <button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
         <?php } ?>
@@ -617,7 +609,7 @@ if (!empty(config('Openaudit')->modules)) {
         <div class="container-fluid">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <?= $_SESSION['warning'] ?>
-                <button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
         <?php } ?>
@@ -625,13 +617,12 @@ if (!empty(config('Openaudit')->modules)) {
         <div class="container-fluid">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= $_SESSION['success'] ?>
-                <button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
         <?php } ?>
 
         <!-- Toasts -->
-
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container top-0 end-0 p-3">
                 <div class="toast toast-ent" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastEnterprise">
