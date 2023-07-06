@@ -164,9 +164,9 @@ class Queue extends BaseController
                 log_message('debug', $microtime . " " . "Auditing IP " . $details->ip . " as per type COMPLETED.");
             }
 
-            #if ($item->type === 'integrations') {
-            #    $integrationsModel->execute($details->integrations_id);
-            #}
+            if ($item->type === 'integrations') {
+                $integrationsModel->execute($details->integrations_id);
+            }
         }
     }
 }
