@@ -109,6 +109,14 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'integrations') {
+        foreach ($result as $item) {
+            $item->additional_items = json_decode($item->additional_items);
+            $item->attributes = json_decode($item->attributes);
+            $item->fields = json_decode($item->fields);
+        }
+    }
+
     if ($type === 'roles') {
         foreach ($result as $item) {
             $item->permissions = json_decode($item->permissions);
