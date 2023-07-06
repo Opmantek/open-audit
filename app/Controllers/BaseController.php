@@ -210,15 +210,14 @@ abstract class BaseController extends Controller
 
         if ($this->resp->meta->format === 'screen' and $this->resp->meta->action !== 'help') {
             $action = $this->resp->meta->permission_requested[$this->resp->meta->action];
-            #if (!empty($this->config->enterprise_collections[$this->resp->meta->collection]) and strpos($this->config->enterprise_collections[$this->resp->meta->collection], $action) !== false) {
-            if (!empty(config('Openaudit')->enterprise_collections[$this->resp->meta->collection]) and strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], $action) !== false) {
+            if (!empty(config('Openaudit')->enterprise_collections[$this->resp->meta->collection]) and strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], $action) !== false and $this->resp->meta->action !== 'defaults') {
                 log_message('info', 'License to do ' . $this->resp->meta->action . ' on ' . $this->resp->meta->collection . ' is required.');
                 \Config\Services::session()->setFlashdata('error', 'This feature is limited to Enterprise licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
                 header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
                 exit();
             }
 
-            if (!empty(config('Openaudit')->professional_collections[$this->resp->meta->collection]) and strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], $action) !== false) {
+            if (!empty(config('Openaudit')->professional_collections[$this->resp->meta->collection]) and strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], $action) !== false and $this->resp->meta->action !== 'defaults') {
                 log_message('info', 'License to do ' . $this->resp->meta->action . ' on ' . $this->resp->meta->collection . ' is required.');
                 \Config\Services::session()->setFlashdata('error', 'This feature is limited to Professional licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
                 header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
