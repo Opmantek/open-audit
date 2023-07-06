@@ -392,14 +392,15 @@ class Collections extends BaseController
         if ($this->resp->meta->collection !== 'database') {
             $this->resp->meta->id = intval($this->resp->meta->id);
         }
+        log_message('debug', 'ID: ' . $this->resp->meta->id);
         $this->resp->data = $this->{$this->resp->meta->collection.'Model'}->read($this->resp->meta->id);
         $this->resp->meta->total = count($this->{$this->resp->meta->collection.'Model'}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if ($this->resp->meta->collection === 'database') {
-            $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->id) . "Model";
-            $IdModel = new $namespace;
-            $dictionary =  $IdModel->dictionary();
+            // $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->id) . "Model";
+            // $IdModel = new $namespace;            
+            // $dictionary =  $IdModel->dictionary();
         }
         if ($this->resp->meta->collection === 'components' and $this->resp->data[0]->type === 'attachment') {
             return $this->response->download($this->resp->data[0]->attributes->filename, null);
