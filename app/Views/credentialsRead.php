@@ -26,7 +26,7 @@ include 'shared/read_functions.php';
                                             <option value='windows'><?= __('Windows') ?></option>
                                         </select>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php if ($resource->type === 'snmp') {
@@ -54,14 +54,14 @@ include 'shared/read_functions.php';
                                                 <option value="SHA">SHA</option>
                                             </select>
                                             <?php if ($update) { ?>
-                                            <div class="pull-right" style="padding-left:4px;">
+                                            <div class="float-right" style="padding-left:4px;">
                                                 <div data-attribute="credentials.authentication_protocol" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                                 <div data-attribute="credentials.authentication_protocol" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                                 <div data-attribute="credentials.authentication_protocol" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.authentication_protocol" data-dictionary="<?= $dictionary->columns->authentication_protocol ?>"><span><br></span></div>
+                                        <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="credentials.authentication_protocol" data-dictionary="<?= $dictionary->columns->authentication_protocol ?>"><span><br></span></div>
                                     </div>
                                 </div>
 
@@ -76,14 +76,14 @@ include 'shared/read_functions.php';
                                                 <option value="DES">DES</option>
                                             </select>
                                             <?php if ($update) { ?>
-                                            <div class="pull-right" style="padding-left:4px;">
+                                            <div class="float-right" style="padding-left:4px;">
                                                 <div data-attribute="credentials.privacy_protocol" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                                 <div data-attribute="credentials.privacy_protocol" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                                 <div data-attribute="credentials.privacy_protocol" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.privacy_protocol" data-dictionary="<?= $dictionary->columns->privacy_protocol ?>"><span><br></span></div>
+                                        <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="credentials.privacy_protocol" data-dictionary="<?= $dictionary->columns->privacy_protocol ?>"><span><br></span></div>
                                     </div>
                                 </div>
 
@@ -97,14 +97,14 @@ include 'shared/read_functions.php';
                                                 <option value="authPriv">authPriv</option>
                                             </select>
                                             <?php if ($update) { ?>
-                                            <div class="pull-right" style="padding-left:4px;">
+                                            <div class="float-right" style="padding-left:4px;">
                                                 <div data-attribute="credentials.security_level" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                                 <div data-attribute="credentials.security_level" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                                 <div data-attribute="credentials.security_level" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="credentials.security_level" data-dictionary="<?= $dictionary->columns->security_level ?>"><span><br></span></div>
+                                        <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="credentials.security_level" data-dictionary="<?= $dictionary->columns->security_level ?>"><span><br></span></div>
                                     </div>
                                 </div>
 

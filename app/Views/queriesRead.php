@@ -24,14 +24,14 @@ include 'shared/read_functions.php';
                                         <option value='n'><?php echo __('No'); ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="pull-right" style="padding-left:4px;">
+                                        <div class="float-right" style="padding-left:4px;">
                                             <div data-attribute="menu_display" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="menu_display" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="menu_display" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="menu_display" data-dictionary="<?= $dictionary->columns->menu_display ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="menu_display" data-dictionary="<?= $dictionary->columns->menu_display ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -43,14 +43,14 @@ include 'shared/read_functions.php';
                                     <div class="input-group">
                                         <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= $resource->sql ?></textarea>
                                         <?php if ($update) { ?>
-                                        <div class="pull-right" style="padding-left:4px;">
+                                        <div class="float-right" style="padding-left:4px;">
                                             <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
 

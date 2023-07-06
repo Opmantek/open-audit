@@ -200,18 +200,10 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
                                 <label for="' . $name . '" class="form-label">' . $label . '</label>
                                 <div class="input-group">
                                     <input disabled type="' . $type . '" class="form-control" id="' . $name . '" value="' . $value . '" data-original-value="' . $value . '" ' . $placeholder . '>';
-    // if ($update) {
-    //     $return = $return . '
-    //                                 <div class="pull-right" style="padding-left:4px;">
-    //                                     <div data-attribute="' . $name . '" class="btn btn-outline-secondary edit" disabled><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-    //                                     <div data-attribute="' . $name . '" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-    //                                     <div data-attribute="' . $name . '" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
-    //                                 </div>';
-    // }
 
     if ($update) {
         $return = $return . '
-                                    <div class="pull-right" style="padding-left:4px;">
+                                    <div class="float-right" style="padding-left:4px;">
                                         <button data-attribute="' . $name . '" class="btn btn-outline-secondary edit" title="' . __('Edit') . '"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></button>
                                         <button data-attribute="' . $name . '" class="btn btn-outline-success submit" title="' . __('Submit') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></button>
                                         <button data-attribute="' . $name . '" class="btn btn-outline-danger cancel" title="' . __('Cancel') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></button>
@@ -219,11 +211,11 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     }
 
     if (!empty($link_button)) {
-        $return = $return . '<div class="pull-right" style="padding-left:4px;">' . $link_button . '</div>';
+        $return = $return . '<div class="float-right" style="padding-left:4px;">' . $link_button . '</div>';
     }
                                     $return = $return . '
                                 </div>
-                                <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br></span></div>
+                                <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br></span></div>
                             </div>
                         </div>
                         ';
@@ -294,14 +286,14 @@ function read_select(string $name = '', string $value = '', string $dictionary =
     }
     $return .= "                                        </select>\n";
     if ($update) {
-        $return .= "                                        <div class=\"pull-right\" style=\"padding-left:4px;\">
+        $return .= "                                        <div class=\"float-right\" style=\"padding-left:4px;\">
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-secondary edit\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></div>
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-success submit\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-check\"></span></div>
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-danger cancel\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-remove\"></span></div>
                                         </div>\n";
     }
     $return .= "                                    </div>
-                                    <div class=\"form-text form-help pull-right\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br></span></div>
+                                    <div class=\"form-text form-help float-right\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br></span></div>
                                 </div>
                             </div>\n";
     return $return;
@@ -359,7 +351,7 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
             </div>
             <div class="col-8 clearfix">
                 <div class="btn-group btn-group-sm float-end" role="group" id="device_panel_' . $name . '">
-                    <div class="page-title-right pull-right">
+                    <div class="page-title-right float-right">
                         ' . $panel_add_button . '
                         ' . $panel_close_button . '
                     </div>
