@@ -820,12 +820,14 @@ class DiscoveriesModel extends BaseModel
         if (empty($discovery)) {
             return false;
         }
-        $instance = & get_instance();
-        $queueModel = new \App\Models\QueueModel();
+        // Delete all discovery logs
         $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
         $this->db->query($sql, [$id]);
+        // Reset attributes
         $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
         $this->db->query($sql, [$id]);
+        // Queue the item
+        $queueModel = new \App\Models\QueueModel();
         $data = new \stdClass();
         $data->type = $discovery->attributes->type;
         $data->details = new \stdClass();
