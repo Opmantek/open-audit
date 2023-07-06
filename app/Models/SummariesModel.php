@@ -208,7 +208,12 @@ class SummariesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $include = array();
+        $attributesModel = new \App\Models\AttributesModel();
+        $attributes = $attributesModel->listUser(['attributes.resource', 'queries', 'attributes.type', 'menu_category']);
+        $include['attributes'] = $attributes;
+        $include['database'] = $this->db->listTables();
+        return $include;
     }
 
 
