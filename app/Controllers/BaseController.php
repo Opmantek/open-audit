@@ -164,15 +164,15 @@ abstract class BaseController extends Controller
             }
             $message .= ':' . $data;
         }
-        // if (!empty($this->resp->meta->requestor)) {
-        //     # The request is from the commercial code. Do not bother logging requests for reports, dashboards and widgets
-        //     if (($this->resp->meta->collection === 'dashboards' and $this->resp->meta->action === 'collection') or
-        //         ($this->resp->meta->collection === 'reports' and $this->resp->meta->action === 'collection') or
-        //         ($this->resp->meta->collection === 'widgets' and $this->resp->meta->action === 'collection') or
-        //         ($this->resp->meta->collection === 'widgets' and $this->resp->meta->action === 'execute')) {
-        //         $message = '';
-        //     }
-        // }
+        if (!empty($this->resp->meta->requestor)) {
+            # The request is from the commercial code. Do not bother logging requests for reports, dashboards and widgets
+            if (($this->resp->meta->collection === 'dashboards' and $this->resp->meta->action === 'collection') or
+                ($this->resp->meta->collection === 'reports' and $this->resp->meta->action === 'collection') or
+                ($this->resp->meta->collection === 'widgets' and $this->resp->meta->action === 'collection') or
+                ($this->resp->meta->collection === 'widgets' and $this->resp->meta->action === 'execute')) {
+                $message = '';
+            }
+        }
         if ($message !== '') {
             log_message('info', $message);
         }
