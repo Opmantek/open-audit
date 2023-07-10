@@ -392,7 +392,6 @@ class Collections extends BaseController
         if ($this->resp->meta->collection !== 'database') {
             $this->resp->meta->id = intval($this->resp->meta->id);
         }
-        log_message('debug', 'ID: ' . $this->resp->meta->id);
         $this->resp->data = $this->{$this->resp->meta->collection.'Model'}->read($this->resp->meta->id);
         $this->resp->meta->total = count($this->{$this->resp->meta->collection.'Model'}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
