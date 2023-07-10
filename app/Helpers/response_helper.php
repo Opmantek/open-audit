@@ -1138,17 +1138,13 @@ if (!function_exists('response_get_permission_id')) {
     {
         #$instance = & get_instance();
         $db = db_connect();
-        $collections = array('charts', 'configuration', 'database', 'errors', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
+        $collections = array('charts', 'configuration', 'database', 'errors', 'help', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
 
         if (empty($id) or in_array($collection, $collections)) {
             log_message('debug', 'User permitted to access ' . $collection);
             return true;
         }
 
-        if ($collection === 'help') {
-            // Always allow a user to view help
-            return true;
-        }
         if ($collection === 'users' && $id === $user->id) {
             // Always allow a user to view their own user item
             return true;
