@@ -50,26 +50,6 @@ class Database extends Config
         'port'     => 3306,
     ];
 
-    // public $open5 = [
-    //     'DSN'      => '',
-    //     'hostname' => '127.0.0.1',
-    //     'username' => 'openaudit',
-    //     'password' => 'openauditpassword',
-    //     'database' => 'open5',
-    //     'DBDriver' => 'MySQLi',
-    //     'DBPrefix' => '',
-    //     'pConnect' => false,
-    //     'DBDebug'  => (ENVIRONMENT !== 'production'),
-    //     'charset'  => 'utf8',
-    //     'DBCollat' => 'utf8_general_ci',
-    //     'swapPre'  => '',
-    //     'encrypt'  => false,
-    //     'compress' => false,
-    //     'strictOn' => false,
-    //     'failover' => [],
-    //     'port'     => 3306,
-    // ];
-
     /**
      * This database connection is used when
      * running PHPUnit database tests.

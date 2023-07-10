@@ -350,7 +350,7 @@ if (!function_exists('response_create')) {
         if ($collection === 'components' and $response->meta->action !== 'create' and $response->meta->action !== 'delete') {
             if (!empty($response->meta->filter)) {
                 foreach ($response->meta->filter as $fitler) {
-                    if ($filter->name === 'components.type') {
+                    if (!empty($filter->name) and $filter->name === 'components.type') {
                         $collection = $filter->value;
                     }
                 }
@@ -438,23 +438,25 @@ if (!function_exists('response_get_data')) {
 
 function response_get_debug($get = '', $post = '', $header = '')
 {
+    # We cannot change the threshold after creation.
+    # Leaving the below, but it won't have much effect.
     $debug = false;
     if (!empty($get) && strtolower($get) === 'true') {
         $summary = 'Set debug TRUE according to GET.';
-        config('Openaudit')->log_level = 9;
-        config('Logger')->threshold = 9;
+        #config('Openaudit')->log_level = 9;
+        #config('Logger')->threshold = 9;
         $debug = true;
     }
     if (!empty($post) && strtolower($post) === 'true') {
         $summary = 'Set debug TRUE according to POST.';
-        config('Openaudit')->log_level = 9;
-        config('Logger')->threshold = 9;
+        #config('Openaudit')->log_level = 9;
+        #config('Logger')->threshold = 9;
         $debug = true;
     }
     if (!empty($header) && strtolower($header) === 'true') {
         $summary = 'Set debug TRUE according to HEADER.';
-        config('Openaudit')->log_level = 9;
-        config('Logger')->threshold = 9;
+        #config('Openaudit')->log_level = 9;
+        #config('Logger')->threshold = 9;
         $debug = true;
     }
     if ($debug) {

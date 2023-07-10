@@ -77,6 +77,8 @@ class OpenAudit extends BaseConfig
 
         $this->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
 
-        config('Logger')->threshold = intval($this->log_level);
+        # We cannot change the threshold after creation.
+        # Leaving the below, but it won't have any effect.
+        # config('Logger')->threshold = intval($this->log_level);
     }
 }
