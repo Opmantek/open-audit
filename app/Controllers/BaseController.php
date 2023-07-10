@@ -129,6 +129,12 @@ abstract class BaseController extends Controller
         if (empty($this->user->permissions['discovery_log'])) {
             $this->user->permissions['discovery_log'] = $this->user->permissions['discoveries'];
         }
+        if (empty($this->user->permissions['integrations_log'])) {
+            $this->user->permissions['integrations_log'] = $this->user->permissions['integrations'];
+        }
+        if (empty($this->user->permissions['integrations_rules'])) {
+            $this->user->permissions['integrations_rules'] = $this->user->permissions['integrations'];
+        }
         if (empty($this->user->permissions['rack_devices'])) {
             $this->user->permissions['rack_devices'] = $this->user->permissions['racks'];
         }
