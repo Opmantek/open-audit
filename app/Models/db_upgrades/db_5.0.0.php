@@ -172,20 +172,6 @@ if ($db->tableExists('system') and !$db->tableExists('devices')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-if ($db->tableExists('invoice')) {
-    $sql = "DROP TABLE invoice";
-    $query = $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
-if ($db->tableExists('invoice_item')) {
-    $sql = "DROP TABLE invoice_item";
-    $query = $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
 if ($db->tableExists('ldap_groups')) {
     $sql = "DROP TABLE ldap_groups";
     $query = $db->query($sql);
@@ -228,7 +214,7 @@ if (!$db->fieldExists('notes', 'locations')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discoveries', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'graph', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+$component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discoveries', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'graph', 'image', 'invoice_item', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
 foreach ($component_tables as $table) {
     if ($db->fieldExists('system_id', $table)) {
         $sql = "ALTER TABLE `$table` RENAME COLUMN system_id TO device_id";

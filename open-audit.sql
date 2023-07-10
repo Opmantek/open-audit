@@ -1927,6 +1927,66 @@ LOCK TABLES `integrations_log` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `invoice`
+--
+
+DROP TABLE IF EXISTS `invoice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `purchase_order` varchar(100) NOT NULL DEFAULT '',
+  `cost_center` varchar(100) NOT NULL DEFAULT '',
+  `date_received` varchar(100) NOT NULL DEFAULT '',
+  `date_paid` varchar(100) NOT NULL DEFAULT '',
+  `supplier` varchar(100) NOT NULL DEFAULT '',
+  `filename` varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice`
+--
+
+LOCK TABLES `invoice` WRITE;
+/*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `invoice_item`
+--
+
+DROP TABLE IF EXISTS `invoice_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice_item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `invoice_id` int(10) unsigned DEFAULT NULL,
+  `line_text` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(200) NOT NULL DEFAULT '',
+  `asset_number` varchar(200) NOT NULL DEFAULT '',
+  `line_amount` varchar(200) NOT NULL DEFAULT '',
+  `notes` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice_item`
+--
+
+LOCK TABLES `invoice_item` WRITE;
+/*!40000 ALTER TABLE `invoice_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_item` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ip`
 --
 
