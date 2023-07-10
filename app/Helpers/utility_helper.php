@@ -96,6 +96,19 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'baselines_policies') {
+        foreach ($result as $item) {
+            $item->tests = json_decode($item->tests);
+        }
+    }
+
+    if ($type === 'baselines_results') {
+        foreach ($result as $item) {
+            $item->baseline = json_decode($item->baseline);
+            $item->result = json_decode($item->result);
+        }
+    }
+
     if ($type === 'dashboards') {
         foreach ($result as $item) {
             $item->options = json_decode($item->options);
@@ -262,6 +275,12 @@ if (!function_exists('collections_list')) {
         $collections->baselines_policies->name = 'Baselines Policies';
         $collections->baselines_policies->edition = 'Enterprise';
         $collections->baselines_policies->orgs = 'd';
+
+        $collections->baselines_results = new \StdClass();
+        $collections->baselines_results->icon = 'fa fa-table';
+        $collections->baselines_results->name = 'Baselines Results';
+        $collections->baselines_results->edition = 'Enterprise';
+        $collections->baselines_results->orgs = 'd';
 
         $collections->buildings = new \StdClass();
         $collections->buildings->icon = 'fa fa-building-o';

@@ -30,7 +30,7 @@ $routes->setAutoRoute(false);
  */
 
 $routes->collections = array('applications','attributes','baselines',
-'baselines_policies','buildings','clouds','clusters','collectors', 'components',
+'baselines_policies','baselines_results','buildings','clouds','clusters','collectors', 'components',
 'configuration','connections','credentials','dashboards','devices',
 'discoveries','discovery_log','discovery_scan_options','errors','fields','files',
 'floors','groups','integrations','ldap_servers','licenses','locations',

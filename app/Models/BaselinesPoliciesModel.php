@@ -27,6 +27,13 @@ class BaselinesPoliciesModel extends BaseModel
     public function collection(object $resp): array
     {
         $properties = $resp->meta->properties;
+        $properties[] = 'baselines.id AS `basleines.id`';
+        $properties[] = 'baselines.name AS `baselines.name`';
+        $properties[] = 'orgs.id AS `orgs.id`';
+        $properties[] = 'orgs.name AS `orgs.name`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $this->builder->join('baselines', $resp->meta->collection . '.baseline_id = baselines.id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -55,6 +62,16 @@ class BaselinesPoliciesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (empty($data->baseline_id)) {
+            return null;
+        }
+
+        $sql = "SELECT org_id FROM baselines WHERE id = ?";
+        $org_id = $this->db->query($sql, [$data->baseline_id])->getResult();
+        if (empty($org_id)) {
+            return null;
+        }
+        $data->org_id = intval($org_id[0]->org_id);
 
         if (!empty($data->table) && $data->table === 'software') {
             $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
@@ -148,6 +165,7 @@ class BaselinesPoliciesModel extends BaseModel
             unset($data->tests);
             $data->tests = json_encode($tests);
         }
+
         $data = $this->createFieldData('baselines_policies', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
@@ -212,6 +230,16 @@ class BaselinesPoliciesModel extends BaseModel
 
         $properties = array();
         $properties[] = 'baselines_policies.*';
+        $properties[] = 'orgs.name as `orgs.name`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'baselines_policies.org_id = orgs.id', 'left');
+        $this->builder->whereIn('orgs.id', $org_list);
+        if (!empty($where[0]) and !empty($where[1])) {
+            $this->builder->where($where[0], $where[1]);
+        }
+        if (!empty($where[2]) and !empty($where[3])) {
+            $this->builder->where($where[2], $where[3]);
+        }
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

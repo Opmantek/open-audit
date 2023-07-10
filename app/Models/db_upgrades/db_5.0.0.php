@@ -36,6 +36,83 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+if (!$db->fieldExists('org_id', 'baselines_policies')) {
+    $sql = "ALTER TABLE `baselines_policies` ADD org_id int(10) unsigned DEFAULT '1' AFTER `id`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "SELECT id, name, org_id FROM baselines";
+$baselines = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+if (!empty($baselines)) {
+    foreach ($baselines as $baseline) {
+        $sql = "UPDATE baselines_policies SET baselines_policies.org_id = (SELECT baselines.org_id FROM baselines WHERE baselines.id = ?)";
+        $query = $db->query($sql);
+        $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
+    }
+}
+
+if (!$db->tableExists('baselines_results')) {
+    // We will now store Baseline Result in the database
+    $sql = "CREATE TABLE `baselines_results` (
+        `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+        `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+        `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+        `name` varchar(200) NOT NULL DEFAULT '',
+        `baseline` longtext NOT NULL,
+        `result` longtext NOT NULL,
+        `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+        PRIMARY KEY (`id`),
+        KEY `baseline_id` (`baseline_id`),
+        CONSTRAINT `baselines_results_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!empty($baselines)) {
+    $path = '/usr/local/opmojo/var/oae/baselines/results/';
+    if (file_exists($path)) {
+        $results = array_diff(scandir($path), array('.', '..'));
+    }
+    if (empty($results)) {
+        $path = '/usr/local/omk/var/oae/baselines/results/';
+        if (file_exists($path)) {
+            $results = array_diff(scandir($path), array('.', '..'));
+        }
+    }
+    if (empty($results)) {
+        $path = 'c:\\omk\\var\\oae\\baselines\\results\\';
+        if (file_exists($path)) {
+            $results = array_diff(scandir($path), array('.', '..'));
+        }
+    }
+
+    foreach ($results as $result) {
+        $contents = file_get_contents($path . $result);
+        $json_result = json_decode($contents);
+        $json_result->org_id = 1;
+        foreach ($baselines as $baseline) {
+            if (intval($baseline->id) === intval($json_result->baseline->id)) {
+                $json_result->org_id = intval($baseline->org_id);
+            }
+        }
+        $sql = "INSERT INTO baselines_results VALUES (null, ?, ?, ?, ?, ?, ?)";
+        $timestamp = substr($json_result->result->timestamp, 0, 4) . '-' . substr($json_result->result->timestamp, 4, 2) . '-' .
+                        substr($json_result->result->timestamp, 6, 2) . ' ' . substr($json_result->result->timestamp, 8, 2) . ':' .
+                        substr($json_result->result->timestamp, 10, 2) . ':' . substr($json_result->result->timestamp, 12, 2);
+        $name = 'Executed on ' . $timestamp;
+        $db->query($sql, [$json_result->org_id, intval($json_result->baseline->id), $name, json_encode($json_result->baseline), json_encode($json_result->result), $timestamp]);
+        $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
+    }
+}
 
 if ($db->fieldExists('clusters_id', 'cluster')) {
     $sql = "ALTER TABLE `cluster` RENAME COLUMN `clusters_id` TO `cluster_id`";

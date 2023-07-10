@@ -199,6 +199,14 @@ class BaselinesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return false;
         }
+        if (!empty($data->org_id)) {
+            // Update our policies
+            $sql = "UPDATE baselines_policies SET org_id = ? WHERE baseline_id = ?";
+            $this->db->query($sql, [$data->org_id, $id]);
+            // Update our results
+            $sql = "UPDATE baselines_results SET org_id = ? WHERE baseline_id = ?";
+            $this->db->query($sql, [$data->org_id, $id]);
+        }
         return true;
     }
 

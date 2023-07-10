@@ -413,6 +413,7 @@ DROP TABLE IF EXISTS `baselines_policies`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `baselines_policies` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(200) NOT NULL DEFAULT '',
   `priority` int(10) unsigned NOT NULL DEFAULT '5',
@@ -435,6 +436,36 @@ CREATE TABLE `baselines_policies` (
 LOCK TABLES `baselines_policies` WRITE;
 /*!40000 ALTER TABLE `baselines_policies` DISABLE KEYS */;
 /*!40000 ALTER TABLE `baselines_policies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `baselines_results`
+--
+
+DROP TABLE IF EXISTS `baselines_results`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `baselines_results` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `baseline` longtext NOT NULL,
+  `result` longtext NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `baseline_id` (`baseline_id`),
+  CONSTRAINT `baselines_results_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `baselines_results`
+--
+
+LOCK TABLES `baselines_results` WRITE;
+/*!40000 ALTER TABLE `baselines_results` DISABLE KEYS */;
+/*!40000 ALTER TABLE `baselines_results` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -894,7 +925,7 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_vm','n','bool','y','
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_windows','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current windows data.');
 INSERT INTO `configuration` VALUES (NULL,'device_auto_delete','n','bool','y','system','2000-01-01 00:00:00','Should we delete the device data completely from the database when the device status is set to Deleted.');
 INSERT INTO `configuration` VALUES (NULL,'devices_default_display_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, display these columns.');
-INSERT INTO `configuration` VALUES (NULL,'devices_default_group_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status','text','y','system','2000-01-01 00:00:00','When requesting a group of devices, retrieve and display these columns.');
+INSERT INTO `configuration` VALUES (NULL,'devices_default_group_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status,devices.org_id','text','y','system','2000-01-01 00:00:00','When requesting a group of devices, retrieve and display these columns.');
 INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns','devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, provide these columns.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_default_scan_option','1','number','y','system','2000-01-01 00:00:00','The default discovery options for Nmap.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_ip_exclude','','text','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');

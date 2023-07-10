@@ -1165,14 +1165,6 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
-        if ($collection === 'baselines_policies') {
-            $sql = 'SELECT `orgs`.`id` AS org_id FROM `baselines_policies` LEFT JOIN `baselines` ON (`baselines_policies`.`baseline_id` = `baselines`.`id`) LEFT JOIN `orgs` ON (`baselines`.`org_id` = `orgs`.`id`) WHERE `baselines_policies`.`id` = ?';
-            $result = $db->query($sql, [$id])->getResult();
-            if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
-                return false;
-            }
-        }
-
         if ($collection === 'components') {
             $component = $received_data[0]->component_type;
             $sql = "SELECT $component.*, devices.id, devices.org_id FROM $component LEFT JOIN devices ON ($component.device_id = devices.id) WHERE $component.id = $id";
@@ -1496,7 +1488,7 @@ if (!function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('agents','applications','attributes','baselines','baselines_policies','buildings','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+        return array('agents','applications','attributes','baselines','baselines_policies','baselines_results','buildings','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','rules','scripts','search','sessions','summaries','tasks','users','widgets');
     }
 }
 

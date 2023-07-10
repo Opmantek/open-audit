@@ -117,6 +117,12 @@ abstract class BaseController extends Controller
             }
         }
         $this->user->permissions = $userRoles;
+        if (empty($this->user->permissions['baselines_policies'])) {
+            $this->user->permissions['baselines_policies'] = $this->user->permissions['baselines'];
+        }
+        if (empty($this->user->permissions['baselines_results'])) {
+            $this->user->permissions['baselines_results'] = $this->user->permissions['baselines'];
+        }
         if (empty($this->user->permissions['components'])) {
             $this->user->permissions['components'] = $this->user->permissions['devices'];
         }
