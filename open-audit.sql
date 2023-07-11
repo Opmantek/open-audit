@@ -981,9 +981,9 @@ INSERT INTO `configuration` VALUES (NULL,'match_uuid','y','bool','y','system','2
 INSERT INTO `configuration` VALUES (NULL,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed FirstWave modules.');
 INSERT INTO `configuration` VALUES (NULL,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
 INSERT INTO `configuration` VALUES (NULL,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
-INSERT INTO `configuration` VALUES (NULL,'oae_license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','y','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (NULL,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
+INSERT INTO `configuration` VALUES (NULL,'product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');

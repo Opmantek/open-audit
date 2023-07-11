@@ -39,12 +39,78 @@ class Logon extends Controller
 {
     public function createForm()
     {
-
+        $this->checkDefaults();
         $this->session = \Config\Services::session();
         if (!empty($this->session->get('user_id'))) {
             return redirect()->to(site_url('orgs'));
         }
         return view('logon', ['config' => new \Config\OpenAudit()]);
+    }
+
+    public function checkDefaults()
+    {
+        $license = @file_get_contents('http://localhost/omk/open-audit/license', false);
+        if (empty($license)) {
+            # try https
+            $license = @file_get_contents('https://localhost/omk/open-audit/license', false);
+        }
+        if (!empty($license) and $license !== false) {
+            $json = json_decode($license);
+            if (json_last_error()) {
+                $license = 'none';
+            } else {
+                $license = $json->license;
+            }
+        } else {
+            $license = 'none';
+        }
+        if (!in_array($license, ['none', 'free', 'commercial'])) {
+            $license = 'none';
+        }
+        if (!empty($json->product)) {
+            $product = $json->product;
+        } else {
+            $product = 'Open-AudIT Community';
+        }
+        if ($license == 'none') {
+            $product = 'Open-AudIT Community';
+        }
+        if (!in_array($product, ['Open-AudIT Community', 'Open-AudIT Professional', 'Open-AudIT Enterprise'])) {
+            $product = 'Open-AudIT Community';
+        }
+        $db = db_connect();
+        $sql = "UPDATE configuration SET value = '" . $license->license . "' WHERE name = 'license'";
+        $db->query($sql);
+        $sql = "UPDATE configuration SET value = '" . $product . "' WHERE name = 'product'";
+        $db->query($sql);
+
+        if (file_exists(APPPATH . '../other/modules.json')) {
+            $modules = @file_get_contents(APPPATH.'../other/modules.json');
+            if (!empty($modules)) {
+                $modules = json_decode($modules);
+                # echo "<pre>"; print_r($modules); exit;
+                $installed = @file_get_contents('http://localhost/omk/.json', false);
+                if (empty($license)) {
+                    # try https
+                    $installed = @file_get_contents('https://localhost/omk/.json', false);
+                }
+                if (!empty($installed)) {
+                    $installed = json_decode($installed);
+                    foreach ($installed->products as $app) {
+                        if (!empty($modules->{$app->name})) {
+                            $modules->{$app->name}->installed = true;
+                            $modules->{$app->name}->version = $app->version;
+                        }
+                        if (stripos($app->name, 'Open-AudIT') !== false) {
+                            $modules->{'Open-AudIT'}->installed = true;
+                            $modules->{'Open-AudIT'}->version = $app->version;
+                        }
+                    }
+                    $sql = "UPDATE configuration SET value = ? WHERE name = 'modules'";
+                    $db->query($sql, [json_encode($modules)]);
+                }
+            }
+        }
     }
 
     public function create()

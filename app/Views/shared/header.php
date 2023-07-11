@@ -151,8 +151,8 @@ $categories = array_unique($categories);
                                 <?php if (!empty($dashboards)) { ?>
                                     <?php foreach ($dashboards as $dashboard) {
                                         if ($dashboard->type === 'dashboards') {
-                                            if (config('Openaudit')->oae_product === 'enterprise' or config('Openaudit')->oae_product === 'professional') {
-                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
+                                            if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
+                                                echo "                                <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
                                             }
@@ -500,13 +500,13 @@ $categories = array_unique($categories);
 <?php
 if (!empty(config('Openaudit')->modules)) {
     $modules = json_decode(config('Openaudit')->modules);
-    foreach ($modules as $modules) {
-        if (!empty($modules->installed)) {
-            $url = $modules->link;
+    foreach ($modules as $module) {
+        if (!empty($module->installed)) {
+            $url = $module->link;
         } else {
-            $url = $modules->url;
+            $url = $module->url;
         }
-        echo "                              <li><a class=\"dropdown-item\" href=\"" . $url . "\">" . $modules->name . "</a></li>\n";
+        echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $url . "\">" . $module->name . "</a></li>\n";
     }
 } else {
     echo "                              <li><a class=\"dropdown-item\" href=\"#\">No modules installed.</a></li>\n";
@@ -516,7 +516,7 @@ if (!empty(config('Openaudit')->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if (config('Openaudit')->oae_license === 'none') { ?>
+<?php if (config('Openaudit')->license === 'none') { ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
@@ -564,7 +564,6 @@ if (!empty(config('Openaudit')->modules)) {
                                 <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
                                 <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
                             </div>
-                            <!--
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
                                     <button class="btn btn-sm dropdown-toggle btn-outline-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -575,8 +574,8 @@ if (!empty(config('Openaudit')->modules)) {
                                     if (!empty($dashboards)) {
                                         foreach ($dashboards as $dashboard) {
                                             if ($dashboard->type === 'dashboards') {
-                                                if (config('Openaudit')->oae_product === 'Open-AudIT Enterprise' or config('Openaudit')->oae_product === 'Open-AudIT Professional') {
-                                                    echo "                                    <li><a class=\"dropdown-item\" href=\"/omk/open-audit/dashboards/" . $dashboard->id . "/execute\">" . $dashboard->attributes->name . "</a></li>\n";
+                                                if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
+                                                    echo "                                    <li><a class=\"dropdown-item\" target=\"_blank\" href=\"/omk/open-audit/dashboards/" . $dashboard->id . "/execute\">" . $dashboard->attributes->name . "</a></li>\n";
                                                 } else {
                                                     echo "                                    <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
                                                 }
@@ -586,7 +585,6 @@ if (!empty(config('Openaudit')->modules)) {
                                     </ul>
                                 </div>
                             </div>
-                            -->
                         </form>
                     </div>
                 </div>
