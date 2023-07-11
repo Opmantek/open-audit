@@ -324,8 +324,8 @@ class SummariesModel extends BaseModel
         $dictionary->columns = new \StdClass();
 
         $dictionary->attributes = new \StdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','table','column','menu_category');
+        $dictionary->attributes->collection = array('id', 'name', 'table', 'column', 'menu_category', 'orgs.name');
+        $dictionary->attributes->create = array('name', 'org_id', 'table', 'column', 'menu_category');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
         $dictionary->attributes->update = $this->updateFields($collection);

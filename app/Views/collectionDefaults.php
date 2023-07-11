@@ -78,6 +78,8 @@ $(document).ready(function() {
         }
         e.preventDefault();
     });
+    $("#button_export_json").remove();
+    $(".delete_link").remove();
 });
 </script>
 <?php } ?>

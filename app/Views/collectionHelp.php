@@ -14,7 +14,6 @@ include 'shared/collection_functions.php';
                             <h1><?= ucwords(str_replace('_', ' ', $meta->collection)) ?></h1>
                             <br>
                             <?= $dictionary->about ?>
-                            <p>For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/<?= $meta->collection ?>">Knowledge Base</a>.<br><br></p>
                         </div>
                     </div>
 
