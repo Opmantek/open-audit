@@ -121,6 +121,23 @@ if ($db->fieldExists('clusters_id', 'cluster')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "DROP TABLE IF EXISTS `commercial`";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `commercial` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `request` text NOT NULL,
+  `response` text NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
 if ($db->fieldExists('system_id_a', 'connections')) {
     $sql = "ALTER TABLE `connections` RENAME COLUMN `system_id_a` TO `device_id_a`";
     $query = $db->query($sql);
@@ -378,6 +395,16 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "UPDATE configuration SET name = 'product' WHERE name = 'oae_product'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM configuration WHERE name = 'license_string'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'license_string','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT (if used).')";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());

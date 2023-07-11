@@ -808,6 +808,31 @@ LOCK TABLES `collectors` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `commercial`
+--
+
+DROP TABLE IF EXISTS `commercial`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `commercial` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `request` text NOT NULL,
+  `response` text NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `commercial`
+--
+
+LOCK TABLES `commercial` WRITE;
+/*!40000 ALTER TABLE `commercial` DISABLE KEYS */;
+/*!40000 ALTER TABLE `commercial` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `configuration`
 --
 
@@ -982,6 +1007,7 @@ INSERT INTO `configuration` VALUES (NULL,'modules','','text','n','system','2000-
 INSERT INTO `configuration` VALUES (NULL,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
 INSERT INTO `configuration` VALUES (NULL,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
 INSERT INTO `configuration` VALUES (NULL,'license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'license_string','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT (if used).');
 INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','y','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
