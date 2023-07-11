@@ -79,7 +79,7 @@ class Logon extends Controller
             $product = 'Open-AudIT Community';
         }
         $db = db_connect();
-        $sql = "UPDATE configuration SET value = '" . $license->license . "' WHERE name = 'license'";
+        $sql = "UPDATE configuration SET value = '" . $license . "' WHERE name = 'license'";
         $db->query($sql);
         $sql = "UPDATE configuration SET value = '" . $product . "' WHERE name = 'product'";
         $db->query($sql);
