@@ -30,7 +30,17 @@ $user->permissions['components'] = '';
                             $resource->{$key} = html_entity_decode($resource->{$key});
                             echo read_text_box($key, $resource->{$key});
                         } else {
-                            echo read_field($key, $resource->{$key});
+                            $label = '';
+                            if ($key === 'id') {
+                                $label = 'ID';
+                            }
+                            if ($key === 'device_id') {
+                                $label = 'Device ID';
+                            }
+                            if ($key === 'devices.id' or $key === 'devices.name') {
+                                continue;
+                            }
+                            echo read_field($key, $resource->{$key}, '', false, $label);
                         }
                         echo "</div>\n";
                     } ?>
@@ -39,6 +49,9 @@ $user->permissions['components'] = '';
             </div>
         </main>
 
-
-
-                            
+<script>
+$(document).ready(function() {
+    $("#button_list").remove();
+    $("#button_export_json").remove();
+});
+</script>
