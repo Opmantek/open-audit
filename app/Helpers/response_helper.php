@@ -1533,7 +1533,7 @@ if (!function_exists('response_valid_permissions')) {
     function response_valid_permissions($collection)
     {
         $permission = array();
-        $permission['bulkUpdateForm'] = 'u';
+        $permission['bulkupdate'] = 'u';
         $permission['bulkupdateform'] = 'u';
         $permission['collection'] = 'r';
         $permission['compare'] = 'r';

@@ -30,6 +30,33 @@ namespace App\Controllers;
  */
 class Collections extends BaseController
 {
+
+    /**
+     * Update a list of items
+     *
+     * @access public
+     * @return NULL
+     */
+    public function bulkUpdate()
+    {
+        if (empty($this->resp->meta->received_data->ids)) {
+            return false;
+        }
+        $ids = explode(',', $this->resp->meta->received_data->ids);
+        foreach ($ids as $id) {
+            $status = $this->{$this->resp->meta->collection.'Model'}->update($id, $this->resp->meta->received_data->attributes);
+        }
+        if ($status) {
+            output($this);
+        } else {
+            $this->response->setStatusCode(400);
+            if (!empty($GLOBALS['stash'])) {
+                print_r(json_encode($GLOBALS['stash']));
+            }
+        }
+        return;
+    }
+
     /**
      * Collection of items
      *
@@ -53,6 +80,14 @@ class Collections extends BaseController
         if ($this->resp->meta->format !== 'screen') {
             output($this);
         } else {
+            $view = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
+            $this->resp->included = array();
+            // A special case for the Bulk Update Form
+            if ($this->resp->meta->request_method === 'GET' and strpos($this->resp->meta->query_string, 'action=bulkupdateform') !== false) {
+                $view = $this->resp->meta->collection . 'BulkUpdateForm';
+                $this->resp->included = $this->{strtolower($this->resp->meta->collection) . "Model"}->includedBulkUpdate();
+                $this->resp->meta->action = 'bulkupdateform';
+            }
             return view('shared/header', [
                 'config' => $this->config,
                 'dashboards' => filter_response($this->dashboards),
@@ -60,7 +95,7 @@ class Collections extends BaseController
                 'queries' => filter_response($this->queriesUser),
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
-                view($this->resp->meta->collection . ucfirst($this->resp->meta->action), ['data' => filter_response($this->resp->data)]);
+                view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included)]);
         }
         return true;
     }

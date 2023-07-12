@@ -141,6 +141,9 @@ foreach ($routes->collections as $collection) {
 
     # update
     $routes->patch($collection . '/(:num)', 'Collections::update/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Update']);
+
+    # bulk update
+    $routes->patch($collection, 'Collections::bulkUpdate/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'BulkUpdate']);
 }
 
 /*

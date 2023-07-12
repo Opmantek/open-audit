@@ -216,6 +216,33 @@ class DevicesModel extends BaseModel
         return true;
     }
 
+    public function includedBulkUpdate(): array
+    {
+        $include = array();
+
+        $attributesModel = new \App\Models\AttributesModel();
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
+        $include['class'] = $attributes;
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'environment']);
+        $include['environment'] = $attributes;
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'status']);
+        $include['status'] = $attributes;
+        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+        $include['type'] = $attributes;
+
+        $fieldsModel = new \App\Models\FieldsModel();
+        $include['fields'] = $fieldsModel->listUser();
+
+        $locationsModel = new \App\Models\LocationsModel();
+        $include['locations'] = $locationsModel->listUser();
+
+        $orgsModel = new \App\Models\OrgsModel();
+        $include['orgs'] = $orgsModel->listUser();
+
+        return $include;
+    }
+
+
     /**
      * Return an array containing arrays of related items to be stored in resp->included
      *

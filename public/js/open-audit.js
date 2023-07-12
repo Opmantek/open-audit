@@ -1,6 +1,26 @@
 /* inline edit */
 $(document).ready(function () {
 
+    /* select all devices on /devices for bulk edit */
+    $('#select_all').click(function () {
+        $(':checkbox').each(function () { this.checked = !this.checked; });
+    });
+
+    /* Send to bulk edit form */
+    $(document).on('click', '.bulk_edit_button', function (e) {
+        var ids = "";
+        $("input:checked").each(function () {
+            if ($(this).attr("value")) {
+                ids = ids + "," + $(this).attr("value");
+            }
+        });
+        ids = ids.substring(1);
+        // var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;
+        var url = baseurl + 'index.php/devices?devices.id=in(' + ids + ')&action=bulkupdateform';
+        window.location = url;
+    });
+
+
     /* Inline edit, click edit */
     $(document).on('click', '.edit', function (e) {
         var attribute = $(this).attr("data-attribute");
@@ -38,8 +58,14 @@ $(document).ready(function () {
         attribute = attribute.replace(/\]/g, '\\]'); /* for tasks.minute[] */
         var value = $("#" + attribute.replace(/\./g, '\\.')).val();
         attribute = $(this).attr("data-attribute");
+
         var data = {};
         data["data"] = {};
+        var ids = document.getElementById("ids");
+        if (typeof id == 'undefined' && ids) {
+            id = collection;
+            data["data"]["ids"] = $("#ids").attr("data-value");
+        }
         data["data"]["id"] = id;
         data["data"]["type"] = collection;
         data["data"]["attributes"] = {};
@@ -76,6 +102,7 @@ $(document).ready(function () {
             }
         }
         data = JSON.stringify(data);
+
         $.ajax({
             type: "PATCH",
             url: id,
