@@ -247,8 +247,28 @@ class Collections extends BaseController
             \Config\Services::session()->setFlashdata('error', 'CSV error.');
             return redirect()->route($this->resp->meta->collection.'Collection');
         }
-        $this->resp->data = $this->{$this->resp->meta->collection.'Model'}->import($csv);
-        return redirect()->route($this->resp->meta->collection.'Collection');
+        $attributes = $csv[0];
+        $row_count = count($csv);
+        $column_count = count($attributes);
+        for ($i=1; $i < $row_count; $i++) {
+            $data = new \stdClass();
+            for ($j=0; $j < $column_count; $j++) {
+                $data->{$attributes[$j]} = $csv[$i][$j];
+            }
+            if (!empty($data->id)) {
+                $this->{$this->resp->meta->collection.'Model'}->update(intval($data->id), $data);
+                $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read(intval($data->id));
+            } else {
+                $id = $this->{$this->resp->meta->collection.'Model'}->create($data);
+                $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read($id);
+            }
+        }
+        if ($this->resp->meta->format !== 'screen') {
+            output($this);
+            return true;
+        } else {
+            return redirect()->route($this->resp->meta->collection.'Collection');
+        }
     }
 
     /**
@@ -335,17 +355,26 @@ class Collections extends BaseController
         }
         $id = array();
         foreach ($this->resp->meta->received_data->json as $item) {
-            if (empty($item->attributes)) {
-                // Account for old style individual JSON export
-                $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item);
+            if (!empty($item->id)) {
+                if (empty($item->attributes)) {
+                    // Account for old style individual JSON export
+                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->update(intval($item->id), $item);
+                } else {
+                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->update(intval($item->id), $item->attributes);
+                }
             } else {
-                $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+                if (empty($item->attributes)) {
+                    // Account for old style individual JSON export
+                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item);
+                } else {
+                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+                }
             }
         }
         if (!empty($id)) {
             if ($this->resp->meta->format !== 'screen') {
                 if (count($id) > 1) {
-                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection();
+                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->listUser();
                 } else {
                     $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id[0]);
                 }
@@ -398,7 +427,7 @@ class Collections extends BaseController
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if ($this->resp->meta->collection === 'database') {
             // $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->id) . "Model";
-            // $IdModel = new $namespace;            
+            // $IdModel = new $namespace;
             // $dictionary =  $IdModel->dictionary();
         }
         if ($this->resp->meta->collection === 'components' and $this->resp->data[0]->type === 'attachment') {
