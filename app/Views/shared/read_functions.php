@@ -13,7 +13,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
 
     $tab_string = '<div class="col-6"></div>';
 
-    if ($collection !== 'database') {
+    if ($collection !== 'database' and strpos($user->permissions[$collection], 'c') !== false) {
         if ($style === 'icontext') {
             $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Create") . "</a>";
         } else if ($style === 'icon') {
@@ -247,7 +247,7 @@ function read_column_name(string $name = ''): string
 function device_panel(string $name = '', string $toolbar = '', int $device_id = 0, string $icon = ''): string
 {
     if (empty($icon)) {
-        $icon = base_url() . 'icons/' . $name . '.svg';
+        $icon = base_url() . 'icons/' . strtolower($name) . '.svg';
     }
     if ($toolbar === 'icontext') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
