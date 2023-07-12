@@ -152,7 +152,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.manufacturer=" . urlencode($resource->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('manufacturer', $resource->manufacturer, '', $update, '', $link) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.os_group=" . urlencode($resource->os_group) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('os_group', $resource->manufacturer, '', false, __('OS Group'), $link) ?>
+                                            <?= read_field('os_group', $resource->os_group, '', false, __('OS Group'), $link) ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
                                                 <?= read_field('printer_color', $resource->printer_color, '', false, __('Color')) ?>
                                             <?php } ?>
@@ -214,7 +214,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('attachments', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"><?= __('Download') ?></th>
@@ -248,10 +248,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('audit_log', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('On') ?></th>
                                                     <th><?= __('By') ?></th>
                                                     <th><?= __('Type') ?></th>
@@ -308,10 +308,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('change_log', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th class="text-center"><?= __('ID') ?></th>
                                                     <th><?= __('Timestamp') ?></th>
                                                     <th><?= __('Type') ?></th>
@@ -342,10 +342,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('cluster', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Purpose') ?></th>
                                                     <th><?= __('Role') ?></th>
@@ -374,7 +374,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('credentials', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th><?= __('Name') ?></th>
@@ -404,7 +404,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('discovery_log', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"><?= __('ID') ?></th>
@@ -454,10 +454,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('edit_log', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('On') ?></th>
                                                     <th><?= __('By') ?></th>
                                                     <th><?= __('Attribute') ?></th>
@@ -595,7 +595,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('images', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th><?= __('Download') ?></th>
@@ -629,10 +629,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('ip', $user->toolbar_style, $resource->id, base_url() . 'icons/ip.svg'); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Interface') ?></th>
                                                     <th><?= __('Index') ?></th>
                                                     <th><?= __('IP') ?></th>
@@ -683,11 +683,14 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                             <?= read_field('country', $location->attributes->country) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_system_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('switch_device_id', $resource->switch_device_id, '', $update, '', $link) ?>
-                                            <?= read_field('switch_port', $resource->switch_port, '', $update, '') ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('owner', $resource->owner, '', $update, '', $link) ?>
+                                            <?= read_select('org_id_2', $resource->org_id, '', false, __('Organisation'), $orgs) ?>
                                         </div>
                                         <div class="col-4">
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_device_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('switch_device_id', $resource->switch_device_id, '', $update, '', $link) ?>
+                                            <?= read_field('switch_port', $resource->switch_port, '', $update, '') ?>
                                             <?= read_field('patch_panel', $resource->patch_panel, '', $update, '', $link) ?>
                                             <?= read_field('patch_panel_port', $resource->patch_panel_port, '', $update, '') ?>
                                         </div>
@@ -832,17 +835,17 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <?php if (!empty($included['bios'])) { ?>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.manufacturer=" . urlencode($included['bios'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('manufacturer', $included['bios'][0]->manufacturer, '', false, '', $link) ?>
+                                            <?= read_field('bios_manufacturer', $included['bios'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.model=" . urlencode($included['bios'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('model', $included['bios'][0]->model, '', false, '', $link) ?>
+                                            <?= read_field('bios_model', $included['bios'][0]->model, '', false, __('Model'), $link) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('serial', $included['bios'][0]->serial) ?>
+                                            <?= read_field('bios_serial', $included['bios'][0]->serial, '', false, __('Serial'), $link) ?>
                                             <?= read_field('smversion', $included['bios'][0]->smversion, '', false, __('SM Version')) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('version', $included['bios'][0]->version) ?>
-                                            <?= read_field('asset_tag', $included['bios'][0]->asset_tag) ?>
+                                            <?= read_field('bios_asset_tag', $included['bios'][0]->asset_tag, '', false, __('Asset Tag')) ?>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -853,10 +856,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('disk', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Index') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Model') ?></th>
@@ -897,10 +900,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('memory', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Bank') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                     <th><?= __('Form Factor') ?></th>
@@ -944,10 +947,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('module', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th class="text-center"><?= __('Index') ?></th>
                                                     <th class="text-center"><?= __('Connected To') ?></th>
                                                     <th><?= __('Class') ?></th>
@@ -988,10 +991,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('monitor', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Model') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Serial') ?></th>
@@ -1027,12 +1030,12 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <?php if (!empty($included['motherboard'])) { ?>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.manufacturer=" . urlencode($included['motherboard'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('manufacturer', $included['motherboard'][0]->manufacturer, '', false, '', $link) ?>
+                                            <?= read_field('mb_manufacturer', $included['motherboard'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.model=" . urlencode($included['motherboard'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('model', $included['motherboard'][0]->model, '', false, '', $link) ?>
+                                            <?= read_field('mb_model', $included['motherboard'][0]->model, '', false, __('Model'), $link) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('serial', $included['motherboard'][0]->serial) ?>
+                                            <?= read_field('mb_serial', $included['motherboard'][0]->serial, '', false, __('Serial')) ?>
                                             <?= read_field('memory_slot_count', $included['motherboard'][0]->memory_slot_count) ?>
                                         </div>
                                         <div class="col-4">
@@ -1048,10 +1051,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('network', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Connection') ?></th>
                                                     <th><?= __('MAC Address') ?></th>
                                                     <th><?= __('Model') ?></th>
@@ -1099,10 +1102,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('optical', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Description') ?></th>
                                                     <th><?= __('Model') ?></th>
                                                     <th><?= __('Mount Point') ?></th>
@@ -1131,10 +1134,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('partition', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Disk') ?></th>
                                                     <th><?= __('Index') ?></th>
                                                     <th><?= __('Type') ?></th>
@@ -1176,9 +1179,9 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <?php if (!empty($included['processor'])) { ?>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.manufacturer=" . urlencode($included['processor'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('manufacturer', $included['processor'][0]->manufacturer, '', false, '', $link) ?>
+                                            <?= read_field('proc_manufacturer', $included['processor'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.description=" . urlencode($included['processor'][0]->description) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('description', $included['processor'][0]->description, '', false, '', $link) ?>
+                                            <?= read_field('proc_description', $included['processor'][0]->description, '', false, __('Description'), $link) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('speed', number_format($included['processor'][0]->speed) . ' MHz') ?>
@@ -1200,10 +1203,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('radio', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Index') ?></th>
                                                     <th><?= __('RX Level') ?></th>
                                                     <th><?= __('RX Profile') ?></th>
@@ -1246,10 +1249,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('scsi', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Type') ?></th>
@@ -1278,10 +1281,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('sound', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Device') ?></th>
@@ -1308,10 +1311,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('usb', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Class') ?></th>
@@ -1348,10 +1351,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('video', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Model') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Memory') ?></th>
@@ -1380,10 +1383,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('service', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Description') ?></th>
                                                     <th><?= __('Start Mode') ?></th>
@@ -1414,10 +1417,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('software', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Version') ?></th>
                                                     <th><?= __('Publisher') ?></th>
@@ -1457,10 +1460,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('software_key', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Text') ?></th>
                                                     <th><?= __('Edition') ?></th>
@@ -1489,10 +1492,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('certificate', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Issuer') ?></th>
                                                     <th><?= __('Valid From') ?></th>
@@ -1521,10 +1524,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('dns', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('FQDN') ?></th>
                                                     <th><?= __('IP') ?></th>
@@ -1548,13 +1551,13 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="file_section">
-                                <?=  device_panel('dns', $user->toolbar_style); ?>
+                                <?=  device_panel('file', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Directory') ?></th>
                                                     <th><?= __('Full Name') ?></th>
@@ -1589,10 +1592,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('log', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('File Name') ?></th>
                                                     <th><?= __('Size') ?></th>
@@ -1606,7 +1609,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                 <tr>
                                                     <?= device_component_button_read('log', $row->id) ?>
                                                     <td><?= $row->name ?></td>
-                                                    <td><?= $row->file_name ?></td>
+                                                    <td><?= str_replace(' /', '<br> /', $row->file_name) ?></td>
                                                     <td><?= $row->file_size ?></td>
                                                     <td><?= $row->max_file_size ?></td>
                                                     <td><?= $row->overwrite ?></td>
@@ -1623,10 +1626,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('netstat', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"],[3,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Protocol') ?></th>
                                                     <th><?= __('IP Address') ?></th>
                                                     <th><?= __('Port') ?></th>
@@ -1655,10 +1658,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('nmap', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Protocol') ?></th>
                                                     <th><?= __('IP Address') ?></th>
                                                     <th><?= __('Port') ?></th>
@@ -1687,10 +1690,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('pagefile', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Initial Size') ?></th>
                                                     <th><?= __('Max Size') ?></th>
@@ -1719,10 +1722,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('policy', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Value') ?></th>
@@ -1749,10 +1752,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('print_queue', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Model') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Description') ?></th>
@@ -1785,14 +1788,14 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('route', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
-                                                    <th><?= __('Metric') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Destination') ?></th>
                                                     <th><?= __('Mask') ?></th>
                                                     <th><?= __('Gateway') ?></th>
+                                                    <th><?= __('Metric') ?></th>
                                                     <th><?= __('Protocol') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                 </tr>
@@ -1802,10 +1805,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                 foreach ($included['route'] as $row) { ?>
                                                 <tr>
                                                     <?= device_component_button_read('route', $row->id) ?>
-                                                    <td><?= $row->metric ?></td>
                                                     <td><?= $row->destination ?></td>
                                                     <td><?= $row->mask ?></td>
                                                     <td><?= $row->next_hop ?></td>
+                                                    <td><?= $row->metric ?></td>
                                                     <td><?= $row->protocol ?></td>
                                                     <td><?= $row->type ?></td>
                                                 </tr>
@@ -1827,35 +1830,35 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                         <div class="row">
                                             <div class="col-4">
                                                 <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.type=" . urlencode($row->type) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                                <?= read_field('type', $row->type, '', false, '', $link) ?>
+                                                <?= read_field('server_type_' . $row->id, $row->type, '', false, __('Type'), $link) ?>
                                                 <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.name=" . urlencode($row->name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                                <?= read_field('Name', $row->name, '', false, '', $link) ?>
+                                                <?= read_field('server_name_' . $row->id, $row->name, '', false, '', $link) ?>
                                             </div>
                                             <div class="col-4">
                                                 <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version=" . urlencode($row->version) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                                <?= read_field('version', $row->version, '', false, '', $link) ?>
+                                                <?= read_field('server_version_' . $row->id, $row->version, '', false, __('Version'), $link) ?>
                                                 <?php if ($row->type === 'web') {
                                                     $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version_string=" . urlencode($row->version_string) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
-                                                    echo read_field('version_string', $row->version_string, '', false, '', $link);
+                                                    echo read_field('version_string_' . $row->id, $row->version_string, '', false, '', $link);
                                                 } else if ($row->type === 'database') {
                                                     $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.status=" . urlencode($row->status) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
-                                                    echo read_field('status', $row->status, '', false, '', $link);
+                                                    echo read_field('server_status_' . $row->id, $row->status, '', false, __('Status'), $link);
                                                 } ?>
                                             </div>
                                             <div class="col-4">
-                                                <?= read_field('IP', $row->ip) ?>
-                                                <?= read_field('port', $row->port) ?>
+                                                <?= read_field('server_ip_' . $row->id, $row->ip, '', false, __('IP')) ?>
+                                                <?= read_field('server_port_' . $row->id, $row->port, '', false, __('Port')) ?>
                                             </div>
                                         </div>
                                         <br>
                                         <br>
                                         <div class="row">
                                             <div class="col-12">
-                                                <table class="table table-striped">
+                                                <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                                     <thead>
                                                         <tr>
                                                             <?php if ($row->type === 'web') { ?>
-                                                                <th class="text-center"><?= __('View') ?></th>
+                                                                <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                                 <th><?= __('Name') ?></th>
                                                                 <th><?= __('Description') ?></th>
                                                                 <th><?= __('Internal ID') ?></th>
@@ -1866,7 +1869,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                                 <th><?= __('Instance') ?></th>
                                                                 <th><?= __('Path') ?></th>
                                                             <?php } else if ($row->type === 'database') { ?>
-                                                                <th class="text-center"><?= __('View') ?></th>
+                                                                <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                                 <th><?= __('Name') ?></th>
                                                                 <th><?= __('Internal ID') ?></th>
                                                                 <th><?= __('Instance') ?></th>
@@ -1919,10 +1922,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('share', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Description') ?></th>
                                                     <th><?= __('Path') ?></th>
@@ -1953,10 +1956,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('task', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Status') ?></th>
                                                     <th><?= __('State') ?></th>
@@ -1989,11 +1992,11 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('user', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <?php if ($resource->os_group === 'Windows') { ?>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Caption') ?></th>
                                                     <th><?= __('Disabled') ?></th>
@@ -2006,7 +2009,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                 </tr>
                                                 <?php } else { ?>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('SID') ?></th>
                                                     <th><?= __('SSH Key') ?></th>
@@ -2075,10 +2078,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('user_group', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Description') ?></th>
                                                     <th><?= __('SID') ?></th>
@@ -2093,7 +2096,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->description ?></td>
                                                     <td><?= $row->sid ?></td>
-                                                    <td><?= $row->members ?></td>
+                                                    <td><?= str_replace(',', ', ', $row->members) ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -2107,10 +2110,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('variable', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Program') ?></th>
                                                     <th><?= __('Value') ?></th>
@@ -2123,7 +2126,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     <?= device_component_button_read('variable', $row->id) ?>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->program ?></td>
-                                                    <td style="word-wrap:break-word; min-width:160px; max-width:160px; white-space:normal;"><?= $row->value ?></td>
+                                                    <td><?= str_replace(':', ': ', $row->value) ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -2137,10 +2140,10 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                 <?=  device_panel('vm', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped dataTable" data-order='[[2,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center"><?= __('View') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('View Device') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Type') ?></th>
