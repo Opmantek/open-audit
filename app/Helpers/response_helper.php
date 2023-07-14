@@ -852,19 +852,6 @@ if (!function_exists('response_get_include')) {
             $include = $post;
             log_message('debug', 'Set include according to POST (' . $post . ').');
         }
-        if (($format === 'screen' && empty($include)) or $include === '*' or $include === 'all') {
-            $include = implode(',', $valid_includes);
-        } else {
-            if (!empty($include)) {
-                $temp = explode(',', $include);
-                for ($i=0; $i < count($temp); $i++) {
-                    if (!in_array($temp[$i], $valid_includes)) {
-                        unset($temp[$i]);
-                    }
-                }
-                $include = implode(',', $temp);
-            }
-        }
         return $include;
     }
 }
