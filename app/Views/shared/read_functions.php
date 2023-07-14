@@ -112,6 +112,7 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
         $value = '';
     }
     $label = !empty($label) ? $label : ucwords(str_replace('_', ' ', $name));
+    $label = str_replace('Nmis', 'NMIS', $label);
     if (strlen($dictionary) > 60) {
         $dictionary = mb_substr($dictionary, 0, 60) . '...';
     }
@@ -167,6 +168,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
     $return = '';
     if (empty($label)) {
         $label = ucwords(str_replace('_', ' ', __($name)));
+        $label = str_replace('Nmis', 'NMIS', $label);
     }
 
     if (empty($values)) {
