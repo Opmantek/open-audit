@@ -2,7 +2,15 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
-$firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_netType', 'nmis_ping', 'nmis_port', 'activated_NMIS', 'activated_opConfig', 'activated_opEvents',)
+$firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_netType', 'nmis_ping', 'nmis_port', 'activated_NMIS', 'activated_opConfig', 'activated_opEvents');
+$included['nmis_fields'] = array();
+if (!empty($included['fields'])) {
+    foreach ($included['fields'] as $field) {
+        if (in_array($field->name, $firstwave_fields)) {
+            $included['nmis_fields'][] = $field;
+        }
+    }
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -34,7 +42,7 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     <li class="list-group-item section_toggle" data-section="discovery_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/discovery_log.svg" alt=""> <a href="#"><?= __('Discovery Log') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="edit_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/edit_log.svg" alt=""> <a href="#"><?= __('Edit Log') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="fields_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/fields.svg" alt=""> <a href="#"><?= __('Fields') ?></a></li>
-                                                    <li class="list-group-item section_toggle" data-section="firstwave_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/opmantek_details.svg" alt=""> <a href="#"><?= __('Firstwave Details') ?></a></li>
+                                                    <li class="list-group-item section_toggle" data-section="firstwave_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/opmantek_details.svg" alt=""> <a href="#"><?= __('FirstWave Details') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="images_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/images.svg" alt=""> <a href="#"><?= __('Images') ?></a></li>
                                                     <?php if (!empty($included['ip'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="ip_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/ip.svg" alt=""> <a href="#"><?= __('IP Addresses') ?></a></li>
@@ -539,25 +547,28 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="firstwave_section">
-                                <?=  device_panel('firstwave', $user->toolbar_style, $resource->id, base_url() . 'icons/opmantek_details.svg'); ?>
+                                <?=  device_panel('FirstWave', $user->toolbar_style, $resource->id, base_url() . 'icons/opmantek_details.svg'); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                    <?php if (!empty($included['fields'])) {
-                                        $count = 0;
-                                        foreach ($included['fields'] as $field) {
-                                            if (!in_array($field->name, $firstwave_fields)) {
-                                                continue;
-                                            }
-                                            $count += 1;
-                                            if ($count > 3) {
-                                                echo "</div><div class=\"row\">\n";
-                                                $count = 1;
-                                            }
-                                            echo "<div class=\"col-4\">\n";
-                                            if ($field->{'type'} == 'varchar') {
-                                                echo read_field($field->{'name'}, '', '', $update);
-                                            }
+                                        <div class="col-4">
+                                            <?= read_select('nmis_manage', $resource->nmis_manage, '', $update, __('Manage in NMIS'), []) ?>
+                                            <?= read_field('nmis_name', $resource->nmis_name, '', $update) ?>
+                                            <?= read_field('nmis_notes', $resource->nmis_notes, '', $update) ?>
+                                            <?= read_field('omk_uuid', $resource->omk_uuid, '', $update) ?>
+                                            <?= read_select('nmis_group', $resource->nmis_group, '', $update, __('NMIS Group'), $included['nmis_groups']) ?>
+                                            <?= read_select('nmis_role', $resource->nmis_role, '', $update, __('NMIS Role'), $included['nmis_roles']) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_select('nmis_business_service', $resource->nmis_business_service, '', $update, __('NMIS Business Service'), $included['nmis_business_services']) ?>
+                                            <?= read_select('nmis_customer', $resource->nmis_customer, '', $update, __('NMIS Customer'), $included['nmis_customers']) ?>
+                                            <?= read_select('nmis_poller_uuid', $resource->nmis_poller_uuid, '', $update, __('NMIS Poller'), $included['nmis_pollers']) ?>
 
+
+
+
+                                    <?php if (!empty($included['nmis_fields'])) {
+                                        for ($i=0; $i < 3; $i++) {
+                                            $field = $included['nmis_fields'][$i];
                                             if ($field->{'type'} == 'list') {
                                                 $values = array();
                                                 // Put an empty value in for 'not set'.
@@ -578,15 +589,62 @@ $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_net
                                                     $item->attributes->name = $value;
                                                     $values[] = $item;
                                                 }
-                                                echo read_select($field->name, '', '', $update, '', $values);
+                                                echo read_select($field->name, (string)$field->{'field.value'}, '', $update, '', $values);
                                             }
 
                                             if ($field->{'type'} == 'date') {
-                                                echo read_field($field->{'name'}, '', '', $update, '', '', '', 'date') ;
+                                                echo read_field($field->{'name'}, (string)$field->{'field.value'}, '', $update, '', '', '', 'date') ;
                                             }
-                                            echo "</div>\n";
+
+                                            if ($field->{'type'} == 'varchar') {
+                                                echo read_field($field->{'name'}, (string)$field->{'field.value'}, '', $update, '', '', '', 'text') ;
+                                            }
                                         }
                                     } ?>
+
+                                        </div>
+                                        <div class="col-4">
+
+                                    <?php if (!empty($included['nmis_fields'])) {
+                                        for ($i=3; $i < count($included['nmis_fields']); $i++) {
+                                            $field = $included['nmis_fields'][$i];
+                                            if (!in_array($field->name, $firstwave_fields)) {
+                                                continue;
+                                            }
+                                            if ($field->{'type'} == 'list') {
+                                                $values = array();
+                                                // Put an empty value in for 'not set'.
+                                                $item = new \stdClass();
+                                                $item->id = '';
+                                                $item->name = '';
+                                                $item->type = '';
+                                                $item->attributes = new \stdClass();
+                                                $item->attributes->name = '';
+                                                $values[] = $item;
+                                                $valid_values = explode(',', $field->values);
+                                                foreach ($valid_values as $key => $value) {
+                                                    $item = new \stdClass();
+                                                    $item->id = $value;
+                                                    $item->name = $value;
+                                                    $item->type = '';
+                                                    $item->attributes = new \stdClass();
+                                                    $item->attributes->name = $value;
+                                                    $values[] = $item;
+                                                }
+                                                echo read_select($field->name, (string)$field->{'field.value'}, '', $update, '', $values);
+                                            }
+
+                                            if ($field->{'type'} == 'varchar') {
+                                                echo read_field($field->{'name'}, (string)$field->{'field.value'}, '', $update, '', '', '', 'text') ;
+                                            }
+
+                                            if ($field->{'type'} == 'date') {
+                                                echo read_field($field->{'name'}, (string)$field->{'field.value'}, '', $update, '', '', '', 'date') ;
+                                            }
+                                        }
+                                    } ?>
+                                </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -2204,15 +2262,21 @@ $(document).ready(function() {
     if (!empty($included['field']) and !empty($included['fields'])) {
         foreach ($included['field'] as $field) {
             foreach ($included['fields'] as $fields) {
-                if ($field->fields_id == $fields->id) {
+                if ($field->field_id == $fields->id) {
                     echo "\$(\"#" . $fields->name . "\").val(\"" . $field->value . "\");\n";
                 }
             }
         }
     }
     ?>
-    
 });
 
-
+$(document).ready(function() {
+    $("#nmis_manage").val("<?= $resource->nmis_manage ?>");
+    $("#nmis_group").val("<?= $resource->nmis_group ?>");
+    $("#nmis_role").val("<?= $resource->nmis_role ?>");
+    $("#nmis_business_service").val("<?= $resource->nmis_business_service ?>");
+    $("#nmis_customer").val("<?= $resource->nmis_customer ?>");
+    $("#nmis_poller_uuid").val("<?= $resource->nmis_poller_uuid ?>");
+});
 </script>

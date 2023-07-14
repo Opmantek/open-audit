@@ -253,10 +253,13 @@ class DevicesModel extends BaseModel
     {
         $instance = & get_instance();
         $resp_include = array();
+
+        if ($instance->resp->meta->include === 'all') {
+            $instance->resp->meta->include = '';
+        }
         if (!empty($instance->resp->meta->include) and $instance->resp->meta->include !== 'all') {
             $resp_include = explode(',', $instance->resp->meta->include);
         }
-        log_message('debug', 'Include: ' . json_encode($resp_include));
 
         $include = array();
         $current = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
@@ -271,7 +274,7 @@ class DevicesModel extends BaseModel
             }
         }
 
-        $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'cluster', 'credential', 'edit_log', 'field', 'image', 'rack_devices');
+        $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'cluster', 'credential', 'edit_log', 'image', 'rack_devices');
         foreach ($no_current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT `$table`.*, devices.name AS `devices.name` FROM `$table` LEFT JOIN devices ON (`$table`.device_id = devices.id) WHERE device_id = ?";
@@ -283,16 +286,18 @@ class DevicesModel extends BaseModel
             }
         }
 
-        $sql = "SELECT application.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (application.application_id = applications.id) WHERE application.device_id = ?";
-        $query = $this->db->query($sql, $id);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['application'] = $result;
+        if (empty($resp_include) or in_array('applications', $resp_include) or $instance->resp->meta->format === 'screen') {
+            $sql = "SELECT application.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (application.application_id = applications.id) WHERE application.device_id = ?";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['application'] = $result;
+            }
         }
 
         if (empty($resp_include) or in_array('discovery_log', $resp_include)) {
             $sql = "SELECT discovery_log.*, discoveries.name AS `discoveries.name` FROM `discovery_log` LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discovery_log.device_id = ?";
-            $query = $this->db->query($sql, $id);
+            $query = $this->db->query($sql, [$id]);
             $result = $query->getResult();
             if (!empty($result)) {
                 $include['discovery_log'] = $result;
@@ -304,16 +309,16 @@ class DevicesModel extends BaseModel
         $user = $instance->user;
         $orgsList = implode(',', $orgsModel->getUserDescendants(explode(',', $user->org_list)));
 
-        if (empty($resp_include) or in_array('field', $resp_include)) {
-            $sql = "SELECT * FROM fields WHERE org_id IN (" . $orgsList . ")";
-            $query = $this->db->query($sql);
+        if (empty($resp_include) or in_array('field', $resp_include) or in_array('fields', $resp_include) or $instance->resp->meta->format === 'screen') {
+            $sql = "SELECT fields.*, field.id AS `field.id`, field.value AS `field.value`, field.device_id AS `field.device_id` FROM fields LEFT JOIN field on (field.field_id = fields.id AND field.device_id = ?) WHERE fields.org_id IN (" . $orgsList . ")";
+            $query = $this->db->query($sql, [$id]);
             $result = $query->getResult();
             if (!empty($result)) {
                 $include['fields'] = $result;
             }
         }
 
-        if (empty($resp_include) or in_array('location', $resp_include)) {
+        if (empty($resp_include) or in_array('location', $resp_include) or $instance->resp->meta->format === 'screen') {
             $sql = "SELECT * FROM locations WHERE org_id IN (" . $orgsList . ")";
             $query = $this->db->query($sql);
             $result = $query->getResult();
@@ -322,16 +327,81 @@ class DevicesModel extends BaseModel
             }
         }
 
-        $attributesModel = new \App\Models\AttributesModel();
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
-        $include['class'] = $attributes;
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'environment']);
-        $include['environment'] = $attributes;
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'status']);
-        $include['status'] = $attributes;
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
-        $include['type'] = $attributes;
+        if (empty($resp_include) or in_array('attributes', $resp_include) or $instance->resp->meta->format === 'screen') {
+            $attributesModel = new \App\Models\AttributesModel();
+            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
+            $include['class'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'environment']);
+            $include['environment'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'status']);
+            $include['status'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+            $include['type'] = $attributes;
+        }
 
+        if (empty($resp_include) or in_array('nmis', $resp_include) or in_array('firstwave', $resp_include) or $instance->resp->meta->format === 'screen') {
+            $include['nmis_business_services'] = array();
+            $include['nmis_groups'] = array();
+            $include['nmis_roles'] = array();
+            $include['nmis_customers'] = array();
+            $include['nmis_pollers'] = array();
+            $integrationsModel = new \App\Models\IntegrationsModel();
+            $integrations = $integrationsModel->listUser(['integrations.type', 'nmis']);
+            if (!empty($integrations)) {
+                foreach ($integrations as $integration) {
+                    if (!empty($integration->attributes->additional_items->business_services)) {
+                        foreach ($integration->attributes->additional_items->business_services as $item) {
+                            $entry = new \stdClass();
+                            $entry->id = $item;
+                            $entry->type = 'nmis';
+                            $entry->attributes = new \stdClass();
+                            $entry->attributes->name = $item;
+                            $include['nmis_business_services'][] = $entry;
+                        }
+                    }
+                    if (!empty($integration->attributes->additional_items->groups)) {
+                        foreach ($integration->attributes->additional_items->groups as $item) {
+                            $entry = new \stdClass();
+                            $entry->id = $item;
+                            $entry->type = 'nmis';
+                            $entry->attributes = new \stdClass();
+                            $entry->attributes->name = $item;
+                            $include['nmis_groups'][] = $entry;
+                        }
+                    }
+                    if (!empty($integration->attributes->additional_items->roles)) {
+                        foreach ($integration->attributes->additional_items->roles as $item) {
+                            $entry = new \stdClass();
+                            $entry->id = $item;
+                            $entry->type = 'nmis';
+                            $entry->attributes = new \stdClass();
+                            $entry->attributes->name = $item;
+                            $include['nmis_roles'][] = $entry;
+                        }
+                    }
+                    if (!empty($integration->attributes->additional_items->customers)) {
+                        foreach ($integration->attributes->additional_items->customers as $item) {
+                            $entry = new \stdClass();
+                            $entry->id = $item;
+                            $entry->type = 'nmis';
+                            $entry->attributes = new \stdClass();
+                            $entry->attributes->name = $item;
+                            $include['nmis_customers'][] = $entry;
+                        }
+                    }
+                    if (!empty($integration->attributes->additional_items->pollers)) {
+                        foreach ($integration->attributes->additional_items->pollers as $item) {
+                            $entry = new \stdClass();
+                            $entry->id = $item->cluster_id;
+                            $entry->type = 'nmis';
+                            $entry->attributes = new \stdClass();
+                            $entry->attributes->name = $item->server_name;
+                            $include['nmis_pollers'][] = $entry;
+                        }
+                    }
+                }
+            }
+        }
         return $include;
     }
 
@@ -347,6 +417,9 @@ class DevicesModel extends BaseModel
         $attributesModel = new \App\Models\AttributesModel();
         $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
         $include['type'] = $attributes;
+
+        $locationsModel = new \App\Models\LocationsModel();
+        $include['locations'] = $locationsModel->listUser();
 
         return $include;
     }
@@ -446,6 +519,12 @@ class DevicesModel extends BaseModel
             return false;
         }
 
+        $instance = get_instance();
+        $user_id = 0;
+        if (!empty($instance->user)) {
+            $user_id = $instance->user->id;
+        }
+
         $log = new \StdClass();
         $log->severity = 7;
         $log->file = 'DevicesModel';
@@ -534,7 +613,7 @@ class DevicesModel extends BaseModel
                     if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
                         $update_device->$key = $value;
                         $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
-                        $query = $this->db->query($sql, [0, $id, $source, $weight, $key, $data->timestamp, $value, $previous_value]);
+                        $query = $this->db->query($sql, [$user_id, $id, $source, $weight, $key, $data->timestamp, $value, $previous_value]);
                     } else {
                         // We have an existing edit_log entry with a more important change - don't touch the `devices`.`$key` value
                     }
@@ -604,9 +683,41 @@ class DevicesModel extends BaseModel
             $query = $this->db->query($sql, [$source, $data->org_id]);
         }
 
+        // Check and update any custom fields, if the supplied data key name == the fields.name
+        $fieldsModel = new \App\Models\FieldsModel;
+        $fields = $fieldsModel->listUser();
+        $sql = "SELECT * FROM field WHERE device_id = ?";
+        $deviceFields = $this->db->query($sql, [$id])->getResult();
+        foreach ($fields as $field) {
+            foreach ($data as $key => $value) {
+                if ($key === $field->attributes->name) {
+                    // We have a matching field - check for an existing value
+                    $updated = false;
+                    if (!empty($deviceFields)) {
+                        foreach ($deviceFields as $deviceField) {
+                            if (intval($field->id) === intval($deviceField->fields_id)) {
+                                $previous_value = $deviceField->value;
+                                $update = true;
+                                $sql = "UPDATE field SET value = ?, `timestamp` = NOW() WHERE id = ?";
+                                $this->db->query($sql, [$deviceField->id, $value]);
+                                $sql = "INSERT INTO edit_log VALUES (null, ?, ?, 'Field data was updated', ?, ?, 'field', ?, NOW(), ?, ?)";
+                                $this->db->query($sql, [$user_id, $id, $source, 1000, $field->attributes->name, $value, $previous_value]);
+                            }
+                        }
+                    }
+                    if ($updated === false) {
+                        // A new field - insert it
+                        $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
+                        $this->db->query($sql, [$id, $field->id, $value]);
+                        $sql = "INSERT INTO edit_log VALUES (null, ?, ?, 'Field data was created', ?, ?, 'field', ?, NOW(), ?, '')";
+                        $this->db->query($sql, [$user_id, $id, $source, 1000, $field->attributes->name, $value]);
+                    }
+                }
+            }
+        }
+
         $log->message = 'System update end for ID: ' . $id;
         $log->summary = 'finish function';
-        #discovery_log($log);
         return true;
     }
 
@@ -630,18 +741,17 @@ class DevicesModel extends BaseModel
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
 
-        #$dictionary->about = '<p>Devices.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
-        $dictionary->about = '<p>Devices.<br /><br /></p>';
+        $dictionary->about = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Even add devices that aren\'t connected to your network or those devices your Open-AudIT server cannot reach.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' .  $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '';
 
         $dictionary->product = 'community';
-        $dictionary->columns->id = ''; #$instance->dictionary->id;
-        $dictionary->columns->name = ''; #$instance->dictionary->name;
-        $dictionary->columns->description = ''; #$instance->dictionary->description;
-        $dictionary->columns->org_id = ''; #$instance->dictionary->org_id;
-        $dictionary->columns->edited_by = ''; #$instance->dictionary->edited_by;
-        $dictionary->columns->edited_date = ''; #$instance->dictionary->edited_date;
+        $dictionary->columns->id = $instance->dictionary->id;
+        $dictionary->columns->name = $instance->dictionary->name;
+        $dictionary->columns->description = $instance->dictionary->description;
+        $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->last_seen = 'The last time that Open-AudIT retrieved details of this device.';
+        $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
         return $dictionary;
     }
 }
