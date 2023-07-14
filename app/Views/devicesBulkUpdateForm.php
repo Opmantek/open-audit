@@ -60,6 +60,64 @@ $ids = implode(',', $id);
             <br />
             <div class="card">
                 <div class="card-header">
+                    <?= collection_card_header($meta->collection, $meta->icon, $user, 'Fields') ?>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    <?php if (!empty($included['fields'])) {
+                        $count = 0;
+                        foreach ($included['fields'] as $field) {
+                            $count += 1;
+                            if ($count > 3) {
+                                echo "</div><div class=\"row\">\n";
+                                $count = 1;
+                            }
+                            echo "<div class=\"col-4\">\n";
+                            if ($field->attributes->type == 'varchar') {
+                                echo read_field($field->attributes->name, '', '', 1);
+                            }
+
+                            if ($field->attributes->type == 'list') {
+                                $values = array();
+                                // Put an empty value in for 'not set'.
+                                $item = new \stdClass();
+                                $item->id = '';
+                                $item->name = '';
+                                $item->type = '';
+                                $item->attributes = new \stdClass();
+                                $item->attributes->name = '';
+                                $values[] = $item;
+                                $valid_values = explode(',', $field->values);
+                                foreach ($valid_values as $key => $value) {
+                                    $item = new \stdClass();
+                                    $item->id = $value;
+                                    $item->name = $value;
+                                    $item->type = '';
+                                    $item->attributes = new \stdClass();
+                                    $item->attributes->name = $value;
+                                    $values[] = $item;
+                                }
+                                echo read_select($field->attributes->name, '', '', 1, '', $values);
+                            }
+
+                            if ($field->attributes->type == 'date') {
+                                echo read_field($field->attributes->name, '', '', 1, '', '', '', 'date') ;
+                            }
+                            echo "</div>\n";
+                        }
+                    } ?>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <br />
+            <div class="card">
+                <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
@@ -109,14 +167,25 @@ $(document).ready(function() {
     /* Remove these panel header buttons */
     $("#button_export_json").remove();
     $("#button_export_json").remove();
+    $("#button_export_json").remove();
+
     $("#button_import_json").remove();
     $("#button_import_json").remove();
+    $("#button_import_json").remove();
+
     $("#button_export_csv").remove();
     $("#button_export_csv").remove();
+    $("#button_export_csv").remove();
+
     $("#button_import_csv").remove();
     $("#button_import_csv").remove();
+    $("#button_import_csv").remove();
+
     $("#button_create").remove();
     $("#button_create").remove();
+    $("#button_create").remove();
+
+    $("#button_help").remove();
     $("#button_help").remove();
     $("#button_help").remove();
 
