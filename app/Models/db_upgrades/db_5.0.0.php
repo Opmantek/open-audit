@@ -189,6 +189,13 @@ if ($db->tableExists('system') and !$db->tableExists('devices')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if ($db->fieldExists('fields_id', 'field')) {
+    $sql = "ALTER TABLE field CHANGE `fields_id` `field_id` int(10) unsigned NOT NULL DEFAULT '0'";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if ($db->tableExists('ldap_groups')) {
     $sql = "DROP TABLE ldap_groups";
     $query = $db->query($sql);

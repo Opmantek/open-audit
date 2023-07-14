@@ -1594,7 +1594,7 @@ DROP TABLE IF EXISTS `field`;
 CREATE TABLE `field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `fields_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `field_id` int(10) unsigned NOT NULL DEFAULT '0',
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
