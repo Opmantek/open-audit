@@ -187,7 +187,6 @@ class BaselinesResultsModel extends BaseModel
             return array();
         }
         return format_data($query->getResult(), 'baselines_results');
-
     }
 
     /**
