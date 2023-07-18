@@ -198,6 +198,28 @@ class DashboardsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
+        if (!empty($data->options)) {
+            $dashboard = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
+            $existing = new stdClass();
+            if (!empty($dashboard->options)) {
+                $existing = json_decode($dashboard->options);
+            }
+            if (!empty($data->options->layout)) {
+                $existing->layout = $data->options->layout;
+            }
+            if (!empty($data->options->widgets->position)) {
+                foreach ($data->options->widgets->position as $key => $value) {
+                    $widget_position = $key;
+                    $widget_id = $value;
+                }
+            }
+            foreach ($existing->widgets as $widget) {
+                if (intval($widget->position) === intval($widget_position)) {
+                    $widget->widget_id = $widget_id;
+                }
+            }
+            $data->options = (string)json_encode($existing);
+        }
         $data = $this->updateFieldData('dashboards', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
