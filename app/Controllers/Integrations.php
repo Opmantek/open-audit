@@ -50,4 +50,29 @@ class Integrations extends BaseController
             return redirect()->route('integrationsRead', [$id]);
         }
     }
+
+    /**
+     * Delete an individual field from the array of fields in an Integration.
+     * NOTE - Overloading the update function in the controller to more easily test permission (without adding yet another permission exception in BaseController)
+     *
+     * @access public
+     * @return void
+     */
+    public function update($id)
+    {
+        $data = new \stdClass();
+        foreach ($this->resp->meta->filter as $item) {
+            if ($item->name !== 'integrations.org_id') {
+                $data->{$item->name} = $item->value;
+            }
+        }
+        if ($this->integrationsModel->deleteFields(intval($id), $data)) {
+            output($this);
+        } else {
+            $this->response->setStatusCode(400);
+            if (!empty($GLOBALS['stash'])) {
+                print_r(json_encode($GLOBALS['stash']));
+            }
+        }
+    }
 }

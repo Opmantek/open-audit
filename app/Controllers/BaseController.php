@@ -157,21 +157,30 @@ abstract class BaseController extends Controller
         # log this request
         $log_user = (!empty($this->user->full_name)) ? $this->user->full_name : $this->user->name;
         $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $log_user;
+        if ($this->resp->meta->collection === 'integrations' and empty($this->resp->meta->recieved_data) and $this->resp->meta->action === 'update') {
+            $this->resp->meta->received_data = $this->resp->meta->filter;
+        }
         if (!empty($this->resp->meta->received_data)) {
             $data = json_encode($this->resp->meta->received_data);
             if ($this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') {
                 $data = json_decode($data);
-                $data->attributes->credentials = 'Removed for logging';
+                if (!empty($data->attributes->credentials)) {
+                    $data->attributes->credentials = 'Removed for logging';
+                }
                 $data = json_encode($data);
             }
             if ($this->resp->meta->collection === 'integrations') {
                 $data = json_decode($data);
-                $data->attributes->attributes = 'Removed for logging';
+                if (!empty($data->attributes->attributes)) {
+                    $data->attributes->attributes = 'Removed for logging';
+                }
                 $data = json_encode($data);
             }
             if ($this->resp->meta->collection === 'users') {
                 $data = json_decode($data);
-                $data->attributes->password = 'Removed for logging';
+                if (!empty($data->attributes->password)) {
+                    $data->attributes->password = 'Removed for logging';
+                }
                 $data = json_encode($data);
             }
             $message .= ':' . $data;

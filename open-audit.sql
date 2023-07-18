@@ -1908,7 +1908,7 @@ CREATE TABLE `integrations` (
   `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
   `status` varchar(200) NOT NULL DEFAULT '',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `duration` int(10) unsigned DEFAULT NULL,
+  `duration` int(10) unsigned DEFAULT 0,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)

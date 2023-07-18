@@ -41,7 +41,7 @@ $routes->collections = array('applications','attributes','baselines',
 # The default route
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
 
-# These will match and then take precedence over the below routes
+# These will match and then take precedence over the below route array
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
 $routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
 $routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
@@ -87,6 +87,8 @@ $routes->get('reports', 'Reports::Collection', ['filter' => \App\Filters\Session
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->post('util/google', 'Util::google');
+
+$routes->delete('integrations/(:num)/fields/(:num)', 'Integrations::update/$1', ['filter' => \App\Filters\Session::class]);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character

@@ -61,6 +61,7 @@ class IntegrationsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        $instance = & get_instance();
         if (!empty($data->attributes)) {
             if (!is_string($data->attributes)) {
                 $data->attributes = json_encode($data->attributes);
@@ -97,14 +98,15 @@ class IntegrationsModel extends BaseModel
         }
         $id = $this->db->insertID();
         $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
+        $integration->fields = json_decode($integration->fields);
         $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
 
-        if ($integration->attributes->discovery_run === 'y') {
+        if ($integration->discovery_run === 'y') {
             $discovery = new \StdClass();
             $discovery->type = 'integration';
-            $discovery->name = 'Discovery for ' . $integration->attributes->name;
+            $discovery->name = 'Discovery for ' . $integration->name;
             $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
-            $discovery->org_id = $integration->attributes->org_id;
+            $discovery->org_id = $integration->org_id;
             $discovery->discard = 'n';
             $discovery->complete = 'n';
             $discovery->subnet = '';
@@ -115,8 +117,8 @@ class IntegrationsModel extends BaseModel
         }
 
         $instance->fieldsModel = new \App\Models\FieldsModel();
-        if (!empty($integration->attributes->fields)) {
-            foreach ($integration->attributes->fields as $field) {
+        if (!empty($integration->fields)) {
+            foreach ($integration->fields as $field) {
                 if ($field->internal_field_name === '' or strpos($field->internal_field_name, 'fields.') === 0) {
                     if (strpos($field->internal_field_name, 'fields.') === 0) {
                         $field_name = str_replace('fields.', '', $field->internal_field_name);
@@ -124,13 +126,13 @@ class IntegrationsModel extends BaseModel
                         $field_name = $this->internalFieldFromEmpty($data->type, $field->external_field_name);
                     }
                     $sql = "SELECT * FROM fields WHERE name = ? AND org_id = ?";
-                    $result = $this->db->query($sql, [$field_name, $integration->attributes->org_id])->getResult();
+                    $result = $this->db->query($sql, [$field_name, $integration->org_id])->getResult();
                     if (empty($result)) {
                         # No field exists, create it
                         $field = new \StdClass();
                         $field->type = $field;
                         $field->name = $field_name;
-                        $field->org_id = $integration->attributes->org_id;
+                        $field->org_id = $integration->org_id;
                         $field->type = 'varchar';
                         $field->values = @$field->default_value;
                         $field->group_id = 1;
@@ -157,6 +159,7 @@ class IntegrationsModel extends BaseModel
         $sql = "SELECT discovery_id FROM integrations WHERE id = ?";
         $discovery_id = intval($this->db->query($sql, [$id])->getResult()[0]->discovery_id);
 
+        // Delete any discovery
         $sql = "DELETE FROM discoveries WHERE id = ?";
         $result = $this->db->query($sql, [$discovery_id]);
 
@@ -179,6 +182,34 @@ class IntegrationsModel extends BaseModel
         return true;
     }
 
+    public function deleteFields(int $id = 0, object $data = null): bool
+    {
+        $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
+        $fields = json_decode($integration->fields);
+        $update = false;
+        $count = count($fields);
+        for ($i=0; $i < $count; $i++) {
+            if ($fields[$i]->internal_field_name === $data->internal_field_name and
+                $fields[$i]->external_field_name === $data->external_field_name and
+                $fields[$i]->external_field_type === $data->external_field_type and
+                $fields[$i]->default_value === $data->default_value and
+                $fields[$i]->priority === $data->priority and
+                $fields[$i]->matching_attribute === $data->matching_attribute) {
+                unset($fields[$i]);
+                $update = true;
+            }
+        }
+        if ($update === false) {
+            return false;
+        }
+        $fields = json_encode(array_values($fields));
+        $sql = "UPDATE integrations SET fields = ? WHERE id = ?";
+        $this->db->query($sql, [$fields, $id]);
+        if ($this->sqlError($this->db->error())) {
+            return false;
+        }
+        return true;
+    }
 
     public function execute(int $id = 0)
     {
@@ -1045,7 +1076,14 @@ class IntegrationsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $include = array();
+        $groupsModel = new \App\Models\GroupsModel();
+        $include['groups'] = $groupsModel->listUser();
+
+        $queriesModel = new \App\Models\QueriesModel();
+        $include['queries'] = $queriesModel->listUser();
+
+        return $include;
     }
 
     public function internalFieldFromEmpty(string $type = '', string $field_name = '')
@@ -1255,7 +1293,16 @@ class IntegrationsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
+        $properties = array();
+        $properties[] = 'integrations.*';
+        $properties[] = 'orgs.name as `orgs.name`';
+        $properties[] = 'orgs.id as `orgs.id`';
+        $properties[] = 'discoveries.name as `discoveries.name`';
+        $properties[] = 'discoveries.id as `discoveries.id`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'integrations.org_id = orgs.id', 'left');
+        $this->builder->join('discoveries', 'integrations.discovery_id = discoveries.id', 'left');
+        $query = $this->builder->getWhere(['integrations.id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -1299,6 +1346,35 @@ class IntegrationsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
+        $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
+        if (empty($integration->attributes)) {
+            $integration->attributes = new \stdClass();
+        } else {
+            $integration->attributes = json_decode($integration->attributes);
+        }
+        if (empty($integration->fields)) {
+            $integration->fields = new \stdClass();
+        } else {
+            $integration->fields = json_decode($integration->fields);
+        }
+
+        if (!empty($data->attributes)) {
+            foreach ($data->attributes as $key => $value) {
+                $integration->attributes->$key = $value;
+            }
+            $data->attributes = json_encode($integration->attributes);
+        }
+
+        if (!empty($data->fields)) {
+            $newfield = new stdClass();
+            foreach ($data->fields as $key => $value) {
+                $newfield->{$key} = $value;
+            }
+            $integration->fields[] = $newfield;
+            $data->fields = $integration->fields;
+            $data->fields = json_encode($data->fields);
+        }
+
         $data = $this->updateFieldData('integrations', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
@@ -1538,7 +1614,7 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->discovery_run = 'When retrieve an external device, should we run discovery upon it?';
         $dictionary->columns->select_internal_type = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';
         $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'system\' table).';
-        $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected.';
+        $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected or contains the ID of the query to be used.';
 
         $dictionary->columns->create_external_from_internal = 'If an Open-AudIT device is not on the external system, should we create it.';
         $dictionary->columns->update_external_from_internal = 'If an Open-AudIT device has been changed, should we update the external system.';
