@@ -49,7 +49,6 @@ class BaselinesResultsModel extends BaseModel
         }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
-        log_message('error', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
