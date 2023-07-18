@@ -130,6 +130,18 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'locations') {
+        foreach ($result as $item) {
+            $item->options = json_decode($item->options);
+        }
+    }
+
+    if ($type === 'networks') {
+        foreach ($result as $item) {
+            $item->options = json_decode($item->options);
+        }
+    }
+
     if ($type === 'roles') {
         foreach ($result as $item) {
             $item->permissions = json_decode($item->permissions);
