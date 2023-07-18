@@ -777,6 +777,22 @@ class RulesModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
+        $tables = array('bios', 'credential', 'devices', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $columns = array();
+        foreach ($tables as $table) {
+            $fields = $this->db->getFieldNames($table);
+            $myfields = array();
+            foreach ($fields as $field) {
+                if ($field !== 'id' && $field !== 'current' && $field !== 'device_id' && $field !== 'first_seen' && $field !== 'last_seen') {
+                    $myfields[] = $field;
+                }
+            }
+            sort($myfields);
+            $columns[$table] = $myfields;
+        }
+        $dictionary->attributes->tables = $tables;
+        $dictionary->attributes->columns = $columns;
+
         $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.</p>';
 
         $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br /><br />If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/images/map_icons<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a \'device\', valid <i>types</i> are: \'class\', \'environment\', \'status\' and \'type\'. If the <i>resource</i> is \'locations\' or \'orgs\' the only valid <i>type</i> is \'type\'. If the <i>resource</i> is a \'query\' the only valid <i>type</i> is \'menu_category\'.</p>';
