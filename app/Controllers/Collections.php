@@ -108,8 +108,8 @@ class Collections extends BaseController
     public function create()
     {
         if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
-            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise') {
-                log_message('debug', config('Openaudit')->oae_product);
+            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise') {
+                log_message('debug', config('Openaudit')->product);
                 log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
                 log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
                 \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
@@ -117,7 +117,7 @@ class Collections extends BaseController
             }
         }
         if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
-            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise' and config('Openaudit')->oae_product !== 'professional') {
+            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise' and config('Openaudit')->product !== 'professional') {
                 log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
                 \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
                 return redirect()->route($this->config->homepage);
@@ -161,8 +161,8 @@ class Collections extends BaseController
     public function createForm()
     {
         if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
-            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise') {
-                log_message('debug', config('Openaudit')->oae_product);
+            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise') {
+                log_message('debug', config('Openaudit')->product);
                 log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
                 log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
                 \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
@@ -170,7 +170,7 @@ class Collections extends BaseController
             }
         }
         if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
-            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise' and config('Openaudit')->oae_product !== 'professional') {
+            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise' and config('Openaudit')->product !== 'professional') {
                 log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
                 \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
                 return redirect()->route($this->config->homepage);
@@ -360,8 +360,8 @@ class Collections extends BaseController
     public function importJSON()
     {
         if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
-            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise') {
-                log_message('debug', config('Openaudit')->oae_product);
+            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise') {
+                log_message('debug', config('Openaudit')->product);
                 log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
                 log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
                 \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
@@ -369,7 +369,7 @@ class Collections extends BaseController
             }
         }
         if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
-            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->oae_product !== 'enterprise' and config('Openaudit')->oae_product !== 'professional') {
+            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise' and config('Openaudit')->product !== 'professional') {
                 log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
                 \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
                 return redirect()->route($this->config->homepage);

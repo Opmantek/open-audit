@@ -28,7 +28,7 @@ class OpenAudit extends BaseConfig
 
         if (stripos($this->product, 'enterprise')) {
             $this->product = 'enterprise';
-        } else if (stripos($this->oae_product, 'professional')) {
+        } else if (stripos($this->product, 'professional')) {
             $this->roduct = 'professional';
         } else {
             $this->product = 'community';
