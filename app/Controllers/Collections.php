@@ -472,6 +472,7 @@ class Collections extends BaseController
         if ($this->resp->meta->format !== 'screen') {
             if ($this->resp->meta->collection === 'devices' or !empty($this->resp->meta->requestor)) {
                 $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
+                $this->resp->dictionary = $dictionary;
             }
             output($this);
             return true;
