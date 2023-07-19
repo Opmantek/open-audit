@@ -245,6 +245,7 @@ class LdapServersModel extends BaseModel
         $dictionary->columns->user_dn = 'Used by OpenLDAP only.';
         $dictionary->columns->user_membership_attribute = 'Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
         $dictionary->columns->use_auth = "Should we use this LDAP server to authenticate user credentials. Set to 'y' or 'n'.";
+        $dictionary->columns->use_discovery = "Unused.";
         $dictionary->columns->use_people = "Should we use this LDAP server to to populate people. Set to 'y' or 'n'.";
         $dictionary->columns->use_roles = "Should we use this LDAP server to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to 'y' or 'n'.";
         $dictionary->columns->dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';

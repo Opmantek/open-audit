@@ -238,7 +238,9 @@ class CollectorsModel extends BaseModel
         $dictionary->columns->check_minutes = 'How often should the collector ask the server for a task.';
         $dictionary->columns->ip = 'The IP address of this collector used to communicate with the server.';
         $dictionary->columns->network_address = 'The collectors internal IP used when it runs a discovery.';
-        $dictionary->columns->status = 'unused';
+        $dictionary->columns->status = 'Unused.';
+        $dictionary->columns->os = 'Unused.';
+        $dictionary->columns->options = 'Unused.';
         $dictionary->columns->user_id = 'The user account this collector uses. Links to <code>users.id</code>.';
         $dictionary->columns->uuid = 'This collectors universally unique identifier.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

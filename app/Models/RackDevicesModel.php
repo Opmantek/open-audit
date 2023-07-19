@@ -245,9 +245,9 @@ class RackDevicesModel extends BaseModel
         $dictionary->columns->width = 'The width of this device.';
         $dictionary->columns->orientation = 'The orientation of this device.';
         $dictionary->columns->type = 'The type of device.';
-        $dictionary->columns->options = 'unused';
-        $dictionary->columns->notes = 'unused';
-        $dictionary->columns->tags = 'unused';
+        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->notes = 'Unused.';
+        $dictionary->columns->tags = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

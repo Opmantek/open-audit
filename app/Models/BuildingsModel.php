@@ -247,9 +247,9 @@ class BuildingsModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
-        $dictionary->columns->options = 'unused';
-        $dictionary->columns->notes = 'unused';
-        $dictionary->columns->tags = 'unused';
+        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->notes = 'Unused.';
+        $dictionary->columns->tags = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

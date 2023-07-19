@@ -282,7 +282,7 @@ class GroupsModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select devices that will populate this group.';
-        $dictionary->columns->link = 'unused';
+        $dictionary->columns->link = 'Unused.';
         $dictionary->columns->expose = 'Should we expose this group in the web interface.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

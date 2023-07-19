@@ -343,7 +343,7 @@ class QueriesModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
-        $dictionary->columns->link = 'unused';
+        $dictionary->columns->link = 'Unused.';
         $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Report" menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

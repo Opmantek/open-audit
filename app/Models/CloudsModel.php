@@ -309,7 +309,7 @@ class CloudsModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->credentials = 'Your access credentials, as per that clouds native API.';
-        $dictionary->columns->type = 'At the moment, only Amazon AWS is supported.';
+        $dictionary->columns->type = 'At the moment, only Amazon and Microsoft are supported.';
         # AWS
         $dictionary->columns->key = 'Your AWS EC2 API key.';
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your AWS EC2 API key.';

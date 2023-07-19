@@ -93,6 +93,17 @@ class RacksModel extends BaseModel
      * @param  int $id The ID of the requested item
      * @return array  An array of anything needed for screen output
      */
+    public function includedCreateForm(int $id = 0): array
+    {
+        return array();
+    }
+
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
     public function includedRead(int $id = 0): array
     {
         $included = array();
@@ -105,17 +116,6 @@ class RacksModel extends BaseModel
         $query = $this->builder->get();
         $included['rack_devices'] = format_data($query->getResult(), 'rack_devices');
         return $included;
-    }
-
-    /**
-     * Return an array containing arrays of related items to be stored in resp->included
-     *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
-     */
-    public function includedCreateForm(int $id = 0): array
-    {
-        return array();
     }
 
     /**
@@ -241,6 +241,34 @@ class RacksModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->row_id = 'The row the rack is located in. Links to <code>rows.id</code>.';
+        $dictionary->columns->row_position = 'The height of this rack in rack units.';
+        $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
+        $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';
+        $dictionary->columns->physical_width = 'The physical width (in CMs) of the rack.';
+        $dictionary->columns->physical_depth = 'The physical depth (in CMs) of the rack.';
+        $dictionary->columns->weight_empty = 'The physical weight (in KGs) of the rack when empty.';
+        $dictionary->columns->weight_current = 'The physical weight (in KGs) of the rack at present.';
+        $dictionary->columns->weight_max = 'The maximum physical weight (in KGs) this rack can hold.';
+        $dictionary->columns->ru_start = 'The starting RU number this device occupies.';
+        $dictionary->columns->ru_height = 'How many rack units in height is this rack.';
+        $dictionary->columns->type = 'The type of rack (compute, power, network, etc).';
+        $dictionary->columns->purpose = 'What is the purpose of this rack.';
+        $dictionary->columns->manufacturer = 'Who made this rack.';
+        $dictionary->columns->model = 'The rack model.';
+        $dictionary->columns->series = 'The rack series.';
+        $dictionary->columns->serial = 'The rack serial.';
+        $dictionary->columns->asset_number = 'The rack asset number.';
+        $dictionary->columns->asset_tag = 'The rack asset tag.';
+        $dictionary->columns->bar_code = 'The rack bar code.';
+        $dictionary->columns->power_circuit = 'The power circuit this rack attaches to.';
+        $dictionary->columns->power_sockets = 'How many power sockets in this rack.';
+        $dictionary->columns->circuit_count = 'How many circuit feed to this rack.';
+        $dictionary->columns->btu_total = 'The total BTU output by this rack.';
+        $dictionary->columns->btu_max = 'The maximum total BTUs this rack is rated for.';
+        $dictionary->columns->options = 'unused';
+        $dictionary->columns->notes = 'unused';
+        $dictionary->columns->tags = 'unused';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

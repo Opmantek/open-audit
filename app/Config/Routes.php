@@ -89,6 +89,8 @@ $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->post('util/google', 'Util::google');
 
 $routes->delete('integrations/(:num)/fields/(:num)', 'Integrations::update/$1', ['filter' => \App\Filters\Session::class]);
+$routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
+$routes->post('integrations_log/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'integrations_logReset']);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character

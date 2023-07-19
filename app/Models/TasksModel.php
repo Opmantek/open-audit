@@ -392,11 +392,11 @@ class TasksModel extends BaseModel
         $dictionary->columns->day_of_month = 'The day of the month when this task should execute (* for every day).';
         $dictionary->columns->month = 'The month of the year when this task should execute (* for every month).';
         $dictionary->columns->day_of_week = 'The day of the week when this task should execute (* for every day).';
-        $dictionary->columns->delay_minutes = 'unused';
-        $dictionary->columns->expire_minutes = 'unused';
+        $dictionary->columns->delay_minutes = 'Unused.';
+        $dictionary->columns->expire_minutes = 'Unused.';
         $dictionary->columns->first_run = "The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to '2017-06-01 09:59:00'. This value should be zero padded (ie, 09, not 9). This value defaults to '2001-01-01 00:00:00' which means by default, a scheduled task will run at next scheduled execution time.";
         $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
-        $dictionary->columns->options = 'unused';
+        $dictionary->columns->options = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

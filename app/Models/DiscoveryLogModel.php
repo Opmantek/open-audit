@@ -374,9 +374,21 @@ class DiscoveryLogModel extends BaseModel
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->parent_id = 'The ID of this orgs parent org. Linked to <code>orgs.id</code>';
-        $dictionary->columns->type = 'The type of organisation.';
-        $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.';
+        $dictionary->columns->discovery_id = 'The ID of the associated discovery. Linked to <code>discoveries.id</code>';
+        $dictionary->columns->device_id = 'The ID of the associated device (if any). Links to <code>devices.id</code>.';
+        $dictionary->columns->timestamp = 'When this log was created.';
+        $dictionary->columns->severity = 'The integer of severity.';
+        $dictionary->columns->severity_text = 'Derived from the integer severity.';
+        $dictionary->columns->pid = 'The Process Identifier of the running associated discovery.';
+        $dictionary->columns->ip = 'The target IP this log entry referers to (if any).';
+        $dictionary->columns->file = 'The Open-AudIT server code was exeucted within this file.';
+        $dictionary->columns->function = 'The Open-AudIT server code was exeucted within this function.';
+        $dictionary->columns->message = 'A short description of the log entry.';
+        $dictionary->columns->command = 'The command executed upon the target device or Open-AudIT server code executed during discovery.';
+        $dictionary->columns->command_status = 'Did the command complete successfully and return expected data.';
+        $dictionary->columns->command_time_to_execute = 'How long did the command take to execute.';
+        $dictionary->columns->command_output = 'The result of the command.';
+
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

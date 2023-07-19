@@ -269,6 +269,10 @@ class QueueModel extends BaseModel
         $dictionary->columns->type = 'The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.';
         $dictionary->columns->name = 'The text that is displayed.';
         $dictionary->columns->value = 'The value that is stored for this particular item.';
+        $dictionary->columns->pid = 'The process identifier of this queue item.';
+        $dictionary->columns->status = 'The status of this queued item.';
+        $dictionary->columns->details = 'A JSON representation containing the details of the queue item to be executed.';
+        $dictionary->columns->started_date = 'When this queue item started processing.';
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

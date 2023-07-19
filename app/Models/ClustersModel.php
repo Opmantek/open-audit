@@ -415,8 +415,8 @@ class ClustersModel extends BaseModel
         $dictionary->columns->configuration = "The configuration of your cluster can be: 'active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other' or blank.";
         $dictionary->columns->environment = 'As per the attributes for device environments. Production, Training, et al.';
         $dictionary->columns->scaling = "Can be 'auto', 'fixed', 'other' or blank.";
-        $dictionary->columns->retrieved_name = 'unused';
-        $dictionary->columns->retrieved_ident = 'unused';
+        $dictionary->columns->retrieved_name = 'Unused.';
+        $dictionary->columns->retrieved_ident = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

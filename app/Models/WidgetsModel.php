@@ -670,7 +670,7 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->ternary = 'The optional third column.';
         $dictionary->columns->where = 'Any required filter.';
         $dictionary->columns->limit = 'Limit the query to the first X items.';
-        $dictionary->columns->options = 'unused';
+        $dictionary->columns->options = 'Unused.';
         $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
         $dictionary->columns->type = "Can be 'line' or 'pie'.";
         $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';

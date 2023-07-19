@@ -232,7 +232,7 @@ class DiscoveryScanOptionsModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->ping = 'Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.';
+        $dictionary->columns->ping = 'Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.';
         $dictionary->columns->service_version = 'When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.';
         $dictionary->columns->filtered = 'Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?';
         $dictionary->columns->{'open|filtered'} = 'Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?';
@@ -246,6 +246,16 @@ class DiscoveryScanOptionsModel extends BaseModel
         $dictionary->columns->exclude_udp_ports = 'Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.';
         $dictionary->columns->exclude_ip = 'Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.';
         $dictionary->columns->ssh_ports = 'If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.';
+        $dictionary->columns->snmp_timeout = 'Our timeout for an SNMP response';
+        $dictionary->columns->ssh_timeout = 'Our timeout for a SSH response';
+        $dictionary->columns->wmi_timeout = 'Our timeout for a WMI response';
+        $dictionary->columns->script_timeout = 'Our timeout for an audit script response';
+
+        $dictionary->columns->command_options  = 'Unused.';
+        $dictionary->columns->options  = 'Unused.';
+        $dictionary->columns->ports_in_order  = 'Unused.';
+        $dictionary->columns->ports_stop_after  = 'Unused.';
+
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

@@ -360,9 +360,12 @@ class BaselinesPoliciesModel extends BaseModel
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
+        $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->attributes->baseline_id = 'The associated baseline. Links to <code>baselines.id</code>.';
+        $dictionary->columns->baseline_id = 'The associated baseline. Links to <code>baselines.id</code>.';
         $dictionary->columns->notes = 'Any additional notes you care to make.';
+        $dictionary->columns->table = 'At present we can use netstat_ports, software and users.';
+        $dictionary->columns->tests = 'A JSON representation of the tests that make up this policy.';
         $dictionary->columns->documentation = 'Any additional documentation you need.';
         $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

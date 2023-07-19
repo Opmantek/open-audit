@@ -568,7 +568,7 @@ class ScriptsModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->based_on = 'The audit script upon which to base your customisations.';
         $dictionary->columns->options = 'A JSON document containing the required attributes depending on <code>scripts.type</code>.';
-        $dictionary->columns->hash = 'unused';
+        $dictionary->columns->hash = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 

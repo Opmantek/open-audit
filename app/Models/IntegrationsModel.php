@@ -1597,10 +1597,17 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->type = 'The type of the integration (usually named after the remote system).';
         $dictionary->columns->populate_from_local = 'Should we add devices from the remote service, locally.';
         $dictionary->columns->populate_from_remote = 'Should we populate the remote system from our local devices.';
-        $dictionary->columns->query_id = '';
-        $dictionary->columns->group_id = 'The group that provides a list of devices for the integration.';
+        $dictionary->columns->query_id = 'The query that provides a list of devices for the integration. Links to <code>queries.id</code>.';
+        $dictionary->columns->group_id = 'The group that provides a list of devices for the integration. Links to <code>groups.id</code>.';
         $dictionary->columns->last_run = 'The last time this integration was run.';
         $dictionary->columns->status = 'The status of this integration';
+        $dictionary->columns->additional_items = 'Populated with additional data from the external system, in a JSON representation.';
+        $dictionary->columns->devices = 'Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.';
+        $dictionary->columns->locations = 'Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.';
+        $dictionary->columns->debug = 'Unused.';
+        $dictionary->columns->discovery_id = 'The associated discovery (if required). Links to <code>discoveries.id</code>.';
+        $dictionary->columns->fields = 'A JSON representation of the fields for this integration.';
+        $dictionary->columns->duration = 'Calculated upon integration completion, the time taken to execute this integration.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
@@ -1616,12 +1623,18 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'system\' table).';
         $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected or contains the ID of the query to be used.';
 
+        $dictionary->columns->create_external_count = 'The calculated number of devices to be created externally.';
+        $dictionary->columns->create_internal_count = 'The calculated number of devices to be created in Open-AudIT.';
         $dictionary->columns->create_external_from_internal = 'If an Open-AudIT device is not on the external system, should we create it.';
         $dictionary->columns->update_external_from_internal = 'If an Open-AudIT device has been changed, should we update the external system.';
         $dictionary->columns->delete_external_from_internal = 'If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the remote system.';
         $dictionary->columns->select_external_type = 'Which devices should Open-AudIT create from the remote system (if any). Using All, None or a given Attribute.';
         $dictionary->columns->select_external_attribute = 'The attribute to test (must match an external field name from below).';
         $dictionary->columns->select_external_value = 'This item must match the value of the attribute selected.';
+        $dictionary->columns->select_external_count = 'Calculated when integration is run and contains the number of devices selected the external system.';
+        $dictionary->columns->select_internal_count = 'Calculated when integration is run and contains the number of devices selected from Open-AudIT.';
+        $dictionary->columns->update_external_count = 'Calculated when integration is run and contains the number of devices to be updated in the external system.';
+        $dictionary->columns->update_internal_count = 'Calculated when integration is run and contains the number of devices updated in Open-AudIT.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

@@ -461,9 +461,15 @@ class Collections extends BaseController
         $this->resp->meta->filtered = count($this->resp->data);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if ($this->resp->meta->collection === 'database') {
-            // $namespace = "\\App\\Models\\" . ucfirst($this->resp->meta->id) . "Model";
-            // $IdModel = new $namespace;
-            // $dictionary =  $IdModel->dictionary();
+            $filename = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->resp->meta->id)));
+            if (file_exists(APPPATH . '/Models/' . $filename . 'Model.php')) {
+                $namespace = "\\App\\Models\\" . $filename . "Model";
+                $IdModel = new $namespace;
+                $dictionary =  $IdModel->dictionary();
+                if ($this->resp->meta->id === 'integrations') {
+                    $dictionary->columns->attributes = 'A JSON encoded set of details for accessing the external system.';
+                }
+            }
         }
         if ($this->resp->meta->collection === 'components' and $this->resp->data[0]->type === 'attachment') {
             return $this->response->download($this->resp->data[0]->attributes->filename, null);

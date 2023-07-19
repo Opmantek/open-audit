@@ -237,12 +237,17 @@ class BaselinesResultsModel extends BaseModel
         $dictionary->notes = '';
 
         $dictionary->product = 'enterprise';
-        $dictionary->columns->baseline = 'The associated baseline this result is from.';
+        $dictionary->columns->id = $instance->dictionary->id;
+        $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->name = 'Unused.';
+        $dictionary->columns->baseline_id = 'The associated baseline. Links to <code>baselines.id</code>.';
+        $dictionary->columns->baseline = 'The entire associated baseline this result is from.';
         $dictionary->columns->timestamp = 'The date/time when this result was created.';
         $dictionary->columns->group = 'The group of devices on which the baseline was run against.';
         $dictionary->columns->devices = 'The number of devices in the associated group.';
         $dictionary->columns->pass = 'How many policies results in a pass.';
         $dictionary->columns->fail = 'How many policies results in a fail.';
+        $dictionary->columns->result = 'A JSON representation of the individual tests and their results on all devices this baseline has been run against.';
         $dictionary->columns->{'tests.operator'} = 'How to compare';
         return $dictionary;
     }
