@@ -203,6 +203,13 @@ if ($db->tableExists('ldap_groups')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if ($db->tableExists('logs')) {
+    $sql = "DROP TABLE IF EXISTS `logs`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if ($db->fieldExists('refresh', 'ldap_servers')) {
     $sql = "ALTER TABLE ldap_servers DROP refresh";
     $query = $db->query($sql);
