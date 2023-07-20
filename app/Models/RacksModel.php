@@ -95,7 +95,48 @@ class RacksModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $instance = & get_instance();
+        $include = array();
+        $locationsModel = new \App\Models\LocationsModel();
+        $include['locations'] = $locationsModel->listUser();
+
+        $include['rows'] = array();
+        $sql = "SELECT DISTINCT `row` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
+        $temp = $this->db->query($sql)->getResult();
+        foreach ($temp as $item) {
+            if (!empty($item->row)) {
+                $include['rows'][] = $item->row;
+            }
+        }
+
+        $include['rooms'] = array();
+        $sql = "SELECT DISTINCT `room` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
+        $temp = $this->db->query($sql)->getResult();
+        foreach ($temp as $item) {
+            if (!empty($item->room)) {
+                $include['rooms'][] = $item->room;
+            }
+        }
+
+        $include['floors'] = array();
+        $sql = "SELECT DISTINCT `floor` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
+        $temp = $this->db->query($sql)->getResult();
+        foreach ($temp as $item) {
+            if (!empty($item->floor)) {
+                $include['floors'][] = $item->floor;
+            }
+        }
+
+        $include['buildings'] = array();
+        $sql = "SELECT DISTINCT `building` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
+        $temp = $this->db->query($sql)->getResult();
+        foreach ($temp as $item) {
+            if (!empty($item->building)) {
+                $include['buildings'][] = $item->building;
+            }
+        }
+
+        return $include;
     }
 
     /**
@@ -232,7 +273,7 @@ class RacksModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
-        $dictionary->about = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '';
 
@@ -241,7 +282,11 @@ class RacksModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->row_id = 'The row the rack is located in. Links to <code>rows.id</code>.';
+        $dictionary->columns->location_id = 'The location the rack is located in. Links to <code>locations.id</code>.';
+        $dictionary->columns->building = 'The building the rack is located in.';
+        $dictionary->columns->floor = 'The floor the rack is located on.';
+        $dictionary->columns->room = 'The room the rack is located in.';
+        $dictionary->columns->row = 'The row the rack is located in. Links to <code>rows.id</code>.';
         $dictionary->columns->row_position = 'The height of this rack in rack units.';
         $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
         $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';

@@ -307,6 +307,128 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+if (!$db->fieldExists('location_id', 'racks')) {
+    $sql = "ALTER TABLE `racks` ADD `location_id` int(10) unsigned DEFAULT NULL AFTER `row_id`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('building', 'racks')) {
+    $sql = "ALTER TABLE `racks` ADD `building` varchar(200) NOT NULL DEFAULT '' AFTER `description`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('floor', 'racks')) {
+    $sql = "ALTER TABLE `racks` ADD `floor` varchar(200) NOT NULL DEFAULT '' AFTER `building`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('room', 'racks')) {
+    $sql = "ALTER TABLE `racks` ADD `room` varchar(200) NOT NULL DEFAULT '' AFTER `floor`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('row', 'racks')) {
+    $sql = "ALTER TABLE `racks` ADD `row` varchar(200) NOT NULL DEFAULT '' AFTER `room`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "SELECT * FROM racks";
+$racks = $db->query($sql)->getResult();
+
+if (!empty($racks)) {
+    $sql = "SELECT * FROM `locations`";
+    $locations = $db->query($sql)->getResult();
+
+    $sql = "SELECT * FROM `buildings`";
+    $buildings = $db->query($sql)->getResult();
+
+    $sql = "SELECT * FROM `floors`";
+    $floors = $db->query($sql)->getResult();
+
+    $sql = "SELECT * FROM `rooms`";
+    $rooms = $db->query($sql)->getResult();
+
+    $sql = "SELECT * FROM `rows`";
+    $rows = $db->query($sql)->getResult();
+
+    foreach ($racks as $rack) {
+        foreach ($rows as $row) {
+            if ($rack->row_id === $row->id) {
+                $rack->row = $row->name;
+                foreach ($rooms as $room) {
+                    if ($row->room_id === $room->id) {
+                        $rack->room = $room->name;
+                        foreach ($floors as $floor) {
+                            if ($room->floor_id === $floor->id) {
+                                $rack->floor = $floor->name;
+                                foreach ($buildings as $building) {
+                                    if ($floor->building_id === $building->id) {
+                                        $rack->building = $building->name;
+                                        foreach ($locations as $location) {
+                                            if ($building->location_id === $location->id) {
+                                                $rack->location_id = $location->id;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $sql = "UPDATE `racks` SET row = ?, room = ?, floor = ?, building = ?, location_id = ? WHERE id = ?";
+        $db->query($sql, [$rack->row, $rack->room, $rack->floor, $rack->building, $rack->location_id, $rack->id]);
+        $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
+    }
+}
+
+if ($db->fieldExists('row_id', 'racks')) {
+    $sql = "ALTER TABLE `racks` DROP `row_id`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->tableExists('rows')) {
+    $sql = "DROP TABLE `rows` IF EXISTS";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->tableExists('rooms')) {
+    $sql = "DROP TABLE `rooms` IF EXISTS";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->tableExists('floors')) {
+    $sql = "DROP TABLE `floors` IF EXISTS";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->tableExists('buildings')) {
+    $sql = "DROP TABLE `buildings` IF EXISTS";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->fieldExists('toolbar_style', 'users')) {
     $sql = "ALTER TABLE users ADD toolbar_style enum('','icon','text','icontext') NOT NULL DEFAULT 'icontext' AFTER devices_default_display_columns";
     $query = $db->query($sql);
@@ -324,7 +446,7 @@ foreach ($result as $item) {
     }
 }
 
-$sql = "ALTER TABLE users CHANGE access_token access_token longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`access_token`)) AFTER toolbar_style";
+$sql = "ALTER TABLE `users` CHANGE access_token access_token longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`access_token`)) AFTER toolbar_style";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -348,7 +470,7 @@ foreach ($result as $item) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "UPDATE edit_log SET db_table = 'devices' WHERE db_table = 'system'";
+$sql = "UPDATE `edit_log` SET `db_table` = 'devices' WHERE `db_table` = 'system'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -363,7 +485,7 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE summaries SET `table` = 'devices' WHERE `table` = 'system'";
+$sql = "UPDATE `summaries` SET `table` = 'devices' WHERE `table` = 'system'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -393,37 +515,37 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = 'UPDATE widgets SET `sql` = REPLACE(`sql`, "system.", "devices.")';
+$sql = 'UPDATE `widgets` SET `sql` = REPLACE(`sql`, "system.", "devices.")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = 'UPDATE widgets SET `primary` = REPLACE(`primary`, "system.", "devices.")';
+$sql = 'UPDATE `widgets` SET `primary` = REPLACE(`primary`, "system.", "devices.")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = 'UPDATE widgets SET `sql` = REPLACE(`sql`, "system_id", "device_id")';
+$sql = 'UPDATE `widgets` SET `sql` = REPLACE(`sql`, "system_id", "device_id")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = 'UPDATE widgets SET `sql` = REPLACE(`sql`, "system", "devices")';
+$sql = 'UPDATE `widgets` SET `sql` = REPLACE(`sql`, "system", "devices")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE configuration SET name = 'license' WHERE name = 'oae_license'";
+$sql = "UPDATE `configuration` SET name = 'license' WHERE name = 'oae_license'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE configuration SET name = 'product' WHERE name = 'oae_product'";
+$sql = "UPDATE `configuration` SET name = 'product' WHERE name = 'oae_product'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'license_string'";
+$sql = "DELETE FROM `configuration` WHERE name = 'license_string'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -433,22 +555,22 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE configuration SET value = 'devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status' WHERE name = 'devices_default_display_columns'";
+$sql = "UPDATE `configuration` SET value = 'devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status' WHERE name = 'devices_default_display_columns'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE configuration SET value = 'devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status' WHERE name = 'devices_default_group_columns'";
+$sql = "UPDATE `configuration` SET value = 'devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status' WHERE name = 'devices_default_group_columns'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE configuration SET value = 'devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification' WHERE name = 'devices_default_retrieve_columns'";
+$sql = "UPDATE `configuration` SET value = 'devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification' WHERE name = 'devices_default_retrieve_columns'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = 'UPDATE users SET `devices_default_display_columns` = REPLACE(`devices_default_display_columns`, "system.", "devices.")';
+$sql = 'UPDATE `users` SET `devices_default_display_columns` = REPLACE(`devices_default_display_columns`, "system.", "devices.")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
