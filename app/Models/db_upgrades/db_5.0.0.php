@@ -36,6 +36,16 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "SELECT * FROM `attachment`";
+$result = $db->query($sql)->getResult();
+if (!empty($result)) {
+    foreach ($result as $row) {
+        $filename = end(explode(DIRECTORY_SEPARATOR, $row->filename));
+        $sql = "UPDATE `attachment` SET `filename` = ? WHERE id = ?";
+        $query = $db->query($sql, [$filename, $row->id]);
+    }
+}
+
 if (!$db->fieldExists('org_id', 'baselines_policies')) {
     $sql = "ALTER TABLE `baselines_policies` ADD org_id int(10) unsigned DEFAULT '1' AFTER `id`";
     $query = $db->query($sql);

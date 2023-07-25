@@ -11,7 +11,7 @@ if (!function_exists('output')) {
             $instance->resp->data = false;
         }
         // if we have errors set, make sure we remove the data object / array
-        if (!empty($instance->resp->errors) && count($instance->resp->errors) > 0) {
+        if (!empty($instance->resp->errors) && $instance->resp->errors !== '') {
             if ($instance->resp->meta->collection !== 'discoveries') {
                 unset($instance->resp->data);
             }
@@ -287,6 +287,7 @@ if (!function_exists('output')) {
     {
         $instance->response->setContentType('application/json');
         $instance->response->noCache();
+        $instance->response->setStatusCode($instance->resp->meta->header);
         unset($instance->resp->meta->user);
         if ($instance->resp->meta->format === 'json') {
             echo json_encode($instance->resp);

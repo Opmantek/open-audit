@@ -29,6 +29,7 @@ $(document).ready(function () {
         attribute = attribute.replace(/\[/g, '\\['); /* for tasks.minute[] */
         attribute = attribute.replace(/\]/g, '\\]'); /* for tasks.minute[] */
         $(".form-help[data-attribute='" + attribute + "']").html($(".form-help[data-attribute='" + attribute + "']").attr('data-dictionary'));
+        $(".form-help[data-attribute='" + attribute + "']").parent().append("<br />");
         $("#" + attribute).attr("disabled", false);
         $(".edit[data-attribute='" + attribute + "']").hide();
         $(".submit[data-attribute='" + attribute + "']").show();
@@ -43,6 +44,7 @@ $(document).ready(function () {
         attribute = attribute.replace(/\[/g, '\\['); /* for tasks.minute[] */
         attribute = attribute.replace(/\]/g, '\\]'); /* for tasks.minute[] */
         $(".form-help[data-attribute='" + attribute + "']").html('<br />');
+        $(".form-help[data-attribute='" + attribute + "']").parent().find('br:last-child').remove();
         $("#"+attribute).val($("#"+attribute).attr("data-original-value"));
         $("#" + attribute).attr("disabled", true);
         $(".edit[data-attribute='" + attribute + "']").show();
@@ -175,7 +177,7 @@ $(document).ready(function () {
         }
         var $type = $(this).attr('data-component_type');
         var $id = $(this).attr('data-id');
-        var $url = baseurl + '/components/' + $type + '/' + $id;
+        var $url = baseurl + 'components/' + $id + '/' + $type + "?components.type=" + $type;
         $.ajax({
             type: 'DELETE',
             url: $url,

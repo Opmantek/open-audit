@@ -53,9 +53,39 @@ class Components extends BaseController
         $this->resp->meta->sub_resource = $type;
         if ($this->{'componentsModel'}->delete($id)) {
             \Config\Services::session()->setFlashdata('success', 'Item deleted.');
+            $this->response->setStatusCode(200);
+            $temp = new \stdClass();
+            $temp->type = $type;
+            $this->resp->data = array();
+            $this->resp->data[] = $temp;
         } else {
-            \Config\Services::session()->setFlashdata('error', 'Item not deleted.');
+            $this->resp->meta->header = 500;
+            $this->response->setStatusCode($this->resp->meta->header);
+            if (!empty(\Config\Services::session()->getFlashdata('error'))) {
+                $this->resp->errors = \Config\Services::session()->getFlashdata('error');
+            } else if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
+                $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
+            } else {
+                $this->resp->errors = 'Item in ' . $this->resp->meta->collection . ' not deleted.';
+                \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not deleted.');
+            }
+            log_message('error', $this->resp->errors);
         }
         output($this);
+    }
+
+    public function download($id, $type)
+    {
+        if ($type !== 'attachment') {
+            $this->resp->meta->header = 500;
+            $this->response->setStatusCode($this->resp->meta->header);
+            return;
+        }
+        $filter = new \stdClass();
+        $filter->name = 'type';
+        $filter->value = $type;
+        $this->resp->meta->filter[] = $filter;
+        $item = $this->componentsModel->read(intval($id));
+        return $this->response->download(APPPATH.'/Attachments/' . $item[0]->attributes->filename, null);
     }
 }

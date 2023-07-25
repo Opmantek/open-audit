@@ -74,10 +74,10 @@ if (!function_exists('response_create')) {
             $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
             $response->errors = array();
             $response->errors[] = $message;
-            $response->meta->header = 'HTTP/1.1 403 Forbidden';
+            $response->meta->header = 403;
             log_message('warning', $message);
             if ($response->meta->format === 'json') {
-                header($response->meta->header);
+                $instance->response->setStatusCode($response->meta->header);
                 echo json_encode($response);
                 exit();
             } else {
@@ -105,7 +105,7 @@ if (!function_exists('response_create')) {
         $response->meta->debug = false;
         $response->meta->filtered = '';
         $response->meta->groupby = '';
-        $response->meta->header = 'HTTP/1.1 200 OK';
+        $response->meta->header = 200;
         // $response->meta->ids = null; // Only set below if it contains data
         $response->meta->include = '';
         $response->meta->limit = '';
@@ -224,10 +224,11 @@ if (!function_exists('response_create')) {
                     $message = 'No access token provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
                     log_message('error', $message);
                     $response->errors[] = $message;
-                    $response->meta->header = 'HTTP/1.1 400 Bad Request';
+                    $response->meta->header = 400;
                     if ($response->meta->format !== 'screen') {
-                        header($response->meta->header);
-                        output();
+                        $instance->response->setStatusCode($response->meta->header);
+                        $instance->resp = $response;
+                        output($instance);
                         exit();
                     } else {
                         \Config\Services::session()->setFlashdata('error', $message);
@@ -239,10 +240,11 @@ if (!function_exists('response_create')) {
                     $message = 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
                     log_message('error', $message);
                     $response->errors[] = $message;
-                    $response->meta->header = 'HTTP/1.1 400 Bad Request';
+                    $response->meta->header = 400;
                     if ($response->meta->format !== 'screen') {
-                        header($response->meta->header);
-                        output();
+                        $instance->response->setStatusCode($response->meta->header);
+                        $instance->resp = $response;
+                        output($instance);
                         exit();
                     } else {
                         \Config\Services::session()->setFlashdata('error', $message);
@@ -255,7 +257,7 @@ if (!function_exists('response_create')) {
 
         // depends on action
         if ($response->meta->action === 'create' or $response->meta->action === 'import') {
-            $response->meta->header = 'HTTP/1.1 201 Created';
+            $response->meta->header = 201;
         }
 
         // depends on collection and format
@@ -360,14 +362,15 @@ if (!function_exists('response_create')) {
         $permission = response_get_permission_id($instance->user, $collection, $response->meta->action, $response->meta->received_data, $response->meta->id);
 
         if (!$permission) {
-            $message = 'User denied permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action . ' on item because of OrgID.';
+            $message = 'User permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action . ' on item because of OrgID.';
             log_message('warning', $message);
-            $response->meta->header = 'HTTP/1.1 403 Forbidden';
+            $response->meta->header = 403;
             $response->errors = array();
             $response->errors[] = $message;
             if ($response->meta->format !== 'screen') {
-                header($response->meta->header);
-                output();
+                $instance->response->setStatusCode($response->meta->header);
+                $instance->resp = $response;
+                output($instance);
                 exit();
             } else {
                 \Config\Services::session()->setFlashdata('error', $message);
@@ -1151,12 +1154,25 @@ if (!function_exists('response_get_permission_id')) {
         }
 
         if ($collection === 'components') {
-            $component = $received_data[0]->component_type;
-            $sql = "SELECT $component.*, devices.id, devices.org_id FROM $component LEFT JOIN devices ON ($component.device_id = devices.id) WHERE $component.id = $id";
-            $result = $db->query($sql, [$id])->getResult();
+            if (!empty($received_data[0]->component_type)) {
+                $component = $received_data[0]->component_type;
+            } else {
+                log_message('error', 'Calling a componets ' . $action . ' on URL for comonents requires components.type=$TYPE in the URL');
+                return false;
+            }
+            if ($received_data[0]->component_type !== 'application' and $received_data[0]->component_type !== 'attachment' and $received_data[0]->component_type !== 'cluster' and $received_data[0]->component_type !== 'credential' and $received_data[0]->component_type !== 'image' and $received_data[0]->component_type !== 'rack_devices') {
+                log_message('error', 'Invalid component.type provided: ' . $received_data[0]->component_type);
+                return false;
+            }
+            $sql = "SELECT `$component`.*, devices.id, devices.org_id AS `org_id` FROM `$component` LEFT JOIN devices ON (`$component`.device_id = devices.id) WHERE `$component`.id = ?";
+            $query = $db->query($sql, [$id]);
+            if (!empty($query)) {
+                $result = $query->getResult();
+            }
             if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
                 return false;
             }
+            log_message('debug', 'User permitted to perform ' . $action . ' on ' . $collection . '::' . $id . '::' . $component);
             return true;
         }
 
@@ -1169,7 +1185,6 @@ if (!function_exists('response_get_permission_id')) {
             $sql = "SELECT devices.org_id AS org_id FROM `{$collection}` LEFT JOIN devices ON {$collection}.device_id = devices.id WHERE {$collection}.id = ?";
             $result = $db->query($sql, [$id])->getResult();
         }
-
 
         if (count($result) === 0) {
             \Config\Services::session()->setFlashdata('error', 'Requested item does not exist (' . $collection . '::' . intval($id) . ').');

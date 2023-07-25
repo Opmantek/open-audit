@@ -103,7 +103,6 @@ class ComponentsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        log_message('error', json_encode($data));
         $device_ids = array();
         if (!empty($data->device_id)) {
             $device_ids[] = $data->device_id;
@@ -122,10 +121,44 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
             }
             redirect()->route('devicesCollection');
-            return false;
+            return null;
         }
 
         $instance = & get_instance();
+
+        if ($data->component_type === 'application') {
+            $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
+            $this->db->query($sql, [intval($data->device_id), intval($data->applications_id), $instance->user->full_name]);
+            return (intval($this->db->insertID()));
+        }
+
+        if ($data->component_type === 'attachment') {
+            if (empty($_FILES['attachment'])) {
+                log_message('error', 'No uploaded file attachment.');
+                \Config\Services::session()->setFlashdata('error', 'No uploaded file attachment.');
+                redirect()->route('devicesRead', [$data->device_id]);
+                return null;
+            }
+            $filename = $data->device_id . '_' . basename($_FILES['attachment']['name']);
+            $target = APPPATH . 'Attachments/' . $filename;
+            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                $sql = "INSERT INTO `attachment` VALUES (null, ?, ?, ?, ?, NOW())";
+                $query = $this->db->query($sql, [$data->device_id, $data->name, $filename, $instance->user->full_name]);
+                $id = (intval($this->db->insertID()));
+                redirect()->route('devicesRead', [$data->device_id]);
+                return $id;
+            } else {
+                log_message('error', "Cannot move the uploaded attachment to $target.");
+                \Config\Services::session()->setFlashdata('error', "Cannot move the uploaded attachment to $target.");
+            }
+        }
+
+        if ($data->component_type === 'cluster') {
+            $sql = "INSERT INTO cluster VALUES (NULL, ?, ?, ?, 'y', ?, NOW())";
+            $this->db->query($sql, [intval($data->device_id), intval($data->clusters_id), $data->role, $instance->user->full_name]);
+            return (intval($this->db->insertID()));
+        }
+
         if ($data->component_type === 'credential') {
             foreach ($device_ids as $id) {
                 // we only store a SINGLE credential set of each type per device - delete any existing
@@ -142,38 +175,55 @@ class ComponentsModel extends BaseModel
 
                 if ($error = $this->sqlError($this->db->error())) {
                     \Config\Services::session()->setFlashdata('error', json_encode($error));
-                    return false;
+                    return null;
                 }
                 $id = (intval($this->db->insertID()));
                 redirect()->route('devicesRead', [$data->device_id]);
                 return $id;
             }
         }
-        if ($data->component_type === 'attachment') {
-            if (empty($_FILES['attachment'])) {
-                log_message('error', 'No uploaded file attachment.');
-                \Config\Services::session()->setFlashdata('error', 'No uploaded file attachment.');
-                redirect()->route('devicesRead', [$data->device_id]);
-                return false;
+        if ($data->component_type === 'discovery') {
+            $devicesModel = new \App\Models\DevicesModel();
+            $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
+            $instance->queueModel = new \App\Models\QueueModel();
+            // Get the device details
+            $id = intval($data->device_id);
+            $devices = $devicesModel->read($id);
+            if (empty($devices[0])) {
+                // TODO - flash error
+                log_message('error', json_encode($devices));
+                return null;
             }
-            $target = '../app/Attachments/' . $data->device_id . '_' . basename($_FILES['attachment']['name']);
-            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
-                $sql = "INSERT INTO `attachment` VALUES (null, ?, ?, ?, ?, NOW())";
-                $query = $this->db->query($sql, [$data->device_id, $data->name, $target, $instance->user->full_name]);
-                $id = (intval($this->db->insertID()));
-                redirect()->route('devicesRead', [$data->device_id]);
-                return $id;
-            } else {
-                log_message('error', "Cannot move the uploaded attachment to $target.");
-                \Config\Services::session()->setFlashdata('error', "Cannot move the uploaded attachment to $target.");
+            $device = $devices[0];
+            $sql = "SELECT * FROM discoveries WHERE name = ? AND device_id = ?";
+            $result = $this->db->query($sql, ['Device Discovery - ' . $device->attributes->name, $id])->getResult();
+            if (!empty($result)) {
+                // We already have a previously created device discovery - use that
+                $instance->discoveriesModel->queue(intval($result[0]->id));
+                $instance->queueModel->start();
+                return intval($result[0]->id);
             }
+            $discovery = new \stdClass();
+            $discovery->type = 'subnet';
+            $discovery->subnet = $device->attributes->ip;
+            $discovery->org_id = intval($device->attributes->org_id);
+            $discovery->device_id = $id;
+            $discovery->name = 'Device Discovery - ' . $device->attributes->name;
+            $discovery_id = $instance->discoveriesModel->create($discovery);
+            if (!empty($discovery_id)) {
+                $instance->discoveriesModel->queue($discovery_id);
+                $instance->queueModel->start();
+                return intval($discovery_id);
+            }
+            return null;
         }
+
         if ($data->component_type === 'image') {
-            if (empty($_FILES['attachment'])) {
+            if (empty($_FILES['attachment']) and empty($data->filename)) {
                 log_message('error', 'No uploaded image attachment');
                 \Config\Services::session()->setFlashdata('error', 'No uploaded image attachment.');
                 redirect()->route('devicesRead', [$data->device_id]);
-                return false;
+                return null;
             }
             if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
                 mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images');
@@ -182,51 +232,48 @@ class ComponentsModel extends BaseModel
                 log_message('error', 'Custom Images directory does not exist and cannot be created.');
                 \Config\Services::session()->setFlashdata('error', 'Custom Images directory does not exist and cannot be created. Check filesystem permissions.');
                 redirect()->route('devicesRead', [$data->device_id]);
-                return false;
+                return null;
             }
-            $filename = (string)basename($_FILES['attachment']['name']);
-            // Ensure we only accept JPG, PNG and SVG files
-            if (function_exists('mime_content_type')) {
-                $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
-            } else {
-                $mime_type = '';
-            }
-            // $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
-            // $extensions = array('jpg', 'jpeg', 'png', 'svg');
-            // disabled SVG because of XSS issues when requesting the direct image
-            $filetypes = array('image/png', 'image/jpeg', '');
-            $extensions = array('jpg', 'jpeg', 'png');
-            $temp = explode('.', $filename);
-            $extension = strtolower($temp[count($temp)-1]);
-            if (!in_array($mime_type, $filetypes) or !in_array($extension, $extensions)) {
-                unlink($_FILES['attachment']['tmp_name']);
-                log_message('warning', 'Only jpg, png and svg files are accepted (' . $extension . ') (' . $mime_type . ')');
-                \Config\Services::session()->setFlashdata('warning', 'Only jpg, jpeg and png files are accepted (' . $extension . ') (' . $mime_type . ')');
-                redirect()->route('devicesRead', [$data->device_id]);
-                return false;
-            }
-            $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
-            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+            if (!empty($_FILES['attachment']['name'])) {
+                $filename = (string)basename($_FILES['attachment']['name']);
+                // Ensure we only accept JPG, PNG and SVG files
+                if (function_exists('mime_content_type')) {
+                    $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
+                } else {
+                    $mime_type = '';
+                }
+                // $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
+                // $extensions = array('jpg', 'jpeg', 'png', 'svg');
+                // disabled SVG because of XSS issues when requesting the direct image
+                $filetypes = array('image/png', 'image/jpeg', '');
+                $extensions = array('jpg', 'jpeg', 'png');
+                $temp = explode('.', $filename);
+                $extension = strtolower($temp[count($temp)-1]);
+                if (!in_array($mime_type, $filetypes) or !in_array($extension, $extensions)) {
+                    unlink($_FILES['attachment']['tmp_name']);
+                    log_message('warning', 'Only jpg and png files are accepted (' . $extension . ') (' . $mime_type . ')');
+                    \Config\Services::session()->setFlashdata('warning', 'Only jpg, jpeg and png files are accepted (provided: ' . $extension . ') (which is a: ' . $mime_type . ')');
+                    redirect()->route('devicesRead', [$data->device_id]);
+                    return null;
+                }
+                # $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
+                $target = APPPATH . '../public/custom_images/' . $filename;
+                if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                    $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
+                    $this->db->query($sql, [$data->device_id, $data->name, $filename, $data->orientation, $instance->user->full_name]);
+                    return (intval($this->db->insertID()));
+                } else {
+                    log_message('error', "Cannot move the uploaded image file to $target.");
+                    \Config\Services::session()->setFlashdata('warning', "Cannot move the uploaded image file to $target.");
+                    return null;
+                }
+            } else if (!empty($data->filename)) {
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
-                $this->db->query($sql, [$data->device_id, $data->name, $filename, $data->orientation, $instance->user->full_name]);
-                return (intval($this->db->insertID()));
-            } else {
-                log_message('error', "Cannot move the uploaded image file to $target.");
-                \Config\Services::session()->setFlashdata('warning', "Cannot move the uploaded image file to $target.");
-                return false;
+                $this->db->query($sql, [$data->device_id, $data->name, $data->filename, $data->orientation, $instance->user->full_name]);
+                return true;
             }
         }
-        if ($data->component_type === 'application') {
-            $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
-            $this->db->query($sql, [intval($data->device_id), intval($data->applications_id), $instance->user->full_name]);
-            return (intval($this->db->insertID()));
-        }
-        if ($data->component_type === 'cluster') {
-            $sql = "INSERT INTO cluster VALUES (NULL, ?, ?, ?, 'y', ?, NOW())";
-            $this->db->query($sql, [intval($data->device_id), intval($data->clusters_id), $data->role, $instance->user->full_name]);
-            return (intval($this->db->insertID()));
-        }
-        return false;
+        return null;
     }
 
     /**
@@ -240,14 +287,43 @@ class ComponentsModel extends BaseModel
     {
         $instance = get_instance();
         $type = $instance->resp->meta->sub_resource;
-        if ($type !== 'credential' and $type !== 'attachment' and $type !== 'application') {
+        if ($type !== 'cluster' and $type !== 'credential' and $type !== 'attachment' and $type !== 'application' and $type !== 'image') {
             return false;
         }
         if ($type === 'attachment') {
-            $sql = "SELECT * FROM attachment WHERE id = ?";
+            $sql = "SELECT * FROM `attachment` WHERE id = ?";
             $query = $this->db->query($sql, [$id]);
             $data = $query->getResult();
-            unlink($data[0]->filename);
+            $file = APPPATH . 'Attachments/' . $data[0]->filename;
+            if (file_exists($file)) {
+                if (is_writable($file)) {
+                    if (unlink($file)) {
+                        // success
+                    } else {
+                        // fail
+                        log_message('error', "Cannot delete the file " . $file . ".");
+                        \Config\Services::session()->setFlashdata('warning', "Cannot delete the file " . $data[0]->filename . ".");
+                        return false;
+                    }
+                } else {
+                    // fail
+                    log_message('error', "Cannot delete the file " . $file . " because of permissions.");
+                    \Config\Services::session()->setFlashdata('warning', "Cannot delete the file " . $data[0]->filename . " because of permissions.");
+                    return false;
+                }
+            } else {
+                // fail
+                log_message('error', "File does not exist " . $file . ".");
+                \Config\Services::session()->setFlashdata('warning', "File does not exist " . $data[0]->filename . ". Deleting database record.");
+            }
+        }
+        if ($type === 'image') {
+            // Do NOT delete the actual image file, users can do that manually if they want
+            // The image may be used by more than one device (likely - think same model of server)
+            // $sql = "SELECT * FROM `image` WHERE id = ?";
+            // $query = $this->db->query($sql, [$id]);
+            // $data = $query->getResult();
+            // unlink(APPPATH . '../public/custom_images/' . $data[0]->filename);
         }
         $sql = "DELETE FROM `$type` WHERE id = ?";
         $query = $this->db->query($sql, [$id]);
@@ -311,6 +387,7 @@ class ComponentsModel extends BaseModel
     public function read(int $id = 0): array
     {
         $instance = get_instance();
+        $type = '';
         foreach ($instance->resp->meta->filter as $filter) {
             if ($filter->name === 'components.type' or $filter->name === 'type') {
                 $type = $filter->value;

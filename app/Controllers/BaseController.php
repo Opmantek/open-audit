@@ -162,7 +162,7 @@ abstract class BaseController extends Controller
         }
         if (!empty($this->resp->meta->received_data)) {
             $data = json_encode($this->resp->meta->received_data);
-            if ($this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') {
+            if ($this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds' or $this->resp->meta->collection === 'components') {
                 $data = json_decode($data);
                 if (!empty($data->attributes->credentials)) {
                     $data->attributes->credentials = 'Removed for logging';

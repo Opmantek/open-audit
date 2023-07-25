@@ -126,7 +126,17 @@ class Collections extends BaseController
         $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         if (!empty($id)) {
             if ($this->resp->meta->format !== 'screen') {
-                $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id);
+                $this->resp->meta->header = 201;
+                if ($this->resp->meta->collection !== 'components') {
+                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id);
+                } else {
+                    if ($this->resp->meta->received_data->attributes->component_type === 'discovery') {
+                        $this->resp->data = $this->discoveriesModel->read($id);
+                        // Sleep for a couple of seconds so some logs get a change happen
+                        // and the resulting discovery screen doesn't look empty (as if nothing has happened).
+                        sleep(2);
+                    }
+                }
                 output($this);
                 return true;
             } else {
@@ -144,6 +154,13 @@ class Collections extends BaseController
             }
         } else {
             if ($this->resp->meta->format !== 'screen') {
+                $this->resp->meta->header = 500;
+                if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
+                    $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
+                }
+                if (!empty(\Config\Services::session()->getFlashdata('error'))) {
+                    $this->resp->errors = \Config\Services::session()->getFlashdata('error');
+                }
                 output($this);
                 return true;
             } else {
@@ -230,8 +247,20 @@ class Collections extends BaseController
     {
         if ($this->{$this->resp->meta->collection.'Model'}->delete($this->resp->meta->id)) {
             \Config\Services::session()->setFlashdata('success', 'Item in ' . $this->resp->meta->collection . ' deleted.');
+            $temp = new \stdClass();
+            $temp->type = $this->resp->meta->collection;
+            $this->resp->data = array();
+            $this->resp->data[] = $temp;
         } else {
+            $this->resp->meta->header = 500;
             \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not deleted.');
+            if (!empty(\Config\Services::session()->getFlashdata('error'))) {
+                $this->resp->errors = \Config\Services::session()->getFlashdata('error');
+            } else if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
+                $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
+            } else {
+                $this->resp->errors = 'Item in ' . $this->resp->meta->collection . ' not deleted.';
+            }
         }
         output($this);
     }
@@ -299,6 +328,7 @@ class Collections extends BaseController
             }
         }
         if ($this->resp->meta->format !== 'screen') {
+            $this->resp->meta->header = 201;
             output($this);
             return true;
         } else {
@@ -416,6 +446,7 @@ class Collections extends BaseController
                 output($this);
                 return true;
             } else {
+                $this->resp->meta->header = 200;
                 if ($this->resp->meta->collection !== 'components') {
                     if (count($id) > 1) {
                         \Config\Services::session()->setFlashdata('success', "Items in {$this->resp->meta->collection} created successfully.");
@@ -435,6 +466,7 @@ class Collections extends BaseController
             }
         } else {
             if ($this->resp->meta->format !== 'screen') {
+                $this->resp->meta->header = 500;
                 output($this);
                 return true;
             } else {
@@ -470,9 +502,6 @@ class Collections extends BaseController
                     $dictionary->columns->attributes = 'A JSON encoded set of details for accessing the external system.';
                 }
             }
-        }
-        if ($this->resp->meta->collection === 'components' and $this->resp->data[0]->type === 'attachment') {
-            return $this->response->download($this->resp->data[0]->attributes->filename, null);
         }
 
         if ($this->resp->meta->format !== 'screen') {

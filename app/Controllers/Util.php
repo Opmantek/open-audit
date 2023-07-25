@@ -89,8 +89,8 @@ class Util extends Controller
             log_message('error', 'A request for the Google API was received, but no credentials we present in the POST.');
             $response->errors = array();
             $response->errors[] = 'A request for the Google API was received, but no credentials we present in the POST.';
-            $response->meta->header = 'HTTP/1.1 400 Bad Request';
-            header($response->meta->header);
+            $response->meta->header = 400;
+            $response->setStatusCode($response->meta->header);
             print_r(json_encode($response));
             return;
         }

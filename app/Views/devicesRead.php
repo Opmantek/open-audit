@@ -237,7 +237,7 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['attachment'])) {
                                                 foreach ($included['attachment'] as $row) { ?>
                                                 <tr id="components_attachment_<?= $row->id ?>">
-                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="fa-solid fa-download"></span></button></td>
+                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>/attachment/download?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="fa-solid fa-download"></span></button></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>
@@ -656,7 +656,7 @@ if (!empty($included['fields'])) {
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th><?= __('Download') ?></th>
+                                                    <th></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Filename') ?></th>
                                                     <th><?= __('Edited By') ?></th>
@@ -668,12 +668,12 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['image'])) {
                                                 foreach ($included['image'] as $row) { ?>
                                                 <tr>
-                                                    <td><?= $row->id ?></td>
+                                                    <td class="text-center"><img src="/open-audit/custom_images/<?= $row->filename ?>" width="200px" /></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>
                                                     <td><?= $row->edited_date ?></td>
-                                                    <td><?= $row->id ?></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="image" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

@@ -42,8 +42,12 @@ $routes->collections = array('applications','attributes','baselines',
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
 
 # These will match and then take precedence over the below route array
+// TODO - Make this URL the same format as the two below (:num)/(:any) not (:any)/(:num)
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
+// TODO - Both below, we have to specify the url thus: components/1/image?components.type=image because we cannot cater to the type (yet) in the response_helper->response_get_permission_id
 $routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
+$routes->get('components/(:num)/(:any)/download', 'Components::download/$1/$2');
+
 $routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
 
 $routes->get('charts', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
