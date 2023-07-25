@@ -20,6 +20,7 @@ include 'shared/read_functions.php';
                                     <td><?= __('Max Length') ?></td>
                                     <td><?= __('Primary Key') ?></td>
                                     <td><?= __('Valid Values') ?></td>
+                                    <td class="text-center"><?= __('Required') ?> <span style="color: #dc3545;">*</span></td>
                                     <td><?= __('Description') ?></td>
                                 </tr>
                             </thead>
@@ -32,12 +33,14 @@ include 'shared/read_functions.php';
                                     <td><?= $column->max_length ?></td>
                                     <td><?= $column->primary_key ?></td>
                                     <td><?= @$column->values ?></td>
+                                    <td class="text-center"><?php if (in_array($column->name, $dictionary->attributes->create)) { ?><span class="fa fa-check text-success"></span><?php } ?></td>
                                     <td><?= $dictionary->columns->{$column->name} ?></td>
                                 </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
                     </div>
+                    <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by Open-AudIT to create an item of this type') ?></p>
                 </div>
             </div>
             <br>
