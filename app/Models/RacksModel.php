@@ -29,8 +29,16 @@ class RacksModel extends BaseModel
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
+        $properties[] = "locations.name as `locations.name`";
+        $properties[] = "locations.id as `locations.id`";
+        $properties[] = "count(rack_devices.id) as `rack_devices_count`";
+        $properties[] = "SUM(rack_devices.height) AS `used`";
+        $properties[] = "COALESCE(racks.ru_height, 0) - COALESCE(SUM(rack_devices.height), 0) AS `free`";
+        $properties[] = "racks.ru_height AS `lcs`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
+        $this->builder->join('rack_devices', 'rack_devices.rack_id = racks.id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
@@ -38,13 +46,50 @@ class RacksModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
+        $this->builder->groupBy('racks.id');
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        $racks = $query->getResult();
+        $count = count($racks);
+        for ($i=0; $i < $count; $i++) {
+            $height = $racks[$i]->ru_height;
+            log_message('error', "Rack: " . $racks[$i]->id . ", height: " . $racks[$i]->ru_height);
+            $sql = "SELECT * FROM rack_devices WHERE rack_id = ? ORDER BY position";
+            $devices = $this->db->query($sql, [$racks[$i]->id])->getResult();
+            $spaces = array();
+            $space = 0;
+            if (!empty($devices)) {
+                log_message('error', 'Staring devices loop');
+                for ($j=0; $j < $height; $j++) {
+                    log_message('error', 'Testing position ' . $j);
+                    $hit = false;
+                    foreach ($devices as $device) {
+                        if (intval($device->position) === $j or (intval($device->position) < $j and (intval($device->position) + intval($device->height)) >= $j)) {
+                            log_message('error', 'TRUE - position is ' . $j . ' and device position is ' . $device->position . ' and device height is ' . $device->height);
+                            $hit = true;
+                            if ($space > 0) {
+                                $spaces[] = $space;
+                            }
+                            $space = 0;
+                        }
+                    }
+                    if (!$hit) {
+                        $space += 1;
+                    }
+                    log_message('error', 'Space is now ' . $space);
+                }
+                $spaces[] = $space;
+                log_message('error', json_encode($spaces));
+            }
+            if (!empty($spaces)) {
+                $racks[$i]->lcs = max($spaces);
+            }
+        }
+        return format_data($racks, $resp->meta->collection);
     }
 
     /**
@@ -151,8 +196,16 @@ class RacksModel extends BaseModel
         $properties = array();
         $properties[] = 'rack_devices.*';
         $properties[] = 'devices.name as `devices.name`';
+        $properties[] = 'devices.id as `devices.id`';
+        $properties[] = 'devices.name as `devices.name`';
+        $properties[] = 'devices.type as `devices.type`';
+        $properties[] = 'devices.ip as `devices.ip`';
+        $properties[] = 'devices.icon as `devices.icon`';
+        $properties[] = 'image.filename as `image.filename`';
         $this->builder->select($properties, false);
-        $this->builder->join('devices', 'racks.device_id = devices.id', 'left');
+        $this->builder->join('rack_devices', 'rack_devices.rack_id = racks.id', 'left');
+        $this->builder->join('devices', 'rack_devices.device_id = devices.id', 'left');
+        $this->builder->join('image', 'image.device_id = rack_devices.device_id and image.orientation = "front"', 'left');
         $this->builder->where('rack_id', $id);
         $query = $this->builder->get();
         $included['rack_devices'] = format_data($query->getResult(), 'rack_devices');
