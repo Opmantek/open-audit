@@ -1881,96 +1881,97 @@ if (! function_exists('ip_audit')) {
         // }
 
         // If we are configured as a collector, forward the information to the server
-        // TODO
-        // if (config('Openaudit')->servers !== '') {
-        //     $server = json_decode(config('Openaudit')->servers);
-        //     $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
-        //     $discoveryLogModel->create($log);
+        if (!empty(config('Openaudit')->servers)) {
+            $server = config('Openaudit')->servers;
+            $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
+            $discoveryLogModel->create($log);
 
-        //     $device_json = '';
-        //     if (!empty($device->id)) {
-        //         $device_json = new \StdClass();
-        //         $device_json->system = new \StdClass();
-        //         foreach ($device as $key => $value) {
-        //             if ($key !== 'id' and ! empty($value)) {
-        //                 $device_json->system->{$key} = $value;
-        //             }
-        //         }
-        //         $device_json->system->collector_uuid = $CI->config->config['uuid'];
-        //         if (count($nmap_result) > 0) {
-        //             $device_json->nmap = new \StdClass();
-        //             $device_json->nmap = array();
-        //             foreach ($nmap_result as $item) {
-        //                 $device_json->nmap[] = $item;
-        //             }
-        //         }
-        //         if (isset($guests) and count($guests) > 0) {
-        //             $device_json->vm = new \StdClass();
-        //             $device_json->vm = array();
-        //             foreach ($guests as $item) {
-        //                 $device_json->vm[] = $item;
-        //             }
-        //         }
-        //         if (isset($modules) and count($modules) > 0) {
-        //             $device_json->module = new \StdClass();
-        //             $device_json->module = array();
-        //             foreach ($modules as $item) {
-        //                 $device_json->module[] = $item;
-        //             }
-        //         }
-        //         if (isset($ip) and count($ip) > 0) {
-        //             $device_json->ip = new \StdClass();
-        //             $device_json->ip = array();
-        //             foreach ($ip->item as $item) {
-        //                 $device_json->ip[] = $item;
-        //             }
-        //         }
-        //         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-        //             $device_json->network = new \StdClass();
-        //             $device_json->network = array();
-        //             foreach ($network_interfaces as $item) {
-        //                 $device_json->network[] = $item;
-        //             }
-        //         }
-        //         unset($device_json->system->id);
-        //         unset($device_json->system->first_seen);
-        //         $device_json = json_encode($device_json);
-        //     }
+            $device_json = '';
+            if (!empty($device->id)) {
+                $device_json = new \StdClass();
+                $device_json->system = new \StdClass();
+                foreach ($device as $key => $value) {
+                    if ($key !== 'id' and !empty($value)) {
+                        $device_json->system->{$key} = $value;
+                    }
+                }
+                $device_json->system->collector_uuid = config('Openaudit')->uuid;
+                if (count($nmap_result) > 0) {
+                    $device_json->nmap = new \StdClass();
+                    $device_json->nmap = array();
+                    foreach ($nmap_result as $item) {
+                        $device_json->nmap[] = $item;
+                    }
+                }
+                if (isset($guests) and count($guests) > 0) {
+                    $device_json->vm = new \StdClass();
+                    $device_json->vm = array();
+                    foreach ($guests as $item) {
+                        $device_json->vm[] = $item;
+                    }
+                }
+                if (isset($modules) and count($modules) > 0) {
+                    $device_json->module = new \StdClass();
+                    $device_json->module = array();
+                    foreach ($modules as $item) {
+                        $device_json->module[] = $item;
+                    }
+                }
+                if (isset($ip) and count($ip) > 0) {
+                    $device_json->ip = new \StdClass();
+                    $device_json->ip = array();
+                    foreach ($ip->item as $item) {
+                        $device_json->ip[] = $item;
+                    }
+                }
+                if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                    $device_json->network = new \StdClass();
+                    $device_json->network = array();
+                    foreach ($network_interfaces as $item) {
+                        $device_json->network[] = $item;
+                    }
+                }
+                unset($device_json->system->id);
+                unset($device_json->system->first_seen);
+                $device_json = json_encode($device_json);
+            }
 
-        //     if (!empty($audit->system->id)) {
-        //         unset($audit->system->id);
-        //         unset($audit->system->original_last_seen_by);
-        //         unset($audit->system->original_last_seen);
-        //         unset($audit->system->first_seen);
-        //         $audit->system->collector_uuid = $CI->config->config['uuid'];
-        //         $device_json = json_encode($audit);
-        //     }
+            if (!empty($audit->system->id)) {
+                unset($audit->system->id);
+                unset($audit->system->original_last_seen_by);
+                unset($audit->system->original_last_seen);
+                unset($audit->system->first_seen);
+                $audit->system->collector_uuid = config('Openaudit')->uuid;
+                $device_json = json_encode($audit);
+            }
 
-        //     $url = $server->host . $server->community . '/index.php/input/devices';
-        //     $data = array('data' => $device_json);
-        //     // We must use the key 'http' even if we send the request to https://...
-        //     $options = array(
-        //         'http' => array(
-        //             'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        //             'method'  => 'POST',
-        //             'content' => http_build_query($data)
-        //         )
-        //     );
-        //     $context  = stream_context_create($options);
-        //     $result = file_get_contents($url, false, $context);
-        //     if ($result === false) {
-        //         // error
-        //         $log->severity = 4;
-        //         $log->message = 'Could not send result to ' . $server->host . $server->community . '/index.php/input/devices - please check with your server administrator.';
-        //         $discoveryLogModel->create($log);
-        //         $log->severity = 7;
-        //     } else {
-        //         // success
-        //         $log->severity = 7;
-        //         $log->message = 'Result sent to ' . $server->host . '.';
-        //         $discoveryLogModel->create($log);
-        //     }
-        // }
+            $url = $server->host . $server->community . '/index.php/input/devices';
+            $data = array('data' => $device_json);
+            // We must use the key 'http' even if we send the request to https://...
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data)
+                )
+            );
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === false) {
+                // error
+                $log->severity = 4;
+                $log->message = 'Could not send result to ' . $url . ' - please check with your server administrator.';
+                $discoveryLogModel->create($log);
+                $log->severity = 7;
+                log_message('error', 'Could not send result to ' . $url);
+            } else {
+                // success
+                $log->severity = 7;
+                $log->message = 'Result sent to ' . $server->host . '.';
+                $discoveryLogModel->create($log);
+                // log_message('info', 'Result sent to ' . $server->host . '.');
+            }
+        }
 
         // NOTE - The log helper will increase the count in discoveries.ip_discovered_count for us because Collector / Server
         //      - It will match on the message string, so don't change without also changing log_helper

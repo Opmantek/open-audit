@@ -34,6 +34,10 @@ class OpenAudit extends BaseConfig
             $this->product = 'community';
         }
 
+        if (!empty($this->servers)) {
+            $this->servers = json_decode($this->servers);
+        }
+
         if (empty($this->page_size)) {
             $this->page_size = 1000;
         }
