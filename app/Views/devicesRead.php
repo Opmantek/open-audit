@@ -2279,4 +2279,22 @@ $(document).ready(function() {
     $("#nmis_customer").val("<?= $resource->nmis_customer ?>");
     $("#nmis_poller_uuid").val("<?= $resource->nmis_poller_uuid ?>");
 });
+
+
+$(document).ready(function() {
+    <?php $form_contents = '<input type="hidden" id="data[access_token]" name="data[access_token]" value="' . $meta->access_token . '">\
+                            <input type="hidden" id="data[type]"         name="data[type]" value="components">\
+                            <input type="hidden" id="data[attributes][component_type]" name="data[attributes][component_type]" value="discovery">\
+                            <input type="hidden" id="data[attributes][device_id]" name="data[attributes][device_id]" value="' . $meta->id . '">'; ?>
+
+    <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
+    $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish"></span>&nbsp;<?= __('Discover') ?></button></form>');
+
+    <?php } else if (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish"></span></button></form>');
+
+    <?php } else { ?>
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
+    <?php } ?>
+});
 </script>
