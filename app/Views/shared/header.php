@@ -296,10 +296,12 @@ $categories = array_unique($categories);
                                     <ul class="dropdown-menu">
                                         <?= menuItem('devices', 'r', $user, 'devicesCollection', __('List') . ' ' . __('Devices')) ?>
                                         <?= menuItem('devices', 'c', $user, 'devicesCreateForm', __('Import') . ' ' . __('Devices') . ' ' . __('from Audit Script Result')) ?>
-                                        <?= menuItem('devices', 'c', $user, 'nmisCreateForm', __('Import') . ' ' . __('Devices') . ' ' . __('from NMIS')) ?>
+                                        <?= menuItem('devices', 'c', $user, 'devicesImportNMISForm', __('Import') . ' ' . __('Devices') . ' ' . __('from NMIS')) ?>
+                                        <!--
                                         <li><hr class="dropdown-divider"></li>
                                         <?= menuItem('devices', 'c', $user, 'devicesCreateExampleForm', __('Import') . ' ' . __('Example Devices')) ?>
                                         <?= menuItem('devices', 'c', $user, 'devicesDeleteExampleForm', __('Delete') . ' ' . __('Example Devices')) ?>
+                                        -->
                                         <li><hr class="dropdown-divider"></li>
                                         <?= menuItem('configuration', 'u', $user, 'configurationCollection', __('Configure') . ' ' . __('Change Logs'), '?configuration.name=likecreate_change_log') ?>
                                         <?= menuItem('configuration', 'u', $user, 'configurationCollection', __('Configure') . ' ' . __('Data Retention'), '?configuration.name=likedelete_non_current') ?>
