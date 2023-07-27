@@ -183,35 +183,51 @@ class ComponentsModel extends BaseModel
             }
         }
         if ($data->component_type === 'discovery') {
+            // TODO - what if we have collectors?
+            //        We should get the collector_UUID from the device first and schedule the collector discovery if required
             $devicesModel = new \App\Models\DevicesModel();
             $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
             $instance->queueModel = new \App\Models\QueueModel();
-            // Get the device details
-            $id = intval($data->device_id);
-            $devices = $devicesModel->read($id);
-            if (empty($devices[0])) {
-                // TODO - flash error
-                log_message('error', json_encode($devices));
-                return null;
+            if (!empty($data->ids)) {
+                $data->ids = explode(',', $data->ids);
+            } else {
+                $data->ids = array();
             }
-            $device = $devices[0];
-            $sql = "SELECT * FROM discoveries WHERE name = ? AND device_id = ?";
-            $result = $this->db->query($sql, ['Device Discovery - ' . $device->attributes->name, $id])->getResult();
-            if (!empty($result)) {
-                // We already have a previously created device discovery - use that
-                $instance->discoveriesModel->queue(intval($result[0]->id));
-                $instance->queueModel->start();
-                return intval($result[0]->id);
+            if (!empty($data->device_id)) {
+                $data->ids[] = $data->device_id;
             }
-            $discovery = new \stdClass();
-            $discovery->type = 'subnet';
-            $discovery->subnet = $device->attributes->ip;
-            $discovery->org_id = intval($device->attributes->org_id);
-            $discovery->device_id = $id;
-            $discovery->name = 'Device Discovery - ' . $device->attributes->name;
-            $discovery_id = $instance->discoveriesModel->create($discovery);
-            if (!empty($discovery_id)) {
-                $instance->discoveriesModel->queue($discovery_id);
+            $startDiscovery = false;
+            foreach ($data->ids as $id) {
+                // Get the device details
+                $id = intval($id);
+                $devices = $devicesModel->read($id);
+                if (empty($devices[0])) {
+                    // TODO - flash error
+                    log_message('error', json_encode($devices));
+                    return null;
+                }
+                $device = $devices[0];
+                $sql = "SELECT * FROM discoveries WHERE name = ? AND device_id = ?";
+                $result = $this->db->query($sql, ['Device Discovery - ' . $device->attributes->name, $id])->getResult();
+                if (!empty($result)) {
+                    // We already have a previously created device discovery - use that
+                    $instance->discoveriesModel->queue(intval($result[0]->id));
+                    $instance->queueModel->start();
+                    return intval($result[0]->id);
+                }
+                $discovery = new \stdClass();
+                $discovery->type = 'subnet';
+                $discovery->subnet = $device->attributes->ip;
+                $discovery->org_id = intval($device->attributes->org_id);
+                $discovery->device_id = $id;
+                $discovery->name = 'Device Discovery - ' . $device->attributes->name;
+                $discovery_id = $instance->discoveriesModel->create($discovery);
+                if (!empty($discovery_id)) {
+                    $startDiscovery = true;
+                    $instance->discoveriesModel->queue($discovery_id);
+                }
+            }
+            if ($startDiscovery) {
                 $instance->queueModel->start();
                 return intval($discovery_id);
             }
