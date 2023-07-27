@@ -610,28 +610,32 @@ if (!function_exists('snmp_audit')) {
             $temp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.2.2.1.6');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
-            foreach ($temp as $key => $value) {
-                $first_key = $key;
-                break;
+            if (!empty($temp)) {
+                foreach ($temp as $key => $value) {
+                    $first_key = $key;
+                    break;
+                }
             }
 
-            $interface_number = str_replace('.1.3.6.1.2.1.2.2.1.6.', '', $first_key);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'Interface number retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
-            $log->command_output = (string)$interface_number;
-            $log->command_status = 'notice';
-            $discoveryLogModel->create($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            if (!empty($first_key)) {
+                $interface_number = str_replace('.1.3.6.1.2.1.2.2.1.6.', '', $first_key);
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'Interface number retrieval for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
+                $log->command_output = (string)$interface_number;
+                $log->command_status = 'notice';
+                $discoveryLogModel->create($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
 
-            $details->mac_address = @format_mac($temp[$first_key]);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->message = 'MAC Address retrieval for '.$ip;
-            $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6.' . $interface_number;
-            $log->command_output = (string)$details->mac_address;
-            $log->command_status = 'notice';
-            $discoveryLogModel->create($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+                $details->mac_address = @format_mac($temp[$first_key]);
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'MAC Address retrieval for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6.' . $interface_number;
+                $log->command_output = (string)$details->mac_address;
+                $log->command_status = 'notice';
+                $discoveryLogModel->create($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
+            }
         }
 
         $item_start = microtime(true);
