@@ -170,6 +170,7 @@ class Devices extends BaseController
             $nodes[$i]['org_id'] = intval($this->resp->meta->received_data->attributes->org_id);
             $nodes[$i]['location_id'] = intval($this->resp->meta->received_data->attributes->location_id);
         }
+        $db = db_connect();
         $devicesModel = new \App\Models\DevicesModel();
         $networkModel = new \App\Models\NetworksModel();
         $attributesModel = new \App\Models\AttributesModel();
@@ -286,9 +287,8 @@ class Devices extends BaseController
             }
 
             // Need to manually remove any discovery logs.
-            // $sql = '/* nmis::_from_nmis_9 */ ' . 'DELETE FROM discovery_log WHERE ip = ?';
-            // $data = array(ip_address_from_db(@$device->ip));
-            // $this->db->query($sql, $data);
+            $sql = 'DELETE FROM discovery_log WHERE ip = ?';
+            $db->query($sql, [$device->ip]);
 
             $device->id = deviceMatch($device, 0, $match);
             $device->ip = ip_address_to_db(@$device->ip);
@@ -334,7 +334,7 @@ class Devices extends BaseController
         $this->resp->meta->total = $inserted + $updated;
 
         if ($this->resp->meta->format === 'json') {
-            output($this->resp);
+            output($this);
         } else {
             \Config\Services::session()->setFlashdata('success', $this->resp->meta->total . ' devices imported (' . $this->resp->meta->inserted . ' inserted and ' . $this->resp->meta->updated . ' updated).');
 
