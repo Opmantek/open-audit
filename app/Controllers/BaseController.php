@@ -224,7 +224,7 @@ abstract class BaseController extends Controller
 
         if ($this->resp->meta->format === 'screen') {
             $this->queriesUser = $this->queriesModel->listUser();
-            $this->orgsUser = $this->orgsModel->listUser($this->user);
+            $this->orgsUser = $this->orgsModel->listUser();
             $this->dashboardsModel = new \App\Models\DashboardsModel();
             $this->dashboards = $this->dashboardsModel->listUser();
         }
