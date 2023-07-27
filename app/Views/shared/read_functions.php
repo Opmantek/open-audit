@@ -113,6 +113,7 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     }
     $label = !empty($label) ? $label : ucwords(str_replace('_', ' ', $name));
     $label = str_replace('Nmis', 'NMIS', $label);
+    $label = str_replace('Os ', 'OS ', $label);
     if (strlen($dictionary) > 60) {
         $dictionary = mb_substr($dictionary, 0, 60) . '...';
     }

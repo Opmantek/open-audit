@@ -695,7 +695,7 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Index') ?></th>
                                                     <th><?= __('IP') ?></th>
                                                     <th><?= __('Mac') ?></th>
-                                                    <th><?= __('Net Mask') ?></th>
+                                                    <th><?= __('Netmask') ?></th>
                                                     <th><?= __('CIDR') ?></th>
                                                     <th><?= __('Version') ?></th>
                                                 </tr>

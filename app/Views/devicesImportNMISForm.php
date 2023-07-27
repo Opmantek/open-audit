@@ -14,8 +14,8 @@ include 'shared/create_functions.php';
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'ImportNMIS') ?>" accept-charset="utf-8">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
-                                <?= create_select('data[attributes][location_id]', __('Assign to Location'), $included['locations'], ['location_id']) ?>
-                                <?= create_select('data[attributes][org_id]', __('Assign to Organisation'), $orgs, ['org_id']) ?>
+                                <?= create_select('data[attributes][location_id]', __('Assign Devices to Location'), $included['locations'], ['location_id']) ?>
+                                <?= create_select('data[attributes][org_id]', __('Assign Devices to Organisation'), $orgs, ['org_id']) ?>
                                 <?= create_select('data[attributes][run_discovery]', __('Run Discovery on Devices'), null, ['run_discovery']) ?>
 
                                 <div class="row" style="padding-top:16px;">
