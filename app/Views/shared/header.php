@@ -33,7 +33,10 @@ if (!function_exists('__')) {
     function __($word)
     {
         $language_learning_mode = false;
-        $language_file = APPPATH . 'views/lang/en.inc';
+        if (ENVIRONMENT === 'development') {
+            $language_learning_mode = true;
+        }
+        $language_file = APPPATH . 'Views/lang/en.inc';
         $word = (string)$word;
         if (isset($GLOBALS['lang'][$word])) {
             return $GLOBALS['lang'][$word];
@@ -62,6 +65,7 @@ if (!function_exists('__')) {
                         fclose($handle);
                     }
                 } else {
+                    log_message('error', "Language-Learning-Mode, but $language_file not writeable");
                     die("Language-Learning-Mode, but $language_file not writeable");
                 }
             }
