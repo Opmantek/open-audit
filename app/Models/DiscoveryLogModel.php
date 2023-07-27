@@ -292,7 +292,7 @@ class DiscoveryLogModel extends BaseModel
      *
      * @return array  An array of all Orgs
      */
-    public function listUser($user = null): array
+    public function listUser($where = array(), $orgs = array()): array
     {
         return array();
     }

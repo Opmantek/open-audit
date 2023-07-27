@@ -106,7 +106,7 @@ class ClustersModel extends BaseModel
 
         $attributesModel = new \App\Models\AttributesModel();
         $return = array();
-        $types = $attributesModel->listUser(['attributes.type', 'environment']);
+        $types = $attributesModel->listUser(['attributes.type' => 'environment']);
         $return['types'] = $types;
 
         if ($cluster->attributes->purpose === 'virtualisation') {
@@ -283,7 +283,10 @@ class ClustersModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $attributesModel = new \App\Models\AttributesModel();
+        $include = array();
+        $include['environment'] = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'environment']);
+        return $include;
     }
 
     /**
@@ -291,25 +294,22 @@ class ClustersModel extends BaseModel
      *
      * @return array  An array of formatted entries
      */
-    public function listUser($where = array()): array
+    public function listUser($where = array(), $orgs = array()): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
+        if (empty($orgs)) {
+            $instance = & get_instance();
+            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $orgs[] = 1;
+            $orgs = array_unique($org_list);
+        }
 
         $properties = array();
         $properties[] = 'clusters.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'clusters.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
-        if (!empty($where[0]) and !empty($where[1])) {
-            $this->builder->where($where[0], $where[1]);
-        }
-        if (!empty($where[2]) and !empty($where[3])) {
-            $this->builder->where($where[2], $where[3]);
-        }
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

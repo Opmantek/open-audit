@@ -133,7 +133,7 @@ class QueueModel extends BaseModel
      *
      * @return array  An array of formatted entries
      */
-    public function listUser($where = array()): array
+    public function listUser($where = array(), $orgs = array()): array
     {
         return array();
     }

@@ -239,7 +239,7 @@ class OrgsModel extends BaseModel
     {
         $attributesModel = new \App\Models\AttributesModel();
         $return = array();
-        $types = $attributesModel->listUser(['attributes.resource', 'orgs', 'attributes.type', 'type']);
+        $types = $attributesModel->listUser(['attributes.resource' => 'orgs', 'attributes.type' => 'type']);
         $return['types'] = $types;
         return $return;
     }
@@ -254,7 +254,7 @@ class OrgsModel extends BaseModel
     {
         $attributesModel = new \App\Models\AttributesModel();
         $return = array();
-        $types = $attributesModel->listUser(['attributes.resource', 'orgs', 'attributes.type', 'type']);
+        $types = $attributesModel->listUser(['attributes.resource' => 'orgs', 'attributes.type' => 'type']);
         $return['types'] = $types;
         return $return;
     }
@@ -340,19 +340,22 @@ class OrgsModel extends BaseModel
      *
      * @return array  An array of all Orgs
      */
-    public function listUser($user = null): array
+    public function listUser($where = array(), $orgs = array()): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
+        if (empty($orgs)) {
+            $instance = & get_instance();
+            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $orgs[] = 1;
+            $orgs = array_unique($orgs);
+        }
 
         $properties = array();
         $properties[] = 'orgs.*';
         $properties[] = 'o2.name as parent_name';
         $this->builder->select($properties);
         $this->builder->join('orgs o2', 'orgs.parent_id = o2.id', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

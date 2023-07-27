@@ -221,13 +221,13 @@ class DevicesModel extends BaseModel
         $include = array();
 
         $attributesModel = new \App\Models\AttributesModel();
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
+        $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'class']);
         $include['class'] = $attributes;
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'environment']);
+        $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'environment']);
         $include['environment'] = $attributes;
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'status']);
+        $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'status']);
         $include['status'] = $attributes;
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+        $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'type']);
         $include['type'] = $attributes;
 
         $fieldsModel = new \App\Models\FieldsModel();
@@ -336,13 +336,13 @@ class DevicesModel extends BaseModel
 
         if (empty($resp_include) or in_array('attributes', $resp_include) or $instance->resp->meta->format === 'screen') {
             $attributesModel = new \App\Models\AttributesModel();
-            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'class']);
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'class']);
             $include['class'] = $attributes;
-            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'environment']);
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'environment']);
             $include['environment'] = $attributes;
-            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'status']);
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'status']);
             $include['status'] = $attributes;
-            $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'type']);
             $include['type'] = $attributes;
         }
 
@@ -422,7 +422,7 @@ class DevicesModel extends BaseModel
     {
         $include = array();
         $attributesModel = new \App\Models\AttributesModel();
-        $attributes = $attributesModel->listUser(['attributes.resource', 'devices', 'attributes.type', 'type']);
+        $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'type']);
         $include['type'] = $attributes;
 
         $locationsModel = new \App\Models\LocationsModel();
@@ -436,25 +436,22 @@ class DevicesModel extends BaseModel
      *
      * @return array  An array of formatted entries
      */
-    public function listUser($where = array()): array
+    public function listUser($where = array(), $orgs = array()): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
+        if (empty($orgs)) {
+            $instance = & get_instance();
+            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $orgs[] = 1;
+            $orgs = array_unique($orgs);
+        }
 
         $properties = array();
         $properties[] = 'devices.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'devices.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
-        if (!empty($where[0]) and !empty($where[1])) {
-            $this->builder->where($where[0], $where[1]);
-        }
-        if (!empty($where[2]) and !empty($where[3])) {
-            $this->builder->where($where[2], $where[3]);
-        }
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -692,7 +689,9 @@ class DevicesModel extends BaseModel
 
         // Check and update any custom fields, if the supplied data key name == the fields.name
         $fieldsModel = new \App\Models\FieldsModel;
-        $fields = $fieldsModel->listUser();
+        // TODO - can we restrict this to only those fields from discoveries.org_id and lower by populating listUser([], $orgs) ?
+        //      - The incoming data may be from a user (web interface) a discovery or an audit.
+        $fields = $fieldsModel->listAll();
         $sql = "SELECT * FROM field WHERE device_id = ?";
         $deviceFields = $this->db->query($sql, [$id])->getResult();
         foreach ($fields as $field) {

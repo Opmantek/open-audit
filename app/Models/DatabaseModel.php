@@ -89,7 +89,7 @@ class DatabaseModel extends BaseModel
      *
      * @return array  An array of all Orgs
      */
-    public function listUser()
+    public function listUser($where = array(), $orgs = array()): array
     {
         $query = $this->db->listTables();
         if ($this->sqlError($this->db->error())) {

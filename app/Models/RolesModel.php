@@ -147,8 +147,9 @@ class RolesModel extends BaseModel
      *
      * @return array  An array of all Orgs
      */
-    public function listUser()
+    public function listUser($where = array(), $orgs = array()): array
     {
+        $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

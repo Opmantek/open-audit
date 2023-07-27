@@ -416,7 +416,7 @@ class DiscoveriesModel extends BaseModel
         $log = new \StdClass();
         $log->discovery_id = $discovery_id;
         $log->file = 'm_device';
-        $log->function = 'get_device_discovery_credentials';
+        $log->function = 'getDeviceDiscoveryCredentials';
         $log->ip = $ip_address;
         $log->message = 'Credentials retrieved for: ';
         $log->pid = getmypid();
@@ -479,11 +479,9 @@ class DiscoveriesModel extends BaseModel
             $log->message = 'No credentials retrieved.';
             $log->severity = 5;
             $log->command_status = 'warning';
-            #discovery_log($log);
             $discoveryLogModel->create($log);
         } else {
             $log->message = $log->message . implode(', ', $retrieved_types) . '.';
-            #discovery_log($log);
             $discoveryLogModel->create($log);
         }
         return $credentials;
@@ -768,25 +766,22 @@ class DiscoveriesModel extends BaseModel
      *
      * @return array  An array of formatted entries
      */
-    public function listUser($where = array()): array
+    public function listUser($where = array(), $orgs = array()): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
+        if (empty($orgs)) {
+            $instance = & get_instance();
+            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $orgs[] = 1;
+            $orgs = array_unique($orgs);
+        }
 
         $properties = array();
         $properties[] = 'discoveries.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'discoveries.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
-        if (!empty($where[0]) and !empty($where[1])) {
-            $this->builder->where($where[0], $where[1]);
-        }
-        if (!empty($where[2]) and !empty($where[3])) {
-            $this->builder->where($where[2], $where[3]);
-        }
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -1017,8 +1012,8 @@ class DiscoveriesModel extends BaseModel
         $error->message = '';
 
 
-        if ( ! empty($data->subnet)) {
-            if ( ! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
+        if (!empty($data->subnet)) {
+            if (!preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
                 $error->message = 'Discovery could not be updated - invalid Subnet supplied (' . $data->subnet . ').';
                 log_message('error', $error->message);
                 $GLOBALS['stash'] = $error;
@@ -1069,26 +1064,26 @@ class DiscoveriesModel extends BaseModel
         }
 
         if (isset($data->devices_assigned_to_org)) {
-            if ( ! is_int($data->devices_assigned_to_org) && ! is_numeric($data->devices_assigned_to_org) && $data->devices_assigned_to_org !== '') {
+            if (!is_int($data->devices_assigned_to_org) && ! is_numeric($data->devices_assigned_to_org) && $data->devices_assigned_to_org !== '') {
                 $error->message = 'Discovery could not be updated - invalid devices_assigned_to_org supplied.';
                 log_message('error', $error->message);
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                if ( ! empty($data->devices_assigned_to_org)) {
+                if (!empty($data->devices_assigned_to_org)) {
                     $data->devices_assigned_to_org = intval($data->devices_assigned_to_org);
                 }
             }
         }
 
         if (isset($data->devices_assigned_to_location)) {
-            if ( ! is_int($data->devices_assigned_to_location) && ! is_numeric($data->devices_assigned_to_location) && $data->devices_assigned_to_location !== '') {
+            if (!is_int($data->devices_assigned_to_location) && ! is_numeric($data->devices_assigned_to_location) && $data->devices_assigned_to_location !== '') {
                 $error->message = 'Discovery could not be updated - invalid devices_assigned_to_location supplied.';
                 log_message('error', $error->message);
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                if ( ! empty($data->devices_assigned_to_location)) {
+                if (!empty($data->devices_assigned_to_location)) {
                     $data->devices_assigned_to_location = intval($data->devices_assigned_to_location);
                 }
             }
@@ -1117,14 +1112,14 @@ class DiscoveriesModel extends BaseModel
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                if ( ! empty($data->scan_options->id)) {
+                if (!empty($data->scan_options->id)) {
                     $select = "SELECT id FROM discovery_scan_options";
                     $result = $this->db->query($select)->getResult();
                     $ids = array();
                     foreach ($result as $item) {
                         $ids[] = $item->id;
                     }
-                    if ( ! in_array($data->scan_options->id, $ids)) {
+                    if (!in_array($data->scan_options->id, $ids)) {
                         $error->message = 'Invalid ID supplied for scan_options::id (non-numeric)';
                         log_message('error', $error->message);
                         $GLOBALS['stash'] = $error;
@@ -1355,7 +1350,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns = new \stdClass();
 
         $dictionary->attributes = new \stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'last_run', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default

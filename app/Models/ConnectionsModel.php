@@ -130,12 +130,14 @@ class ConnectionsModel extends BaseModel
      *
      * @return array  An array of formatted entries
      */
-    public function listUser($where = array()): array
+    public function listUser($where = array(), $orgs = array()): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
+        if (empty($orgs)) {
+            $instance = & get_instance();
+            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $orgs[] = 1;
+            $orgs = array_unique($orgs);
+        }
 
         $properties = array();
         $properties[] = 'connections.*';
@@ -150,13 +152,8 @@ class ConnectionsModel extends BaseModel
         $this->builder->join('locations loc_b', 'loc_b.id = connections.location_id_b', 'left');
         $this->builder->join('devices dev_a', 'dev_a.id = connections.device_id_a', 'left');
         $this->builder->join('devices dev_b', 'dev_b.id = connections.device_id_b', 'left');
-        $this->builder->whereIn('orgs.id', $org_list);
-        if (!empty($where[0]) and !empty($where[1])) {
-            $this->builder->where($where[0], $where[1]);
-        }
-        if (!empty($where[2]) and !empty($where[3])) {
-            $this->builder->where($where[2], $where[3]);
-        }
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
