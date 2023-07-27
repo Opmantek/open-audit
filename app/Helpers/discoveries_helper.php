@@ -2195,8 +2195,7 @@ if (! function_exists('discover_ad')) {
         $orgs = implode(',', $orgs);
 
         // Stored credential sets
-        // TODO - check this 'where' filter below - does it function in the credentialsModel as intended?
-        $credentials = $instance->credentialsModel->collection(['org_id', 'IN ($orgs)']);
+        $credentials = $instance->credentialsModel->listUser([], explode(',', $orgs));
         // get the list of subnets from AD
         // TODO - make the below able to use LDAPS as well as LDAP
         $ldapuri = 'ldap://' . $discovery->ad_server;
