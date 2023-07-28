@@ -40,6 +40,12 @@ $user->permissions['components'] = '';
                             if ($key === 'devices.id' or $key === 'devices.name') {
                                 continue;
                             }
+                            if (strpos($key, 'ip_padded') !== false) {
+                                continue;
+                            }
+                            if ($key === 'command_output') {
+                                $resource->{$key} = html_entity_decode($resource->{$key});
+                            }
                             echo read_field($key, $resource->{$key}, '', false, $label);
                         }
                         echo "</div>\n";
