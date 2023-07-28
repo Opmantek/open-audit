@@ -291,7 +291,6 @@ class Devices extends BaseController
             $db->query($sql, [$device->ip]);
 
             $device->id = deviceMatch($device, 0, $match);
-            $device->ip = ip_address_to_db(@$device->ip);
             $credentials = $device->credentials;
             unset($device->credentials);
 
@@ -324,7 +323,10 @@ class Devices extends BaseController
             $data->attributes->id = $device->id;
             $data->attributes->name = $device->name;
             $data->attributes->hostname = @$device->hostname;
-            $data->attributes->ip = ip_address_from_db(@$device->ip);
+            $data->attributes->ip = '';
+            if (!empty($device->ip)) {
+                $data->attributes->ip = ip_address_from_db($device->ip);
+            }
             $this->resp->data[] = $data;
         }
         $ids = implode(',', $ids);
@@ -332,14 +334,13 @@ class Devices extends BaseController
         $this->resp->meta->inserted = $inserted;
         $this->resp->meta->updated = $updated;
         $this->resp->meta->total = $inserted + $updated;
-
         if (!empty($this->resp->meta->received_data->attributes->run_discovery) and $this->resp->meta->received_data->attributes->run_discovery === 'y') {
             $this->componentsModel = new \App\Models\ComponentsModel();
             $data = new \stdClass();
             $data->component_type = 'discovery';
             $data->ids = array();
             foreach ($devices as $device) {
-                if (!empty($device->ip) and $device->ip !== '127.0.0.1') {
+                if (!empty($device->ip) and $device->ip !== '127.0.0.1' and $device->ip !== '127.000.000.001') {
                     $data->ids[] = $device->id;
                 }
             }
