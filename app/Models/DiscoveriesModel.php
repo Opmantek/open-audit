@@ -452,8 +452,8 @@ class DiscoveriesModel extends BaseModel
                     for ($i=0; $i < count($result); $i++) {
                         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
                     }
+                    $credentials = array_merge($credentials, $result);
                 }
-                $credentials = array_merge($credentials, $result);
             }
             $retrieved_types[] = 'Device previously working';
         }
