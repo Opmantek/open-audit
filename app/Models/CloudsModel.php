@@ -155,7 +155,7 @@ class CloudsModel extends BaseModel
             $instance = & get_instance();
             $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
             $orgs[] = 1;
-            $orgs = array_unique($org_list);
+            $orgs = array_unique($orgs);
         }
 
         $properties = array();

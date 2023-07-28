@@ -696,7 +696,7 @@ class DevicesModel extends BaseModel
         $deviceFields = $this->db->query($sql, [$id])->getResult();
         foreach ($fields as $field) {
             foreach ($data as $key => $value) {
-                if ($key === $field->attributes->name) {
+                if ($key === $field->name) {
                     // We have a matching field - check for an existing value
                     $updated = false;
                     if (!empty($deviceFields)) {
@@ -707,7 +707,7 @@ class DevicesModel extends BaseModel
                                 $sql = "UPDATE field SET value = ?, `timestamp` = NOW() WHERE id = ?";
                                 $this->db->query($sql, [$deviceField->id, $value]);
                                 $sql = "INSERT INTO edit_log VALUES (null, ?, ?, 'Field data was updated', ?, ?, 'field', ?, NOW(), ?, ?)";
-                                $this->db->query($sql, [$user_id, $id, $source, 1000, $field->attributes->name, $value, $previous_value]);
+                                $this->db->query($sql, [$user_id, $id, $source, 1000, $field->name, $value, $previous_value]);
                             }
                         }
                     }
@@ -716,7 +716,7 @@ class DevicesModel extends BaseModel
                         $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
                         $this->db->query($sql, [$id, $field->id, $value]);
                         $sql = "INSERT INTO edit_log VALUES (null, ?, ?, 'Field data was created', ?, ?, 'field', ?, NOW(), ?, '')";
-                        $this->db->query($sql, [$user_id, $id, $source, 1000, $field->attributes->name, $value]);
+                        $this->db->query($sql, [$user_id, $id, $source, 1000, $field->name, $value]);
                     }
                 }
             }
@@ -736,6 +736,9 @@ class DevicesModel extends BaseModel
     {
         $instance = & get_instance();
 
+        // TODO - When running cli -> queue_start -> ip_audit, the $instance->dictionary is not populated.
+        //      - Hence the @'s below. Fix this and remove the @'s.
+
         $collection = 'devices';
         $dictionary = new \StdClass();
         $dictionary->table = $collection;
@@ -747,15 +750,15 @@ class DevicesModel extends BaseModel
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
 
-        $dictionary->about = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Even add devices that aren\'t connected to your network or those devices your Open-AudIT server cannot reach.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' .  $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br /><br />Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br /><br />Expand on the stored fields easily with your own custom attributes.<br /><br />Even add devices that aren\'t connected to your network or those devices your Open-AudIT server cannot reach.<br /><br />Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br /><br />' .  @$instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '';
 
         $dictionary->product = 'community';
-        $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->id = @$instance->dictionary->id;
+        $dictionary->columns->name = @$instance->dictionary->name;
+        $dictionary->columns->description = @$instance->dictionary->description;
+        $dictionary->columns->org_id = @$instance->dictionary->org_id;
         $dictionary->columns->uuid = 'Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.';
         $dictionary->columns->last_seen = 'The last time that Open-AudIT retrieved details of this device.';
         $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
