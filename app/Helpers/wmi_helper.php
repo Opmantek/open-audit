@@ -23,7 +23,7 @@ if (! function_exists('windows_credentials')) {
         $log->command = '';
         $log->command_output = '';
         $log->discovery_id = $discovery_id;
-        $log->ip = $parameters->ip;
+        $log->ip = $ip;
 
         if (empty($credentials)) {
             log_message('warning', 'No credentials array passed to windows_credentials.');
