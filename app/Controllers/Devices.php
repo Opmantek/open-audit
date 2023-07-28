@@ -333,6 +333,20 @@ class Devices extends BaseController
         $this->resp->meta->updated = $updated;
         $this->resp->meta->total = $inserted + $updated;
 
+        if (!empty($this->resp->meta->received_data->attributes->run_discovery) and $this->resp->meta->received_data->attributes->run_discovery === 'y') {
+            $this->componentsModel = new \App\Models\ComponentsModel();
+            $data = new \stdClass();
+            $data->component_type = 'discovery';
+            $data->ids = array();
+            foreach ($devices as $device) {
+                if (!empty($device->ip) and $device->ip !== '127.0.0.1') {
+                    $data->ids[] = $device->id;
+                }
+            }
+            $data->ids = implode(',', $data->ids);
+            $this->componentsModel->create($data);
+        }
+
         if ($this->resp->meta->format === 'json') {
             output($this);
         } else {
