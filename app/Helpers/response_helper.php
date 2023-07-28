@@ -1150,11 +1150,12 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
+        // TODO - I don't think this EVER gets called. Check the lines prior to the calling function above.
         if ($collection === 'components') {
             if (!empty($received_data[0]->component_type)) {
                 $component = $received_data[0]->component_type;
             } else {
-                log_message('error', 'Calling a componets ' . $action . ' on URL for comonents requires components.type=$TYPE in the URL');
+                log_message('error', 'Calling a components ' . $action . ' on URL for comonents requires components.type=$TYPE in the URL');
                 return false;
             }
             if ($received_data[0]->component_type !== 'application' and $received_data[0]->component_type !== 'attachment' and $received_data[0]->component_type !== 'cluster' and $received_data[0]->component_type !== 'credential' and $received_data[0]->component_type !== 'image' and $received_data[0]->component_type !== 'rack_devices') {
@@ -1173,12 +1174,13 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
-        if (in_array($collection, response_valid_collections())) {
+        if ($collection === 'discovery_log') {
+            $sql = "SELECT discoveries.org_id FROM discoveries LEFT JOIN discovery_log ON (discoveries.id = discovery_log.discovery_id) WHERE discovery_log.id = ?";
+            $result = $db->query($sql, [$id])->getResult();
+        } else if (in_array($collection, response_valid_collections())) {
             $sql = "SELECT `{$collection}`.`org_id` AS org_id FROM `{$collection}` WHERE `id` = ?";
             $result = $db->query($sql, [$id])->getResult();
-        }
-
-        if (!in_array($collection, response_valid_collections())) {
+        } else if (!in_array($collection, response_valid_collections())) {
             $sql = "SELECT devices.org_id AS org_id FROM `{$collection}` LEFT JOIN devices ON {$collection}.device_id = devices.id WHERE {$collection}.id = ?";
             $result = $db->query($sql, [$id])->getResult();
         }
