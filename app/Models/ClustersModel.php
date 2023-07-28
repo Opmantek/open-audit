@@ -110,6 +110,8 @@ class ClustersModel extends BaseModel
         $return['types'] = $types;
 
         if ($cluster->attributes->purpose === 'virtualisation') {
+            $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.memory_count AS `system.memory_count`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.icon AS `system.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, "host" AS `type`, SUM(memory.size) AS `memory.size` FROM `system` LEFT JOIN `orgs` ON (`system`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`system`.`id` = `cluster`.`system_id`) LEFT JOIN `processor` ON (`system`.`id` = `processor`.`system_id` AND `processor`.`current` = "y") LEFT JOIN `memory` ON (`system`.`id` = `memory`.`system_id` AND `memory`.`current` = "y") WHERE `orgs`.`id` IN (' . implode(',', $org_list) . ') AND `cluster`.`clusters_id` = ? GROUP BY `system`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
+
             $sql = "SELECT
                         devices.id AS `devices.id`,
                         devices.name AS `devices.name`,
@@ -121,123 +123,46 @@ class ClustersModel extends BaseModel
                         processor.physical_count AS `processor.physical_count`,
                         processor.core_count AS `processor.core_count`,
                         processor.logical_count AS `processor.logical_count`,
-                        clusters_devices.role AS `clusters_devices.role`,
-                        clusters_devices.id AS `clusters_devices.id`
+                        cluster.role AS `cluster.role`,
+                        cluster.cluster_id AS `cluster.id`,
+                        'host' AS `type`
                     FROM
-                        devices,
-                        (SELECT device_id, JSON_EXTRACT(components.details, '$.physical_count') AS `physical_count`, JSON_EXTRACT(components.details, '$.core_count') AS `core_count`, JSON_EXTRACT(components.details, '$.logical_count') AS `logical_count`, JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.hyperthreading')) AS `hyperthreading` FROM components WHERE components.current = 'y' AND components.type = 'processor') AS processor,
-                        clusters_devices
+                        cluster
+                    LEFT JOIN
+                        devices ON (cluster.device_id = devices.id)
+                    LEFT JOIN
+                        processor ON (devices.id = processor.device_id)
                     WHERE
-                        clusters_devices.clusters_id = " . intval($id) . " AND
-                        clusters_devices.devices_id = devices.id AND
-                        processor.device_id = devices.id AND
+                        cluster.cluster_id = " . intval($id) . " AND
                         devices.org_id IN (" . implode(',', $org_list) . ")";
+
             $query = $this->db->query($sql);
             if ($this->sqlError($this->db->error())) {
                 return array();
             }
             $return['members'] = format_data($query->getResult(), 'devices');
 
-            $sql = "SELECT
-                        components.device_id AS `devices.id`,
-                        devices.name AS `devices.name`,
-                        (devices.memory_count / 1024) AS `devices.memory_count`,
-                        devices.ip AS `devices.ip`,
-                        devices.os_family AS `devices.os_family`,
-                        devices.icon AS `devices.icon`,
-                        GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) ORDER BY JSON_EXTRACT(components.details, '$.name') ASC SEPARATOR ', ') AS `servers`
-                    FROM 
-                        components
-                    LEFT JOIN
-                        clusters_devices ON components.device_id = clusters_devices.devices_id
-                    LEFT JOIN
-                        devices ON components.device_id = devices.id
-                    WHERE
-                        components.type = 'server' AND
-                        clusters_devices.clusters_id = " . intval($id) . " AND
-                        devices.org_id IN (" . implode(',', $org_list) . ")
-                    GROUP BY
-                        components.device_id";
+            $sql = 'SELECT devices.name AS `host.name`, vm.icon AS `vm.icon`, vm.name AS `vm.name`, vm.id AS `vm.id`, vm.guest_device_id AS `vm.guest_device_id`, vm.cpu_count AS `vm.cpu_count`, vm.memory_count AS `vm.memory_count`, vm.status AS `vm.status`, "guest" as `type`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR ", ") AS `guest.servers`, guest.os_family AS `guest.os_family`, guest.ip AS `guest.ip`, guest.icon AS `guest.icon` FROM `devices` LEFT JOIN `cluster` ON (`devices`.`id` = `cluster`.`device_id`) LEFT JOIN `vm` ON (`devices`.`id` = `vm`.`device_id` AND `vm`.`current` = "y") LEFT JOIN `server` ON vm.guest_device_id = `server`.`device_id` LEFT JOIN `devices` `guest` ON vm.guest_device_id = guest.id WHERE devices.org_id IN (' . implode(',', $org_list) . ') AND `cluster`.`cluster_id` = ? GROUP BY vm.guest_device_id, vm.icon, vm.name, devices.name, vm.id, vm.cpu_count, vm.memory_count, vm.status, guest.os_family, guest.ip ORDER BY vm.name';
 
-            $sql = "SELECT
-                        components.device_id AS `host.id`,
-                        components.details AS `details`
-                    FROM
-                        components
-                    LEFT JOIN
-                        clusters_devices ON clusters_devices.devices_id = components.device_id
-                    WHERE
-                        components.type = 'vm'";
-
-            $sql = "SELECT
-                        devices.id AS `host.id`,
-                        devices.name AS `host.name`,
-                        components.details AS `details`
-                    FROM
-                        components
-                    LEFT JOIN
-                        clusters_devices ON clusters_devices.devices_id = components.device_id
-                    LEFT JOIN
-                        devices ON clusters_devices.devices_id = devices.id
-                    WHERE
-                        components.type = 'vm'";
-
-            $query = $this->db->query($sql);
+            $query = $this->db->query($sql, [$id]);
             if ($this->sqlError($this->db->error())) {
                 return array();
             }
             $guests = $query->getResult();
-            foreach ($guests as &$guest) {
-                $guest->details = json_decode($guest->details);
-                if (!empty($guest->details->guest_device_id)) {
-                    $sql = "SELECT id, hostname, ip, os_family, icon FROM devices WHERE id = " . intval($guest->details->guest_device_id);
-                    $query = $this->db->query($sql);
-                    $details = $query->getResult();
-                    $guest->hostname = $details[0]->hostname;
-                    $guest->ip = $details[0]->ip;
-                    $guest->os_family = $details[0]->os_family;
-                    $guest->icon = $details[0]->icon;
-
-                    $sql = "SELECT GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) ORDER BY JSON_EXTRACT(components.details, '$.name') ASC SEPARATOR ', ') AS `servers` FROM components WHERE components.type = 'server' AND components.device_id = " . intval($guest->details->guest_device_id);
-                    $query = $this->db->query($sql);
-                    $details = $query->getResult();
-                    $guest->servers = $details[0]->servers;
-                }
-            }
-
-            if ($this->sqlError($this->db->error())) {
-                return array();
+            foreach ($guests as $guest) {
+                $guest->{'guest.ip_padded'} = $guest->{'guest.ip'};
+                $guest->{'guest.ip'} = ip_address_from_db($guest->{'guest.ip'});
             }
             $return['guests'] = $guests;
         }
 
 
         if ($cluster->attributes->purpose !== 'virtualisation') {
-            $sql = "SELECT 
-                        clusters_devices.role AS `clusters_devices.role`,
-                        devices.id AS `host.id`,
-                        devices.name AS `host.name`, 
-                        devices.ip AS `host.ip`, 
-                        components.id AS `components.id`,
-                        JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.status')) AS `vm.status`, 
-                        if (devices.icon != '', devices.icon, JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.icon'))) AS `vm.icon`, 
-                        JSON_EXTRACT(components.details, '$.guest_device_id') AS `vm.devices_id`,
-                        JSON_EXTRACT(components.details, '$.cpu_count') AS `vm.cpu_count`, 
-                        JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.memory_count')) AS `vm.memory_count`, 
-                        JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) AS `vm.name`
-                    FROM 
-                        clusters_devices,
-                        devices,
-                        components
-                    WHERE
-                        clusters_devices.clusters_id = " . intval($id) . " AND
-                        clusters_devices.devices_id = devices.id AND
-                        devices.org_id IN (" . implode(',', $org_list) . ") AND
-                        devices.id = components.device_id AND
-                        components.type = 'vm'";
-
-            $sql = preg_replace('!\s+!', ' ', $sql);
-            $query = $this->db->query($sql);
+            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.memory_count AS `devices.memory_count`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.icon AS `devices.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR ", ") AS `servers` FROM `devices` LEFT JOIN `orgs` ON (`devices`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`devices`.`id` = `cluster`.`device_id`) LEFT JOIN `processor` ON (`devices`.`id` = `processor`.`device_id` AND `processor`.`current` = "y") LEFT JOIN `server` ON `devices`.`id` = `server`.`device_id` WHERE `orgs`.`id` IN (' . implode(',', $org_list) . ') AND `cluster`.`cluster_id` = ? GROUP BY `devices`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
+            $query = $this->db->query($sql, [$id]);
+            if ($this->sqlError($this->db->error())) {
+                return array();
+            }
             $result = $query->getResult();
             $count = count($result);
             for ($i=0; $i < $count; $i++) {
@@ -265,10 +190,6 @@ class ClustersModel extends BaseModel
                     }
                     $result[$i]->{'guest.servers'} = implode(', ', $servers);
                 }
-            }
-
-            if ($this->sqlError($this->db->error())) {
-                return array();
             }
             $return['devices'] = format_data($result, 'devices');
         }
