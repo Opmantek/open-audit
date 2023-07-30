@@ -124,7 +124,7 @@ class ClustersModel extends BaseModel
                         processor.core_count AS `processor.core_count`,
                         processor.logical_count AS `processor.logical_count`,
                         cluster.role AS `cluster.role`,
-                        cluster.cluster_id AS `cluster.id`,
+                        cluster.id AS `cluster.id`,
                         'host' AS `type`
                     FROM
                         cluster
