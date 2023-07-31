@@ -319,6 +319,9 @@ class Collections extends BaseController
             for ($j=0; $j < $column_count; $j++) {
                 $data->{$attributes[$j]} = $csv[$i][$j];
             }
+            if ($this->resp->meta->collection === 'devices' and empty($data->last_seen_by)) {
+                $data->last_seen_by = 'user';
+            }
             if (!empty($data->id)) {
                 $this->{$this->resp->meta->collection.'Model'}->update(intval($data->id), $data);
                 $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read(intval($data->id));
