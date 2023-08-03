@@ -549,7 +549,14 @@ class Collections extends BaseController
     public function reset()
     {
         $this->{$this->resp->meta->collection.'Model'}->reset();
-        return redirect()->route($this->resp->meta->collection.'Collection');
+        if ($this->resp->meta->format !== 'screen') {
+            # Note the below data is only for Enterprise to accept data back after a POST
+            $this->resp->data[0] = 'Table reset';
+            output($this);
+            return true;
+        } else {
+            return redirect()->route($this->resp->meta->collection.'Collection');
+        }
     }
 
     /**

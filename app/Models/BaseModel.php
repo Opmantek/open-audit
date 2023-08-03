@@ -17,7 +17,7 @@ class BaseModel extends Model
     {
         // $this->session = \Config\Services::session();
         // $this->uri = new \CodeIgniter\HTTP\URI(current_url(true));
-        $this->sql_file = FCPATH . '../open-audit.sql';
+        $this->sql_file = FCPATH . '../other/open-audit.sql';
     }
 
 
@@ -134,7 +134,7 @@ class BaseModel extends Model
             return false;
         }
 
-        $this->sql_file = FCPATH . '../open-audit.sql';
+        $this->sql_file = FCPATH . '../other/open-audit.sql';
         $sql_file = file($this->sql_file);
         $count = count($sql_file);
         for ($i=0; $i < $count; $i++) {
