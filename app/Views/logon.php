@@ -40,14 +40,14 @@ header('X-Content-Type-Options: nosniff');
         <script src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
         <script src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
         <script src="<?= base_url('js/fa-v4-shims.js') ?>"></script>
-        <script src="<?= base_url('js/open-audit.js') ?>"></script>
+        <script src="<?= base_url('js/open-audit.js') . '?v=' . time() ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>"                     rel="stylesheet">
         <link href="<?= base_url('css/bootstrap.css') ?>"                 rel="stylesheet">
         <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/font-awesome.css') ?>"              rel="stylesheet">
-        <link href="<?= base_url('css/open-audit.css') ?>"                rel="stylesheet">
+        <link href="<?= base_url('css/open-audit.css') . '?v=' . time() ?>" rel="stylesheet">
 
         <script type="text/javascript">
             function audit_my_pc()
