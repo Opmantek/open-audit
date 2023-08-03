@@ -851,10 +851,14 @@ class DiscoveriesModel extends BaseModel
             return array();
         }
         $result = format_data($query->getResult(), 'discoveries');
+        $scan_options_id = (!empty($result[0]->attributes->scan_options->id)) ? $result[0]->attributes->scan_options->id : config('Openaudit')->discovery_default_scan_option;
         $sql = "SELECT discovery_scan_options.name from discovery_scan_options where id = ?";
-        $query = $this->db->query($sql, [$result[0]->attributes->scan_options->id]);
+        $query = $this->db->query($sql, [$scan_options_id]);
         $dco = $query->getResult();
         if (!empty($dco)) {
+            if (empty($result[0]->attributes->scan_options)) {
+                $result[0]->attributes->scan_options = new \stdClass();
+            }
             $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
         }
         return $result;
