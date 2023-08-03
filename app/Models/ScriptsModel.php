@@ -274,6 +274,7 @@ class ScriptsModel extends BaseModel
             
             case 'vmkernel':
             case 'vmware':
+            case 'esxi':
                 $audit_script = 'audit_esxi.sh';
                 break;
             
@@ -282,17 +283,20 @@ class ScriptsModel extends BaseModel
                 break;
             
             case 'darwin':
+            case 'osx':
                 $audit_script = 'audit_osx.sh';
                 break;
             
-            case 'osx':
-                $audit_script = 'audit_osx.sh';
+            case 'hpux':
+            case 'hp-ux':
+                $audit_script = 'audit_hpux.sh';
                 break;
             
             case 'windows':
                 $audit_script = 'audit_windows.vbs';
                 break;
             
+            case 'solaris':
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
                 break;
