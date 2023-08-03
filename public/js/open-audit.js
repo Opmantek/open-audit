@@ -64,9 +64,11 @@ $(document).ready(function () {
         var data = {};
         data["data"] = {};
         var ids = $("#ids").attr("data-value");
-        if (ids != "") {
-            id = collection;
-            data["data"]["ids"] = $("#ids").attr("data-value");
+        if (typeof ids !== 'undefined') {
+            if (ids != "") {
+                id = collection;
+                data["data"]["ids"] = $("#ids").attr("data-value");
+            }
         }
         data["data"]["id"] = id;
         data["data"]["type"] = collection;

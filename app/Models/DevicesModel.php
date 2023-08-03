@@ -496,10 +496,34 @@ class DevicesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('devices')) {
-            return true;
+        $instance = get_instance();
+        $status = '';
+        $orgs = array();
+        foreach ($instance->resp->meta->filter as $filter) {
+            if ($filter->name === 'status') {
+                $status = $filter->value;
+            }
+            if ($filter->name === 'devices.org_id') {
+                $orgs = $filter->value;
+            }
         }
-        return false;
+        if (!empty($status) and !empty($orgs)) {
+            $sql = "DELETE FROM devices WHERE status = ? AND org_id IN (" . implode(',', $orgs) . ")";
+            $query = $this->db->query($sql, [$status]);
+            $message = "Deleted " . $this->db->affectedRows() . " devices with status: $status.";
+            \Config\Services::session()->setFlashdata('error', $message);
+            log_message('info', $message);
+        } else {
+            if (empty($status)) {
+                log_message('error', 'No devices deleted because status not provided.');
+                \Config\Services::session()->setFlashdata('error', 'No devices deleted because status not provided.');
+            }
+            if (empty($orgs)) {
+                log_message('error', 'No devices deleted because Orgs not calculated.');
+                \Config\Services::session()->setFlashdata('error', 'No devices deleted because Orgs not calculated.');
+            }
+        }
+        return true;
     }
 
     /**

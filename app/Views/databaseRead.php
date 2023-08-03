@@ -2,6 +2,13 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+$device_delete = false;
+if ($meta->id === 'devices' and !empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'd') !== false) {
+    $device_delete = true;
+}
+if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'summaries', 'users', 'widgets'])) {
+    $user->permissions[$meta->id] = '';
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -13,6 +20,28 @@ include 'shared/read_functions.php';
                         <div class="col-6">
                             <?= read_field('name', $data[0]->id, '', false) ?>
                             <?= read_field('Row Count', $data[0]->attributes->count, '', false) ?>
+
+                            <?php if ($data[0]->id === 'devices') { ?>
+                                <?php foreach ($data[0]->attributes->status as $status) { ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <form id="status_form" method="post" action="<?= url_to($data[0]->id.'Reset') ?>?status=<?= $status->status ?>">
+                                                <label for="<?= $status->status ?>" class="form-label"><?php echo __('Device Status: ' . $status->status); ?></label>
+                                                <div class="input-group">
+                                                    <input disabled type="text" class="form-control" id="<?= $status->status ?>" value="<?php echo $status->count; ?>">
+                                                    <?php if ($device_delete and $status->status != 'production') { ?>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-danger" type="submit" id="status_button_<?= $status->status ?>"><span class="fa fa-trash" aria-hidden="true"></span></button>
+                                                    </span>
+                                                    <?php } ?>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            <?php } ?>
+
+
                             <br><br>
                             <div class="col-8 offset-2">
                                 <table class="table">
@@ -97,10 +126,20 @@ include 'shared/read_functions.php';
             </div>
         </main>
 <script>
-      document.getElementById('<?= $data[0]->id ?>ResetForm').addEventListener('submit', function(e){
-        if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $data[0]->id ?> table and insert the original rows.") == true) {
-            return;
-        }
-        e.preventDefault();
-   });
+document.getElementById('<?= $data[0]->id ?>ResetForm').addEventListener('submit', function(e){
+    if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $data[0]->id ?> table and insert the original rows.") == true) {
+        return;
+    }
+    e.preventDefault();
+});
 </script>
+<?php if ($data[0]->id === 'devices') { ?>
+<script>
+document.getElementById('status_form').addEventListener('submit', function(e){
+    if (confirm("Are you sure?\n\nThis will delete the rows in the devices table with this status.") == true) {
+        return;
+    }
+    e.preventDefault();
+});
+</script>
+<?php } ?>
