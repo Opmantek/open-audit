@@ -209,7 +209,7 @@ class DatabaseModel extends BaseModel
                 $result->operating_system = 'unknown (You must run Apache as an administrator on Windows to determine this)';
             }
         } else {
-            $result->operating_system = php_uname('s');
+            $result->operating_system = php_uname('a');
         }
 
         $result->current_version = config('Openaudit')->display_version;
@@ -218,7 +218,9 @@ class DatabaseModel extends BaseModel
         $result->database_platform = $db->getPlatform();
         $result->database_version = $db->getVersion();
         $result->web_server = (!empty(getenv("SERVER_SOFTWARE"))) ? getenv("SERVER_SOFTWARE") : '';
-        $result->web_server = (empty($result->web_server) and !empty(php_sapi_name())) ? php_sapi_name() : '';
+        if (empty($result->web_server) and !empty(php_sapi_name())) {
+            $result->web_server = php_sapi_name();
+        }
         $result->php_version = phpversion();
 
         return $result;
