@@ -65,7 +65,7 @@ class FieldsModel extends BaseModel
         if (in_array($data->name, $deviceFields)) {
             $instance = & get_instance();
             \Config\Services::session()->setFlashdata('error', 'The name of your field cannot be the same as a column name in the devices table.');
-            $instance->resp->errors[] = 'The name of your field cannot be the same as a column name in the devices table.';
+            $instance->resp->errors = 'The name of your field cannot be the same as a column name in the devices table.';
             return null;
         }
         $data = $this->createFieldData('fields', $data);

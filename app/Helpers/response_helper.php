@@ -72,8 +72,7 @@ if (!function_exists('response_create')) {
 
         if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
             $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
-            $response->errors = array();
-            $response->errors[] = $message;
+            $response->errors = $message;
             $response->meta->header = 403;
             log_message('warning', $message);
             if ($response->meta->format === 'json') {
@@ -219,11 +218,10 @@ if (!function_exists('response_create')) {
         if (!empty($response->meta->received_data)) {
             $session = \Config\Services::session();
             if ($response->meta->request_method === 'POST' && !empty(config('OpenAudit')->access_token_enable) && config('OpenAudit')->access_token_enable === 'y') {
-                $response->errors = array();
                 if (empty($response->meta->received_data->access_token)) {
                     $message = 'No access token provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
                     log_message('error', $message);
-                    $response->errors[] = $message;
+                    $response->errors = $message;
                     $response->meta->header = 400;
                     if ($response->meta->format !== 'screen') {
                         $instance->response->setStatusCode($response->meta->header);
@@ -239,7 +237,7 @@ if (!function_exists('response_create')) {
                 } else if (!in_array($response->meta->received_data->access_token, $session->get('access_token'))) {
                     $message = 'An invalid access token was provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
                     log_message('error', $message);
-                    $response->errors[] = $message;
+                    $response->errors = $message;
                     $response->meta->header = 400;
                     if ($response->meta->format !== 'screen') {
                         $instance->response->setStatusCode($response->meta->header);
@@ -363,17 +361,21 @@ if (!function_exists('response_create')) {
 
         if (!$permission) {
             $message = 'User permission denied for ' . $response->meta->collection . ' to perform ' . $response->meta->action . ' on item because of OrgID.';
+            if (!empty($_SESSION['error'])) {
+                $message = $_SESSION['error'];
+            }
             log_message('warning', $message);
             $response->meta->header = 403;
-            $response->errors = array();
-            $response->errors[] = $message;
+            $response->errors = $message;
             if ($response->meta->format !== 'screen') {
                 $instance->response->setStatusCode($response->meta->header);
                 $instance->resp = $response;
                 output($instance);
                 exit();
             } else {
-                \Config\Services::session()->setFlashdata('error', $message);
+                if (empty($_SESSION['error'])) {
+                    \Config\Services::session()->setFlashdata('error', $message);
+                }
                 header('Location: ' . url_to($response->meta->collection.'Collection'));
                 exit();
             }
