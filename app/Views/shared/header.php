@@ -565,14 +565,14 @@ if (!empty(config('Openaudit')->modules)) {
                             <div class="btn-group" role="group">
                                 <input type="hidden" id="data[access_token]" name="data[access_token]" value="<?= $meta->access_token; ?>">
                                 <label style="padding-top:5px;" for="data[attributes][value]">Search&nbsp;</label>
-                                <input type="text"   id="data[attributes][value]" name="data[attributes][value]" class="form-control form-control-sm" placeholder="Device Name or IP">
+                                <input type="text"   id="data[attributes][value]" name="data[attributes][value]" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
                                 <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["devices"]'>
                                 <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
-                                <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" style="border: 1px solid #adb5bd" data-oc="f6f7fb" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
                             </div>
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
-                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary" style="border: 1px solid #adb5bd" data-oc="f6f7fb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Dashboards
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
