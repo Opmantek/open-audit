@@ -33,7 +33,7 @@ class Scripts extends BaseController
     public function download($id)
     {
         if (empty($this->scriptsModel)) {
-            $this->scriptsModel = new \App\Models\scriptsModel();
+            $this->scriptsModel = new \App\Models\ScriptsModel();
         }
         if (!is_numeric($id)) {
             $id = $this->scriptsModel->getByOs($id);

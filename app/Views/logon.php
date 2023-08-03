@@ -54,15 +54,15 @@ header('X-Content-Type-Options: nosniff');
             {
                 var testWin = navigator.userAgent.match(/Windows NT/i);
                 if (testWin) {
-                    location.href = "<?= $config->oa_web_folder ?>index.php/scripts/windows/download";
+                    location.href = "<?= base_url() ?>index.php/scripts/windows/download";
                 }
                 var testLin = navigator.userAgent.match(/Linux /i);
                 if (testLin) {
-                    location.href = "<?= $config->oa_web_folder ?>index.php/scripts/linux/download";
+                    location.href = "<?= base_url() ?>index.php/scripts/linux/download";
                 }
                 var testOsx = navigator.userAgent.match(/Mac OS X/i);
                 if (testOsx) {
-                    location.href = "<?= $config->oa_web_folder ?>index.php/scripts/osx/download";
+                    location.href = "<?= base_url() ?>index.php/scripts/osx/download";
                 }
             }
             <?php if (config('Openaudit')->device_count === 0) { ?>
@@ -127,7 +127,7 @@ header('X-Content-Type-Options: nosniff');
                                         <div class="offset-2 col-8" style="position:relative;">
                                         <br>Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
                                         </div>
-                                        <?php if (!empty($config->default_network_address) and strpos($config->default_network_address, '127.0.0.1') === false and strpos($config->default_network_address, 'localhost') === false and !empty($config->default_network_address)) { ?>
+                                        <?php if (!empty(config('Openaudit')->default_network_address) and strpos(config('Openaudit')->default_network_address, '127.0.0.1') === false and strpos(config('Openaudit')->default_network_address, 'localhost') === false and !empty(config('Openaudit')->default_network_address)) { ?>
                                         <span align='center'>
                                             <br>
                                             <input type="button" class="btn btn-sm btn-primary" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" />

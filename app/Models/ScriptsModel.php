@@ -265,7 +265,7 @@ class ScriptsModel extends BaseModel
         return true;
     }
 
-    public function getByOs(string $os = ''): ?string
+    public function getByOs(string $os = ''): ?int
     {
         switch (strtolower($os)) {
             case 'aix':
