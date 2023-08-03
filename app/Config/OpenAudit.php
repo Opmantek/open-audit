@@ -69,7 +69,13 @@ class OpenAudit extends BaseConfig
         $this->server_os = php_uname('s');
 
         // get the total number of devices
-        if ($this->internal_version > 20230614) {
+        if ($this->internal_version < 20230615) {
+            $query = $db->query('SELECT count(*) as device_count FROM `system`');
+            if (!empty($query)) {
+                $result = $query->getRow();
+                $this->device_count = @intval($result->device_count);
+            }
+        } else {
             $query = $db->query('SELECT count(*) as device_count FROM `devices`');
             if (!empty($query)) {
                 $result = $query->getRow();

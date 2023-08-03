@@ -65,7 +65,7 @@ header('X-Content-Type-Options: nosniff');
                     location.href = "<?= $config->oa_web_folder ?>index.php/scripts/osx/download";
                 }
             }
-            <?php if (intval($config->device_count) === 0) { ?>
+            <?php if (config('Openaudit')->device_count === 0) { ?>
             document.getElementById("username").value = "admin";
             document.getElementById("password").value = "password";
             <?php } ?>
@@ -106,14 +106,14 @@ header('X-Content-Type-Options: nosniff');
                                         <div class="offset-5 col-2" style="position:relative;">
                                             <label class="form-label" for="submit"></label>
                                                 <?php $disabled = '';
-                                                if (empty($config->internal_version)) {
+                                                if (empty(config('Openaudit')->internal_version)) {
                                                     $disabled = 'disabled';
                                                 } ?>
                                             <button type="submit" class="btn btn-primary" id="submit" name="submit" <?php echo $disabled; ?>>Submit</button>
                                         </div>
                                     </div>
 
-                                    <?php if (intval($config->device_count) === 0) { ?>
+                                    <?php if (config('Openaudit')->device_count === 0) { ?>
                                     <div class="row">
                                         <div class="offset-5 col-2" style="position:relative;">
                                             <div class="well well-sm" style="padding:10px; margin:4px; background:#d9edf7;">No devices are in the database.</div>
