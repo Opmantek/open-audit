@@ -103,14 +103,14 @@ $categories = array_unique($categories);
         <title>Open-AudIT</title>
 
         <!-- JS -->
-        <script src="<?= base_url('js/jquery.min.js') ?>"></script>
-        <script src="<?= base_url('js/popper.min.js') ?>"></script>
-        <script src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
-        <script src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
-        <script src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
-        <script src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
-        <script src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
-        <script src="<?= base_url('js/open-audit.js') ?>"></script>
+        <script defer src="<?= base_url('js/jquery.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/popper.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
+        <script defer src="<?= base_url('js/open-audit.js') ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
@@ -144,7 +144,7 @@ $categories = array_unique($categories);
         <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
             <div class="container-fluid">
                 <a class="navbar-brand" style="color: white;" href="<?= base_url() ?>index.php">
-                    <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
+                    <img class="rounded-circle border border-white border-0" style="background: white; width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
                     Open-AudIT <?= config('Openaudit')->display_version . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
