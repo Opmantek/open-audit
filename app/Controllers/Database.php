@@ -73,7 +73,7 @@ class Database extends BaseController
         $return = array();
         $tables = $db->listTables();
 
-        $sql_file = file(APPPATH . '../open-audit.sql');
+        $sql_file = file(APPPATH . '../other/open-audit.sql');
         $output = '';
         $body_output = '';
         $total_inserts = 0;

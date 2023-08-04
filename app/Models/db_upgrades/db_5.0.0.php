@@ -3,7 +3,7 @@ $output .= "Upgrade database to 5.0.0 commenced.\n\n";
 
 
 if ($db->tableExists('agents')) {
-    $sql = "DROP TABLE agents";
+    $sql = "DROP TABLE IF EXISTS `agents`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -92,19 +92,17 @@ if (!empty($baselines)) {
         $results = array_diff(scandir($path), array('.', '..'));
         log_message('info', "Baselines Results taken from $path");
     }
-    if (empty($results)) {
-        $path = '/usr/local/omk/var/oae/baselines/results';
-        if (file_exists($path)) {
-            $results = array_diff(scandir($path), array('.', '..'));
-            log_message('info', "Baselines Results taken from $path");
-        }
+
+    $path = '/usr/local/omk/var/oae/baselines/results';
+    if (file_exists($path)) {
+        $results = array_diff(scandir($path), array('.', '..'));
+        log_message('info', "Baselines Results taken from $path");
     }
-    if (empty($results)) {
-        $path = 'c:\\omk\\var\\oae\\baselines\\results';
-        if (file_exists($path)) {
-            $results = array_diff(scandir($path), array('.', '..'));
-            log_message('info', "Baselines Results taken from $path");
-        }
+
+    $path = 'c:\\omk\\var\\oae\\baselines\\results';
+    if (file_exists($path)) {
+        $results = array_diff(scandir($path), array('.', '..'));
+        log_message('info', "Baselines Results taken from $path");
     }
 
     if (!empty($results)) {
@@ -212,7 +210,7 @@ if ($db->fieldExists('fields_id', 'field')) {
 }
 
 if ($db->tableExists('ldap_groups')) {
-    $sql = "DROP TABLE ldap_groups";
+    $sql = "DROP TABLE IF EXISTS `ldap_groups`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -278,35 +276,35 @@ if ($db->fieldExists('guest_system_id', 'vm')) {
 }
 
 if ($db->tableExists('notes')) {
-    $sql = "DROP TABLE notes";
+    $sql = "DROP TABLE IF EXISTS `notes`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('oa_change')) {
-    $sql = "DROP TABLE oa_change";
+    $sql = "DROP TABLE IF EXISTS `oa_change`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('oa_temp')) {
-    $sql = "DROP TABLE oa_temp";
+    $sql = "DROP TABLE IF EXISTS `oa_temp`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('oa_user_sessions')) {
-    $sql = "DROP TABLE oa_user_sessions";
+    $sql = "DROP TABLE IF EXISTS `oa_user_sessions`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('warranty')) {
-    $sql = "DROP TABLE warranty";
+    $sql = "DROP TABLE IF EXISTS `warranty`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -409,36 +407,36 @@ if (!empty($racks)) {
     }
 }
 
-if ($db->fieldExists('row_id', 'racks')) {
-    $sql = "ALTER TABLE `racks` DROP `row_id`";
-    $query = $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
 if ($db->tableExists('rows')) {
-    $sql = "DROP TABLE `rows` IF EXISTS";
+    $sql = "DROP TABLE IF EXISTS `rows`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('rooms')) {
-    $sql = "DROP TABLE `rooms` IF EXISTS";
+    $sql = "DROP TABLE IF EXISTS `rooms`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('floors')) {
-    $sql = "DROP TABLE `floors` IF EXISTS";
+    $sql = "DROP TABLE IF EXISTS `floors`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('buildings')) {
-    $sql = "DROP TABLE `buildings` IF EXISTS";
+    $sql = "DROP TABLE IF EXISTS `buildings`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->fieldExists('row_id', 'racks')) {
+    $sql = "ALTER TABLE `racks` DROP `row_id`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -451,7 +449,7 @@ if (!$db->fieldExists('toolbar_style', 'users')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "SELECT * FROM users";
+$sql = "SELECT * FROM `users`";
 $query = $db->query($sql);
 $result = $query->getResult();
 foreach ($result as $item) {
