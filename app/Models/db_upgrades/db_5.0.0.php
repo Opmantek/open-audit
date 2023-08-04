@@ -87,22 +87,20 @@ if (!$db->tableExists('baselines_results')) {
 }
 
 if (!empty($baselines)) {
-    $path = '/usr/local/opmojo/var/oae/baselines/results';
+    $results = array();
+    # This is a temporary directory created by the installer so the web user can read the baselines results files
+    $path = '/usr/local/open-audit/temp_baselines_results';
     if (file_exists($path)) {
         $results = array_diff(scandir($path), array('.', '..'));
         log_message('info', "Baselines Results taken from $path");
     }
 
-    $path = '/usr/local/omk/var/oae/baselines/results';
-    if (file_exists($path)) {
-        $results = array_diff(scandir($path), array('.', '..'));
-        log_message('info', "Baselines Results taken from $path");
-    }
-
-    $path = 'c:\\omk\\var\\oae\\baselines\\results';
-    if (file_exists($path)) {
-        $results = array_diff(scandir($path), array('.', '..'));
-        log_message('info', "Baselines Results taken from $path");
+    if (empty($results)) {
+        $path = 'c:\\omk\\var\\oae\\baselines\\results';
+        if (file_exists($path)) {
+            $results = array_diff(scandir($path), array('.', '..'));
+            log_message('info', "Baselines Results taken from $path");
+        }
     }
 
     if (!empty($results)) {
@@ -123,6 +121,20 @@ if (!empty($baselines)) {
             $db->query($sql, [$json_result->org_id, intval($json_result->baseline->id), $name, json_encode($json_result->baseline), json_encode($json_result->result), $timestamp]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
             log_message('info', (string)$db->getLastQuery());
+        }
+
+        # Now delete the temporary directory and any files within
+        if ($path === '/usr/local/open-audit/temp_baselines_results') {
+            $it = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+            foreach($files as $file) {
+                if ($file->isDir()){
+                    rmdir($file->getRealPath());
+                } else {
+                    unlink($file->getRealPath());
+                }
+            }
+            rmdir($path);
         }
     }
 }
@@ -405,6 +417,18 @@ if (!empty($racks)) {
         $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
         log_message('info', (string)$db->getLastQuery());
     }
+}
+
+$result = array();
+$sql = "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'racks' AND CONSTRAINT_NAME = 'racks_row_id'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+$result = $query->getResult();
+if (count($result) > 0) {
+    # Need to drop the foreign key
+    $sql = "ALTER TABLE `racks` DROP FOREIGN KEY `racks_row_id`";
+    $query = $db->query($sql);
 }
 
 if ($db->tableExists('rows')) {
