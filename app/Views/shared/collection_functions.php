@@ -129,7 +129,7 @@ function collection_button_delete(int $id = 0): string
 {
     $return = "<td class=\"text-center\">
                                         <button type=\"button\" class=\"btn btn-sm btn-danger delete_link\" data-id=\"$id\">
-                                            <span style=\"width:1rem;\" title=\"" . __('Delete') . "\" class=\"fa fa-trash\"></span>
+                                            <span style=\"width:1rem;\" title=\"" . __('Delete') . "\" class=\"fa fa-trash\" aria-label=\"<?= __('Delete') ?>\"></span>
                                         </button>
                                     </td>";
     return $return;

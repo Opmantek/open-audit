@@ -25,7 +25,7 @@ include 'shared/collection_functions.php';
                                             if (!empty($data[0]->id)) {
                                                     echo "            <th data-orderable=\"false\" class=\"text-center\">\n";
                                                     echo "              <button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
-                                                    echo "              <input type=\"checkbox\" name=\"select_all\" id=\"select_all\"/>\n";
+                                                    echo "              <input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\"/>\n";
                                                     echo "            </th>\n";
                                             }
                                         } ?>
@@ -50,7 +50,7 @@ include 'shared/collection_functions.php';
                                             }
                                         }
                                         if (strpos($user->permissions[$meta->collection], 'u') !== false and !empty($item->id)) {
-                                            echo "                                    <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . $item->id . "]' value='" . $item->id . "' name='ids[" . $item->id . "]' /></td>\n";
+                                            echo "                                    <td style=\"text-align: center;\"><input aria-label='" . __('Select') . "' type='checkbox' id='ids[" . $item->id . "]' value='" . $item->id . "' name='ids[" . $item->id . "]' /></td>\n";
                                         }
                                         if (strpos($user->permissions[$meta->collection], 'd') !== false) {
                                             echo "                                    " . collection_button_delete(intval($item->id)) . "\n";

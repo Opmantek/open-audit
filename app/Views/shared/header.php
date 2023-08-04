@@ -143,7 +143,7 @@ $categories = array_unique($categories);
         <!-- Menu -->
         <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
             <div class="container-fluid">
-                <a class="navbar-brand" style="color: white;" href="<?= base_url() ?>">
+                <a class="navbar-brand" style="color: white;" href="<?= base_url() ?>index.php">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
                     Open-AudIT <?= config('Openaudit')->display_version . "\n" ?>
                 </a>
@@ -568,11 +568,11 @@ if (!empty(config('Openaudit')->modules)) {
                                 <input type="text"   id="data[attributes][value]" name="data[attributes][value]" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
                                 <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["devices"]'>
                                 <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
-                                <button class="btn btn-sm btn-outline-secondary" style="border: 1px solid #adb5bd" data-oc="f6f7fb" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" style="border: 1px solid #adb5bd" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
                             </div>
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
-                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary" style="border: 1px solid #adb5bd" data-oc="f6f7fb" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary" style="border: 1px solid #adb5bd; color: #212529" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Dashboards
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
