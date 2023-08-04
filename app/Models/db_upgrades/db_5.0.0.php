@@ -87,20 +87,23 @@ if (!$db->tableExists('baselines_results')) {
 }
 
 if (!empty($baselines)) {
-    $path = '/usr/local/opmojo/var/oae/baselines/results/';
+    $path = '/usr/local/opmojo/var/oae/baselines/results';
     if (file_exists($path)) {
         $results = array_diff(scandir($path), array('.', '..'));
+        log_message('info', "Baselines Results taken from $path");
     }
     if (empty($results)) {
-        $path = '/usr/local/omk/var/oae/baselines/results/';
+        $path = '/usr/local/omk/var/oae/baselines/results';
         if (file_exists($path)) {
             $results = array_diff(scandir($path), array('.', '..'));
+            log_message('info', "Baselines Results taken from $path");
         }
     }
     if (empty($results)) {
-        $path = 'c:\\omk\\var\\oae\\baselines\\results\\';
+        $path = 'c:\\omk\\var\\oae\\baselines\\results';
         if (file_exists($path)) {
             $results = array_diff(scandir($path), array('.', '..'));
+            log_message('info', "Baselines Results taken from $path");
         }
     }
 
