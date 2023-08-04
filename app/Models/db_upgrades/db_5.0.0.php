@@ -60,8 +60,8 @@ log_message('info', (string)$db->getLastQuery());
 
 if (!empty($baselines)) {
     foreach ($baselines as $baseline) {
-        $sql = "UPDATE baselines_policies SET baselines_policies.org_id = (SELECT baselines.org_id FROM baselines WHERE baselines.id = ?)";
-        $query = $db->query($sql);
+        $sql = "UPDATE baselines_policies SET baselines_policies.org_id = ? WHERE baselines_policies.baseline_id = ?";
+        $query = $db->query($sql, [$baseline->org_id, $baseline->id]);
         $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
         log_message('info', (string)$db->getLastQuery());
     }
@@ -104,23 +104,25 @@ if (!empty($baselines)) {
         }
     }
 
-    foreach ($results as $result) {
-        $contents = file_get_contents($path . $result);
-        $json_result = json_decode($contents);
-        $json_result->org_id = 1;
-        foreach ($baselines as $baseline) {
-            if (intval($baseline->id) === intval($json_result->baseline->id)) {
-                $json_result->org_id = intval($baseline->org_id);
+    if (!empty($results)) {
+        foreach ($results as $result) {
+            $contents = file_get_contents($path . $result);
+            $json_result = json_decode($contents);
+            $json_result->org_id = 1;
+            foreach ($baselines as $baseline) {
+                if (intval($baseline->id) === intval($json_result->baseline->id)) {
+                    $json_result->org_id = intval($baseline->org_id);
+                }
             }
+            $sql = "INSERT INTO baselines_results VALUES (null, ?, ?, ?, ?, ?, ?)";
+            $timestamp = substr($json_result->result->timestamp, 0, 4) . '-' . substr($json_result->result->timestamp, 4, 2) . '-' .
+                            substr($json_result->result->timestamp, 6, 2) . ' ' . substr($json_result->result->timestamp, 8, 2) . ':' .
+                            substr($json_result->result->timestamp, 10, 2) . ':' . substr($json_result->result->timestamp, 12, 2);
+            $name = 'Executed on ' . $timestamp;
+            $db->query($sql, [$json_result->org_id, intval($json_result->baseline->id), $name, json_encode($json_result->baseline), json_encode($json_result->result), $timestamp]);
+            $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
         }
-        $sql = "INSERT INTO baselines_results VALUES (null, ?, ?, ?, ?, ?, ?)";
-        $timestamp = substr($json_result->result->timestamp, 0, 4) . '-' . substr($json_result->result->timestamp, 4, 2) . '-' .
-                        substr($json_result->result->timestamp, 6, 2) . ' ' . substr($json_result->result->timestamp, 8, 2) . ':' .
-                        substr($json_result->result->timestamp, 10, 2) . ':' . substr($json_result->result->timestamp, 12, 2);
-        $name = 'Executed on ' . $timestamp;
-        $db->query($sql, [$json_result->org_id, intval($json_result->baseline->id), $name, json_encode($json_result->baseline), json_encode($json_result->result), $timestamp]);
-        $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-        log_message('info', (string)$db->getLastQuery());
     }
 }
 
