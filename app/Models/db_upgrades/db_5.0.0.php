@@ -127,8 +127,8 @@ if (!empty($baselines)) {
         if ($path === '/usr/local/open-audit/temp_baselines_results') {
             $it = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-            foreach($files as $file) {
-                if ($file->isDir()){
+            foreach ($files as $file) {
+                if ($file->isDir()) {
                     rmdir($file->getRealPath());
                 } else {
                     unlink($file->getRealPath());
