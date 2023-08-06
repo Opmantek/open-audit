@@ -105,7 +105,7 @@ if (!empty($baselines)) {
 
     if (!empty($results)) {
         foreach ($results as $result) {
-            $contents = file_get_contents($path . $result);
+            $contents = file_get_contents($path . '/' . $result);
             $json_result = json_decode($contents);
             $json_result->org_id = 1;
             foreach ($baselines as $baseline) {
