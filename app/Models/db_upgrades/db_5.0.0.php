@@ -128,7 +128,7 @@ if (!empty($baselines)) {
             foreach ($results as $result) {
                 unlink($path . '/' . $result);
             }
-            rmdir($path);
+            # rmdir($path);
         }
     }
 }
