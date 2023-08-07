@@ -52,6 +52,8 @@ $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', 
 $routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);
 $routes->get('components/(:num)/(:any)/download', 'Components::download/$1/$2');
 
+$routes->get('configuration/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'configurationRead']);
+
 $routes->get('database/update', 'Database::update/get', ['filter' => \App\Filters\Session::class, 'as' => 'databaseUpdate']);
 $routes->post('database/update', 'Database::update/post', ['filter' => \App\Filters\Session::class]);
 $routes->get('database/compare', 'Database::compare', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCompare']);
@@ -75,6 +77,7 @@ $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::cl
 $routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
 
 $routes->post('input/devices', 'Input::devices');
+$routes->post('input/logs', 'Input::logs');
 
 // TODO - Make the HTML template provide the complete list of fields and update that, rather than loop through and find the provided field and remove it
 //        That way we can use the standard 'update' function as per other collections.

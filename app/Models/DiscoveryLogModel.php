@@ -140,14 +140,19 @@ class DiscoveryLogModel extends BaseModel
             $data->timestamp = date('Y-m-d H:i:s');
         }
 
-        if (!empty($data->message) and stripos($data->message, 'Collector - Starting discovery') === 0 and !empty($data->discovery_id)) {
+        if (!empty($data->message) and stripos($data->message, 'Collector - Starting discovery') !== false and !empty($data->discovery_id)) {
             // Special clear of local discovery logs if start of a Collector discovery
+            log_message('debug', 'Deleting discovery logs for discovery #' . $data->discovery_id);
             $this->builder->delete(['discovery_id' => $data->discovery_id]);
+            // And set the discovery status
+            $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_log` = NOW() WHERE id = ?";
+            $this->db->query($sql, [$data->discovery_id]);
         }
  
         $newdata = new \stdClass();
         foreach ($this->db->getFieldData('discovery_log') as $field) {
             $newdata->{$field->name} = @$data->{$field->name};
+            # $newdata->{$field->name} = (isset($data->{$field->name})) ? $data->{$field->name} : '';
         }
 
         $this->builder->insert($newdata);
@@ -168,11 +173,11 @@ class DiscoveryLogModel extends BaseModel
             }
             foreach ($data as $key => $value) {
                 if ($key !== 'id' && $key !== 'device_id') {
-                    $post_items[] = $key . '=' . urlencode($value);
+                    $post_items[] = $key . '=' . urlencode((string)@$value);
                 }
             }
             $post = implode('&', $post_items);
-            $server = json_decode(config('Openaudit')->servers);
+            $server = config('Openaudit')->servers;
             if (!empty($server->host) and !empty($server->community)) {
                 $connection = curl_init($server->host . $server->community . '/index.php/input/logs');
                 curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);
@@ -182,11 +187,11 @@ class DiscoveryLogModel extends BaseModel
                 curl_setopt($connection, CURLOPT_FOLLOWLOCATION, 1);
                 curl_setopt($connection, CURLOPT_POSTFIELDS, $post);
                 curl_exec($connection);
-                curl_close($connection);
                 if (curl_errno($connection)) {
                     log_message('error', 'Failed to send log to ' . $server->host . $server->community . '/index.php/input/logs');
                     log_message('error', json_encode(curl_getinfo($connection)));
                 }
+                curl_close($connection);
             }
         }
 

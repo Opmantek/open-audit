@@ -181,7 +181,7 @@ if (!function_exists('audit_convert')) {
         $log->message = 'Audit converted';
         $log->command_status = 'success';
         $discoveryLogModel->create($log);
-        log_message('debug', 'Returning $input is a ' . gettype($input));
+        log_message('debug', 'Returning $input is an ' . gettype($input));
         if (empty($input->system)) {
             log_message('error', 'Something is wrong, $input->system is empty.');
         }

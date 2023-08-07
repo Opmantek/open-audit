@@ -1762,10 +1762,10 @@ if (! function_exists('ip_audit')) {
 
         // Run our rules to update the device attributes
         if (!empty($audit)) {
-            log_message('debug', 'rulesModel::execute because $audit script result exists');
+            log_message('debug', 'rulesModel::execute::return because $audit script result exists');
             $instance->rulesModel->execute($audit->system, intval($discovery->id), 'return', intval($audit->system->id));
         } else {
-            log_message('debug', 'rulesModel::execute because $audit script result does not exist');
+            log_message('debug', 'rulesModel::execute::update because $audit script result does not exist');
             $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
         }
 
@@ -1903,28 +1903,28 @@ if (! function_exists('ip_audit')) {
                         $device_json->nmap[] = $item;
                     }
                 }
-                if (isset($guests) and count($guests) > 0) {
+                if (isset($guests) and is_countable($guests) and count($guests) > 0) {
                     $device_json->vm = new \StdClass();
                     $device_json->vm = array();
                     foreach ($guests as $item) {
                         $device_json->vm[] = $item;
                     }
                 }
-                if (isset($modules) and count($modules) > 0) {
+                if (isset($modules) and is_countable($modules) and count($modules) > 0) {
                     $device_json->module = new \StdClass();
                     $device_json->module = array();
                     foreach ($modules as $item) {
                         $device_json->module[] = $item;
                     }
                 }
-                if (isset($ip) and count($ip) > 0) {
+                if (isset($ip) and is_countable($ip) and count($ip) > 0) {
                     $device_json->ip = new \StdClass();
                     $device_json->ip = array();
                     foreach ($ip->item as $item) {
                         $device_json->ip[] = $item;
                     }
                 }
-                if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                if (isset($network_interfaces) and is_countable($network_interfaces) and count($network_interfaces) > 0) {
                     $device_json->network = new \StdClass();
                     $device_json->network = array();
                     foreach ($network_interfaces as $item) {
