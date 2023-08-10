@@ -22,24 +22,24 @@ include 'shared/read_functions.php';
                                     <div class="offset-2 col-8">
                                         <br><hr><br>
                                         <h5 style="text-center"><?= __('Files') ?></h5>
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Path') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php foreach ($included['files'] as $file) { ?>
+                                                <tr>
+                                                    <td><?= $file->attributes->name ?></td>
+                                                    <td><?= $file->attributes->path ?></td>
+                                                </tr>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th><?= __('Name') ?></th>
-                                            <th><?= __('Path') ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach ($included['files'] as $file) { ?>
-                                        <tr>
-                                            <td><?= $file->attributes->name ?></td>
-                                            <td><?= $file->attributes->path ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                    </tbody>
-                                </table>
                             <?php } ?>
                         </div>
                         <div class="col-4">
