@@ -77,6 +77,10 @@ if (!function_exists('audit_convert')) {
 
         if (is_string($input)) {
             // See if we have stringified XML
+            // Remove the data= from the start if it exists
+            if (strpos($input, 'data=') === 0) {
+                $input = substr($input, 5);
+            }
             $xml = html_entity_decode($input);
             if (mb_detect_encoding($xml) !== 'UTF-8') {
                 $xml = utf8_encode($xml);
