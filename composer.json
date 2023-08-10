@@ -8,7 +8,8 @@
         "php": "^7.3 || ^8.0",
         "codeigniter4/framework": "^4",
         "ext-json": "*",
-        "phpseclib/phpseclib": "^3.0"
+        "phpseclib/phpseclib": "^3.0",
+        "google/auth": "^1.28"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

@@ -8,17 +8,10 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 
-use Google\Cloud\Compute\V1\InstancesClient;
-
-use Google\Protobuf;
-
-use Google\Service\Compute;
-use Google\Client;
-
-use Google\Cloud\Compute\V1\GetZoneRequest;
-use Google\Cloud\Compute\V1\ListZonesRequest;
-use Google\Cloud\Compute\V1\Zone;
-use Google\Cloud\Compute\V1\ZoneList;
+use Google\Auth\CredentialsLoader;
+use Google\Auth\Middleware\AuthTokenMiddleware;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 
 use \stdClass;
 
@@ -81,10 +74,11 @@ class Util extends Controller
         if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
             exit;
         }
-        // echo "<pre>";
 
-        $response = new stdClass();
-        $credentials = $_POST['credentials'];
+        log_message('info', 'ACCESS:util:google::' . $this->user->username);
+
+        $credentials = $this->request->getPost('credentials');
+
         if (empty($credentials)) {
             log_message('error', 'A request for the Google API was received, but no credentials we present in the POST.');
             $response->errors = 'A request for the Google API was received, but no credentials we present in the POST.';
@@ -94,207 +88,91 @@ class Util extends Controller
             return;
         }
 
-        $credentials = json_decode($credentials, true);
+        // Define the Google Application Credentials array
+        $jsonKey = json_decode($credentials, true);
 
-        $client = new \Google\Client(['credentials' => $credentials]);
+        $projects = array();
+        $projects[0] = new \stdClass();
+        $projects[0]->instances = array();
+        $projects[0]->networks = array();
+        $projects[0]->zones = array();
+        $instances = array();
+        $zones = array();
+        $regions = array();
 
-        $scope = array("https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform.read-only","https://www.googleapis.com/auth/cloudplatformprojects","https://www.googleapis.com/auth/cloudplatformprojects.readonly");
-        $client->addScope($scope);
-        $httpClient = $client->authorize();
+        // define the scopes for your API call
+        $scopes = array("https://www.googleapis.com/auth/cloud-platform",
+                        "https://www.googleapis.com/auth/cloud-platform.read-only",
+                        "https://www.googleapis.com/auth/cloudplatformprojects",
+                        "https://www.googleapis.com/auth/cloudplatformprojects.readonly");
 
-        $service = new Compute($client);
-        $zones = $service->zones->listZones($credentials['project_id']);
-        $ourZones = array();
+        // Load credentials
+        $creds = CredentialsLoader::makeCredentials($scopes, $jsonKey) or die('Could not create creds');
+
+        // create middleware
+        $middleware = new AuthTokenMiddleware($creds) or die('Could not create middleware');
+        $stack = HandlerStack::create() or die('Could not create stack');
+        $stack->push($middleware); # or die('Could not push middleware on to stack');
+
+        // create the HTTP client
+        $client = new Client([
+          'handler' => $stack,
+          'base_uri' => 'https://www.googleapis.com',
+          'auth' => 'google_auth'  // authorize all requests
+        ]) or die('Could not create client');
+
+        // make the request
+        $response = $client->get('compute/v1/projects/' . $jsonKey['project_id'] . '/zones') or die('Could not create response');
+        $zones = json_decode((string)$response->getBody());
+        $inZones = array();
+
+        $response = $client->get('compute/v1/projects/' . $jsonKey['project_id'] . '/aggregated/instances') or die('Could not create response');
+        $instances = json_decode((string)$response->getBody());
+
+        $response = $client->get('compute/v1/projects/' . $jsonKey['project_id'] . '/aggregated/subnetworks') or die('Could not create response');
+        $networks = json_decode((string)$response->getBody());
+
+        foreach ($instances->items as $zone) {
+            if (!empty($zone->instances)) {
+                foreach ($zone->instances as $instance) {
+                    $temp = explode('/', $instance->machineType);
+                    $instance->instance_type = end($temp);
+                    $temp = explode('/', $instance->zone);
+                    $instance->location_name = end($temp);
+                    $instance->zone = end($temp);
+
+                    if (!empty($instance->networkInterfaces)) {
+                        foreach ($instance->networkInterfaces as $interface) {
+                            if (!empty($interface->accessConfigs[0]->natIP)) {
+                                $instance->ip = $interface->accessConfigs[0]->natIP;
+                            } else {
+                                $instance->ip = $interface->networkIP;
+                            }
+                        }
+                    }
+                    $inZones[] = $instance->zone;
+                    $projects[0]->instances[] = $instance;
+                }
+            }
+        }
+
         foreach ($zones->items as $zone) {
-            $ourZones[] = (['id' => $zone->id, 'status' => $zone->status, 'name' => $zone->name, 'region' => $zone->region]);
-        }
-        #print_r($zones);
-        #exit;
-
-        $instances = new InstancesClient(['credentials' => $credentials]);
-
-        $ourInstances = $instances->aggregatedList($credentials['project_id']);
-        foreach ($ourInstances->iteratePages() as $page) {
-            #echo json_encode($page) . "\n\n";
-            foreach ($page as $key => $element) {
-                echo json_encode($element);
+            if (in_array($zone->name, $inZones)) {
+                $temp = explode('/', $zone->region);
+                $zone->region = end($temp);
+                $regions[] = $zone->region;
+                $projects[0]->zones[] = (['id' => $zone->id, 'description' => $zone->description, 'kind' => $zone->kind, 'status' => $zone->status, 'name' => $zone->name, 'region' => $zone->region]);
             }
         }
-        exit;
-        foreach ($ourZones as $zone) {
-            log_message('error', 'Getting for zone: ' . $zone['name']);
-            $ourInstances = $instances->list($credentials['project_id'], $zone['name']);
-            foreach ($ourInstances->iterateAllElements() as $element) {
-                echo json_encode($element);
-                echo "\n\n";
-            }
-        }
-        exit;
-        // $response = $instances->listInstances($credentials->project_id, 'us-central1-a');
-        // print_r($response);
-        // exit;
 
-
-
-        #print_r($zones);
-        exit;
-
-        // foreach ($ourZones as $zone) {
-        //     foreach ($instances->list_($credentials->project_id, $zone) as $instance) {
-        //         print($instance->getName() . PHP_EOL);
-        //     }
-        // }
-        $instancesClient = new InstancesClient(['credentials' => $credentials]);
-        $allInstances = $instancesClient->aggregatedList($credentials->project_id);
-        print_r($allInstances);
-        exit;
-
-        printf('All instances for %s' . PHP_EOL, $credentials->project_id);
-        foreach ($allInstances as $zone => $zoneInstances) {
-            $instances = $zoneInstances->getInstances();
-            if (count($instances) > 0) {
-                printf('Zone - %s' . PHP_EOL, $zone);
-                foreach ($instances as $instance) {
-                    printf(' - %s' . PHP_EOL, $instance->getName());
+        foreach ($networks->items as $networkZone => $network) {
+            $region = str_replace('regions/', '', $networkZone);
+            if (in_array($region, $regions)) {
+                foreach ($network->subnetworks as $subnetwork) {
+                    $subnetwork->region = $region;
+                    $projects[0]->networks[] = $subnetwork;
                 }
             }
-        }
-    
-
-        exit;
-
-
-        // $client->setAuthConfig($credentials);
-        // $scope = array("https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform.read-only","https://www.googleapis.com/auth/cloudplatformprojects","https://www.googleapis.com/auth/cloudplatformprojects.readonly");
-        // $client->addScope($scope);
-        // $httpClient = $client->authorize();
-        // $response = $httpClient->get('https://cloudresourcemanager.googleapis.com/v1/projects');
-        // print_r($response);
-        // exit;
-
-        // $projects = array();
-        // if ($response->getBody()) {
-        //     $temp = json_decode($response->getBody());
-        //     $projects = $temp->projects;
-        // }
-        // log_message('error', print_r($projects));
-
-            $projects = array($credentials->project_id => new \StdClass());
-
-        foreach ($projects as &$project) {
-            $project->instances = array();
-            $project->networks = array();
-            $project->projects = array();
-            $project->zones = array();
-        }
-
-        if (!empty($projects)) {
-            # Projects
-            foreach ($projects as &$project) {
-                $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId;
-                $response = $httpClient->get($url);
-                if ($response->getBody()) {
-                    $temp = json_decode($response->getBody());
-                    $item = new stdClass();
-                    foreach ($temp as $key => $value) {
-                        $item->{$key} = $value;
-                    }
-                    unset($item->commonInstanceMetadata);
-                    unset($item->quotas);
-                    $project->projects[] = $item;
-                }
-            }
-
-            # Zones
-            foreach ($projects as &$project) {
-                unset($response);
-                $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/zones';
-                $response = $httpClient->get($url);
-                if ($response->getBody()) {
-                    $temp = json_decode($response->getBody());
-                    foreach ($temp->items as $zone) {
-                        $item = new stdClass();
-                        foreach ($zone as $key => $value) {
-                            $item->{$key} = $value;
-                        }
-                        $temp = explode('/', $zone->region);
-                        $item->region = end($temp);
-                        $item->notes = implode(', ', $zone->availableCpuPlatforms);
-                        $project->zones[] = $item;
-                    }
-                }
-            }
-
-            # Instances
-            foreach ($projects as &$project) {
-                foreach ($project->zones as $zone) {
-                    unset($response);
-                    $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/zones/' . $zone->name . '/instances';
-                    $response = $httpClient->get($url);
-                    if ($response->getBody()) {
-                        $instances = json_decode($response->getBody());
-                        if (!empty($instances->items)) {
-                            foreach ($instances->items as $each_instance) {
-                                $item = new stdClass();
-                                foreach ($each_instance as $key => $value) {
-                                    $item->{$key} = $value;
-                                }
-                                $temp = explode('/', $each_instance->machineType);
-                                $item->instance_type = end($temp);
-                                $item->location_name = $zone->name;
-                                if (!empty($item->networkInterfaces)) {
-                                    foreach ($item->networkInterfaces as $interface) {
-                                        if (!empty($interface->accessConfigs[0])) {
-                                            $item->ip = $interface->accessConfigs[0]->natIP;
-                                        } else {
-                                            $item->ip = $interface->networkIP;
-                                        }
-                                    }
-                                }
-                                $project->instances[] = $item;
-                            }
-                        }
-                    }
-                }
-            }
-
-            # Only keep zones with instances
-            foreach ($projects as &$project) {
-                $zones = array();
-                foreach ($project->instances as $instance) {
-                    $zones[] = $instance->location_name;
-                }
-                foreach ($project->zones as $key => $zone) {
-                    if (!in_array($zone->name, $zones)) {
-                        unset($project->zones[$key]);
-                    }
-                }
-                $project->zones = array_values($project->zones);
-            }
-
-            # Networks
-            foreach ($projects as &$project) {
-                foreach ($project->zones as $zone) {
-                    unset($response);
-                    $url = 'https://www.googleapis.com/compute/v1/projects/' . $project->projectId . '/regions/' . $zone->region . '/subnetworks';
-                    $response = $httpClient->get($url);
-                    if ($response->getBody()) {
-                        $temp = json_decode($response->getBody());
-                        if (!empty($temp->items)) {
-                            foreach ($temp->items as $zone) {
-                                $item = new stdClass();
-                                foreach ($zone as $key => $value) {
-                                    $item->{$key} = $value;
-                                }
-                                $project->networks[] = $item;
-                                unset($item);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            log_message('error', "no projects");
         }
 
         header('Content-Type: application/json');
