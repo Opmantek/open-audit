@@ -286,11 +286,14 @@ if (! function_exists('dotbin')) {
 if (! function_exists('dqtobin')) {
     function dqtobin($dqin)
     {
-        $dq = explode(".", $dqin);
-        for ($i = 0; $i<4; $i++) {
-            $bin[$i] = str_pad(decbin(intval($dq[$i])), 8, "0", STR_PAD_LEFT);
+        if (!empty($dqin)) {
+            $dq = explode(".", $dqin);
+            for ($i = 0; $i<4; $i++) {
+                $bin[$i] = str_pad(decbin(intval($dq[$i])), 8, "0", STR_PAD_LEFT);
+            }
+            return implode("", $bin);
         }
-        return implode("", $bin);
+        return '';
     }
 }
 
