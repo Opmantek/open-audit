@@ -139,8 +139,6 @@ if (!function_exists('response_create')) {
         }
 
         $response->meta->sort = '';
-        // $response->meta->sub_resource = '';
-        // $response->meta->sub_resource_id = 0; // Only set below if it contains data
         if (!empty($GLOBALS['timer_start'])) {
             $response->meta->time_start = $GLOBALS['timer_start'];
         } else {
@@ -188,30 +186,6 @@ if (!function_exists('response_create')) {
             if ($response->meta->collection !== 'database' && $response->meta->collection !== 'configuration' and $response->meta->received_data->id !== 'dictionary') {
                 $response->meta->id = intval($response->meta->received_data->id);
             }
-        }
-
-        // depends on version affecting URI, collection and format
-        $response->meta->sub_resource = response_get_sub_resource(
-            $request->getGet('sub_resource'),
-            $request->getPost('sub_resource'),
-            $uri->getSegment(3),
-            $response->meta->collection,
-            $response->meta->format
-        );
-
-        // depends on version affecting URI
-        $temp = response_get_sub_resource_id(
-            intval($uri->getSegment(4)),
-            $request->getGet('id'),
-            $request->getPost('id')
-        );
-        if (!empty($temp)) {
-            $response->meta->sub_resource_id = intval($temp);
-        }
-
-        $temp = $request->getGet('sub_resource_id');
-        if (!empty($temp)) {
-            $response->meta->sub_resource_id = intval($request->getGet('sub_resource_id'));
         }
 
         // If we're creating data (POST), we should have an access token (configuration depending)
@@ -295,9 +269,9 @@ if (!function_exists('response_create')) {
         $response->meta->properties = response_get_properties(
             $response->meta->collection,
             $response->meta->action,
-            $response->meta->sub_resource,
             $request->getGet('properties'),
-            $request->getPost('properties')
+            $request->getPost('properties'),
+            $instance->user
         );
 
         $response->meta->properties = explode(',', $response->meta->properties);
@@ -1402,82 +1376,6 @@ if (!function_exists('response_get_sort')) {
     }
 }
 
-if (!function_exists('response_get_sub_resource')) {
-    /**
-     * Determine the requested included sub-collections
-     * @param  string $collection [description]
-     * @param  string $format     [description]
-     * @return string The requested includes, or all valid includes, or none
-     */
-    function response_get_sub_resource($get = '', $post = '', $uri = '', $collection = '', $format = '')
-    {
-        $sub_resource = '';
-
-        if (!empty($get)) {
-            $sub_resource = $get;
-            $summary = 'Set sub_resource according to GET';
-        }
-        if (!empty($post)) {
-            $sub_resource = $post;
-            $summary = 'Set sub_resource according to POST';
-        }
-        if (!empty($uri)) {
-            $sub_resource = $uri;
-            $summary = 'Set sub_resource according to URI';
-        }
-        if (!empty($sub_resource) && $collection === 'devices') {
-            $valid_sub_resources = response_valid_sub_resources();
-            if ($format === 'screen' && (empty($sub_resource) or $sub_resource === '*' or $sub_resource === 'all')) {
-                $sub_resource = implode(',', $valid_sub_resources);
-            } else {
-                $temp = explode(',', $sub_resource);
-                for ($i=0; $i < count($temp); $i++) {
-                    if (!in_array($temp[$i], $valid_sub_resources)) {
-                        unset($temp[$i]);
-                    }
-                }
-                $sub_resource = implode(',', $temp);
-            }
-            if (!empty($sub_resource)) {
-                log_message('debug', $summary . " ($sub_resource).");
-            }
-        } else {
-            $sub_resource = '';
-        }
-        return $sub_resource;
-    }
-}
-
-if (!function_exists('response_get_sub_resource_id')) {
-    /**
-     * Determine the ID of the sub_resource
-     * @param  string $sub_resource From $response->meta
-     * @return int                  The requested resource ID
-     */
-    function response_get_sub_resource_id($uri = '', $get = '', $post = '')
-    {
-
-        $sub_resource_id = '';
-
-        if (!empty($uri)) {
-            $sub_resource_id = $uri;
-            $summary = 'Set sub_resource_id according to URI';
-        }
-        if (!empty($get)) {
-            $sub_resource_id = intval($get);
-            $summary = 'Set sub_resource_id according to GET';
-        }
-        if (!empty($post)) {
-            $sub_resource_id = intval($post);
-            $summary = 'Set sub_resource_id according to POST';
-        }
-        if (!empty($sub_resource_id)) {
-            log_message('debug', $summary . "($sub_resource_id).");
-        }
-        return $sub_resource_id;
-    }
-}
-
 if (!function_exists('response_valid_actions')) {
     /**
      * An array of valid actions
@@ -1591,7 +1489,7 @@ if (!function_exists('valid_reserved_words')) {
      */
     function response_valid_reserved_words()
     {
-        return array('action', 'as_at', 'current', 'debug', 'format', 'graph', 'groupby', 'ids', 'include', 'limit', 'offset', 'properties', 'query', 'report_name', 'search', 'sort', 'sub_resource', 'sub_resource_id');
+        return array('action', 'as_at', 'current', 'debug', 'format', 'graph', 'groupby', 'ids', 'include', 'limit', 'offset', 'properties', 'query', 'report_name', 'search', 'sort');
     }
 }
 // End of file response_helper.php
