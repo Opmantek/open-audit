@@ -223,7 +223,7 @@ if (!function_exists('response_create')) {
                     log_message('error', $message);
                     $response->errors = $message;
                     $response->meta->header = 400;
-                    if ($response->meta->format !== 'screen') {
+                    if ($response->meta->format !== 'html') {
                         $instance->response->setStatusCode($response->meta->header);
                         $instance->resp = $response;
                         output($instance);
@@ -239,7 +239,7 @@ if (!function_exists('response_create')) {
                     log_message('error', $message);
                     $response->errors = $message;
                     $response->meta->header = 400;
-                    if ($response->meta->format !== 'screen') {
+                    if ($response->meta->format !== 'html') {
                         $instance->response->setStatusCode($response->meta->header);
                         $instance->resp = $response;
                         output($instance);
@@ -367,7 +367,7 @@ if (!function_exists('response_create')) {
             log_message('warning', $message);
             $response->meta->header = 403;
             $response->errors = $message;
-            if ($response->meta->format !== 'screen') {
+            if ($response->meta->format !== 'html') {
                 $instance->response->setStatusCode($response->meta->header);
                 $instance->resp = $response;
                 output($instance);
@@ -608,30 +608,37 @@ if (!function_exists('response_get_format')) {
      */
     function response_get_format($get = '', $post = '', $header = '')
     {
-        $format = 'json';
+        $format = '';
         $summary = '';
-        if (strpos((string)$header, 'application/json') !== false) {
+
+        if (!empty($header) and stripos((string)$header, 'application/json') !== false) {
             $format = 'json';
-            $summary = "Set format according to HEADERS ($format).";
+            $summary = "Set format according to HEADER ($format).";
         }
-        if (strpos((string)$header, 'html') !== false) {
-            $format = 'screen';
-            $summary = "Set format according to HEADERS ($format).";
+        if (!empty($header) and stripos((string)$header, 'html') !== false) {
+            $format = 'html';
+            $summary = "Set format according to HEADER ($format).";
+        }
+        if (!empty($header) and stripos((string)$header, '/') === false) {
+            $format = $header;
+            $summary = "Set format according to HEADER ($format).";
         }
         if (!empty($get)) {
             $format = $get;
-            $summary = "Set format according to GET ($get).";
+            $summary = "Set format according to GET ($format).";
         }
         if (!empty($post)) {
             $format = $post;
-            $summary = "Set format according to POST ($post).";
+            $summary = "Set format according to POST ($format).";
         }
         $valid_formats = response_valid_formats();
         if (!in_array($format, $valid_formats)) {
             $summary = 'Set format to json, because unknown format: ' . $format;
             $format = 'json';
+            log_message('warning', $summary);
+        } else {
+            log_message('debug', $summary);
         }
-        log_message('debug', $summary);
         return $format;
     }
 }

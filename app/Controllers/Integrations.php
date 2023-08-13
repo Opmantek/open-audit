@@ -42,7 +42,7 @@ class Integrations extends BaseController
         $this->integrationsModel->queue(intval($id));
         $this->queueModel = new \App\Models\QueueModel();
         $this->queueModel->start();
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             $this->resp->data = $this->integrationsModel->read($id);
             output($this);
         } else {

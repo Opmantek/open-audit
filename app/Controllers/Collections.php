@@ -77,7 +77,7 @@ class Collections extends BaseController
                 $this->resp->meta->data_order[] = str_replace($this->resp->meta->collection . '.', '', $key);
             }
         }
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             output($this);
         } else {
             $view = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
@@ -125,7 +125,7 @@ class Collections extends BaseController
         }
         $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         if (!empty($id)) {
-            if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->format !== 'html') {
                 $this->resp->meta->header = 201;
                 if ($this->resp->meta->collection !== 'components') {
                     $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id);
@@ -153,7 +153,7 @@ class Collections extends BaseController
                 }
             }
         } else {
-            if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->format !== 'html') {
                 $this->resp->meta->header = 500;
                 if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
                     $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
@@ -196,7 +196,7 @@ class Collections extends BaseController
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $this->resp->included['orgs'] = $this->orgsModel->listUser();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             $this->resp->dictionary = $dictionary;
             output($this);
             return true;
@@ -330,7 +330,7 @@ class Collections extends BaseController
                 $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read($id);
             }
         }
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             $this->resp->meta->header = 201;
             output($this);
             return true;
@@ -440,7 +440,7 @@ class Collections extends BaseController
             }
         }
         if (!empty($id)) {
-            if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->format !== 'html') {
                 if (count($id) > 1) {
                     $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->listUser();
                 } else {
@@ -468,7 +468,7 @@ class Collections extends BaseController
                 }
             }
         } else {
-            if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->format !== 'html') {
                 $this->resp->meta->header = 500;
                 output($this);
                 return true;
@@ -507,7 +507,7 @@ class Collections extends BaseController
             }
         }
 
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             if ($this->resp->meta->collection === 'devices' or !empty($this->resp->meta->requestor)) {
                 $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
                 $this->resp->dictionary = $dictionary;
@@ -549,7 +549,7 @@ class Collections extends BaseController
     public function reset()
     {
         $this->{$this->resp->meta->collection.'Model'}->reset();
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             # Note the below data is only for Enterprise to accept data back after a POST
             $this->resp->data[0] = 'Table reset';
             output($this);

@@ -293,7 +293,7 @@ class DevicesModel extends BaseModel
             $include['cluster'] = $result;
         }
 
-        if (empty($resp_include) or in_array('applications', $resp_include) or $instance->resp->meta->format === 'screen') {
+        if (empty($resp_include) or in_array('applications', $resp_include) or $instance->resp->meta->format === 'html') {
             $sql = "SELECT application.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (application.application_id = applications.id) WHERE application.device_id = ?";
             $query = $this->db->query($sql, $id);
             $result = $query->getResult();
@@ -316,7 +316,7 @@ class DevicesModel extends BaseModel
         $user = $instance->user;
         $orgsList = implode(',', $orgsModel->getUserDescendants(explode(',', $user->org_list)));
 
-        if (empty($resp_include) or in_array('field', $resp_include) or in_array('fields', $resp_include) or $instance->resp->meta->format === 'screen') {
+        if (empty($resp_include) or in_array('field', $resp_include) or in_array('fields', $resp_include) or $instance->resp->meta->format === 'html') {
             $sql = "SELECT fields.*, field.id AS `field.id`, field.value AS `field.value`, field.device_id AS `field.device_id` FROM fields LEFT JOIN field on (field.field_id = fields.id AND field.device_id = ?) WHERE fields.org_id IN (" . $orgsList . ")";
             $query = $this->db->query($sql, [$id]);
             $result = $query->getResult();
@@ -325,7 +325,7 @@ class DevicesModel extends BaseModel
             }
         }
 
-        if (empty($resp_include) or in_array('location', $resp_include) or $instance->resp->meta->format === 'screen') {
+        if (empty($resp_include) or in_array('location', $resp_include) or $instance->resp->meta->format === 'html') {
             $sql = "SELECT * FROM locations WHERE org_id IN (" . $orgsList . ")";
             $query = $this->db->query($sql);
             $result = $query->getResult();
@@ -334,7 +334,7 @@ class DevicesModel extends BaseModel
             }
         }
 
-        if (empty($resp_include) or in_array('attributes', $resp_include) or $instance->resp->meta->format === 'screen') {
+        if (empty($resp_include) or in_array('attributes', $resp_include) or $instance->resp->meta->format === 'html') {
             $attributesModel = new \App\Models\AttributesModel();
             $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'class']);
             $include['class'] = $attributes;
@@ -346,7 +346,7 @@ class DevicesModel extends BaseModel
             $include['type'] = $attributes;
         }
 
-        if (empty($resp_include) or in_array('nmis', $resp_include) or in_array('firstwave', $resp_include) or $instance->resp->meta->format === 'screen') {
+        if (empty($resp_include) or in_array('nmis', $resp_include) or in_array('firstwave', $resp_include) or $instance->resp->meta->format === 'html') {
             $include['nmis_business_services'] = array();
             $include['nmis_groups'] = array();
             $include['nmis_roles'] = array();

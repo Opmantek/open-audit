@@ -143,7 +143,7 @@ class Logon extends Controller
             $format = 'json';
         }
         if (strpos($http_accept, 'html') !== false) {
-            $format = 'screen';
+            $format = 'html';
         }
         if (isset($_GET['format'])) {
             $format = $_GET['format'];

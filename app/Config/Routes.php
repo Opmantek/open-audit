@@ -101,8 +101,6 @@ $routes->post('util/google', 'Util::google');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
-$routes->cli('test', 'Cli::test', ['as' => 'test']);
-# $routes->cli('upgrade', 'Cli::upgrade', ['as' => 'upgrade']);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character

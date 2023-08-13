@@ -37,7 +37,7 @@ class Search extends BaseController
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
         $this->resp->meta->data_order = array();
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             output($this);
             return true;
         } else {

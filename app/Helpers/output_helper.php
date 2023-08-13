@@ -62,53 +62,11 @@ if (!function_exists('output')) {
             $instance->resp->meta->data_order = array_values($instance->resp->meta->data_order);
         }
 
-        // if ($instance->resp->meta->format === 'screen' && $instance->resp->meta->action === 'read' && $instance->m_users->get_user_permission('', $instance->resp->meta->collection, 'u')) {
-        //     $instance->resp->edit = true;
-        // }
-
-        // $timer_end = microtime(true);
-        // $entry = new \StdClass();
-        // $entry->time = ($timer_end - $timer_start);
-        // $entry->detail = 'output_helper::output';
-        // $entry->time_now = time();
-        // $GLOBALS['timer_log'][] = $entry;
-
         $instance->resp->meta->user = $instance->user;
         $instance->resp->meta->time_end = microtime(true);
         $instance->resp->meta->time_elapsed = number_format(($instance->resp->meta->time_end - $instance->resp->meta->microtime), 2);
 
-
-        // if (!empty($instance->resp->meta->debug) && $instance->resp->meta->debug === true) {
-        //     $instance->resp->meta->user = $instance->user;
-        //     #$instance->resp->meta->timing = $GLOBALS['timer_log'];
-        //     $instance->resp->meta->time_end = microtime(true);
-        //     $instance->resp->meta->time_elapsed = '';
-        //     if (!empty($instance->resp->meta->time_end) && ! empty($instance->resp->meta->time_start)) {
-        //         $instance->resp->meta->time_elapsed = ($instance->resp->meta->time_end - $instance->resp->meta->time_start);
-        //     }
-        // } else {
-        //     unset($instance->resp->logs);
-        //     unset($instance->resp->meta->internal);
-        //     unset($instance->resp->meta->sql);
-        //     unset($instance->resp->meta->time_start);
-        //     unset($instance->resp->meta->time_end);
-        //     unset($instance->resp->meta->time_elapsed);
-        //     unset($instance->resp->meta->timing);
-        // }
-
-        // $message = strtolower($instance->resp->meta->collection) . '::' . strtolower($instance->resp->meta->action) . ' by user ' . @$instance->user->full_name . ', response: ' . json_encode($instance->resp->meta) . "\n";
-
-        // if ($instance->resp->meta->action === 'create' or $instance->resp->meta->action === 'update' or $instance->resp->meta->action === 'delete') {
-        //     log_message('notice', $message);
-        // } else {
-        //     log_message('debug', $message);
-        // }
-
         switch ($instance->resp->meta->format) {
-            case 'screen':
-                output_screen($instance);
-                break;
-
             case 'datatables':
                 output_datatables($instance);
                 break;
@@ -121,8 +79,8 @@ if (!function_exists('output')) {
                 output_highcharts($instance);
                 break;
 
-            case 'html':
-                output_html($instance);
+            case 'html_data':
+                output_html_data($instance);
                 break;
 
             case 'table':
@@ -154,7 +112,7 @@ if (!function_exists('output')) {
                 break;
 
             default:
-                output_screen($instance);
+                output_json($instance);
                 break;
         }
 
@@ -531,7 +489,7 @@ if (!function_exists('output')) {
 
 
 
-    function output_html()
+    function output_html_data()
     {
         $CI = & get_instance();
         $CI->resp = filter_response($CI->resp);

@@ -42,7 +42,7 @@ class Discoveries extends BaseController
         $this->discoveriesModel->queue(intval($id));
         $this->queueModel = new \App\Models\QueueModel();
         $this->queueModel->start();
-        if ($this->resp->meta->format !== 'screen') {
+        if ($this->resp->meta->format !== 'html') {
             $this->resp->data = $this->discoveriesModel->read($id);
             output($this);
         } else {

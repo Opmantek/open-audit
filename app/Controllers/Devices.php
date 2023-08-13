@@ -101,7 +101,7 @@ class Devices extends BaseController
         }
 
         if (!empty($id)) {
-            if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->format !== 'html') {
                 $this->resp->data = $this->{"devicesModel"}->read($id);
                 output($this);
                 return true;
@@ -110,7 +110,7 @@ class Devices extends BaseController
                 return redirect()->route('devicesRead', [$id]);
             }
         } else {
-            if ($this->resp->meta->format !== 'screen') {
+            if ($this->resp->meta->format !== 'html') {
                 output($this);
                 return true;
             } else {

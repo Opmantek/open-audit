@@ -68,7 +68,6 @@ abstract class BaseController extends Controller
         $this->usersModel = new \App\Models\UsersModel();
         $this->user = $this->usersModel->userValidate();
         $this->orgsModel = new \App\Models\OrgsModel();
-        # $this->orgs = $this->orgsModel->listAll();
         $this->queriesModel = new \App\Models\QueriesModel();
         $this->rolesModel = new \App\Models\RolesModel();
         $this->roles = $this->rolesModel->listAll();
@@ -222,14 +221,14 @@ abstract class BaseController extends Controller
 
         $this->resp->meta->icon = $this->collections->{strtolower($this->resp->meta->collection)}->icon;
 
-        if ($this->resp->meta->format === 'screen') {
+        if ($this->resp->meta->format === 'html') {
             $this->queriesUser = $this->queriesModel->listUser();
             $this->orgsUser = $this->orgsModel->listUser();
             $this->dashboardsModel = new \App\Models\DashboardsModel();
             $this->dashboards = $this->dashboardsModel->listUser();
         }
 
-        if ($this->resp->meta->format === 'screen' and
+        if ($this->resp->meta->format === 'html' and
             $this->resp->meta->action !== 'help' and
             $this->resp->meta->action !== 'dictionary' and
             $this->resp->meta->action !== 'defaults') {
