@@ -87,7 +87,7 @@ if (!function_exists('response_create')) {
         } else {
             log_message('debug', 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', and has permission to do so.');
         }
-        $instance->user->org_list = response_get_org_list($instance, $response->meta->collection);
+        $instance->user->org_list = response_get_org_list($instance->user, $response->meta->collection);
         $response->meta->permission_requested = $permission_requested;
 
 
@@ -180,7 +180,7 @@ if (!function_exists('response_create')) {
         }
 
         // no dependencies - set in PATCH or POST, can set ID
-        $response->meta->received_data = response_get_data($response->meta->request_method);
+        $response->meta->received_data = response_get_data($response->meta->request_method, @$_POST['data'], urldecode(str_replace('data=', '', @file_get_contents('php://input'))));
 
         if (!empty($response->meta->received_data->id)) {
             if ($response->meta->collection !== 'database' && $response->meta->collection !== 'configuration' and $response->meta->received_data->id !== 'dictionary') {
@@ -236,8 +236,7 @@ if (!function_exists('response_create')) {
         $response->meta->include = response_get_include(
             $request->getGet('include'),
             $request->getPost('include'),
-            $response->meta->collection,
-            $response->meta->format
+            $response->meta->collection
         );
 
         // depends on version affecting URI, collection
@@ -248,11 +247,7 @@ if (!function_exists('response_create')) {
         );
 
         // depends on version affecting URI, collection
-        $response->meta->groupby = response_get_groupby(
-            $request->getGet('groupby'),
-            $request->getPost('groupby'),
-            $response->meta->collection
-        );
+        $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $request->getPost('groupby'));
 
         // no dependencies - set in GET or POST
         $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
@@ -367,13 +362,13 @@ if (!function_exists('response_get_data')) {
      * @param  string $request_method How we got this data
      * @return array The received data
      */
-    function response_get_data($request_method = '')
+    function response_get_data($request_method = '', $post = null, $patch = '')
     {
         $data_supplied_by = '';
         $received_data = array();
 
         if ($request_method === 'POST') {
-            if (!empty($_POST['data']) && is_array($_POST['data'])) {
+            if (!empty($post) && is_array($post)) {
                 $summary = 'Set received data according to POST (form).';
                 $received_data = $_POST['data'];
                 $received_data = json_encode($received_data);
@@ -382,15 +377,16 @@ if (!function_exists('response_get_data')) {
                 if (!empty($received_data->json) and is_string($received_data->json)) {
                     $received_data->json = json_decode($received_data->json);
                 }
-            } else if (!empty($_POST['data'])) {
+            } else if (!empty($post)) {
                 $summary = 'Set received data according to POST (json).';
                 // This is straight JSON submitted data in a string
-                $received_data = @json_decode($_POST['data']);
+                $received_data = @json_decode($post);
                 $data_supplied_by = 'json';
             }
         }
         if ($request_method === 'PATCH') {
-            $data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
+            #$data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
+            $data_json = $patch;
             $data_object = json_decode($data_json);
             $options = @$data_object->data->attributes->options;
             if (empty($data_object)) {
@@ -417,7 +413,7 @@ if (!function_exists('response_get_data')) {
 
 function response_get_debug($get = '', $post = '', $header = '')
 {
-    # We cannot change the threshold after creation.
+    # We cannot change the log threshold after creation.
     # Leaving the below, but it won't have much effect.
     $debug = false;
     if (!empty($get) && strtolower($get) === 'true') {
@@ -452,7 +448,7 @@ if (!function_exists('response_get_query_filter')) {
      */
     function response_get_query_filter($query_string, $type = '')
     {
-        $instance = & get_instance();
+        # $instance = & get_instance();
         $reserved_words = response_valid_reserved_words();
         $filter = array();
 
@@ -534,15 +530,20 @@ if (!function_exists('response_get_query_filter')) {
                 }
 
                 if (is_string($query->value) and substr($query->value, 0, 6) === 'notin(' && strpos($query->value, ')') === strlen($query->value)-1) {
-                    $query->value = substr($query->value, 2);
-                    $query->function = 'whereIn';
-                    $query->operator = 'in';
+                    $query->value = substr($query->value, 5);
+                    $query->function = 'whereNotIn';
+                    $query->operator = 'not in';
                     $values = explode(',', trim($query->value, '()'));
+                    $query->value = array();
                     foreach ($values as $key => $value) {
-                        $values[$key] = trim($values[$key], '"\'');
+                        $values[$key] = trim(trim($values[$key]), '"\'');
                         if (($query->name === 'ip' or stripos($query->name, '.ip') !== false) and filter_var($values[$key], FILTER_VALIDATE_IP)) {
                             $values[$key] = ip_address_to_db($values[$key]);
                         }
+                        if (is_numeric($values[$key])) {
+                            $values[$key] = intval($values[$key]);
+                        }
+                        $query->value[] = $values[$key];
                     }
                 }
 
@@ -620,10 +621,10 @@ if (!function_exists('response_get_format')) {
 if (!function_exists('response_get_groupby')) {
     /**
      * Determine and validate the requested groupby
-     * @param  string $collection The request collection
-     * @return string             The validated groupby
+     * @param  string $get  The groupby=table.column name from $_GET
+     * @return string $post The groupby=table.column name from $_POST
      */
-    function response_get_groupby($get = '', $post = '', $collection = '')
+    function response_get_groupby($get = '', $post = '')
     {
         $db = db_connect();
         $groupby = '';
@@ -643,17 +644,17 @@ if (!function_exists('response_get_groupby')) {
             if (strpos($groupby, '.') !== false) {
                 $temp = explode('.', $groupby);
                 if (!$db->fieldExists($temp[1], $temp[0])) {
-                    $groupby = '';
                     $summary = "Invalid groupby supplied ({$groupby}), removed.";
-                    log_message('debug', 'GroupBy: ' . $summary);
+                    log_message('warning', 'GroupBy: ' . $summary);
+                    $groupby = '';
                 } else {
                     $groupby = $temp[0] . '.' . $temp[1];
                 }
             } else {
                 if (!$db->fieldExists($groupby, $temp)) {
-                    $groupby = '';
                     $summary = "Invalid groupby supplied ({$groupby}), removed.";
-                    log_message('debug', 'GroupBy: ' . $summary);
+                    log_message('warning', 'GroupBy: ' . $summary);
+                    $groupby = '';
                 } else {
                     $groupby = $temp . '.' . $groupby;
                 }
@@ -676,49 +677,47 @@ if (!function_exists('response_get_id')) {
      */
     function response_get_id($id = '', $collection = '', $org_list = '')
     {
-        $db = db_connect();
-
-        $instance = & get_instance();
-
         if (empty($id)) {
-            // log_message('debug', 'No ID provided, returning NULL.');
+            log_message('debug', 'No ID provided, returning NULL.');
             return null;
         }
         if (is_numeric($id)) {
+            if (is_integer($id)) {
+                log_message('debug', "Integer ID supplied (Provided ID: $id).");
+            } else {
+                log_message('debug', "Numeric ID supplied (Provided ID: $id).");
+            }
             return intval($id);
         } else {
+            if ($collection === 'components') {
+                // We must have a numeric ID for components because we don't know which table the user is referencing here.
+                // If you need to ptovide a name, do it thus: components.type=processor&components.name=Intel Core...
+                // That will give you a filtered collection
+                return null;
+            }
+            $db = db_connect();
             $actions = response_valid_actions();
             $collections = response_valid_collections();
-            $no_org_id = array('chart', 'components', 'configuration', 'database', 'errors', 'help', 'logs', 'nmis', 'reports', 'roles', 'search', 'sessions');
+            $no_org_id = array('chart', 'configuration', 'reports', 'roles');
             if (!in_array($id, $actions)) {
                 // Our 'id' is a string, but not an action - therefore it's a name
                 if ($collection === 'database') {
                     $tables = $db->listTables();
                     if (!in_array($id, $tables)) {
-                        log_message('warning', 'No ID to Name match in database.');
+                        log_message('warning', "No ID to Name match in database (Provided ID: $id).");
                         $id = null;
-                    }
-                    log_message('debug', "ID to Name match in database (Provided ID: $id).");
-                } else if ($collection === 'configuration') {
-                    // configuration
-                    $sql = "SELECT id FROM `configuration` WHERE name = ? ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
-                    if (!empty($result)) {
-                        log_message('debug', "ID to Name match in configuration (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
-                        $id = intval($result[0]->id);
                     } else {
-                        log_message('warning', 'No ID to Name match in configuration.');
-                        $id = null;
+                        log_message('debug', "ID to Name match in database (Provided ID: $id).");
                     }
                 } else if ($collection === 'devices') {
                     // devices
                     $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $instance->db->query($sql, [$id])->getResult();
+                    $result = $db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in devices (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        log_message('warning', 'No ID to Name match in devices.');
+                        log_message('warning', "No ID to Name match in devices (Provided ID: $id).");
                         $id = null;
                     }
                 } else if ($collection === 'users') {
@@ -727,29 +726,29 @@ if (!function_exists('response_get_id')) {
                     $temp = explode('@', $id);
                     $data = array($temp[0]);
                     unset($temp);
-                    $result = $instance->db->query($sql, $data)->getResult();
+                    $result = $db->query($sql, $data)->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in users (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        log_message('warning', 'No ID to Name match in users.');
+                        log_message('warning', "No ID to Name match in users (Provided ID: $id).");
                         $id = null;
                     }
                 } else if ($collection === 'orgs') {
                     // orgs.id, not *.org_id
                     $sql = "SELECT id FROM orgs WHERE name LIKE ? AND id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $instance->db->query($sql, [$id])->getResult();
+                    $result = $db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in orgs (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
                     } else {
-                        log_message('warning', 'No ID to Name match in orgs.');
+                        log_message('warning', "No ID to Name match in orgs (Provided ID: $id).");
                         $id = null;
                     }
                 } else if ($collection === 'baselines_policies') {
                     // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
                     $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $instance->db->query($sql, [$id])->getResult();
+                    $result = $db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in baselines_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -758,11 +757,20 @@ if (!function_exists('response_get_id')) {
                         $id = null;
                     }
                 } else if (in_array($collection, $no_org_id)) {
-                    log_message('debug', 'No ID required for ' . $collection);
-                    $id = 1;
+                    // log_message('debug', 'No OrgID required for ' . $collection);
+                    // $id = 1;
+                    $sql = "SELECT id FROM {$collection} WHERE name LIKE ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to Name match in $collection (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', "No ID to Name match in $collection.");
+                        $id = null;
+                    }
                 } else if (in_array($collection, $collections)) {
                     $sql = "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $instance->db->query($sql, [$id])->getResult();
+                    $result = $db->query($sql, [$id])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in $collection (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -789,11 +797,9 @@ if (!function_exists('response_get_ids')) {
 
         if (!empty($get)) {
             $device_ids = $get;
-            log_message('debug', 'Set IDs according to GET (' . $get . ').');
         }
         if (!empty($post)) {
             $device_ids = $post;
-            log_message('debug', 'Set IDs according to POST (' . $post . ').');
         }
         if ($device_ids !== '') {
             // Remove a trailing comma if we have one
@@ -805,9 +811,19 @@ if (!function_exists('response_get_ids')) {
             for ($i=0; $i < count($temp); $i++) {
                 $temp[$i] = intval($temp[$i]);
             }
+            // Unique values only
+            $temp = array_unique($temp);
+            // And sort them
+            asort($temp);
             // Join by comma's
             $device_ids = implode(',', $temp);
             unset($temp);
+        }
+        if (!empty($get)) {
+            log_message('debug', 'Set IDs according to GET (' . $device_ids . ').');
+        }
+        if (!empty($post)) {
+            log_message('debug', 'Set IDs according to POST (' . $device_ids . ').');
         }
         return $device_ids;
     }
@@ -817,26 +833,33 @@ if (!function_exists('response_get_include')) {
     /**
      * Determine the requested included sub-collections
      * @param  string $collection [description]
-     * @param  string $format     [description]
      * @return string The requested includes, or all valid includes, or none
      */
-    function response_get_include($get = '', $post = '', $collection = '', $format = '')
+    function response_get_include($get = '', $post = '', $collection = '')
     {
+        if ($collection !== 'devices') {
+            // We only use include for devices.
+            return '';
+        }
         $include = '';
         $valid_includes = response_valid_includes();
-
-        // We only use include for devices.
-        if ($collection !== 'devices') {
-            return $include;
-        }
-
         if (!empty($get)) {
             $include = $get;
-            log_message('debug', 'Set include according to GET (' . $get . ').');
         }
         if (!empty($post)) {
             $include = $post;
-            log_message('debug', 'Set include according to POST (' . $post . ').');
+        }
+        if (!empty($include)) {
+            if (!in_array($include, $valid_includes)) {
+                log_message('warning', 'Invalid include provided (' . $include . ').');
+                $include = '';
+            } else {
+                if (!empty($post)) {
+                    log_message('debug', 'Set include according to POST (' . $post . ').');
+                } else if (!empty($get)) {
+                    log_message('debug', 'Set include according to GET (' . $get . ').');
+                }
+            }
         }
         return $include;
     }
@@ -845,13 +868,13 @@ if (!function_exists('response_get_include')) {
 if (!function_exists('response_get_limit')) {
     /**
      * [response_get_limit description]
-     * @param  string $format [description]
-     * @return [type]         [description]
+     * @param  string  $get        The GET limit variable
+     * @param  string  $post       The POST limit variable
+     * @return integer             The integer to limit the query
      */
     function response_get_limit($get = '', $post = '', $format = '', $default_limit = 1000)
     {
-        $limit = 0;
-
+        $limit = $default_limit;
         if (!empty($get)) {
             $limit = intval($get);
             log_message('debug', 'Set include according to GET (' . $limit . ').');
@@ -860,83 +883,55 @@ if (!function_exists('response_get_limit')) {
             $limit = intval($post);
             log_message('debug', 'Set include according to POST (' . $limit . ').');
         }
-        if ($format === 'screen' && empty($limit)) {
+        if ($format === 'html' && empty($limit)) {
             $limit = intval($default_limit);
-            // log_message('debug', 'Set include according to SCREEN DEFAULT (' . $limit . ').');
+            log_message('debug', 'Set include according to SCREEN DEFAULT (' . $limit . ').');
         }
         if ($format === 'json' && empty($limit)) {
             $limit = intval($default_limit);
-            // log_message('debug', 'Set include according to JSON DEFAULT (' . $limit . ').');
+            log_message('debug', 'Set include according to JSON DEFAULT (' . $limit . ').');
         }
         return $limit;
-    }
-}
-
-if (!function_exists('response_get_links')) {
-    /**
-     * Derive our links
-     * @param  string $collection      [description]
-     * @param  string $id              [description]
-     * @param  string $sub_resource    [description]
-     * @param  string $sub_resource_id [description]
-     * @return class                   Our links
-     */
-    function response_get_links($collection = '', $id = '', $sub_resource = '', $sub_resource_id = '')
-    {
-        $instance = & get_instance();
-        $links = new \StdClass();
-        $links->self = base_url() . '/index.php/' . $collection;
-        if (!is_null($id)) {
-            $links->self .= '/' . $id;
-        }
-        if ($sub_resource !== '') {
-            $links->self .= '/' . $sub_resource;
-        }
-        if (!empty($sub_resource_id)) {
-            $links->self .= '/' . $sub_resource_id;
-        }
-        $links->first = null;
-        $links->last = null;
-        $links->next = null;
-        $links->prev = null;
-        return $links;
     }
 }
 
 if (!function_exists('response_get_offset')) {
     /**
      * Determine the requested offset
-     * @return [type] [description]
+     * @param  string  $get        The GET offset variable
+     * @param  string  $post       The POST offset variable
+     * @return integer             The integer to offset the query
      */
-    function response_get_offset($get = '', $post = '')
+    function response_get_offset($get = '', $post = ''): ?int
     {
         $offset = 0;
-
-        if (!empty($get)) {
+        if (!empty(intval($get))) {
             $offset = intval($get);
             log_message('debug', 'Set offset according to GET (' . $offset . ').');
         }
-        if (!empty($post)) {
+        if (!empty(intval($post))) {
             $offset = intval($post);
             log_message('debug', 'Set offset according to POST (' . $offset . ').');
         }
-        return $offset;
+        return intval($offset);
     }
 }
 
 if (!function_exists('response_get_org_list')) {
     /**
      * Return the Org IDs list for the given collection for a supplied user
-     * @param  string $collection [description]
-     * @param  [type] $user       [description]
-     * @return [type]             [description]
+     * @param  object  $user          The requesting user must contain an org_list comma separated string
+     * @param  string  $collection    The requested collection
+     * @return string                 A comma separated string of OrgIDs the user can access for the requested collection
      */
-    function response_get_org_list($instance, $collection = '')
+    function response_get_org_list($user, $collection = '')
     {
-        #$instance = & get_instance();
         $org_list = array();
 
-        if (empty($collection) or empty($instance->user)) {
+        $orgsModel = new \App\Models\OrgsModel();
+        $orgs = $orgsModel->listAll();
+
+        if (empty($collection) or empty($user)) {
             log_message('error', 'Either no collection or no user supplied.');
             return;
         }
@@ -969,7 +964,7 @@ if (!function_exists('response_get_org_list')) {
             case 'search':
             case 'tasks':
             case 'users':
-                $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+                $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
                 log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
                 break;
 
@@ -981,7 +976,7 @@ if (!function_exists('response_get_org_list')) {
             case 'san':
             case 'test':
             case 'util':
-                $org_list = $instance->user->orgs;
+                $org_list = $user->orgs;
                 log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
                 break;
 
@@ -998,8 +993,8 @@ if (!function_exists('response_get_org_list')) {
             case 'scripts':
             case 'summaries':
             case 'widgets':
-                $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-                $org_list = array_unique(array_merge($org_list, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
+                $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
+                $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
                 $org_list[] = 1;
                 $org_list = array_unique($org_list);
                 asort($org_list);
@@ -1007,7 +1002,7 @@ if (!function_exists('response_get_org_list')) {
                 break;
 
             default:
-                $org_list = $instance->user->orgs;
+                $org_list = $user->orgs;
                 log_message('debug', 'Set org_list according to ' . $collection . ' for USER DEFAULT (' . implode(', ', $org_list) . ').');
                 break;
         }
@@ -1016,99 +1011,17 @@ if (!function_exists('response_get_org_list')) {
     }
 }
 
-if (!function_exists('response_get_permission_ca')) {
-    /**
-     * Is the user allowed to perform $action on $collection according to their role membership
-     * @param  class  $user          [description]
-     * @param  string $collection    [description]
-     * @param  string $action        [description]
-     * @param  class  $received_data [description]
-     * @param  int    $id            [description]
-     * @return bool                  [description]
-     */
-    function response_get_permission_ca($user = null, $collection = '', $action = '', $received_data = null, $id = null, $usersModel = null)
-    {
-        $instance = & get_instance();
-        $permissions = response_valid_permissions($collection);
-
-        if (empty($instance->roles) && intval(config('Openaudit')->internal_version) >= 20160904) {
-            return true;
-        }
-
-        if (empty($user->orgs)) {
-            log_message('error', 'User has no permissions on any orgs. User: ' . json_encode($user));
-            $instance->session->unset_userdata('user_id');
-            \Config\Services::session()->setFlashdata('error', 'User has no permissions on any orgs.');
-            header('Location: ' . url_to('logon'));
-            exit;
-        }
-
-        if (empty($user) or empty($collection) or empty($action)) {
-            log_message('critical', 'Cannot retrieve permission, missing attribute.');
-            return false;
-        }
-
-        if ($collection === 'users' && intval($user->id) === intval($id) && $action === 'read') {
-            // Always allow a user to READ their own object
-            return true;
-        }
-        if ($collection === 'help') {
-            // Always allow a user to view help
-            return true;
-        }
-        if ($collection === 'errors') {
-            // Always allow a user to view errors
-            return true;
-        }
-        if ($collection === 'users' && $action === 'update' && $id === $user->id && ! empty($received_data)) {
-            // A user is allowed to update some of their own fields
-            $allowed_attributes = array('id', 'name', 'full_name', 'email', 'lang', 'password', 'dashboard_id');
-            $check_permission = false;
-            foreach (array_keys($received_data->attributes) as $key) {
-                if (!in_array($key, $allowed_attributes)) {
-                    $check_permission = true;
-                }
-            }
-            if ($check_permission === false) {
-                return true;
-            }
-        }
-        // TODO - move the below into the function
-        $perm_collection = $collection;
-        if ($collection === 'baselines_policies') {
-            $perm_collection = 'baselines';
-        }
-        if ($collection === 'discovery_log') {
-            $perm_collection = 'discoveries';
-        }
-        if ($collection === 'integrations_log') {
-            $perm_collection = 'integrations';
-        }
-        if ($collection === 'integrations_rules') {
-            $perm_collection = 'integrations';
-        }
-        // if (!$usersModel->get_user_permission($user->id, $perm_collection, $permissions[$action]) and config('Openaudit')->internal_version >= '20160904') {
-        //     log_message('warning', 'User not permitted to perform ' . $action . ' on ' . $collection);
-        //     return false;
-        // }
-        log_message('debug', 'User permitted to perform ' . $action . ' on ' . $collection);
-        return true;
-    }
-}
-
 if (!function_exists('response_get_permission_id')) {
     /**
-     * [response_get_permission_id description]
-     * @param  [type] $user          [description]
-     * @param  string $collection    [description]
-     * @param  string $action        [description]
-     * @param  [type] $received_data [description]
-     * @param  [type] $id            [description]
-     * @return [type]                [description]
+     * Can the $user perform this $action on item $id in this $collection
+     * @param  object  $user          The requesting user must contain an org_list comma separated string
+     * @param  string  $collection    The requested collection
+     * @param  string  $action        The requested action
+     * @param  array   $received_data Any received data
+     * @param  integer $id            Any received ID
      */
     function response_get_permission_id($user, $collection, $action, $received_data, $id)
     {
-        #$instance = & get_instance();
         $db = db_connect();
         $collections = array('charts', 'configuration', 'database', 'errors', 'help', 'ldap_servers', 'logs', 'nmis', 'queue', 'report', 'roles');
 
@@ -1117,7 +1030,7 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
-        if ($collection === 'users' && $id === $user->id) {
+        if ($collection === 'users' && $id === $user->id and in_array($action, ['read','update'])) {
             // Always allow a user to view their own user item
             return true;
         }
@@ -1213,18 +1126,20 @@ if (!function_exists('response_get_permission_id')) {
 
 if (!function_exists('response_get_properties')) {
     /**
-     * Determine and validate or supply default property list
+     * Accept a list of properties (or nothing) and return a validated list of fully qualified table.column properties in a comma separated string
      * @param  string $collection   The request collection
      * @param  string $action       The request action
-     * @param  string $sub_resource The request sub_resource (if exists)
-     * @return string               A comma separeted list of properties
+     * @param  string $get          A comma separeted list of properties
+     * @param  string $post         A comma separeted list of properties
+     * @param  object $user         The user making this request
+     * @return string               A comma separeted list of validated properties
+     *
      */
-    function response_get_properties($collection = '', $action = '', $sub_resource = '', $get = '', $post = '')
+    function response_get_properties($collection = '', $action = '', $get = '', $post = '', $user = null)
     {
         $db = db_connect();
         $properties = '';
         $summary = '';
-        $instance = & get_instance();
 
         if (!empty($get)) {
             $properties = $get;
@@ -1244,34 +1159,28 @@ if (!function_exists('response_get_properties')) {
                 $summary = 'Set properties according to POST JSON.';
             }
         }
-        if ($collection === 'devices') {
-            if ($action === 'collection' && ($properties === 'default' or $properties === '') && ($sub_resource === '' or $sub_resource === 'system')) {
-                if ($properties === 'default') {
-                    $summary = 'Set properties to config DEFAULT.';
-                    $properties = config('Openaudit')->devices_default_retrieve_columns;
+        if ($collection === 'devices' and $action === 'collection' and ($properties === 'default' or $properties === '')) {
+            if ($properties === 'default') {
+                $summary = 'Set properties to config DEFAULT.';
+                $properties = config('Openaudit')->devices_default_retrieve_columns;
+            } else {
+                if (!empty($user->devices_default_display_columns)) {
+                    $summary = 'Set properties to user default.';
+                    $properties = $user->devices_default_display_columns;
+                } else if (!empty(config('Openaudit')->devices_default_display_columns)) {
+                    $summary = 'Set properties to config default.';
+                    $properties = config('Openaudit')->devices_default_display_columns;
                 } else {
-                    if (!empty($instance->user->devices_default_display_columns)) {
-                        $summary = 'Set properties to user default.';
-                        $properties = $instance->user->devices_default_display_columns;
-                    } else if (!empty(config('Openaudit')->devices_default_display_columns)) {
-                        $summary = 'Set properties to config default.';
-                        $properties = config('Openaudit')->devices_default_display_columns;
-                    } else {
-                        $summary = 'Set properties to default because neither user nor config are set.';
-                        $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
-                    }
+                    $summary = 'Set properties to default because neither user nor config are set.';
+                    $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
                 }
-            } else if ($action === 'collection' && $sub_resource !== '') {
-                $summary = 'Set properties to ALL.';
-                $properties = $sub_resource . '.*';
             }
         }
         if ($properties === 'all' or $properties === '*') {
             $properties = $collection . '.' . implode(','.$collection.'.', $db->getFieldNames($collection));
             $summary = 'Set properties to TABLE ALL.';
         }
-
-        if (!empty($properties) and $properties !== $sub_resource . '.*') {
+        if (!empty($properties)) {
             // Validate the properties are database columns
             $properties = explode(',', $properties);
             for ($i=0; $i < count($properties); $i++) {
@@ -1291,6 +1200,8 @@ if (!function_exists('response_get_properties')) {
                     } else if (!$db->fieldExists($properties[$i], $collection)) {
                         log_message('warning', 'Invalid property supplied (' . (string)$properties[$i] . '), removed.');
                         unset($properties[$i]);
+                    } else {
+                        $properties[$i] = $collection . '.' . $properties[$i];
                     }
                 }
             }
@@ -1313,7 +1224,7 @@ if (!function_exists('response_get_properties')) {
             $summary = 'Set properties according to FILTERING.';
         }
         if (!empty($properties)) {
-            log_message('debug', $summary);
+            log_message('debug', $summary . ' (' . $properties . ')');
         }
         return $properties;
     }
@@ -1321,9 +1232,11 @@ if (!function_exists('response_get_properties')) {
 
 if (!function_exists('response_get_sort')) {
     /**
-     * Determine the requested sort
+     * Determine the requested sort by parsing an comma separated string of properies, validating them and returning a string in SQL format
      * @param  string $collection The request collection
-     * @return string             [description]
+     * @param  string $get        The GET sort variable
+     * @param  string $post       The POST sort variable
+     * @return string             A string of properties, in SQL format
      */
     function response_get_sort($collection = '', $get = '', $post = '')
     {
@@ -1351,26 +1264,23 @@ if (!function_exists('response_get_sort')) {
                     $temp = explode('.', $field);
                 } else {
                     $temp[0] = $collection;
-                    if ($temp[0] === 'devices') {
-                        $temp[0] = 'system';
-                    }
                     $temp[1] = $field;
                 }
-                if (!$db->fieldExists($temp[1], $temp[0])) {
-                    log_message('warning', 'Invalid sort attribute supplied (' . $properties[$i] . '), removed.');
-                    unset($properties[$i]);
-                } else {
+                if (!empty($temp[0]) and !empty($temp[1]) and $db->fieldExists($temp[1], $temp[0])) {
                     if (substr($properties[$i], 0, 1) === '-') {
                         $properties[$i] = $temp[0] . '.' . $temp[1] . ' DESC';
                     } else {
                         $properties[$i] = $temp[0] . '.' . $temp[1];
                     }
+                } else {
+                    log_message('warning', 'Invalid sort attribute supplied (' . $properties[$i] . '), removed.');
+                    unset($properties[$i]);
                 }
             }
             $sort = implode(',', $properties);
         }
         if (!empty($sort)) {
-            log_message('debug', $summary . " ($properties).");
+            log_message('debug', $summary . " ($sort).");
         }
         return $sort;
     }
@@ -1416,7 +1326,7 @@ if (!function_exists('response_valid_formats')) {
      */
     function response_valid_formats()
     {
-        $valid_formats = array('json','json_data','highcharts','html','screen','xml','csv','sql','table');
+        $valid_formats = array('csv','highcharts','html','html_data','json','json_data','sql','table','xml');
         return $valid_formats;
     }
 }
