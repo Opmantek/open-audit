@@ -522,7 +522,7 @@ if (!empty(config('Openaudit')->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if (config('Openaudit')->license === 'none') { ?>
+<?php if (empty(config('Openaudit')->license) or config('Openaudit')->license === 'none') { ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
