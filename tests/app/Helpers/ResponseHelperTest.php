@@ -22,6 +22,17 @@ class ResponseHelperTest extends CIUnitTestCase
 
         helper('response');
         helper('utility');
+        $db = db_connect();
+
+        $sql = "INSERT INTO orgs VALUES (2, 'My Second Org', 1, '', 'organisation', 'open-audit_orgs_my_second_org', 'system', NOW())";
+        $db->query($sql);
+        $sql = "INSERT INTO orgs VALUES (3, 'My Third Org', 2, '', 'organisation', 'open-audit_orgs_my_third_org', 'system', NOW())";
+        $db->query($sql);
+        $sql = "INSERT INTO orgs VALUES (4, 'My A Org', 1, '', 'organisation', 'open-audit_orgs_my_a_org', 'system', NOW())";
+        $db->query($sql);
+        $sql = "INSERT INTO orgs VALUES (5, 'My B Org', 4, '', 'organisation', 'open-audit_orgs_my_b_org', 'system', NOW())";
+        $db->query($sql);
+
         $this->orgsModel = new \App\Models\OrgsModel();
         $this->orgs = $this->orgsModel->listAll();
         $this->usersModel = new \App\Models\UsersModel();
