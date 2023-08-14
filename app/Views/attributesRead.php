@@ -84,33 +84,13 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#resource").val("<?= $resource->resource ?>");
-});
-$(document).ready(function() {
-    $("#type").children().remove();
-    if ($("#resource").val() == 'devices') {
-        $("#type").append($('<option>', { value: 'class', text: 'Class' }));
-        $("#type").append($('<option>', { value: 'environment', text: 'Environment' }));
-        $("#type").append($('<option>', { value: 'status', text: 'Status' }));
-        $("#type").append($('<option>', { value: 'type', text: 'Type' }));
-    }
-    if ($("#resource").val() == 'locations') {
-        $("#type").append($('<option>', { value: 'type', text: 'Type' }));
-    }
-    if ($("#resource").val() == 'queries') {
-        $("#type").append($('<option>', { value: 'menu_category', text: 'Menu Category' }));
-    }
-    if ($("#resource").val() == 'orgs') {
-        $("#type").append($('<option>', { value: 'type', text: 'Type' }));
-    }
-    $("#type").val("<?= $resource->type ?>");
-});
-$(document).ready(function () {
-    $(document).on('change', "#resource", function () {
+window.onload = function () {
+    $(document).ready(function() {
+        $("#resource").val("<?= $resource->resource ?>");
+    });
+    $(document).ready(function() {
         $("#type").children().remove();
         if ($("#resource").val() == 'devices') {
-            $("#type").append($('<option>', { value: '', text: 'Choose' }));
             $("#type").append($('<option>', { value: 'class', text: 'Class' }));
             $("#type").append($('<option>', { value: 'environment', text: 'Environment' }));
             $("#type").append($('<option>', { value: 'status', text: 'Status' }));
@@ -125,6 +105,28 @@ $(document).ready(function () {
         if ($("#resource").val() == 'orgs') {
             $("#type").append($('<option>', { value: 'type', text: 'Type' }));
         }
+        $("#type").val("<?= $resource->type ?>");
     });
-});
+    $(document).ready(function () {
+        $(document).on('change', "#resource", function () {
+            $("#type").children().remove();
+            if ($("#resource").val() == 'devices') {
+                $("#type").append($('<option>', { value: '', text: 'Choose' }));
+                $("#type").append($('<option>', { value: 'class', text: 'Class' }));
+                $("#type").append($('<option>', { value: 'environment', text: 'Environment' }));
+                $("#type").append($('<option>', { value: 'status', text: 'Status' }));
+                $("#type").append($('<option>', { value: 'type', text: 'Type' }));
+            }
+            if ($("#resource").val() == 'locations') {
+                $("#type").append($('<option>', { value: 'type', text: 'Type' }));
+            }
+            if ($("#resource").val() == 'queries') {
+                $("#type").append($('<option>', { value: 'menu_category', text: 'Menu Category' }));
+            }
+            if ($("#resource").val() == 'orgs') {
+                $("#type").append($('<option>', { value: 'type', text: 'Type' }));
+            }
+        });
+    });
+}
 </script>

@@ -67,15 +67,17 @@ include 'shared/create_functions.php';
         </main>
 
 <script>
-$(document).ready(function () {
-    $("#data\\[attributes\\]\\[values\\]").prop('disabled', true);
+window.onload = function () {
+    $(document).ready(function () {
+        $("#data\\[attributes\\]\\[values\\]").prop('disabled', true);
 
-    $(document).on('change', "#data\\[attributes\\]\\[type\\]", function () {
-        if ($("#data\\[attributes\\]\\[type\\]").val() == 'list') {
-            $("#data\\[attributes\\]\\[values\\]").prop('disabled', false);
-        } else {
-            $("#data\\[attributes\\]\\[values\\]").prop('disabled', true);
-        }
+        $(document).on('change', "#data\\[attributes\\]\\[type\\]", function () {
+            if ($("#data\\[attributes\\]\\[type\\]").val() == 'list') {
+                $("#data\\[attributes\\]\\[values\\]").prop('disabled', false);
+            } else {
+                $("#data\\[attributes\\]\\[values\\]").prop('disabled', true);
+            }
+        });
     });
-});
+}
 </script>

@@ -99,34 +99,36 @@ include 'shared/create_functions.php';
         </main>
 
 <script>
-$(document).ready(function () {
-    $("#data\\[attributes\\]\\[type\\]").val("computer");
-});
-$(document).ready(function () {
-    $(document).on('change', '#input_type', function (e) {
-        var showDiv = $("#input_type").val();
-        $("#manual_input").css('display', 'none');
-        $("#audit_input").css('display', 'none');
-        $("#file_input").css('display', 'none');
-        $(this).css('display', 'block');
-        if (showDiv != "") {
-            document.getElementById(showDiv).style.display = 'block';
-            $("#submit_button").css('display', 'block');
-        } else {
-            $("#submit_button").css('display', 'none');
-        }
+window.onload = function () {
+    $(document).ready(function () {
+        $("#data\\[attributes\\]\\[type\\]").val("computer");
     });
-});
+    $(document).ready(function () {
+        $(document).on('change', '#input_type', function (e) {
+            var showDiv = $("#input_type").val();
+            $("#manual_input").css('display', 'none');
+            $("#audit_input").css('display', 'none');
+            $("#file_input").css('display', 'none');
+            $(this).css('display', 'block');
+            if (showDiv != "") {
+                document.getElementById(showDiv).style.display = 'block';
+                $("#submit_button").css('display', 'block');
+            } else {
+                $("#submit_button").css('display', 'none');
+            }
+        });
+    });
 
-function choose_type() {
-    var showDiv = document.getElementById("data[attributes][type]").value;
-    $("#printer").css('display', 'none');
-    $("#phone").css('display', 'none');
-    if (showDiv == "printer") {
-        $("#printer").css('display', 'block');
-    }
-    if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
-        $("#phone").css('display', 'block');
+    function choose_type() {
+        var showDiv = document.getElementById("data[attributes][type]").value;
+        $("#printer").css('display', 'none');
+        $("#phone").css('display', 'none');
+        if (showDiv == "printer") {
+            $("#printer").css('display', 'block');
+        }
+        if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
+            $("#phone").css('display', 'block');
+        }
     }
 }
 </script>

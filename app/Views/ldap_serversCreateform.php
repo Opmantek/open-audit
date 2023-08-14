@@ -118,23 +118,25 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#data\\[attributes\\]\\[user_dn\\]").val('cn=@username,ou=people');
-    $("#data\\[attributes\\]\\[version\\]").val('3');
-    $("#data\\[attributes\\]\\[port\\]").val('389');
-    $("#data\\[attributes\\]\\[user_membership_attribute\\]").val('memberUid');
-    $("#data\\[attributes\\]\\[dn_password\\]").prop("type", "password");
-    $("#data\\[attributes\\]\\[user_dn\\]").prop("disabled", true);
-    $("#data\\[attributes\\]\\[user_membership_attribute\\]").prop("disabled", true);
+window.onload = function () {
+    $(document).ready(function() {
+        $("#data\\[attributes\\]\\[user_dn\\]").val('cn=@username,ou=people');
+        $("#data\\[attributes\\]\\[version\\]").val('3');
+        $("#data\\[attributes\\]\\[port\\]").val('389');
+        $("#data\\[attributes\\]\\[user_membership_attribute\\]").val('memberUid');
+        $("#data\\[attributes\\]\\[dn_password\\]").prop("type", "password");
+        $("#data\\[attributes\\]\\[user_dn\\]").prop("disabled", true);
+        $("#data\\[attributes\\]\\[user_membership_attribute\\]").prop("disabled", true);
 
-    $(document).on('change', "#data\\[attributes\\]\\[type\\]", function () {
-        if ($("#data\\[attributes\\]\\[type\\]").val() == 'active directory') {
-            $("#data\\[attributes\\]\\[user_dn\\]").prop("disabled", true);
-            $("#data\\[attributes\\]\\[user_membership_attribute\\]").prop("disabled", true);
-        } else {
-            $("#data\\[attributes\\]\\[user_dn\\]").prop("disabled", false);
-            $("#data\\[attributes\\]\\[user_membership_attribute\\]").prop("disabled", false);
-        }
+        $(document).on('change', "#data\\[attributes\\]\\[type\\]", function () {
+            if ($("#data\\[attributes\\]\\[type\\]").val() == 'active directory') {
+                $("#data\\[attributes\\]\\[user_dn\\]").prop("disabled", true);
+                $("#data\\[attributes\\]\\[user_membership_attribute\\]").prop("disabled", true);
+            } else {
+                $("#data\\[attributes\\]\\[user_dn\\]").prop("disabled", false);
+                $("#data\\[attributes\\]\\[user_membership_attribute\\]").prop("disabled", false);
+            }
+        });
     });
-});
+}
 </script>

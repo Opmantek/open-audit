@@ -2246,20 +2246,20 @@ if (!empty($included['fields'])) {
         </main>
 
 <script>
-/* Show / Hide section on device details */
-$(document).on('click', '.section_toggle', function (e) {
-    var section = $(this).attr("data-section");
-    var status = $("#" + section).css('display');
-    if (status === 'none') {
-        $("#" + section).css('display', 'block');
-    } else {
-        $("#" + section).css('display', 'none');
-    }
-});
+window.onload = function () {
+    /* Show / Hide section on device details */
+    $(document).on('click', '.section_toggle', function (e) {
+        var section = $(this).attr("data-section");
+        var status = $("#" + section).css('display');
+        if (status === 'none') {
+            $("#" + section).css('display', 'block');
+        } else {
+            $("#" + section).css('display', 'none');
+        }
+    });
 
-$(document).ready(function() {
-    <?php
-    if (!empty($included['field']) and !empty($included['fields'])) {
+    <?php if (!empty($included['field']) and !empty($included['fields'])) {
+        echo "\$(document).ready(function() {\n";
         foreach ($included['field'] as $field) {
             foreach ($included['fields'] as $fields) {
                 if ($field->field_id == $fields->id) {
@@ -2267,34 +2267,30 @@ $(document).ready(function() {
                 }
             }
         }
-    }
-    ?>
-});
+        echo "});\n";
+    } ?>
 
-$(document).ready(function() {
     $("#nmis_manage").val("<?= $resource->nmis_manage ?>");
     $("#nmis_group").val("<?= $resource->nmis_group ?>");
     $("#nmis_role").val("<?= $resource->nmis_role ?>");
     $("#nmis_business_service").val("<?= $resource->nmis_business_service ?>");
     $("#nmis_customer").val("<?= $resource->nmis_customer ?>");
     $("#nmis_poller_uuid").val("<?= $resource->nmis_poller_uuid ?>");
-});
 
-
-$(document).ready(function() {
     <?php $form_contents = '<input type="hidden" id="data[access_token]" name="data[access_token]" value="' . $meta->access_token . '">\
-                            <input type="hidden" id="data[type]"         name="data[type]" value="components">\
-                            <input type="hidden" id="data[attributes][component_type]" name="data[attributes][component_type]" value="discovery">\
-                            <input type="hidden" id="data[attributes][device_id]" name="data[attributes][device_id]" value="' . $meta->id . '">'; ?>
+            <input type="hidden" id="data[type]" name="data[type]" value="components">\
+            <input type="hidden" id="data[attributes][component_type]" name="data[attributes][component_type]" value="discovery">\
+            <input type="hidden" id="data[attributes][device_id]" name="data[attributes][device_id]" value="' . $meta->id . '">'; ?>
 
     <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
     $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish"></span>&nbsp;<?= __('Discover') ?></button></form>');
 
     <?php } else if (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish"></span></button></form>');
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish"></span></button></form>');
 
     <?php } else { ?>
-    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
     <?php } ?>
-});
+
+}
 </script>

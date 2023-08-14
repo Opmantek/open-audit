@@ -74,26 +74,28 @@ include 'shared/create_functions.php';
         </main>
 
 <script>
-$(document).ready(function () {
-    $(document).on('change', "#data\\[attributes\\]\\[resource\\]", function () {
-        $("#data\\[attributes\\]\\[type\\]").children().remove();
-        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'devices') {
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: '', text: 'Choose' }));
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'class', text: 'Class' }));
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'environment', text: 'Environment' }));
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'status', text: 'Status' }));
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
-        }
-        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'locations') {
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
-        }
-        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'queries') {
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'menu_category', text: 'Menu Category' }));
-        }
-        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'orgs') {
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
-            /* $("#submit").removeAttr('disabled'); */
-        }
+window.onload = function () {
+    $(document).ready(function () {
+        $(document).on('change', "#data\\[attributes\\]\\[resource\\]", function () {
+            $("#data\\[attributes\\]\\[type\\]").children().remove();
+            if ($("#data\\[attributes\\]\\[resource\\]").val() == 'devices') {
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: '', text: 'Choose' }));
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'class', text: 'Class' }));
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'environment', text: 'Environment' }));
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'status', text: 'Status' }));
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
+            }
+            if ($("#data\\[attributes\\]\\[resource\\]").val() == 'locations') {
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
+            }
+            if ($("#data\\[attributes\\]\\[resource\\]").val() == 'queries') {
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'menu_category', text: 'Menu Category' }));
+            }
+            if ($("#data\\[attributes\\]\\[resource\\]").val() == 'orgs') {
+                $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
+                /* $("#submit").removeAttr('disabled'); */
+            }
+        });
     });
-});
+}
 </script>
