@@ -266,7 +266,7 @@ if (!$db->fieldExists('notes', 'locations')) {
 
 $component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discoveries', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'graph', 'image', 'invoice_item', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
 foreach ($component_tables as $table) {
-    if ($db->fieldExists('system_id', $table)) {
+    if ($db->tableExists($table) and $db->fieldExists('system_id', $table)) {
         $sql = "ALTER TABLE `$table` RENAME COLUMN system_id TO device_id";
         $query = $db->query($sql);
         $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
