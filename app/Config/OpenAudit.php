@@ -26,10 +26,17 @@ class OpenAudit extends BaseConfig
             }
         }
 
+        if (!empty($this->oae_product)) {
+            $this->product = $this->oae_product;
+        }
+        if (empty($this->product)) {
+            $this->product = '';
+        }
+
         if (stripos($this->product, 'enterprise')) {
             $this->product = 'enterprise';
         } else if (stripos($this->product, 'professional')) {
-            $this->roduct = 'professional';
+            $this->product = 'professional';
         } else {
             $this->product = 'community';
         }
