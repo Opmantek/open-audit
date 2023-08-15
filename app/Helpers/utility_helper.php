@@ -98,79 +98,115 @@ function format_data($result, $type)
 
     if ($type === 'baselines_policies') {
         foreach ($result as $item) {
-            $item->tests = json_decode($item->tests);
+            if (!empty($item->tests)) {
+                $item->tests = json_decode($item->tests);
+            }
         }
     }
 
     if ($type === 'baselines_results') {
         foreach ($result as $item) {
-            $item->baseline = json_decode($item->baseline);
-            $item->result = json_decode($item->result);
+            if (!empty($item->baseline)) {
+                $item->baseline = json_decode($item->baseline);
+            }
+            if (!empty($item->result)) {
+                $item->result = json_decode($item->result);
+            }
         }
     }
 
     if ($type === 'dashboards') {
         foreach ($result as $item) {
-            $item->options = json_decode($item->options);
+            if (!empty($item->options)) {
+                $item->options = json_decode($item->options);
+            }
         }
     }
 
     if ($type === 'discoveries') {
         foreach ($result as $item) {
-            $item->scan_options = json_decode($item->scan_options);
-            $item->match_options = json_decode($item->match_options);
+            if (!empty($item->scan_options)) {
+                $item->scan_options = json_decode($item->scan_options);
+            }
+            if (!empty($item->match_options)) {
+                $item->match_options = json_decode($item->match_options);
+            }
         }
     }
 
     if ($type === 'integrations') {
         foreach ($result as $item) {
-            $item->additional_items = json_decode($item->additional_items);
-            $item->attributes = json_decode($item->attributes);
-            $item->fields = json_decode($item->fields);
+            if (!empty($item->additional_items)) {
+                $item->additional_items = json_decode($item->additional_items);
+            }
+            if (!empty($item->attributes)) {
+                $item->attributes = json_decode($item->attributes);
+            }
+            if (!empty($item->fields)) {
+                $item->fields = json_decode($item->fields);
+            }
         }
     }
 
     if ($type === 'locations') {
         foreach ($result as $item) {
-            $item->options = json_decode($item->options);
+            if (!empty($item->options)) {
+                $item->options = json_decode($item->options);
+            }
         }
     }
 
     if ($type === 'networks') {
         foreach ($result as $item) {
-            $item->options = json_decode($item->options);
+            if (!empty($item->options)) {
+                $item->options = json_decode($item->options);
+            }
         }
     }
 
     if ($type === 'roles') {
         foreach ($result as $item) {
-            $item->permissions = json_decode($item->permissions);
+            if (!empty($item->permissions)) {
+                $item->permissions = json_decode($item->permissions);
+            }
         }
     }
 
     if ($type === 'rules') {
         foreach ($result as $item) {
-            $item->inputs = json_decode($item->inputs);
-            $item->outputs = json_decode($item->outputs);
+            if (!empty($item->inputs)) {
+                $item->inputs = json_decode($item->inputs);
+            }
+            if (!empty($item->outputs)) {
+                $item->outputs = json_decode($item->outputs);
+            }
         }
     }
 
     if ($type === 'scripts') {
         foreach ($result as $item) {
-            $item->options = @json_decode($item->options);
+            if (!empty($item->options)) {
+                $item->options = json_decode($item->options);
+            }
         }
     }
 
     if ($type === 'tasks') {
         foreach ($result as $item) {
-            $item->options = @json_decode($item->options);
+            if (!empty($item->options)) {
+                $item->options = json_decode($item->options);
+            }
         }
     }
 
     if ($type === 'users') {
         foreach ($result as $item) {
-            $item->roles = json_decode($item->roles);
-            $item->orgs = json_decode($item->orgs);
+            if (!empty($item->roles)) {
+                $item->roles = json_decode($item->roles);
+            }
+            if (!empty($item->orgs)) {
+                $item->orgs = json_decode($item->orgs);
+            }
         }
     }
 
