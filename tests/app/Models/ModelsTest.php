@@ -88,7 +88,7 @@ class ModelsTest extends CIUnitTestCase
 
                 $result = $this->{strtolower($response->meta->collection) . "Model"}->collection($response);
                 $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $response->meta->action . ') is not an array');
-                $this->assertCount($count, $result, "Count of $collection . ' (' . $response->meta->action . ') direct is $count, count via model is " . count($result));
+                $this->assertCount($count, $result, "Count of $collection (" . $response->meta->action . ") direct is $count, count via model is " . count($result));
             }
         }
     }
