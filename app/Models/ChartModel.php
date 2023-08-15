@@ -8,7 +8,7 @@ namespace App\Models;
 
 use stdClass;
 
-class ChartsModel extends BaseModel
+class ChartModel extends BaseModel
 {
 
     public function __construct()

@@ -43,8 +43,8 @@ $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::
 
 # These will match and then take precedence over the below route array
 
-$routes->get('charts', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
-$routes->get('charts/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
+$routes->get('chart', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
+$routes->get('chart/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
 
 // TODO - Make this URL the same format as the two below (:num)/(:any) not (:any)/(:num)
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
