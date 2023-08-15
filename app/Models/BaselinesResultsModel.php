@@ -26,10 +26,6 @@ class BaselinesResultsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list = array_unique($org_list);
-
         $properties = $resp->meta->properties;
         $properties[] = 'baselines.name AS `baselines.name`';
         $this->builder->select($properties, false);
@@ -42,7 +38,6 @@ class BaselinesResultsModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
-        $this->builder->whereIn('baselines.org_id', $org_list);
         $this->builder->orderBy($resp->meta->sort);
         if (!empty($resp->meta->groupby)) {
             $this->builder->groupBy($resp->meta->groupby);
