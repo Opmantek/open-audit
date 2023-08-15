@@ -304,6 +304,19 @@ if (!function_exists('response_create')) {
             $response->meta->filter[] = $item;
         }
 
+        if ($response->meta->collection === 'discovery_log') {
+            $item = new \StdClass();
+            $item->name = 'discoveries.org_id';
+            $item->function = 'whereIn';
+            $item->operator = 'in';
+            if (is_string($instance->user->org_list)) {
+                $item->value = explode(',', $instance->user->org_list);
+            } else {
+                $item->value = $instance->user->org_list;
+            }
+            $response->meta->filter[] = $item;
+        }
+
         if ($response->meta->collection === 'components' and $response->meta->action === 'delete') {
             foreach ($response->meta->filter as $filter) {
                 if ($filter->name === 'components.type') {
