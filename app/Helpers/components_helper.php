@@ -169,11 +169,24 @@ function get_sql_server_version_string($version)
     $version_string = '';
 
     // SQL 2022
-    if (mb_strpos($version, '16.00.4035.4') === 0 or mb_strpos($version, '16.0.4035.4') === 0) {
-        $version_string = 'Cumulative update 4 (CU4) for SQL Server 2022  Latest CU';
+    if (mb_strpos($version, '16.00.4065.3') === 0 or mb_strpos($version, '16.0.4035.4') === 0) {
+        $version_string = 'Cumulative update 7 (CU7) for SQL Server 2022';
     }
+
+    if (mb_strpos($version, '16.00.4055.4') === 0 or mb_strpos($version, '16.0.4035.4') === 0) {
+        $version_string = 'Cumulative update 6 (CU6) for SQL Server 2022';
+    }
+
+    if (mb_strpos($version, '16.00.4045.3') === 0 or mb_strpos($version, '16.0.4035.4') === 0) {
+        $version_string = 'Cumulative update 5 (CU5) for SQL Server 2022';
+    }
+
+    if (mb_strpos($version, '16.00.4035.4') === 0 or mb_strpos($version, '16.0.4035.4') === 0) {
+        $version_string = 'Cumulative update 4 (CU4) for SQL Server 2022';
+    }
+
     if (mb_strpos($version, '16.00.4025.1') === 0 or mb_strpos($version, '16.0.4025.1') === 0) {
-        $version_string = 'Cumulative update 3 (CU3) for SQL Server 2022  CVE-2015-6420 CVE-2017-15708';
+        $version_string = 'Cumulative update 3 (CU3) for SQL Server 2022';
     }
 
     if (mb_strpos($version, '16.00.4015.1') === 0 or mb_strpos($version, '16.0.4015.1') === 0) {
@@ -181,7 +194,7 @@ function get_sql_server_version_string($version)
     }
 
     if (mb_strpos($version, '16.00.4003.1') === 0 or mb_strpos($version, '16.0.4003.1') === 0) {
-        $version_string = 'Cumulative update 1 (CU1) for SQL Server 2022  CVE-2022-41064';
+        $version_string = 'Cumulative update 1 (CU1) for SQL Server 2022';
     }
 
     if (mb_strpos($version, '16.00.1050.5') === 0 or mb_strpos($version, '16.0.1050.5') === 0) {
