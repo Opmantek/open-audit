@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class AttributesModel extends BaseModel
 {
@@ -52,11 +52,11 @@ class AttributesModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|null $data The data attributes
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create($data = null): ?int
+    public function create(object $data = null): ?int
     {
         if (empty($data)) {
             return null;
@@ -64,12 +64,12 @@ class AttributesModel extends BaseModel
         if (!in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
             \Config\Services::session()->setFlashdata('error', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
             log_message('warning', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
-            return false;
+            return null;
         }
         if (!in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
             \Config\Services::session()->setFlashdata('error', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category. Type is set to: ' . $data->type);
             log_message('warning', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.');
-            return false;
+            return null;
         }
         $data = $this->createFieldData('attributes', $data);
         $this->builder->insert($data);
@@ -174,7 +174,7 @@ class AttributesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
+        $query = $this->builder->getWhere(['id' => $id]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -206,7 +206,7 @@ class AttributesModel extends BaseModel
         // Some minor data cleansing, 'attributes' specific
 
         if (isset($data->resource) and !in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
-            $error = new \stdClass();
+            $error = new stdClass();
             $error->level = 'error';
             $error->message = 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.';
             $GLOBALS['stash'] = $error;
@@ -214,7 +214,7 @@ class AttributesModel extends BaseModel
             return false;
         }
         if (isset($data->type) and !in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
-            $error = new \stdClass();
+            $error = new stdClass();
             $error->level = 'error';
             $error->message = 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.';
             $GLOBALS['stash'] = $error;
