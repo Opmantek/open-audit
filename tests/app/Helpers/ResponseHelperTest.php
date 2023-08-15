@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
+use CodeIgniter\Test\ControllerTestTrait;
 use CodeIgniter\Test\DatabaseTestTrait;
 
 class ResponseHelperTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
+    use ControllerTestTrait;
 
     public function testResponseHelper()
     {
@@ -24,6 +26,8 @@ class ResponseHelperTest extends CIUnitTestCase
         helper('utility');
         $db = db_connect();
 
+        $sql = "DELETE FROM orgs WHERE id > 1";
+        $db->query($sql);
         $sql = "INSERT INTO orgs VALUES (2, 'My Second Org', 1, '', 'organisation', 'open-audit_orgs_my_second_org', 'system', NOW())";
         $db->query($sql);
         $sql = "INSERT INTO orgs VALUES (3, 'My Third Org', 2, '', 'organisation', 'open-audit_orgs_my_third_org', 'system', NOW())";
@@ -166,7 +170,6 @@ class ResponseHelperTest extends CIUnitTestCase
         $this->assertSame('2,3', response_get_org_list($this->user, 'orgs'));
         $this->assertSame('1,2,3', response_get_org_list($this->user, 'queries'));
         $this->assertSame('2', response_get_org_list($this->user, 'database'));
-        #$this->user->orgs = $temp;
 
         # TODO - More tests for response_get_permission_id
         # response_get_permission_id($user, $collection, $action, $received_data, $id)
@@ -175,6 +178,7 @@ class ResponseHelperTest extends CIUnitTestCase
         $this->user->org_list = '1,2,3';
         $this->assertSame(true, response_get_permission_id($this->user, 'orgs', 'read', '', 1));
         $this->assertSame(false, response_get_permission_id($this->user, 'orgs', 'read', '', 8888));
+        $this->user->orgs = $temp;
 
         # response_get_properties($collection = '', $action = '', $sub_resource = '', $get = '', $post = '')
         $this->assertSame('orgs.*', response_get_properties('orgs', 'read', '', '', ''));
@@ -221,7 +225,7 @@ class ResponseHelperTest extends CIUnitTestCase
         $response->meta->groupby = '';
         $response->meta->header = 200;
         $response->meta->include = '';
-        $response->meta->limit = '';
+        $response->meta->limit = null;
         $response->meta->microtime = config('OpenAudit')->microtime;
         $response->meta->offset = 0;
         $response->meta->properties = '';
