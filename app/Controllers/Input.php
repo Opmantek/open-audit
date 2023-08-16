@@ -69,7 +69,7 @@ class Input extends BaseController
                 return;
             }
         }
-        $this->discoveryLogModel = new \App\Models\DiscoveryLogModel();
+        $this->discoveryLogModel = model('App\Models\DiscoveryLogModel');
         if ($data = $this->request->getPostGet()) {
             unset($data['id']);
             $this->discoveryLogModel->create((object)$data);

@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class QueueModel extends BaseModel
 {
@@ -248,11 +248,11 @@ class QueueModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'attributes';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

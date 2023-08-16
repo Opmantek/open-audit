@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class RackDevicesModel extends BaseModel
 {
@@ -215,11 +215,11 @@ class RackDevicesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'rack_devices';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'racks.name', 'devices.name', 'orgs.name', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('device_id', 'rack_id', 'position'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

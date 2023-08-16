@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class DashboardsModel extends BaseModel
 {
@@ -237,11 +237,11 @@ class DashboardsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'dashboards';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description');
         $dictionary->attributes->create = array('name','org_id', 'options', 'sidebar');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

@@ -32,8 +32,8 @@ class Reports extends BaseController
 {
     public function collection()
     {
-        $queriesModel = new \App\Models\QueriesModel();
-        $summariesModel = new \App\Models\SummariesModel();
+        $queriesModel = model('App\Models\QueriesModel');
+        $summariesModel = model('App\Models\SummariesModel');
         $this->resp->data = $queriesModel->listUser();
         $summaries = $summariesModel->listUser();
         foreach ($summaries as $summary) {

@@ -6,7 +6,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
+
+use \Config\Services;
 
 class AttributesModel extends BaseModel
 {
@@ -36,7 +38,8 @@ class AttributesModel extends BaseModel
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
+            }
+            if (!in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
@@ -62,19 +65,20 @@ class AttributesModel extends BaseModel
             return null;
         }
         if (!in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
-            \Config\Services::session()->setFlashdata('error', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
+            session()->setFlashdata('error', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
             log_message('warning', 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.');
             return null;
         }
         if (!in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
-            \Config\Services::session()->setFlashdata('error', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category. Type is set to: ' . $data->type);
+            session()->setFlashdata('error', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category. Type is set to: ' . $data->type);
             log_message('warning', 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.');
             return null;
         }
         $data = $this->createFieldData('attributes', $data);
         $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
+        $error = $this->sqlError($this->db->error());
+        if ($error) {
+            session()->setFlashdata('error', json_encode($error));
             return null;
         }
         return ($this->db->insertID());
@@ -83,7 +87,8 @@ class AttributesModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int     $id The ID of the requested item
+     * @param  bool    Not used. Only present so we are compatible with CodeIgniter\BaseModel::delete
      *
      * @return bool    true || false depending on success
      */
@@ -243,11 +248,11 @@ class AttributesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'attributes';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new StdClass();
         $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

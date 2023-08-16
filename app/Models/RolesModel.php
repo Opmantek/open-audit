@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class RolesModel extends BaseModel
 {
@@ -220,11 +220,11 @@ class RolesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'roles';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'ad_group', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','permissions'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

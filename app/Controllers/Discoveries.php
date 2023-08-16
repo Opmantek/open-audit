@@ -40,14 +40,14 @@ class Discoveries extends BaseController
     {
         $id = intval($id);
         $this->discoveriesModel->queue(intval($id));
-        $this->queueModel = new \App\Models\QueueModel();
+        $this->queueModel = model('App\Models\QueueModel');
         $this->queueModel->start();
         if ($this->resp->meta->format !== 'html') {
             $this->resp->data = $this->discoveriesModel->read($id);
             output($this);
-        } else {
-            \Config\Services::session()->setFlashdata('error', 'Discovery started.');
-            return redirect()->route('discoveriesRead', [$id]);
+            return;
         }
+        \Config\Services::session()->setFlashdata('error', 'Discovery started.');
+        return redirect()->route('discoveriesRead', [$id]);
     }
 }

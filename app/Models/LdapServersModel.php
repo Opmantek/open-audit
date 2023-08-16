@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class LdapServersModel extends BaseModel
 {
@@ -211,11 +211,11 @@ class LdapServersModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'ldap_servers';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','lang','host','port','secure','domain','type','version','use_auth','use_roles','refresh');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

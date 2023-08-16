@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class DatabaseModel extends BaseModel
 {
@@ -360,10 +360,10 @@ class DatabaseModel extends BaseModel
     public function dictionary(): object
     {
         $collection = 'database';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
-        $dictionary->attributes = new \StdClass();
+        $dictionary->columns = new stdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'count');
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();

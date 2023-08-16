@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -40,15 +42,15 @@ class Integrations extends BaseController
     {
         $id = intval($id);
         $this->integrationsModel->queue(intval($id));
-        $this->queueModel = new \App\Models\QueueModel();
+        $this->queueModel = model('App\Models\QueueModel');
         $this->queueModel->start();
         if ($this->resp->meta->format !== 'html') {
             $this->resp->data = $this->integrationsModel->read($id);
             output($this);
-        } else {
-            \Config\Services::session()->setFlashdata('error', 'Discovery started.');
-            return redirect()->route('integrationsRead', [$id]);
+            return;
         }
+        \Config\Services::session()->setFlashdata('error', 'Discovery started.');
+        return redirect()->route('integrationsRead', [$id]);
     }
 
     /**
@@ -60,7 +62,7 @@ class Integrations extends BaseController
      */
     public function update($id)
     {
-        $data = new \stdClass();
+        $data = new stdClass();
         foreach ($this->resp->meta->filter as $item) {
             if ($item->name !== 'integrations.org_id') {
                 $data->{$item->name} = $item->value;
@@ -68,11 +70,12 @@ class Integrations extends BaseController
         }
         if ($this->integrationsModel->deleteFields(intval($id), $data)) {
             output($this);
-        } else {
-            $this->response->setStatusCode(400);
-            if (!empty($GLOBALS['stash'])) {
-                print_r(json_encode($GLOBALS['stash']));
-            }
+            return;
         }
+        $this->response->setStatusCode(400);
+        if (!empty($GLOBALS['stash'])) {
+            print_r(json_encode($GLOBALS['stash']));
+        }
+        return;
     }
 }

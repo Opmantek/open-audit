@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class FieldsModel extends BaseModel
 {
@@ -219,11 +219,11 @@ class FieldsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'fields';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'placement', 'orgs.name');
         $dictionary->attributes->create = array('name', 'org_id', 'type');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

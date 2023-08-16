@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -33,8 +35,8 @@ class Database extends BaseController
 
     public function update($action)
     {
-        $this->databaseModel = new \App\Models\DatabaseModel();
-        $meta = new \StdClass();
+        $this->databaseModel = model('App\Models\DatabaseModel');
+        $meta = new stdClass();
         $meta->collection = 'database';
         $meta->action = 'updateForm';
         $meta->access_token = '';
@@ -49,7 +51,8 @@ class Database extends BaseController
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
                 view('databaseUpdateForm', ['data' => filter_response($this->data)]);
-        } else {
+        }
+        if ($action === 'post') {
             $output = $this->databaseModel->update();
             $errors = array();
             \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
@@ -88,10 +91,9 @@ class Database extends BaseController
             // From the DB
             $query = $db->query("SHOW CREATE TABLE `{$table}`");
             $result = $query->getResult();
+            $db_schema = '';
             if (!empty($result[0]->{'Create Table'})) {
                 $db_schema = preg_replace('/AUTO_INCREMENT=\d+ /', '', $result[0]->{'Create Table'});
-            } else {
-                $db_schema = '';
             }
 
             // NOTE - the below exceptions and conversions are because MariaDB no longer encloses default interger values with single quotes.
@@ -161,7 +163,8 @@ class Database extends BaseController
             $body_output .= "<h2>{$table} (file -> database)</h2>\n";
             if (empty($file_schema)) {
                 $body_output .= "<span style=\"color:red;\"><strong>{$table} does not exist in the file.</strong></span><br />\n";
-            } else {
+            }
+            if (!empty($file_schema)) {
                 $body_output .= "<strong>Del: {$count_del} Ins: {$count_ins}</strong>\n";
                 $table_output = $diffClass->toTable($diffClass->compare($file_schema, $db_schema));
                 $temp = str_replace('<table class="diff">', '<table class="diff" style="width:100%">', $table_output);
@@ -172,7 +175,7 @@ class Database extends BaseController
         $output .= "<h2>Inserts: {$total_inserts} Deletes: {$total_deletes}</h2>\n<br /><br />\n" . $body_output;
         # echo $output;
 
-        $meta = new \StdClass();
+        $meta = new stdClass();
         $meta->collection = 'database';
         $meta->action = 'read';
         $meta->access_token = '';

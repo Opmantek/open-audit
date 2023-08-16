@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class LocationsModel extends BaseModel
 {
@@ -283,11 +283,11 @@ class LocationsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'locations';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'type', 'address', 'city', 'state', 'country', 'device_count');
         $dictionary->attributes->create = array('name','org_id');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

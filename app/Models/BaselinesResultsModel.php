@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class BaselinesResultsModel extends BaseModel
 {
@@ -213,11 +213,11 @@ class BaselinesResultsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'baselines_results';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array();
         $dictionary->attributes->create = array(); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = array(); # $this->db->getFieldNames($collection); # All field names for this table

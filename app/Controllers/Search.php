@@ -40,28 +40,26 @@ class Search extends BaseController
         if ($this->resp->meta->format !== 'html') {
             output($this);
             return true;
-        } else {
-            if (empty($this->resp->data)) {
-                \Config\Services::session()->setFlashdata('error', 'No data returned when running search.');
-                return redirect()->route('devicesCollection');
-            } else {
-                foreach ($this->resp->data[0]->attributes as $key => $value) {
-                    if (stripos($key, 'ip_padded') === false) {
-                        $key = str_ireplace('devices.', '', $key);
-                        $this->resp->meta->data_order[] = $key;
-                    }
-                }
-                $this->resp->meta->collection = 'devices';
-                return view('shared/header', [
-                    'config' => $this->config,
-                    'dictionary' => $this->queriesModel->dictionary(),
-                    'meta' => filter_response($this->resp->meta),
-                    'orgs' => filter_response($this->orgsUser),
-                    'queries' => filter_response($this->queriesUser),
-                    'roles' => filter_response($this->roles),
-                    'user' => filter_response($this->user)]) .
-                    view('devicesCollection', ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)]);
+        }
+        if (empty($this->resp->data)) {
+            \Config\Services::session()->setFlashdata('error', 'No data returned when running search.');
+            return redirect()->route('devicesCollection');
+        }
+        foreach ($this->resp->data[0]->attributes as $key => $value) {
+            if (stripos($key, 'ip_padded') === false) {
+                $key = str_ireplace('devices.', '', $key);
+                $this->resp->meta->data_order[] = $key;
             }
         }
+        $this->resp->meta->collection = 'devices';
+        return view('shared/header', [
+            'config' => $this->config,
+            'dictionary' => $this->queriesModel->dictionary(),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('devicesCollection', ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)]);
     }
 }

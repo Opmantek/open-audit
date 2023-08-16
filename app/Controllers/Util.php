@@ -45,9 +45,8 @@ class Util extends Controller
         // NOTE #1 - We cannot restrict the source (like the Google function below) because it is called from the client browser.
         // NOTE #2 - it would be nice do run the below, but unsure that Windows would handle 2>/dev/null
         // nmap -n -sL $subnet 2>/dev/null | grep "^Nmap done" | awk '{print $3}'
-        if (!empty($_POST['subnet'])) {
-            $subnet = $_POST['subnet'];
-        } else {
+        $subnet = (!empty($_POST['subnet'])) ? $_POST['subnet'] : '';
+        if (empty($subnet)) {
             return;
         }
         # filter out all characters not in the $chars list
@@ -92,7 +91,7 @@ class Util extends Controller
         $jsonKey = json_decode($credentials, true);
 
         $projects = array();
-        $projects[0] = new \stdClass();
+        $projects[0] = new stdClass();
         $projects[0]->instances = array();
         $projects[0]->networks = array();
         $projects[0]->zones = array();
@@ -143,11 +142,7 @@ class Util extends Controller
 
                     if (!empty($instance->networkInterfaces)) {
                         foreach ($instance->networkInterfaces as $interface) {
-                            if (!empty($interface->accessConfigs[0]->natIP)) {
-                                $instance->ip = $interface->accessConfigs[0]->natIP;
-                            } else {
-                                $instance->ip = $interface->networkIP;
-                            }
+                            $instance->ip = (!empty($interface->accessConfigs[0]->natIP)) ? $interface->accessConfigs[0]->natIP : $interface->networkIP;
                         }
                     }
                     $inZones[] = $instance->zone;
@@ -182,5 +177,6 @@ class Util extends Controller
         $response->data = array();
         $response->data[] = $projects;
         print_r(json_encode($response));
+        return;
     }
 }

@@ -4,6 +4,16 @@
 
 declare(strict_types=1);
 
+namespace App\Controllers;
+
+use CodeIgniter\Controller;
+use CodeIgniter\HTTP\CLIRequest;
+use CodeIgniter\HTTP\IncomingRequest;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Psr\Log\LoggerInterface;
+use \Config\Services;
+
 /**
  * PHP version 7.4
  *
@@ -15,15 +25,6 @@ declare(strict_types=1);
  * @version   GIT: Open-AudIT_5.0.0
  * @link      http://www.open-audit.org
  */
-
-namespace App\Controllers;
-
-use CodeIgniter\Controller;
-use CodeIgniter\HTTP\CLIRequest;
-use CodeIgniter\HTTP\IncomingRequest;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Base Object Logon
@@ -40,7 +41,7 @@ class Logon extends Controller
     public function createForm()
     {
         $this->checkDefaults();
-        $this->session = \Config\Services::session();
+        $this->session = session();
         if (!empty($this->session->get('user_id'))) {
             return redirect()->to(site_url('orgs'));
         }
@@ -56,21 +57,16 @@ class Logon extends Controller
         }
         if (!empty($license) and $license !== false) {
             $json = json_decode($license);
-            if (json_last_error()) {
-                $license = 'none';
-            } else {
-                $license = $json->license;
-            }
+            $license = (json_last_error()) ? 'none' : $json->license;
         } else {
             $license = 'none';
         }
         if (!in_array($license, ['none', 'free', 'commercial'])) {
             $license = 'none';
         }
+        $product = 'Open-AudIT Community';
         if (!empty($json->product)) {
             $product = $json->product;
-        } else {
-            $product = 'Open-AudIT Community';
         }
         if ($license == 'none') {
             $product = 'Open-AudIT Community';
@@ -115,10 +111,10 @@ class Logon extends Controller
 
     public function create()
     {
-        $this->session = \Config\Services::session();
-        $this->logonModel = new \App\Models\LogonModel();
+        $this->session = session();
+        $this->logonModel = model('App\Models\LogonModel');
 
-        $username = @$_POST['username'];
+        $username = (!empty($_POST['username'])) ? $_POST['username'] : '';
         if (empty($username) && ! empty($_SERVER['HTTP_USERNAME'])) {
             # The actual header should just be USERNAME
             $username = $_SERVER['HTTP_USERNAME'];
@@ -164,19 +160,18 @@ class Logon extends Controller
                     exit;
                 }
                 return redirect()->to(url_to('home'));
-            } else {
-                if (!empty($user->id)) {
-                    $user->id = intval($user->id);
-                }
-                if (!empty($user->org_id)) {
-                    $user->org_id = intval($user->org_id);
-                }
-                if (!empty($user->roles)) {
-                    $user->roles = json_decode($user->roles);
-                }
-                print_r(json_encode($user));
-                exit;
             }
+            if (!empty($user->id)) {
+                $user->id = intval($user->id);
+            }
+            if (!empty($user->org_id)) {
+                $user->org_id = intval($user->org_id);
+            }
+            if (!empty($user->roles)) {
+                $user->roles = json_decode($user->roles);
+            }
+            print_r(json_encode($user));
+            exit;
         }
         log_message('error', json_encode($user));
         return redirect()->to(site_url('logon'));
@@ -185,7 +180,7 @@ class Logon extends Controller
     public function delete()
     {
 
-        $this->session = \Config\Services::session();
+        $this->session = session();
         $this->session->destroy();
         return redirect()->to(site_url('logon'));
     }

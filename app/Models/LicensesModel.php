@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class LicensesModel extends BaseModel
 {
@@ -244,11 +244,11 @@ class LicensesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'licenses';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','org_descendants','purchase_count','match_string');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

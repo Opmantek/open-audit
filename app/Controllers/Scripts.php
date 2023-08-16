@@ -34,7 +34,7 @@ class Scripts extends BaseController
     {
         $id = intval($id);
         if (empty($this->scriptsModel)) {
-            $this->scriptsModel = new \App\Models\ScriptsModel();
+            $this->scriptsModel = model('App\Models\ScriptsModel');
         }
         if (!is_numeric($id)) {
             $id = $this->scriptsModel->getByOs($id);
@@ -51,11 +51,11 @@ class Scripts extends BaseController
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
         header('Content-Disposition: attachment; filename=' . $script[0]->attributes->name);
+        $header = "Content-Type: application/x-sh";
         if ($script[0]->attributes->based_on == 'audit_windows.vbs') {
-            header("Content-Type: text/vbscript");
-        } else {
-            header("Content-Type: application/x-sh");
+            $header = "Content-Type: text/vbscript";
         }
+        header($header);
         header('Content-Transfer-Encoding: binary');
         echo $scriptContents;
         return;

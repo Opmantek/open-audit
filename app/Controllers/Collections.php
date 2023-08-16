@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -48,11 +50,11 @@ class Collections extends BaseController
         }
         if ($status) {
             output($this);
-        } else {
-            $this->response->setStatusCode(400);
-            if (!empty($GLOBALS['stash'])) {
-                print_r(json_encode($GLOBALS['stash']));
-            }
+            return;
+        }
+        $this->response->setStatusCode(400);
+        if (!empty($GLOBALS['stash'])) {
+            print_r(json_encode($GLOBALS['stash']));
         }
         return;
     }
@@ -79,24 +81,24 @@ class Collections extends BaseController
         }
         if ($this->resp->meta->format !== 'html') {
             output($this);
-        } else {
-            $view = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
-            $this->resp->included = array();
-            // A special case for the Bulk Update Form
-            if ($this->resp->meta->request_method === 'GET' and strpos($this->resp->meta->query_string, 'action=bulkupdateform') !== false) {
-                $view = $this->resp->meta->collection . 'BulkUpdateForm';
-                $this->resp->included = $this->{strtolower($this->resp->meta->collection) . "Model"}->includedBulkUpdate();
-                $this->resp->meta->action = 'bulkupdateform';
-            }
-            return view('shared/header', [
-                'config' => $this->config,
-                'dashboards' => filter_response($this->dashboards),
-                'meta' => filter_response($this->resp->meta),
-                'queries' => filter_response($this->queriesUser),
-                'roles' => filter_response($this->roles),
-                'user' => filter_response($this->user)]) .
-                view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included)]);
+            return;
         }
+        $view = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
+        $this->resp->included = array();
+        // A special case for the Bulk Update Form
+        if ($this->resp->meta->request_method === 'GET' and strpos($this->resp->meta->query_string, 'action=bulkupdateform') !== false) {
+            $view = $this->resp->meta->collection . 'BulkUpdateForm';
+            $this->resp->included = $this->{strtolower($this->resp->meta->collection) . "Model"}->includedBulkUpdate();
+            $this->resp->meta->action = 'bulkupdateform';
+        }
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included)]);
         return true;
     }
 
@@ -200,19 +202,18 @@ class Collections extends BaseController
             $this->resp->dictionary = $dictionary;
             output($this);
             return true;
-        } else {
-            return view('shared/header', [
-                'config' => $this->config,
-                'dashboards' => filter_response($this->dashboards),
-                'dictionary' => $dictionary,
-                'included' => $this->resp->included,
-                'meta' => filter_response($this->resp->meta),
-                'queries' => filter_response($this->queriesUser),
-                'roles' => filter_response($this->roles),
-                'orgs' => filter_response($this->orgsUser),
-                'user' => filter_response($this->user)]) .
-                view($this->resp->meta->collection . ucfirst($this->resp->meta->action));
         }
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'dictionary' => $dictionary,
+            'included' => $this->resp->included,
+            'meta' => filter_response($this->resp->meta),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'orgs' => filter_response($this->orgsUser),
+            'user' => filter_response($this->user)]) .
+            view($this->resp->meta->collection . ucfirst($this->resp->meta->action));
     }
 
     /**
@@ -222,9 +223,9 @@ class Collections extends BaseController
      */
     public function defaults()
     {
-        $this->baseModel = new \App\Models\BaseModel();
+        $this->baseModel = model('App\Models\BaseModel');
         $defaults = $this->baseModel->tableDefaults($this->resp->meta->collection);
-        $this->databaseModel = new \App\Models\DatabaseModel();
+        $this->databaseModel = model('App\Models\DatabaseModel');
         $data = $this->databaseModel->read($this->resp->meta->collection);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
@@ -247,7 +248,7 @@ class Collections extends BaseController
     {
         if ($this->{$this->resp->meta->collection.'Model'}->delete($this->resp->meta->id)) {
             \Config\Services::session()->setFlashdata('success', 'Item in ' . $this->resp->meta->collection . ' deleted.');
-            $temp = new \stdClass();
+            $temp = new stdClass();
             $temp->type = $this->resp->meta->collection;
             $this->resp->data = array();
             $this->resp->data[] = $temp;
@@ -315,7 +316,7 @@ class Collections extends BaseController
         $row_count = count($csv);
         $column_count = count($attributes);
         for ($i=1; $i < $row_count; $i++) {
-            $data = new \stdClass();
+            $data = new stdClass();
             for ($j=0; $j < $column_count; $j++) {
                 $data->{$attributes[$j]} = $csv[$i][$j];
             }
@@ -346,7 +347,7 @@ class Collections extends BaseController
      */
     public function importForm()
     {
-        $this->databaseModel = new \App\Models\DatabaseModel();
+        $this->databaseModel = model('App\Models\DatabaseModel');
         $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [

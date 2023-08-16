@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class DiscoveryLogModel extends BaseModel
 {
@@ -355,11 +355,11 @@ class DiscoveryLogModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'discovery_log';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'parent_name', 'type', 'ad_group', 'device_count');
         $dictionary->attributes->create = array(); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table

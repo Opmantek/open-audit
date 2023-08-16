@@ -12,6 +12,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use stdClass;
 
 /**
  * Class BaseController
@@ -60,16 +61,16 @@ abstract class BaseController extends Controller
         $this->method = $router->methodName();
 
         // Preload any models, libraries, etc, here.
-        $this->session = \Config\Services::session();
+        $this->session = session();
         $this->config = new \Config\OpenAudit();
 
         $this->config->homepage = 'orgsCollection';
 
-        $this->usersModel = new \App\Models\UsersModel();
+        $this->usersModel = model('App\Models\UsersModel');
         $this->user = $this->usersModel->userValidate();
-        $this->orgsModel = new \App\Models\OrgsModel();
-        $this->queriesModel = new \App\Models\QueriesModel();
-        $this->rolesModel = new \App\Models\RolesModel();
+        $this->orgsModel = model('App\Models\OrgsModel');
+        $this->queriesModel = model('App\Models\QueriesModel');
+        $this->rolesModel = model('App\Models\RolesModel');
         $this->roles = $this->rolesModel->listAll();
         $this->collections = collections_list();
 
@@ -145,9 +146,8 @@ abstract class BaseController extends Controller
             if ($router->controllerName() !== '\App\Controllers\Database' and $router->methodName() !== 'update') {
                 header('Location: ' . url_to('databaseUpdate'));
                 exit;
-            } else {
-                return;
             }
+            return;
         }
 
         # Parse the input and create our response
@@ -198,7 +198,7 @@ abstract class BaseController extends Controller
         }
 
         // The dictionary items
-        $this->dictionary = new \stdClass();
+        $this->dictionary = new stdClass();
         $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . @$this->resp->meta->collection . '">Knowledge Base</a>.';
         $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
         $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
@@ -224,7 +224,7 @@ abstract class BaseController extends Controller
         if ($this->resp->meta->format === 'html') {
             $this->queriesUser = $this->queriesModel->listUser();
             $this->orgsUser = $this->orgsModel->listUser();
-            $this->dashboardsModel = new \App\Models\DashboardsModel();
+            $this->dashboardsModel = model('App\Models\DashboardsModel');
             $this->dashboards = $this->dashboardsModel->listUser();
         }
 

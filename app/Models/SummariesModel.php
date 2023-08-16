@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class SummariesModel extends BaseModel
 {
@@ -317,11 +317,11 @@ class SummariesModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'summaries';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'table', 'column', 'menu_category', 'orgs.name');
         $dictionary->attributes->create = array('name', 'org_id', 'table', 'column', 'menu_category');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

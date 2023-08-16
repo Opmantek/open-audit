@@ -6,25 +6,31 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use \stdClass;
 
-use stdClass;
+use CodeIgniter\Model;
 
 class BaseModel extends Model
 {
 
     public function __construct()
     {
-        // $this->session = \Config\Services::session();
-        // $this->uri = new \CodeIgniter\HTTP\URI(current_url(true));
         $this->sql_file = APPPATH . '../other/open-audit.sql';
     }
 
-
-    public function createFieldData($table, $data)
+    /**
+     * Take an object and filter it to contain only those attributes present in the database table as columns
+     * as well as populate any text columns and ensure we have the required attributes to create the entry
+     *
+     * @access public
+     * @param  string       $table  The database table
+     * @param  object|null  $data   The object of data attributes
+     * @return object
+     */
+    public function createFieldData(string $table = '', object $data = null)
     {
         $db = db_connect();
-        $insert_data = new \stdClass();
+        $insert_data = new stdClass();
         $instance = & get_instance();
 
         $dictionary = $instance->{strtolower($table).'Model'}->dictionary();
@@ -71,10 +77,18 @@ class BaseModel extends Model
         return $insert_data;
     }
 
-    public function updateFieldData($table, $data)
+    /**
+     * Take an object and filter it to contain only those attributes defined in the dictionary as allowed to be updated
+     *
+     * @access public
+     * @param  string       $table  The database table
+     * @param  object|null  $data   The object of data attributes
+     * @return object
+     */
+    public function updateFieldData(string $table = '', object $data = null)
     {
         $db = db_connect();
-        $update_data = new \stdClass();
+        $update_data = new stdClass();
         $instance = & get_instance();
         $updateFields = $this->updateFields($table);
 
@@ -97,6 +111,13 @@ class BaseModel extends Model
         return $update_data;
     }
 
+    /**
+     * If we have an error, log it and put it in the global stash
+     *
+     * @access public
+     * @param  object|null  $error   The result of $this->db->error()
+     * @return false|object
+     */
     public function sqlError($error = null)
     {
         if (!empty($error['code'])) {
@@ -109,6 +130,13 @@ class BaseModel extends Model
         return false;
     }
 
+    /**
+     * Delete all data in a table and restore the original entries (if any)
+     *
+     * @access public
+     * @param  string  $table  The database table name
+     * @return boolean
+     */
     public function tableReset(string $table = ''): bool
     {
         $db = db_connect();
@@ -151,6 +179,13 @@ class BaseModel extends Model
         return true;
     }
 
+    /**
+     * Return an array of default entries in a database table
+     *
+     * @access public
+     * @param  string  $table  The database table name
+     * @return array
+     */
     public function tableDefaults(string $table = ''): array
     {
         $result = array();

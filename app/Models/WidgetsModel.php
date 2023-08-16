@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class WidgetsModel extends BaseModel
 {
@@ -642,11 +642,11 @@ class WidgetsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'widgets';
-        $dictionary = new \stdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \stdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \stdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'orgs.name', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','org_id','type');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -35,7 +37,7 @@ class Devices extends BaseController
         $db = db_connect();
 
         if (empty($_POST['input_type']) or $_POST['input_type'] === 'manual_input') {
-            $device = new \stdClass();
+            $device = new stdClass();
             foreach ($this->resp->meta->received_data->attributes as $key => $value) {
                 if ($value !== '') {
                     $device->$key = $value;
@@ -53,7 +55,7 @@ class Devices extends BaseController
                 $componentsModel = new \App\Models\ComponentsModel();
                 $network = network_details($device->ip . ' ' . $device->netmask);
                 if (empty($network->error)) {
-                    $device_ip = new \stdClass();
+                    $device_ip = new stdClass();
                     $device_ip->mac = $mac;
                     $device_ip->net_index = '';
                     $device_ip->ip = $network->address;
@@ -64,7 +66,7 @@ class Devices extends BaseController
                     $device_ip->set_by = '';
                     $input = array();
                     $input[] = $device_ip;
-                    $parameters = new \stdClass();
+                    $parameters = new stdClass();
                     $parameters->table = 'ip';
                     $parameters->details = $device;
                     $parameters->input = $input;
@@ -105,29 +107,30 @@ class Devices extends BaseController
                 $this->resp->data = $this->{"devicesModel"}->read($id);
                 output($this);
                 return true;
-            } else {
+            }
+            if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('success', "Item in devices created successfully.");
                 return redirect()->route('devicesRead', [$id]);
             }
-        } else {
-            if ($this->resp->meta->format !== 'html') {
-                output($this);
-                return true;
-            } else {
-                log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
-                return redirect()->route('devicesCollection');
-            }
+        }
+        if ($this->resp->meta->format !== 'html') {
+            output($this);
+            return true;
+        }
+        if ($this->resp->meta->format === 'html') {
+            log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+            return redirect()->route('devicesCollection');
         }
     }
 
     public function importNMISForm()
     {
-        $locationsModel = new \App\Models\LocationsModel();
+        $locationsModel = model('App\Models\LocationsModel');
         $this->resp->included['locations'] = $locationsModel->listUser();
         $this->resp->included['orgs'] = $this->orgsModel->listUser();
         // $this->databaseModel = new \App\Models\DatabaseModel();
         // $this->resp->data = $this->databaseModel->read('devices');
-        $devicesModel = new \App\Models\DevicesModel();
+        $devicesModel = model('App\Models\DevicesModel');
         $dictionary = $this->devicesModel->dictionary();
         return view('shared/header', [
             'config' => $this->config,
@@ -140,7 +143,6 @@ class Devices extends BaseController
             'roles' => $this->roles,
             'user' => $this->user ]) .
             view('devicesImportNMISForm', ['data' => $this->resp->included]);
-        return;
     }
 
     public function importNMIS()
@@ -171,12 +173,12 @@ class Devices extends BaseController
             $nodes[$i]['location_id'] = intval($this->resp->meta->received_data->attributes->location_id);
         }
         $db = db_connect();
-        $devicesModel = new \App\Models\DevicesModel();
-        $networkModel = new \App\Models\NetworksModel();
-        $attributesModel = new \App\Models\AttributesModel();
-        $componentsModel = new \App\Models\ComponentsModel();
+        $devicesModel = model('App\Models\DevicesModel');
+        $networkModel = model('App\Models\NetworksModel');
+        $attributesModel = model('App\Models\AttributesModel');
+        $componentsModel = model('App\Models\ComponentsModel');
 
-        $match = new \stdClass();
+        $match = new stdClass();
         $match->match_ip = 'y';
         $match->match_dns_fqdn = 'y';
         $match->match_dns_hostname = 'y';
@@ -185,15 +187,18 @@ class Devices extends BaseController
         $attributes = $attributesModel->listUser();
 
         foreach ($nodes as $node) {
-            $device = new \stdClass();
-            $device->name = strtolower(@$node['name']);
+            $device = new stdClass();
+            $device->name = (!empty($node['name'])) ? strtolower($node['name']) : '';
             $device->ip = '';
             $device->hostname = '';
             $device->fqdn = '';
             if (filter_var($node['configuration']['host'], FILTER_VALIDATE_IP) !== false) {
                 $device->ip = $node['configuration']['host'];
                 # $device = dns_validate($device);
-            } else {
+            }
+            if (filter_var($node['configuration']['host'], FILTER_VALIDATE_IP) === false) {
+                $device->hostname =  $node['configuration']['host'];
+                $device->ip = gethostbyname($device->hostname);
                 if (strpos($node['configuration']['host'], '.') !== false) {
                     $device->fqdn =  $node['configuration']['host'];
                     $temp = explode('.', $device->fqdn);
@@ -202,12 +207,9 @@ class Devices extends BaseController
                     $device->domain = implode('.', $temp);
                     unset($temp);
                     $device->ip = gethostbyname($device->fqdn);
-                } else {
-                    $device->hostname =  $node['configuration']['host'];
-                    $device->ip = gethostbyname($device->hostname);
                 }
             }
-            $serviceStatus = @$node['configuration']['serviceStatus'];
+            $serviceStatus = (!empty($node['configuration']['serviceStatus'])) ? $node['configuration']['serviceStatus'] : '';
             foreach ($attributes as $attribute) {
                 if ($attribute->attributes->type === 'environment') {
                     if (strtolower($serviceStatus) === strtolower($attribute->attributes->value) or strtolower($serviceStatus) === strtolower($attribute->attributes->name)) {
@@ -218,22 +220,22 @@ class Devices extends BaseController
             $device->org_id = $node['org_id'];
             $device->location_id = $node['location_id'];
             $device->nmis_manage = 'y';
-            $device->omk_uuid = @$node['uuid'];
+            $device->omk_uuid = (!empty($node['uuid'])) ? $node['uuid'] : '';
             $device->status = 'production';
-            $device->nmis_group = @$node['configuration']['group'];
-            $device->nmis_name = @$node['name'];
-            $device->nmis_role = @$node['configuration']['roleType'];
-            $device->nmis_notes = @$node['configuration']['notes'];
-            $device->nmis_business_service = @$node['configuration']['businessService'];
+            $device->nmis_group = (!empty($node['configuration']['group'])) ? $node['configuration']['group'] : '';
+            $device->nmis_name = (!empty($node['name'])) ? $node['name'] : '';
+            $device->nmis_role = (!empty($node['configuration']['roleType'])) ? $node['configuration']['roleType'] : '';
+            $device->nmis_notes = (!empty($node['configuration']['notes'])) ? $node['configuration']['notes'] : '';
+            $device->nmis_business_service = (!empty($node['configuration']['businessService'])) ? $node['configuration']['businessService'] : '';
             $device->last_seen_by = 'nmis';
             $device->last_seen = config('Openaudit')->timestamp;
 
-            $device->credentials = new \stdClass();
+            $device->credentials = new stdClass();
             $device->credentials->description = 'Imported from NMIS 9';
             $device->credentials->name = 'Device Specific Credentials';
             $device->credentials->type = 'snmp';
-            $device->credentials->credentials = new \stdClass();
-            $temp =  @$node['configuration']['version'];
+            $device->credentials->credentials = new stdClass();
+            $temp =  (!empty($node['configuration']['version'])) ? $node['configuration']['version'] : '';
             switch ($temp) {
                 case 'snmpv1':
                     $device->credentials->credentials->version = 1;
@@ -253,18 +255,18 @@ class Devices extends BaseController
             }
 
             if ($device->credentials->credentials->version == 1) {
-                $device->credentials->credentials->community =  @$node['configuration']['community'];
+                $device->credentials->credentials->community =  (!empty($node['configuration']['community'])) ? $node['configuration']['community'] : '';
             }
             if ($device->credentials->credentials->version == 2) {
-                $device->credentials->credentials->community =  @$node['configuration']['community'];
+                $device->credentials->credentials->community =  (!empty($node['configuration']['community'])) ? $node['configuration']['community'] : '';
             }
             if ($device->credentials->credentials->version == 3) {
                 $device->credentials->type = 'snmp_v3';
-                $device->credentials->credentials->security_name = @$node['configuration']['username'];
-                $device->credentials->credentials->authentication_passphrase = @$node['configuration']['authpassword'];
-                $device->credentials->credentials->authentication_protocol = @$node['configuration']['authprotocol'];
-                $device->credentials->credentials->privacy_passphrase = @$node['configuration']['privpassword'];
-                $device->credentials->credentials->privacy_protocol = @$node['configuration']['privprotocol'];
+                $device->credentials->credentials->security_name = (!empty($node['configuration']['username'])) ? $node['configuration']['username'] : '';
+                $device->credentials->credentials->authentication_passphrase = (!empty($node['configuration']['authpassword'])) ? $node['configuration']['authpassword'] : '';
+                $device->credentials->credentials->authentication_protocol = (!empty($node['configuration']['authprotocol'])) ? $node['configuration']['authprotocol'] : '';
+                $device->credentials->credentials->privacy_passphrase = (!empty($node['configuration']['privpassword'])) ? $node['configuration']['privpassword'] : '';
+                $device->credentials->credentials->privacy_protocol = (!empty($node['configuration']['privprotocol'])) ? $node['configuration']['privprotocol'] : '';
                 $device->credentials->credentials->security_level = 'noAuthNoPriv';
                 if (!empty($node['configuration']['authpassword']) and !empty($node['configuration']['authprotocol']) and empty($node['configuration']['privpassword'])) {
                     $device->credentials->credentials->security_level = 'authNoPriv';
@@ -301,7 +303,8 @@ class Devices extends BaseController
                 // $sql = 'UPDATE system SET last_seen_by = "nmis", last_seen = ? WHERE id = ?';
                 // $data = array($device->last_seen, $device->id);
                 // $this->db->query($sql, $data);
-            } else {
+            }
+            if (empty($device->id)) {
                 $device->first_seen = config('Openaudit')->timestamp;
                 $device->id = $devicesModel->create($device);
                 $inserted++;
@@ -316,13 +319,13 @@ class Devices extends BaseController
             $ids[] = $device->id;
             # NOTE - this applies for returning a JSON result
             #      - a HTML output redirects
-            $data = new \stdClass();
+            $data = new stdClass();
             $data->id = $device->id;
             $data->type = 'devices';
-            $data->attributes = new \stdClass();
+            $data->attributes = new stdClass();
             $data->attributes->id = $device->id;
             $data->attributes->name = $device->name;
-            $data->attributes->hostname = @$device->hostname;
+            $data->attributes->hostname = (!empty($device->hostname)) ? $device->hostname : '';
             $data->attributes->ip = '';
             if (!empty($device->ip)) {
                 $data->attributes->ip = ip_address_from_db($device->ip);
@@ -335,8 +338,8 @@ class Devices extends BaseController
         $this->resp->meta->updated = $updated;
         $this->resp->meta->total = $inserted + $updated;
         if (!empty($this->resp->meta->received_data->attributes->run_discovery) and $this->resp->meta->received_data->attributes->run_discovery === 'y') {
-            $this->componentsModel = new \App\Models\ComponentsModel();
-            $data = new \stdClass();
+            $this->componentsModel = model('App\Models\ComponentsModel');
+            $data = new stdClass();
             $data->component_type = 'discovery';
             $data->ids = array();
             foreach ($devices as $device) {
@@ -348,12 +351,11 @@ class Devices extends BaseController
             $this->componentsModel->create($data);
         }
 
-        if ($this->resp->meta->format === 'json') {
+        if ($this->resp->meta->format === 'json' or $this->resp->meta->format === 'json_data') {
             output($this);
-        } else {
-            \Config\Services::session()->setFlashdata('success', $this->resp->meta->total . ' devices imported (' . $this->resp->meta->inserted . ' inserted and ' . $this->resp->meta->updated . ' updated).');
-
-            return redirect()->to(site_url() . '/devices?devices.last_seen=' . config('Openaudit')->timestamp . '&devices.last_seen_by=nmis&properties=devices.id,devices.icon,devices.type,devices.name,nmis_name,devices.ip,devices.nmis_business_service,devices.nmis_group,devices.nmis_role,devices.nmis_notes');
+            return;
         }
+        \Config\Services::session()->setFlashdata('success', $this->resp->meta->total . ' devices imported (' . $this->resp->meta->inserted . ' inserted and ' . $this->resp->meta->updated . ' updated).');
+        return redirect()->to(site_url() . '/devices?devices.last_seen=' . config('Openaudit')->timestamp . '&devices.last_seen_by=nmis&properties=devices.id,devices.icon,devices.type,devices.name,nmis_name,devices.ip,devices.nmis_business_service,devices.nmis_group,devices.nmis_role,devices.nmis_notes');
     }
 }

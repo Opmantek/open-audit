@@ -8,7 +8,7 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 
-use FilesystemIterator;
+use \FilesystemIterator;
 
 /**
  * PHP version 7.4
@@ -46,7 +46,7 @@ class Cli extends Controller
 
         $logPath = WRITEPATH . 'logs';
         log_message('info', 'Rotating logs in directory: ' . $logPath);
-        $fileSysIt = new \FilesystemIterator($logPath, FilesystemIterator::SKIP_DOTS);
+        $fileSysIt = new FilesystemIterator($logPath, FilesystemIterator::SKIP_DOTS);
         $count = 0;
         $keep = 10;
         if (iterator_count($fileSysIt) < $keep) {
@@ -62,15 +62,15 @@ class Cli extends Controller
         }
         arsort($thefiles);
         foreach ($thefiles as $key => $value) {
+            $logMessage = 'keep these key: ' . $key .' value: '. $value;
             if ($keep < $count) {
-                log_message('info', 'unlink these key: ' . $key .' value: '. $value);
-                #$killme = $logPath . DIRECTORY_SEPARATOR . $key;
-                #if (!unlink($killme)) {
-                #    log_message('info', 'unable to unlink '. $killme);
-                #}
-            } else {
-                log_message('info', 'keep these key: ' . $key .' value: '. $value);
+                $logMessage = 'unlink these key: ' . $key .' value: '. $value;
+                $killme = $logPath . DIRECTORY_SEPARATOR . $key;
+                if (!unlink($killme)) {
+                    log_message('info', 'unable to unlink '. $killme);
+                }
             }
+            log_message('info', $logMessage);
             $count++;
         }
     }

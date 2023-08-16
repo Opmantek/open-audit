@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -51,21 +53,25 @@ class Components extends BaseController
     public function delete($id, $type)
     {
         $this->resp->meta->sub_resource = $type;
-        if ($this->{'componentsModel'}->delete($id)) {
+        $test = $this->{'componentsModel'}->delete($id);
+        if ($test) {
             \Config\Services::session()->setFlashdata('success', 'Item deleted.');
             $this->response->setStatusCode(200);
-            $temp = new \stdClass();
+            $temp = new stdClass();
             $temp->type = $type;
             $this->resp->data = array();
             $this->resp->data[] = $temp;
-        } else {
+        }
+        if (!$test) {
             $this->resp->meta->header = 500;
             $this->response->setStatusCode($this->resp->meta->header);
             if (!empty(\Config\Services::session()->getFlashdata('error'))) {
                 $this->resp->errors = \Config\Services::session()->getFlashdata('error');
-            } else if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
+            }
+            if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
                 $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
-            } else {
+            }
+            if (empty($this->resp->errors)) {
                 $this->resp->errors = 'Item in ' . $this->resp->meta->collection . ' not deleted.';
                 \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not deleted.');
             }
@@ -81,7 +87,7 @@ class Components extends BaseController
             $this->response->setStatusCode($this->resp->meta->header);
             return;
         }
-        $filter = new \stdClass();
+        $filter = new stdClass();
         $filter->name = 'type';
         $filter->value = $type;
         $this->resp->meta->filter[] = $filter;

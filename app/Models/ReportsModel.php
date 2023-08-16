@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
+use \stdClass;
 
 class ReportsModel extends BaseModel
 {
@@ -314,11 +314,11 @@ class ReportsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'reports';
-        $dictionary = new \StdClass();
+        $dictionary = new stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new \StdClass();
+        $dictionary->columns = new stdClass();
 
-        $dictionary->attributes = new \StdClass();
+        $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array();
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();
