@@ -81,12 +81,12 @@ class Logon extends Controller
         $db->query($sql);
 
         if (file_exists(APPPATH . '../other/modules.json')) {
-            $modules = @file_get_contents(APPPATH.'../other/modules.json');
+            $modules = file_get_contents(APPPATH.'../other/modules.json');
             if (!empty($modules)) {
                 $modules = json_decode($modules);
                 # echo "<pre>"; print_r($modules); exit;
                 $installed = @file_get_contents('http://localhost/omk/.json', false);
-                if (empty($license)) {
+                if (empty($installed)) {
                     # try https
                     $installed = @file_get_contents('https://localhost/omk/.json', false);
                 }
@@ -100,6 +100,9 @@ class Logon extends Controller
                         if (stripos($app->name, 'Open-AudIT') !== false) {
                             $modules->{'Open-AudIT'}->installed = true;
                             $modules->{'Open-AudIT'}->version = $app->version;
+                            if ($product === 'Open-AudIT Enterprise' or $product === 'Open-AudIT Professional') {
+                                $modules->{'Open-AudIT'}->name = $product;
+                            }
                         }
                     }
                     $sql = "UPDATE configuration SET value = ? WHERE name = 'modules'";
