@@ -259,22 +259,6 @@ class OrgsModel extends BaseModel
         return $return;
     }
 
-    /**
-     * Read the entire collection from the database, not restricted to the user
-     *
-     * @return array  An array of all Orgs
-     */
-    public function listAll(): array
-    {
-        $sql = 'SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT devices.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN devices ON (orgs.id = devices.org_id) GROUP BY orgs.id';
-        $orgs = $this->db->query($sql)->getResult();
-        foreach ($orgs as $org) {
-            $org->id = intval($org->id);
-            $org->parent_id = intval($org->parent_id);
-        }
-        return $orgs;
-    }
-
     public function import(array $csv = null)
     {
         $instance = & get_instance();
@@ -333,6 +317,22 @@ class OrgsModel extends BaseModel
             }
         }
         return $result;
+    }
+
+    /**
+     * Read the entire collection from the database, not restricted to the user
+     *
+     * @return array  An array of all Orgs
+     */
+    public function listAll(): array
+    {
+        $sql = 'SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT devices.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN devices ON (orgs.id = devices.org_id) GROUP BY orgs.id';
+        $orgs = $this->db->query($sql)->getResult();
+        foreach ($orgs as $org) {
+            $org->id = intval($org->id);
+            $org->parent_id = intval($org->parent_id);
+        }
+        return $orgs;
     }
 
     /**
