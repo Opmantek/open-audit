@@ -66,23 +66,25 @@ include 'shared/read_functions.php';
         </main>
 <?php if (strpos($user->permissions[$meta->collection], 'u') !== false) { ?>
 <script>
-$(document).ready(function() {
-    <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-    $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="fa fa-rotate-right"></span>&nbsp;<?= __('Reset') ?></button></form>');
-    <?php } else if (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-    $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="fa fa-rotate-right"></span></button></form>');
-    <?php } else { ?>
-    $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><?= __('Reset') ?></button></form>');
-    <?php } ?>
+window.onload = function () {
+    $(document).ready(function() {
+        <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="fa fa-rotate-right"></span>&nbsp;<?= __('Reset') ?></button></form>');
+        <?php } else if (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="fa fa-rotate-right"></span></button></form>');
+        <?php } else { ?>
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><?= __('Reset') ?></button></form>');
+        <?php } ?>
 
-    document.getElementById('<?= $meta->collection ?>ResetForm').addEventListener('submit', function(e){
-        if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $meta->collection ?> table and insert the original rows.") == true) {
-            return;
-        }
-        e.preventDefault();
+        document.getElementById('<?= $meta->collection ?>ResetForm').addEventListener('submit', function(e){
+            if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $meta->collection ?> table and insert the original rows.") == true) {
+                return;
+            }
+            e.preventDefault();
+        });
+        $("#button_export_json").remove();
+        $(".delete_link").remove();
     });
-    $("#button_export_json").remove();
-    $(".delete_link").remove();
-});
+}
 </script>
 <?php } ?>
