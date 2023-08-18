@@ -67,7 +67,9 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#type").val("<?= $resource->type ?>");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#type").val("<?= $resource->type ?>");
+    });
+}
 </script>

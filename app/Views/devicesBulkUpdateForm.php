@@ -163,44 +163,46 @@ $ids = implode(',', $id);
 
 
 <script>
-$(document).ready(function() {
-    /* Remove these panel header buttons */
-    $("#button_export_json").remove();
-    $("#button_export_json").remove();
-    $("#button_export_json").remove();
+window.onload = function () {
+    $(document).ready(function() {
+        /* Remove these panel header buttons */
+        $("#button_export_json").remove();
+        $("#button_export_json").remove();
+        $("#button_export_json").remove();
 
-    $("#button_import_json").remove();
-    $("#button_import_json").remove();
-    $("#button_import_json").remove();
+        $("#button_import_json").remove();
+        $("#button_import_json").remove();
+        $("#button_import_json").remove();
 
-    $("#button_export_csv").remove();
-    $("#button_export_csv").remove();
-    $("#button_export_csv").remove();
+        $("#button_export_csv").remove();
+        $("#button_export_csv").remove();
+        $("#button_export_csv").remove();
 
-    $("#button_import_csv").remove();
-    $("#button_import_csv").remove();
-    $("#button_import_csv").remove();
+        $("#button_import_csv").remove();
+        $("#button_import_csv").remove();
+        $("#button_import_csv").remove();
 
-    $("#button_create").remove();
-    $("#button_create").remove();
-    $("#button_create").remove();
+        $("#button_create").remove();
+        $("#button_create").remove();
+        $("#button_create").remove();
 
-    $("#button_help").remove();
-    $("#button_help").remove();
-    $("#button_help").remove();
+        $("#button_help").remove();
+        $("#button_help").remove();
+        $("#button_help").remove();
 
-    /* Add a blank entry for the select boxes (read_select populates the existing value) */
-    $("#class").append('<option></option>');
-    $("#class").val("").change();
-    $("#environment").append('<option></option>');
-    $("#environment").val("").change();
-    $("#location_id").append('<option></option>');
-    $("#location_id").val("").change();
-    $("#org_id").append('<option></option>');
-    $("#org_id").val("").change();
-    $("#status").append('<option></option>');
-    $("#status").val("").change();
-    $("#type").append('<option></option>');
-    $("#type").val("").change();
-});
+        /* Add a blank entry for the select boxes (read_select populates the existing value) */
+        $("#class").append('<option></option>');
+        $("#class").val("").change();
+        $("#environment").append('<option></option>');
+        $("#environment").val("").change();
+        $("#location_id").append('<option></option>');
+        $("#location_id").val("").change();
+        $("#org_id").append('<option></option>');
+        $("#org_id").val("").change();
+        $("#status").append('<option></option>');
+        $("#status").val("").change();
+        $("#type").append('<option></option>');
+        $("#type").val("").change();
+    });
+}
 </script>

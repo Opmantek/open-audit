@@ -141,11 +141,13 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#secure").val("<?= $resource->secure ?>");
-    $("#use_roles").val("<?= $resource->use_roles ?>");
-    $("#use_auth").val("<?= $resource->use_auth ?>");
-    $("#type").val("<?= $resource->type ?>");
-    $("#lang").val("<?= $resource->lang ?>");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#secure").val("<?= $resource->secure ?>");
+        $("#use_roles").val("<?= $resource->use_roles ?>");
+        $("#use_auth").val("<?= $resource->use_auth ?>");
+        $("#type").val("<?= $resource->type ?>");
+        $("#lang").val("<?= $resource->lang ?>");
+    });
+}
 </script>

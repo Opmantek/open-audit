@@ -47,9 +47,11 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#menu_category").val("<?= $resource->menu_category ?>");
-    $("#menu_display").val("<?= $resource->menu_display ?>");
-    $("#table").val("<?= $resource->table ?>");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#menu_category").val("<?= $resource->menu_category ?>");
+        $("#menu_display").val("<?= $resource->menu_display ?>");
+        $("#table").val("<?= $resource->table ?>");
+    });
+}
 </script>

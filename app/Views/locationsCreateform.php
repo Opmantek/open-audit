@@ -58,7 +58,9 @@ foreach ($included['types'] as $type) {
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#data\\[attributes\\]\\[type\\]").val("Office");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#data\\[attributes\\]\\[type\\]").val("Office");
+    });
+}
 </script>

@@ -67,7 +67,9 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#data\\[attributes\\]\\[type\\]").val("Local Area Network");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#data\\[attributes\\]\\[type\\]").val("Local Area Network");
+    });
+}
 </script>

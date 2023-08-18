@@ -120,7 +120,9 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#org_descendants").val("<?= $resource->org_descendants ?>");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#org_descendants").val("<?= $resource->org_descendants ?>");
+    });
+}
 </script>

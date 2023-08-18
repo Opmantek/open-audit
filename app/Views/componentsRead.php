@@ -56,8 +56,10 @@ $user->permissions['components'] = '';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#button_list").remove();
-    $("#button_export_json").remove();
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#button_list").remove();
+        $("#button_export_json").remove();
+    });
+}
 </script>

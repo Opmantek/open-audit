@@ -66,7 +66,9 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#type").val("<?= $resource->type ?>");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#type").val("<?= $resource->type ?>");
+    });
+}
 </script>

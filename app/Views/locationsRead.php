@@ -52,9 +52,3 @@ include 'shared/read_functions.php';
                 </div>
             </div>
         </main>
-
-<script>
-$(document).ready(function() {
-
-});
-</script>

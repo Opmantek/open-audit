@@ -105,7 +105,7 @@ include 'shared/collection_functions.php';
                                                 $selected = 'selected';
                                             }
                                             echo '<option value="' . $org->id . "\" $selected >" . __($org->attributes->name) . "</option>\n";
-                                            } ?>
+                                        } ?>
                                     </select>
                                         <?php if ($update) { ?>
                                         <div class="float-right" style="padding-left:4px;">
@@ -120,7 +120,6 @@ include 'shared/collection_functions.php';
                             </div>
 
                             <?php // TODO - dashboard and default display columns ?>
-
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
@@ -137,13 +136,14 @@ include 'shared/collection_functions.php';
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
                                 <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                <?php $do_not_show = array('id', 'dashboard_id', 'active', 'ldap', 'type', 'devices_default_display_columns', 'access_token', 'edited_by', 'edited_date'); ?>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    if (!in_array($key, $do_not_show)) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                    <?php
+                                    $do_not_show = array('id', 'dashboard_id', 'active', 'ldap', 'type', 'devices_default_display_columns', 'access_token', 'edited_by', 'edited_date');
+                                    foreach ($dictionary->columns as $key => $value) {
+                                        if (!in_array($key, $do_not_show)) {
+                                            echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                        }
                                     }
                                 } ?>
-                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -152,16 +152,18 @@ include 'shared/collection_functions.php';
             </main>
 
 <script>
-$(document).ready(function() {
-    $("#lang").val("<?= $resource->lang ?>");
-    $("#toolbar_style").val("<?= $resource->toolbar_style ?>");
+window.onload = function () {
+    $(document).ready(function() {
+        $("#lang").val("<?= $resource->lang ?>");
+        $("#toolbar_style").val("<?= $resource->toolbar_style ?>");
 
-    <?php if (isset($resource->password)) {
-        if ($resource->password !== '') { ?>
-            $("#password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
-        <?php } else { ?>
-            $("#password").attr("placeholder", "<?= __("has not been set") ?>");
-        <?php }
-    } ?>
-});
+        <?php if (isset($resource->password)) {
+            if ($resource->password !== '') { ?>
+                $("#password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+            <?php } else { ?>
+                $("#password").attr("placeholder", "<?= __("has not been set") ?>");
+            <?php }
+        } ?>
+    });
+}
 </script>

@@ -84,7 +84,9 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function() {
-    $("#menu_display").val("<?= $resource->menu_display ?>");
-});
+window.onload = function () {
+    $(document).ready(function() {
+        $("#menu_display").val("<?= $resource->menu_display ?>");
+    });
+}
 </script>
