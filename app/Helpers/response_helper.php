@@ -69,6 +69,9 @@ if (!function_exists('response_create')) {
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
+        if ($response->meta->collection === 'widgets' and $response->meta->action === 'execute') {
+            $permission_requested['execute'] = 'r';
+        }
 
         if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
             $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
@@ -1317,7 +1320,7 @@ if (!function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','tasks','users','widgets');
+        return array('applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
     }
 }
 
