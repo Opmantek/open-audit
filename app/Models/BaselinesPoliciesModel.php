@@ -351,6 +351,8 @@ class BaselinesPoliciesModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
+        $dictionary->sentence = '';
+
         $dictionary->about = '';
 
         $dictionary->notes = '';

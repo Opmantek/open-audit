@@ -319,31 +319,26 @@ class ChartModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'buildings';
+        $collection = 'charts';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'locations.name', 'description', 'edited_by', 'edited_date');
-        $dictionary->attributes->create = array('name', 'org_id', 'location_id'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->collection = array();
+        $dictionary->attributes->create = array(); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
-        $dictionary->about =  '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->sentence = '';
 
-        $dictionary->notes = '<p>Buildings go inside your Locations and contain Floors.<br /><br /></p>';
+        $dictionary->about =  '';
+
+        $dictionary->notes = '';
 
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
-        $dictionary->columns->options = 'Unused.';
-        $dictionary->columns->notes = 'Unused.';
-        $dictionary->columns->tags = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

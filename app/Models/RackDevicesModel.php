@@ -226,6 +226,8 @@ class RackDevicesModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
+        $dictionary->sentence = 'Place your devices into racks.';
+
         $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';

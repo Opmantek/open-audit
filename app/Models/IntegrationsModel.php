@@ -1582,18 +1582,27 @@ class IntegrationsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
-        $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.</p>';
+        $dictionary->sentence = 'Use Open-AudIT to integrate with external systems.';
 
-        $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br /><br />If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br /><em>Linux</em>: /usr/local/open-audit/www/open-audit/images/map_icons<br /><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a \'device\', valid <i>types</i> are: \'class\', \'environment\', \'status\' and \'type\'. If the <i>resource</i> is \'locations\' or \'orgs\' the only valid <i>type</i> is \'type\'. If the <i>resource</i> is a \'query\' the only valid <i>type</i> is \'menu_category\'.</p>';
+        $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+
+        $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br /><br />The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = \'Debian\'</code><br /><br /></p>';
+
+        $dictionary->system_fields = $this->db->getFieldNames('devices');
+        sort($dictionary->system_fields);
+        $dictionary->remote_format = array('string', 'int', 'bool', 'date_YMD', 'date_MDY', 'date_DMY');
+        sort($dictionary->remote_format);
+        $dictionary->transform = array('', 'string', 'int', 'bool', 'capitalise', 'lower', 'upper', 'date', 'date_now', 'date_time', 'datetime_now', 'int_to_bool', 'int_to_yn', 'yn_to_int', 'yn_to_bool');
+        sort($dictionary->transform);
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->type = 'The type of the integration (usually named after the remote system).';
+        $dictionary->columns->type = 'The type of the integration (usually named after the external system).';
         $dictionary->columns->populate_from_local = 'Should we add devices from the remote service, locally.';
-        $dictionary->columns->populate_from_remote = 'Should we populate the remote system from our local devices.';
+        $dictionary->columns->populate_from_remote = 'Should we populate the external system from our local devices.';
         $dictionary->columns->query_id = 'The query that provides a list of devices for the integration. Links to <code>queries.id</code>.';
         $dictionary->columns->group_id = 'The group that provides a list of devices for the integration. Links to <code>groups.id</code>.';
         $dictionary->columns->last_run = 'The last time this integration was run.';
@@ -1617,15 +1626,15 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->update_internal_from_external = 'When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?';
         $dictionary->columns->discovery_run = 'When retrieve an external device, should we run discovery upon it?';
         $dictionary->columns->select_internal_type = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';
-        $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'system\' table).';
+        $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'devices\' table).';
         $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected or contains the ID of the query to be used.';
 
         $dictionary->columns->create_external_count = 'The calculated number of devices to be created externally.';
         $dictionary->columns->create_internal_count = 'The calculated number of devices to be created in Open-AudIT.';
         $dictionary->columns->create_external_from_internal = 'If an Open-AudIT device is not on the external system, should we create it.';
         $dictionary->columns->update_external_from_internal = 'If an Open-AudIT device has been changed, should we update the external system.';
-        $dictionary->columns->delete_external_from_internal = 'If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the remote system.';
-        $dictionary->columns->select_external_type = 'Which devices should Open-AudIT create from the remote system (if any). Using All, None or a given Attribute.';
+        $dictionary->columns->delete_external_from_internal = 'If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.';
+        $dictionary->columns->select_external_type = 'Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.';
         $dictionary->columns->select_external_attribute = 'The attribute to test (must match an external field name from below).';
         $dictionary->columns->select_external_value = 'This item must match the value of the attribute selected.';
         $dictionary->columns->select_external_count = 'Calculated when integration is run and contains the number of devices selected the external system.';

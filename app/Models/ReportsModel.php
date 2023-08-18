@@ -325,9 +325,12 @@ class ReportsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
-        $dictionary->about = '<p></p>';
+        $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.';
 
-        $dictionary->notes = '<p></p>';
+        $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen "over time". All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>"over time\</i>.<br /><br /></p>';
+
+        $dictionary->marketing = '<p>Open-AudIT Professional and Enterprise make report creation effortless through Enhanced Reporting features like time-based reports, historical reports, and multi-query based reporting. Reports can be created dynamically and interacted with on screen, or exported to CVS for further analysis.<br /><br />
+Simply Select which types of devices you want to be exported, which queries to run, and the format you want. Export to CSV and analyze offline, or import into your favorite third part data visualizer. The power is in your hands with Open-AudIT Enterprise Enhanced Reporting.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;

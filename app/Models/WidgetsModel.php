@@ -653,6 +653,8 @@ class WidgetsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
         $dictionary->attributes->update = $this->updateFields($collection);
 
+        $dictionary->sentence = 'Widgets are used on Dashboards and are completely open to user design.';
+
         $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br /><br /></p>';

@@ -318,20 +318,17 @@ class NetworksModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
+        $dictionary->sentence = 'Open-AudIT stores your networks and in addition, provides a secure mechanism for accepting input data.';
+
         $dictionary->about = '<p>A network is derived from discovery entries and device attribtes.<br /><br />Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/networks">Knowledge Base</a>.<br /><br /></p>';
         $dictionary->notes = '<p>The network should be in the format 192.168.1.0/24.<br /><br /></p>';
 
         $dictionary->product = 'community';
-
         // Set the below directly for when we don't call using a normal user, via CLI discovery
         $dictionary->columns->id = 'The identifier column (integer) in the database (read only).';
         $dictionary->columns->name = 'The name given to this item. Ideally it should be unique.';
         $dictionary->columns->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
         $dictionary->columns->description = 'Your description of this item.';
-        // $dictionary->columns->id = $instance->dictionary->id;
-        // $dictionary->columns->name = $instance->dictionary->name;
-        // $dictionary->columns->org_id = $instance->dictionary->org_id;
-        // $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->network = 'The network in the format 192.168.1.0/24.';
         $dictionary->columns->type = "One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.";
         $dictionary->columns->external_ident = 'The ID retrieved from a Cloud discovery.';
@@ -352,8 +349,6 @@ class NetworksModel extends BaseModel
         // Set the below directly for when we don't call using a normal user, via CLI discovery
         $dictionary->columns->edited_by = 'The name of the user who last changed or added this item (read only).';
         $dictionary->columns->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
-        // $dictionary->columns->edited_by = $instance->dictionary->edited_by;
-        // $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
     }
 }

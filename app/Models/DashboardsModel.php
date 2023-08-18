@@ -248,6 +248,8 @@ class DashboardsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
         $dictionary->attributes->update = $this->updateFields($collection);
 
+        $dictionary->sentence = "Open-AudIT Professional and Enterprises' interactive Dashboard provides a single point of access to audit status and results. The ability to customize and create Dashboards is an Enterprise feature.";
+
         $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '<p><table class="table table-bordered">

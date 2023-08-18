@@ -369,8 +369,9 @@ class DatabaseModel extends BaseModel
         $dictionary->attributes->fields = array();
         $dictionary->attributes->update = array();
         $dictionary->attributes->fieldsMeta = array();
-        $dictionary->about = '<p></p>';
-        $dictionary->notes = '<p></p>';
+        $dictionary->sentence = '';
+        $dictionary->about = '';
+        $dictionary->notes = '';
         return $dictionary;
     }
 }
