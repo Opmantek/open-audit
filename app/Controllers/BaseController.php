@@ -141,6 +141,12 @@ abstract class BaseController extends Controller
         if (empty($this->user->permissions['search'])) {
             $this->user->permissions['search'] = $this->user->permissions['devices'];
         }
+        if (empty($this->user->permissions['maps'])) {
+            $this->user->permissions['maps'] = 'r';
+        }
+        if (empty($this->user->permissions['support'])) {
+            $this->user->permissions['support'] = 'r';
+        }
 
         if (intval($this->config->internal_version) < intval($this->config->appVersion)) {
             if ($router->controllerName() !== '\App\Controllers\Database' and $router->methodName() !== 'update') {
