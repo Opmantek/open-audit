@@ -29,14 +29,10 @@ $routes->setAutoRoute(false);
  * --------------------------------------------------------------------
  */
 
-$routes->collections = array('applications','attributes','baselines',
-'baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
-'configuration','connections','credentials','dashboards','devices',
-'discoveries','discovery_log','discovery_scan_options','errors','fields','files',
-'groups','integrations','ldap_servers','licenses','locations',
-'networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
-'rules','scripts','summaries','tasks','users',
-'widgets');
+$routes->collections = array('applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
+'configuration','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files',
+'groups','integrations','ldap_servers','licenses','locations','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
+'rules','scripts','summaries','support','tasks','users','widgets');
 
 # The default route
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
@@ -73,8 +69,8 @@ $routes->post('devices/importnmis', 'Devices::importNMIS', ['filter' => \App\Fil
 $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
 
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
+$routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
-$routes->get('support', 'Help::support', ['filter' => \App\Filters\Session::class, 'as' => 'support']);
 
 $routes->post('input/devices', 'Input::devices');
 $routes->post('input/logs', 'Input::logs');
