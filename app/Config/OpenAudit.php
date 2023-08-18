@@ -53,11 +53,11 @@ class OpenAudit extends BaseConfig
             $this->discovery_linux_script_directory .= '/';
         }
 
-        $this->oa_web_index = site_url();
+        // $this->oa_web_index = site_url();
 
-        $temp = explode('/', base_url());
-        unset($temp[0], $temp[1], $temp[2]);
-        $this->oa_web_folder =  '/' . implode('/', $temp);
+        // $temp = explode('/', base_url());
+        // unset($temp[0], $temp[1], $temp[2]);
+        // $this->oa_web_folder =  '/' . implode('/', $temp);
 
         $query = $db->query('SELECT NOW() as `timestamp`');
         $result = $query->getRow();
