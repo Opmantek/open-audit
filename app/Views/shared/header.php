@@ -121,21 +121,25 @@ $categories = array_unique($categories);
 
         <!-- Open-AudIT specific items -->
         <script>
-            <?php
-            if (isset($meta->id) and !is_null($meta->id)) {
-                echo "            var id = '" . $meta->id . "';\n";
-            }
-            if (!empty($meta->collection)) {
-                echo "            var collection = '" . $meta->collection . "';\n";
-            }
-            if (!empty($meta->baseurl)) {
-                echo "            var baseurl = '" . $meta->baseurl . "';\n";
-            } else {
-                echo "            var baseurl = '';\n";
-            }
-            ?>
-            var web_folder = '<?= base_url() ?>';
-            var device_auto_delete = '<?= config('Openaudit')->device_auto_delete; ?>';
+        <?php if (isset($meta->id) and !is_null($meta->id)) {
+                echo "  var id = '" . $meta->id . "';\n";
+        }
+        if (!empty($meta->collection)) {
+            echo "            var collection = '" . $meta->collection . "';\n";
+        }
+        if (!empty($meta->baseurl)) {
+            echo "            var baseurl = '" . $meta->baseurl . "';\n";
+        } else {
+            echo "            var baseurl = '';\n";
+        } ?>
+        var web_folder = '<?= base_url() ?>';
+        var device_auto_delete = '<?= config('Openaudit')->device_auto_delete; ?>';
+        <?php
+        $license = (!empty(config('Openaudit')->license)) ? strtolower(config('Openaudit')->license) : 'none';
+        $product = (!empty(config('Openaudit')->product)) ? config('Openaudit')->product : 'community';
+        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+            echo "            window.onload = function() { $('#myModalLicense').modal('show'); }\n";
+        } ?>
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -231,7 +235,7 @@ $categories = array_unique($categories);
                                 foreach ($reports as $report) {
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
-                                            if (config('Openaudit')->oae_license !== 'commercial') {
+                                            if (config('Openaudit')->license !== 'commercial') {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('queriesExecute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
@@ -479,7 +483,7 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Getting+Started"><?= __('Getting Started') ?></a></li>
                                 <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Open-AudIT+FAQ"><?= __('FAQ') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
-                                <li><a class="dropdown-item" href="<?= url_to('support') ?>"><?= __('Support') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Defaults') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
@@ -505,12 +509,15 @@ $categories = array_unique($categories);
                             <ul class="dropdown-menu" aria-labelledby="navbarModules">
 <?php
 if (!empty(config('Openaudit')->modules)) {
-    $modules = json_decode(config('Openaudit')->modules);
+    $modules = config('Openaudit')->modules;
+    if (is_string($modules)) {
+        $modules = json_decode($modules);
+    }
     foreach ($modules as $module) {
         if (!empty($module->installed)) {
             $url = $module->link;
         } else {
-            $url = $module->url;
+            $url = @$module->url;
         }
         echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $url . "\">" . $module->name . "</a></li>\n";
     }
@@ -526,7 +533,7 @@ if (!empty(config('Openaudit')->modules)) {
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
-                                <li><a class="dropdown-item buy_more_licenses" href='#'><?= __('Buy More Licenses')?></a></li>
+                                <li><a class="dropdown-item buy_more_licenses" href='#' data-bs-toggle="modal" data-bs-target="#myModalLicense"><?= __('Buy More Licenses')?></a></li>
                             </ul>
                         </li>
 
@@ -701,3 +708,5 @@ function get_user_permission($collection, $action, $user)
     }
     return false;
 }
+
+include('modal.php');

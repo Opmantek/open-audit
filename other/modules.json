@@ -1,8 +1,8 @@
 {
-	"NMIS8": {
-		"name": "NMIS8",
+	"NMIS": {
+		"name": "NMIS",
 		"file": "/cgi-bin/nmiscgi.pl",
-		"link": "/cgi-nmis8/nmiscgi.pl",
+		"link": "/cgi-nmis9/nmiscgi.pl",
 		"url": "https://firstwave.com/products/network-management-information-system/"
 	},
 	"opAddress": {
@@ -34,12 +34,6 @@
 		"file": "/install/opeventsd.init.d",
 		"link": "/omk/opEvents/",
 		"url": "https://firstwave.com/opevents-traps-network-event-management/"
-	},
-	"opFlow": {
-		"name": "opFlow",
-		"file": "/bin/opflow-cli.pl",
-		"link": "/omk/opFlow",
-		"url": "https://firstwave.com/products/network-management-information-system/"
 	},
 	"opHA": {
 		"name": "opHA",
