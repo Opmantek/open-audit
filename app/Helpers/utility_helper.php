@@ -559,6 +559,12 @@ if (!function_exists('collections_list')) {
         $collections->summaries->edition = 'Professional';
         $collections->summaries->orgs = 'b';
 
+        $collections->support = new \StdClass();
+        $collections->support->icon = 'fa-solid fa-headset';
+        $collections->support->name = 'Support';
+        $collections->support->edition = 'Professional';
+        $collections->support->orgs = 'b';
+
         $collections->tasks = new \StdClass();
         $collections->tasks->icon = 'fa fa-clock-o';
         $collections->tasks->name = 'Tasks';
