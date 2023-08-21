@@ -1966,6 +1966,7 @@ CREATE TABLE `ip` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   KEY `mac` (`mac`),
+  KEY `network` (`network`),
   CONSTRAINT `ip_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2400,6 +2401,8 @@ CREATE TABLE `network` (
   KEY `system_id` (`device_id`),
   KEY `net_index` (`net_index`),
   KEY `mac` (`mac`),
+  KEY `dhcp_server` (`dhcp_server`),
+  KEY `dns_server` (`dns_server`),
   CONSTRAINT `network_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -3036,6 +3039,7 @@ CREATE TABLE `route` (
   `type` varchar(10) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
+  KEY `next_hop` (`next_hop`),
   CONSTRAINT `route_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

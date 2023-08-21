@@ -546,6 +546,26 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "ALTER TABLE `ip` ADD index IF NOT EXISTS `network` (`network`)";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "ALTER TABLE `network` ADD index IF NOT EXISTS `dhcp_server` (`dhcp_server`)";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "ALTER TABLE `network` ADD index IF NOT EXISTS `dns_server` (`dns_server`)";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "ALTER TABLE `route` ADD index IF NOT EXISTS `next_hop` (`next_hop`)";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = 'UPDATE `widgets` SET `sql` = REPLACE(`sql`, "system.", "devices.")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
