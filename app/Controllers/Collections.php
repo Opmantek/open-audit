@@ -228,6 +228,13 @@ class Collections extends BaseController
         $this->databaseModel = model('App\Models\DatabaseModel');
         $data = $this->databaseModel->read($this->resp->meta->collection);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        if ($this->resp->meta->format !== 'html') {
+            $this->resp->dictionary_rows = $this->databaseModel->read($this->resp->meta->collection);
+            $this->resp->dictionary = $dictionary;
+            $this->resp->data = $defaults;
+            output($this);
+            return true;
+        }
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
