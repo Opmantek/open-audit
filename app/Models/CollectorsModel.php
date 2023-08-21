@@ -92,6 +92,7 @@ class CollectorsModel extends BaseModel
 
     /**
      * Return an array containing arrays of related items to be stored in resp->included
+     * NOTE - Items formatted (attributes->), except logs (raw SQL result)
      *
      * @param  int $id The ID of the requested item
      * @return array  An array of anything needed for screen output
@@ -143,7 +144,7 @@ class CollectorsModel extends BaseModel
     /**
      * Read the entire collection from the database
      *
-     * @return array  An array of all entries
+     * @return array  An array of all entries, unformatted
      */
     public function listAll(): array
     {
