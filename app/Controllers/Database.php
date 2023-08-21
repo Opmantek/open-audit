@@ -67,7 +67,13 @@ class Database extends BaseController
         }
     }
 
-
+    public function delete(string $table = '', string $status = '')
+    {
+        // This will delete ALL data from a table with the exception of devices, which will delete by status
+        $this->databaseModel = model('App\Models\DatabaseModel');
+        $test = $this->databaseModel->deleteAll($table, $status);
+        return $test;
+    }
 
     public function compare()
     {

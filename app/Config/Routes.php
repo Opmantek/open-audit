@@ -56,6 +56,8 @@ $routes->get('database/compare', 'Database::compare', ['filter' => \App\Filters\
 $routes->get('database/help', 'Database::help', ['filter' => \App\Filters\Session::class, 'as' => 'databaseHelp']);
 $routes->get('database/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseRead']);
 $routes->get('database', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCollection']);
+$routes->delete('database/(:any)/(:any)', 'Database::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'databaseDelete']);
+$routes->delete('database/(:any)', 'Database::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseDelete']);
 
 $routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
 $routes->get('devices/create/example', 'devices::createExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExampleForm']);

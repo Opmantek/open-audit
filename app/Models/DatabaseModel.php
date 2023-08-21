@@ -59,6 +59,28 @@ class DatabaseModel extends BaseModel
         return $return;
     }
 
+    public function deleteAll(string $table = '', string $status = ''): bool
+    {
+        if ($table === 'devices') {
+            log_message('info', 'In here');
+            if (empty($status)) {
+                log_message('info', 'no status');
+                return false;
+            }
+            $sql = "DELETE FROM devices WHERE status = ?";
+            $this->db->query($sql, [$status]);
+            log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+            return true;
+        }
+        if (in_array($table, $this->db->listTables())) {
+            $sql = "DELETE FROM $table";
+            $this->db->query($sql);
+            log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Return an array containing arrays of related items to be stored in resp->included
      *
