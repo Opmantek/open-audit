@@ -131,6 +131,14 @@ class LocationsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
+        if ($id === 1) {
+            # We cannot delete the default Location
+            return false;
+        }
+        // Set all devices in this location to the default location
+        $sql = "UPDATE devices SET location_id = 1 WHERE location_id = ?";
+        $this->db->query($sql, [$id]);
+        // Delete the location
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return false;
