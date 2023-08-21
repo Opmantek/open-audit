@@ -37,6 +37,10 @@ class DevicesModel extends BaseModel
         $properties[] = "orgs.id as `orgs.id`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $properties[] = "locations.name as `locations.name`";
+        $properties[] = "locations.id as `locations.id`";
+        $this->builder->select($properties, false);
+        $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
@@ -98,6 +102,10 @@ class DevicesModel extends BaseModel
             } else {
                 $data->name = '';
             }
+        }
+        if (strpos($data->name, '.') !== false) {
+            $temp = explode('.', $data->name);
+            $data->name = $temp[0];
         }
         if (empty($data->org_id)) {
             $data->org_id = 1;
@@ -262,7 +270,7 @@ class DevicesModel extends BaseModel
         }
 
         $include = array();
-        $current = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $current = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
@@ -273,6 +281,22 @@ class DevicesModel extends BaseModel
                 }
             }
         }
+
+        if (!empty($include['ip'])) {
+            $count = count($include['ip']);
+            for ($i=0; $i < $count; $i++) {
+                $include['ip'][$i]->ip_padded = $include['ip'][$i]->ip;
+                $include['ip'][$i]->ip = ip_address_from_db($include['ip'][$i]->ip);
+            }
+        }
+
+        $sql = "SELECT server.*, certificate.id AS `certificate.id` FROM `server` LEFT JOIN certificate ON (server.certificates = certificate.name and server.device_id = certificate.device_id and certificate.current = 'y') WHERE server.device_id = ? and server.current = 'y'";
+        $query = $this->db->query($sql, $id);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['server'] = $result;
+        }
+
 
         $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'credential', 'edit_log', 'image', 'rack_devices');
         foreach ($no_current as $table) {
