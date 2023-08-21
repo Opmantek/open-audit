@@ -143,22 +143,28 @@ class BaseModel extends Model
 
         $sql = "DELETE FROM `{$table}`";
         $query = $db->query($sql);
+        log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($GLOBALS['stash']));
+            log_message('error', json_encode($GLOBALS['stash']));
             return false;
         }
 
         $sql = "ALTER TABLE `{$table}` AUTO_INCREMENT = 1";
         $query = $db->query($sql);
+        log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($GLOBALS['stash']));
+            log_message('error', json_encode($GLOBALS['stash']));
             return false;
         }
 
         $sql = "OPTIMIZE TABLE `{$table}`";
         $query = $db->query($sql);
+        log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($GLOBALS['stash']));
+            log_message('error', json_encode($GLOBALS['stash']));
             return false;
         }
 
@@ -168,14 +174,17 @@ class BaseModel extends Model
         for ($i=0; $i < $count; $i++) {
             if (stripos($sql_file[$i], "INSERT INTO `{$table}` VALUES") !== false) {
                 $db->query($sql_file[$i]);
+                log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
                 if ($this->sqlError($db->error())) {
                     \Config\Services::session()->setFlashdata('error', json_encode($GLOBALS['stash']));
+                    log_message('error', json_encode($GLOBALS['stash']));
                     return false;
                 }
             }
         }
 
         \Config\Services::session()->setFlashdata('success', "The {$table} table has been reset - existing data removed and default data inserted.");
+        log_message('info', "The {$table} table has been reset - existing data removed and default data inserted.");
         return true;
     }
 
