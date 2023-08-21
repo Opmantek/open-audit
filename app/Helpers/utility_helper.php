@@ -20,6 +20,7 @@ function &get_instance() # : \App\Controllers\BaseController
 
 function format_data($result, $type)
 {
+
     if (empty($result)) {
         // log_message('debug', 'No data provided to format_data function from '. debug_backtrace()[1]['class'] . '::' . debug_backtrace()[1]['function'] . ' for ' . $type);
         return array();
@@ -84,6 +85,10 @@ function format_data($result, $type)
             }
             if (strrpos((string)$key, 'location_id') === strlen((string)$key)-11) {
                 $item->{'locations.id'} = intval($value);
+            }
+            if ($key === 'ip' or strrpos((string)$key, '.ip') === strlen((string)$key)-3 or strrpos((string)$key, '_ip') === strlen((string)$key)-3) {
+                $item->{$key . '_padded'} = $value;
+                $item->{$key} = ip_address_from_db($value);
             }
         }
     }
