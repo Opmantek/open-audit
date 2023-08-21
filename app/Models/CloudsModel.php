@@ -127,7 +127,7 @@ class CloudsModel extends BaseModel
     public function includedRead(int $id = 0): array
     {
         $included = array();
-        $sql = "SELECT * FROM cloud_log WHERE cloud_id = ?";
+        $sql = "SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY id";
         $included['cloud_log'] = $this->db->query($sql, [$id])->getResult();
         return $included;
     }
