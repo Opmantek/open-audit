@@ -139,6 +139,7 @@ class Collections extends BaseController
                         sleep(2);
                     }
                 }
+                $this->resp->meta->id = $id;
                 output($this);
                 return true;
             } else {
