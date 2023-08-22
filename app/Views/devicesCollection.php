@@ -45,6 +45,8 @@ include 'shared/collection_functions.php';
                                             }
                                             if ($key === 'icon') {
                                                 echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
+                                            } else if ($key === 'ip' and !empty($item->attributes->ip_padded)) {
+                                                echo "                                    <td><span style=\"display:none;\">" . $item->attributes->ip_padded . "</span>" . $item->attributes->{$key} . "</td>\n";
                                             } else {
                                                 echo "                                    <td>" . $item->attributes->{$key} . "</td>\n";
                                             }
