@@ -24,7 +24,7 @@
 # *****************************************************************************
 *
 * PHP version 5.3.3
-* 
+*
 * @category  Helper
 * @author    Mark Unwin <mark.unwin@firstwave.com>
 * @copyright 2022 Firstwave
@@ -868,7 +868,7 @@ if (!function_exists('integrations_create')) {
             }
             $external_device = @json_decode($output);
             if (empty($external_device)) {
-                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] No JSON in result from NMIS. Result: ' . (string)$output)";
+                $sql = "/* integrations_nmis_helper::create */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] No JSON in result from NMIS. Result: " . (string)$output . "')";
                 $data = array($integration->id, microtime(true));
                 $query = $CI->db->query($sql, $data);
                 curl_close($ch);
