@@ -42,6 +42,7 @@ class Queue extends BaseController
         $this->credentialsModel = new \App\Models\CredentialsModel();
         $this->devicesModel = new \App\Models\DevicesModel();
         $this->discoveriesModel = new \App\Models\DiscoveriesModel();
+        $this->discoveryLogModel = new \App\Models\DiscoveryLogModel();
         #$this->integrationsModel = new \App\Models\IntegrationsModel();
         $this->networksModel = new \App\Models\NetworksModel();
         $this->orgsModel = new \App\Models\OrgsModel();
@@ -146,6 +147,20 @@ class Queue extends BaseController
                 log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type.");
                 $result = ip_scan($details);
 
+                if (empty($result)) {
+                    $log = new \stdClass();
+                    $log->discovery_id = intval($details->discovery_id);
+                    $log->command = 'Peak Memory';
+                    $log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB';
+                    $log->command_status = 'device complete';
+                    $log->command_time_to_execute = microtime(true)  - $microtime;
+                    $log->message = 'IP scan finish on device ' . ip_address_from_db($details->ip);
+                    $log->ip = ip_address_from_db($details->ip);
+                    $log->function = 'start';
+                    $log->file = 'queue';
+                    $this->discoveryLogModel->create($log);
+                }
+
                 if (!empty($result)) {
                     $result['ip'] = $details->ip;
                     $result['discovery_id'] = $details->discovery_id;
@@ -156,6 +171,7 @@ class Queue extends BaseController
                     $this->queueModel->create($queue_item);
                 }
                 log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type COMPLETED.");
+                discovery_check_finished(intval($details->discovery_id));
             }
 
             if ($item->type === 'ip_audit') {

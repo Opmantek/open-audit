@@ -287,6 +287,7 @@ if (! function_exists('discover_subnet')) {
             } else {
                 $log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
             }
+            $discoveryLogModel->create($log);
             $start = microtime(true);
             $responding_ip_list = responding_ip_list($discovery);
             $log->command_time_to_execute = microtime(true) - $start;
