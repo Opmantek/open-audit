@@ -49,14 +49,16 @@ class SearchModel extends BaseModel
                 if (empty($temp[$i])) {
                     $temp[$i] = '%';
                 } else {
-                    $temp[$i] = mb_substr('000'.$temp[$i], -3);
+                    #$temp[$i] = mb_substr('000'.$temp[$i], -3);
+                    $temp[$i] = '%' . $temp[$i] . '%';
                 }
             }
             $padded_ip = '%' . implode('.', $temp) . '%';
-            $sql = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.hostname AS `devices.hostname`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.status AS `devices.status`, devices.dns_hostname AS `devices.dns_hostname`, devices.dns_domain AS `devices.dns_domain`, devices.sysName AS `devices.sysName`, ip.ip AS `ip.ip` FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y' AND (ip.ip LIKE ? or ip.ip LIKE ?)) WHERE devices.org_id IN ({$instance->user->org_list}) AND ( devices.name LIKE ? OR devices.hostname LIKE ? OR  devices.dns_hostname LIKE ? OR  devices.sysName LIKE ? OR  devices.domain LIKE ? OR  devices.dns_domain LIKE ? OR devices.ip LIKE ? OR devices.ip LIKE ? OR ip.ip LIKE ? or ip.ip LIKE ?)";
+            // $sql = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.hostname AS `devices.hostname`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.status AS `devices.status`, devices.dns_hostname AS `devices.dns_hostname`, devices.dns_domain AS `devices.dns_domain`, devices.sysName AS `devices.sysName`, ip.ip AS `ip.ip` FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y' AND (ip.ip LIKE ? or ip.ip LIKE ?)) WHERE devices.org_id IN ({$instance->user->org_list}) AND ( devices.name LIKE ? OR devices.hostname LIKE ? OR  devices.dns_hostname LIKE ? OR  devices.sysName LIKE ? OR  devices.domain LIKE ? OR  devices.dns_domain LIKE ? OR devices.ip LIKE ? OR devices.ip LIKE ? OR ip.ip LIKE ? or ip.ip LIKE ?)";
             $sql = "SELECT devices.id, devices.icon, devices.type, devices.name, devices.hostname, devices.domain, devices.ip, devices.os_family, devices.status, devices.dns_hostname, devices.dns_domain, devices.sysName, ip.ip AS `ip.ip` FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y' AND (ip.ip LIKE ? or ip.ip LIKE ?)) WHERE devices.org_id IN ({$instance->user->org_list}) AND ( devices.name LIKE ? OR devices.hostname LIKE ? OR  devices.dns_hostname LIKE ? OR  devices.sysName LIKE ? OR  devices.domain LIKE ? OR  devices.dns_domain LIKE ? OR devices.ip LIKE ? OR devices.ip LIKE ? OR ip.ip LIKE ? or ip.ip LIKE ?)";
             $value = '%' . $value . '%';
             $result = $this->db->query($sql, [$value, $padded_ip, $value, $value, $value, $value, $value, $value, $padded_ip, $value, $value, $padded_ip])->getResult();
+            log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             $return = format_data($result, 'devices');
         } else {
             $instance->resp->meta->data_order = array('devices.id', 'devices.icon', 'devices.type', 'devices.name', 'table', 'column', 'value');
