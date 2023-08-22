@@ -772,31 +772,6 @@ LOCK TABLES `collectors` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `commercial`
---
-
-DROP TABLE IF EXISTS `commercial`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `commercial` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `request` text NOT NULL,
-  `response` text NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `commercial`
---
-
-LOCK TABLES `commercial` WRITE;
-/*!40000 ALTER TABLE `commercial` DISABLE KEYS */;
-/*!40000 ALTER TABLE `commercial` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `configuration`
 --
 
