@@ -643,7 +643,7 @@ class DiscoveriesModel extends BaseModel
 
         for ($i=0; $i < count($issues); $i++) {
             // Derive the description and action
-            $issues[$i] = $this->issue_map($issues[$i]);
+            $issues[$i] = $this->issueMap($issues[$i]);
             // Format the IP
             if (!empty($issues[$i]->{'devices.ip'})) {
                 $issues[$i]->{'devices.ip_padded'} = ip_address_to_db($issues[$i]->{'devices.ip'});
