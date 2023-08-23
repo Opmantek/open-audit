@@ -651,7 +651,7 @@ class DevicesModel extends BaseModel
             if (($key !== '') && ($value !== '')) {
                 // need to iterate through available columns and only insert where $key == valid column name
                 if (!in_array($key, $disallowed_fields) && in_array($key, $fields)) {
-                    $previous_value = $db_entry->{$key};
+                    $previous_value = (!empty($db_entry->{$key})) ? $db_entry->{$key} : '';
                     // get the current weight from the edit_log
                     $previous_weight = 10000;
                     $count = count($edit_log);
@@ -750,7 +750,7 @@ class DevicesModel extends BaseModel
                     if (!empty($deviceFields)) {
                         foreach ($deviceFields as $deviceField) {
                             if (intval($field->id) === intval($deviceField->fields_id)) {
-                                $previous_value = $deviceField->value;
+                                $previous_value = (!empty($deviceField->value)) ? $deviceField->value : '';
                                 $update = true;
                                 $sql = "UPDATE field SET value = ?, `timestamp` = NOW() WHERE id = ?";
                                 $this->db->query($sql, [$deviceField->id, $value]);
