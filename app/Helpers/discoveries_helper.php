@@ -835,6 +835,12 @@ if (! function_exists('ip_audit')) {
         if (!empty($discovery->device_id)) {
             // This may have been set on the discovery itself - a single device discovery
             $device->id = intval($discovery->device_id);
+            // And double check this device exists
+            $sql = "SELECT id, name FROM devices WHERE id = ?";
+            $result = $db->query($sql, [$device->id])->getResult();
+            if (empty($result)) {
+                $device->id = '';
+            }
         }
         $device->ip = $ip_scan->ip;
 
@@ -990,12 +996,12 @@ if (! function_exists('ip_audit')) {
             $device->manufacturer = '';
         }
         if (!empty($device->type)
-            and $device->type !== 'computer'
-            and $device->type !== 'unknown'
-            and $device->type !== 'unclassified'
-            and stripos($device->os_name, 'dd-wrt') === false
-            and stripos($device->manufacturer, 'Ubiquiti') === false
-            and stripos($device->manufacturer, 'Synology') === false) {
+                and $device->type !== 'computer'
+                and $device->type !== 'unknown'
+                and $device->type !== 'unclassified'
+                and stripos($device->os_name, 'dd-wrt') === false
+                and stripos($device->manufacturer, 'Ubiquiti') === false
+                and stripos($device->manufacturer, 'Synology') === false) {
             $log->message = 'Not a computer and not a DD-WRT or Ubiquiti or Synology device setting SSH status to false for ' . $device->ip;
             $log->severity = 5;
             $discoveryLogModel->create($log);
@@ -1260,6 +1266,7 @@ if (! function_exists('ip_audit')) {
         if (isset($radio) and is_array($radio) and count($radio) > 0) {
             $log->command_status = 'notice';
             $log->message = 'Processing found radios for ' . $device->ip;
+            $discoveryLogModel->create($log);
             $componentsModel->upsert('radio', $device, $radio);
         }
 
