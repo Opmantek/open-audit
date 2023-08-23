@@ -826,16 +826,6 @@ if (!function_exists('integrations_create')) {
 
         // loop over our devices and send them to be created
         foreach ($devices as $device) {
-            $device->polling_policy = new \StdClass();
-            $device->polling_policy->collect = 1;
-            $device->polling_policy->group = $device->configuration->group;
-            $device->polling_policy->netType = $device->configuration->netType;
-            $device->polling_policy->ping = 1;
-            $device->polling_policy->polling_policy = 'default';
-            $device->polling_policy->port = 161;
-            $device->polling_policy->roleType = 'default';
-            $device->polling_policy->threshold = 1;
-
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
