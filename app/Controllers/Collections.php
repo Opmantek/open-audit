@@ -79,6 +79,11 @@ class Collections extends BaseController
                 $this->resp->meta->data_order[] = str_replace($this->resp->meta->collection . '.', '', $key);
             }
         }
+        if ($this->resp->meta->collection === 'discoveries') {
+            $this->resp->included['issues'] = $this->discoveriesModel->issuesCollection(intval($this->user->id));
+            // $this->collectorsModel = new \App\Models\CollectorsModel;
+            // $this->resp->included['collectors'] = $this->collectorsModel->listUser();
+        }
         if ($this->resp->meta->format !== 'html') {
             output($this);
             return;
