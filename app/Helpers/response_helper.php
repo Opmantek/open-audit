@@ -604,15 +604,15 @@ if (!function_exists('response_get_format')) {
 
         if (!empty($header) and stripos((string)$header, 'application/json') !== false) {
             $format = 'json';
-            $summary = "Set format according to HEADER ($format).";
+            $summary = "Set format according to HEADER application/json ($format).";
+        }
+        if (!empty($header) and stripos((string)$header, '*/*') !== false) {
+            $format = 'json';
+            $summary = "Set format according to HEADER */* ($format).";
         }
         if (!empty($header) and stripos((string)$header, 'html') !== false) {
             $format = 'html';
-            $summary = "Set format according to HEADER ($format).";
-        }
-        if (!empty($header) and stripos((string)$header, '/') === false) {
-            $format = $header;
-            $summary = "Set format according to HEADER ($format).";
+            $summary = "Set format according to HEADER html ($format).";
         }
         if (!empty($get)) {
             $format = $get;
