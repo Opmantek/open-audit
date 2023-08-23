@@ -88,10 +88,12 @@ include 'shared/read_functions.php';
         </main>
 
 <script>
-$(document).ready(function () {
-    $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
-    $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
-    $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
-    $("#devices_assigned_to_location").val("<?= $resource->devices_assigned_to_location ?>");
-});
+window.onload = function () {
+    $(document).ready(function () {
+        $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
+        $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
+        $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
+        $("#devices_assigned_to_location").val("<?= $resource->devices_assigned_to_location ?>");
+    });
+}
 </script>
