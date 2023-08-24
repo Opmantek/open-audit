@@ -459,20 +459,43 @@ class Collections extends BaseController
             $this->resp->meta->received_data->json = array($this->resp->meta->received_data->json);
         }
         $id = array();
+        $count_create = 0;
+        $count_create_fail = 0;
+        $count_update = 0;
+        $count_update_fail = 0;
         foreach ($this->resp->meta->received_data->json as $item) {
+            if (!empty($item->id)) {
+                $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->read(intval($item->id));
+                if (empty($test)) {
+                    log_message('warning', 'ID provided to JSON import of ' . $item->id . ' for ' . $this->resp->meta->collection . ' but that row does not exist, removing ID and creating, not updating.');
+                    unset($item->id);
+                }
+            }
             if (!empty($item->id)) {
                 if (empty($item->attributes)) {
                     // Account for old style individual JSON export
-                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->update(intval($item->id), $item);
+                    $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->update(intval($item->id), $item);
                 } else {
-                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->update(intval($item->id), $item->attributes);
+                    $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->update(intval($item->id), $item->attributes);
+                }
+                if (!empty($test)) {
+                    $id[] = $item->id;
+                    $count_update += 1;
+                } else {
+                    $count_update_fail += 1;
                 }
             } else {
                 if (empty($item->attributes)) {
                     // Account for old style individual JSON export
-                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item);
+                    $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item);
                 } else {
-                    $id[] = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+                    $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($item->attributes);
+                }
+                if (!empty($test)) {
+                    $id[] = $test;
+                    $count_create += 1;
+                } else {
+                    $count_create_fail += 1;
                 }
             }
         }
@@ -489,10 +512,18 @@ class Collections extends BaseController
                 $this->resp->meta->header = 200;
                 if ($this->resp->meta->collection !== 'components') {
                     if (count($id) > 1) {
-                        \Config\Services::session()->setFlashdata('success', "Items in {$this->resp->meta->collection} created successfully.");
+                        $message = $count_create . ' ' . $this->resp->meta->collection . ' created successfully.<br />';
+                        $message .= $count_update . ' ' . $this->resp->meta->collection . ' updated successfully.<br />';
+                        $message .= $count_create_fail . ' ' . $this->resp->meta->collection . ' failed to create.<br />';
+                        $message .= $count_update_fail . ' ' . $this->resp->meta->collection . ' failed to update.';
+                        \Config\Services::session()->setFlashdata('success', $message);
                         return redirect()->route($this->resp->meta->collection.'Collection');
                     } else {
-                        \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                        $message = "1 Item in {$this->resp->meta->collection} created successfully.";
+                        if ($count_update === 1) {
+                            $message = "1 Item in {$this->resp->meta->collection} updated successfully.";
+                        }
+                        \Config\Services::session()->setFlashdata('success', $message);
                         return redirect()->route($this->resp->meta->collection.'Read', [$id[0]]);
                     }
                 } else {
