@@ -105,24 +105,26 @@ include 'shared/create_functions.php';
         </main>
 
 <script>
-$(document).ready(function () {
-    $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= config('Openaudit')->discovery_default_scan_option ?>);
-    $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").append($('<option>', { value: '', text: ''}));
-    $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").val("");
-    $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").append($('<option>', { value: '', text: ''}));
-    $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").val("");
+window.onload = function () {
+    $(document).ready(function () {
+        $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= config('Openaudit')->discovery_default_scan_option ?>);
+        $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").append($('<option>', { value: '', text: ''}));
+        $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").val("");
+        $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").append($('<option>', { value: '', text: ''}));
+        $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").val("");
 
 
-    $('#data\\[attributes\\]\\[type\\]').change(function() {
-        var $type = $(this).val();
-        if ($type == "subnet") {
-            $("#ad").css("display", "none");
-            $("#subnet").css("display", "block");
-        } else if ($type == "active directory") {
-            $("#ad").css("display", "block");
-            $("#subnet").css("display", "none");
-        }
+        $('#data\\[attributes\\]\\[type\\]').change(function() {
+            var $type = $(this).val();
+            if ($type == "subnet") {
+                $("#ad").css("display", "none");
+                $("#subnet").css("display", "block");
+            } else if ($type == "active directory") {
+                $("#ad").css("display", "block");
+                $("#subnet").css("display", "none");
+            }
+        });
+
     });
-
-});
+}
 </script>

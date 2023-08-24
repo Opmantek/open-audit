@@ -126,20 +126,20 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
             </div>
         </main>
 <script>
-document.getElementById('<?= $data[0]->id ?>ResetForm').addEventListener('submit', function(e){
-    if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $data[0]->id ?> table and insert the original rows.") == true) {
-        return;
-    }
-    e.preventDefault();
-});
+window.onload = function () {
+    document.getElementById('<?= $data[0]->id ?>ResetForm').addEventListener('submit', function(e){
+        if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $data[0]->id ?> table and insert the original rows.") == true) {
+            return;
+        }
+        e.preventDefault();
+    });
+    <?php if ($data[0]->id === 'devices') { ?>
+    document.getElementById('status_form').addEventListener('submit', function(e){
+        if (confirm("Are you sure?\n\nThis will delete the rows in the devices table with this status.") == true) {
+            return;
+        }
+        e.preventDefault();
+    });
+    <?php } ?>
+}
 </script>
-<?php if ($data[0]->id === 'devices') { ?>
-<script>
-document.getElementById('status_form').addEventListener('submit', function(e){
-    if (confirm("Are you sure?\n\nThis will delete the rows in the devices table with this status.") == true) {
-        return;
-    }
-    e.preventDefault();
-});
-</script>
-<?php } ?>

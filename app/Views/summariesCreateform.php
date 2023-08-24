@@ -73,7 +73,9 @@ include 'shared/create_functions.php';
         </main>
 
 <script>
-$(document).ready(function () {
-    $("#data\\[attributes\\]\\[menu_display\\]").val("y");
-});
+window.onload = function () {
+    $(document).ready(function () {
+        $("#data\\[attributes\\]\\[menu_display\\]").val("y");
+    });
+}
 </script>
