@@ -164,11 +164,54 @@ class Database extends BaseController
 
     public function export(string $table = '')
     {
-        $this->resp->meta->heading = $table;
-        $this->resp->data = $this->databaseModel->export($table);
-        $this->resp->meta->collection = $table;
-        config('Openaudit')->output_escape_csv = 'n';
-        output($this);
+        if ($this->resp->meta->format !== 'sql') {
+            $this->resp->meta->heading = $table;
+            $this->resp->data = $this->databaseModel->export($table);
+            $this->resp->meta->collection = $table;
+        }
+        if ($this->resp->meta->format === 'csv') {
+            // Don't run format_data as this will insert devices.id (for example).
+            // We want the raw table data and no extra columns, but formatted as usual (using attributes->).
+            $count = count($this->resp->data);
+            $return = array();
+            for ($i=0; $i < $count; $i++) {
+                $item = new stdClass();
+                $item->attributes = $this->resp->data[$i];
+                $return[] = $item;
+            }
+            $this->resp->data = $return;
+            config('Openaudit')->output_escape_csv = 'n';
+            output($this);
+        }
+        if ($this->resp->meta->format === 'json' or $this->resp->meta->format === 'json_data') {
+            $this->resp->data = format_data($this->resp->data, $this->resp->meta->id);
+            output($this);
+        }
+        if ($this->resp->meta->format === 'xml') {
+            $this->resp->data = format_data($this->resp->data, $this->resp->meta->id);
+            output($this);
+        }
+        if ($this->resp->meta->format === 'sql') {
+            $db = db_connect();
+            if (php_uname('s') === 'Windows NT') {
+                $mysqldump = 'c:\\xampplite\\mysql\\bin\\mysqldump.exe';
+                if (file_exists('c:\\xampp\\mysql\\bin\\mysqldump.exe')) {
+                    $mysqldump = 'c:\\xampp\\mysql\\bin\\mysqldump.exe';
+                }
+            }
+            if (php_uname('s') === 'Darwin') {
+                $mysqldump = '/usr/local/mysql/bin/mysqldump';
+            }
+            if (php_uname('s') === 'Linux') {
+                exec('which mysqldump', $temp);
+                $mysqldump = $temp[0];
+                unset($temp);
+            }
+            $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $db->username . ' -p' . $db->password . ' -h' . $db->hostname . ' ' . $db->database . ' ' . $table;
+            exec($command, $backup);
+            $backup = implode("\n", $backup);
+            return $this->response->download('open-audit_' . $table . '.sql', $backup);
+        }
         return;
     }
 
