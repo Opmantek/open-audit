@@ -458,7 +458,7 @@ if (!function_exists('output')) {
 
     function output_xml($instance)
     {
-        $instance->load->helper('xml');
+        helper('xml');
         if (!empty($instance->resp->meta->heading)) {
             $filename = $instance->resp->meta->heading;
         } else if (!empty($instance->resp->meta->collection)) {
@@ -471,19 +471,23 @@ if (!function_exists('output')) {
         foreach ($instance->resp->data as $details) {
             $output .= "\t<item>\n";
             foreach ($details->attributes as $attribute => $value) {
-                if (gettype($value) == 'string') {
-                    if (phpversion() >= 5.4) {
-                        $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-                    } else {
-                        $value = xml_convert($value);
+                if (gettype($value) === 'string') {
+                    $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                    $output .= "\t\t<" . $attribute . '>' . trim($value) . '</' . $attribute . ">\n";
+                }
+                if (gettype($value) == 'array' or gettype($value) === 'object') {
+                    $output .= "\t\t<" . $attribute . ">\n";
+                    foreach ($value as $skey => $svalue) {
+                        $svalue = htmlspecialchars((string)$svalue, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                        $output .= "\t\t\t<" . $skey . '>' . trim($svalue) . '</' . $skey . ">\n";
                     }
-                    $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
+                    $output .= "\t\t</" . $attribute . ">\n";
                 }
             }
             $output .= "\t</item>\n";
         }
         $output .=  "</" . $instance->resp->meta->collection . ">\n";
-        if ((string) $instance->config->config['download_reports'] === 'y') {
+        if ((string) config('Openaudit')->download_reports === 'y') {
             $instance->response->setContentType('text/xml');
             $instance->response->noCache();
             $instance->response->setHeader('Content-Disposition', 'attachment;filename="' . $filename . '.xml"');
