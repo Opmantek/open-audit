@@ -116,16 +116,7 @@ class DatabaseModel extends BaseModel
                 unset($result[$i]->command_options);
             }
         }
-        // Don't run format_data as this will insert devices.id (for example).
-        // We want the raw table data and no extra columns, but formatted as usual (using attributes->).
-        $count = count($result);
-        $return = array();
-        for ($i=0; $i < $count; $i++) {
-            $item = new stdClass();
-            $item->attributes = $result[$i];
-            $return[] = $item;
-        }
-        return $return;
+        return $result;
     }
 
     /**
