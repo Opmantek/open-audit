@@ -64,18 +64,18 @@ if (php_uname('s') == "Windows NT") {
 
                     <div class="row">
                         <div class="col-8 offset-2 text-center">
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?= base_url() ?>images/logo-agpl.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?= base_url() ?>images/logo-php.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?= base_url() ?>images/logo-code_igniter.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?= base_url() ?>images/logo-jquery.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?= base_url() ?>images/logo-w3c.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?= base_url() ?>images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>
-                    </tr>
-                </tbody>
-            </table>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?= base_url() ?>images/logo-agpl.png' style='width:120px' alt=''/></a></td>
+                                        <td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?= base_url() ?>images/logo-php.png' style='width:120px' alt=''/></a></td>
+                                        <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?= base_url() ?>images/logo-code_igniter.png' style='width:120px' alt=''/></a></td>
+                                        <td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?= base_url() ?>images/logo-jquery.png' style='width:120px' alt=''/></a></td>
+                                        <td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?= base_url() ?>images/logo-w3c.png' style='width:120px' alt=''/></a></td>
+                                        <td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?= base_url() ?>images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
