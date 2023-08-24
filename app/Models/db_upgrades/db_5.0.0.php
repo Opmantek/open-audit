@@ -529,25 +529,53 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `ip` ADD index IF NOT EXISTS `network` (`network`)";
-$query = $db->query($sql);
+$sql = "SHOW INDEX FROM `ip` WHERE Key_name = 'network'";
+$result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `network` ADD index IF NOT EXISTS `dhcp_server` (`dhcp_server`)";
-$query = $db->query($sql);
+if (count($result) === 0) {
+    $sql = "ALTER TABLE `ip` ADD index `network` (`network`)";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "SHOW INDEX FROM `network` WHERE Key_name = 'dhcp_server'";
+$result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `network` ADD index IF NOT EXISTS `dns_server` (`dns_server`)";
-$query = $db->query($sql);
+if (count($result) === 0) {
+    $sql = "ALTER TABLE `network` ADD index `dhcp_server` (`dhcp_server`)";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "SHOW INDEX FROM `network` WHERE Key_name = 'dns_server'";
+$result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `route` ADD index IF NOT EXISTS `next_hop` (`next_hop`)";
-$query = $db->query($sql);
+if (count($result) === 0) {
+    $sql = "ALTER TABLE `network` ADD index `dns_server` (`dns_server`)";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "SHOW INDEX FROM `route` WHERE Key_name = 'next_hop'";
+$result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
+
+if (count($result) === 0) {
+    $sql = "ALTER TABLE `route` ADD index IF NOT EXISTS `next_hop` (`next_hop`)";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = 'UPDATE `widgets` SET `sql` = REPLACE(`sql`, "system.", "devices.")';
 $query = $db->query($sql);
