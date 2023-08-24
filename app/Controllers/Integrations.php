@@ -68,6 +68,8 @@ class Integrations extends BaseController
                 $data->{$item->name} = $item->value;
             }
         }
+        // We only READ here so we have something in data for oae.pm
+        $this->resp->data = $this->integrationsModel->read(intval($id));
         if ($this->integrationsModel->deleteFields(intval($id), $data)) {
             output($this);
             return;
