@@ -101,8 +101,8 @@ if ($collection === "roles") {
 }
 
 if ($collection === "scripts") {
-    $sample = ' <tr><td>"name","org_id","based_on","options"</td></tr>
-                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"New Audit Windows","1","audit_windows.vbs","{\'audit_dns\':\'n\',\'audit_mount_point\':\'y\',\'audit_netstat\':\'s\',\'audit_software\':\'y\',\'audit_win32_product\':\'n\',\'create_file\':\'n\',\'debugging\':\'1\',\'details_to_lower\':\'y\',\'hide_audit_window\':\'n\',\'ldap\':\'\',\'ldap_seen_date\':\'2012-06-30\',\'ldap_seen_days\':\'0\',\'org_id\':\'\',\'ping_target\':\'n\',\'san_audit\':\'y\',\'san_discover\':\'n\',\'self_delete\':\'n\',\'strcomputer\':\'.\',\'strpass\':\'\',\'struser\':\'\',\'submit_online\':\'y\',\'system_id\':\'\',\'url\':\'http:\/\/10.210.26.10\/open-audit\/index.php\/input\/devices\',\'use_proxy\':\'n\',\'windows_user_work_1\':\'physicalDeliveryOfficeName\',\'windows_user_work_2\':\'company\'}"</td></tr>';
+    $sample = ' <tr><td>"name","org_id","based_on","options.debugging","options.create_file","options.submit_online"</td></tr>
+                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"New Audit Windows","1","audit_windows.vbs","1","y","y"</td></tr>';
     $extra = "The field 'options' is stored as a JSON object. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a script and then go to menu -> Admin -> Database -> List Tables and click on Scripts. Then export to CSV.";
 }
 
