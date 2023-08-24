@@ -158,7 +158,7 @@ class ScriptsModel extends BaseModel
         if (!empty($data->options) and is_string($data->options)) {
             $data->options = json_decode($data->options);
         }
-        // Validate options
+        $options = scripts_options();
         foreach ($data->options as $name => $value) {
             $value = str_replace("'", '', $value);
             $value = str_replace('"', '', $value);
@@ -434,7 +434,10 @@ class ScriptsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $filesModel = new \App\Models\FilesModel();
+        $included['files'] = $filesModel->listUser();
+        return $included;
     }
 
 
