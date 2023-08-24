@@ -328,6 +328,11 @@ class Collections extends BaseController
         $attributes = $csv[0];
         $row_count = count($csv);
         $column_count = count($attributes);
+        $count_create = 0;
+        $count_create_fail = 0;
+        $count_update = 0;
+        $count_update_fail = 0;
+        $id = array();
         for ($i=1; $i < $row_count; $i++) {
             $data = new stdClass();
             for ($j=0; $j < $column_count; $j++) {
@@ -341,7 +346,7 @@ class Collections extends BaseController
                 $data->{$key} = str_replace("\\r", "\r", $data->{$key});
             }
 
-            if ($this->resp->meta->collection === 'credentials' and empty($data->credentials)) {
+            if (($this->resp->meta->collection === 'credential' or $this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') and empty($data->credentials)) {
                 $data->credentials = new \stdClass();
                 foreach ($data as $key => $value) {
                     if (strpos($key, 'credentials.') !== false) {
@@ -359,20 +364,95 @@ class Collections extends BaseController
                 }
             }
 
+            if ($this->resp->meta->collection === 'discoveries' and empty($data->scan_options)) {
+                $data->options = new \stdClass();
+                foreach ($data as $key => $value) {
+                    if (strpos($key, 'scan_options.') !== false) {
+                        $data->options->{str_replace('scan_options.', '', $key)} = $value;
+                    }
+                }
+            }
+
+            if ($this->resp->meta->collection === 'discoveries' and empty($data->match_options)) {
+                $data->options = new \stdClass();
+                foreach ($data as $key => $value) {
+                    if (strpos($key, 'match_options.') !== false) {
+                        $data->options->{str_replace('match_options.', '', $key)} = $value;
+                    }
+                }
+            }
+
             if (!empty($data->id)) {
-                $this->{$this->resp->meta->collection.'Model'}->update(intval($data->id), $data);
-                $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read(intval($data->id));
+                $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->read(intval($data->id));
+                if (empty($test)) {
+                    log_message('warning', 'ID provided to JSON import of ' . $data->id . ' for ' . $this->resp->meta->collection . ' but that row does not exist, removing ID and creating, not updating.');
+                    unset($data->id);
+                }
+            }
+
+            if (!empty($data->id)) {
+                $test = $this->{$this->resp->meta->collection.'Model'}->update(intval($data->id), $data);
+                if (!empty($test)) {
+                    $id[] = $data->id;
+                    $count_update += 1;
+                } else {
+                    $count_update_fail += 1;
+                }
             } else {
-                $id = $this->{$this->resp->meta->collection.'Model'}->create($data);
-                $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read($id);
+                $test = $this->{$this->resp->meta->collection.'Model'}->create($data);
+                if (!empty($test)) {
+                    $id[] = $test;
+                    $count_create += 1;
+                } else {
+                    $count_create_fail += 1;
+                }
             }
         }
-        if ($this->resp->meta->format !== 'html') {
-            $this->resp->meta->header = 201;
-            output($this);
-            return true;
+        if (!empty($id)) {
+            if ($this->resp->meta->format !== 'html') {
+                if (count($id) > 1) {
+                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->listUser();
+                } else {
+                    $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->read($id[0]);
+                }
+                output($this);
+                return true;
+            } else {
+                $this->resp->meta->header = 200;
+                if ($this->resp->meta->collection !== 'components') {
+                    if (count($id) > 1) {
+                        $message = $count_create . ' ' . $this->resp->meta->collection . ' created successfully.<br />';
+                        $message .= $count_update . ' ' . $this->resp->meta->collection . ' updated successfully.<br />';
+                        $message .= $count_create_fail . ' ' . $this->resp->meta->collection . ' failed to create.<br />';
+                        $message .= $count_update_fail . ' ' . $this->resp->meta->collection . ' failed to update.';
+                        \Config\Services::session()->setFlashdata('success', $message);
+                        return redirect()->route($this->resp->meta->collection.'Collection');
+                    } else {
+                        $message = "1 Item in {$this->resp->meta->collection} created successfully.";
+                        if ($count_update === 1) {
+                            $message = "1 Item in {$this->resp->meta->collection} updated successfully.";
+                        }
+                        \Config\Services::session()->setFlashdata('success', $message);
+                        return redirect()->route($this->resp->meta->collection.'Read', [$id[0]]);
+                    }
+                } else {
+                    \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
+                    if (!empty($this->resp->meta->received_data->attributes->device_id)) {
+                        return redirect()->route('devicesRead', [$this->resp->meta->received_data->attributes->device_id]);
+                    } else {
+                        return redirect()->route('devicesCollection');
+                    }
+                }
+            }
         } else {
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            if ($this->resp->meta->format !== 'html') {
+                $this->resp->meta->header = 500;
+                output($this);
+                return true;
+            } else {
+                log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+                return redirect()->route($this->resp->meta->collection.'Collection');
+            }
         }
     }
 
