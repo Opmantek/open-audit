@@ -54,6 +54,8 @@ $routes->get('database/update', 'Database::update/get', ['filter' => \App\Filter
 $routes->post('database/update', 'Database::update/post', ['filter' => \App\Filters\Session::class]);
 $routes->get('database/compare', 'Database::compare', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCompare']);
 $routes->get('database/help', 'Database::help', ['filter' => \App\Filters\Session::class, 'as' => 'databaseHelp']);
+
+$routes->get('database/(:any)/export', 'Database::export/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseExport']);
 $routes->get('database/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseRead']);
 $routes->get('database', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'databaseCollection']);
 $routes->delete('database/(:any)/(:any)', 'Database::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'databaseDelete']);

@@ -29,6 +29,8 @@ if (!function_exists('output')) {
             if (empty($instance->resp->meta->data_order)) {
                 $instance->resp->meta->data_order = array();
             }
+        } else if ($instance->resp->meta->collection === 'database') {
+            // Do nothing
         } else {
             $db = db_connect();
             unset($instance->resp->meta->data_order);
@@ -142,35 +144,65 @@ if (!function_exists('output')) {
 
         $output_csv = '';
 
-        if ($instance->resp->meta->collection === 'clouds' and ! empty($instance->resp->data)) {
-            for ($i=0; $i < count($instance->resp->data); $i++) {
-                $instance->resp->data[$i]->attributes->credentials = json_encode($instance->resp->data[$i]->attributes->credentials);
+        // Credentials Clouds both use an encrypted JSON string in the credentials column. Expand this.
+        if ($instance->resp->meta->collection === 'credentials' or $instance->resp->meta->collection === 'credential' or $instance->resp->meta->collection === 'clouds') {
+            $count = count($instance->resp->data);
+            for ($i=0; $i < $count; $i++) {
+                foreach ($instance->resp->data[$i]->attributes->credentials as $key => $value) {
+                    if (is_string($instance->resp->data[$i]->attributes->credentials->{$key})) {
+                        $instance->resp->data[$i]->attributes->{'credentials.' . $key} = $value;
+                    } else {
+                        $instance->resp->data[$i]->attributes->{'credentials.' . $key} = json_encode($value);
+                    }
+                }
+                unset($instance->resp->data[$i]->attributes->credentials);
             }
         }
 
-        if ($instance->resp->meta->collection === 'credentials' and ! empty($instance->resp->data)) {
-            for ($i=0; $i < count($instance->resp->data); $i++) {
-                $instance->resp->data[$i]->attributes->credentials = json_encode($instance->resp->data[$i]->attributes->credentials);
+
+        // Dashboards and Tasks both use a JSON string in the options column. Expand this.
+        if ($instance->resp->meta->collection === 'dashboards' or $instance->resp->meta->collection === 'scripts' or $instance->resp->meta->collection === 'tasks') {
+            $count = count($instance->resp->data);
+            for ($i=0; $i < $count; $i++) {
+                foreach ($instance->resp->data[$i]->attributes->options as $key => $value) {
+                    if (is_string($instance->resp->data[$i]->attributes->options->{$key})) {
+                        $instance->resp->data[$i]->attributes->{'options.' . $key} = $value;
+                    } else {
+                        $instance->resp->data[$i]->attributes->{'options.' . $key} = json_encode($value);
+                    }
+                }
+                unset($instance->resp->data[$i]->attributes->options);
             }
         }
 
-        if ($instance->resp->meta->collection === 'dashboards' and ! empty($instance->resp->data)) {
-            for ($i=0; $i < count($instance->resp->data); $i++) {
-                $instance->resp->data[$i]->attributes->options = json_encode($instance->resp->data[$i]->attributes->options);
-            }
-        }
+        // Discoveries use a JSON string in the scan_options, match_options and command_options columns. Expand these.
+        if ($instance->resp->meta->collection === 'discoveries') {
+            $count = count($instance->resp->data);
+            for ($i=0; $i < $count; $i++) {
+                // Command Options (not used)
+                unset($instance->resp->data[$i]->attributes->command_options);
 
-        if ($instance->resp->meta->collection === 'discoveries' and ! empty($instance->resp->data)) {
-            for ($i=0; $i < count($instance->resp->data); $i++) {
-                $instance->resp->data[$i]->attributes->scan_options = json_encode($instance->resp->data[$i]->attributes->scan_options);
-                $instance->resp->data[$i]->attributes->match_options = json_encode($instance->resp->data[$i]->attributes->match_options);
-                $instance->resp->data[$i]->attributes->command_options = json_encode($instance->resp->data[$i]->attributes->command_options);
-            }
-        }
+                // Scan options
+                if (!empty($instance->resp->data[$i]->attributes->scan_options) and !is_string($instance->resp->data[$i]->attributes->scan_options)) {
+                    foreach ($instance->resp->data[$i]->attributes->scan_options as $key => $value) {
+                        if (is_string($instance->resp->data[$i]->attributes->scan_options->{$key})) {
+                            $instance->resp->data[$i]->attributes->{'scan_options.' . $key} = $value;
+                        } else {
+                            $instance->resp->data[$i]->attributes->{'scan_options.' . $key} = json_encode($value);
+                        }
+                    }
+                }
+                unset($instance->resp->data[$i]->attributes->scan_options);
 
-        if ($instance->resp->meta->collection === 'tasks' and ! empty($instance->resp->data)) {
-            for ($i=0; $i < count($instance->resp->data); $i++) {
-                $instance->resp->data[$i]->attributes->options = json_encode($instance->resp->data[$i]->attributes->options);
+                // Match options
+                foreach ($instance->resp->data[$i]->attributes->match_options as $key => $value) {
+                    if (is_string($instance->resp->data[$i]->attributes->match_options->{$key})) {
+                        $instance->resp->data[$i]->attributes->{'match_options.' . $key} = $value;
+                    } else {
+                        $instance->resp->data[$i]->attributes->{'match_options.' . $key} = json_encode($value);
+                    }
+                }
+                unset($instance->resp->data[$i]->attributes->match_options);
             }
         }
 
@@ -182,23 +214,20 @@ if (!function_exists('output')) {
             }
         }
 
-        $table = $instance->resp->meta->collection;
-        if ($table === 'devices' or $table === 'queries') {
-            $table = 'system';
-        }
-
-        $instance->resp->meta->data_order = array_values($instance->resp->meta->data_order);
-
-        $csv_header = $instance->resp->meta->data_order;
-
-        for ($i=0; $i < count($csv_header); $i++) {
-            if (stripos($csv_header[$i], $table.'.') === 0) {
-                $csv_header[$i] = str_ireplace($table.'.', '', $csv_header[$i]);
+        // Our header line
+        $data_order_columns = array();
+        $count = count($instance->resp->data);
+        for ($i=0; $i < $count; $i++) {
+            foreach ($instance->resp->data[$i]->attributes as $key => $value) {
+                if (!in_array($key, $data_order_columns)) {
+                    $data_order_columns[] = $key;
+                }
             }
         }
-
-        // Our header line
+        $instance->resp->meta->data_order = $data_order_columns;
+        $csv_header = $data_order_columns;
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
+
         // Each individual data line
         $output_escape_csv = @config('Openaudit')->output_escape_csv;
         if (!empty($instance->resp->data)) {
@@ -206,23 +235,17 @@ if (!function_exists('output')) {
                 $line_array = array();
                 foreach ($instance->resp->meta->data_order as $field) {
                     $value = '';
-                    if (!empty($item->attributes->{$instance->resp->meta->collection.'.'.$field})) {
-                        $value = $item->attributes->{$instance->resp->meta->collection.'.'.$field};
-                    }
                     if (!empty($item->attributes->$field)) {
                         $value = $item->attributes->$field;
                     }
-                    if (empty($value) && stripos($field, '.') !== false) {
-                        $temp = explode('.', $field);
-                        if (!empty($item->attributes->{$temp[1]})) {
-                            $value = $item->attributes->{$temp[1]};
-                        }
-                    }
                     if (is_string($value) or is_int($value)) {
                         $value = str_replace('"', '""', (string)$value);
+                        $value = str_replace("\n", "\\n", $value);
+                        $value = str_replace("\r", "\\r", $value);
                     } else {
                         $value = '';
                     }
+
                     if (!empty($output_escape_csv) && $output_escape_csv === 'y') {
                         if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
                             $value = "'" . $value;

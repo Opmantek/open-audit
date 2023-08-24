@@ -55,10 +55,10 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                         <?php } ?>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><a id="export_csv" class="btn btn-sm btn-primary" href="<?= url_to('databaseRead', $data[0]->id) ?>?format=csv"><?= __('CSV') ?></a></td>
-                                        <td class="text-center"><a id="export_sql" class="btn btn-sm btn-primary" href="<?= url_to('databaseRead', $data[0]->id) ?>?format=sql"><?= __('SQL') ?></a></td>
-                                        <td class="text-center"><a id="export_json" class="btn btn-sm btn-primary" href="<?= url_to('databaseRead', $data[0]->id) ?>?format=json"><?= __('JSON') ?></a></td>
-                                        <td class="text-center"><a id="export_xml" class="btn btn-sm btn-primary" href="<?= url_to('databaseRead', $data[0]->id) ?>?format=xml"><?= __('XML') ?></a></td>
+                                        <td class="text-center"><a id="export_csv" class="btn btn-sm btn-primary" href="<?= url_to('databaseExport', $data[0]->id) ?>?format=csv"><?= __('CSV') ?></a></td>
+                                        <td class="text-center"><a id="export_sql" class="btn btn-sm btn-primary" href="<?= url_to('databaseExport', $data[0]->id) ?>?format=sql"><?= __('SQL') ?></a></td>
+                                        <td class="text-center"><a id="export_json" class="btn btn-sm btn-primary" href="<?= url_to('databaseExport', $data[0]->id) ?>?format=json"><?= __('JSON') ?></a></td>
+                                        <td class="text-center"><a id="export_xml" class="btn btn-sm btn-primary" href="<?= url_to('databaseExport', $data[0]->id) ?>?format=xml"><?= __('XML') ?></a></td>
                                         <?php if (!empty($user->permissions[$meta->id]) and strpos($user->permissions[$meta->id], 'd') !== false) { ?>
                                         <td class="text-center"><form id="<?= $data[0]->id ?>ResetForm" method="post" action="<?= url_to($data[0]->id.'Reset') ?>"><button id="<?= $data[0]->id ?>Reset" class="btn btn-sm btn-danger" type="submit"><?= __('Reset') ?></button></form></td>
                                         <?php } ?>

@@ -82,6 +82,53 @@ class DatabaseModel extends BaseModel
     }
 
     /**
+     * Return an array containing all data from the given database table
+     *
+     * @param  string $table The name of the database table to retrieve data from
+     * @return array  An array of all rows from the dsatabase table. When a column is JSON, provide $columnName.$JSONAttribute and delete $columnName
+     */
+    public function export(string $table = ''): array
+    {
+        $db = db_connect();
+        if (!$db->tableExists($table)) {
+            return array();
+        }
+        $builder = $db->table($table);
+        $sql = "SELECT * FROM $table";
+        $result = $db->query($sql)->getResult();
+        $count = count($result);
+        // Credentials Clouds both use an encrypted JSON string in the credentials column. Decode this.
+        if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
+            for ($i=0; $i < $count; $i++) {
+                $result[$i]->credentials = simpleDecrypt($result[$i]->credentials, config('Encryption')->key);
+                $result[$i]->credentials = json_decode($result[$i]->credentials);
+            }
+        }
+        if ($table === 'dashboards' or $table === 'scripts' or $table === 'tasks') {
+            for ($i=0; $i < $count; $i++) {
+                $result[$i]->options = json_decode($result[$i]->options);
+            }
+        }
+        if ($table === 'discoveries') {
+            for ($i=0; $i < $count; $i++) {
+                $result[$i]->scan_options = json_decode($result[$i]->scan_options);
+                $result[$i]->match_options = json_decode($result[$i]->match_options);
+                unset($result[$i]->command_options);
+            }
+        }
+        // Don't run format_data as this will insert devices.id (for example).
+        // We want the raw table data and no extra columns, but formatted as usual (using attributes->).
+        $count = count($result);
+        $return = array();
+        for ($i=0; $i < $count; $i++) {
+            $item = new stdClass();
+            $item->attributes = $result[$i];
+            $return[] = $item;
+        }
+        return $return;
+    }
+
+    /**
      * Return an array containing arrays of related items to be stored in resp->included
      *
      * @param  int $id The ID of the requested item
@@ -132,7 +179,7 @@ class DatabaseModel extends BaseModel
         # Count current rows
         $item->attributes->current = 0;
         $item->attributes->non_current = 0;
-            $item->attributes->current_row = false;
+        $item->attributes->current_row = false;
         if ($db->fieldExists('current', $table)) {
             $builder->where('current', 'y');
             $item->attributes->current = $builder->countAllResults();

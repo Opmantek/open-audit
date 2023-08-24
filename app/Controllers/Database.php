@@ -32,49 +32,6 @@ use \stdClass;
  */
 class Database extends BaseController
 {
-
-    public function update($action)
-    {
-        $this->databaseModel = model('App\Models\DatabaseModel');
-        $meta = new stdClass();
-        $meta->collection = 'database';
-        $meta->action = 'updateForm';
-        $meta->access_token = '';
-        $meta->icon = 'fa fa-database';
-        if ($action !== 'post') {
-            $this->data = $this->databaseModel->updateForm();
-            return view('shared/header', [
-                'config' => $this->config,
-                'dashboards' => filter_response($this->dashboards),
-                'meta' => filter_response($meta),
-                'queries' => array(),
-                'roles' => filter_response($this->roles),
-                'user' => filter_response($this->user)]) .
-                view('databaseUpdateForm', ['data' => filter_response($this->data)]);
-        }
-        if ($action === 'post') {
-            $output = $this->databaseModel->update();
-            $errors = array();
-            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
-            return view('shared/header', [
-                'config' => $this->config,
-                'dashboards' => filter_response($this->dashboards),
-                'meta' => filter_response($meta),
-                'queries' => array(),
-                'roles' => filter_response($this->roles),
-                'user' => filter_response($this->user)]) .
-                view('databaseUpdate', ['data' => filter_response($this->data)]);
-        }
-    }
-
-    public function delete(string $table = '', string $status = '')
-    {
-        // This will delete ALL data from a table with the exception of devices, which will delete by status
-        $this->databaseModel = model('App\Models\DatabaseModel');
-        $test = $this->databaseModel->deleteAll($table, $status);
-        return $test;
-    }
-
     public function compare()
     {
         helper('diff');
@@ -130,7 +87,7 @@ class Database extends BaseController
             // From the file
             $file_schema = '';
             for ($i=0; $i < count($sql_file); $i++) {
-                if (strpos($sql_file[$i], "CREATE TABLE `{$table}`") !== false) {
+                if (strpos($sql_file[$i], "CREATE TABLE `$table`") !== false) {
                     $file_schema = $sql_file[$i];
                     for ($j=$i+1; $j < count($sql_file); $j++) {
                         if (strpos($sql_file[$j], '/*!') === false) {
@@ -195,5 +152,57 @@ class Database extends BaseController
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
             view('databaseSchemaCompare', ['data' => $output]);
+    }
+
+    public function delete(string $table = '', string $status = '')
+    {
+        // This will delete ALL data from a table with the exception of devices, which will delete by status
+        $this->databaseModel = model('App\Models\DatabaseModel');
+        $test = $this->databaseModel->deleteAll($table, $status);
+        return $test;
+    }
+
+    public function export(string $table = '')
+    {
+        $this->resp->meta->heading = $table;
+        $this->resp->data = $this->databaseModel->export($table);
+        $this->resp->meta->collection = $table;
+        config('Openaudit')->output_escape_csv = 'n';
+        output($this);
+        return;
+    }
+
+    public function update($action)
+    {
+        $this->databaseModel = model('App\Models\DatabaseModel');
+        $meta = new stdClass();
+        $meta->collection = 'database';
+        $meta->action = 'updateForm';
+        $meta->access_token = '';
+        $meta->icon = 'fa fa-database';
+        if ($action !== 'post') {
+            $this->data = $this->databaseModel->updateForm();
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'meta' => filter_response($meta),
+                'queries' => array(),
+                'roles' => filter_response($this->roles),
+                'user' => filter_response($this->user)]) .
+                view('databaseUpdateForm', ['data' => filter_response($this->data)]);
+        }
+        if ($action === 'post') {
+            $output = $this->databaseModel->update();
+            $errors = array();
+            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'meta' => filter_response($meta),
+                'queries' => array(),
+                'roles' => filter_response($this->roles),
+                'user' => filter_response($this->user)]) .
+                view('databaseUpdate', ['data' => filter_response($this->data)]);
+        }
     }
 }
