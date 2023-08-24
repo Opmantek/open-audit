@@ -37,9 +37,13 @@ include 'shared/collection_functions.php';
                                         echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         ?>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
-                                    <?php } ?>
+                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+                                        if ($item->id < 8) {
+                                            echo "<td></td>\n";
+                                        } else {
+                                            echo collection_button_delete(intval($item->id)) . "\n";
+                                        }
+                                    } ?>
                                 </tr>
                                 <?php } ?>
                             <?php } ?>
