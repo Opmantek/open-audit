@@ -1027,7 +1027,7 @@ class DiscoveriesModel extends BaseModel
             }
         }
 
-        if (isset($data->ad_domain)) {
+        if (isset($data->ad_domain) and $data->ad_domain !== '') {
             $data->description = 'Active Directory - ' . $data->ad_domain;
         }
 
@@ -1328,7 +1328,6 @@ class DiscoveriesModel extends BaseModel
             $log->message = 'Discovery process has been manually stopped.';
             discovery_log($log);
         }
-
 
         $data = $this->updateFieldData('discoveries', $data);
         $this->builder->where('id', intval($id));
