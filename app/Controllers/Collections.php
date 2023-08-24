@@ -336,6 +336,29 @@ class Collections extends BaseController
             if ($this->resp->meta->collection === 'devices' and empty($data->last_seen_by)) {
                 $data->last_seen_by = 'user';
             }
+            foreach ($data as $key => $value) {
+                $data->{$key} = str_replace("\\n", "\n", $value);
+                $data->{$key} = str_replace("\\r", "\r", $data->{$key});
+            }
+
+            if ($this->resp->meta->collection === 'credentials' and empty($data->credentials)) {
+                $data->credentials = new \stdClass();
+                foreach ($data as $key => $value) {
+                    if (strpos($key, 'credentials.') !== false) {
+                        $data->credentials->{str_replace('credentials.', '', $key)} = $value;
+                    }
+                }
+            }
+
+            if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts' or $this->resp->meta->collection === 'tasks') and empty($data->options)) {
+                $data->options = new \stdClass();
+                foreach ($data as $key => $value) {
+                    if (strpos($key, 'options.') !== false) {
+                        $data->options->{str_replace('options.', '', $key)} = $value;
+                    }
+                }
+            }
+
             if (!empty($data->id)) {
                 $this->{$this->resp->meta->collection.'Model'}->update(intval($data->id), $data);
                 $this->resp->data[] = $this->{$this->resp->meta->collection.'Model'}->read(intval($data->id));

@@ -136,6 +136,9 @@ function format_data($result, $type)
             if (!empty($item->match_options)) {
                 $item->match_options = json_decode($item->match_options);
             }
+            if (!empty($item->command_options)) {
+                $item->command_options = json_decode($item->command_options);
+            }
         }
     }
 
