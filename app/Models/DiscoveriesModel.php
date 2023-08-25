@@ -508,6 +508,8 @@ class DiscoveriesModel extends BaseModel
         $discovery_scan_optionsModel = new \App\Models\DiscoveryScanOptionsModel();
         $include['discovery_scan_options'] = $discovery_scan_optionsModel->listUser();
 
+        $include['issues'] = $this->issuesRead($id);
+
         return $include;
     }
 
@@ -538,7 +540,7 @@ class DiscoveriesModel extends BaseModel
     {
         $issues = array();
 
-        # Windows issues from Linx
+        # Windows issues from Linux
         $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.device_id IN (select device_id from discovery_log a where message LIKE '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command using winexe-static-2' AND discoveries.id = " . $id;
         $issues = $this->db->query($sql)->getResult();
 
