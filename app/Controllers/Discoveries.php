@@ -47,7 +47,7 @@ class Discoveries extends BaseController
             output($this);
             return;
         }
-        \Config\Services::session()->setFlashdata('error', 'Discovery started.');
+        \Config\Services::session()->setFlashdata('success', 'Discovery started.');
         return redirect()->route('discoveriesRead', [$id]);
     }
 }
