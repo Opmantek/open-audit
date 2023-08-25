@@ -1729,12 +1729,16 @@ if (! function_exists('ip_audit')) {
                     $log->command_status = 'success';
                     $log->command = "unlink('" . $destination . "')";
                     $log->command_output = '';
-                    try {
-                        unlink($destination);
-                    } catch (Exception $error) {
+                    if (is_file($destination) and is_writable($destination) and @unlink($destination)) {
+                        // delete success
+                    } else if (is_file($destination)) {
                         $log->severity = 4;
                         $log->command_status = 'fail';
-                        $log->command_output = json_encode($error);
+                        $log->message = 'Could not delete audit result - likely permissions.';
+                    } else {
+                        $log->severity = 4;
+                        $log->command_status = 'fail';
+                        $log->message = 'Could not delete audit result - reason unknown.';
                     }
                     $discoveryLogModel->create($log);
                 }
