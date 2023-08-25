@@ -51,7 +51,10 @@ include 'shared/read_functions.php';
             <br>
             <div class="card">
                 <div class="card-header">
-                    Discovery Log
+                    <h6 style="padding-top:10px;">
+                        <span class="fa fa-bars oa-icon"></span>
+                        Discovery Log
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
