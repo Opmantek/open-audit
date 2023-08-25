@@ -742,13 +742,8 @@ if (! function_exists('wmi_command')) {
     function wmi_command(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
-        $log = new \StdClass();
-        $log->file = 'wmi_helper';
-        $log->function = 'wmi_command';
-        $log->severity = 7;
-        $return = array('output' => '', 'status' => '');
 
-        $log->message = 'Using credentials named ' . $credentials->name;
+        $return = array('output' => '', 'status' => '');
 
         if (empty($ip)) {
             log_message('error', 'No IP supplied to wmi_helper::wmi_command');
@@ -785,6 +780,14 @@ if (! function_exists('wmi_command')) {
         } else {
             $password = false;
         }
+
+        $log = new \StdClass();
+        $log->file = 'wmi_helper';
+        $log->function = 'wmi_command';
+        $log->severity = 7;
+        $log->discovery_id = $discovery_id;
+        $log->ip = $ip;
+        $log->message = 'Using credentials named ' . $credentials->name;
 
         if (php_uname('s') == 'Darwin' and !file_exists('/usr/local/bin/winexe')) {
             $log->message = 'Winexe not installed on OSX, cannot run wmi_command.';
