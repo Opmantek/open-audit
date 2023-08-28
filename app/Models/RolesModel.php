@@ -52,35 +52,7 @@ class RolesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        if (empty($data->ad_group) && ! empty($data->name)) {
-            $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
-        }
-        if (!empty($data->permissions) && gettype($data->permissions) === 'string') {
-            // We likely have a CSV submitted item
-            // Replace quotes as it should already be stringified JSON
-            $item->permissions = str_replace("'", '"', $item->permissions);
-        } else if (!empty($data->permissions) && gettype($data->permissions) !== 'string') {
-            // We likely have a submitted form or a JSON submission using the API
-            // Build up our permissions
-            $permissions = new \stdClass();
-            foreach ($data->permissions as $endpoint => $object) {
-                $permissions->{$endpoint} = '';
-                foreach ($object as $key => $value) {
-                    $permissions->{$endpoint} .= $key;
-                }
-            }
-            $data->permissions = json_encode($permissions);
-        }
-        $data = $this->createFieldData('roles', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
@@ -244,7 +216,7 @@ class RolesModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.';
-        $dictionary->columns->permissions = 'This attribute is stored as a JSON object. It is the result of the table above and contained the endpoint name along with "c", "r", "u" and/or "d" which represent create, read, update and delete. These are the actions a user can perform on items from the particular endpoint.';
+        $dictionary->columns->permissions = 'This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with "c", "r", "u" and/or "d" which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
