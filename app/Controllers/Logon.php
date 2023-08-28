@@ -50,63 +50,39 @@ class Logon extends Controller
 
     public function checkDefaults()
     {
-        $license = @file_get_contents('http://localhost/omk/open-audit/license', false);
-        if (empty($license)) {
-            # try https
-            $license = @file_get_contents('https://localhost/omk/open-audit/license', false);
-        }
-        if (!empty($license) and $license !== false) {
-            $json = json_decode($license);
-            $license = (json_last_error()) ? 'none' : $json->license;
-        } else {
-            $license = 'none';
-        }
-        if (!in_array($license, ['none', 'free', 'commercial'])) {
-            $license = 'none';
-        }
-        $product = 'Open-AudIT Community';
-        if (!empty($json->product)) {
-            $product = $json->product;
-        }
-        if ($license == 'none') {
-            $product = 'Open-AudIT Community';
-        }
-        if (!in_array($product, ['Open-AudIT Community', 'Open-AudIT Professional', 'Open-AudIT Enterprise'])) {
-            $product = 'Open-AudIT Community';
-        }
-        $db = db_connect();
-        $sql = "UPDATE configuration SET value = '" . $license . "' WHERE name = 'license'";
-        $db->query($sql);
-        $sql = "UPDATE configuration SET value = '" . $product . "' WHERE name = 'product'";
-        $db->query($sql);
+        // TODO - log rotation?
 
+        $db = db_connect();
+        $sql = "UPDATE configuration SET value = 'community' WHERE name = 'product'";
+        $db->query($sql);
+        $sql = "UPDATE configuration SET value = 'none' WHERE name = 'license'";
+        $db->query($sql);
         if (file_exists(APPPATH . '../other/modules.json')) {
             $modules = file_get_contents(APPPATH.'../other/modules.json');
             if (!empty($modules)) {
                 $modules = json_decode($modules);
                 # echo "<pre>"; print_r($modules); exit;
-                $installed = @file_get_contents('http://localhost/omk/.json', false);
-                if (empty($installed)) {
-                    # try https
-                    $installed = @file_get_contents('https://localhost/omk/.json', false);
+                $configFiles = array('/usr/local/opmojo/conf/opCommon.json', '/usr/local/omk/conf/opCommon.json');
+                foreach ($configFiles as $configFile) {
+                    if (is_file($configFile)) {
+                        $installed = file_get_contents($configFile);
+                    }
                 }
                 if (!empty($installed)) {
+                    $modules->opLicensing->installed = true;
                     $installed = json_decode($installed);
-                    foreach ($installed->products as $app) {
-                        if (!empty($modules->{$app->name})) {
-                            $modules->{$app->name}->installed = true;
-                            $modules->{$app->name}->version = $app->version;
+                    foreach ($installed->omkd->load_applications as $app) {
+                        if (!empty($modules->{$app})) {
+                            $modules->{$app}->installed = true;
                         }
-                        if (stripos($app->name, 'Open-AudIT') !== false) {
-                            $modules->{'Open-AudIT'}->installed = true;
-                            $modules->{'Open-AudIT'}->version = $app->version;
-                            if ($product === 'Open-AudIT Enterprise' or $product === 'Open-AudIT Professional') {
-                                $modules->{'Open-AudIT'}->name = $product;
-                            }
-                        }
+                    }
+                    if (file_exists($modules->NMIS->file)) {
+                        $modules->NMIS->installed = true;
                     }
                     $sql = "UPDATE configuration SET value = ? WHERE name = 'modules'";
                     $db->query($sql, [json_encode($modules)]);
+                } else {
+                    unset($modules->opLicensing);
                 }
             }
         }

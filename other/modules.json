@@ -1,61 +1,64 @@
 {
-	"NMIS": {
-		"name": "NMIS",
-		"file": "/cgi-bin/nmiscgi.pl",
-		"link": "/cgi-nmis9/nmiscgi.pl",
-		"url": "https://firstwave.com/products/network-management-information-system/"
-	},
-	"opAddress": {
-		"name": "opAddress",
-		"file": "/bin/opaddress-cli.pl",
-		"link": "/omk/opAddress/",
-		"url": "https://firstwave.com/products/ip-address-audit-and-management/"
-	},
-	"opCharts": {
-		"name": "opCharts",
-		"file": "/public/omk/js/opCharts_a_external_packed.js",
-		"link": "/omk/opCharts",
-		"url": "https://firstwave.com/products/interactive-dashboards-and-charts/"
-	},
-	"opConfig": {
-		"name": "opConfig",
-		"file": "/install/opconfigd.init.d",
-		"link": "/omk/opConfig",
-		"url": "https://firstwave.com/products/network-configuration-management/"
-	},
-	"Open-AudIT": {
-		"name": "Open-AudIT",
-		"file": "/bin/oae-tasks.sh",
-		"link": "/omk/open-audit/",
-		"url": "https://firstwave.com/products/network-discovery-and-inventory-software/"
-	},
-	"opEvents": {
-		"name": "opEvents",
-		"file": "/install/opeventsd.init.d",
-		"link": "/omk/opEvents/",
-		"url": "https://firstwave.com/opevents-traps-network-event-management/"
-	},
-	"opHA": {
-		"name": "opHA",
-		"file": "",
-		"link": "/omk/opHA",
-		"url": "https://firstwave.com/products/distributed-network-management/"
-	},
-	"opLicensing": {
-		"name": "opLicensing",
-		"file": "/lib/opLicense.pm.exe",
-		"link": "/omk/opLicense",
-		"url": "#"
-	},
-	"opReports": {
-		"name": "opReports",
-		"file": "/bin/opreports-cli.pl",
-		"link": "/omk/opReports/",
-		"url": "https://firstwave.com/products/advanced-analysis-and-reporting/"
-	},
-	"Other Modules": {
-		"name": "Other Modules",
-		"link": "https://firstwave.com",
-		"url": "https://firstwave.com"
-	}
+    "NMIS":
+    {
+        "file": "/usr/local/nmis9/cgi-bin/nmiscgi.pl",
+        "link": "/cgi-nmis9/nmiscgi.pl",
+        "name": "NMIS",
+        "url": "https://firstwave.com/products/network-management-information-system/"
+    },
+    "opAddress":
+    {
+        "file": "/bin/opaddress-cli.pl",
+        "link": "/omk/opAddress/",
+        "name": "opAddress",
+        "url": "https://firstwave.com/products/ip-address-audit-and-management/"
+    },
+    "opCharts":
+    {
+        "file": "/public/omk/js/opCharts_a_external_packed.js",
+        "link": "/omk/opCharts",
+        "name": "opCharts",
+        "url": "https://firstwave.com/products/interactive-dashboards-and-charts/"
+    },
+    "opConfig":
+    {
+        "file": "/install/opconfigd.init.d",
+        "link": "/omk/opConfig",
+        "name": "opConfig",
+        "url": "https://firstwave.com/products/network-configuration-management/"
+    },
+    "opEvents":
+    {
+        "file": "/install/opeventsd.init.d",
+        "link": "/omk/opEvents/",
+        "name": "opEvents",
+        "url": "https://firstwave.com/opevents-traps-network-event-management/"
+    },
+    "opHA":
+    {
+        "file": "",
+        "link": "/omk/opHA",
+        "name": "opHA",
+        "url": "https://firstwave.com/products/distributed-network-management/"
+    },
+    "opLicensing":
+    {
+        "file": "/lib/opLicense.pm.exe",
+        "link": "/omk/opLicense",
+        "name": "opLicensing",
+        "url": "/omk/opLicense"
+    },
+    "opReports":
+    {
+        "file": "/bin/opreports-cli.pl",
+        "link": "/omk/opReports/",
+        "name": "opReports",
+        "url": "https://firstwave.com/products/advanced-analysis-and-reporting/"
+    },
+    "Other Modules":
+    {
+        "link": "https://firstwave.com",
+        "name": "Other Modules",
+        "url": "https://firstwave.com"
+    }
 }

@@ -30,14 +30,6 @@ class OpenAudit extends BaseConfig
             $this->product = $this->oae_product;
         }
         if (empty($this->product)) {
-            $this->product = '';
-        }
-
-        if (stripos($this->product, 'enterprise')) {
-            $this->product = 'enterprise';
-        } else if (stripos($this->product, 'professional')) {
-            $this->product = 'professional';
-        } else {
             $this->product = 'community';
         }
 
