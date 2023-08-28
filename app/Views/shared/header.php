@@ -149,7 +149,7 @@ $categories = array_unique($categories);
             <div class="container-fluid">
                 <a class="navbar-brand" style="color: white;" href="<?= base_url() ?>index.php">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
-                    Open-AudIT <?= config('Openaudit')->display_version . "\n" ?>
+                    Open-AudIT <?= ucfirst(config('Openaudit')->product) ?> <?= config('Openaudit')->display_version . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
@@ -529,7 +529,7 @@ if (!empty(config('Openaudit')->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if (empty(config('Openaudit')->license) or config('Openaudit')->license === 'none') { ?>
+<?php if ($license === 'none') { ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
@@ -639,7 +639,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <div class="toast toast-ent" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastEnterprise">
                     <div class="toast-header" style="background-color: var(--bs-primary-bg-subtle); --bs-border-color: var(--bs-primary-border-subtle); color: var(--bs-primary-text);">
                         <strong class="me-auto">Enterprise Feature</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body">
                         This feature is limited to Enterprise licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.
@@ -648,7 +648,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <div class="toast toast-pro" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastProfessional">
                     <div class="toast-header" style="background-color: var(--bs-primary-border-subtle); color: var(--bs-primary-text);">
                         <strong class="me-auto">Professional Feature</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body">
                         This feature is limited to Professional licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.
@@ -657,7 +657,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <div class="toast toast-perm" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastPermission">
                     <div class="toast-header" style="background-color: var(--bs-danger-bg-subtle); --bs-border-color: var(--bs-danger-border-subtle); color: var(--bs-danger-text);">
                         <strong class="me-auto">Not Authorized</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body">
                         Your user account does not have permission to perform this function.
@@ -666,7 +666,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastSuccess">
                     <div class="toast-header" style="background-color: var(--bs-success-bg-subtle); --bs-border-color: var(--bs-success-border-subtle); color: var(--bs-success-text);">
                         <strong id="liveToastSuccess-header" class="me-auto"></strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body" id="liveToastSuccess-body">
                     </div>
@@ -674,7 +674,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <div class="toast toast-failure" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastFailure">
                     <div class="toast-header" style="background-color: var(--bs-danger-bg-subtle); --bs-border-color: var(--bs-danger-border-subtle); color: var(--bs-danger-text);">
                         <strong id="liveToastFailure-header" class="me-auto"></strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body" id="liveToastFailure-body">
                     </div>
@@ -693,8 +693,14 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
     if (!empty(config('Openaudit')->enterprise_collections[$collection]) and strpos(config('Openaudit')->enterprise_collections[$collection], $permission) !== false) {
         $return = "<li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $title . "</a></li>\n";
+        if (config('Openaudit')->product === 'enterprise' and get_user_permission($collection, $permission, $user)) {
+            $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
+        }
     } else if (!empty(config('Openaudit')->professional_collections[$collection]) and strpos(config('Openaudit')->professional_collections[$collection], $permission) !== false) {
         $return = "<li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $title . "</a></li>\n";
+        if ((config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') and get_user_permission($collection, $permission, $user)) {
+            $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
+        }
     } else if (get_user_permission($collection, $permission, $user)) {
         $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
     }
