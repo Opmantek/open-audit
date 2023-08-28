@@ -36,7 +36,11 @@ include 'shared/collection_functions.php';
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;
                                         }
-                                        echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                        if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
+                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                        } else {
+                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                        }
                                         ?>
                                     <?php } ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
