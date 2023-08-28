@@ -130,7 +130,15 @@ class Collections extends BaseController
                 return redirect()->route($this->config->homepage);
             }
         }
-        $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
+
+        if (!empty($this->resp->meta->id)) {
+            $id = intval($this->resp->meta->id);
+        }
+
+        if (empty($this->resp->meta->id)) {
+            $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
+        }
+
         if (!empty($id)) {
             if ($this->resp->meta->format !== 'html') {
                 $this->resp->meta->header = 201;
