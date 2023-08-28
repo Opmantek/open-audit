@@ -296,7 +296,7 @@ class LocationsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'type', 'address', 'city', 'state', 'country', 'device_count');
+        $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'type', 'description', 'address', 'city', 'state', 'country', 'device_count');
         $dictionary->attributes->create = array('name','org_id');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
