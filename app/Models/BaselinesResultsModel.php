@@ -27,6 +27,7 @@ class BaselinesResultsModel extends BaseModel
     public function collection(object $resp): array
     {
         $properties = $resp->meta->properties;
+        $properties[] = 'baselines.id AS `baselines.id`';
         $properties[] = 'baselines.name AS `baselines.name`';
         $this->builder->select($properties, false);
         $this->builder->join('baselines', 'baselines_results.baseline_id = baselines.id', 'left');
