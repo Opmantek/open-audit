@@ -174,6 +174,9 @@ if (!function_exists('response_create')) {
             $response->meta->collection,
             $instance->user->org_list
         );
+        if ($response->meta->action === 'create') {
+            $response->meta->id = null;
+        }
 
         // no dependencies - set in GET or POST
         $temp = response_get_ids($request->getGet('ids'), $request->getPost('ids'));
@@ -368,6 +371,47 @@ if (!function_exists('response_create')) {
         if (!empty($instance->response->logs)) {
             $response->logs = $instance->response->logs;
         }
+
+        # Enterprise
+        $enterprise = APPPATH . '/other/enterprise.exe';
+        if (file_exists($enterprise)) {
+            log_message('debug', "Calling external enterprise function.");
+            $db = db_connect();
+            // Insert the entry
+            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+            $db->query($sql, [json_encode($response)]);
+            $id = $db->insertID();
+            // Call the binary and wait for it's response
+            if (php_uname('s') === 'Windows NT') {
+                $command = "%comspec% /c start /b $enterprise $id";
+                @exec($command, $output);
+                pclose(popen($command, 'r'));
+            } else if (php_uname('s') === 'Darwin') {
+                $command = "$enterprise $id";
+                @exec($command, $output);
+            } else {
+                $command = "$enterprise $id";
+                @exec($command, $output);
+            }
+            // log_message('error', 'Output: ' . json_encode($output));
+            $sql = "SELECT * FROM enterprise WHERE id = $id";
+            $result = $db->query($sql)->getResult();
+            // Convert the response
+            $response = json_decode($result[0]->response);
+            $response->meta->permission_requested = json_decode(json_encode($response->meta->permission_requested), true);
+            if (!empty($response->meta->license)) {
+                config('Openaudit')->license = $response->meta->license;
+                unset($response->meta->license);
+            }
+            if (!empty($response->meta->product)) {
+                config('Openaudit')->product = $response->meta->product;
+                unset($response->meta->product);
+            }
+            // Delete the DB entry
+            #$sql = "DELETE FROM enterprise WHERE id = $id";
+            #$db->query($sql);
+        }
+
         return $response;
     }
 }
