@@ -555,18 +555,24 @@ if (!empty(config('Openaudit')->modules)) {
 
         <div class="container-fluid" style="margin-bottom: -10px;">
                 <div class="row second-nav">
-                    <div class="col-3" style="padding-bottom: 0px; padding-top: 16px;">
+                    <div class="col-6" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
-                                <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
-                            <?php if ($meta->action === 'read' and !empty($name)) { ?>
-                                <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
-                            <?php } ?>
+                                <?php if (empty($meta->breadcrumbs)) { ?>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
+                                    <?php if ($meta->action === 'read' and !empty($name)) { ?>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
+                                    <?php }
+                                } else {
+                                    foreach ($meta->breadcrumbs as $breadcrumb) { ?>
+                                        <li class="breadcrumb-item"><a href="<?= $breadcrumb->url ?>" class="link-secondary"><?= $breadcrumb->name ?></a></li>
+                                    <?php }
+                                } ?>
                             </ol>
                         </nav>
                     </div>
-                    <div class="col-9 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
+                    <div class="col-6 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
                         <!-- TODO - fix the below search route -->
                         <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>">
                             <div class="btn-group" role="group">
