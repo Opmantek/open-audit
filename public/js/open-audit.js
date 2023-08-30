@@ -148,21 +148,31 @@ $(document).ready(function () {
 
     /* Delete links */
     $('.delete_link').click(function (e) {
+        dataCollection = $(this).attr('data-collection');
+        if (typeof dataCollection !== 'undefined' && dataCollection != "") {
+            collection = dataCollection;
+        }
+
         if (confirm("Are you sure?\nThis will permanently DELETE this entry for " + collection + ".") !== true) {
             return;
         }
+
+        redirect = baseurl + "/" + collection;
+        dataRedirect = $(this).attr('data-redirect');
+        if (typeof dataRedirect !== 'undefined' && dataRedirect != "") {
+            redirect = baseurl + dataRedirect;
+        }
+
         var $id = $(this).attr('data-id');
         /* var $name = $(this).attr('data-name'); */
-        if (collection == '') {
-            collection = $(this).attr('data-collection');
-        }
+
         var $url = baseurl + '/' + collection + '/' + $id;
         $.ajax({
             type: 'DELETE',
             url: $url,
             dataType: 'json',
             success: function(data, textStatus) { 
-                window.location = baseurl + "/" + collection; },
+                window.location = redirect; },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Status: " + textStatus);
                 console.log("errorThrown: " + errorThrown);
