@@ -158,10 +158,10 @@ class SummariesModel extends BaseModel
         }
         if (empty($result)) {
             $result = array();
-            $item = new \StdClass();
+            $item = new \stdClass();
             $item->id = 0;
             $item->type = 'summaries';
-            $item->attributes = new \StdClass();
+            $item->attributes = new \stdClass();
             $item->attributes->id = 0;
             $item->attributes->count = 0;
             $item->attributes->name = '';
@@ -187,10 +187,10 @@ class SummariesModel extends BaseModel
         $tables = $this->db->listTables();
         foreach ($tables as $table) {
             $result = array();
-            $item = new \StdClass();
+            $item = new \stdClass();
             $item->id = $table;
             $item->type = 'tables';
-            $item->attributes = new \StdClass();
+            $item->attributes = new \stdClass();
             $item->attributes->id = $table;
             $item->attributes->name = $table;
             $item->attributes->value = $table;

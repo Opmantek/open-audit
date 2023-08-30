@@ -364,7 +364,7 @@ class ScriptsModel extends BaseModel
             $sql = "SELECT * FROM files WHERE `path` NOT LIKE '/%'";
         }
         $result = $this->db->query($sql)->getResult();
-        $options = new \StdClass();
+        $options = new \stdClass();
         $options->files = array();
         if (!empty($result)) {
             foreach ($result as $item) {

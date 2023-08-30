@@ -82,7 +82,7 @@ class DevicesModel extends BaseModel
             return null;
         }
 
-        $parameters = new \StdClass();
+        $parameters = new \stdClass();
         $parameters->input = $data;
         if (!empty($data->discovery_id)) {
             $parameters->discovery_id = intval($data->discovery_id);
@@ -577,7 +577,7 @@ class DevicesModel extends BaseModel
             $user_id = $instance->user->id;
         }
 
-        $log = new \StdClass();
+        $log = new \stdClass();
         $log->severity = 7;
         $log->file = 'DevicesModel';
         $log->function = 'DevicesModel::update';

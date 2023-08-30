@@ -21,10 +21,10 @@ class DatabaseModel extends BaseModel
         $return = array();
         $tables = $db->listTables();
         foreach ($tables as $table) {
-            $item = new \StdClass();
+            $item = new \stdClass();
             $item->type = 'database';
             $item->id = $table;
-            $item->attributes = new \StdClass();
+            $item->attributes = new \stdClass();
             
             $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
             $query = $db->query($sql);

@@ -25,7 +25,7 @@ class ChartModel extends BaseModel
         # use the sub_resource as the first preference for the type
         $count = 0;
         if (!empty($instance->resp->meta->sub_resource)) {
-            $filter = new \StdClass();
+            $filter = new \stdClass();
             $filter->name = 'what';
             $filter->operator = '=';
             $filter->value = $instance->resp->meta->sub_resource;
@@ -40,7 +40,7 @@ class ChartModel extends BaseModel
             }
         }
         if ($count == 0) {
-            $filter = new \StdClass();
+            $filter = new \stdClass();
             $filter->name = 'what';
             $filter->operator = '=';
             $filter->value = 'audit';
@@ -56,7 +56,7 @@ class ChartModel extends BaseModel
             }
         }
         if ($count == 0) {
-            $filter = new \StdClass();
+            $filter = new \stdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
             $temp = config('Openaudit')->graph_days;
@@ -77,7 +77,7 @@ class ChartModel extends BaseModel
             }
         }
         if ($count == 0) {
-            $filter = new \StdClass();
+            $filter = new \stdClass();
             $filter->name = 'end';
             $filter->operator = '=<';
             $filter->value = (string)date('Y-m-d');
@@ -276,7 +276,7 @@ class ChartModel extends BaseModel
             }
         } else {
             $result = array();
-            $item = new \StdClass();
+            $item = new \stdClass();
             $item->date = $resp->meta->internal->end;
             $item->timestamp = strtotime($resp->meta->internal->end);
             $item->count = 0;

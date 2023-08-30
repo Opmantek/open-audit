@@ -64,7 +64,7 @@ class RulesModel extends BaseModel
         if (is_array($data->inputs) or is_object($data->inputs)) {
             $new_inputs = array();
             foreach ($data->inputs as $input) {
-                $item = new \StdClass();
+                $item = new \stdClass();
                 foreach ($input as $key => $value) {
                     $item->{$key} = $value;
                 }
@@ -76,7 +76,7 @@ class RulesModel extends BaseModel
         if (is_array($data->outputs) or is_object($data->outputs)) {
             $new_outputs = array();
             foreach ($data->outputs as $output) {
-                $item = new \StdClass();
+                $item = new \stdClass();
                 foreach ($output as $key => $value) {
                     $item->{$key} = $value;
                 }
@@ -284,7 +284,7 @@ class RulesModel extends BaseModel
             $rule->outputs = json_decode($rule->outputs);
             foreach ($rule->inputs as $input) {
                 if (!$this->db->tableExists($input->table)) {
-                    $l = new \StdClass();
+                    $l = new \stdClass();
                     $l->command_status = 'error';
                     $l->discovery_id = $log->discovery_id;
                     $l->ip = $log->ip;
@@ -309,7 +309,7 @@ class RulesModel extends BaseModel
 
         // Special case the MAC as we might have it in the device entry, but not network table yet
         if (!empty($device->mac_address) and empty($device_sub['network'])) {
-            $item = new \StdClass();
+            $item = new \stdClass();
             $item->mac = $device->mac_address;
             $device_sub['network'] = array($item);
         }
@@ -319,7 +319,7 @@ class RulesModel extends BaseModel
                 $input_count = count($rule->inputs);
             } else {
                 // Log an error, but continue
-                $l = new \StdClass();
+                $l = new \stdClass();
                 $l->command_status = 'error';
                 $l->discovery_id = $log->discovery_id;
                 $l->ip = $log->ip;
@@ -563,7 +563,7 @@ class RulesModel extends BaseModel
                     }
                 }
                 if ($hit >= $input_count) {
-                    $attributes = new \StdClass();
+                    $attributes = new \stdClass();
                     foreach ($rule->outputs as $output) {
                         switch ($output->value_type) {
                             case 'string':

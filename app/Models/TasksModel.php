@@ -96,7 +96,7 @@ class TasksModel extends BaseModel
         } else if (!empty($data->options)) {
             $data->options = json_encode($data->options);
         } else {
-            $data->options = new \StdClass();
+            $data->options = new \stdClass();
             $data->options = json_encode($data->options);
         }
         if (!empty($data->minute) && is_array($data->minute)) {

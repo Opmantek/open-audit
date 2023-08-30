@@ -77,7 +77,7 @@ class IntegrationsModel extends BaseModel
         if (is_array($data->fields) or is_object($data->fields)) {
             $new_fields = array();
             foreach ($data->fields as $field) {
-                $item = new \StdClass();
+                $item = new \stdClass();
                 foreach ($field as $key => $value) {
                     $item->{$key} = $value;
                 }
@@ -102,7 +102,7 @@ class IntegrationsModel extends BaseModel
         $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
 
         if ($integration->discovery_run === 'y') {
-            $discovery = new \StdClass();
+            $discovery = new \stdClass();
             $discovery->type = 'integration';
             $discovery->name = 'Discovery for ' . $integration->name;
             $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
@@ -129,7 +129,7 @@ class IntegrationsModel extends BaseModel
                     $result = $this->db->query($sql, [$field_name, $integration->org_id])->getResult();
                     if (empty($result)) {
                         # No field exists, create it
-                        $field = new \StdClass();
+                        $field = new \stdClass();
                         $field->type = $field;
                         $field->name = $field_name;
                         $field->org_id = $integration->org_id;
@@ -219,7 +219,7 @@ class IntegrationsModel extends BaseModel
         $timer_start = microtime(true);
         $instance = & get_instance();
 
-        $log = new \StdClass();
+        $log = new \stdClass();
         $log->type = 'system';
         $log->severity = 5;
         $log->user = 'system';
@@ -349,9 +349,9 @@ class IntegrationsModel extends BaseModel
         $this->db->query($sql, [count($external_formatted_devices), $integration->id]);
 
         // Match any retrieved devices
-        $parameters = new \StdClass();
+        $parameters = new \stdClass();
         $parameters->log = $log;
-        $parameters->match = new \StdClass();
+        $parameters->match = new \stdClass();
         foreach ($integration->attributes->fields as $field) {
             if ($field->matching_attribute === 'y') {
                 $field_name = str_replace('system.', 'match_', $field->internal_field_name);
@@ -429,7 +429,7 @@ class IntegrationsModel extends BaseModel
                 if (!empty($device->devices->id)) {
                     // Update
                     $device_ids[] = intval($device->devices->id);
-                    $temp_device = new \StdClass();
+                    $temp_device = new \stdClass();
                     $temp_device->id = $device->devices->id;
                     $temp_device->last_seen_by = 'integrations';
                     // If this is the FIRST time we have integrated this device
@@ -523,7 +523,7 @@ class IntegrationsModel extends BaseModel
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
 
-                    $item = new \StdClass();
+                    $item = new \stdClass();
                     $item->ip = ip_address_from_db($device->devices->ip);
                     $item->discovery_id = intval($integration->attributes->discovery_id);
                     $details = json_encode($item);
@@ -644,9 +644,9 @@ class IntegrationsModel extends BaseModel
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             }
-            $parameters = new \StdClass();
+            $parameters = new \stdClass();
             $parameters->log = $log;
-            $parameters->match = new \StdClass();
+            $parameters->match = new \stdClass();
             foreach ($integration->attributes->fields as $field) {
                 if ($field->matching_attribute === 'y') {
                     $field_name = str_replace('system.', 'match_', $field->internal_field_name);
@@ -816,7 +816,7 @@ class IntegrationsModel extends BaseModel
         $external_formatted_devices = array();
 
         foreach ($external_devices as $device) {
-            $newdevice = new \StdClass();
+            $newdevice = new \stdClass();
             foreach ($integration->attributes->fields as $field) {
                 if (empty($field->internal_field_name)) {
                     $temp = explode('.', $field->external_field_name);
@@ -827,7 +827,7 @@ class IntegrationsModel extends BaseModel
                     $int = explode('.', $field->internal_field_name);
                     // If we don't have newdevice->system or newdevice->fields, etc
                     if (empty($newdevice->{$int[0]})) {
-                        $newdevice->{$int[0]} = new \StdClass();
+                        $newdevice->{$int[0]} = new \stdClass();
                     }
                     // If we don't have newdevice->system->name, et al
                     // TODO - This only accounts for two levels deep
@@ -880,7 +880,7 @@ class IntegrationsModel extends BaseModel
         $orgs = $orgsModel->getDescendants($integration->attributes->org_id);
         $orgs[] = $integration->attributes->org_id;
         if (empty($instance->user)) {
-            $instance->user = new \StdClass();
+            $instance->user = new \stdClass();
         }
         if (empty($instance->user->org_list)) {
             $instance->user->org_list = $orgs;
@@ -959,7 +959,7 @@ class IntegrationsModel extends BaseModel
             $custom_fields = array();
             foreach ($integration->attributes->fields as $integration_field) {
                 if ($integration_field->internal_field_name === '' or strpos($integration_field->internal_field_name, 'fields.') !== false) {
-                    $newfield = new \StdClass();
+                    $newfield = new \stdClass();
                     $newfield = clone $integration_field;
                     $newfield->internal_field_name = str_replace('fields.', '', $integration_field->internal_field_name);
                     if ($newfield->internal_field_name === '') {
@@ -970,7 +970,7 @@ class IntegrationsModel extends BaseModel
             }
 
             foreach ($devices as $device) {
-                $device->fields = new \StdClass();
+                $device->fields = new \stdClass();
                 foreach ($custom_fields as $custom_field) {
                     foreach ($fields as $field) {
                         if ($field->name === $custom_field->internal_field_name and intval($field->device_id) === intval($device->id)) {
@@ -991,7 +991,7 @@ class IntegrationsModel extends BaseModel
             if (is_array($credentials)) {
                 foreach ($devices as $device) {
                     $retrieved_credentials = (!empty($device->credentials)) ? @json_decode($device->credentials) : '';
-                    $device->credentials = new \StdClass();
+                    $device->credentials = new \stdClass();
                     foreach ($credentials as $credential) {
                         if (is_array($retrieved_credentials)) {
                             foreach ($retrieved_credentials as $key => $value) {
@@ -1105,7 +1105,7 @@ class IntegrationsModel extends BaseModel
     {
         $newdevices = array();
         foreach ($internal_devices as &$internal_device) {
-            $newdevice = new \StdClass();
+            $newdevice = new \stdClass();
             foreach ($integration->attributes->fields as $field) {
                 if (! empty($field->external_field_name)) {
                     if (empty($field->internal_field_name)) {
@@ -1327,7 +1327,7 @@ class IntegrationsModel extends BaseModel
         }
         if (count($explode) === 2) {
             if (empty($device->{$explode[0]})) {
-                $device->{$explode[0]} = new \StdClass();
+                $device->{$explode[0]} = new \stdClass();
             }
             $device->{$explode[0]}->{$explode[1]} = $value;
         }
@@ -1385,7 +1385,7 @@ class IntegrationsModel extends BaseModel
     {
         helper('security');
 
-        $cred_fields = new \StdClass();
+        $cred_fields = new \stdClass();
         foreach ($integration->attributes->fields as $field) {
             // check if we need to update various fields
             if (strpos($field->internal_field_name, 'credentials.') !== false) {
@@ -1404,7 +1404,7 @@ class IntegrationsModel extends BaseModel
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
-                $credentials = new \StdClass();
+                $credentials = new \stdClass();
                 $credentials->community = $device->credentials->snmp_community;
                 $credentials = (string)simpleEncrypt(json_encode($credentials));
 
@@ -1427,7 +1427,7 @@ class IntegrationsModel extends BaseModel
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
-                $credentials = new \StdClass();
+                $credentials = new \stdClass();
                 $credentials->username = $device->credentials->windows_username;
                 $credentials->password = $device->credentials->windows_password;
                 $credentials = (string)simpleEncrypt(json_encode($credentials));
@@ -1451,7 +1451,7 @@ class IntegrationsModel extends BaseModel
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
-                $credentials = new \StdClass();
+                $credentials = new \stdClass();
                 $credentials->authentication_passphrase = $device->credentials->authentication_passphrase;
                 $credentials->authentication_protocol = $device->credentials->authentication_protocol;
                 $credentials->privacy_passphrase = $device->credentials->privacy_passphrase;
@@ -1485,7 +1485,7 @@ class IntegrationsModel extends BaseModel
                 $query = $this->db->query($sql, $data);
                 $result = $query->getResult();
 
-                $credentials = new \StdClass();
+                $credentials = new \stdClass();
                 $credentials->username = $device->credentials->ssh_username;
                 $credentials->password = $device->credentials->ssh_password;
                 $credentials = (string)simpleEncrypt(json_encode($credentials));
@@ -1617,7 +1617,7 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
-        $dictionary->columns->attributes = new \StdClass();
+        $dictionary->columns->attributes = new \stdClass();
         $dictionary->columns->attributes->url = 'The URL of the external system.';
         $dictionary->columns->attributes->username = 'The username used to access the external system.';
         $dictionary->columns->attributes->password = 'The password used to access the external system.';

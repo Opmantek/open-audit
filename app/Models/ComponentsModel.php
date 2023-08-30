@@ -737,7 +737,7 @@ class ComponentsModel extends BaseModel
                     }
                     // ensure we add the network to the networks list
                     if (!empty($data[$i]->network)) {
-                        $network = new \StdClass();
+                        $network = new \stdClass();
                         $network->name = $data[$i]->network;
                         $network->network = $data[$i]->network;
                         $network->org_id = 1;

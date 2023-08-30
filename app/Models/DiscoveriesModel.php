@@ -413,7 +413,7 @@ class DiscoveriesModel extends BaseModel
 
         $retrieved_types = array();
         // set up a log object
-        $log = new \StdClass();
+        $log = new \stdClass();
         $log->discovery_id = $discovery_id;
         $log->file = 'm_device';
         $log->function = 'getDeviceDiscoveryCredentials';

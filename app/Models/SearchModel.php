@@ -99,7 +99,7 @@ class SearchModel extends BaseModel
                                 $temp_value = $value;
                             }
                             if (stripos($item_value, $temp_value) !== false) {
-                                $new_item = new \StdClass();
+                                $new_item = new \stdClass();
                                 $new_item->{'devices.id'} = $item->{'devices.id'};
                                 $new_item->{'devices.icon'} = $item->{'devices.icon'};
                                 $new_item->{'devices.type'} = $item->{'devices.type'};
@@ -147,7 +147,7 @@ class SearchModel extends BaseModel
                         }
                         if (!is_null($item_value)) {
                             if (stripos($item_value, $value) !== false) {
-                                $new_item = new \StdClass();
+                                $new_item = new \stdClass();
                                 $new_item->{'devices.id'} = $item->{'id'};
                                 $new_item->{'devices.icon'} = $item->{'icon'};
                                 $new_item->{'devices.type'} = $item->{'type'};

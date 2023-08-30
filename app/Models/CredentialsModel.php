@@ -207,12 +207,12 @@ class CredentialsModel extends BaseModel
         if (!empty($data->credentials)) {
             $query = $this->builder->getWhere(['id' => intval($id)]);
             $get_result = $query->getResult();
-            $received_credentials = new \StdClass();
+            $received_credentials = new \stdClass();
             foreach ($data->credentials as $key => $value) {
                     $received_credentials->$key = $value;
             }
             $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key));
-            $new_credentials = new \StdClass();
+            $new_credentials = new \stdClass();
             foreach ($existing_credentials as $key => $value) {
                 if (!empty($received_credentials->$key)) {
                     $new_credentials->$key = $received_credentials->$key;
