@@ -96,7 +96,7 @@ class BaselinesModel extends BaseModel
     public function includedRead(int $id = 0): array
     {
         $included = array();
-        $sql = "SELECT id, name, timestamp FROM baselines_results WHERE baseline_id = ?";
+        $sql = "SELECT id, name, timestamp, result FROM baselines_results WHERE baseline_id = ?";
         $result = $this->db->query($sql, [$id])->getResult();
         $included['baselines_results'] = format_data($result, 'baselines_results');
 

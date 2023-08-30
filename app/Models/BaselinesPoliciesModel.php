@@ -73,102 +73,150 @@ class BaselinesPoliciesModel extends BaseModel
         }
         $data->org_id = intval($org_id[0]->org_id);
 
-        if (!empty($data->table) && $data->table === 'software') {
-            $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
-            $tests = array();
-            $entry = new \StdClass();
-            $entry->column = 'name';
-            $entry->operator = '=';
-            $entry->value = $data->tests->name->value;
-            $tests[] = $entry;
+        if (empty($data->type or $data->type === 'single')) {
+            log_message('ingo', 'Creating a siongle policy based on ' . $data->table);
+            if (!empty($data->table) && $data->table === 'software') {
+                $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
+                $tests = array();
+                $entry = new stdClass();
+                $entry->column = 'name';
+                $entry->operator = '=';
+                $entry->value = $data->tests->name->value;
+                $tests[] = $entry;
 
-            $entry = new \StdClass();
-            $entry->column = 'version';
-            $entry->operator = $data->tests->version->operator;
-            $entry->value = $data->tests->version->value;
-            $tests[] = $entry;
+                $entry = new stdClass();
+                $entry->column = 'version';
+                $entry->operator = $data->tests->version->operator;
+                $entry->value = $data->tests->version->value;
+                $tests[] = $entry;
 
-            $entry = new \StdClass();
-            $entry->column = 'version_padded';
-            $entry->operator = $data->tests->version->operator;
-            $entry->value = $this->versionPadded($data->tests->version->value);
-            $tests[] = $entry;
+                $entry = new stdClass();
+                $entry->column = 'version_padded';
+                $entry->operator = $data->tests->version->operator;
+                $entry->value = $this->versionPadded($data->tests->version->value);
+                $tests[] = $entry;
 
-            unset($data->tests);
-            $data->tests = json_encode($tests);
+                unset($data->tests);
+                $data->tests = json_encode($tests);
+            }
+
+            if (!empty($data->table) && $data->table === 'netstat') {
+                $data->name = $data->tests->program->value . ' on ' . $data->tests->port->value . ' using ' . $data->tests->protocol->value;
+                $tests = array();
+                $entry = new stdClass();
+                $entry->column = 'protocol';
+                $entry->operator = '=';
+                $entry->value = $data->tests->protocol->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'program';
+                $entry->operator = '=';
+                $entry->value = $data->tests->program->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'port';
+                $entry->operator = '=';
+                $entry->value = $data->tests->port->value;
+                $tests[] = $entry;
+
+                unset($data->tests);
+                $data->tests = json_encode($tests);
+            }
+
+            if (!empty($data->table) && $data->table === 'user') {
+                $data->name = $data->tests->name->value;
+                $tests = array();
+                $entry = new stdClass();
+                $entry->column = 'name';
+                $entry->operator = '=';
+                $entry->value = $data->tests->name->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'status';
+                $entry->operator = '=';
+                $entry->value = $data->tests->status->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'type';
+                $entry->operator = '=';
+                $entry->value = $data->tests->type->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'password_expires';
+                $entry->operator = '=';
+                $entry->value = $data->tests->password_expires->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'password_changeable';
+                $entry->operator = '=';
+                $entry->value = $data->tests->password_changeable->value;
+                $tests[] = $entry;
+
+                $entry = new stdClass();
+                $entry->column = 'password_required';
+                $entry->operator = '=';
+                $entry->value = $data->tests->password_required->value;
+                $tests[] = $entry;
+
+                unset($data->tests);
+                $data->tests = json_encode($tests);
+            }
+            $data = $this->createFieldData('baselines_policies', $data);
+            $this->builder->insert($data);
         }
 
-        if (!empty($data->table) && $data->table === 'netstat') {
-            $data->name = $data->tests->program->value . ' on ' . $data->tests->port->value . ' using ' . $data->tests->protocol->value;
-            $tests = array();
-            $entry = new \StdClass();
-            $entry->column = 'protocol';
-            $entry->operator = '=';
-            $entry->value = $data->tests->protocol->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'program';
-            $entry->operator = '=';
-            $entry->value = $data->tests->program->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'port';
-            $entry->operator = '=';
-            $entry->value = $data->tests->port->value;
-            $tests[] = $entry;
-
-            unset($data->tests);
-            $data->tests = json_encode($tests);
+        if (!empty($data->type) and $data->type === 'device') {
+            log_message('info', 'Creating policies from device based on ' . $data->table);
+            if ($data->table === 'software') {
+                $columns = array('name', 'version', 'version_padded');
+                $sql = "SELECT name, version, version_padded FROM software WHERE software.device_id = ? and current = 'y' and name != 'kernel' and name != 'kernel-devel' GROUP BY name, version, version_padded";
+            } else if ($data->table === 'netstat') {
+                $columns = array('protocol', 'program', 'port');
+                $sql = "SELECT protocol, program, port, CONCAT(`program`, ' on ', `port`, ' using ', `protocol`) AS `name` FROM netstat WHERE netstat.device_id = ? and current = 'y' GROUP BY protocol, program, port";
+            } else if ($data->table === 'user') {
+                $columns = array('name', 'status', 'type', 'password_expires', 'password_changeable', 'password_required');
+                $sql = "SELECT name, status, type, password_expires, password_changeable, password_required FROM user WHERE user.device_id = ? and current = 'y' GROUP BY name, status, type, password_expires, password_changeable, password_required";
+            }
+            $result = $this->db->query($sql, [$data->device_id])->getResult();
+            $policies = array();
+            foreach ($result as $row) {
+                $policy = new stdClass();
+                $policy->org_id = $data->org_id;
+                $policy->baseline_id = $data->baseline_id;
+                $policy->name = $row->name;
+                $policy->priority = 5;
+                $policy->notes = '';
+                $policy->documentation = '';
+                $policy->table = $data->table;
+                $policy->tests = array();
+                foreach ($columns as $column) {
+                    $operator = $data->operator;
+                    if ($data->table === "software" and $column === "name") {
+                        # hard set the operator for this case
+                        $operator = "=";
+                    }
+                    if ($data->table === "software" and $column === "version") {
+                        $policy->name .= ' ' . $condition . ' ' . $row->version;
+                    }
+                    $policy->tests[] = array('column' => $column, 'operator' => $operator, 'value' => $row->{$column});
+                }
+                $policy->tests = json_encode($policy->tests);
+                $policies[] = $policy;
+                log_message('debug', 'Policy: ' . json_encode($policy));
+            }
+            foreach ($policies as $policy) {
+                $data = $this->createFieldData('baselines_policies', $policy);
+                $this->builder->insert($data);
+            }
         }
-
-        if (!empty($data->table) && $data->table === 'user') {
-            $data->name = $data->tests->name->value;
-            $tests = array();
-            $entry = new \StdClass();
-            $entry->column = 'name';
-            $entry->operator = '=';
-            $entry->value = $data->tests->name->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'status';
-            $entry->operator = '=';
-            $entry->value = $data->tests->status->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'type';
-            $entry->operator = '=';
-            $entry->value = $data->tests->type->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'password_expires';
-            $entry->operator = '=';
-            $entry->value = $data->tests->password_expires->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'password_changeable';
-            $entry->operator = '=';
-            $entry->value = $data->tests->password_changeable->value;
-            $tests[] = $entry;
-
-            $entry = new \StdClass();
-            $entry->column = 'password_required';
-            $entry->operator = '=';
-            $entry->value = $data->tests->password_required->value;
-            $tests[] = $entry;
-
-            unset($data->tests);
-            $data->tests = json_encode($tests);
-        }
-
-        $data = $this->createFieldData('baselines_policies', $data);
-        $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
+            log_message('error', json_encode($error));
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
@@ -213,7 +261,18 @@ class BaselinesPoliciesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $instance = & get_instance();
+        if (!empty($instance->resp->meta->filter)) {
+            foreach ($instance->resp->meta->filter as $item) {
+                if ($item->name === 'baselines.id') {
+                    $id = intval($item->value);
+                }
+            }
+        }
+        $baselinesModel = new \App\Models\BaselinesModel();
+        $included['baseline'] = $baselinesModel->read($id);
+        return $included;
     }
 
     /**
@@ -267,7 +326,16 @@ class BaselinesPoliciesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
+        $properties = array();
+        $properties[] = 'baselines_policies.*';
+        $properties[] = 'baselines.id AS `basleines.id`';
+        $properties[] = 'baselines.name AS `baselines.name`';
+        $properties[] = 'orgs.id AS `orgs.id`';
+        $properties[] = 'orgs.name AS `orgs.name`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'baselines_policies.org_id = orgs.id', 'left');
+        $this->builder->join('baselines', 'baselines_policies.baseline_id = baselines.id', 'left');
+        $query = $this->builder->getWhere(['baselines_policies.id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -296,6 +364,74 @@ class BaselinesPoliciesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
+
+        if (!empty($data->tests)) {
+            $existing_policy = $this->read(intval($id))[0]->attributes;
+            $existing_tests = $existing_policy->tests;
+
+            if ($existing_policy->table === 'netstat') {
+                $attributes = array('protocol', 'program', 'port');
+                foreach ($attributes as $attribute) {
+                    if (isset($data->tests->{$attribute})) {
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === $attribute) {
+                                $existing_tests[$i]->value = $data->tests->{$attribute};
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($existing_policy->table === 'software') {
+                if (isset($data->tests->name)) {
+                    for ($i=0; $i < count($existing_tests); $i++) {
+                        if ($existing_tests[$i]->column === 'name') {
+                            $existing_tests[$i]->value = $data->tests->name;
+                        }
+                    }
+                }
+                if (isset($data->tests->operator)) {
+                    for ($i=0; $i < count($existing_tests); $i++) {
+                        if ($existing_tests[$i]->column === 'version') {
+                            $existing_tests[$i]->operator = $data->tests->operator;
+                        }
+                    }
+                    for ($i=0; $i < count($existing_tests); $i++) {
+                        if ($existing_tests[$i]->column === 'version_padded') {
+                            $existing_tests[$i]->operator = $data->tests->operator;
+                        }
+                    }
+                }
+                if (isset($data->tests->version)) {
+                    for ($i=0; $i < count($existing_tests); $i++) {
+                        if ($existing_tests[$i]->column === 'version') {
+                            $existing_tests[$i]->value = $data->tests->version;
+                        }
+                    }
+                    for ($i=0; $i < count($existing_tests); $i++) {
+                        if ($existing_tests[$i]->column === 'version_padded') {
+                            $existing_tests[$i]->value = $this->versionPadded($data->tests->version);
+                        }
+                    }
+                }
+            }
+
+            if ($existing_policy->table === 'user') {
+                $attributes = array('name', 'status', 'type', 'password_expires', 'password_changeable', 'password_required');
+                foreach ($attributes as $attribute) {
+                    if (isset($data->tests->{$attribute})) {
+                        for ($i=0; $i < count($existing_tests); $i++) {
+                            if ($existing_tests[$i]->column === $attribute) {
+                                $existing_tests[$i]->value = $data->tests->{$attribute};
+                            }
+                        }
+                    }
+                }
+            }
+            $data->tests = json_encode($existing_tests);
+        }
+
+
         // Accept our client data
         $data = $this->updateFieldData('baselines_policies', $data);
         $this->builder->where('id', intval($id));
@@ -345,7 +481,7 @@ class BaselinesPoliciesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'table', 'name', 'baselines.name', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default

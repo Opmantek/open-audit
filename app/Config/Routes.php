@@ -39,6 +39,12 @@ $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::
 
 # These will match and then take precedence over the below route array
 
+$routes->get('baselines/(:num)/execute', 'Baselines::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecuteForm']);
+$routes->post('baselines/(:num)/execute', 'Baselines::execute/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecute']);
+
+$routes->get('baselines_results/(:num)/export/device', 'BaselinesResults::export/$1/device', ['filter' => \App\Filters\Session::class, 'as' => 'baselines_resultsExportDevice']);
+$routes->get('baselines_results/(:num)/export/policy', 'BaselinesResults::export/$1/policy', ['filter' => \App\Filters\Session::class, 'as' => 'baselines_resultsExportPolicy']);
+
 $routes->get('chart', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'chartsCollection']);
 $routes->get('chart/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
 

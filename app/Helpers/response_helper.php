@@ -54,6 +54,10 @@ if (!function_exists('response_create')) {
             $request->header('Accept')
         );
 
+        if ($response->meta->collection === 'baselinesresults') {
+            $response->meta->collection = 'baselines_results';
+        }
+
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
             if (empty($response->meta->collection)) {
@@ -180,9 +184,9 @@ if (!function_exists('response_create')) {
             $response->meta->collection,
             $instance->user->org_list
         );
-        if ($response->meta->action === 'create') {
-            $response->meta->id = null;
-        }
+        // if ($response->meta->action === 'create') {
+        //     $response->meta->id = null;
+        // }
 
         // no dependencies - set in GET or POST
         $temp = response_get_ids($request->getGet('ids'), $request->getPost('ids'));
@@ -1429,6 +1433,7 @@ if (!function_exists('response_valid_permissions')) {
         $permission['dictionary'] = 'r';
         $permission['download'] = 'r';
         $permission['execute'] = 'u';
+        $permission['executeform'] = 'u';
         $permission['export'] = 'r';
         $permission['help'] = 'r';
         $permission['import'] = 'c';

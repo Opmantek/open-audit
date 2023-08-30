@@ -158,6 +158,9 @@ class Collections extends BaseController
             } else {
                 if ($this->resp->meta->collection !== 'components') {
                     \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                    if ($this->resp->meta->collection === 'baselines_policies') {
+                        return redirect()->route('baselinesRead', [$this->resp->meta->received_data->attributes->baseline_id]);
+                    }
                     return redirect()->route($this->resp->meta->collection.'Read', [$id]);
                 } else {
                     \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
@@ -676,6 +679,44 @@ class Collections extends BaseController
                 \Config\Services::session()->setFlashdata('warning', 'Invalid ID provided to ' . $this->resp->meta->collection . ' read function (ID: ' . $this->resp->meta->id . ')');
                 return redirect()->route($this->resp->meta->collection.'Collection');
             } else {
+                if ($this->resp->meta->collection === 'baselines_results') {
+                    $this->resp->meta->breadcrumbs = array();
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselinesCollection');
+                    $breadcrumb->name = 'Baselines';
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselinesRead', $this->resp->data[0]->attributes->baseline_id);
+                    $breadcrumb->name = $this->resp->data[0]->attributes->{'baselines.name'};
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselines_resultsCollection') . '?baselines.id=' . $this->resp->data[0]->attributes->baseline_id;
+                    $breadcrumb->name = 'Results';
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselines_resultsRead', $this->resp->data[0]->id);
+                    $breadcrumb->name = $this->resp->data[0]->attributes->name;
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                }
+                if ($this->resp->meta->collection === 'baselines_policies') {
+                    $this->resp->meta->breadcrumbs = array();
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselinesCollection');
+                    $breadcrumb->name = 'Baselines';
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselinesRead', $this->resp->data[0]->attributes->baseline_id);
+                    $breadcrumb->name = $this->resp->data[0]->attributes->{'baselines.name'};
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselines_policiesCollection') . '?baselines.id=' . $this->resp->data[0]->attributes->baseline_id;
+                    $breadcrumb->name = 'Policies';
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                    $breadcrumb = new stdClass();
+                    $breadcrumb->url = url_to('baselines_policiesRead', $this->resp->data[0]->id);
+                    $breadcrumb->name = $this->resp->data[0]->attributes->name;
+                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                }
                 $update = false;
                 if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false) {
                     $update = true;
