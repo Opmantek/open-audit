@@ -73,6 +73,12 @@ if (!function_exists('response_create')) {
             $permission_requested['execute'] = 'r';
         }
 
+        // log_message('debug', 'Action: ' . $response->meta->action);
+        // log_message('debug', 'Collection: ' . $response->meta->collection);
+        // log_message('debug', 'Permission Requested: ' . $permission_requested[$response->meta->action]);
+        // log_message('debug', 'UserPermission: ' . $instance->user->permissions[$response->meta->collection]);
+
+
         if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
             $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
             $response->errors = $message;

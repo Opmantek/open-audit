@@ -59,6 +59,8 @@ abstract class BaseController extends Controller
         $router = \Config\Services::router();
         $this->controller = $router->controllerName();
         $this->method = $router->methodName();
+        // log_message('debug', 'Controller: ' . $this->controller);
+        // log_message('debug', 'Method: ' . $this->method);
 
         // Preload any models, libraries, etc, here.
         $this->session = session();
