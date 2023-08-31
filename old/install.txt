@@ -1,3 +1,0 @@
-INSTALLATION
-
-All install documentation is available on the [Wiki](https://community.opmantek.com/display/OA/Home).
