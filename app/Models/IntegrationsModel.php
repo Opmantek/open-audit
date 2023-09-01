@@ -42,11 +42,20 @@ class IntegrationsModel extends BaseModel
         }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
+        $query = $this->builder->get()->getResult();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        if (config('Openaudit')->decrypt_credentials === 'y') {
+            $count = count($query);
+            for ($i=0; $i < $count; $i++) {
+                if (!empty($query[$i]->credentials)) {
+                    $query[$i]->credentials = simpleDecrypt($query[$i]->credentials, config('Encryption')->key);
+                    $query[$i]->credentials = json_decode($query[$i]->credentials);
+                }
+            }
+        }
+        return format_data($query, $resp->meta->collection);
     }
 
     /**
@@ -1299,11 +1308,17 @@ class IntegrationsModel extends BaseModel
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'integrations.org_id = orgs.id', 'left');
         $this->builder->join('discoveries', 'integrations.discovery_id = discoveries.id', 'left');
-        $query = $this->builder->getWhere(['integrations.id' => intval($id)]);
+        $query = $this->builder->getWhere(['integrations.id' => intval($id)])->getResult();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'integrations');
+        if (config('Openaudit')->decrypt_credentials === 'y') {
+            if (!empty($query[0]->credentials)) {
+                $query[0]->credentials = simpleDecrypt($query[0]->credentials, config('Encryption')->key);
+                $query[0]->credentials = json_decode($query[0]->credentials);
+            }
+        }
+        return format_data($query, 'integrations');
     }
 
     /**
