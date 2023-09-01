@@ -101,10 +101,11 @@ class ApplicationsModel extends BaseModel
         $org_list = array_unique($org_list);
 
         $properties = array();
-        $properties[] = 'devices.id';
-        $properties[] = 'devices.name';
-        $properties[] = 'devices.ip';
-        $properties[] = 'devices.description';
+        $properties[] = 'application.id AS `application.id`';
+        $properties[] = 'devices.id AS `devices.id`';
+        $properties[] = 'devices.name AS `devices.name`';
+        $properties[] = 'devices.ip AS `devices.ip`';
+        $properties[] = 'devices.description AS `devices.description`';
         $this->builder->select($properties, false);
         $this->builder->join('application', 'application.application_id = applications.id', 'left');
         $this->builder->join('devices', 'application.device_id = devices.id', 'left');
