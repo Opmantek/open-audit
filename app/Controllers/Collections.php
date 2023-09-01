@@ -65,7 +65,7 @@ class Collections extends BaseController
      * @access public
      * @return NULL
      */
-    public function collection()
+    public function collection(string $export = '')
     {
         $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
@@ -84,17 +84,28 @@ class Collections extends BaseController
             // $this->collectorsModel = new \App\Models\CollectorsModel;
             // $this->resp->included['collectors'] = $this->collectorsModel->listUser();
         }
+        if ($this->resp->meta->collection === 'clouds' or
+            $this->resp->meta->collection === 'discoveries' or
+            $this->resp->meta->collection === 'networks') {
+            $this->resp->included = array_merge($this->resp->included, $this->{strtolower($this->resp->meta->collection) . "Model"}->includedCollection());
+        }
+
         if ($this->resp->meta->format !== 'html') {
             output($this);
             return;
         }
         $view = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
-        $this->resp->included = array();
+        if (empty($this->resp->included)) {
+            $this->resp->included = array();
+        }
         // A special case for the Bulk Update Form
         if ($this->resp->meta->request_method === 'GET' and strpos($this->resp->meta->query_string, 'action=bulkupdateform') !== false) {
             $view = $this->resp->meta->collection . 'BulkUpdateForm';
             $this->resp->included = $this->{strtolower($this->resp->meta->collection) . "Model"}->includedBulkUpdate();
             $this->resp->meta->action = 'bulkupdateform';
+        }
+        if ($export === 'export') {
+            $view = 'collectionExport';
         }
         return view('shared/header', [
             'config' => $this->config,
@@ -645,7 +656,7 @@ class Collections extends BaseController
      * @access public
      * @return void
      */
-    public function read($id)
+    public function read($id, string $export = '')
     {
         if ($this->resp->meta->collection !== 'database') {
             $this->resp->meta->id = intval($this->resp->meta->id);
@@ -722,6 +733,10 @@ class Collections extends BaseController
                     $update = true;
                 }
                 $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
+                $template = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
+                if (!empty($export)) {
+                    $template = 'collectionExport';
+                }
                 return view('shared/header', [
                     'config' => $this->config,
                     'dashboards' => filter_response($this->dashboards),
@@ -733,7 +748,7 @@ class Collections extends BaseController
                     'roles' => filter_response($this->roles),
                     'user' => filter_response($this->user),
                     'name' => @$this->resp->data[0]->attributes->name]) .
-                    view($this->resp->meta->collection . ucfirst($this->resp->meta->action), ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update]);
+                    view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update]);
             }
         }
     }
