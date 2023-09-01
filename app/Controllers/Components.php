@@ -37,6 +37,10 @@ class Components extends BaseController
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         $this->resp->meta->id = $device_id;
+        if ($type === 'applications') {
+            $this->applicationsModel = new \App\Models\ApplicationsModel();
+            $this->resp->included['applications'] = $this->applicationsModel->listUser();
+        }
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
