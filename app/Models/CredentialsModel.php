@@ -42,11 +42,20 @@ class CredentialsModel extends BaseModel
         }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
+        $query = $this->builder->get()->getResult();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        if (config('Openaudit')->decrypt_credentials === 'y') {
+            $count = count($query);
+            for ($i=0; $i < $count; $i++) {
+                if (!empty($query[$i]->credentials)) {
+                    $query[$i]->credentials = simpleDecrypt($query[$i]->credentials, config('Encryption')->key);
+                    $query[$i]->credentials = json_decode($query[$i]->credentials);
+                }
+            }
+        }
+        return format_data($query, $resp->meta->collection);
     }
 
     /**
@@ -174,9 +183,11 @@ class CredentialsModel extends BaseModel
             return array();
         }
         $credentials = $query->getResult();
-        if (!empty($credentials[0]->credentials)) {
-            $credentials[0]->credentials = simpleDecrypt($credentials[0]->credentials, config('Encryption')->key);
-            $credentials[0]->credentials = json_decode($credentials[0]->credentials);
+        if (config('Openaudit')->decrypt_credentials === 'y') {
+            if (!empty($credentials[0]->credentials)) {
+                $credentials[0]->credentials = simpleDecrypt($credentials[0]->credentials, config('Encryption')->key);
+                $credentials[0]->credentials = json_decode($credentials[0]->credentials);
+            }
         }
         return format_data($credentials, 'credentials');
     }
