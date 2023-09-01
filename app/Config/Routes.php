@@ -115,13 +115,13 @@ foreach ($routes->collections as $collection) {
     // The capitalised controller name
     $controller = ucfirst($collection);
 
-    # execute
-    $routes->get($collection . '/(:num)/execute', $controller . '::execute/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Execute']);
-
     # Below functions are all generic enough to be handled by the Collections controller
 
     # collection
     $routes->get($collection, 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Collection']);
+
+    # export all
+    $routes->get($collection . '/export', 'Collections::collection/export', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CollectionExport']);
 
     # create
     $routes->post($collection, 'Collections::create', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Create']);
@@ -137,6 +137,12 @@ foreach ($routes->collections as $collection) {
 
     # dictionary
     $routes->get($collection . '/dictionary', 'Collections::dictionary/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Dictionary']);
+
+    # execute
+    $routes->get($collection . '/(:num)/execute', $controller . '::execute/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Execute']);
+
+    # export individual
+    $routes->get($collection . '/(:num)/export', 'Collections::read/$1/export', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Export']);
 
     # help
     $routes->get($collection . '/help', 'Collections::help', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Help']);
