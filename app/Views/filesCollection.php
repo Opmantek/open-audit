@@ -6,12 +6,12 @@ include 'shared/collection_functions.php';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user); ?>
+                    <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                        <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>

@@ -10,6 +10,7 @@ $user->permissions['components'] = '';
                     <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
+                    <br />
                     <div class="table-responsive">
                         <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
                             <thead>

@@ -9,6 +9,7 @@ include 'shared/collection_functions.php';
                     <?= collection_card_header($meta->collection, $meta->icon, $user, 'Support') ?>
                 </div>
                 <div class="card-body">
+                    <br />
                     <div class="row">
                         <div class="col-6">
 

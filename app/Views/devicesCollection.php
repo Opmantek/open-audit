@@ -4,11 +4,52 @@
 include 'shared/collection_functions.php';
 ?>
         <main class="container-fluid">
+            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none') { ?>
+            <div class="card oa-card-advanced">
+                <div class="card-header" style="height:57px;">
+                    <div class="row">
+                        <div class="col-9 clearfix">
+                                <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Resources (All Devices)') ?></h6>
+                        </div>
+                        <div class="col-3 clearfix pull-right">
+                            <div class="btn-group btn-group-sm float-end mb-2" role="group">
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body collapse" id="advanced">
+                    <div class="row">
+                        <?php $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard');
+                        foreach ($components as $component) { ?>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"/><br /><?= ucwords($component) ?></a></div>
+                        <?php } ?>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <?php $components = array('netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item');
+                        foreach ($components as $component) { ?>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"/><br /><?= ucwords($component) ?></a></div>
+                        <?php } ?>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <?php $components = array('service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                        foreach ($components as $component) { ?>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"/><br /><?= ucwords($component) ?></a></div>
+                        <?php } ?>
+                    </div>
+                    <br />
+                </div>
+            </div>
+            <?php } ?>
+
             <div class="card">
                 <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
+                    <br />
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover dataTable" data-order='[[3,"asc"]]'>

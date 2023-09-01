@@ -4,11 +4,189 @@
 include 'shared/collection_functions.php';
 ?>
         <main class="container-fluid">
+            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none') { ?>
+            <div class="card">
+                <div class="card-header" style="height:57px;">
+                    <div class="row">
+                        <div class="col-9 clearfix">
+                            <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Advanced') ?></h6>
+                        </div>
+                        <div class="col-3 clearfix pull-right">
+                            <div class="btn-group btn-group-sm float-end mb-2" role="group">
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body collapse" id="advanced">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="offset-3 col-6">
+                                    <label for="queue_limit" class="form-label"><?= __('Queue Limit') ?></label>
+                                    <div class="input-group">
+                                        <input disabled title="<?= __('Queue Limit') ?>" type="text" class="form-control"  id="queue_limit" name="queue_limit" value="<?= config('Openaudit')->queue_limit ?>">
+                                        <span class="pull-right">
+                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false) { ?>
+                                            <a href="<?= url_to('configurationCollection') ?>/queue_limit" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-cog" aria-hidden="true"></span></a>
+                                            <?php } ?>
+                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The maximum number of parrallel discovery threads.">?</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span><br /></span>
+
+                                <div class="offset-3 col-6">
+                                    <label for="queue_count" class="form-label"><?= __('Current Discovery Processes') ?></label>
+                                    <div class="input-group">
+                                        <input disabled title="<?= __('Current Discovery Processes') ?>" type="text" class="form-control"  id="queue_count" name="queue_count" value="<?= config('Openaudit')->queue_count ?>">
+                                        <span class="pull-right">
+                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and intval(config('Openaudit')->queue_count) > 0) { ?>
+                                            <a id="delete_queue_count" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Count') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
+                                            <?php } ?>
+                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The number of running discovery threads.">?</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span><br /></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+
+                                <div class="offset-3 col-6">
+                                    <label for="queue_items" class="form-label"><?= __('All Queued Items') ?></label>
+                                    <div class="input-group">
+                                        <input disabled title="<?= __('Queued Items') ?>" type="text" class="form-control"  id="queue_items" name="queue_items" value="<?= $included['queue_items'] ?>">
+                                        <span class="pull-right">
+                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and $included['queue_items'] > 0) { ?>
+                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
+                                            <?php } ?>
+                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of discovery queue items waiting to be processed.">?</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span><br /></span>
+
+                                <div class="offset-3 col-6">
+                                    <label for="ip_scan" class="form-label"><?= __('Queued IP Scans') ?></label>
+                                    <div class="input-group">
+                                        <input disabled title="<?= __('Queued IP Scans') ?>" type="text" class="form-control"  id="ip_scan" name="ip_scan" value="<?= (!empty($included['ip_scan'])) ? $included['ip_scan'] : 0; ?>">
+                                        <span class="pull-right">
+                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of IPs waiting to be scanned in the queue.">?</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span><br /></span>
+
+                                <div class="offset-3 col-6">
+                                    <label for="ip_audit" class="form-label"><?= __('Queued Device Audits') ?></label>
+                                    <div class="input-group">
+                                        <input disabled title="<?= __('Queued Device Audits') ?>" type="text" class="form-control"  id="ip_audit" name="ip_audit" value="<?= (!empty($included['ip_audit'])) ? $included['ip_audit'] : 0; ?>">
+                                        <span class="pull-right">
+                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of devices waiting to be audited in the queue.">?</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span><br /></span>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <?php } ?>
+
+            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none' and !empty($included['issues'])) { ?>
+            <div class="card">
+                <div class="card-header" style="height:57px;">
+                    <div class="row">
+                        <div class="col-9 clearfix">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="">
+                                <div class="btn-group" role="group">
+                                    <button data-bs-toggle="collapse" data-bs-target="#issues" type="button" class="btn btn-outline-dark oa-card-button"><span class="fa-solid fa-triangle-exclamation" style="margin-right:10px;" aria-hidden="true"></span><?= __('Discovery Issues') . ' (' . count($included['issues']) . ')' ?></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 clearfix pull-right">
+                            <div class="btn-group btn-group-sm float-end" role="group">
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="issues" aria-label="<?= __('Show') ?>"><span class="fa fa-angle-down"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body collapse" id="issues">
+                    <?php if (count($included['issues']) > 99) { ?>
+                        <div class="alert alert-warning alert-dismissable fade show" role="alert">
+                            <?= __('Limited to 100 rows.') ?>'
+                            <button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php } ?>
+                    <form class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <br />
+                                <table class="table table-striped table-hover dataTable" id="table_issue" data-order='[[3,"asc"]]'>
+                                    <thead>
+                                        <tr>
+                                            <th data-orderable="false" class="text-center"><?= __('View Discovery') ?></th>
+                                            <th><?= __('Discovery Name') ?></th>
+                                            <th data-orderable="false" class="text-center"><?= __('View Device') ?></th>
+                                            <th><?= __('IP') ?></th>
+                                            <th></th>
+                                            <th><?= __('Name') ?></th>
+                                            <th><?= __('Issue') ?></th>
+                                            <th><?= __('Description') ?></th>
+                                            <th data-orderable="false" class="text-center"><?= __('Action') ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php foreach ($included['issues'] as $issue) { ?>
+                                        <tr>
+                                            <td class="text-center col-md-1"><a title="<?= __('Discovery') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('discoveriesRead', $issue->discovery_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                            <td class="col-md-1"><?= $issue->discovery_name ?></td>
+                                            <td class="text-center col-md-1"><a title="<?= __('Devices') ?>"role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $issue->{'devices.id'}) ?>"><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
+                                            <td class="col-md-1"><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} ?><br />
+                                            <?php if ($issue->{'devices.type'} === 'unknown') { ?>
+                                                <span class="text-danger"><em><?= $issue->{'devices.type'} ?></em></span>
+                                            <?php } else if ($issue->{'devices.type'} === 'unclassified') { ?>
+                                                <span class="text-warning"><em><?= $issue->{'devices.type'} ?></em></span>
+                                            <?php } else { ?>
+                                                <span class="text-success"><em><?= $issue->{'devices.type'} ?></em></span>
+                                            <?php } ?>
+                                            </td>
+                                            <?php if ($issue->{'devices.icon'}) { ?>
+                                            <td class="text-center"><img width="30" src="/open-audit/device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
+                                            <?php } else { ?>
+                                            <td class="text-center"></td>
+                                            <?php } ?>
+                                            <td class="col-md-1"><?= $issue->{'devices.name'} ?></td>
+                                            <td class="col-md-3"><?= $issue->output ?></td>
+                                            <td class="col-md-4"><?= $issue->description ?></td>
+                                            <td class="text-center col-md-1">
+                                            <?php if ($issue->action === 'add credentials') { ?>
+                                                <a role="button" class="btn btn-default btn-sm" href="<?= url_to('credentialsCreateForm') ?>"><?= __('Add Credentials') ?></a>
+                                            <?php } ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br />
+            <?php } ?>
+
             <div class="card">
                 <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
+                    <br />
                     <div class="table-responsive">
                         <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                             <thead>
@@ -55,3 +233,61 @@ include 'shared/collection_functions.php';
                 </div>
             </div>
         </main>
+
+
+<script>
+window.onload = function () {
+    $(document).ready(function() {
+
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        $("#delete_queue").click(function () {
+            if (confirm("<%= l('Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.') %>") !== true) {
+                return;
+            }
+            var $id = $(this).attr("data-id");
+            var $name = $(this).attr("data-name");
+            $.ajax({
+                type: "DELETE",
+                url: oae_url_base + "/database/queue?current=all",
+                dataType: "json",
+                success: function (data) {
+                    window.location.reload(true);
+                },
+                error: function (data) {
+                    console.log(data.responseText);
+                    alert("An error occurred when deleting the queue");
+                }
+            });
+        });
+
+        $("#delete_queue_count").click(function () {
+            if (confirm("<%= l('Are you sure? This will reset the queue processing count and could cause load on the server.') %>") !== true) {
+                return;
+            }
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = 'queue_count';
+            data["data"]["type"] = 'configuration';
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"]['value'] = 0;
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: oae_url_base + "/configuration/queue_count",
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                    window.location.reload(true);
+                },
+                error: function (data) {
+                    var json = JSON.parse(data.responseText);
+                    console.log(json);
+                    alert(json.errors[0].code + "\n\n" + json.errors[0].title + "\n\n" + json.errors[0].detail + "\n\n" + json.errors[0].message);
+                }
+            });
+        });
+    });
+}
+</script>

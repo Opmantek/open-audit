@@ -33,6 +33,7 @@ if (!empty($included['fields'])) {
                                                 <ul class="list-group">
                                                     <li class="list-group-item section_toggle" data-section="summary_section"><img class="device-menu-icon" src="<?= base_url() ?>device_images/<?= $resource->icon ?>.svg" alt=""> <a href="#"><?= __('Summary') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="details_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/details.svg" alt=""> <a href="#"><?= __('Details') ?></a></li>
+                                                    <li class="list-group-item section_toggle" data-section="applications_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/applications.svg" alt=""> <a href="#"><?= __('Applications') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="attachments_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/attachments.svg" alt=""> <a href="#"><?= __('Attachments') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="audit_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/audit_log.svg" alt=""> <a href="#"><?= __('Audit Log') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="cell_details_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/cell_details.svg" alt=""> <a href="#"><?= __('Cellular Details') ?></a></li>
@@ -202,7 +203,7 @@ if (!empty($included['fields'])) {
                                             <?= read_field('domain', $resource->domain, '', $update) ?>
                                             <?= read_field('dns_domain', $resource->dns_domain, '', $update, 'DNS Domain') ?>
                                             <?= read_select('class', $resource->class, '', $update, __('Class'), $included['class']) ?>
-                                            <?= read_field('os_version', $resource->dns_domain, '', false, __('OS Version')) ?>
+                                            <?= read_field('os_version', $resource->os_version, '', false, __('OS Version')) ?>
                                             <?= read_field('memory_count', ($resource->memory_count / 1024 / 1024) . ' GB', '', false, __('Memory')) ?>
                                             <?= read_field('last_seen', $resource->last_seen, '', false, __('Last Seen On')) ?>
                                         </div>
@@ -214,6 +215,36 @@ if (!empty($included['fields'])) {
                                             <?= read_select('oae_manage', $resource->oae_manage, '', $update, __('Manage in Enterprise'), []) ?>
                                             <?= read_field('last_seen_by', $resource->last_seen_by) ?>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="applications_section">
+                                <?=  device_panel('applications', $user->toolbar_style, $resource->id); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th class="text-center"><?= __('Delete') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['application'])) {
+                                                foreach ($included['application'] as $row) { ?>
+                                                <tr>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('applicationsRead', $row->application_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <td><?= $row->{'applications.name'} ?></td>
+                                                    <td><?= $row->{'applications.description'} ?></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="application" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -357,18 +388,18 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Purpose') ?></th>
                                                     <th><?= __('Role') ?></th>
-                                                    <th><?= __('Delete') ?></th>
+                                                    <th class="text-center"><?= __('Delete') ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             <?php if (!empty($included['cluster'])) {
                                                 foreach ($included['cluster'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->cluster_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->{'cluster.id'}) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->purpose ?></td>
                                                     <td><?= $row->role ?></td>
-                                                    <td><?= $row->id ?></td>
+                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -388,7 +419,7 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                     <th><?= __('Description') ?></th>
-                                                    <th class="text-center"><?= __('Delete') ?></th>
+                                                    <th class="text-center" data-orderable="false"><?= __('Delete') ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -398,7 +429,7 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->description ?></td>
-                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="credential" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="credential" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
