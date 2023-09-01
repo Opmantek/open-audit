@@ -153,7 +153,7 @@ class ClustersModel extends BaseModel
                 $guest->{'guest.ip_padded'} = $guest->{'guest.ip'};
                 $guest->{'guest.ip'} = ip_address_from_db($guest->{'guest.ip'});
             }
-            $return['guests'] = $guests;
+            $return['guests'] = format_data($guests, 'devices');
         }
 
 
@@ -315,7 +315,7 @@ class ClustersModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'purpose', 'status', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'purpose', 'status', 'configuration', 'environment', 'scaling', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
