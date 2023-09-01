@@ -493,24 +493,52 @@ class DiscoveriesModel extends BaseModel
      * @param  int $id The ID of the requested item
      * @return array  An array of anything needed for screen output
      */
+    public function includedCollection(int $id = 0): array
+    {
+        $included = array();
+        $sql = 'SELECT COUNT(id) AS `count` FROM `queue`';
+        $included['queue_items'] = $this->db->query($sql)->getResult()[0]->count;
+
+        $sql = 'SELECT COUNT(id) AS `count`, type FROM `queue` GROUP BY type';
+        $result = $this->db->query($sql)->getResult();
+        foreach ($result as $item) {
+            $included[$item->{'type'}] = $item->{'count'};
+        }
+
+        $sql = 'SELECT TIMESTAMPDIFF(SECOND, (SELECT `timestamp` FROM discovery_log ORDER BY id DESC LIMIT 1), NOW()) AS `seconds`';
+        $result = $this->db->query($sql)->getResult();
+        if (!empty($result)) {
+            if (intval($result[0]->seconds) > 6000 and intval(config('Openaudit')->queue_count) > 0) {
+                $_SESSION['warning'] = 'You have running processes, but no discovery log has occurred for more than 10 minutes. See <a href="https://community.opmantek.com/display/OA/Troubleshooting#Troubleshooting-Problemswitharunawayqueue" target="_blank">here</a> for more information.';
+            }
+        }
+        return $included;
+    }
+
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
     public function includedRead(int $id = 0): array
     {
 
-        $include = array();
+        $included = array();
 
         $locationsModel = new \App\Models\LocationsModel();
-        $include['locations'] = $locationsModel->listUser();
+        $included['locations'] = $locationsModel->listUser();
 
         $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY id";
         $query = $this->db->query($sql, [$id]);
-        $include['discovery_log'] = $query->getResult();
+        $included['discovery_log'] = $query->getResult();
 
         $discovery_scan_optionsModel = new \App\Models\DiscoveryScanOptionsModel();
-        $include['discovery_scan_options'] = $discovery_scan_optionsModel->listUser();
+        $included['discovery_scan_options'] = $discovery_scan_optionsModel->listUser();
 
-        $include['issues'] = $this->issuesRead($id);
+        $included['issues'] = $this->issuesRead($id);
 
-        return $include;
+        return $included;
     }
 
     /**
@@ -521,18 +549,18 @@ class DiscoveriesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $include = array();
+        $included = array();
 
         $scanOptionsModel = new \App\Models\DiscoveryScanOptionsModel();
-        $include['discovery_scan_options'] = $scanOptionsModel->listUser();
+        $included['discovery_scan_options'] = $scanOptionsModel->listUser();
 
         $collectorsModel = new \App\Models\CollectorsModel();
-        $include['collectors'] = $collectorsModel->listUser();
+        $included['collectors'] = $collectorsModel->listUser();
 
         $locationsModel = new \App\Models\LocationsModel();
-        $include['locations'] = $locationsModel->listUser();
+        $included['locations'] = $locationsModel->listUser();
 
-        return $include;
+        return $included;
     }
 
 
@@ -606,6 +634,12 @@ class DiscoveriesModel extends BaseModel
             (discovery_log.device_id IN (select device_id from discovery_log a where message like '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command')
         AND discoveries.org_id IN (" . implode(',', $org_list) . ") GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
         $issues = $this->db->query($sql)->getResult();
+        $count = count($issues);
+        for ($i=0; $i < $count; $i++) {
+            if (empty($issues[$i]->discovery_name)) {
+                unset($issues[$i]);
+            }
+        }
 
         # Other issues, limited to the 50 most recent rows
         $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, discovery_log.timestamp AS `timestamp`, `message` AS `output`
@@ -620,8 +654,15 @@ class DiscoveriesModel extends BaseModel
             (discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail') OR
             (discovery_log.message LIKE 'No credentials array passed to%') OR
             (discovery_log.message LIKE 'No valid credentials for%')
-        AND discoveries.org_id IN (" . implode(',', $org_list) . ") GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
+        AND discoveries.org_id IN (" . implode(',', $org_list) . ") 
+        GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
         $result = $this->db->query($sql)->getResult();
+        $count = count($result);
+        for ($i=0; $i < $count; $i++) {
+            if (empty($result[$i]->discovery_name)) {
+                unset($result[$i]);
+            }
+        }
         $issues = array_merge($issues, $result);
 
         // Refine the issue list to the latest discovery_log.id per device
