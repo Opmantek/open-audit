@@ -99,9 +99,11 @@ class DatabaseModel extends BaseModel
         $count = count($result);
         // Credentials Clouds both use an encrypted JSON string in the credentials column. Decode this.
         if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
-            for ($i=0; $i < $count; $i++) {
-                $result[$i]->credentials = simpleDecrypt($result[$i]->credentials, config('Encryption')->key);
-                $result[$i]->credentials = json_decode($result[$i]->credentials);
+            if (config('Openaudit')->decrypt_credentials === 'y') {
+                for ($i=0; $i < $count; $i++) {
+                    $result[$i]->credentials = simpleDecrypt($result[$i]->credentials, config('Encryption')->key);
+                    $result[$i]->credentials = json_decode($result[$i]->credentials);
+                }
             }
         }
         if ($table === 'dashboards' or $table === 'scripts' or $table === 'tasks') {
