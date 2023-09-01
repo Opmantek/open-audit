@@ -298,7 +298,7 @@ class DevicesModel extends BaseModel
         }
 
 
-        $no_current = array('application', 'attachment', 'audit_log', 'change_log', 'credential', 'edit_log', 'image', 'rack_devices');
+        $no_current = array('attachment', 'audit_log', 'change_log', 'credential', 'edit_log', 'image', 'rack_devices');
         foreach ($no_current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT `$table`.*, devices.name AS `devices.name` FROM `$table` LEFT JOIN devices ON (`$table`.device_id = devices.id) WHERE device_id = ?";
@@ -309,6 +309,15 @@ class DevicesModel extends BaseModel
                 }
             }
         }
+
+
+        $sql = "SELECT `application`.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (`application`.application_id = applications.id) WHERE application.device_id = ?";
+        $query = $this->db->query($sql, $id);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['application'] = $result;
+        }
+
 
         $sql = "SELECT `clusters`.*, `cluster`.`role`, `cluster`.`id` AS `cluster.id` FROM `clusters` RIGHT JOIN `cluster` ON `clusters`.`id` = `cluster`.`cluster_id` AND `cluster`.`device_id` = ?";
         $query = $this->db->query($sql, $id);
