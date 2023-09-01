@@ -42,11 +42,20 @@ class CloudsModel extends BaseModel
         }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
+        $query = $this->builder->get()->getResult();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        if (config('Openaudit')->decrypt_credentials === 'y') {
+            $count = count($query);
+            for ($i=0; $i < $count; $i++) {
+                if (!empty($query[$i]->credentials)) {
+                    $query[$i]->credentials = simpleDecrypt($query[$i]->credentials, config('Encryption')->key);
+                    $query[$i]->credentials = json_decode($query[$i]->credentials);
+                }
+            }
+        }
+        return format_data($query, $resp->meta->collection);
     }
 
     /**
@@ -116,6 +125,48 @@ class CloudsModel extends BaseModel
             return false;
         }
         return true;
+    }
+
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
+    public function includedCollection(int $id = 0): array
+    {
+        $included = array();
+        $included['devices_retrieved'] = 0;
+        $included['devices_audited'] = 0;
+        $included['devices_not_audited'] = 0;
+        $included['devices_running'] = 0;
+        $included['devices_stopped'] = 0;
+        $included['locations'] = 0;
+        $included['networks'] = 0;
+
+        $sql = "SELECT * FROM devices WHERE cloud_id != ''";
+        $devices = $this->db->query($sql, [$id])->getResult();
+        $included['devices_retrieved'] = count($devices);
+        foreach ($devices as $device) {
+            if ($device->serial !== '') {
+                $included['devices_audited'] += 1;
+            } else {
+                $included['devices_not_audited'] += 1;
+            }
+            if ($device->instance_state === 'running') {
+                $included['devices_running'] += 1;
+            } else {
+                $included['devices_stopped'] += 1;
+            }
+        }
+
+        $sql = "SELECT count(*) AS `count` FROM locations WHERE cloud_id != ''";
+        $included['locations'] = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+
+        $sql = "SELECT count(*) AS `count` FROM networks WHERE cloud_id != ''";
+        $included['networks'] = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+
+        return $included;
     }
 
     /**
@@ -208,9 +259,11 @@ class CloudsModel extends BaseModel
             $cloud[0]->options->wmi = 'y';
             $cloud[0]->options->snmp = 'n';
         }
-        if (!empty($cloud[0]->credentials)) {
-            $cloud[0]->credentials = simpleDecrypt($cloud[0]->credentials, config('Encryption')->key);
-            $cloud[0]->credentials = json_decode($cloud[0]->credentials);
+        if (config('Openaudit')->decrypt_credentials === 'y') {
+            if (!empty($cloud[0]->credentials)) {
+                $cloud[0]->credentials = simpleDecrypt($cloud[0]->credentials, config('Encryption')->key);
+                $cloud[0]->credentials = json_decode($cloud[0]->credentials);
+            }
         }
         return format_data($cloud, 'clouds');
     }
@@ -308,7 +361,14 @@ class CloudsModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->credentials = 'Your access credentials, as per that clouds native API.';
-        $dictionary->columns->type = 'At the moment, only Amazon and Microsoft are supported.';
+        $dictionary->columns->type = 'Either Amazon, Google or Microsoft.';
+        $dictionary->columns->status = 'The current status of the Cloud Discovery.';
+        $dictionary->columns->options = 'Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.';
+        $dictionary->columns->snmp = 'Should we test for SNMP using UDP port 161.';
+        $dictionary->columns->ssh = 'Should we test for SSH using TCP port 21.';
+        $dictionary->columns->wmi = 'Should we test for WMI using TCP port 135.';
+        $dictionary->columns->edited_by = $instance->dictionary->edited_by;
+        $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         # AWS
         $dictionary->columns->key = 'Your AWS EC2 API key.';
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your AWS EC2 API key.';
@@ -319,13 +379,7 @@ class CloudsModel extends BaseModel
         $dictionary->columns->client_secret = 'Your Microsoft Azure Client Secret.';
         # Google Compute
         $dictionary->columns->json = 'Your Google Compute credentials as JSON.';
-        $dictionary->columns->status = 'The current status of the Cloud Discovery.';
-        $dictionary->columns->options = 'Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.';
-        $dictionary->columns->snmp = 'Should we test for SNMP using UDP port 161.';
-        $dictionary->columns->ssh = 'Should we test for SSH using TCP port 21.';
-        $dictionary->columns->wmi = 'Should we test for WMI using TCP port 135.';
-        $dictionary->columns->edited_by = $instance->dictionary->edited_by;
-        $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+
         return $dictionary;
     }
 }
