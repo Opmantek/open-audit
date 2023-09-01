@@ -19,10 +19,9 @@ class OpenAudit extends BaseConfig
         $query = $db->query('SELECT * FROM `configuration`');
         $result = $query->getResult();
         foreach ($result as $row) {
+            $this->{$row->name} = $row->value;
             if ($row->type === 'number') {
                 $this->{$row->name} = intval($row->value);
-            } else {
-                $this->{$row->name} = $row->value;
             }
         }
 
@@ -45,49 +44,52 @@ class OpenAudit extends BaseConfig
             $this->discovery_linux_script_directory .= '/';
         }
 
-        // $this->oa_web_index = site_url();
-
-        // $temp = explode('/', base_url());
-        // unset($temp[0], $temp[1], $temp[2]);
-        // $this->oa_web_folder =  '/' . implode('/', $temp);
-
         $query = $db->query('SELECT NOW() as `timestamp`');
         $result = $query->getRow();
         $this->timestamp = $result->timestamp;
 
         $query = $db->query("SELECT TIME_FORMAT(TIMEDIFF(NOW(),CONVERT_TZ(NOW(),@@session.time_zone,'+00:00')),'%H%i') AS `tz`");
         $result = $query->getRow();
-        $this->timezone = $result->tz;
-        if ($this->timezone >= 0) {
-            $this->timezone = 'UTC +' . $this->timezone;
-        } else {
-            $this->timezone = 'UTC ' . $this->timezone;
+        if (intval($result->tz) === 0) {
+            $this->timezone = 'UTC';
+        }
+        if (intval($result->tz) > 0) {
+            $tz = substr($result->tz, 0, 2) . ':' . substr($result->tz, 2);
+            $this->timezone = 'UTC +' . $tz;
+            unset($tz);
+        }
+        if (intval($result->tz) < 0) {
+            $tz = substr($result->tz, 0, 2) . ':' . substr($result->tz, 2);
+            $this->timezone = 'UTC -' . $tz;
+            unset($tz);
         }
 
         // get the server OS
         $this->server_os = php_uname('s');
 
         // get the total number of devices
+        $this->device_count = 0;
         if ($this->internal_version < 20230615) {
             $query = $db->query('SELECT count(*) as device_count FROM `system`');
             if (!empty($query)) {
                 $result = $query->getRow();
-                $this->device_count = @intval($result->device_count);
+                if (!empty($result->device_count)) {
+                    $this->device_count = intval($result->device_count);
+                }
             }
-        } else {
+        }
+        if ($this->internal_version >= 20230615) {
             $query = $db->query('SELECT count(*) as device_count FROM `devices`');
             if (!empty($query)) {
                 $result = $query->getRow();
-                $this->device_count = @intval($result->device_count);
+                if (!empty($result->device_count)) {
+                    $this->device_count = intval($result->device_count);
+                }
             }
         }
 
         $this->enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
 
         $this->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
-
-        # We cannot change the threshold after creation.
-        # Leaving the below, but it won't have any effect.
-        # config('Logger')->threshold = intval($this->log_level);
     }
 }
