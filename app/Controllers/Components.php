@@ -32,7 +32,7 @@ use \stdClass;
  */
 class Components extends BaseController
 {
-    public function createForm($type, $device_id)
+    public function createForm(string $type = '', $device_id = 0)
     {
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
@@ -40,6 +40,10 @@ class Components extends BaseController
         if ($type === 'applications') {
             $this->applicationsModel = new \App\Models\ApplicationsModel();
             $this->resp->included['applications'] = $this->applicationsModel->listUser();
+        }
+        if ($type === 'clusters') {
+            $this->clustersModel = new \App\Models\ClustersModel();
+            $this->resp->included['clusters'] = $this->clustersModel->listUser();
         }
         return view('shared/header', [
             'config' => $this->config,

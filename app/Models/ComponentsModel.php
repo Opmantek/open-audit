@@ -128,7 +128,7 @@ class ComponentsModel extends BaseModel
 
         if ($data->component_type === 'application') {
             $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
-            $this->db->query($sql, [intval($data->device_id), intval($data->applications_id), $instance->user->full_name]);
+            $this->db->query($sql, [intval($data->device_id), intval($data->application_id), $instance->user->full_name]);
             return (intval($this->db->insertID()));
         }
 
@@ -155,7 +155,7 @@ class ComponentsModel extends BaseModel
 
         if ($data->component_type === 'cluster') {
             $sql = "INSERT INTO cluster VALUES (NULL, ?, ?, ?, 'y', ?, NOW())";
-            $this->db->query($sql, [intval($data->device_id), intval($data->clusters_id), $data->role, $instance->user->full_name]);
+            $this->db->query($sql, [intval($data->device_id), intval($data->cluster_id), $data->role, $instance->user->full_name]);
             return (intval($this->db->insertID()));
         }
 

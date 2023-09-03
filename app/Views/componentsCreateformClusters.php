@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 $type = 'device';
-if (stripos($meta->query_string, 'type=application') !== false) {
-    $type = 'application';
+if (stripos($meta->query_string, 'type=cluster') !== false) {
+    $type = 'cluster';
 }
 ?>
         <main class="container-fluid">
@@ -19,23 +19,23 @@ if (stripos($meta->query_string, 'type=application') !== false) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <h6>
                                     <?php if ($type === 'device') {
-                                        echo __('Assign Device to Application');
+                                        echo __('Assign Device to Cluster');
                                     } ?>
-                                    <?php if ($type === 'application') {
-                                        echo __('Add Device to Application');
+                                    <?php if ($type === 'cluster') {
+                                        echo __('Add Device to Cluster');
                                     } ?>
                                     </h6>
                                 </div>
                             </div>
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
-                                <input type="hidden" value="application" id="data[attributes][component_type]" name="data[attributes][component_type]" />
+                                <input type="hidden" value="cluster" id="data[attributes][component_type]" name="data[attributes][component_type]" />
 
                                 <?php if ($type === 'device') { ?>
-                                    <?= create_select('data[attributes][application_id]', __('Application'), $included['applications'], $dictionary->attributes->create) ?>
+                                    <?= create_select('data[attributes][cluster_id]', __('Cluster'), $included['clusters'], $dictionary->attributes->create) ?>
                                 <?php } ?>
 
-                                <?php if ($type === 'application') { ?>
+                                <?php if ($type === 'cluster') { ?>
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br />
@@ -60,6 +60,20 @@ if (stripos($meta->query_string, 'type=application') !== false) {
                                 </div>
                                 <?php } ?>
 
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <label for="data[attributes][role]" class="form-label"><?= __('Role') ?> <span style="color: #dc3545;">*</span></label><br />
+                                        <select class="form-select" name="data[attributes][role]" id="data[attributes][role]">
+                                        <option value="" selected><?= __('') ?></option>
+                                        <option value="head"><?= __('Head') ?></option>
+                                        <option value="node"><?= __('Node') ?></option>
+                                        <option value="storage"><?= __('Storage') ?></option>
+                                        <option value="network"><?= __('Network') ?></option>
+                                        <option value="other"><?= __('Other') ?></option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <br>
                                 <div class="row">
                                     <div class="offset-2 col-8">
@@ -72,8 +86,8 @@ if (stripos($meta->query_string, 'type=application') !== false) {
                                     <?php if ($type === 'device') { ?>
                                         <input type="hidden" value="<?php echo intval($meta->id); ?>" id="data[attributes][device_id]" name="data[attributes][device_id]" />
                                     <?php } ?>
-                                    <?php if ($type === 'application') { ?>
-                                        <input type="hidden" value="<?php echo intval($meta->id); ?>" id="data[attributes][application_id]" name="data[attributes][application_id]" />
+                                    <?php if ($type === 'cluster') { ?>
+                                        <input type="hidden" value="<?php echo intval($meta->id); ?>" id="data[attributes][cluster_id]" name="data[attributes][cluster_id]" />
                                     <?php } ?>
                                 <?php } ?>
                             </form>

@@ -384,8 +384,9 @@ if (!function_exists('response_create')) {
 
         # Enterprise
         $enterprise = APPPATH . '/other/enterprise.exe';
+        $enterprise = '/usr/local/opmojo/private/enterprise.pl';
         if (file_exists($enterprise)) {
-            log_message('debug', "Calling external enterprise function.");
+            // log_message('debug', "Calling external enterprise function.");
             $db = db_connect();
             // Insert the entry
             $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";

@@ -49,6 +49,7 @@ $routes->get('chart', 'Collections::collection', ['filter' => \App\Filters\Sessi
 $routes->get('chart/(:any)', 'Charts::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'chartsRead']);
 
 // TODO - Make this URL the same format as the two below (:num)/(:any) not (:any)/(:num)
+#$routes->get('components/create/(:any)', 'Components::createForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
 $routes->get('components/create/(:any)/(:num)', 'Components::createForm/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsCreateForm']);
 // TODO - Both below, we have to specify the url thus: components/1/image?components.type=image because we cannot cater to the type (yet) in the response_helper->response_get_permission_id
 $routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter' => \App\Filters\Session::class, 'as' => 'componentsDelete']);

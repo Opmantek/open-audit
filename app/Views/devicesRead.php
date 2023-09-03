@@ -378,7 +378,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="cluster_section">
-                                <?=  device_panel('cluster', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('clusters', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -395,7 +395,7 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['cluster'])) {
                                                 foreach ($included['cluster'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->{'cluster.id'}) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->{'id'}) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->purpose ?></td>
                                                     <td><?= $row->role ?></td>

@@ -2,6 +2,13 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+if ($user->toolbar_style === 'icontext') {
+    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+} else if ($user->toolbar_style === 'icon') {
+    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span class=\"fa fa-plus\"></span></a>";
+} else {
+    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\">" . __("Add") . "</a>";
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -47,6 +54,13 @@ include 'shared/read_functions.php';
                     <div class="row">
                         <div class="col-9 clearfix">
                             <h6 style="padding-top:10px;"><span class="fa fa-desktop oa-icon"></span><?= __('Devices') ?></h6>
+                        </div>
+                        <div class="col-3 clearfix">
+                            <div class="btn-group btn-group-sm float-end" role="group" id="device_panel_' . $name . '">
+                                <div class="page-title-right float-right">
+                                    <?= $panel_add_button ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

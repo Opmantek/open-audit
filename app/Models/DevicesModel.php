@@ -319,7 +319,7 @@ class DevicesModel extends BaseModel
         }
 
 
-        $sql = "SELECT `clusters`.*, `cluster`.`role`, `cluster`.`id` AS `cluster.id` FROM `clusters` RIGHT JOIN `cluster` ON `clusters`.`id` = `cluster`.`cluster_id` AND `cluster`.`device_id` = ?";
+        $sql = "SELECT `clusters`.*, `cluster`.`role`, `cluster`.`id` AS `cluster.id` FROM `clusters` RIGHT JOIN `cluster` ON `clusters`.`id` = `cluster`.`cluster_id` WHERE `cluster`.`device_id` = ?";
         $query = $this->db->query($sql, $id);
         $result = $query->getResult();
         if (!empty($result)) {
