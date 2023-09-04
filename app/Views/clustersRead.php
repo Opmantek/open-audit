@@ -2,12 +2,14 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
-if ($user->toolbar_style === 'icontext') {
-    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
-} else if ($user->toolbar_style === 'icon') {
-    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span class=\"fa fa-plus\"></span></a>";
-} else {
-    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\">" . __("Add") . "</a>";
+if ($update) {
+    if ($user->toolbar_style === 'icontext') {
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+    } else if ($user->toolbar_style === 'icon') {
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span class=\"fa fa-plus\"></span></a>";
+    } else {
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\">" . __("Add") . "</a>";
+    }
 }
 ?>
         <main class="container-fluid">
@@ -168,8 +170,7 @@ if ($user->toolbar_style === 'icontext') {
                                     <div class="col-sm-7 input-group">
                                         <select class="form-select" id="environment" name="environment" data-original-value="<%= $resource->{'environment'} ?>" disabled>
                                         <option value="" label=" " <?php if ($resource->{'environment'} === '') { ?>selected<?php } ?>></option>
-                                        <?php 
-                                        foreach ($included['types'] as $attribute) {
+                                        <?php foreach ($included['types'] as $attribute) {
                                             $selected = '';
                                             if ($attribute->{'attributes'}->{'value'} === $resource->{'environment'}) {
                                                 $selected = 'selected';
@@ -192,12 +193,6 @@ if ($user->toolbar_style === 'icontext') {
                                     <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br /></span></div>
                                 </div>
                             </div>
-
-
-
-
-
-
 
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
@@ -254,7 +249,9 @@ if ($user->toolbar_style === 'icontext') {
                                     <th><?= __('IP') ?></th>
                                     <th><?= __('Role') ?></th>
                                     <th><?= __('Description') ?></th>
+                                    <?php if ($update) { ?>
                                     <th class="text-center"><?= __('Delete from Cluster') ?></th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -265,8 +262,9 @@ if ($user->toolbar_style === 'icontext') {
                                     <td><?= $item->attributes->{'devices.ip'} ?></td>
                                     <td><?= $item->attributes->{'cluster.role'} ?></td>
                                     <td><?= $item->attributes->{'devices.description'} ?></td>
+                                    <?php if ($update) { ?>
                                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
-                                    
+                                    <?php } ?>                                    
                                 </tr>
                                 <?php } ?>
                             </tbody>
@@ -303,7 +301,9 @@ if ($user->toolbar_style === 'icontext') {
                                     <th><?= __('Logical Cores ') ?></th>
                                     <th><?= __('Hyperthreading') ?></th>
                                     <th><?= __('OS Family') ?></th>
+                                    <?php if ($update) { ?>
                                     <th class="text-center"><?= __('Delete from Cluster') ?></th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -321,8 +321,9 @@ if ($user->toolbar_style === 'icontext') {
                                     <td><?= $item->attributes->{'processor.logical_count'} ?></td>
                                     <td><?= $item->attributes->{'processor.hyperthreading'} ?></td>
                                     <td><?= $item->attributes->{'devices.os_family'} ?></td>
+                                    <?php if ($update) { ?>
                                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
-                                    
+                                    <?php } ?>
                                 </tr>
                                 <?php } ?>
                             </tbody>
@@ -384,5 +385,4 @@ if ($user->toolbar_style === 'icontext') {
             </div>
             <br />
             <?php } ?>
-
         </main>

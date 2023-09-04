@@ -388,7 +388,9 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Purpose') ?></th>
                                                     <th><?= __('Role') ?></th>
+                                                    <?php if ($update) { ?>
                                                     <th class="text-center"><?= __('Delete') ?></th>
+                                                    <?php } ?>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -399,7 +401,9 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->purpose ?></td>
                                                     <td><?= $row->role ?></td>
+                                                    <?php if ($update) { ?>
                                                     <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <?php } ?>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -410,7 +414,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="credentials_section">
-                                <?=  device_panel('credentials', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('credentials', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -429,7 +433,9 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->description ?></td>
+                                                    <?php if ($update) { ?>
                                                     <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="credential" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <?php } ?>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -440,7 +446,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="discovery_log_section">
-                                <?=  device_panel('discovery_log', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('discovery_log', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -490,7 +496,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="edit_log_section">
-                                <?=  device_panel('edit_log', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('edit_log', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -524,7 +530,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="fields_section">
-                                <?=  device_panel('fields', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('fields', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                     <?php if (!empty($included['fields'])) {
@@ -578,7 +584,7 @@ if (!empty($included['fields'])) {
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="firstwave_section">
-                                <?=  device_panel('FirstWave', $user->toolbar_style, $resource->id, base_url() . 'icons/opmantek_details.svg'); ?>
+                                <?=  device_panel('FirstWave', $user->toolbar_style, $resource->id, base_url() . 'icons/opmantek_details.svg', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -681,7 +687,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="images_section">
-                                <?=  device_panel('images', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('images', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -715,7 +721,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="ip_section">
-                                <?=  device_panel('ip', $user->toolbar_style, $resource->id, base_url() . 'icons/ip.svg'); ?>
+                                <?=  device_panel('ip', $user->toolbar_style, $resource->id, base_url() . 'icons/ip.svg', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -761,7 +767,7 @@ if (!empty($included['fields'])) {
                             }
                             ?>
                             <div style="margin-bottom:20px; display:none;" class="card" id="location_section">
-                                <?=  device_panel('location', $user->toolbar_style); ?>
+                                <?=  device_panel('location', $user->toolbar_style, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -788,7 +794,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="purchase_section">
-                                <?=  device_panel('purchase', $user->toolbar_style); ?>
+                                <?=  device_panel('purchase', $user->toolbar_style, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -819,7 +825,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="snmp_section">
-                                <?=  device_panel('SNMP', $user->toolbar_style, 0, base_url() . "icons/snmp_details.svg"); ?>
+                                <?=  device_panel('SNMP', $user->toolbar_style, 0, base_url() . "icons/snmp_details.svg", $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -845,7 +851,7 @@ if (!empty($included['fields'])) {
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="windows_section">
-                                <?=  device_panel('Windows', $user->toolbar_style); ?>
+                                <?=  device_panel('Windows', $user->toolbar_style, '', $update); ?>
                                 <div class="card-body">
                                 <?php if (!empty($included['windows'])) { ?>
                                     <div class="row">
@@ -918,7 +924,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="bios_section">
-                                <?=  device_panel('bios', $user->toolbar_style); ?>
+                                <?=  device_panel('bios', $user->toolbar_style, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <?php if (!empty($included['bios'])) { ?>

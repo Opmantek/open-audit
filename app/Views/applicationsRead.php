@@ -2,12 +2,15 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
-if ($user->toolbar_style === 'icontext') {
-    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
-} else if ($user->toolbar_style === 'icon') {
-    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span class=\"fa fa-plus\"></span></a>";
-} else {
-    $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\">" . __("Add") . "</a>";
+$panel_add_button = '';
+if ($update) {
+    if ($user->toolbar_style === 'icontext') {
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+    } else if ($user->toolbar_style === 'icon') {
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span class=\"fa fa-plus\"></span></a>";
+    } else {
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\">" . __("Add") . "</a>";
+    }
 }
 ?>
         <main class="container-fluid">

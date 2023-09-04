@@ -63,7 +63,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
     }
 
-    if (($collection === 'baselines' or $collection === 'discoveries' or $collection === 'queries') and !empty($id)) {
+    if (($collection === 'baselines' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'queries') and !empty($id)) {
         if ($style === 'icontext') {
             $collection_button .= "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play\"></span>" . __("Execute") . "</a>";
         } else if ($style === 'icon') {
@@ -247,7 +247,7 @@ function read_column_name(string $name = ''): string
     return $name;
 }
 
-function device_panel(string $name = '', string $toolbar = '', int $device_id = 0, string $icon = ''): string
+function device_panel(string $name = '', string $toolbar = '', int $device_id = 0, string $icon = '', bool $update = false): string
 {
     if (empty($icon)) {
         $icon = base_url() . 'icons/' . strtolower($name) . '.svg';
@@ -260,13 +260,15 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
     }
     $panel_add_button = '';
-    if ($name === 'applications' or $name === 'attachments' or $name === 'credentials' or $name === 'clusters' or $name === 'images') {
-        if ($toolbar === 'icontext') {
-            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
-        } else if ($toolbar === 'icon') {
-            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus\"></span></a>";
-        } else {
-            $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\">" . __("Add") . "</a>";
+    if ($update) {
+        if ($name === 'applications' or $name === 'attachments' or $name === 'credentials' or $name === 'clusters' or $name === 'images') {
+            if ($toolbar === 'icontext') {
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+            } else if ($toolbar === 'icon') {
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus\"></span></a>";
+            } else {
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\">" . __("Add") . "</a>";
+            }
         }
     }
     $human_name = read_column_name($name);
