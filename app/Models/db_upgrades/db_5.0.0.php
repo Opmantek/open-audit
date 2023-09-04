@@ -582,6 +582,11 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = 'UPDATE `widgets` SET `link` = REPLACE(`link`, "system.", "devices.")';
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = 'UPDATE `widgets` SET `primary` = REPLACE(`primary`, "system.", "devices.")';
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

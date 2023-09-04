@@ -100,7 +100,10 @@ class DashboardsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $widgetsModel = new \App\Models\WidgetsModel();
+        $included['widgets'] = $widgetsModel->listUser();
+        return $included;
     }
 
     /**
