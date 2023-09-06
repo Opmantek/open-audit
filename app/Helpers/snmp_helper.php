@@ -223,6 +223,7 @@ if (!function_exists('snmp_credentials')) {
 
         $log->command_status = 'warning';
         $log->message = 'SNMP detected, but no valid SNMP credentials found for ' . $ip;
+        $log->command = '';
         $discoveryLogModel->create($log);
         return false;
     }
