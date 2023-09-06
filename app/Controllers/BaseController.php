@@ -164,7 +164,7 @@ abstract class BaseController extends Controller
         # log this request
         $log_user = (!empty($this->user->full_name)) ? $this->user->full_name : $this->user->name;
         $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $log_user;
-        if ($this->resp->meta->collection === 'integrations' and empty($this->resp->meta->recieved_data) and $this->resp->meta->action === 'update') {
+        if ($this->resp->meta->collection === 'integrations' and empty($this->resp->meta->received_data) and $this->resp->meta->action === 'update') {
             $this->resp->meta->received_data = $this->resp->meta->filter;
         }
         if (!empty($this->resp->meta->received_data)) {
