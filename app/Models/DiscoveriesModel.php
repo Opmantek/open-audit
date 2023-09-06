@@ -538,6 +538,10 @@ class DiscoveriesModel extends BaseModel
 
         $included['issues'] = $this->issuesRead($id);
 
+        $sql = "SELECT discovery_log.ip AS `discovery_log.ip`, discovery_log.message AS `discovery_log.message`, ROUND(discovery_log.command_time_to_execute, 1) AS `discovery_log.command_time_to_execute`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '% responding, %' AND discovery_log.discovery_id = ?";
+        $query = $this->db->query($sql, [$id]);
+        $included['devices'] = $query->getResult();
+
         return $included;
     }
 
@@ -1396,7 +1400,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'last_run', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'subnet', 'last_run', 'ip_responding_count', 'status', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
