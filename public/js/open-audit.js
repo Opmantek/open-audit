@@ -269,7 +269,8 @@ $(document).ready(function () {
     $('.dataTable').DataTable( {
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         "pageLength": 50,
-        "pagingType": "full"
+        "pagingType": "full",
+        "autoWidth": false
     });
 
     /* DataTables Init Secondary */
@@ -279,6 +280,7 @@ $(document).ready(function () {
         "order": [[ 1, 'asc' ]],
         "info": false,
         "pageLength": 100,
+        "autoWidth": false
     });
 
     /* Enable pop-over's */
