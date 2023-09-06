@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 $header = "
-    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
+    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com maps.googleapis.com;
     font-src 'self' fonts.gstatic.com;
     form-action 'self';
     frame-ancestors 'none';
