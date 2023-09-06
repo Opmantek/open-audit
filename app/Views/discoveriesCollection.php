@@ -103,15 +103,11 @@ include 'shared/collection_functions.php';
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="">
-                                <div class="btn-group" role="group">
-                                    <button data-bs-toggle="collapse" data-bs-target="#issues" type="button" class="btn btn-outline-dark oa-card-button"><span class="fa-solid fa-triangle-exclamation" style="margin-right:10px;" aria-hidden="true"></span><?= __('Discovery Issues') . ' (' . count($included['issues']) . ')' ?></button>
-                                </div>
-                            </div>
+                            <h6 style="padding-top:10px;"><span class="fa-solid fa-triangle-exclamation oa-icon"></span><?= __('Discovery Issues') . ' (' . count($included['issues']) . ')' ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
-                            <div class="btn-group btn-group-sm float-end" role="group">
-                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="issues" aria-label="<?= __('Show') ?>"><span class="fa fa-angle-down"></span></button>
+                            <div class="btn-group btn-group-sm float-end mb-2" role="group">
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
                             </div>
                         </div>
                     </div>
