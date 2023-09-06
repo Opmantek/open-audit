@@ -162,6 +162,7 @@ if (!function_exists('audit_convert')) {
                 $log->discovery_id = (!empty($input->system->discovery_id)) ? intval($input->system->discovery_id) : null;
                 $log->device_id = (!empty($input->system->id)) ? intval($input->system->id) : null;
                 if (!empty($log->discovery_id) or !empty($log->device_id)) {
+                    $log->command_status = 'notice';
                     $log->message = 'Successfully converted audit result from XML.';
                     $discoveryLogModel->create($log);
                 }
