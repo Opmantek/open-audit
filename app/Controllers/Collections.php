@@ -689,67 +689,66 @@ class Collections extends BaseController
                 log_message('warning', 'Invalid ID provided to read function. ID: ' . $this->resp->meta->id . ', collection: ' . $this->resp->meta->collection);
                 \Config\Services::session()->setFlashdata('warning', 'Invalid ID provided to ' . $this->resp->meta->collection . ' read function (ID: ' . $this->resp->meta->id . ')');
                 return redirect()->route($this->resp->meta->collection.'Collection');
-            } else {
-                if ($this->resp->meta->collection === 'baselines_results') {
-                    $this->resp->meta->breadcrumbs = array();
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselinesCollection');
-                    $breadcrumb->name = 'Baselines';
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselinesRead', $this->resp->data[0]->attributes->baseline_id);
-                    $breadcrumb->name = $this->resp->data[0]->attributes->{'baselines.name'};
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselines_resultsCollection') . '?baselines.id=' . $this->resp->data[0]->attributes->baseline_id;
-                    $breadcrumb->name = 'Results';
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselines_resultsRead', $this->resp->data[0]->id);
-                    $breadcrumb->name = $this->resp->data[0]->attributes->name;
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                }
-                if ($this->resp->meta->collection === 'baselines_policies') {
-                    $this->resp->meta->breadcrumbs = array();
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselinesCollection');
-                    $breadcrumb->name = 'Baselines';
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselinesRead', $this->resp->data[0]->attributes->baseline_id);
-                    $breadcrumb->name = $this->resp->data[0]->attributes->{'baselines.name'};
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselines_policiesCollection') . '?baselines.id=' . $this->resp->data[0]->attributes->baseline_id;
-                    $breadcrumb->name = 'Policies';
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                    $breadcrumb = new stdClass();
-                    $breadcrumb->url = url_to('baselines_policiesRead', $this->resp->data[0]->id);
-                    $breadcrumb->name = $this->resp->data[0]->attributes->name;
-                    $this->resp->meta->breadcrumbs[] = $breadcrumb;
-                }
-                $update = false;
-                if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false) {
-                    $update = true;
-                }
-                $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
-                $template = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
-                if (!empty($export)) {
-                    $template = 'collectionExport';
-                }
-                return view('shared/header', [
-                    'config' => $this->config,
-                    'dashboards' => filter_response($this->dashboards),
-                    'dictionary' => $dictionary,
-                    'included' => filter_response($this->resp->included),
-                    'meta' => filter_response($this->resp->meta),
-                    'orgs' => filter_response($this->orgsUser),
-                    'queries' => filter_response($this->queriesUser),
-                    'roles' => filter_response($this->roles),
-                    'user' => filter_response($this->user),
-                    'name' => @$this->resp->data[0]->attributes->name]) .
-                    view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update]);
             }
+            if ($this->resp->meta->collection === 'baselines_results') {
+                $this->resp->meta->breadcrumbs = array();
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselinesCollection');
+                $breadcrumb->name = 'Baselines';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselinesRead', $this->resp->data[0]->attributes->baseline_id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->{'baselines.name'};
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselines_resultsCollection') . '?baselines.id=' . $this->resp->data[0]->attributes->baseline_id;
+                $breadcrumb->name = 'Results';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselines_resultsRead', $this->resp->data[0]->id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->name;
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            }
+            if ($this->resp->meta->collection === 'baselines_policies') {
+                $this->resp->meta->breadcrumbs = array();
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselinesCollection');
+                $breadcrumb->name = 'Baselines';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselinesRead', $this->resp->data[0]->attributes->baseline_id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->{'baselines.name'};
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselines_policiesCollection') . '?baselines.id=' . $this->resp->data[0]->attributes->baseline_id;
+                $breadcrumb->name = 'Policies';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('baselines_policiesRead', $this->resp->data[0]->id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->name;
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            }
+            $update = false;
+            if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false) {
+                $update = true;
+            }
+            $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
+            $template = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
+            if (!empty($export)) {
+                $template = 'collectionExport';
+            }
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'dictionary' => $dictionary,
+                'included' => filter_response($this->resp->included),
+                'meta' => filter_response($this->resp->meta),
+                'orgs' => filter_response($this->orgsUser),
+                'queries' => filter_response($this->queriesUser),
+                'roles' => filter_response($this->roles),
+                'user' => filter_response($this->user),
+                'name' => @$this->resp->data[0]->attributes->name]) .
+                view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update]);
         }
     }
 
