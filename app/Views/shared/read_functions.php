@@ -65,28 +65,19 @@ function read_card_header(string $collection = '', string $id = '', string $icon
 
     if (($collection === 'baselines' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'queries') and !empty($id)) {
         if ($style === 'icontext') {
-            $collection_button .= "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play\"></span>" . __("Execute") . "</a>";
+            $collection_button .= "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play text-success\"></span>" . __("Execute") . "</a>";
         } else if ($style === 'icon') {
-            $collection_button .= "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span class=\"fa fa-play\"></span></a>";
+            $collection_button .= "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span class=\"fa fa-play text-success\"></span></a>";
         } else {
             $collection_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\">" . __("Execute") . "</a>";
         }
     }
 
     $return = "<div class=\"row\">
-                        <div class=\"col-4 clearfix\">
+                        <div class=\"col-6 clearfix\">
                             <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>
                         </div>
-                        <!--
                         <div class=\"col-6 clearfix\">
-                            <div class=\"text-center\" style=\"position:relative;\">
-                                <div class=\"btn-group btn-group-sm\" role=\"group\">
-                                $tab_string
-                                </div>
-                            </div>
-                        </div>
-                        -->
-                        <div class=\"col-8 clearfix\">
                             <div class=\"btn-group btn-group-sm float-end\" role=\"group\" id=\"oa_panel_buttons\">
                                 <div class=\"page-title-right\">
                                     $collection_button
@@ -197,14 +188,16 @@ function read_select(string $name = '', string $value = '', string $dictionary =
                                         <select class=\"form-select\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";
     foreach ($values as $item) {
         $selected = '';
-        if ($item->id == $value or ($item->type === 'attributes' and !empty($item->attributes->value) and $item->attributes->value == $value)) {
+        if ($item->id == $value or (!empty($item->type) and $item->type === 'attributes' and !empty($item->attributes->value) and $item->attributes->value == $value)) {
             $selected = ' selected';
         }
-        if ($item->type === 'attributes') {
+        if (!empty($item->type) and $item->type === 'attributes') {
             if ($item->attributes->value === '') {
                 $selected .= ' label="none"';
             }
             $return .= "                                            <option value=\"{$item->attributes->value}\"{$selected}>{$item->attributes->name}</option>\n";
+        } else if (!empty($item->type) and $item->type === 'discovery_scan_options') {
+            $return .= "                                            <option value=\"{$item->attributes->id}\"{$selected}>{$item->attributes->name}</option>\n";
         } else {
             if ($item->id === '') {
                 $selected .= ' label="none"';
