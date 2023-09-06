@@ -22,19 +22,19 @@ function collection_card_header(string $collection = '', string $icon = '', obje
 
     if (strpos($user->permissions[$collection], 'c') !== false and $collection !== 'database' and strpos($label, 'About') === false) {
         if ($style === 'icontext') {
-            $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Create") . "</a>";
+            $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-success\"></span>" . __("Create") . "</a>";
 
-            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection.'ImportForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-table-cells-large\"></span>" . __("Import CSV") . "</a>";
+            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection.'ImportForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-table-cells-large text-success\"></span>" . __("Import CSV") . "</a>";
 
-            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection.'ImportJSONForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-code\"></span>" . __("Import JSON") . "</a>";
+            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection.'ImportJSONForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-code text-success\"></span>" . __("Import JSON") . "</a>";
         } else if ($style === 'icon') {
-            $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span class=\"fa fa-plus\"></span></a>";
+            $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\"><span class=\"fa fa-plus text-success\"></span></a>";
 
-            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection.'ImportForm') . "\"><span class=\"fa-solid fa-table-cells-large\"></span></a>";
-            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection.'ImportForm') . "\"><span class=\"fa-solid fa-angles-up\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large\"></span></a>";
+            # $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection.'ImportForm') . "\"><span class=\"fa-solid fa-table-cells-large text-success\"></span></a>";
+            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection.'ImportForm') . "\"><span class=\"fa-solid fa-angles-up\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-success\"></span></a>";
 
-            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection.'ImportJSONForm') . "\"><span class=\"fa-solid fa-code\"></span></a>";
-            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection.'ImportJSONForm') . "\"><span class=\"fa-solid fa-angles-up\"></span>&nbsp;<span class=\"fa-solid fa-code\"></span></a>";
+            # $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection.'ImportJSONForm') . "\"><span class=\"fa-solid fa-code\"></span></a>";
+            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection.'ImportJSONForm') . "\"><span class=\"fa-solid fa-angles-up text-success\"></span>&nbsp;<span class=\"fa-solid fa-code\"></span></a>";
         } else {
             $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection.'CreateForm') . "\">" . __("Create") . "</a>";
 
@@ -46,19 +46,19 @@ function collection_card_header(string $collection = '', string $icon = '', obje
 
     if (strpos($label, 'About') === false) {
         if ($style === 'icontext') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down\"></span>" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
 
-            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Collection') . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down\"></span>" . __("Export JSON") . "</a>";
+            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Collection') . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
 
-            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question\"></span>" . __("Help") . "</a>";
+            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
         } else if ($style === 'icon') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\"><span class=\"fa-solid fa-angles-down\"></span></a>";
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\"><span class=\"fa-solid fa-angles-down\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large\"></span></a>";
+            # $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span></a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large\"></span></a>";
 
-            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Collection') . "?format=json_data\"><span class=\"fa-solid fa-angle-down\"></span></a>";
-            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Collection') . "?format=json_data\"><span class=\"fa-solid fa-angle-down\"></span>&nbsp;<span class=\"fa-solid fa-code\"></span></a>";
+            # $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Collection') . "?format=json_data\"><span class=\"fa-solid fa-angle-down text-primary\"></span></a>";
+            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Collection') . "?format=json_data\"><span class=\"fa-solid fa-angle-down\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
 
-            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question\"></span></a>";
+            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
         } else {
             $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection.'Collection') . "?format=csv\">" . __("Export CSV") . "</a>";
 
@@ -75,10 +75,10 @@ function collection_card_header(string $collection = '', string $icon = '', obje
         if (in_array($collection, ['attributes', 'configuration', 'dashboards', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'summaries', 'users', 'widgets'])) {
             if ($style === 'icontext') {
                 # $defaults_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"{$icon}\"></span>" . __("Default Items") . "</a>";
-                $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-gears\"></span>" . __("Default Items") . "</a>";
+                $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-gears text-primary\"></span>" . __("Default Items") . "</a>";
             } else if ($style === 'icon') {
                 # $defaults_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span class=\"{$icon}\"></span></a>";
-                $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span class=\"fa-solid fa-gears\"></span></a>";
+                $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span class=\"fa-solid fa-gears text-primary\"></span></a>";
             } else {
                 $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\">" . __("Default Items") . "</a>";
             }

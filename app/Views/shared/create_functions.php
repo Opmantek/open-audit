@@ -9,11 +9,11 @@ function create_card_header(string $collection = '', string $icon = '', object $
     $collection_title = __($collection_title);
 
     if ($style === 'icontext') {
-        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list\"></span>" . __("List") . "</a></button>";
-        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question\"></span>" . __("Help") . "</a></button>";
+        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a></button>";
+        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a></button>";
     } else if ($style === 'icon') {
-        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\"><span class=\"fa fa-list\"></span></a></button>";
-        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question\"></span></a></button>";
+        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\"><span class=\"fa fa-list text-primary\"></span></a></button>";
+        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a></button>";
     } else {
         $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\">" . __("List") . "</a></button>";
         $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a></button>";
