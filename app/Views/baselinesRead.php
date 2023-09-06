@@ -36,47 +36,31 @@ if (!empty($included['baselines_policies']) and is_array($included['baselines_po
 
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2 active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true" title="' . __('Details') . '"><span style="margin-right:6px;" class="fa fa-eye"></span>' . __('Details') . '</button></li>';
+    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
+    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Results') . '</a></li>';
+    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span>' . __('Netstat Policies') . '</a></li>';
+    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span style="margin-right:6px;" class="fa-solid fa-box-open text-success" ></span>' . __('Software Policies') . '</a></li>';
+    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span style="margin-right:6px;" class="fa-regular fa-user text-success"></span>' . __('User Policies') . '</a></li>';
 
-    $results_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false" title="' . __('Results') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Results') . '</button></li>';
-
-    $netstat_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="netstat-tab" data-bs-toggle="tab" data-bs-target="#netstat" type="button" role="tab" aria-controls="netstat" aria-selected="false" title="' . __('Netstat Policies') . '"><span style="margin-right:6px;" class="fa-solid fa-diagram-project"></span>' . __('Netstat Policies') . '</button></li>';
-
-    $software_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="software-tab" data-bs-toggle="tab" data-bs-target="#software" type="button" role="tab" aria-controls="software" aria-selected="false" title="' . __('Software Policies') . '"><span style="margin-right:6px;" class="fa-solid fa-box-open"></span>' . __('Software Policies') . '</button></li>';
-
-    $user_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab" aria-controls="user" aria-selected="false" title="' . __('User Policies') . '"><span style="margin-right:6px;" class="fa-regular fa-user"></span>' . __('User Policies') . '</button></li>';
-
-    $add_policy_button = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-light mb-2" title="' . __('Add Policy') . '"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '"><span style="margin-right:6px;" class="fa fa-plus"></span>' . __('Add Policy') . '</a></button></li>';
-
-    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-light mb-2" title="' . __('Add Policies from Device') . '"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device"><span style="margin-right:6px;" class="fa fa-desktop"></span>' . __('Add Policies from Device') . '</a></button></li>';
+    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span style="margin-right:6px;" class="fa fa-plus text-success" ></span>' . __('Add Policy') . '</a></li>';
+    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span style="margin-right:6px;" class="fa fa-desktop text-success"></span>' . __('Add Policies from Device') . '</a></li>';
 } else if ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2 active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true" title="' . __('Details') . '"><span class="fa fa-eye"></span></button></li>';
-
-    $results_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false" title="' . __('Results') . '"><span class="fa-solid fa-square-poll-horizontal"></span></button></li>';
-
-    $netstat_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="netstat-tab" data-bs-toggle="tab" data-bs-target="#netstat" type="button" role="tab" aria-controls="netstat" aria-selected="false" title="' . __('Netstat Policies') . '"><span class="fa-solid fa-diagram-project"></span></button></li>';
-
-    $software_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="software-tab" data-bs-toggle="tab" data-bs-target="#software" type="button" role="tab" aria-controls="software" aria-selected="false" title="' . __('Software Policies') . '"><span class="fa-solid fa-box-open"></span></button></li>';
-
-    $user_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab" aria-controls="user" aria-selected="false" title="' . __('User Policies') . '"><span class="fa-regular fa-user"></span></button></li>';
-
-    $add_policy_button = '<li class="nav-item" role="presentation"><a role="button" class="btn btn-light mb-2" title="' . __('Add Policy') . '" href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '"><span class="fa fa-plus"></span></a></li>';
-
-    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a role="button" class="btn btn-light mb-2" title="' . __('Add Policies from Device') . '" href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device"><span class="fa fa-desktop"></span></a></li>';
+    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span title="' . __('Details') . '" style="margin-right:6px;" class="fa fa-eye text-success"></span></a></li>';
+    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span title="' . __('Results') . '" style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span></a></li>';
+    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span title="' . __('Netstat Policies') . '" style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span></a></li>';
+    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span title="' . __('Software Policies') . '" style="margin-right:6px;" class="fa-solid fa-box-open text-success"></span></a></li>';
+    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span title="' . __('User Policies') . '" style="margin-right:6px;" class="fa-regular fa-user text-success"></span></a></li>';
+    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span title="' . __('Add Policy') . '" style="margin-right:6px;" class="fa fa-plus text-success" ></span></a></li>';
+    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span title="' . __('Add Policies from Device') . '" style="margin-right:6px;" class="fa fa-desktop text-success" ></span></a></li>';
 } else {
-    $details_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2 active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true" title="' . __('Details') . '">' . __('Details') . '</button></li>';
+    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" >' . __('Details') . '</a></li>';
+    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" >' . __('Results') . '</a></li>';
+    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" >' . __('Netstat Policies') . '</a></li>';
+    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab">' . __('Software Policies') . '</a></li>';
+    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    >' . __('User Policies') . '</a></li>';
 
-    $results_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false" title="' . __('Results') . '"></span>' . __('Results') . '</button></li>';
-
-    $netstat_policy_button = '<li class="nav-item" role="presentation" style="padding-right:6px;"><button class="btn btn-light mb-2" id="netstat-tab" data-bs-toggle="tab" data-bs-target="#netstat" type="button" role="tab" aria-controls="netstat" aria-selected="false" title="' . __('Netstat Policies') . '">' . __('Netstat Policies') . '</button></li>';
-
-    $software_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="software-tab" data-bs-toggle="tab" data-bs-target="#software" type="button" role="tab" aria-controls="software" aria-selected="false" title="' . __('Software Policies') . '">' . __('Software Policies') . '</button></li>';
-
-    $user_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab" aria-controls="user" aria-selected="false" title="' . __('User Policies') . '">' . __('User Policies') . '</button></li>';
-
-    $add_policy_button = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-light mb-2" title="' . __('Add Policy') . '"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '">' . __('Add Policy') . '</a></button></li>';
-
-    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-light mb-2" title="' . __('Add Policies from Device') . '"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device">' . __('Add Policies from Device') . '</a></button></li>';
+    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab">' . __('Add Policy') . '</a></li>';
+    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab">' . __('Add Policies from Device') . '</a></li>';
 }
 ?>
         <main class="container-fluid">
@@ -86,7 +70,7 @@ if ($style === 'icontext') {
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-10 offset-1">
+                        <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $details_button ?>
                                 <?= $results_button ?>
@@ -101,7 +85,7 @@ if ($style === 'icontext') {
                     <br/>
 
                     <div class="tab-content">
-                        <div class="tab-pane fade show active" id="details" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
@@ -132,7 +116,7 @@ if ($style === 'icontext') {
                             </div>
                             </div>
 
-                        <div class="tab-pane fade" id="results" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="results" role="tabpanel" tabindex="0">
                             <br>
                             <table class="table table-striped resultsTable dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
@@ -166,7 +150,7 @@ if ($style === 'icontext') {
                             </table>
                         </div>
 
-                        <div class="tab-pane fade" id="netstat" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="netstat" role="tabpanel" tabindex="0">
                             <br>
                             <table class="table table-striped policiesTable dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
@@ -216,7 +200,7 @@ if ($style === 'icontext') {
                             </table>
                         </div>
 
-                        <div class="tab-pane fade" id="software" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="software" role="tabpanel" tabindex="0">
                             <br>
                             <table class="table table-striped policiesTable dataTable" data-order='[[1,"asc"],[3,"asc"]]'>
                                 <thead>
@@ -260,7 +244,7 @@ if ($style === 'icontext') {
                             </table>
                         </div>
 
-                        <div class="tab-pane fade" id="user" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="user" role="tabpanel" tabindex="0">
                             <br>
                             <table class="table table-striped policiesTable dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
@@ -331,3 +315,27 @@ if ($style === 'icontext') {
                 </div>
             </div>
         </main>
+
+<script>
+window.onload = function () {
+    $(document).ready(function () {
+
+        var hash = window.location.hash;
+        if (hash == "") {
+            hash = "#details"
+        }
+        hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
+
+        $('ul.nav.nav-pills a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            window.location.hash = this.hash;
+            window.location = this.href;
+        });
+
+        $(".nav-link").click(function(e) {
+            window.scrollTo(0, 0);
+        });
+    });
+}
+</script>
