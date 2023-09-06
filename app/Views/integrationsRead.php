@@ -242,9 +242,125 @@ if ($resource->type === 'nmis') {
             </div>
         </main>
 
+
 <script>
 window.onload = function () {
     $(document).ready(function () {
+
+        $("#select_internal_type").val("<?= $resource->select_internal_type ?>");
+
+        /* Delete integration field */
+        $('.field_delete_link').click(function () {
+            var $internal_field_name = $(this).attr('data-internal_field_name');
+            var $external_field_name = $(this).attr('data-external_field_name');
+            var $external_field_type = $(this).attr('data-external_field_type');
+            var $default_value = $(this).attr('data-default_value');
+            var $priority = $(this).attr('data-priority');
+            var $matching_attribute = $(this).attr('data-matching_attribute');
+            if (confirm('Are you sure you want to delete this field?') !== true) {
+                /* console.log("<?= url_to('integrationsRead', $resource->id) ?>/fields/<?= $resource->id ?>?internal_field_name=" + $internal_field_name + "&external_field_name=" + $external_field_name + "&external_field_type=" + $external_field_type + "&default_value=" + $default_value); */
+                return;
+            }
+            $.ajax({
+                type: 'DELETE',
+                url: "<?= url_to('integrationsRead', $resource->id) ?>/fields/<?= $resource->id ?>?internal_field_name=" + $internal_field_name + "&external_field_name=" + $external_field_name + "&external_field_type=" + $external_field_type + "&default_value=" + $default_value + "&priority=" + $priority + "&matching_attribute=" + $matching_attribute,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.responseText);
+                    alert('"' + $internal_field_name + '" has been deleted.\nYou may need to refresh the page to display current items.');
+                },
+                error: function () {
+                    console.log(data.responseText);
+                    alert("An error occurred when deleting \"" + $name + '"');
+                }
+            });
+        });
+
+
+
+        /* Add integration field */
+        field_count = 0;
+        $('.field_add').click(function () {
+            var row = "\
+                                        <tr id=\"fields_" + field_count + "\">\
+                                            <td><input type=\"text\" class=\"form-control\" id=\"data[attributes][fields][" + field_count + "][internal_field_name]\" name=\"data[attributes][fields][" + field_count + "][internal_field_name]\" value=\"\"><\/td>\
+                                            <td><input type=\"text\" class=\"form-control\" id=\"data[attributes][fields][" + field_count + "][external_field_name]\" name=\"data[attributes][fields][" + field_count + "][external_field_name]\" value=\"\"><\/td>\
+                                            <td><select class=\"form-select\" name=\"data[attributes][fields][" + field_count + "][external_field_type]\" id=\"data[attributes][fields][" + field_count + "][external_field_type]\">\
+                                                <option value=\"text\" selected><?= __('Text') ?><\/option>\
+                                                <option value=\"integer\">      <?= __('Integer') ?><\/option>\
+                                                <option value=\"bool\">         <?= __('Boolean') ?><\/option>\
+                                                <option value=\"bool_one_zero\"><?= __('Boolean 1/0') ?><\/option>\
+                                                <option value=\"capitalise\">   <?= __('Capitalise') ?><\/option>\
+                                                <option value=\"lower\">        <?= __('Lower Case') ?><\/option>\
+                                                <option value=\"upper\">        <?= __('Upper Case') ?><\/option>\
+                                                <option value=\"datetime_now\"> <?= __('DateTime Now') ?><\/option>\
+                                                <option value=\"datetime_Y-m-d H:i:s\"><?= __('DateTime Y-M-D H:M:S') ?><\/option>\
+                                                <option value=\"date_now\">     <?= __('Date Now') ?><\/option>\
+                                                <option value=\"date_Y-m-d\">   <?= __('Date Y-M-D') ?><\/option>\
+                                                <option value=\"date_m-d-Y\">   <?= __('Date M-D-Y') ?><\/option>\
+                                                <option value=\"date_d-m-Y\">   <?= __('Date D-M-Y') ?><\/option>\
+                                            <td><select class=\"form-select\" name=\"data[attributes][fields][" + field_count + "][priority]\" id=\"data[attributes][fields][" + field_count + "][priority]\"><option value=\"internal\" selected><?= __('Internal') ?><\/option><option value=\"external\"><?= __('External') ?><\/option><\/select><\/td>\
+                                            <td><input type=\"text\" class=\"form-control\" id=\"data[attributes][fields][" + field_count + "][default_value]\" name=\"data[attributes][fields][" + field_count + "][default_value]\" value=\"\"><\/td>\
+                                            <td><select class=\"form-select\" name=\"data[attributes][fields][" + field_count + "][matching_attribute]\" id=\"data[attributes][fields][" + field_count + "][matching_attribute]\"><option value=\"y\"><?= __('Yes') ?><\/option><option value=\"n\" selected><?= __('No') ?><\/option><\/select></td>\
+                                            <td class=\"text-center\"><button type=\"button\" data-row=\"" + field_count + "\" class=\"field_submit btn btn-sm btn-success\" title=\"<?= __('Add') ?>\">Add<\/button><\/td>\
+                                        <\/tr>";
+            $('#fieldstable > tbody:last-child').append(row);
+            field_count = field_count + 1;
+        });
+
+
+        /* Submit integration field */
+        $(document).on('click', '.field_submit', function (e) {
+            var $row = $(this).attr('data-row');
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = <?= $resource->id ?>;
+            data["data"]["type"] = 'integrations';
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"]['fields'] = {};
+            data["data"]["attributes"]['fields']['internal_field_name'] = $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[internal_field_name\\]").val();
+            data["data"]["attributes"]['fields']['external_field_name'] = $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[external_field_name\\]").val();
+            data["data"]["attributes"]['fields']['external_field_type'] = $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[external_field_type\\]").val();
+            data["data"]["attributes"]['fields']['priority'] = $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[priority\\]").val();
+            data["data"]["attributes"]['fields']['default_value'] = $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[default_value\\]").val();
+            data["data"]["attributes"]['fields']['matching_attribute'] = $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[matching_attribute\\]").val();
+            data = JSON.stringify(data);
+            table_data = JSON.parse(data);
+            if (table_data["data"]["attributes"]['fields']['priority'] == 'internal') {
+                table_data["data"]["attributes"]['fields']['priority'] = '<span class="label label-success">internal</span>';
+            } else {
+                table_data["data"]["attributes"]['fields']['priority'] = '<span class="label label-info">external</span>';
+            }
+            console.log(data);
+            $.ajax({
+                type: "PATCH",
+                url: "<?= url_to('integrationsRead', $resource->id) ?>",
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                    console.log(data.responseText);
+                    alert('"' + $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[internal_field_name\\]").val() + '" has been added.');
+                    $('#fieldstable > tbody > tr:last-child').remove();
+                    var row = "\
+                                        <tr>\
+                                            <td>" + table_data["data"]["attributes"]['fields']['internal_field_name'] + "<\/td>\
+                                            <td>" + table_data["data"]["attributes"]['fields']['external_field_name'] + "<\/td>\
+                                            <td>" + table_data["data"]["attributes"]['fields']['external_field_type'] + "<\/td>\
+                                            <td>" + table_data["data"]["attributes"]['fields']['priority'] + "<\/td>\
+                                            <td>" + table_data["data"]["attributes"]['fields']['default_value'] + "<\/td>\
+                                            <td>" + table_data["data"]["attributes"]['fields']['matching_attribute'] + "<\/td>\
+                                            <td><\/td>\
+                                        <\/tr>";
+                    console.log(row);
+                    $('#fieldstable > tbody:last-child').append(row);
+                },
+                error: function (data) {
+                    data = JSON.parse(data.responseText);
+                    console.log(data);
+                    alert("An error occurred when adding '" + $("#data\\[attributes\\]\\[fields\\]\\[" + $row + "\\]\\[internal_field_name\\]").val() + "'.");
+                }
+            });
+        });
 
         var hash = window.location.hash;
         if (hash == "") {
