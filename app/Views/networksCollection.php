@@ -104,6 +104,7 @@ include 'shared/collection_functions.php';
                 </div>
                 </div>
             </div>
+            <br />
             <?php } ?>
 
             <div class="card">
