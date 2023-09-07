@@ -209,6 +209,9 @@ class RacksModel extends BaseModel
         $this->builder->where('rack_id', $id);
         $query = $this->builder->get();
         $included['rack_devices'] = format_data($query->getResult(), 'rack_devices');
+
+        $locationsModel = new \App\Models\LocationsModel();
+        $included['locations'] = $locationsModel->listUser();
         return $included;
     }
 
@@ -317,8 +320,8 @@ class RacksModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'edited_by', 'edited_date');
-        $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'row', 'room', 'floor', 'building', 'locations.name', 'orgs.name', 'used', 'free');
+        $dictionary->attributes->create = array('name','org_id', 'ru_height'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
@@ -338,8 +341,8 @@ class RacksModel extends BaseModel
         $dictionary->columns->building = 'The building the rack is located in.';
         $dictionary->columns->floor = 'The floor the rack is located on.';
         $dictionary->columns->room = 'The room the rack is located in.';
-        $dictionary->columns->row = 'The row the rack is located in. Links to <code>rows.id</code>.';
-        $dictionary->columns->row_position = 'The height of this rack in rack units.';
+        $dictionary->columns->row = 'The row the rack is located in.';
+        $dictionary->columns->row_position = 'Where the rack is in the row.';
         $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
         $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';
         $dictionary->columns->physical_width = 'The physical width (in CMs) of the rack.';
