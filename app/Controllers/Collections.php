@@ -195,6 +195,9 @@ class Collections extends BaseController
                 return true;
             } else {
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+                if ($this->resp->meta->collection === 'components') {
+                    $this->resp->meta->collection = 'devices';
+                }
                 return redirect()->route($this->resp->meta->collection.'Collection');
             }
         }
