@@ -67,6 +67,17 @@ class Collections extends BaseController
      */
     public function collection(string $export = '')
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
@@ -125,21 +136,16 @@ class Collections extends BaseController
      */
     public function create()
     {
-        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
-            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise') {
-                log_message('debug', config('Openaudit')->product);
-                log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
-                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
-                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-                return redirect()->route($this->config->homepage);
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
             }
-        }
-        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
-            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise' and config('Openaudit')->product !== 'professional') {
-                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
-                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-                return redirect()->route($this->config->homepage);
-            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
         }
 
         if (!empty($this->resp->meta->id)) {
@@ -210,21 +216,16 @@ class Collections extends BaseController
      */
     public function createForm()
     {
-        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
-            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise') {
-                log_message('debug', config('Openaudit')->product);
-                log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
-                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
-                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-                return redirect()->route($this->config->homepage);
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
             }
-        }
-        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
-            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise' and config('Openaudit')->product !== 'professional') {
-                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
-                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-                return redirect()->route($this->config->homepage);
-            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
         }
         $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
         $this->resp->included['orgs'] = $this->orgsModel->listUser();
@@ -284,6 +285,17 @@ class Collections extends BaseController
      */
     public function delete()
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         if ($this->{$this->resp->meta->collection.'Model'}->delete($this->resp->meta->id)) {
             \Config\Services::session()->setFlashdata('success', 'Item in ' . $this->resp->meta->collection . ' deleted.');
             $temp = new stdClass();
@@ -337,6 +349,17 @@ class Collections extends BaseController
      */
     public function import()
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         $file = $this->request->getFile('file_import');
         if (!$file->isValid()) {
             \Config\Services::session()->setFlashdata('error', 'File import error. ' . $file->getErrorString() . ' ' . $file->getError());
@@ -488,6 +511,17 @@ class Collections extends BaseController
      */
     public function importForm()
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         $this->databaseModel = model('App\Models\DatabaseModel');
         $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
@@ -511,6 +545,17 @@ class Collections extends BaseController
      */
     public function importJSONForm()
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         $this->databaseModel = new \App\Models\DatabaseModel();
         $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
@@ -534,21 +579,16 @@ class Collections extends BaseController
      */
     public function importJSON()
     {
-        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->enterprise_collections)) {
-            if (strpos(config('Openaudit')->enterprise_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise') {
-                log_message('debug', config('Openaudit')->product);
-                log_message('debug', config('Openaudit')->enterprise_collections[$this->resp->meta->collection]);
-                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs an Enterprise license.');
-                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-                return redirect()->route($this->config->homepage);
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
             }
-        }
-        if (array_key_exists($this->resp->meta->collection, config('Openaudit')->professional_collections)) {
-            if (strpos(config('Openaudit')->professional_collections[$this->resp->meta->collection], 'c') !== false and config('Openaudit')->product !== 'enterprise' and config('Openaudit')->product !== 'professional') {
-                log_message('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a Professional license.');
-                \Config\Services::session()->setFlashdata('error', 'Creating an item in ' . $this->resp->meta->collection . ' needs a commercial license.');
-                return redirect()->route($this->config->homepage);
-            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
         }
         // Account for old style collection JSON export
         if (!empty($this->resp->meta->received_data->json->data)) {
@@ -661,6 +701,17 @@ class Collections extends BaseController
      */
     public function read($id, string $export = '')
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         if ($this->resp->meta->collection !== 'database') {
             $this->resp->meta->id = intval($this->resp->meta->id);
         }
@@ -762,6 +813,17 @@ class Collections extends BaseController
      */
     public function reset()
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         $this->{$this->resp->meta->collection.'Model'}->reset();
         if ($this->resp->meta->format !== 'html') {
             # Note the below data is only for Enterprise to accept data back after a POST
@@ -780,6 +842,17 @@ class Collections extends BaseController
      */
     public function update()
     {
+        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if ($this->resp->meta->format === 'html') {
+                \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
+                header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
+                exit();
+            }
+            $this->resp->meta->errors = $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.';
+            output($this);
+            exit();
+        }
         if ($this->{$this->resp->meta->collection.'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
             output($this);
         } else {
