@@ -6,8 +6,6 @@ $disabled = 'disabled';
 if (!empty(config('Openaudit')->maps_api_key) and (config('Openaudit')->product === 'professional' or config('Openaudit')->product === 'enterprise')) {
     $disabled = '';
 }
-#$disabled = 'disabled';
-#config('Openaudit')->maps_api_key = '';
 if ($user->toolbar_style === 'icontext') {
     $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-globe text-success"></span>' . __('Get Lat/Long') . '</button></li>';
 
