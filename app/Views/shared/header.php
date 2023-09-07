@@ -11,7 +11,7 @@ $header = "
     manifest-src 'none';
     media-src 'none';
     object-src 'none';
-    script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com maps.google.com;
     style-src 'self' 'unsafe-inline' fonts.googleapis.com;
     worker-src 'self';
     ";
