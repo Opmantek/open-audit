@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 $tooltip = '<a href="#" style="color: #16325c;" class="float-end" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="' . __('Please note that the select box will override the text input box.') . '"><span class="fa-regular fa-circle-question"></span></a><br>';
-#$tooltip = '';
 ?>
         <main class="container-fluid">
             <div class="card">
