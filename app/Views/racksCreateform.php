@@ -2,6 +2,8 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+$tooltip = '<a href="#" style="color: #16325c;" class="float-end" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="' . __('Please note that the select box will override the text input box.') . '"><span class="fa-regular fa-circle-question"></span></a><br>';
+#$tooltip = '';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -17,12 +19,13 @@ include 'shared/create_functions.php';
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][description]', __('Description'), $dictionary->attributes->create) ?>
-                                <?= create_text_field('data[attributes][ru_height]', __('Height in RU'), $dictionary->attributes->create, '', 'number', '42') ?>
+                                <?= create_text_field('data[attributes][ru_height]', __('Height in RU'), $dictionary->attributes->create, '', 'number') ?>
                                 <?= create_select('data[attributes][location_id]', __('Location'), $included['locations'], $dictionary->attributes->create) ?>
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][building]" class="form-label"><?= __('Building') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;<a href="#" style="color: #16325c;" class="float-end" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="<?= __('Please note that the select box will override the text input box.') ?>"><span class="fa-regular fa-circle-question"></span></a><br>
+                                        <label for="data[attributes][building]" class="form-label"><?= __('Building') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;
+                                        <?= $tooltip ?>
                                         <div class="input-group">
                                             <input class="form-control myBuilding" type="text" id="data[attributes][building]" name="data[attributes][building]" placeholder="<?= __('New Building Name') ?>">
                                             <span style="padding-left:10px; padding-right:10px; padding-top:5px;">or</span>
@@ -40,7 +43,8 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][floor]" class="form-label"><?= __('Floor') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;<a href="#" style="color: #16325c;" class="float-end" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="<?= __('Please note that the select box will override the text input box.') ?>"><span class="fa-regular fa-circle-question"></span></a><br>
+                                        <label for="data[attributes][floor]" class="form-label"><?= __('Floor') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;
+                                        <?= $tooltip ?>
                                         <div class="input-group">
                                             <input class="form-control myFloor" type="text" id="data[attributes][floor]" name="data[attributes][floor]" placeholder="<?= __('New Floor Name') ?>">
                                             <span style="padding-left:10px; padding-right:10px; padding-top:5px;">or</span>
@@ -57,7 +61,8 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][room]" class="form-label"><?= __('Room') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;<a href="#" style="color: #16325c;" class="float-end" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="<?= __('Please note that the select box will override the text input box.') ?>"><span class="fa-regular fa-circle-question"></span></a><br>
+                                        <label for="data[attributes][room]" class="form-label"><?= __('Room') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;
+                                        <?= $tooltip ?>
                                         <div class="input-group">
                                             <input class="form-control myRoom" type="text" id="data[attributes][room]" name="data[attributes][room]" placeholder="<?= __('New Room Name') ?>">
                                             <span style="padding-left:10px; padding-right:10px; padding-top:5px;">or</span>
@@ -74,7 +79,8 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][row]" class="form-label"><?= __('Row') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;<a href="#" style="color: #16325c;" class="float-end" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="<?= __('Please note that the select box will override the text input box.') ?>"><span class="fa-regular fa-circle-question"></span></a><br>
+                                        <label for="data[attributes][row]" class="form-label"><?= __('Row') ?></label>&nbsp;<span style="color: #dc3545;">*</span>&nbsp;
+                                        <?= $tooltip ?>
                                         <div class="input-group">
                                             <input class="form-control myRow" type="text" id="data[attributes][row]" name="data[attributes][row]" placeholder="<?= __('New Row Name') ?>">
                                             <span style="padding-left:10px; padding-right:10px; padding-top:5px;">or</span>
@@ -109,9 +115,9 @@ include 'shared/create_functions.php';
                                     <br />
                                     <?= create_text_field('data[attributes][ru_start]', __('RU Start'), $dictionary->attributes->create, '', '', '1') ?>
                                     <?= create_text_field('data[attributes][pod]', __('POD'), $dictionary->attributes->create) ?>
-                                    <?= create_text_field('data[attributes][physical_height]', __('Physical Height'), $dictionary->attributes->create, '', 'number', '2000') ?>
-                                    <?= create_text_field('data[attributes][physical_width]', __('Physical Width'), $dictionary->attributes->create, '', 'number', '600') ?>
-                                    <?= create_text_field('data[attributes][physical_depth]', __('Physical Depth'), $dictionary->attributes->create, '', 'number', '1050') ?>
+                                    <?= create_text_field('data[attributes][physical_height]', __('Physical Height'), $dictionary->attributes->create, '', 'number') ?>
+                                    <?= create_text_field('data[attributes][physical_width]', __('Physical Width'), $dictionary->attributes->create, '', 'number') ?>
+                                    <?= create_text_field('data[attributes][physical_depth]', __('Physical Depth'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][weight_empty]', __('Weight Empty'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][weight_current]', __('Weight Current'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][weight_max]', __('Weight Max'), $dictionary->attributes->create, '', 'number') ?>
@@ -150,13 +156,17 @@ include 'shared/create_functions.php';
 
 <script>
 window.onload = function () {
-    $(document).ready(function(){
+    $(document).ready(function() {
+        $("#data\\[attributes\\]\\[ru_height\\]").val(42);
+        $("#data\\[attributes\\]\\[row_position\\]").val(1);
+        $("#data\\[attributes\\]\\[physical_height\\]").val(2000);
+        $("#data\\[attributes\\]\\[physical_width\\]").val(600);
+        $("#data\\[attributes\\]\\[physical_depth\\]").val(1050);
+
+
         $(".myBuilding").change(function (e){
             $(".myBuilding").removeClass("is-invalid");
             $(".myBuilding").css("color", "#212529");
-        });
-        const popover = new bootstrap.Popover('.popover-dismiss', {
-            trigger: 'focus'
         });
         $(".myFloor").change(function (e){
             $(".myFloor").removeClass("is-invalid");
@@ -170,12 +180,13 @@ window.onload = function () {
             $(".myRow").removeClass("is-invalid");
             $(".myRow").css("color", "#212529");
         });
+
         $("form").submit(function(e){
             var valid = false;
             $(".myBuilding").each(function() {
                 if ($(this).val() != null && $(this).val() != "") {
                     valid = true;
-                    console.log($(this).val());
+                    /* console.log($(this).val()); */
                 }
             });
             if (!valid) {
@@ -187,7 +198,7 @@ window.onload = function () {
             $(".myFloor").each(function() {
                 if ($(this).val() != null && $(this).val() != "") {
                     valid = true;
-                    console.log($(this).val());
+                    /* console.log($(this).val()); */
                 }
             });
             if (!valid) {
@@ -199,7 +210,7 @@ window.onload = function () {
             $(".myRoom").each(function() {
                 if ($(this).val() != null && $(this).val() != "") {
                     valid = true;
-                    console.log($(this).val());
+                    /* console.log($(this).val()); */
                 }
             });
             if (!valid) {
@@ -211,7 +222,7 @@ window.onload = function () {
             $(".myRow").each(function() {
                 if ($(this).val() != null && $(this).val() != "") {
                     valid = true;
-                    console.log($(this).val());
+                    /* console.log($(this).val()); */
                 }
             });
             if (!valid) {
@@ -219,6 +230,8 @@ window.onload = function () {
                 e.preventDefault();
             }
         });
+
+
     });
 }
 </script>

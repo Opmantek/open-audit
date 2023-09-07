@@ -38,7 +38,7 @@ function create_card_header(string $collection = '', string $icon = '', object $
     return $return;
 }
 
-function create_text_field(string $field, string $label = '', array $create_fields = array(), string $placeholder = '', string $type = 'text', string $value = '')
+function create_text_field(string $field, string $label = '', array $create_fields = array(), string $placeholder = '', string $type = 'text')
 {
     if (empty($label)) {
         $label = ucwords(str_replace('_', ' ', __($field)));
@@ -57,7 +57,7 @@ function create_text_field(string $field, string $label = '', array $create_fiel
     $return_string = "\n                                <div class=\"row\" style=\"padding-top:16px; padding-bottom:4px;\">
                                     <div class=\"offset-2 col-8\" style=\"position:relative;\">
                                         <label class=\"form-label\" for=\"{$field}\">{$label}</label>
-                                        <input class=\"form-control\" type=\"" . $type . "\" id=\"{$field}\" name=\"{$field}\" {$required} placeholder=\"{$placeholder}\" value=\"$value\"/>
+                                        <input class=\"form-control\" type=\"" . $type . "\" id=\"{$field}\" name=\"{$field}\" {$required} placeholder=\"{$placeholder}\"/>
                                     </div>
                                 </div>";
     return $return_string;
