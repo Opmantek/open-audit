@@ -386,6 +386,12 @@ if (!function_exists('response_create')) {
         $enterprise = APPPATH . '/other/enterprise.exe';
         $enterprise = '/usr/local/opmojo/private/enterprise.pl';
         if (file_exists($enterprise)) {
+            // TODO - fix this
+            if (!empty($response->meta->received_data) and $response->meta->collection === 'rules' and $response->meta->action === 'update') {
+                $received_data = $response->meta->received_data;
+                $response->meta->received_data = array();
+            }
+
             // log_message('debug', "Calling external enterprise function.");
             $db = db_connect();
             // Insert the entry
@@ -419,10 +425,15 @@ if (!function_exists('response_create')) {
                 unset($response->meta->product);
             }
             // Delete the DB entry
-            #$sql = "DELETE FROM enterprise WHERE id = $id";
-            #$db->query($sql);
-        }
+            $sql = "DELETE FROM enterprise WHERE id = $id";
+            $db->query($sql);
 
+            // TODO - fix this
+            if (!empty($received_data) and $response->meta->collection === 'rules' and $response->meta->action === 'update') {
+                $response->meta->received_data = $received_data;
+            }
+            config('Openaudit')->product = 'community';
+        }
         return $response;
     }
 }

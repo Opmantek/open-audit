@@ -729,22 +729,6 @@ class RulesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // if (isset($data->resource) and !in_array($data->resource, ['devices', 'locations', 'orgs', 'queries'])) {
-        //     $error = new \stdClass();
-        //     $error->level = 'error';
-        //     $error->message = 'Invalid attribute value. Should be one of: devices, locations, orgs or queries.';
-        //     $GLOBALS['stash'] = $error;
-        //     log_message('error', $error->message);
-        //     return false;
-        // }
-        // if (isset($data->type) and !in_array($data->type, ['class', 'environment', 'status', 'type', 'menu_category'])) {
-        //     $error = new \stdClass();
-        //     $error->level = 'error';
-        //     $error->message = 'Invalid attribute type. Should be one of: class, environment, status, type or menu_category.';
-        //     $GLOBALS['stash'] = $error;
-        //     log_message('error', $error->message);
-        //     return false;
-        // }
         $data = $this->updateFieldData('rules', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
@@ -769,8 +753,8 @@ class RulesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'resource', 'type', 'name', 'value', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','type','resource','value'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
+        $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
