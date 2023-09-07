@@ -378,7 +378,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="cluster_section">
-                                <?=  device_panel('clusters', $user->toolbar_style, $resource->id); ?>
+                                <?=  device_panel('cluster', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
@@ -767,7 +767,7 @@ if (!empty($included['fields'])) {
                             }
                             ?>
                             <div style="margin-bottom:20px; display:none;" class="card" id="location_section">
-                                <?=  device_panel('location', $user->toolbar_style, '', $update); ?>
+                                <?=  device_panel('location', $user->toolbar_style, 0, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -794,7 +794,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="purchase_section">
-                                <?=  device_panel('purchase', $user->toolbar_style, '', $update); ?>
+                                <?=  device_panel('purchase', $user->toolbar_style, 0, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -851,7 +851,7 @@ if (!empty($included['fields'])) {
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="windows_section">
-                                <?=  device_panel('Windows', $user->toolbar_style, '', $update); ?>
+                                <?= device_panel('Windows', $user->toolbar_style, 0, '', $update); ?>
                                 <div class="card-body">
                                 <?php if (!empty($included['windows'])) { ?>
                                     <div class="row">
@@ -924,7 +924,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="bios_section">
-                                <?=  device_panel('bios', $user->toolbar_style, '', $update); ?>
+                                <?= device_panel('bios', $user->toolbar_style, 0, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <?php if (!empty($included['bios'])) { ?>
