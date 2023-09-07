@@ -695,20 +695,18 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     if (empty($permission)) {
         return "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
     }
+    $instance = & get_instance();
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
-    if (!empty(config('Openaudit')->enterprise_collections[$collection]) and strpos(config('Openaudit')->enterprise_collections[$collection], $permission) !== false) {
-        $return = "<li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $title . "</a></li>\n";
-        if (config('Openaudit')->product === 'enterprise' and get_user_permission($collection, $permission, $user)) {
+    // Check if feature matches license
+    if (strpos($instance->collections->{$collection}->actions->{config('Openaudit')->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
+        $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
+    }
+    // Check if use has permission and a license
+    if (strpos($instance->collections->{$collection}->actions->{config('Openaudit')->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
+        if (get_user_permission($collection, $permission, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
         }
-    } else if (!empty(config('Openaudit')->professional_collections[$collection]) and strpos(config('Openaudit')->professional_collections[$collection], $permission) !== false) {
-        $return = "<li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $title . "</a></li>\n";
-        if ((config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') and get_user_permission($collection, $permission, $user)) {
-            $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
-        }
-    } else if (get_user_permission($collection, $permission, $user)) {
-        $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
     }
     return $return;
 }
