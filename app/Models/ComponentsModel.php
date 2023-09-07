@@ -235,6 +235,9 @@ class ComponentsModel extends BaseModel
         }
 
         if ($data->component_type === 'image') {
+            if (empty($data->orientation)) {
+                $data->orientation = 'front';
+            }
             if (empty($_FILES['attachment']) and empty($data->filename)) {
                 log_message('error', 'No uploaded image attachment');
                 \Config\Services::session()->setFlashdata('error', 'No uploaded image attachment.');
