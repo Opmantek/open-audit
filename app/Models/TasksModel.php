@@ -365,7 +365,7 @@ class TasksModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'type', 'last_run', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
