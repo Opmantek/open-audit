@@ -216,7 +216,7 @@ class DiscoveryScanOptionsModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'edited_by', 'edited_date');
-        $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->create = array('name', 'org_id', 'ping', 'service_version', 'filtered' ,'open|filtered', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
