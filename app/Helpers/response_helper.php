@@ -432,7 +432,7 @@ if (!function_exists('response_create')) {
             if (!empty($received_data) and $response->meta->collection === 'rules' and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
-            config('Openaudit')->product = 'community';
+            #config('Openaudit')->product = 'professional';
         }
         return $response;
     }
