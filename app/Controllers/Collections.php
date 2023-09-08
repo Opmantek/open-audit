@@ -783,7 +783,7 @@ class Collections extends BaseController
                 $this->resp->meta->breadcrumbs[] = $breadcrumb;
             }
             $update = false;
-            if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false) {
+            if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, 'u') !== false) {
                 $update = true;
             }
             $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
