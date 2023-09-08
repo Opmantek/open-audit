@@ -139,6 +139,10 @@ $(document).ready(function () {
 
             }
         });
+        attribute = attribute.replace(/\|/g, '\\|'); /* for scan_options.open|filtered */
+        attribute = attribute.replace(/\[/g, '\\['); /* for tasks.minute[] */
+        attribute = attribute.replace(/\]/g, '\\]'); /* for tasks.minute[] */
+        $("#" + attribute.replace(/\./g, '\\.')).attr("data-original-value", value);
         $("#" + attribute.replace(/\./g, '\\.')).attr("disabled", true);
         $(".edit[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").show();
         $(".submit[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").hide();

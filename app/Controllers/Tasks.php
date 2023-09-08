@@ -30,5 +30,14 @@ namespace App\Controllers;
  */
 class Tasks extends BaseController
 {
-
+    /**
+     * Provide a form to choose a group so we can execute a baseline
+     *
+     * @access public
+     * @return void
+     */
+    public function execute($id)
+    {
+        return redirect()->route('tasksRead', [$id]);
+    }
 }

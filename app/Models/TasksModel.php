@@ -153,7 +153,12 @@ class TasksModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $result = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
+        $type = ucfirst($result->type);
+        $namespace = "\\App\\Models\\" . $type . "Model";
+        $typeModel = new $namespace;
+        $included[strtolower($type)] = $typeModel->listUser();
+        return $included;
     }
 
     /**
@@ -187,6 +192,9 @@ class TasksModel extends BaseModel
 
         $queriesModel = new \App\Models\QueriesModel();
         $include['queries'] = $queriesModel->listUser();
+
+        $reportsModel = new \App\Models\ReportsModel();
+        $include['reports'] = $reportsModel->listUser();
 
         $summariesModel = new \App\Models\SummariesModel();
         $include['summaries'] = $summariesModel->listUser();
@@ -365,7 +373,7 @@ class TasksModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'last_run', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'sub_resource_name', 'minute', 'hour', 'day_of_month', 'month', 'day_of_week', 'enabled', 'last_run', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
