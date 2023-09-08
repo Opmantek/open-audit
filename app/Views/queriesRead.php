@@ -41,7 +41,7 @@ include 'shared/read_functions.php';
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="sql" class="form-label"><?= __('SQL') ?></label>
                                     <div class="input-group">
-                                        <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= $resource->sql ?></textarea>
+                                        <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
                                         <?php if ($update) { ?>
                                         <div class="float-right" style="padding-left:4px;">
                                             <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
