@@ -36,10 +36,15 @@ include 'shared/create_functions.php';
                                 <?= create_text_field('data[attributes][ad_domain]', __('Active Directory Domain'), $dictionary->attributes->create) ?>
                                 </div>
 
+                                <?php
+                                $disabled = 'disabled';
+                                if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
+                                    $disabled = '';
+                                } ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][scan_options][id]"><?= __('Discovery Options'); ?></label>
-                                        <select class="form-select" name="data[attributes][scan_options][id]" id="data[attributes][scan_options][id]" disabled>
+                                        <select class="form-select" name="data[attributes][scan_options][id]" id="data[attributes][scan_options][id]" <?= $disabled ?>>
                                         <?php foreach ($included['discovery_scan_options'] as $option) {
                                             echo "<option value=\"" . $option->id . "\">" . $option->attributes->name . "</option>\n";
                                         } ?>
