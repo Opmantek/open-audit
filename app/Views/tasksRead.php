@@ -198,10 +198,8 @@ include 'shared/read_functions.php';
                         </div>
                         <div class="col-6">
                             <div class="offset-2 col-8">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <div class="alert alert-success fade show text-center" role="alert">
-                                        <?= __('Current date & time is ') . $meta->timestamp . ' (' . $meta->timezone . ')' ?>
-                                    </div>
+                                <div class="alert alert-success fade show text-center" role="alert">
+                                    <?= __('Current date & time is ') . $meta->timestamp . ' (' . $meta->timezone . ')' ?>
                                 </div>
                                 <?php if (!empty($dictionary->about)) { ?>
                                     <h4 class="text-center"><?= __('About') ?></h4><br>

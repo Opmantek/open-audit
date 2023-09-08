@@ -10,6 +10,9 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body">
                     <br />
+                    <div class="alert alert-success fade show text-center" role="alert">
+                        <?= __('Current date & time is ') . $meta->timestamp . ' (' . $meta->timezone . ')' ?>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                             <thead>
