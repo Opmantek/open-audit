@@ -647,7 +647,7 @@ class WidgetsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'orgs.name', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'name', 'type', 'primary', 'secondary', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);

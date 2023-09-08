@@ -391,6 +391,10 @@ if (!function_exists('response_create')) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
+            if (!empty($response->meta->received_data) and $response->meta->collection === 'widgets' and $response->meta->action === 'update') {
+                $received_data = $response->meta->received_data;
+                $response->meta->received_data = array();
+            }
 
             // log_message('debug', "Calling external enterprise function.");
             $db = db_connect();
@@ -430,6 +434,9 @@ if (!function_exists('response_create')) {
 
             // TODO - fix this
             if (!empty($received_data) and $response->meta->collection === 'rules' and $response->meta->action === 'update') {
+                $response->meta->received_data = $received_data;
+            }
+            if (!empty($received_data) and $response->meta->collection === 'widgets' and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
             #config('Openaudit')->product = 'professional';
