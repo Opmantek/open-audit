@@ -161,6 +161,11 @@ abstract class BaseController extends Controller
         # Parse the input and create our response
         $this->resp = response_create($this);
 
+        if (!empty($this->resp->meta->licenses)) {
+            $this->licenses = $this->resp->meta->licenses;
+            unset($this->resp->meta->licenses);
+        }
+
         # log this request
         $log_user = (!empty($this->user->full_name)) ? $this->user->full_name : $this->user->name;
         $message = 'ACCESS:' . strtolower($this->resp->meta->collection) . ':' . strtolower($this->resp->meta->action) . ':' . $this->resp->meta->id . ':' . $log_user;
