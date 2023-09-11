@@ -125,7 +125,8 @@ class Collections extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included)]);
+            view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included)])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         return true;
     }
 
@@ -245,7 +246,8 @@ class Collections extends BaseController
             'roles' => filter_response($this->roles),
             'orgs' => filter_response($this->orgsUser),
             'user' => filter_response($this->user)]) .
-            view($this->resp->meta->collection . ucfirst($this->resp->meta->action));
+            view($this->resp->meta->collection . ucfirst($this->resp->meta->action))
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
@@ -275,7 +277,8 @@ class Collections extends BaseController
             'meta' => filter_response($this->resp->meta),
             'queries' => filter_response($this->queriesUser),
             'user' => filter_response($this->user)]) .
-            view('collectionDefaults', ['data' => $data]);
+            view('collectionDefaults', ['data' => $data])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
@@ -339,7 +342,8 @@ class Collections extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('collectionHelp', ['data' => $dictionary]);
+            view('collectionHelp', ['data' => $dictionary])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
@@ -534,7 +538,8 @@ class Collections extends BaseController
             'queries' => $this->queriesUser,
             'roles' => $this->roles,
             'user' => $this->user ]) .
-            view('collectionImport', ['data' => $dictionary]);
+            view('collectionImport', ['data' => $dictionary])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         return;
     }
 
@@ -568,7 +573,8 @@ class Collections extends BaseController
             'queries' => $this->queriesUser,
             'roles' => $this->roles,
             'user' => $this->user ]) .
-            view('collectionImportJsonForm', ['data' => $dictionary]);
+            view('collectionImportJsonForm', ['data' => $dictionary])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         return;
     }
 
@@ -802,7 +808,8 @@ class Collections extends BaseController
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user),
                 'name' => @$this->resp->data[0]->attributes->name]) .
-                view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update]);
+                view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update])
+                . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         }
     }
 

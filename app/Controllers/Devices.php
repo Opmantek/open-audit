@@ -142,7 +142,8 @@ class Devices extends BaseController
             'queries' => $this->queriesUser,
             'roles' => $this->roles,
             'user' => $this->user ]) .
-            view('devicesImportNMISForm', ['data' => $this->resp->included]);
+            view('devicesImportNMISForm', ['data' => $this->resp->included])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     public function importNMIS()

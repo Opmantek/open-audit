@@ -151,7 +151,8 @@ class Database extends BaseController
             'queries' => array(),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('databaseSchemaCompare', ['data' => $output]);
+            view('databaseSchemaCompare', ['data' => $output])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     public function delete(string $table = '', string $status = '')
@@ -232,7 +233,8 @@ class Database extends BaseController
                 'queries' => array(),
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
-                view('databaseUpdateForm', ['data' => filter_response($this->data)]);
+                view('databaseUpdateForm', ['data' => filter_response($this->data)])
+                . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         }
         if ($action === 'post') {
             $output = $this->databaseModel->update();
@@ -245,7 +247,8 @@ class Database extends BaseController
                 'queries' => array(),
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
-                view('databaseUpdate', ['data' => filter_response($this->data)]);
+                view('databaseUpdate', ['data' => filter_response($this->data)])
+                . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         }
     }
 }

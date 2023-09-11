@@ -57,7 +57,8 @@ class Help extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('helpAbout', []);
+            view('helpAbout', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
@@ -76,7 +77,8 @@ class Help extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('helpDiscoveryIssues', []);
+            view('helpDiscoveryIssues', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
@@ -95,7 +97,8 @@ class Help extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('helpFeatures', []);
+            view('helpFeatures', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
@@ -114,6 +117,7 @@ class Help extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('helpPrereq', []);
+            view('helpPrereq', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 }

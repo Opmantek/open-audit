@@ -91,6 +91,7 @@ class Dashboards extends BaseController
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user),
             'name' => @$this->resp->data[0]->attributes->name]) .
-            view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update]);
+            view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 }

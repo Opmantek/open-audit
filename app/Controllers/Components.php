@@ -55,7 +55,8 @@ class Components extends BaseController
             'roles' => filter_response($this->roles),
             'orgs' => filter_response($this->orgsUser),
             'user' => filter_response($this->user)]) .
-            view($this->resp->meta->collection . ucfirst($this->resp->meta->action) . ucfirst($type));
+            view($this->resp->meta->collection . ucfirst($this->resp->meta->action) . ucfirst($type))
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     public function delete($id, $type)

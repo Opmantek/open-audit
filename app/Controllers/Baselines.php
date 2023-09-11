@@ -53,7 +53,8 @@ class Baselines extends BaseController
             view($this->resp->meta->collection . ucfirst($this->resp->meta->action), [
                 'data' => filter_response($this->resp->data),
                 'meta' => filter_response($this->resp->meta),
-                'included' => filter_response($this->resp->included)]);
+                'included' => filter_response($this->resp->included)])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
     /**
