@@ -319,7 +319,7 @@ class ReportsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array();
+        $dictionary->attributes->collection = array('id', 'name', 'menu_category');
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();
         $dictionary->attributes->fieldsMeta = array();

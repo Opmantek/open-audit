@@ -30,19 +30,5 @@ namespace App\Controllers;
  */
 class Reports extends BaseController
 {
-    public function collection()
-    {
-        $queriesModel = model('App\Models\QueriesModel');
-        $summariesModel = model('App\Models\SummariesModel');
-        $this->resp->data = $queriesModel->listUser();
-        $summaries = $summariesModel->listUser();
-        foreach ($summaries as $summary) {
-            $summary->attributes->menu_display = 'y';
-        }
-        $this->resp->data = array_merge($this->resp->data, $summaries);
-        usort($this->resp->data, 'sort_attributes');
-        $this->resp->meta->total = count($this->resp->data);
-        $this->resp->meta->format = 'json';
-        output($this);
-    }
+
 }
