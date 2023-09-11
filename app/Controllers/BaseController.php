@@ -72,6 +72,8 @@ abstract class BaseController extends Controller
         $this->user = $this->usersModel->userValidate();
         $this->orgsModel = model('App\Models\OrgsModel');
         $this->queriesModel = model('App\Models\QueriesModel');
+        $this->reportsModel = model('App\Models\ReportsModel');
+        $this->summariesModel = model('App\Models\SummariesModel');
         $this->rolesModel = model('App\Models\RolesModel');
         $this->roles = $this->rolesModel->listAll();
         $this->collections = collections_list();
@@ -227,6 +229,8 @@ abstract class BaseController extends Controller
 
         if ($this->resp->meta->format === 'html') {
             $this->queriesUser = $this->queriesModel->listUser();
+            $this->queriesUser = array_merge($this->queriesUser, $this->reportsModel->listUser());
+            $this->queriesUser = array_merge($this->queriesUser, $this->summariesModel->listUser());
             $this->orgsUser = $this->orgsModel->listUser();
             $this->dashboardsModel = model('App\Models\DashboardsModel');
             $this->dashboards = $this->dashboardsModel->listUser();
