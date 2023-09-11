@@ -7,7 +7,7 @@ $header = "
     form-action 'self';
     frame-ancestors 'none';
     frame-src 'none';
-    img-src 'self' data:;
+    img-src 'self' data: *.gstatic.com *.googleapis.com;
     manifest-src 'none';
     media-src 'none';
     object-src 'none';
@@ -97,7 +97,7 @@ $categories = array_unique($categories);
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Open-AudIT Community">
+        <meta name="description" content="Open-AudIT">
         <meta name="author" content="Mark Unwin">
         <link rel="shortcut icon" href="<?= base_url('favicon.png') ?>" type="image/x-icon">
         <title>Open-AudIT</title>
