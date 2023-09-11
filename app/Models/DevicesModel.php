@@ -49,10 +49,11 @@ class DevicesModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
             $joined_table = explode('.', $filter->name);
-            if (count($joined_table) === 2 and $joined_table[0] !== 'devices' and $joined_table[0] !== 'system') {
+            if (count($joined_table) === 2 and $joined_table[0] !== 'devices' and $joined_table[0] !== 'system' and $joined_table[0] !== 'orgs' and $joined_table[0] !== 'locations') {
                 $joined_tables[] = $joined_table[0];
             }
         }
+        log_message('debug', json_encode($joined_tables));
         $joined_tables = array_unique($joined_tables);
         if (!empty($joined_tables)) {
             foreach ($joined_tables as $joined_table) {
@@ -62,7 +63,7 @@ class DevicesModel extends BaseModel
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
-        // log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }

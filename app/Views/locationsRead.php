@@ -43,13 +43,23 @@ if ($user->toolbar_style === 'icontext') {
                             <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['types']) ?>
                             <?php $attributes = array('room', 'suite', 'level', 'address', 'suburb', 'district', 'region', 'area');
                             foreach ($attributes as $attribute) {
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update) . "\n";
+                                $link_button = '';
+                                if (in_array($attribute, ['suburb', 'district', 'region', 'area'])) {
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . $resource->{$attribute} . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-right\" style=\"padding-left:4px;\">
+                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . $resource->{$attribute} . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                }
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button) . "\n";
                             } ?>
                         </div>
                         <div class="col-4">
                             <?php $attributes = array('latitude', 'longitude', 'geo', 'city', 'state', 'postcode', 'country', 'phone', 'external_ident', 'geo');
                             foreach ($attributes as $attribute) {
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update) . "\n";
+                                $link_button = '';
+                                if (in_array($attribute, ['city', 'state', 'postcode', 'country'])) {
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . $resource->{$attribute} . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-right\" style=\"padding-left:4px;\">
+                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . $resource->{$attribute} . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                }
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button) . "\n";
                             } ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
