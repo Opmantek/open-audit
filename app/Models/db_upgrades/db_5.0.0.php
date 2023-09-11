@@ -602,6 +602,16 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = 'UPDATE `widgets` SET `sql` = REPLACE(`sql`, ".applications_id", ".application_id")';
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = 'UPDATE `widgets` SET `where` = "devices.instance_provider != \'\'" WHERE `where` = "system.instance_provider != \'\'"';
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "UPDATE `configuration` SET name = 'license' WHERE name = 'oae_license'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

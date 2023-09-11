@@ -7,6 +7,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use \stdClass;
+use \DateTime;
+use \DateInterval;
+use \DatePeriod;
 
 class WidgetsModel extends BaseModel
 {
@@ -17,22 +20,20 @@ class WidgetsModel extends BaseModel
         $this->builder = $this->db->table('widgets');
     }
 
-    public function cmp_name($a, $b)
+    public function compareName($a, $b)
     {
         if (!empty($a->name) and !empty($b->name)) {
             return strcmp(strtolower((string)$a->name), strtolower((string)$b->name));
-        } else {
-            return;
         }
+        return;
     }
 
-    public function cmp_timestamp($a, $b)
+    public function compareTimestamp($a, $b)
     {
         if (!empty($a->timestamp) and !empty($b->timestamp)) {
             return strcmp(strtolower((string)$a->timestamp), strtolower((string)$b->timestamp));
-        } else {
-            return;
         }
+        return;
     }
 
     /**
@@ -124,16 +125,16 @@ class WidgetsModel extends BaseModel
 
     public function execute(int $id = 0, object $user = null)
     {
-        $result = $this->builder->getWhere(['id' => intval($id)])->getResult();
-        $widget = $result[0];
+        $instance = & get_instance();
+        $widget = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
         if ($widget->type === 'pie') {
-            $result = $this->pieData($widget, $user->org_list);
+            $widget->result = $this->pieData($widget, $instance->user->org_list);
         }
         if ($widget->type === 'line') {
-            $result = $this->lineData($widget, $user->org_list);
+            $widget->result = $this->lineData($widget, $instance->user->org_list);
         }
-        $result = format_data($result, 'widgets');
-        return ($result);
+        #$result = format_data($result, 'widgets');
+        return ($widget);
     }
 
     /**
@@ -170,7 +171,7 @@ class WidgetsModel extends BaseModel
         if (!empty($widget->sql)) {
             $sql = $widget->sql;
             if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
-                // These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
+                // These entries must only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
             } else {
                 $filter = "devices.org_id IN ({$org_list})";
                 if (!empty($instance->resp->meta->requestor)) {
@@ -183,7 +184,7 @@ class WidgetsModel extends BaseModel
                 foreach ($result as $row) {
                     $row->timestamp = strtotime($row->date);
                 }
-                usort($result, array($this,'cmp_timestamp'));
+                usort($result, array($this,'compareTimestamp'));
                 for ($i=0; $i < count($result); $i++) {
                     $result[$i]->link = $widget->link;
                     if (isset($result[$i]->name)) {
@@ -205,18 +206,18 @@ class WidgetsModel extends BaseModel
 
                 if (count($result) < 2) {
                     $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
-                    $begin = new \DateTime($start);
+                    $begin = new DateTime($start);
                     $finish = date('Y-m-d', strtotime('+1 days'));
-                    $end = new \DateTime($finish);
-                    $interval = new \DateInterval('P1D');
-                    $period = new \DatePeriod($begin, $interval, $end);
+                    $end = new DateTime($finish);
+                    $interval = new DateInterval('P1D');
+                    $period = new DatePeriod($begin, $interval, $end);
                 } else {
                     $start = date('Y-m-d', strtotime($result[0]->date));
                     $begin = new \DateTime($start);
                     $i = count($result)-1;
-                    $end = new \DateTime($result[$i]->date);
-                    $interval = \DateInterval::createFromDateString('1 day');
-                    $period = new \DatePeriod($begin, $interval, $end);
+                    $end = new DateTime($result[$i]->date);
+                    $interval = DateInterval::createFromDateString('1 day');
+                    $period = new DatePeriod($begin, $interval, $end);
                 }
 
                 foreach ($period as $dt) {
@@ -229,7 +230,7 @@ class WidgetsModel extends BaseModel
                         }
                     }
                     if ($add_row) {
-                        $row = new \stdClass();
+                        $row = new stdClass();
                         $row->timestamp = strtotime($the_date);
                         $row->date = $the_date;
                         $row->count = 0;
@@ -238,14 +239,14 @@ class WidgetsModel extends BaseModel
                     }
                 }
             } else {
-                $item = new \stdClass();
+                $item = new stdClass();
                 $item->timestamp = strtotime(date('Y-m-d'));
                 $item->date = date('Y-m-d');
                 $item->count = 0;
                 $item->link = '';
                 $result[] = $item;
             }
-            usort($result, array($this,'cmp_timestamp'));
+            usort($result, array($this,'compareTimestamp'));
             return $result;
         }
 
@@ -320,7 +321,7 @@ class WidgetsModel extends BaseModel
                     $result[] = $row;
                 }
             }
-            usort($result, array($this,'cmp_timestamp'));
+            usort($result, array($this,'compareTimestamp'));
             return $result;
         }
     }
@@ -465,7 +466,7 @@ class WidgetsModel extends BaseModel
             $sql = 'SELECT ' .  $primary . ' AS `name`, ' .
                                 $secondary . ' AS `description`, ' .
                                 $ternary . ' AS `ternary`, ' .
-                                " COUNT(" . $primary . ') AS `count`, ' .
+                                " COUNT(" . $primary . ') AS `count` ' .
                                 " FROM devices LEFT JOIN " . $primary_table .
                                 " ON (devices.id = " . $primary_table . '.device_id' .
                                 " AND " . $primary_table . ".current = 'y' ) " .
@@ -519,7 +520,6 @@ class WidgetsModel extends BaseModel
         } else {
             log_message('debug', 'Widget definition is bad. Widget: ' . json_encode($widget));
         }
-
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
             for ($i=0; $i < count($result); $i++) {

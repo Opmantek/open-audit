@@ -147,7 +147,13 @@ $categories = array_unique($categories);
         <!-- Menu -->
         <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
             <div class="container-fluid">
-                <a class="navbar-brand" style="color: white;" href="<?= base_url() ?>index.php">
+                <?php
+                $homepage = url_to('summariesCollection');
+                if (config('Openaudit')->product !== 'community') {
+                    $dashboard = (!empty($user->dashboard_id)) ? $user->dashboard_id : 1;
+                    $homepage = url_to('dashboardsExecute', $dashboard);
+                } ?>
+                <a class="navbar-brand" style="color: white;" href="<?= $homepage ?>">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
                     Open-AudIT <?= ucfirst(config('Openaudit')->product) ?> <?= config('Openaudit')->display_version . "\n" ?>
                 </a>
@@ -160,7 +166,7 @@ $categories = array_unique($categories);
                                     <?php foreach ($dashboards as $dashboard) {
                                         if ($dashboard->type === 'dashboards') {
                                             if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
-                                                echo "                                <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
+                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
                                             }
@@ -603,6 +609,12 @@ if (!empty(config('Openaudit')->modules)) {
                                     } ?>
                                     </ul>
                                 </div>
+                                <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and $meta->id != $user->dashboard_id) { ?>
+                                <button class="btn btn-sm btn-outline-secondary" id="make_my_dashboard_button" title="<?= __('Make My Default Dashboard') ?>" style="border: 1px solid #adb5bd; color: #212529" type="button" aria-expanded="false"><span class="fa fa-home"></span></button>
+                                <?php } ?>
+                                <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute') { ?>
+                                <a href="<?= url_to('dashboardsRead', $meta->id) ?>" class="btn btn-sm btn-outline-secondary" title="<?= __('Edit') ?>" style="border: 1px solid #adb5bd; color: #212529" type="button" aria-expanded="false"><span class="fa fa-edit"></span></a>
+                                <?php } ?>
                             </div>
                         </form>
                     </div>

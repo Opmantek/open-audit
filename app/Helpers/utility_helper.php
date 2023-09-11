@@ -18,6 +18,123 @@ function &get_instance() # : \App\Controllers\BaseController
     return $CI_INSTANCE[0];
 }
 
+function prereqCheck()
+{
+    $prereq = dirPermLinux();
+    $prereq['nmap_installed'] = nmapInstalled();
+    $prereq['nmap_suid'] = nmapSuid();
+    return $prereq;
+}
+
+function nmapInstalled()
+{
+    if (!empty(config('Openaudit')->discovery_override_nmap) && config('Openaudit')->discovery_override_nmap === 'y') {
+        return 'y';
+    }
+    $nmap_installed = 'n';
+    if (php_uname('s') === 'Windows NT') {
+        // check the obvious Windows install locations
+        $test_path = 'c:\Program Files\Nmap\Nmap.exe';
+        if ($nmap_installed === 'n' && file_exists($test_path)) {
+            $nmap_installed = 'y';
+        }
+        $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+        if ($nmap_installed === 'n' && file_exists($test_path)) {
+            $nmap_installed = 'y';
+        }
+        unset($test_path);
+    }
+    if (php_uname('s') !== 'Windows NT') {
+        $command_string = 'which nmap 2>/dev/null';
+        exec($command_string, $output);
+        if (isset($output[0]) && strpos($output[0], 'nmap')) {
+            $nmap_installed = 'y';
+        }
+        if (isset($output[1]) && strpos($output[1], 'nmap')) {
+            $nmap_installed = 'y';
+        }
+        if ($nmap_installed === 'n') {
+            if (file_exists('/usr/local/bin/nmap')) {
+                $nmap_installed = 'y';
+            }
+        }
+        if ($nmap_installed === 'n') {
+            if (file_exists('/usr/bin/nmap')) {
+                $nmap_installed = 'y';
+            }
+        }
+    }
+    return $nmap_installed;
+}
+
+function nmapSuid()
+{
+    if (php_uname('s') === 'Windows NT') {
+        return 'y';
+    }
+    if (!empty(config('Openaudit')->discovery_override_nmap) && config('Openaudit')->discovery_override_nmap === 'y') {
+        return 'y';
+    }
+    $suid = 'n';
+    $command_string = 'which nmap 2>/dev/null';
+    $output = shell_exec($command_string);
+    if (!empty($output)) {
+        $command_string = 'ls -lh `which nmap` | cut -d" " -f1 | cut -c4';
+        exec($command_string, $output);
+        if (isset($output[0]) and $output[0] === 's') {
+            $suid = 'y';
+        }
+    } else if (file_exists('/usr/bin/nmap')) {
+        $command_string = 'ls -lh /usr/bin/nmap | cut -d" " -f1 | cut -c4';
+        exec($command_string, $output);
+        if (isset($output[0]) and $output[0] === 's') {
+            $suid = 'y';
+        }
+    } else if (file_exists('/usr/local/bin/nmap')) {
+        $command_string = 'ls -lh /usr/bin/nmap | cut -d" " -f1 | cut -c4';
+        exec($command_string, $output);
+        if (isset($output[0]) and $output[0] === 's') {
+            $suid = 'y';
+        }
+    }
+    return $suid;
+}
+
+function dirPermLinux()
+{
+    $perm = array();
+    $perm['cron_file_exists'] = 'n';
+    // $perm['cron_file_permission'] = 'n';
+    if (file_exists('/etc/cron.d/open-audit')) {
+        $perm['cron_file_exists'] = 'y';
+        // $command_string = `ls -l /etc/cron.d/open-audit | cut -d" " -f1 | grep -v total`;
+        // $output = shell_exec($command_string);
+        // log_message('debug', "Permission:" . json_encode($output));
+        // if (!empty($output)) {
+        //     if (trim($output[0]) === '-rw-r--r--' or trim($output[0]) === '-rw-r--r--.') {
+        //         $perm['cron_file_permission'] = 'y';
+        //     }
+        // }
+    }
+    $perm['attachments_dir'] = 'n';
+    if (is_writable('/usr/local/open-audit/app/Attachments')) {
+        $perm['attachments_dir'] = 'y';
+    }
+    $perm['uploads_dir'] = 'n';
+    if (is_writable('/usr/local/open-audit/app/Uploads')) {
+        $perm['uploads_dir'] = 'y';
+    }
+    $perm['scripts_dir'] = 'n';
+    if (is_writable('/usr/local/open-audit/other/scripts')) {
+        $perm['scripts_dir'] = 'y';
+    }
+    $perm['custom_images_dir'] = 'n';
+    if (is_writable('/usr/local/open-audit/public/custom_images')) {
+        $perm['custom_images_dir'] = 'y';
+    }
+    return $perm;
+}
+
 function format_data($result, $type)
 {
 
