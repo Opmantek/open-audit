@@ -22,9 +22,11 @@ class MapsModel extends BaseModel
      *
      * @return array        An array of formatted entries
      */
-    public function collection(string $type = ''): array
+    public function collection(object $resp): array
     {
-        return array();
+        $locationsModel = new \App\Models\LocationsModel();
+        $included = $locationsModel->listUser();
+        return $included;
     }
 
     /**
