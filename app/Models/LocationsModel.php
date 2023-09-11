@@ -200,10 +200,13 @@ class LocationsModel extends BaseModel
         $properties = array();
         $properties[] = 'locations.*';
         $properties[] = 'orgs.name as `orgs.name`';
+        $properties[] = "COUNT(DISTINCT devices.id) AS `device_count`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'locations.org_id = orgs.id', 'left');
+        $this->builder->join('devices', 'locations.id = devices.location_id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->groupBy('locations.id');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
