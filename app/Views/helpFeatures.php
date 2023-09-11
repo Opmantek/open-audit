@@ -13,6 +13,66 @@ if (php_uname('s') == "Windows NT") {
 } else {
     $operating_system = php_uname('s');
 }
+$highlightCom = '';
+$btnCom = 'btn-default';
+$btnComStyle = '';
+$btnComText = __('Get Started');
+
+$highlightFre = '';
+$btnFre = 'btn-default';
+$btnFreStyle = '';
+$btnFreText = __('Activate');
+
+$highlightPro = '';
+$btnPro = 'btn-default';
+$btnProStyle = '';
+$btnProText = __('Buy');
+
+$highlightEnt = '';
+$btnEnt = 'btn-default';
+$btnEntStyle = '';
+$btnEntText = __('Upgrade');
+
+$message = '';
+$license = (!empty(config('Openaudit')->license)) ? strtolower(config('Openaudit')->license) : 'none';
+$product = (!empty(config('Openaudit')->product)) ? config('Openaudit')->product : 'community';
+
+if ($product === 'enterprise' and $license !== 'free') {
+    $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
+    $btnEnt = 'btn-success';
+    $btnEntStyle = 'style="color:white;"';
+    $message = 'Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.';
+    $btnEntText = __('Buy More');
+}
+
+if ($product === 'professional') {
+    $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
+    $btnEnt = 'btn-success';
+    $btnEntStyle = 'style="color:white;"';
+    $message = 'Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.';
+    $btnProText = __('Buy More');
+}
+
+if ($license === 'free' and $product === 'enterprise') {
+    $highlightPro = "background: rgba(var(--bs-body-color-rgb), 0.03)";
+    $btnPro = 'btn-success';
+    $btnProStyle = 'style="color:white;"';
+    $message = 'Open-AudIT Professional. The world\'s most flexible network discovery and audit solution. All the features of Community plus: Interactive Dashboards, Geographical Maps, Scheduled Time-based or Historical Reporting, Commercial Support.';
+}
+
+if ($product === 'community') {
+    $highlightFre = "background: rgba(var(--bs-body-color-rgb), 0.03)";
+    $btnFre = 'btn-success';
+    $btnFreStyle = 'style="color:white;"';
+    $message = 'Try Open-AudIT Enterprise, on us without a time limit. All the features of Enterprise. Limited to 20 devices.';
+}
+
+$button_prompt_never = '';
+$button_prompt_later = '';
+if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+    $button_prompt_never = '<span id="button_prompt_never"><a class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
+    $button_prompt_later = '<span id="button_prompt_later"><a class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')) . '">' . __('Ask me later') . '</a></span>';
+}
 ?>
         <main class="container-fluid">
             <div class="card">

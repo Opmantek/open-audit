@@ -41,11 +41,10 @@ if (php_uname('s') == "Windows NT") {
                 ?>
 
                 <br /><br />
-                Open-AudIT is:
                 <p>
-                    Licensed with GNU AGPL.<br>
+                    Most of Open-AudIT is Licensed with GNU AGPL.<br>
                     Written in the PHP scripting language.<br>
-                    Using the CodeIgniter PHP Framework.<br>
+                    Uses the CodeIgniter PHP Framework.<br>
                 </p>
                 <br />
                 Some other technologies Open-AudIT uses are:

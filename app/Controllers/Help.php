@@ -39,7 +39,7 @@ use CodeIgniter\Model;
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  * @link     http://www.open-audit.org
  */
-class Help extends Controller
+class Help extends BaseController
 {
     /**
      * The About page
@@ -49,25 +49,6 @@ class Help extends Controller
      */
     public function about()
     {
-        $this->config = new \Config\OpenAudit();
-        helper('utility');
-        helper('output');
-        $this->usersModel = model('App\Models\UsersModel');
-        $this->user = $this->usersModel->userValidate();
-        $this->orgsModel = model('App\Models\OrgsModel');
-        $this->queriesModel = model('App\Models\QueriesModel');
-        $this->rolesModel = model('App\Models\RolesModel');
-        $this->roles = $this->rolesModel->listAll();
-        $this->collections = collections_list();
-        $this->orgsUser = $this->orgsModel->listUser([], $this->user->orgs);
-        $this->queriesUser = $this->queriesModel->listUser([], $this->user->orgs);
-        $this->dashboardsModel = model('App\Models\DashboardsModel');
-        $this->dashboards = $this->dashboardsModel->listUser([], $this->user->orgs);
-        $this->resp = new stdClass();
-        $this->resp->meta = new stdClass();
-        $this->resp->meta->collection = 'help';
-        $this->resp->meta->action = 'read';
-        $this->resp->meta->id = 'About';
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -85,27 +66,27 @@ class Help extends Controller
      * @access public
      * @return NULL
      */
+    public function discoveryIssues()
+    {
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('helpDiscoveryIssues', []);
+    }
+
+    /**
+     * The Features page
+     *
+     * @access public
+     * @return NULL
+     */
     public function features()
     {
-        $this->config = new \Config\OpenAudit();
-        helper('utility');
-        helper('output');
-        $this->usersModel = model('App\Models\UsersModel');
-        $this->user = $this->usersModel->userValidate();
-        $this->orgsModel = model('App\Models\OrgsModel');
-        $this->queriesModel = model('App\Models\QueriesModel');
-        $this->rolesModel = model('App\Models\RolesModel');
-        $this->roles = $this->rolesModel->listAll();
-        $this->collections = collections_list();
-        $this->orgsUser = $this->orgsModel->listUser([], $this->user->orgs);
-        $this->queriesUser = $this->queriesModel->listUser([], $this->user->orgs);
-        $this->dashboardsModel = model('App\Models\DashboardsModel');
-        $this->dashboards = $this->dashboardsModel->listUser([], $this->user->orgs);
-        $this->resp = new stdClass();
-        $this->resp->meta = new stdClass();
-        $this->resp->meta->collection = 'help';
-        $this->resp->meta->action = 'read';
-        $this->resp->meta->id = 'About';
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -115,5 +96,24 @@ class Help extends Controller
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
             view('helpFeatures', []);
+    }
+
+    /**
+     * The Features page
+     *
+     * @access public
+     * @return NULL
+     */
+    public function prereq()
+    {
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('helpPrereq', []);
     }
 }
