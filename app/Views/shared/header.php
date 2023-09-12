@@ -66,6 +66,7 @@ if (!function_exists('__')) {
                     }
                 } else {
                     log_message('error', "Language-Learning-Mode, but $language_file not writeable");
+                    echo "Language-Learning-Mode, but $language_file not writeable";
                     die("Language-Learning-Mode, but $language_file not writeable");
                 }
             }
