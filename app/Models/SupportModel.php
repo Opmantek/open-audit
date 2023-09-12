@@ -44,12 +44,11 @@ class SupportModel extends BaseModel
         unset($config->professional_collections);
         $config->modules = json_decode($config->modules);
         $modules = array();
-        foreach ($config->modules as $key => $value) {
-            if (!empty($value->installed)) {
-                $item = new stdClass();
-                $item->name = $key;
-                $item->version = $value->version;
-                $modules[] = $item;
+        if (!empty($config->modules)) {
+            foreach ($config->modules as $key => $value) {
+                if (!empty($value->installed)) {
+                    $modules[] = $key;
+                }
             }
         }
         $config->modules = $modules;
@@ -150,6 +149,17 @@ class SupportModel extends BaseModel
         $data->os->name = $os->os_name;
         $data->os->version = $os->os_version;
         unset($os);
+
+        if (php_uname('s') === 'Linux') {
+            $data->use = new stdClass();
+            $command_string = "grep ACCESS " . APPPATH . "../writable/logs/*.log | cut -d\" \" -f6- | sort | cut -d: -f2-3 | uniq -c | sed 's/^ *//g' | sed 's/ *$//g'";
+            exec($command_string, $output, $return_var);
+            foreach ($output as $line) {
+                $temp = explode(' ', $line);
+                $data->use->{$temp[1]} = intval($temp[0]);
+            }
+        }
+
 
 
         if (php_uname('s') === 'Windows NT') {
