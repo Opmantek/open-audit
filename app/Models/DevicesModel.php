@@ -63,11 +63,54 @@ class DevicesModel extends BaseModel
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
-        log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        $result = $query->getResult();
+
+        if (isset($result[0]->type) and isset($result[0]->last_seen_by) and config('Openaudit')->product !== 'community') {
+            for ($i=0; $i < count($result); $i++) {
+                # BAD
+                if ($result[$i]->last_seen_by === 'nmap' and ($result[$i]->type === 'unclassified' or $result[$i]->type === 'unknown')) {
+                    $result[$i]->audit_class = 'fa fa-times text-danger';
+                    $result[$i]->audit_text = 'Nmap discovered, data retrieval will be very limited.';
+                # NOT GOOD
+                } else if ($result[$i]->last_seen_by === 'nmap' and $result[$i]->type !== 'unclassified' and $result[$i]->type !== 'unknown') {
+                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
+                } else if ($result[$i]->last_seen_by === 'cloud') {
+                    #$result[$i]->audit_class = 'fa fa-times text-info';
+                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_text = 'Cloud import, data retrieval will be very limited.';
+                } else if ($result[$i]->last_seen_by === 'integrations') {
+                    #$result[$i]->audit_class = 'fa fa-times text-info';
+                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_text = 'Integration import, data retrieval will be very limited.';
+                } else if ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'ssh' or $result[$i]->last_seen_by === 'windows' or $result[$i]->last_seen_by === 'wmi' or $result[$i]->last_seen_by === 'snmp')) {
+                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_text = 'Partially discovered computer. Data retrieval limited.';
+                } else if ($result[$i]->last_seen_by === 'web form') {
+                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_text = 'Manually created ' . $result[$i]->type . '. Data retrieval limited.';
+                # GOOD
+                } else if ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'audit_wmi' or $result[$i]->last_seen_by === 'audit_ssh')) {
+                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_text = 'Discovered and audited computer.';
+                } else if ($result[$i]->type === 'computer' and $result[$i]->last_seen_by === 'audit') {
+                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_text = 'Audited computer.';
+                } else if ($result[$i]->type !== 'computer' and !empty($result[$i]->snmp_oid)) {
+                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_text = 'Discovered and audited ' . $result[$i]->type . '.';
+                # BAD - FALLBACK
+                } else {
+                    $result[$i]->audit_class = 'fa fa-question text-danger';
+                    $result[$i]->audit_text = 'Limited information available.';
+                }
+            }
+        }
+        return format_data($result, $resp->meta->collection);
     }
 
     /**

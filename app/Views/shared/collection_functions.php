@@ -149,8 +149,15 @@ function collection_column_name(string $name = ''): string
     if ($name === 'Ip') {
         $name = 'IP';
     }
+    if ($name === 'Uuid') {
+        $name = 'UUID';
+    }
     $name = str_replace('Ip Address', 'IP Address', $name);
     $name = str_replace('Device Id', 'Device ID', $name);
+    $name = str_replace('Dns ', 'DNS ', $name);
+    $name = str_replace('Dbus ', 'DBUS ', $name);
+    $name = str_replace('Os ', 'OS ', $name);
+    $name = str_replace(' Id', ' ID', $name);
     $name = __($name);
     return $name;
 }

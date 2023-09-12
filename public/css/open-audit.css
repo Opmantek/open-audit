@@ -527,7 +527,7 @@ a
 /* the dropdown on devices_collection to select columns */
 .toggle-vis
 {
-    font-weight: bold;
+    /* font-weight: bold; */
 
     padding: 3px 20px 3px 20px;
 

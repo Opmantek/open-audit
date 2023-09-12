@@ -22,46 +22,6 @@ if (!function_exists('output')) {
         if ($instance->resp->meta->collection === 'summaries' && $instance->resp->meta->action === 'execute') {
             unset($instance->resp->meta->data_order);
             $instance->resp->meta->data_order = array('name','count');
-        } else if ($instance->resp->meta->collection === 'charts') {
-            // Do nothing
-        } else if ($instance->resp->meta->collection === 'nmis') {
-            // Do nothing
-            if (empty($instance->resp->meta->data_order)) {
-                $instance->resp->meta->data_order = array();
-            }
-        } else if ($instance->resp->meta->collection === 'database') {
-            // Do nothing
-        } else {
-            $db = db_connect();
-            unset($instance->resp->meta->data_order);
-            $instance->resp->meta->data_order = array();
-
-            if (!empty($instance->resp->data[0]->attributes)) {
-                foreach ($instance->resp->data[0]->attributes as $key => $value) {
-                    if (strpos((string)$key, '.') !== false or $instance->resp->meta->collection === 'components' or $instance->resp->meta->collection === 'reports' or $instance->resp->meta->collection === 'search' or $instance->resp->meta->collection === 'help' or $instance->resp->meta->collection === 'database') {
-                        $instance->resp->meta->data_order[] = $key;
-                    } else {
-                        if ($db->fieldExists($key, $instance->resp->meta->collection)) {
-                            $instance->resp->meta->data_order[] = $instance->resp->meta->collection . '.' . $key;
-                        } else {
-                            $instance->resp->meta->data_order[] = $key;
-                        }
-                    }
-                }
-            }
-
-            if ($instance->resp->meta->collection === 'devices' && $instance->resp->meta->action === 'sub_resource_read') {
-                unset($instance->resp->meta->data_order);
-                $instance->resp->meta->data_order = array();
-                if (!empty($instance->resp->data) && is_array($instance->resp->data)) {
-                    foreach ($instance->resp->data[0]->attributes as $key => $value) {
-                        $instance->resp->meta->data_order[] = $key;
-                    }
-                }
-            }
-
-            $instance->resp->meta->data_order = array_unique($instance->resp->meta->data_order);
-            $instance->resp->meta->data_order = array_values($instance->resp->meta->data_order);
         }
 
         $instance->resp->meta->user = $instance->user;

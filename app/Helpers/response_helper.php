@@ -1253,21 +1253,27 @@ if (!function_exists('response_get_properties')) {
             }
         }
         if ($collection === 'devices' and $action === 'collection' and ($properties === 'default' or $properties === '')) {
-            if ($properties === 'default') {
+                $summary = 'Set properties to default because neither user nor config are set.';
+                $properties = 'devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification';
+            if (!empty(config('Openaudit')->devices_default_retrieve_columns)) {
                 $summary = 'Set properties to config DEFAULT.';
                 $properties = config('Openaudit')->devices_default_retrieve_columns;
-            } else {
-                if (!empty($user->devices_default_display_columns)) {
-                    $summary = 'Set properties to user default.';
-                    $properties = $user->devices_default_display_columns;
-                } else if (!empty(config('Openaudit')->devices_default_display_columns)) {
-                    $summary = 'Set properties to config default.';
-                    $properties = config('Openaudit')->devices_default_display_columns;
-                } else {
-                    $summary = 'Set properties to default because neither user nor config are set.';
-                    $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
-                }
             }
+            // if ($properties === 'default') {
+            //     $summary = 'Set properties to config DEFAULT.';
+            //     $properties = config('Openaudit')->devices_default_retrieve_columns;
+            // } else {
+            //     if (!empty($user->devices_default_display_columns)) {
+            //         $summary = 'Set properties to user default.';
+            //         $properties = $user->devices_default_display_columns;
+            //     } else if (!empty(config('Openaudit')->devices_default_retrieve_columns)) {
+            //         $summary = 'Set properties to config default.';
+            //         $properties = config('Openaudit')->devices_default_retrieve_columns;
+            //     } else {
+            //         $summary = 'Set properties to default because neither user nor config are set.';
+            //         $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
+            //     }
+            // }
         }
         if ($properties === 'all' or $properties === '*') {
             $properties = $collection . '.' . implode(','.$collection.'.', $db->getFieldNames($collection));
