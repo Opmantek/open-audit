@@ -444,6 +444,10 @@ if (!function_exists('response_create')) {
                 $response->meta->received_data = $received_data;
             }
             #config('Openaudit')->product = 'professional';
+        } else {
+            config('Openaudit')->license = 'none';
+            config('Openaudit')->product = 'community';
+            $response->meta->license_string = '';
         }
         return $response;
     }

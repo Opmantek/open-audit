@@ -237,3 +237,43 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and co
         </div>
     </div>
 </div>
+
+<script>
+/* inline edit */
+window.onload = function () {
+    $(document).ready(function () {
+        $(document).on('click', '.dismiss_modal_button', function (e) {
+            var value = $(this).attr("data-value");
+            //alert("Value is:"+value);
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = "oae_prompt";
+            data["data"]["type"] = "configuration";
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"]["value"] = value;
+            data["data"]["attributes"]["name"] = "oae_prompt";
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: "<?= base_url() ?>index.php/configuration/oae_prompt",
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                    /* alert( 'success' ); */
+                },
+                error: function (data) {
+                    console.log(data.responseText);
+                    data = JSON.parse(data.responseText);
+                    alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+                }
+            });
+            $(".myModalLicense").hide();
+        });
+
+        $(document).on('click', '.get_started_button', function (e) {
+            modal.hide();
+        });
+
+    });
+}
+</script>

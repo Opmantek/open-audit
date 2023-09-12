@@ -1811,7 +1811,7 @@ CREATE TABLE `integrations` (
   `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
   `status` varchar(200) NOT NULL DEFAULT '',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `duration` int(10) unsigned DEFAULT 0,
+  `duration` int(10) unsigned DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1874,7 +1874,7 @@ CREATE TABLE `invoice` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1903,7 +1903,7 @@ CREATE TABLE `invoice_item` (
   `line_amount` varchar(200) NOT NULL DEFAULT '',
   `notes` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
