@@ -860,6 +860,11 @@ class Collections extends BaseController
             output($this);
             exit();
         }
+        if (empty($this->resp->meta->received_data->id)) {
+            // Enterprise will have taken care of this
+            output($this);
+            return;
+        }
         if ($this->{$this->resp->meta->collection.'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
             output($this);
         } else {

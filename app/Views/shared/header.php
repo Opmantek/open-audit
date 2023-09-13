@@ -135,12 +135,6 @@ $categories = array_unique($categories);
         } ?>
         var web_folder = '<?= base_url() ?>';
         var device_auto_delete = '<?= config('Openaudit')->device_auto_delete; ?>';
-        <?php
-        $license = (!empty(config('Openaudit')->license)) ? strtolower(config('Openaudit')->license) : 'none';
-        $product = (!empty(config('Openaudit')->product)) ? config('Openaudit')->product : 'community';
-        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
-            echo "            window.onload = function() { $('#myModalLicense').modal('show'); }\n";
-        } ?>
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -541,10 +535,10 @@ if (!empty(config('Openaudit')->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if ($license === 'none') { ?>
-                                <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/license_free'><?= __('Activate Free License')?></a></li>
+<?php if (config('Openaudit')->license === 'none') { ?>
+                                <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Activate Free License')?></a></li>
 <?php } ?>
-                                <li><a class="dropdown-item" href='<?= config('Openaudit')->oae_url ?>/../opLicense'><?= __('Manage Licenses')?></a></li>
+                                <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Manage Licenses')?></a></li>
                                 <li><a class="dropdown-item buy_more_licenses" href='#' data-bs-toggle="modal" data-bs-target="#myModalLicense"><?= __('Buy More Licenses')?></a></li>
                             </ul>
                         </li>

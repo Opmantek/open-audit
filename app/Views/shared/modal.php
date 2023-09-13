@@ -56,8 +56,8 @@ if ($product === 'community') {
 $button_prompt_never = '';
 $button_prompt_later = '';
 if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
-    $button_prompt_never = '<span id="button_prompt_never"><a class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
-    $button_prompt_later = '<span id="button_prompt_later"><a class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')) . '">' . __('Ask me later') . '</a></span>';
+    $button_prompt_never = '<span id="button_prompt_never"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
+    $button_prompt_later = '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')) . '">' . __('Ask me later') . '</a></span>';
 }
 ?>
 <div class="modal" id="myModalLicense" tabindex="-1">
@@ -225,9 +225,9 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and co
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td class="text-center"><a class="btn btn-default" target="_blank" href="/en/omk/opLicense"><?= __('Restore my Licenses') ?></a></td>
-                            <td class="text-center"><a class="btn <?= $btnCom ?>" <?= $btnComStyle ?> href="/open-audit/index.php"><?= $btnComText ?></a></td>
-                            <td class="text-center"><a class="btn <?= $btnFre ?>" <?= $btnFreStyle ?> href="/omk/open-audit/license_free"><?= $btnFreText ?></a></td>
+                            <td class="text-center"><a class="btn btn-default" target="_blank" href="<?= url_to('configurationReadLicense') ?>"><?= __('Restore my Licenses') ?></a></td>
+                            <td class="text-center"><a class="btn <?= $btnCom ?>"  data-bs-dismiss="modal" <?= $btnComStyle ?> href="/open-audit/index.php"><?= $btnComText ?></a></td>
+                            <td class="text-center"><a class="btn <?= $btnFre ?>" <?= $btnFreStyle ?> href="<?= url_to('configurationReadLicense') ?>"><?= $btnFreText ?></a></td>
                             <td class="text-center"><a class="btn <?= $btnPro ?>" <?= $btnProStyle ?> href="https://firstwave.com/products/network-discovery-and-inventory-software/"><?= $btnProText ?></a></td>
                             <td class="text-center"><a class="btn <?= $btnEnt ?>" <?= $btnEntStyle ?> href="https://firstwave.com/products/network-discovery-and-inventory-software/"><?= $btnEntText ?></a></td>
                         </tr>
@@ -242,20 +242,25 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and co
 /* inline edit */
 window.onload = function () {
     $(document).ready(function () {
+
+        <?php
+        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+            echo "\n            $('#myModalLicense').modal('show');\n";
+        } ?>
+
         $(document).on('click', '.dismiss_modal_button', function (e) {
             var value = $(this).attr("data-value");
             //alert("Value is:"+value);
             var data = {};
             data["data"] = {};
-            data["data"]["id"] = "oae_prompt";
+            data["data"]["id"] = "<?= config('Openaudit')->oae_prompt_id ?>";
             data["data"]["type"] = "configuration";
             data["data"]["attributes"] = {};
             data["data"]["attributes"]["value"] = value;
-            data["data"]["attributes"]["name"] = "oae_prompt";
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: "<?= base_url() ?>index.php/configuration/oae_prompt",
+                url: "<?= base_url() ?>index.php/configuration/<?= config('Openaudit')->oae_prompt_id ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {
@@ -267,13 +272,7 @@ window.onload = function () {
                     alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
                 }
             });
-            $(".myModalLicense").hide();
         });
-
-        $(document).on('click', '.get_started_button', function (e) {
-            modal.hide();
-        });
-
     });
 }
 </script>

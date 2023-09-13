@@ -23,6 +23,9 @@ class OpenAudit extends BaseConfig
             if ($row->type === 'number') {
                 $this->{$row->name} = intval($row->value);
             }
+            if ($row->name === 'oae_prompt') {
+                $this->oae_prompt_id = $row->id;
+            }
         }
 
         if (!empty($this->oae_product)) {

@@ -34,6 +34,10 @@ if (!function_exists('response_create')) {
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
         $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
 
+        if ($response->meta->collection === 'configuration' and $response->meta->action === 'readlicense') {
+            $response->meta->action = 'read';
+        }
+
         // no dependencies - set in GET or POST or HEADERS or CLI
         $get_format = $request->getGet('format');
         if ($response->meta->request_method === 'CLI') {
