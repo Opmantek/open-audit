@@ -1,0 +1,2514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system>
+    <sys>
+        <description>win 2008r2 with iis</description>
+        <domain>open-audit.local</domain>
+        <form_factor>Other</form_factor>
+        <hostname>win2012r2_web02</hostname>
+        <icon>windows_2008</icon>
+        <ip>192.168.1.138</ip>
+        <manufacturer>VMware, Inc.</manufacturer>
+        <memory_count>2097152</memory_count>
+        <model>VMware Virtual Platform</model>
+        <name>win2012r2_web02</name>
+        <os_bit>64</os_bit>
+        <os_family>Windows 2008</os_family>
+        <os_group>Windows</os_group>
+        <os_installation_date>2015-12-01</os_installation_date>
+        <os_name>Microsoft Windows Server 2008 R2 Standard</os_name>
+        <os_version>6.1.7601</os_version>
+        <processor_count>1</processor_count>
+        <serial>VMware-56 4d 3a 1e b9 d5 13 17-fc 68 fb 3d e5 5a b6 77</serial>
+        <type>computer</type>
+        <uptime>567</uptime>
+        <uuid>1E3A4D56-D5B9-1713-FC68-FB3DE55AB677</uuid>
+    </sys>
+    <windows>
+        <item>
+            <build_number>7601</build_number>
+            <user_name>administrator@win2012r2_web02</user_name>
+            <client_site_name></client_site_name>
+            <domain_short></domain_short>
+            <workgroup>workgroup</workgroup>
+            <domain_controller_address></domain_controller_address>
+            <domain_controller_name></domain_controller_name>
+            <domain_role>Standalone Server</domain_role>
+            <part_of_domain>False</part_of_domain>
+            <id_number>VMware-56 4d 3a 1e b9 d5 13 17-fc 68 fb 3d e5 5a b6 77</id_number>
+            <time_caption>(UTC+10:00) Brisbane</time_caption>
+            <time_daylight>E. Australia Daylight Time</time_daylight>
+            <boot_device>\Device\HarddiskVolume1</boot_device>
+            <country_code>AUSTRALIA</country_code>
+            <organisation></organisation>
+            <language>English - United States</language>
+            <registered_user>Windows User</registered_user>
+            <service_pack>1</service_pack>
+            <version>6.1.7601</version>
+            <install_directory>C:\Windows</install_directory>
+            <active_directory_ou></active_directory_ou>
+        </item>
+    </windows>
+    <bios>
+        <item>
+            <description>PhoenixBIOS 4.0 Release 6.0</description>
+            <manufacturer>Phoenix Technologies LTD</manufacturer>
+            <serial>VMware-56 4d 3a 1e b9 d5 13 17-fc 68 fb 3d e5 5a b6 77</serial>
+            <smversion>6.00</smversion>
+            <version>INTEL  - 6040000</version>
+            <asset_tag>No Asset Tag</asset_tag>
+        </item>
+    </bios>
+    <scsi>
+        <item>
+            <model>LSI Adapter, SAS 3000 series, 8-port with 1068</model>
+            <manufacturer>LSI</manufacturer>
+            <device><![CDATA[PCI\VEN_1000&DEV_0054&SUBSYS_197615AD&REV_01\4&1F16FEF7&0&00A8]]></device>
+            <type>other</type>
+        </item>
+    </scsi>
+    <processor>
+        <item>
+            <physical_count>1</physical_count>
+            <core_count>1</core_count>
+            <logical_count>1</logical_count>
+            <socket>ZIF Socket</socket>
+            <description>Intel Core i5-3210M CPU @ 2.50GHz</description>
+            <speed>2493</speed>
+            <manufacturer>GenuineIntel</manufacturer>
+            <architecture>x64</architecture>
+        </item>
+    </processor>
+    <memory>
+        <item>
+            <bank>RAM slot #0</bank>
+            <type>EDO</type>
+            <form_factor>DIMM</form_factor>
+            <detail>DRAM</detail>
+            <size>2048</size>
+            <speed></speed>
+            <tag>Physical Memory 0</tag>
+            <serial></serial>
+        </item>
+    </memory>
+    <motherboard>
+        <item>
+            <manufacturer>Intel Corporation</manufacturer>
+            <model>440BX Desktop Reference Platform</model>
+            <serial>None</serial>
+            <processor_slot_count>1</processor_slot_count>
+            <processor_type>ZIF Socket</processor_type>
+            <memory_slot_count>64</memory_slot_count>
+        </item>
+    </motherboard>
+    <optical>
+        <item>
+            <description>NECVMWar VMware SATA CD01 ATA Device</description>
+            <model>NECVMWar VMware SATA CD01 ATA Device</model>
+            <device><![CDATA[IDE\CDROMNECVMWAR_VMWARE_SATA_CD01_______________1.00____\6&373888B8&0&1.0.0]]></device>
+            <mount_point>D:</mount_point>
+            <serial></serial>
+        </item>
+    </optical>
+    <video>
+        <item>
+            <model>VMware SVGA 3D</model>
+            <device><![CDATA[PCI\VEN_15AD&DEV_0405&SUBSYS_040515AD&REV_00\3&2B8E0B4B&0&78]]></device>
+            <manufacturer>VMware, Inc.</manufacturer>
+            <size>80</size>
+        </item>
+    </video>
+    <sound>
+        <item>
+            <model>High Definition Audio Device</model>
+            <manufacturer>Microsoft</manufacturer>
+            <device><![CDATA[HDAUDIO\FUNC_01&VEN_15AD&DEV_1975&SUBSYS_15AD1975&REV_1001\5&8A7C455&0&0001]]></device>
+        </item>
+    </sound>
+    <disk>
+        <item>
+            <caption>VMware, VMware Virtual S SCSI Disk Device</caption>
+            <hard_drive_index>0</hard_drive_index>
+            <interface_type>SCSI</interface_type>
+            <manufacturer>(Standard disk drives)</manufacturer>
+            <model>VMware Virtual Disk</model>
+            <serial></serial>
+            <size>40954</size>
+            <device>\\.\PHYSICALDRIVE0</device>
+            <partition_count>2</partition_count>
+            <status>Not available</status>
+            <firmware>1.0</firmware>
+            <scsi_logical_unit>0</scsi_logical_unit>
+        </item>
+    </disk>
+    <partition>
+        <item>
+            <hard_drive_index>0</hard_drive_index>
+            <mount_type>partition</mount_type>
+            <mount_point>C:</mount_point>
+            <name></name>
+            <size>40857</size>
+            <free>31778</free>
+            <used>9079</used>
+            <format>NTFS</format>
+            <description>C:</description>
+            <device>Disk #0, Partition #1</device>
+            <partition_disk_index></partition_disk_index>
+            <type>local</type>
+            <serial>4EEE5134</serial>
+        </item>
+        <item>
+            <hard_drive_index></hard_drive_index>
+            <mount_type>mount point</mount_type>
+            <mount_point>Z:</mount_point>
+            <name>Shared Folders at \\vmware-host\Shared Folders</name>
+            <size>571943</size>
+            <free>22191</free>
+            <used>549752</used>
+            <format>HGFS</format>
+            <description>Z:</description>
+            <device>Z:</device>
+            <partition_disk_index></partition_disk_index>
+            <bootable></bootable>
+            <type>smb</type>
+            <serial>00000064</serial>
+        </item>
+        <item>
+            <hard_drive_index></hard_drive_index>
+            <mount_type>mount point</mount_type>
+            <mount_point>\\?\Volume{d49f7b08-97e3-11e5-8630-806e6f6e6963}\</mount_point>
+            <name>System Reserved</name>
+            <size>99</size>
+            <free>71</free>
+            <used>28</used>
+            <format>NTFS</format>
+            <description>\\?\Volume{d49f7b08-97e3-11e5-8630-806e6f6e6963}\</description>
+            <device></device>
+            <partition_disk_index></partition_disk_index>
+            <type>volume</type>
+            <serial>-957513803</serial>
+        </item>
+    </partition>
+    <network>
+        <item>
+            <mac>00:0C:29:5A:B6:77</mac>
+            <manufacturer>Intel</manufacturer>
+            <model>Intel(R) PRO/1000 MT Network Connection</model>
+            <description>Intel(R) PRO/1000 MT Network Connection</description>
+            <ip_enabled>True</ip_enabled>
+            <net_index>7</net_index>
+            <connection>Local Area Connection</connection>
+            <connection_status>Connected</connection_status>
+            <speed>10000000</speed>
+            <type>Ethernet 802.3</type>
+            <dhcp_enabled>True</dhcp_enabled>
+            <dhcp_server>192.168.1.1</dhcp_server>
+            <dhcp_lease_obtained>15/06/2016 4:35:27 PM</dhcp_lease_obtained>
+            <dhcp_lease_expires>16/06/2016 4:35:27 PM</dhcp_lease_expires>
+            <dns_host_name>win2012r2_web02</dns_host_name>
+            <dns_domain>open-audit.lan</dns_domain>
+            <dns_domain_reg_enabled>False</dns_domain_reg_enabled>
+            <dns_server>192.168.1.1</dns_server>
+        </item>
+    </network>
+    <ip>
+        <item>
+            <mac>00:0C:29:5A:B6:77</mac>
+            <net_index>7</net_index>
+            <ip>192.168.1.138</ip>
+            <netmask>255.255.255.0</netmask>
+            <cidr></cidr>
+            <version>4</version>
+        </item>
+        <item>
+            <mac>00:0C:29:5A:B6:77</mac>
+            <net_index>7</net_index>
+            <ip>fe80::1122:8d09:6e19:6988</ip>
+            <netmask></netmask>
+            <cidr>64</cidr>
+            <version>6</version>
+        </item>
+    </ip>
+   <task>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template ]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[Everyone]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template ]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[Everyone]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template ]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Everyone]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\AppID\PolicyConverter]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\appidpolicyconverter.exe ]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\AppID\VerifiedPublisherCertStoreCheck]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\appidcertstorecheck.exe ]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Application Experience\AitAgent]]></name>
+         <next_run><![CDATA[16/06/2016 2:30:00 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[2/12/2015 2:30:00 AM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[aitagent ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Application Experience\ProgramDataUpdater]]></name>
+         <next_run><![CDATA[16/06/2016 12:30:00 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[2/12/2015 12:30:00 AM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\rundll32.exe aepdu.dll,AePduRunUpdate]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Autochk\Proxy]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 6:47:01 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\rundll32.exe /d acproxy.dll,PerformAutochkOperations]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\SystemTask]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:35:42 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\SystemTask]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:35:42 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\SystemTask]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:35:42 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\UserTask]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:40:09 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\UserTask]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:40:09 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\UserTask]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:40:09 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\UserTask-Roam]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\CertificateServicesClient\UserTask-Roam]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Customer Experience Improvement Program\Consolidator]]></name>
+         <next_run><![CDATA[15/06/2016 10:00:00 PM]]></next_run>
+         <status><![CDATA[Could not start]]></status>
+         <last_run><![CDATA[1/12/2015 7:00:01 PM]]></last_run>
+         <last_result><![CDATA[-2147479295]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%SystemRoot%\System32\wsqmcons.exe ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask]]></name>
+         <next_run><![CDATA[16/06/2016 3:30:00 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 6:40:01 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip]]></name>
+         <next_run><![CDATA[18/06/2016 1:30:00 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 2:34:50 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerCeipAssistant]]></name>
+         <next_run><![CDATA[15/06/2016 5:01:55 PM]]></next_run>
+         <status><![CDATA[Could not start]]></status>
+         <last_run><![CDATA[1/12/2015 8:30:42 PM]]></last_run>
+         <last_result><![CDATA[-2133393396]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\ceipdata.exe ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleCollector]]></name>
+         <next_run><![CDATA[16/06/2016 1:26:55 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\ceiprole.exe ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleUsageCollector]]></name>
+         <next_run><![CDATA[16/06/2016 6:25:40 AM]]></next_run>
+         <status><![CDATA[Could not start]]></status>
+         <last_run><![CDATA[2/12/2015 2:00:44 AM]]></last_run>
+         <last_result><![CDATA[-2133393396]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\ceipdata.exe -roleusage]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Defrag\ScheduledDefrag]]></name>
+         <next_run><![CDATA[22/06/2016 2:44:27 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\defrag.exe -c]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\MemoryDiagnostic\CorruptionDetector]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\MemoryDiagnostic\DecompressionFailureDetector]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\MUI\LPRemove]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 6:47:02 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\lpremove.exe ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Multimedia\SystemSoundsService]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[N/A]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\NetTrace\GatherNetworkInfo]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\gatherNetworkInfo.vbs ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem]]></name>
+         <next_run><![CDATA[21/06/2016 8:25:36 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%SystemRoot%\System32\powercfg.exe -energy -auto]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\RAC\RacTask]]></name>
+         <next_run><![CDATA[15/06/2016 5:06:46 PM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\RAC\RacTask]]></name>
+         <next_run><![CDATA[15/06/2016 5:00:00 PM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Ras\MobilityManager]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Registry\RegIdleBackup]]></name>
+         <next_run><![CDATA[17/06/2016 12:07:34 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 6:40:01 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Server Manager\ServerManager]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[15/06/2016 4:40:09 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\ServerManagerLauncher.exe ]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Administrators]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\SoftwareProtectionPlatform\SvcRestartTask]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[sc.exe start sppsvc]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[NETWORK SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Task Manager\Interactive]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Tcpip\IpAddressConflict1]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\rundll32.exe ndfapi.dll,NdfRunDllDuplicateIPOffendingSystem]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Tcpip\IpAddressConflict2]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\rundll32.exe ndfapi.dll,NdfRunDllDuplicateIPDefendingSystem]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\TextServicesFramework\MsCtfMonitor]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Running]]></status>
+         <last_run><![CDATA[15/06/2016 4:40:09 PM]]></last_run>
+         <last_result><![CDATA[267009]]></last_result>
+         <creator><![CDATA[N/A]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Time Synchronization\SynchronizeTime]]></name>
+         <next_run><![CDATA[19/06/2016 1:00:00 AM]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 2:34:50 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\sc.exe start w32time task_started]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[LOCAL SERVICE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\UPnP\UPnPHostConfig]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[sc.exe config upnphost start= auto]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\User Profile Service\HiveUploadTask]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\WDI\ResolutionHost]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[INTERACTIVE]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Windows Error Reporting\QueueReporting]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[1/12/2015 4:45:33 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\wermgr.exe -queuereporting]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\Windows Filtering Platform\BfeOnServiceStartTypeChange]]></name>
+         <next_run><![CDATA[N/A]]></next_run>
+         <status><![CDATA[Ready]]></status>
+         <last_run><![CDATA[N/A]]></last_run>
+         <last_result><![CDATA[1]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[%windir%\system32\rundll32.exe bfe.dll,BfeOnServiceStartTypeChange]]></task>
+         <state><![CDATA[Enabled]]></state>
+         <user><![CDATA[SYSTEM]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\WindowsColorSystem\Calibration Loader]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[14/07/2009 3:06:48 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+      <item>
+         <name><![CDATA[\Microsoft\Windows\WindowsColorSystem\Calibration Loader]]></name>
+         <next_run><![CDATA[Disabled]]></next_run>
+         <status><![CDATA[]]></status>
+         <last_run><![CDATA[14/07/2009 3:06:48 PM]]></last_run>
+         <last_result><![CDATA[0]]></last_result>
+         <creator><![CDATA[Microsoft Corporation]]></creator>
+         <schedule></schedule>
+         <task><![CDATA[COM handler]]></task>
+         <state><![CDATA[Disabled]]></state>
+         <user><![CDATA[Users]]></user>
+      </item>
+   </task>
+    <variable>
+        <item>
+            <program>environment</program>
+            <name>ComSpec</name>
+            <value>%SystemRoot%\system32\cmd.exe</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>FP_NO_HOST_CHECK</name>
+            <value>NO</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>OS</name>
+            <value>Windows_NT</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>Path</name>
+            <value>%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>PATHEXT</name>
+            <value>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>PROCESSOR_ARCHITECTURE</name>
+            <value>AMD64</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>TEMP</name>
+            <value>%SystemRoot%\TEMP</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>TMP</name>
+            <value>%SystemRoot%\TEMP</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>USERNAME</name>
+            <value>SYSTEM</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>windir</name>
+            <value>%SystemRoot%</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>PSModulePath</name>
+            <value>%SystemRoot%\system32\WindowsPowerShell\v1.0\Modules\</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>NUMBER_OF_PROCESSORS</name>
+            <value>1</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>PROCESSOR_LEVEL</name>
+            <value>6</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>PROCESSOR_IDENTIFIER</name>
+            <value>Intel64 Family 6 Model 58 Stepping 9, GenuineIntel</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>PROCESSOR_REVISION</name>
+            <value>3a09</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>windows_tracing_logfile</name>
+            <value>C:\BVTBin\Tests\installpackage\csilogfile.log</value>
+        </item>
+        <item>
+            <program>environment</program>
+            <name>windows_tracing_flags</name>
+            <value>3</value>
+        </item>
+    </variable>
+    <log>
+        <item>
+            <name>Application</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\Application.evtx</file_name>
+            <file_size>1092</file_size>
+            <max_file_size>20480</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>HardwareEvents</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\HardwareEvents.evtx</file_name>
+            <file_size>68</file_size>
+            <max_file_size>20480</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>Internet Explorer</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\Internet Explorer.evtx</file_name>
+            <file_size>68</file_size>
+            <max_file_size>1028</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>Key Management Service</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\Key Management Service.evtx</file_name>
+            <file_size>68</file_size>
+            <max_file_size>20480</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>Security</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\Security.evtx</file_name>
+            <file_size>1092</file_size>
+            <max_file_size>20480</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>System</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\System.evtx</file_name>
+            <file_size>1092</file_size>
+            <max_file_size>20480</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>ThinPrint Diagnostics</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\ThinPrint Diagnostics.evtx</file_name>
+            <file_size>68</file_size>
+            <max_file_size>1028</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+        <item>
+            <name>Windows PowerShell</name>
+            <file_name>C:\Windows\System32\Winevt\Logs\Windows PowerShell.evtx</file_name>
+            <file_size>68</file_size>
+            <max_file_size>15360</max_file_size>
+            <overwrite>As Needed</overwrite>
+        </item>
+    </log>
+    <user>
+        <item>
+            <name>Administrator</name>
+            <caption>win2012r2_web02\Administrator</caption>
+            <sid>S-1-5-21-3577503626-50693329-1567624542-500</sid>
+            <domain>win2012r2_web02</domain>
+            <disabled>False</disabled>
+            <full_name></full_name>
+            <password_changeable>True</password_changeable>
+            <password_expires>True</password_expires>
+            <password_required>True</password_required>
+            <status>OK</status>
+            <type>local</type>
+        </item>
+        <item>
+            <name>Guest</name>
+            <caption>win2012r2_web02\Guest</caption>
+            <sid>S-1-5-21-3577503626-50693329-1567624542-501</sid>
+            <domain>win2012r2_web02</domain>
+            <disabled>True</disabled>
+            <full_name></full_name>
+            <password_changeable>False</password_changeable>
+            <password_expires>False</password_expires>
+            <password_required>False</password_required>
+            <status>Degraded</status>
+            <type>local</type>
+        </item>
+        <item>
+            <name>LocalSystem</name>
+            <caption>win2012r2_web02\LocalSystem</caption>
+            <sid></sid>
+            <domain>win2012r2_web02</domain>
+            <disabled>False</disabled>
+            <full_name>LocalSystem</full_name>
+            <password_changeable>False</password_changeable>
+            <password_expires>False</password_expires>
+            <password_required>False</password_required>
+            <status>OK</status>
+            <type>local</type>
+        </item>
+        <item>
+            <name>NT AUTHORITY\LocalService</name>
+            <caption>NT AUTHORITY\LocalService</caption>
+            <sid></sid>
+            <domain>win2012r2_web02</domain>
+            <disabled>False</disabled>
+            <full_name>LocalSystem</full_name>
+            <password_changeable>False</password_changeable>
+            <password_expires>False</password_expires>
+            <password_required>False</password_required>
+            <status>OK</status>
+            <type>local</type>
+        </item>
+        <item>
+            <name>NT AUTHORITY\NetworkService</name>
+            <caption>NT AUTHORITY\NetworkService</caption>
+            <sid></sid>
+            <domain>win2012r2_web02</domain>
+            <disabled>False</disabled>
+            <full_name>LocalSystem</full_name>
+            <password_changeable>False</password_changeable>
+            <password_expires>False</password_expires>
+            <password_required>False</password_required>
+            <status>OK</status>
+            <type>local</type>
+        </item>
+    </user>
+    <user_group>
+        <item>
+            <name>Administrators</name>
+            <description>Administrators have complete and unrestricted access to the computer/domain</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members>Administrator@win2012r2_web02,</members>
+        </item>
+        <item>
+            <name>Backup Operators</name>
+            <description>Backup Operators can override security restrictions for the sole purpose of backing up or restoring files</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Certificate Service DCOM Access</name>
+            <description>Members of this group are allowed to connect to Certification Authorities in the enterprise</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Cryptographic Operators</name>
+            <description>Members are authorized to perform cryptographic operations.</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Distributed COM Users</name>
+            <description>Members are allowed to launch, activate and use Distributed COM objects on this machine.</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Event Log Readers</name>
+            <description>Members of this group can read event logs from local machine</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Guests</name>
+            <description>Guests have the same access as members of the Users group by default, except for the Guest account which is further restricted</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members>Guest@win2012r2_web02,</members>
+        </item>
+        <item>
+            <name>IIS_IUSRS</name>
+            <description>Built-in group used by Internet Information Services.</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Network Configuration Operators</name>
+            <description>Members in this group can have some administrative privileges to manage configuration of networking features</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Performance Log Users</name>
+            <description>Members of this group may schedule logging of performance counters, enable trace providers, and collect event traces both locally and via remote access to this computer</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Performance Monitor Users</name>
+            <description>Members of this group can access performance counter data locally and remotely</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Power Users</name>
+            <description>Power Users are included for backwards compatibility and possess limited administrative powers</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Print Operators</name>
+            <description>Members can administer domain printers</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Remote Desktop Users</name>
+            <description>Members in this group are granted the right to logon remotely</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Replicator</name>
+            <description>Supports file replication in a domain</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members></members>
+        </item>
+        <item>
+            <name>Users</name>
+            <description>Users are prevented from making accidental or intentional system-wide changes and can run most applications</description>
+            <sid>{D9C1AAD0-1E71-11CF-B1F3-02608C9E7553}</sid>
+            <members>INTERACTIVE@NT AUTHORITY, Authenticated Users@NT AUTHORITY,</members>
+        </item>
+    </user_group>
+    <software>
+        <item>
+            <name>SQL Server</name>
+            <version>03.50</version>
+            <location>C:\Windows\system32\SQLSRV32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>SQL Server</name>
+            <version>03.50</version>
+            <location>C:\Windows\system32\SQLSRV32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft ODBC for Oracle</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\msorcl32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Access Driver (*.mdb)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Access-Treiber (*.mdb)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Driver do Microsoft Access (*.mdb)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft dBase Driver (*.dbf)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft dBase-Treiber (*.dbf)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Driver do Microsoft dBase (*.dbf)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Excel Driver (*.xls)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Excel-Treiber (*.xls)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Driver do Microsoft Excel(*.xls)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Paradox Driver (*.db )</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Paradox-Treiber (*.db )</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Driver do Microsoft Paradox (*.db )</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Text Driver (*.txt; *.csv)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Text-Treiber (*.txt; *.csv)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Driver da Microsoft para arquivos texto (*.txt; *.csv)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\odbcjt32.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Visual FoxPro Driver</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\vfpodbc.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft FoxPro VFP Driver (*.dbf)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\vfpodbc.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft dBase VFP Driver (*.dbf)</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\vfpodbc.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Microsoft Visual FoxPro-Treiber</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\vfpodbc.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>Driver para o Microsoft Visual FoxPro</name>
+            <version>02.50</version>
+            <location>C:\Windows\system32\vfpodbc.dll</location>
+            <type>odbc driver</type>
+        </item>
+        <item>
+            <name>MDAC</name>
+            <version>6.1.7601.17514</version>
+            <install_date>2015-12-01</install_date>
+            <publisher>Microsoft Corporation</publisher>
+            <url>http://msdn2.microsoft.com/en-us/data/default.aspx</url>
+        </item>
+        <item>
+            <name>DirectX 11</name>
+            <version>6.01.7601</version>
+            <install_date>2015-12-01</install_date>
+            <publisher>Microsoft Corporation</publisher>
+        </item>
+        <item>
+            <name>Internet Explorer</name>
+            <version>8.0.7601.17514</version>
+            <install_date>2015-12-01</install_date>
+            <publisher>Microsoft Corporation</publisher>
+            <url>http://windows.microsoft.com/en-us/internet-explorer/internet-explorer-help</url>
+        </item>
+        <!-- start of normal software -->
+        <item>
+            <name>Sublime Text 2.0.2</name>
+            <version></version>
+            <location>C:\Program Files\Sublime Text 2\</location>
+            <install_date>20151201</install_date>
+            <publisher></publisher>
+            <install_source></install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by></installed_by>
+            <installed_on></installed_on>
+        </item>
+        <item>
+            <name>Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729.6161</name>
+            <version>9.0.30729.6161</version>
+            <location></location>
+            <install_date>20151201</install_date>
+            <publisher>Microsoft Corporation</publisher>
+            <install_source>c:\148cd9983b5ff0fdca70e30024\</install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by>win2012r2_web02\administrator</installed_by>
+            <installed_on>2015-1-12 5:42:38</installed_on>
+        </item>
+        <item>
+            <name>VMware Tools</name>
+            <version>9.9.4.3193940</version>
+            <location>C:\Program Files\VMware\VMware Tools\</location>
+            <install_date>20151201</install_date>
+            <publisher>VMware, Inc.</publisher>
+            <install_source>C:\Users\ADMINI~1\AppData\Local\Temp\{731F7506-2A30-4DF1-B9F2-65F7B7AF7A7F}~setup\</install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by>win2012r2_web02\administrator</installed_by>
+            <installed_on>2015-1-12 5:43:32</installed_on>
+        </item>
+        <!-- end of normal -->
+        <!-- start of 64 #2 -->
+        <item>
+            <name>Microsoft Visual C++ 2008 Redistributable - x86 9.0.30729.4148</name>
+            <version>9.0.30729.4148</version>
+            <location></location>
+            <install_date>20151201</install_date>
+            <publisher>Microsoft Corporation</publisher>
+            <install_source>c:\36d992a7af2b858ac26ddd355626a3\</install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by>win2012r2_web02\administrator</installed_by>
+            <installed_on>2015-1-12 5:42:33</installed_on>
+        </item>
+        <!-- end of 64 #2 -->
+    <!-- end of 64 #3 -->
+        <item>
+            <name>Sublime Text 2.0.2</name>
+            <version></version>
+            <location>C:\Program Files\Sublime Text 2\</location>
+            <install_date>20151201</install_date>
+            <publisher></publisher>
+            <install_source></install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by></installed_by>
+            <installed_on></installed_on>
+        </item>
+        <item>
+            <name>Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729.6161</name>
+            <version>9.0.30729.6161</version>
+            <location></location>
+            <install_date>20151201</install_date>
+            <publisher>Microsoft Corporation</publisher>
+            <install_source>c:\148cd9983b5ff0fdca70e30024\</install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by>win2012r2_web02\administrator</installed_by>
+            <installed_on>2015-1-12 5:42:38</installed_on>
+        </item>
+        <item>
+            <name>VMware Tools</name>
+            <version>9.9.4.3193940</version>
+            <location>C:\Program Files\VMware\VMware Tools\</location>
+            <install_date>20151201</install_date>
+            <publisher>VMware, Inc.</publisher>
+            <install_source>C:\Users\ADMINI~1\AppData\Local\Temp\{731F7506-2A30-4DF1-B9F2-65F7B7AF7A7F}~setup\</install_source>
+            <system_component></system_component>
+            <url></url>
+            <installed_by>win2012r2_web02\administrator</installed_by>
+            <installed_on>2015-1-12 5:43:32</installed_on>
+        </item>
+        <item>
+            <name>KB976902</name>
+            <install_date>11/21/2010</install_date>
+            <publisher>Microsoft</publisher>
+            <url>http://support.microsoft.com/?kbid=976902</url>
+            <type>update</type>
+            <installed_by>win2012r2_web02\administrator</installed_by>
+            <installed_on>11/21/2010</installed_on>
+        </item>
+    </software>
+    <service>
+        <item>
+            <description>Application Experience</description>
+            <name>AeLookupSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Application Layer Gateway Service</description>
+            <name>ALG</name>
+            <executable>C:\Windows\System32\alg.exe</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Application Host Helper Service</description>
+            <name>AppHostSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k apphost</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Application Identity</description>
+            <name>AppIDSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT Authority\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Application Information</description>
+            <name>Appinfo</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Application Management</description>
+            <name>AppMgmt</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Audio Endpoint Builder</description>
+            <name>AudioEndpointBuilder</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Audio</description>
+            <name>AudioSrv</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalServiceNetworkRestricted</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Base Filtering Engine</description>
+            <name>BFE</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceNoNetwork</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Background Intelligent Transfer Service</description>
+            <name>BITS</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Computer Browser</description>
+            <name>Browser</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Disabled</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Certificate Propagation</description>
+            <name>CertPropSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Microsoft .NET Framework NGEN v2.0.50727_X86</description>
+            <name>clr_optimization_v2.0.50727_32</name>
+            <executable>C:\Windows\Microsoft.NET\Framework\v2.0.50727\mscorsvw.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Microsoft .NET Framework NGEN v2.0.50727_X64</description>
+            <name>clr_optimization_v2.0.50727_64</name>
+            <executable>C:\Windows\Microsoft.NET\Framework64\v2.0.50727\mscorsvw.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>COM+ System Application</description>
+            <name>COMSysApp</name>
+            <executable>C:\Windows\system32\dllhost.exe /Processid:{02D4B3F1-FD88-11D1-960D-00805FC79235}</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Cryptographic Services</description>
+            <name>CryptSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k NetworkService</executable>
+            <user>NT Authority\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>DCOM Server Process Launcher</description>
+            <name>DcomLaunch</name>
+            <executable>C:\Windows\system32\svchost.exe -k DcomLaunch</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Disk Defragmenter</description>
+            <name>defragsvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k defragsvc</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>DHCP Client</description>
+            <name>Dhcp</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceNetworkRestricted</executable>
+            <user>NT Authority\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>DNS Client</description>
+            <name>Dnscache</name>
+            <executable>C:\Windows\system32\svchost.exe -k NetworkService</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Wired AutoConfig</description>
+            <name>dot3svc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Diagnostic Policy Service</description>
+            <name>DPS</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalServiceNoNetwork</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Extensible Authentication Protocol</description>
+            <name>EapHost</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Encrypting File System (EFS)</description>
+            <name>EFS</name>
+            <executable>C:\Windows\System32\lsass.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Event Log</description>
+            <name>eventlog</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalServiceNetworkRestricted</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>COM+ Event System</description>
+            <name>EventSystem</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Microsoft Fibre Channel Platform Registration Service</description>
+            <name>FCRegSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceNetworkRestricted</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Function Discovery Provider Host</description>
+            <name>fdPHost</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Function Discovery Resource Publication</description>
+            <name>FDResPub</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Font Cache Service</description>
+            <name>FontCache</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Group Policy Client</description>
+            <name>gpsvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Human Interface Device Access</description>
+            <name>hidserv</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Health Key and Certificate Management</description>
+            <name>hkmsvc</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>IIS Admin Service</description>
+            <name>IISADMIN</name>
+            <executable>C:\Windows\system32\inetsrv\inetinfo.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>IKE and AuthIP IPsec Keying Modules</description>
+            <name>IKEEXT</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>PnP-X IP Bus Enumerator</description>
+            <name>IPBusEnum</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Disabled</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>IP Helper</description>
+            <name>iphlpsvc</name>
+            <executable>C:\Windows\System32\svchost.exe -k NetSvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>CNG Key Isolation</description>
+            <name>KeyIso</name>
+            <executable>C:\Windows\system32\lsass.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>KtmRm for Distributed Transaction Coordinator</description>
+            <name>KtmRm</name>
+            <executable>C:\Windows\System32\svchost.exe -k NetworkServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Server</description>
+            <name>LanmanServer</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Workstation</description>
+            <name>LanmanWorkstation</name>
+            <executable>C:\Windows\System32\svchost.exe -k NetworkService</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Link-Layer Topology Discovery Mapper</description>
+            <name>lltdsvc</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>TCP/IP NetBIOS Helper</description>
+            <name>lmhosts</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceNetworkRestricted</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Multimedia Class Scheduler</description>
+            <name>MMCSS</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Firewall</description>
+            <name>MpsSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceNoNetwork</executable>
+            <user>NT Authority\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Distributed Transaction Coordinator</description>
+            <name>MSDTC</name>
+            <executable>C:\Windows\System32\msdtc.exe</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Microsoft iSCSI Initiator Service</description>
+            <name>MSiSCSI</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Installer</description>
+            <name>msiserver</name>
+            <executable>C:\Windows\system32\msiexec.exe /V</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Network Access Protection Agent</description>
+            <name>napagent</name>
+            <executable>C:\Windows\System32\svchost.exe -k NetworkService</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Netlogon</description>
+            <name>Netlogon</name>
+            <executable>C:\Windows\system32\lsass.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Network Connections</description>
+            <name>Netman</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Network List Service</description>
+            <name>netprofm</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Network Location Awareness</description>
+            <name>NlaSvc</name>
+            <executable>C:\Windows\System32\svchost.exe -k NetworkService</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Network Store Interface Service</description>
+            <name>nsi</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT Authority\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Performance Counter DLL Host</description>
+            <name>PerfHost</name>
+            <executable>C:\Windows\SysWow64\perfhost.exe</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description><![CDATA[Performance Logs & Alerts]]></description>
+            <name>pla</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalServiceNoNetwork</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Plug and Play</description>
+            <name>PlugPlay</name>
+            <executable>C:\Windows\system32\svchost.exe -k DcomLaunch</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>IPsec Policy Agent</description>
+            <name>PolicyAgent</name>
+            <executable>C:\Windows\system32\svchost.exe -k NetworkServiceNetworkRestricted</executable>
+            <user>NT Authority\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Power</description>
+            <name>Power</name>
+            <executable>C:\Windows\system32\svchost.exe -k DcomLaunch</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>User Profile Service</description>
+            <name>ProfSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Protected Storage</description>
+            <name>ProtectedStorage</name>
+            <executable>C:\Windows\system32\lsass.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Remote Access Auto Connection Manager</description>
+            <name>RasAuto</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Remote Access Connection Manager</description>
+            <name>RasMan</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Routing and Remote Access</description>
+            <name>RemoteAccess</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Disabled</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Remote Registry</description>
+            <name>RemoteRegistry</name>
+            <executable>C:\Windows\system32\svchost.exe -k regsvc</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>RPC Endpoint Mapper</description>
+            <name>RpcEptMapper</name>
+            <executable>C:\Windows\system32\svchost.exe -k RPCSS</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Remote Procedure Call (RPC) Locator</description>
+            <name>RpcLocator</name>
+            <executable>C:\Windows\system32\locator.exe</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Remote Procedure Call (RPC)</description>
+            <name>RpcSs</name>
+            <executable>C:\Windows\system32\svchost.exe -k rpcss</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Resultant Set of Policy Provider</description>
+            <name>RSoPProv</name>
+            <executable>C:\Windows\system32\RSoPProv.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Special Administration Console Helper</description>
+            <name>sacsvr</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Security Accounts Manager</description>
+            <name>SamSs</name>
+            <executable>C:\Windows\system32\lsass.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Smart Card</description>
+            <name>SCardSvr</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Task Scheduler</description>
+            <name>Schedule</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Smart Card Removal Policy</description>
+            <name>SCPolicySvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Secondary Logon</description>
+            <name>seclogon</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>System Event Notification Service</description>
+            <name>SENS</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Remote Desktop Configuration</description>
+            <name>SessionEnv</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Internet Connection Sharing (ICS)</description>
+            <name>SharedAccess</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Disabled</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Shell Hardware Detection</description>
+            <name>ShellHWDetection</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>SNMP Trap</description>
+            <name>SNMPTRAP</name>
+            <executable>C:\Windows\System32\snmptrap.exe</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Print Spooler</description>
+            <name>Spooler</name>
+            <executable>C:\Windows\System32\spoolsv.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Software Protection</description>
+            <name>sppsvc</name>
+            <executable>C:\Windows\system32\sppsvc.exe</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>SPP Notification Service</description>
+            <name>sppuinotify</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>SSDP Discovery</description>
+            <name>SSDPSRV</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Disabled</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Secure Socket Tunneling Protocol Service</description>
+            <name>SstpSvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT Authority\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Microsoft Software Shadow Copy Provider</description>
+            <name>swprv</name>
+            <executable>C:\Windows\System32\svchost.exe -k swprv</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Telephony</description>
+            <name>TapiSrv</name>
+            <executable>C:\Windows\System32\svchost.exe -k tapisrv</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>TPM Base Services</description>
+            <name>TBS</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Remote Desktop Services</description>
+            <name>TermService</name>
+            <executable>C:\Windows\System32\svchost.exe -k termsvcs</executable>
+            <user>NT Authority\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Thread Ordering Server</description>
+            <name>THREADORDER</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>TP AutoConnect Service</description>
+            <name>TPAutoConnSvc</name>
+            <executable><![CDATA["C:\Program Files\VMware\VMware Tools\TPAutoConnSvc.exe"]]></executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>TP VC Gateway Service</description>
+            <name>TPVCGateway</name>
+            <executable><![CDATA["C:\Program Files\VMware\VMware Tools\TPVCGateway.exe"]]></executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Distributed Link Tracking Client</description>
+            <name>TrkWks</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Modules Installer</description>
+            <name>TrustedInstaller</name>
+            <executable>C:\Windows\servicing\TrustedInstaller.exe</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Interactive Services Detection</description>
+            <name>UI0Detect</name>
+            <executable>C:\Windows\system32\UI0Detect.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Remote Desktop Services UserMode Port Redirector</description>
+            <name>UmRdpService</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>UPnP Device Host</description>
+            <name>upnphost</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalServiceAndNoImpersonation</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Disabled</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Desktop Window Manager Session Manager</description>
+            <name>UxSms</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>localSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Credential Manager</description>
+            <name>VaultSvc</name>
+            <executable>C:\Windows\system32\lsass.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Virtual Disk</description>
+            <name>vds</name>
+            <executable>C:\Windows\System32\vds.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>VMware Tools</description>
+            <name>VMTools</name>
+            <executable><![CDATA["C:\Program Files\VMware\VMware Tools\vmtoolsd.exe"]]></executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>VMware Snapshot Provider</description>
+            <name>vmvss</name>
+            <executable>C:\Windows\system32\dllhost.exe /Processid:{4401C487-FC8A-4D18-BD2B-20507ECA746A}</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>VMware Physical Disk Helper Service</description>
+            <name>VMware Physical Disk Helper Service</name>
+            <executable><![CDATA["C:\Program Files\VMware\VMware Tools\vmacthlp.exe"]]></executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Volume Shadow Copy</description>
+            <name>VSS</name>
+            <executable>C:\Windows\system32\vssvc.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Time</description>
+            <name>W32Time</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>World Wide Web Publishing Service</description>
+            <name>W3SVC</name>
+            <executable>C:\Windows\system32\svchost.exe -k iissvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Process Activation Service</description>
+            <name>WAS</name>
+            <executable>C:\Windows\system32\svchost.exe -k iissvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Color System</description>
+            <name>WcsPlugInService</name>
+            <executable>C:\Windows\system32\svchost.exe -k wcssvc</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Diagnostic Service Host</description>
+            <name>WdiServiceHost</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Diagnostic System Host</description>
+            <name>WdiSystemHost</name>
+            <executable>C:\Windows\System32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Event Collector</description>
+            <name>Wecsvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k NetworkService</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Problem Reports and Solutions Control Panel Support</description>
+            <name>wercplsupport</name>
+            <executable>C:\Windows\System32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Error Reporting Service</description>
+            <name>WerSvc</name>
+            <executable>C:\Windows\System32\svchost.exe -k WerSvcGroup</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>WinHTTP Web Proxy Auto-Discovery Service</description>
+            <name>WinHttpAutoProxySvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalService</executable>
+            <user>NT AUTHORITY\LocalService</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Management Instrumentation</description>
+            <name>Winmgmt</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>localSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Remote Management (WS-Management)</description>
+            <name>WinRM</name>
+            <executable>C:\Windows\System32\svchost.exe -k NetworkService</executable>
+            <user>NT AUTHORITY\NetworkService</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Licensing Monitoring Service</description>
+            <name>WLMS</name>
+            <executable>C:\Windows\system32\wlms\wlms.exe</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>WMI Performance Adapter</description>
+            <name>wmiApSrv</name>
+            <executable>C:\Windows\system32\wbem\WmiApSrv.exe</executable>
+            <user>localSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Portable Device Enumerator Service</description>
+            <name>WPDBusEnum</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+        <item>
+            <description>Windows Update</description>
+            <name>wuauserv</name>
+            <executable>C:\Windows\system32\svchost.exe -k netsvcs</executable>
+            <user>LocalSystem</user>
+            <start_mode>Auto</start_mode>
+            <state>Running</state>
+        </item>
+        <item>
+            <description>Windows Driver Foundation - User-mode Driver Framework</description>
+            <name>wudfsvc</name>
+            <executable>C:\Windows\system32\svchost.exe -k LocalSystemNetworkRestricted</executable>
+            <user>LocalSystem</user>
+            <start_mode>Manual</start_mode>
+            <state>Stopped</state>
+        </item>
+    </service>
+    <server>
+        <item>
+            <type>web</type>
+            <name>IIS</name>
+            <version>7.5</version>
+            <status>running</status>
+        </item>
+    </server>
+    <server_item>
+        <item>
+            <type>website</type>
+            <name>1</name>
+            <parent_name>IIS</parent_name>
+            <id_internal>W3SVC/1</id_internal>
+            <description>Default Web Site</description>
+            <status>Running</status>
+            <log_status>enabled</log_status>
+            <log_format>W3C Extended Log File Format</log_format>
+            <log_path>C:\inetpub\logs\LogFiles</log_path>
+            <log_rotation>daily</log_rotation>
+            <ip></ip>
+            <port>80</port>
+            <hostname></hostname>
+            <path>C:\inetpub\wwwroot</path>
+            <size>0</size>
+            <instance>DefaultAppPool</instance>
+        </item>
+        <item>
+            <type>website</type>
+            <name>2</name>
+            <parent_name>IIS</parent_name>
+            <id_internal>W3SVC/2</id_internal>
+            <description>test site 2</description>
+            <status>Running</status>
+            <log_status>enabled</log_status>
+            <log_format>W3C Extended Log File Format</log_format>
+            <log_path>C:\inetpub\logs\LogFiles</log_path>
+            <log_rotation>daily</log_rotation>
+            <ip>192.168.1.127</ip>
+            <port>8080</port>
+            <hostname>test.win2012r2_web02</hostname>
+            <path>C:\inetpub\test_site_2</path>
+            <size>5</size>
+            <instance>DefaultAppPool</instance>
+        </item>
+    </server_item>
+    <software_key>
+        <item>
+            <name>Microsoft Windows Server 2008 R2 Standard</name>
+            <string>4GGC4-9947F-FWFP3-78P6F-J9HDR</string>
+            <rel>7601</rel>
+            <edition>6.1.7601</edition>
+        </item>
+    </software_key>
+    <netstat>
+    <![CDATA[  TCP    0.0.0.0:80             0.0.0.0:0              LISTENING  Can not obtain ownership information
+  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING   RpcSs  [svchost.exe]
+  TCP    0.0.0.0:445            0.0.0.0:0              LISTENING  Can not obtain ownership information
+  TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING  Can not obtain ownership information
+  TCP    0.0.0.0:47001          0.0.0.0:0              LISTENING  Can not obtain ownership information
+  TCP    0.0.0.0:49152          0.0.0.0:0              LISTENING  [wininit.exe]
+  TCP    0.0.0.0:49153          0.0.0.0:0              LISTENING  [lsass.exe]
+  TCP    0.0.0.0:49154          0.0.0.0:0              LISTENING   eventlog  [svchost.exe]
+  TCP    0.0.0.0:49155          0.0.0.0:0              LISTENING   Schedule  [svchost.exe]
+  TCP    0.0.0.0:49156          0.0.0.0:0              LISTENING  [services.exe]
+  TCP    0.0.0.0:49157          0.0.0.0:0              LISTENING   PolicyAgent  [svchost.exe]
+  TCP    192.168.1.137:139      0.0.0.0:0              LISTENING  Can not obtain ownership information
+  TCP    [::]:80                [::]:0                 LISTENING  Can not obtain ownership information
+  TCP    [::]:135               [::]:0                 LISTENING   RpcSs  [svchost.exe]
+  TCP    [::]:445               [::]:0                 LISTENING  Can not obtain ownership information
+  TCP    [::]:8080              [::]:0                 LISTENING  Can not obtain ownership information
+  TCP    [::]:47001             [::]:0                 LISTENING  Can not obtain ownership information
+  TCP    [::]:49152             [::]:0                 LISTENING  [wininit.exe]
+  TCP    [::]:49153             [::]:0                 LISTENING  [lsass.exe]
+  TCP    [::]:49154             [::]:0                 LISTENING   eventlog  [svchost.exe]
+  TCP    [::]:49155             [::]:0                 LISTENING   Schedule  [svchost.exe]
+  TCP    [::]:49156             [::]:0                 LISTENING  [services.exe]
+  TCP    [::]:49157             [::]:0                 LISTENING   PolicyAgent  [svchost.exe]
+  UDP    0.0.0.0:500            *:*                       IKEEXT  [svchost.exe]
+  UDP    0.0.0.0:4500           *:*                       IKEEXT  [svchost.exe]
+  UDP    0.0.0.0:5355           *:*                       Dnscache  [svchost.exe]
+  UDP    127.0.0.1:61209        *:*                      [iexplore.exe]
+  UDP    192.168.1.137:137      *:*                      Can not obtain ownership information
+  UDP    192.168.1.137:138      *:*                      Can not obtain ownership information
+  UDP    [::]:500               *:*                       IKEEXT  [svchost.exe]
+  UDP    [::]:4500              *:*                       IKEEXT  [svchost.exe]
+  UDP    [::]:5355              *:*                       Dnscache  [svchost.exe]
+]]>
+    </netstat>
+    <route>
+        <item>
+            <destination>0.0.0.0</destination>
+            <mask>0.0.0.0</mask>
+            <metric>10</metric>
+            <next_hop>192.168.1.1</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Indirect</type>
+        </item>
+        <item>
+            <destination>127.0.0.0</destination>
+            <mask>255.0.0.0</mask>
+            <metric>306</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>127.0.0.1</destination>
+            <mask>255.255.255.255</mask>
+            <metric>306</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>127.255.255.255</destination>
+            <mask>255.255.255.255</mask>
+            <metric>306</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>192.168.1.0</destination>
+            <mask>255.255.255.0</mask>
+            <metric>266</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>192.168.1.137</destination>
+            <mask>255.255.255.255</mask>
+            <metric>266</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>192.168.1.255</destination>
+            <mask>255.255.255.255</mask>
+            <metric>266</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>224.0.0.0</destination>
+            <mask>240.0.0.0</mask>
+            <metric>306</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>224.0.0.0</destination>
+            <mask>240.0.0.0</mask>
+            <metric>266</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>255.255.255.255</destination>
+            <mask>255.255.255.255</mask>
+            <metric>306</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+        <item>
+            <destination>255.255.255.255</destination>
+            <mask>255.255.255.255</mask>
+            <metric>266</metric>
+            <next_hop>0.0.0.0</next_hop>
+            <protocol>Netmgmt</protocol>
+            <type>Direct</type>
+        </item>
+    </route>
+</system>

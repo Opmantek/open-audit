@@ -123,6 +123,67 @@ class Devices extends BaseController
         }
     }
 
+    public function delete()
+    {
+        $db = db_connect();
+        $sql = "DELETE FROM devices WHERE domain = 'open-audit.local'";
+        $db->query($sql);
+        \Config\Services::session()->setFlashdata('success', 'Example devices deleted.');
+        return redirect()->route('devicesCollection');
+    }
+
+    public function deleteForm()
+    {
+        $this->resp->data = $this->devicesModel->listUser(['devices.domain' => 'open-audit.local']);
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('devicesDeleteForm', ['data' => $this->resp->data])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    public function exampleForm()
+    {
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('devicesExampleForm', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    public function example()
+    {
+        $db = db_connect();
+        $count = 0;
+        $files = glob('/usr/local/open-audit/other/example_devices/*.{xml,json}', GLOB_BRACE);
+        foreach ($files as $file) {
+            $device = file_get_contents($file);
+            if ($device === false) {
+                continue;
+            }
+            $device = audit_convert($device);
+            if (!$device) {
+                log_message('error', 'Could not convert example result file ' . $file . '.');
+                \Config\Services::session()->setFlashdata('fail', 'Could not convert example result file ' . $file . '.');
+                return redirect()->to(site_url() . '/devices?devices.domain=open-audit.local');
+            }
+            include "include_process_device.php";
+            $count += 1;
+        }
+        \Config\Services::session()->setFlashdata('success', $count . ' example devices imported.');
+        return redirect()->to(site_url() . '/devices?devices.domain=open-audit.local');
+    }
+
     public function importNMISForm()
     {
         $locationsModel = model('App\Models\LocationsModel');

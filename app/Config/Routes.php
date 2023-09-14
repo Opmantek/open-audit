@@ -70,11 +70,11 @@ $routes->delete('database/(:any)/(:any)', 'Database::delete/$1/$2', ['filter' =>
 $routes->delete('database/(:any)', 'Database::delete/$1', ['filter' => \App\Filters\Session::class, 'as' => 'databaseDelete']);
 
 $routes->post('devices', 'Devices::create', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreate']);
-$routes->get('devices/create/example', 'devices::createExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExampleForm']);
-$routes->get('devices/delete/example', 'devices::deleteExampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExampleForm']);
-$routes->post('devices/create/example', 'devices::createExample', ['filter' => \App\Filters\Session::class, 'as' => 'devicesCreateExample']);
-$routes->post('devices/delete/example', 'devices::deleteExample', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExample']);
-$routes->delete('devices/delete/example', 'devices::deleteExample', ['filter' => \App\Filters\Session::class]);
+$routes->get('devices/example', 'Devices::exampleForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesExampleForm']);
+$routes->post('devices/example', 'Devices::example', ['filter' => \App\Filters\Session::class, 'as' => 'devicesExample']);
+$routes->get('devices/delete', 'Devices::deleteForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteForm']);
+$routes->post('devices/delete', 'Devices::delete', ['filter' => \App\Filters\Session::class, 'as' => 'devicesDeleteExample']);
+
 $routes->get('devices/importnmis', 'Devices::importNMISForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMISForm']);
 $routes->post('devices/importnmis', 'Devices::importNMIS', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMIS']);
 

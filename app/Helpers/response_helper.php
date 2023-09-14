@@ -1400,7 +1400,7 @@ if (!function_exists('response_valid_actions')) {
      */
     function response_valid_actions()
     {
-        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'dictionary', 'download', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'test', 'update');
+        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'test', 'update');
     }
 }
 
@@ -1464,11 +1464,13 @@ if (!function_exists('response_valid_permissions')) {
         $permission['collection'] = 'r';
         $permission['compare'] = 'r';
         $permission['create'] = 'c';
-        $permission['createForm'] = 'c';
         $permission['createform'] = 'c';
         $permission['defaults'] = 'r';
         $permission['delete'] = 'd';
+        $permission['deleteform'] = 'd';
         $permission['dictionary'] = 'r';
+        $permission['example'] = 'c';
+        $permission['exampleform'] = 'c';
         $permission['download'] = 'r';
         $permission['execute'] = 'u';
         $permission['executeform'] = 'u';
