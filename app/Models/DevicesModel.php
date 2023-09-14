@@ -39,6 +39,7 @@ class DevicesModel extends BaseModel
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $properties[] = "locations.name as `locations.name`";
         $properties[] = "locations.id as `locations.id`";
+        $properties[] = "IF(devices.type IN ('unknown', 'Unclassified'), 2, 1) AS mycount";
         $this->builder->select($properties, false);
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
@@ -53,14 +54,14 @@ class DevicesModel extends BaseModel
                 $joined_tables[] = $joined_table[0];
             }
         }
-        log_message('debug', json_encode($joined_tables));
+        // log_message('debug', json_encode($joined_tables));
         $joined_tables = array_unique($joined_tables);
         if (!empty($joined_tables)) {
             foreach ($joined_tables as $joined_table) {
                 $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
             }
         }
-        $this->builder->orderBy($resp->meta->sort);
+        $this->builder->orderBy('mycount', $resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
         # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
