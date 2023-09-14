@@ -447,6 +447,8 @@ if (!function_exists('response_create')) {
             if (!empty($received_data) and $response->meta->collection === 'widgets' and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
+            // TODO - Why does enterprise return this as a string?
+            $response->meta->limit = intval($response->meta->limit);
             #config('Openaudit')->product = 'professional';
         } else {
             config('Openaudit')->license = 'none';
