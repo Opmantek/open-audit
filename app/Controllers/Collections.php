@@ -83,15 +83,15 @@ class Collections extends BaseController
         $this->resp->meta->filtered = count($this->resp->data);
 
         if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total) {
-            $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested.';
+            $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
         }
 
         if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === config('OpenAudit')->page_size) {
-            $_SESSION['success'] = 'Result limited to ' . config('OpenAudit')->page_size . ' items as per configuration. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
+            $_SESSION['success'] = 'Result limited to ' . config('OpenAudit')->page_size . ' items as per configuration. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
         }
 
         if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['success']) and $this->resp->meta->collection === 'devices') {
-            $_SESSION['warning'] = 'Result restricted to ' . $this->resp->meta->limit . ' items as per license.';
+            $_SESSION['warning'] = 'Result restricted to ' . $this->resp->meta->limit . ' items as per license. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
         }
 
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();

@@ -632,6 +632,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
+        <?php unset($_SESSION['error']); ?>
         <?php } ?>
         <?php if (!empty($_SESSION['warning'])) { ?>
         <div class="container-fluid">
@@ -640,6 +641,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
+        <?php unset($_SESSION['warning']); ?>
         <?php } ?>
         <?php if (!empty($_SESSION['success'])) { ?>
         <div class="container-fluid">
@@ -648,6 +650,7 @@ if (!empty(config('Openaudit')->modules)) {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
+        <?php unset($_SESSION['success']); ?>
         <?php } ?>
 
         <!-- Toasts -->
