@@ -39,7 +39,7 @@ class DevicesModel extends BaseModel
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $properties[] = "locations.name as `locations.name`";
         $properties[] = "locations.id as `locations.id`";
-        $properties[] = "IF(devices.type IN ('unknown', 'Unclassified'), 2, 1) AS mycount";
+        $properties[] = "IF(devices.type IN ('unknown', 'unclassified'), 2, 1) AS mycount";
         $this->builder->select($properties, false);
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
