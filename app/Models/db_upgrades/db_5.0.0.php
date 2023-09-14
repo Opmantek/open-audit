@@ -642,6 +642,60 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_domain','','text','y','system','2000-01-01 00:00:00','Email domain to use.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_from','','text','y','system','2000-01-01 00:00:00','Email address used for as the sender.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_password','','text','y','system','2000-01-01 00:00:00','Email passowrd for the email account.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_server','','text','y','system','2000-01-01 00:00:00','Email server to use to send email.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_server_port','25','text','y','system','2000-01-01 00:00:00','Email server port to use to send email.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_use_tls','y','bool','y','system','2000-01-01 00:00:00','Email use TLS or not.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_user','','text','y','system','2000-01-01 00:00:00','Email account name used to send emails.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$email_config_items = array('mail_domain' => 'example.com', 'mail_from' => 'yourmailname@example.com', 'mail_password' => 'your_password', 'mail_server' => 'smtp.example.com', 'mail_server_port' => 25, 'mail_use_tls' => 'true', 'mail_user' => 'your_user_account@example.com');
+$files = array('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
+foreach ($files as $file) {
+    if ($file_exists($file)) {
+        $contents = file_get_contents($file);
+        if (!empty($contents)) {
+            $json = json_decode($contents);
+            foreach ($email_config_items as $key => $value) {
+                if (!empty($json->email->{$key}) and $json->email->{$key} !== $value) {
+                    $sql = "UPDATE configuration SET value = ? WHERE name = ?";
+                    $query = $db->query($sql, [$json->email->{$item}, $key]);
+                    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+                    log_message('info', (string)$db->getLastQuery());
+                }
+            }
+        }
+    }
+}
+
 $sql = "UPDATE `configuration` SET value = 'devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.uuid,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification' WHERE name = 'devices_default_retrieve_columns'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
