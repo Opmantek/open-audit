@@ -1078,13 +1078,14 @@ class ComponentsModel extends BaseModel
                     $virtual_machine->uuid = '';
                 } else {
                     $sql = "SELECT id, icon FROM devices WHERE LOWER(`uuid`) = LOWER(?) AND status = 'production'";
-                    $query = $this->db->query($sql, [$virtual_machine->uuid]);
-                    if ($query->getNumRows() > 0) {
-                        $row = $query->row();
-                        $virtual_machine->guest_device_id = $row->id;
-                        $virtual_machine->icon = $row->icon;
-                        $sql = 'UPDATE devices SET devices.vm_server_name = ?, devices.vm_device_id = ? WHERE devices.id = ?';
-                        $query = $this->db->query($sql, ["{$device->hostname}", "{$device->id}", $virtual_machine->guest_device_id]);
+                    $query = $this->db->query($sql, [$virtual_machine->uuid])->getResult();
+                    if (!empty($query)) {
+                        foreach ($query as $row) {
+                            $virtual_machine->guest_device_id = $row->id;
+                            $virtual_machine->icon = $row->icon;
+                            $sql = 'UPDATE devices SET devices.vm_server_name = ?, devices.vm_device_id = ? WHERE devices.id = ?';
+                            $this->db->query($sql, ["{$device->hostname}", "{$device->id}", $virtual_machine->guest_device_id]);
+                        }
                     }
                 }
             }

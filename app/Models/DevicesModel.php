@@ -770,14 +770,16 @@ class DevicesModel extends BaseModel
             $query = $this->db->query($sql, [$id]);
             $row = $query->getRow();
             $data->icon = $row->icon;
+            $myName = (!empty($data->name)) ? $data->name : '';
+            $myName = (empty($myName) and !empty($data->hostname)) ? $data->hostname : '';
             $sql = 'UPDATE vm SET guest_device_id = ?, icon = ?, name = ? WHERE id = ?';
-            $query = $this->db->query($sql, [$id, "{$data->icon}", "{$data->name}", intval($temp_vm_id)]);
+            $query = $this->db->query($sql, [$id, $data->icon, $myName, intval($temp_vm_id)]);
             $sql = 'UPDATE devices SET vm_device_id = ?, vm_server_name = ? WHERE id = ?';
             $query = $this->db->query($sql, [$data->vm_device_id, $data->vm_server_name, $data->id]);
         }
         // Ensure we have an OrgID
         if (empty($data->org_id)) {
-            $sql = 'SELECT org_id FROM system WHERE id = ?';
+            $sql = 'SELECT org_id FROM devices WHERE id = ?';
             $query = $this->db->query($sql, [$id]);
             $row = $query->getRow();
             $data->org_id = $row->org_id;

@@ -1325,7 +1325,7 @@ if (! function_exists('deviceMatch')) {
                     $message = new \StdClass();
                     $message->message = 'HIT on IP Address (network table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', ID: ' . $details->id . ' OrgID: ' . $details->org_id . ', Config: ' . config('Openaudit')->discovery_use_org_id_match . ', Potential OrgID: ' . $row->org_id;
+                    $message->command_output = 'IP: ' . $details->ip . ', ID: ' . $details->id . ' OrgID: ' . @$details->org_id . ', Config: ' . config('Openaudit')->discovery_use_org_id_match . ', Potential OrgID: ' . $row->org_id;
                     $log_message[] = $message;
                     log_array($log, $log_message);
                     return intval($details->id);
