@@ -81,6 +81,19 @@ class Collections extends BaseController
         $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
+
+        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total) {
+            $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested.';
+        }
+
+        if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === config('OpenAudit')->page_size) {
+            $_SESSION['success'] = 'Result limited to ' . config('OpenAudit')->page_size . ' items as per configuration. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
+        }
+
+        if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['success']) and $this->resp->meta->collection === 'devices') {
+            $_SESSION['warning'] = 'Result restricted to ' . $this->resp->meta->limit . ' items as per license.';
+        }
+
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if (empty($this->resp->meta->properties[0]) or $this->resp->meta->properties[0] === $this->resp->meta->collection . '.*') {
             $this->resp->meta->data_order = $dictionary->attributes->collection;
