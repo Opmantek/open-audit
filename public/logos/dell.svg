@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="400"
+   height="126.95"
+   id="DELL logotype "
+   sodipodi:docname="dell.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1595"
+     inkscape:window-height="1122"
+     id="namedview10"
+     showgrid="false"
+     inkscape:zoom="1.975"
+     inkscape:cx="356.78208"
+     inkscape:cy="89.176965"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="DELL logotype " />
+  <path
+     inkscape:connector-curvature="0"
+     id="D"
+     style="fill:#0075ba;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     d="m -1e-6,6.93619 V 121.62062 H 54.86538 c 24.12723,-1e-5 55.02603,-15.37269 55.02603,-57.40916 0,-45.96817 -35.91608,-57.27527 -68.73568,-57.27527 z M 40.53986,42.36171 c 0,0 7.06904,-1e-5 7.06904,0 11.08238,0 20.52472,9.55871 20.67158,22.41206 -8e-5,0.008 1e-4,0.0183 0,0.0268 -0.14686,12.85336 -8.57169,22.38529 -19.65406,22.38529 0,0 -8.08656,0 -8.08656,0 z" />
+  <path
+     inkscape:connector-curvature="0"
+     id="L1"
+     style="fill:#0075ba;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     d="m 239.82129,6.93619 v 114.69076 h 75.94138 V 85.36323 H 280.00041 V 6.93619 Z" />
+  <path
+     inkscape:connector-curvature="0"
+     id="O"
+     style="fill:#0075ba;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     d="m 203.73715,24.34685 -56.099,35.3689 -9.77219,-6.57319 0.022,0.003 57.38065,-36.54411 0.10746,0.0748 -26.23832,-16.67822 -99.93933,63.56061 100.44866,63.39355 99.24231,-63.23715 -28.73841,-17.54686 -57.21042,36.04471 -9.61341,-6.54766 55.60468,-35.32567 z" />
+  <path
+     inkscape:connector-curvature="0"
+     id="L2"
+     style="fill:#0075ba;fill-opacity:1;fill-rule:evenodd"
+     d="m 322.98691,6.92587 v 114.56764 h 75.94138 V 85.36323 H 363.16603 V 6.92587 Z" />
+</svg>

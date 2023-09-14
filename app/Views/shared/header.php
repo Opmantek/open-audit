@@ -508,6 +508,7 @@ $categories = array_unique($categories);
                                         <?= menuItem('widgets', '', $user, 'widgetsDefaults', 'Widgets') ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
                             </ul>
 
                         <li class="nav-item dropdown">

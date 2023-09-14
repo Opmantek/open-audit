@@ -84,6 +84,8 @@ $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, '
 $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('prereq', 'Help::prereq', ['filter' => \App\Filters\Session::class, 'as' => 'prereq']);
+$routes->get('welcome', 'Help::welcome', ['filter' => \App\Filters\Session::class, 'as' => 'welcome']);
+$routes->get('getting_started', 'Help::gettingStarted', ['filter' => \App\Filters\Session::class, 'as' => 'getting_started']);
 $routes->get('discovery_issues/(:num)', 'Help::discoveryIssues/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveryIssues']);
 
 $routes->post('input/devices', 'Input::devices');
