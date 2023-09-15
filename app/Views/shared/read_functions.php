@@ -9,6 +9,9 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $collection_title = 'LDAP Servers';
     }
     $collection_title = __($collection_title);
+    if (!empty($name)) {
+        $collection_title = __($collection_title) . ' :: ' . $name;
+    }
     $return = '';
 
     if ($collection !== 'database' and strpos($user->permissions[$collection], 'c') !== false) {
