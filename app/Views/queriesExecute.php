@@ -2,11 +2,12 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
+include 'shared/read_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user, $meta->name) ?>
+                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $meta->name) ?>
                 </div>
                 <div class="card-body">
                     <?php if (!empty($data)) { ?>
