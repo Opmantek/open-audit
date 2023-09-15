@@ -66,4 +66,3 @@ window.onload = function () {
     });
 }
 </script>
-</script>
