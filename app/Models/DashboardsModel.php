@@ -58,16 +58,7 @@ class DashboardsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('dashboards', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
@@ -114,7 +105,10 @@ class DashboardsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $widgetsModel = new \App\Models\WidgetsModel();
+        $included['widgets'] = $widgetsModel->listUser();
+        return $included;
     }
 
 
