@@ -234,15 +234,16 @@ $categories = array_unique($categories);
                                 echo "
                             <li><a class=\"dropdown-item dropdown-toggle first-level-dropdown-toggle\" href=\"#\">" . $category . "</a>\n                            <ul class=\"dropdown-menu\">\n";
                                 foreach ($reports as $report) {
+                                    $link = $report->type . 'Execute';
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
                                             if (config('Openaudit')->license !== 'commercial') {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             } else {
-                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('queriesExecute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
+                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             }
                                         } else {
-                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('queriesExecute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
+                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                         }
                                     }
                                 }
@@ -566,7 +567,7 @@ if (!empty(config('Openaudit')->modules)) {
                                 <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
                                 <?php if (empty($meta->breadcrumbs)) { ?>
                                     <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
-                                    <?php if ($meta->action === 'read' and !empty($name)) { ?>
+                                    <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>
                                     <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
                                     <?php }
                                 } else {
