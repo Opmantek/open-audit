@@ -395,11 +395,7 @@ if (!function_exists('response_create')) {
         $enterprise = '/usr/local/opmojo/private/enterprise.pl';
         if (file_exists($enterprise)) {
             // TODO - fix this
-            if (!empty($response->meta->received_data) and $response->meta->collection === 'rules' and $response->meta->action === 'update') {
-                $received_data = $response->meta->received_data;
-                $response->meta->received_data = array();
-            }
-            if (!empty($response->meta->received_data) and $response->meta->collection === 'widgets' and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
@@ -441,10 +437,7 @@ if (!function_exists('response_create')) {
             $db->query($sql);
 
             // TODO - fix this
-            if (!empty($received_data) and $response->meta->collection === 'rules' and $response->meta->action === 'update') {
-                $response->meta->received_data = $received_data;
-            }
-            if (!empty($received_data) and $response->meta->collection === 'widgets' and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
             // TODO - Why does enterprise return this as a string?
