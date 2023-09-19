@@ -55,6 +55,9 @@ class SupportModel extends BaseModel
         if (!empty($config->maps_api_key)) {
             $config->maps_api_key = 'Removed from display, but has been set';
         }
+        if (!empty($config->mail_password)) {
+            $config->mail_password = 'Removed from display, but has been set';
+        }
         $data->config = $config;
 
         $data->os->name = 'unknown';
@@ -82,9 +85,6 @@ class SupportModel extends BaseModel
 
         $sql = 'SELECT COUNT(*) AS `count` FROM change_log';
         $data->stats->change_log = intval($this->db->query($sql)->getResult()[0]->count);
-
-
-
 
         $data->app->log_threshold = config('Config\\Logger')->threshold;
         $data->app->baseURL = config('Config\\App')->baseURL;
@@ -158,9 +158,24 @@ class SupportModel extends BaseModel
                 $temp = explode(' ', $line);
                 $data->use->{$temp[1]} = intval($temp[0]);
             }
+            unset($output);
+            // Get the oldest log file
+            $command_string = "ls " . APPPATH . "../writable/logs/*.log | sort | head -n1";
+            exec($command_string, $output, $return_var);
+            $logfile = str_replace('/usr/local/open-audit/app/../writable/logs/log-', '', $output[0]);
+            $logfile = str_replace('.log', '', $logfile);
+            $data->app->oldest_logfile = $logfile;
+            unset($output);
+            unset($logfile);
+
+            // Get the youngest log file
+            $command_string = "ls " . APPPATH . "../writable/logs/*.log | sort | tail -n1";
+            exec($command_string, $output, $return_var);
+            $logfile = str_replace('/usr/local/open-audit/app/../writable/logs/log-', '', $output[0]);
+            $logfile = str_replace('.log', '', $logfile);
+            $data->app->youngest_logfile = $logfile;
+            unset($logfile);
         }
-
-
 
         if (php_uname('s') === 'Windows NT') {
             $data->prereq->nmap = '';
@@ -219,7 +234,7 @@ class SupportModel extends BaseModel
             unset($command_string);
 
             // winexe version
-            $command_string = '/usr/local/open-audit/other/winexe-static --version 2>&1';
+            $command_string = '/usr/local/open-audit/other/winexe-static-2 --version 2>&1';
             exec($command_string, $output, $return_var);
             if (isset($output[0]) && strpos($output[0], 'winexe') === 0) {
                 $data->prereq->winexe = $output[0];
@@ -303,6 +318,15 @@ class SupportModel extends BaseModel
             unset($command_string);
             // custom images - should be drwxrwxrwx
             $command_string = 'ls -l /usr/local/open-audit/public | grep custom_images | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            $data->permissions->custom_images = 'Error - missing directory';
+            if (!empty($output[0])) {
+                $data->permissions->custom_images = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+            // logs - should be drwxrwxrwx
+            $command_string = 'ls -l /usr/local/open-audit/writable | grep logs | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             $data->permissions->custom_images = 'Error - missing directory';
             if (!empty($output[0])) {
