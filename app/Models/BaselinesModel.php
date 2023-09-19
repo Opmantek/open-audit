@@ -98,6 +98,13 @@ class BaselinesModel extends BaseModel
         $included = array();
         $sql = "SELECT id, name, timestamp, result FROM baselines_results WHERE baseline_id = ?";
         $result = $this->db->query($sql, [$id])->getResult();
+        $count = count($result);
+        for ($i=0; $i < $count; $i++) {
+            $json = json_decode($result[$i]->result);
+            unset($json->device_list);
+            unset($json->policy);
+            $result[$i]->result = json_encode($json);
+        }
         $included['baselines_results'] = format_data($result, 'baselines_results');
 
         $sql = "SELECT * FROM baselines_policies WHERE baseline_id = ?";

@@ -48,7 +48,15 @@ class BaselinesResultsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'baselines_results');
+        $result = $query->getResult();
+        $count = count($result);
+        for ($i=0; $i < $count; $i++) {
+            $json = json_decode($result[$i]->result);
+            unset($json->device_list);
+            unset($json->policy);
+            $result[$i]->result = json_encode($json);
+        }
+        return format_data($result, 'baselines_results');
     }
 
     /**
