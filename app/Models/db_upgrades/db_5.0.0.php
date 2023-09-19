@@ -299,6 +299,73 @@ if ($db->tableExists('warranty')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if ($db->tableExists('enterprise')) {
+    $sql = "DROP TABLE IF EXISTS `enterprise`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "CREATE TABLE `enterprise` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `request` text NOT NULL,
+  `response` text NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
+  `output` varchar(65500) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+if (!$db->fieldExists('email_address', 'tasks')) {
+    $sql = "ALTER TABLE `tasks` ADD `email_address` VARCHAR(100) NOT NULL DEFAULT '' AFTER `last_run`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('format', 'tasks')) {
+    $sql = "ALTER TABLE `tasks` ADD `format` VARCHAR(100) NOT NULL DEFAULT '' AFTER `email_address`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('group_id', 'tasks')) {
+    $sql = "ALTER TABLE `tasks` ADD `group_id` int(10) unsigned NOT NULL DEFAULT '0' AFTER `format`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->fieldExists('options', 'tasks')) {
+    $sql = "SELECT * FROM `tasks`";
+    $tasks = $db->query($sql)->getResult();
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "ALTER TABLE `tasks` DROP `options`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    if (!empty($tasks)) {
+        foreach ($tasks as $task) {
+            $options = @json_decode($task->options);
+            if (!empty($options)) {
+                $email_address = (!empty($options->email_address)) ? $options->email_address : '';
+                $format = (!empty($options->format)) ? $options->format : '';
+                $group_id = (!empty($options->group_id)) ? intval($options->group_id) : 0;
+                $sql = "UPDATE `tasks` SET `email_address` = ?, `format` = ?, `group_id` = ? WHERE id = ?";
+                $query = $db->query($sql, [$email_address, $format, $group_id, $task->id]);
+                $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+                log_message('info', (string)$db->getLastQuery());
+            }
+        }
+    }
+}
+
 $sql = "ALTER TABLE users CHANGE roles roles longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`roles`)) AFTER email";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

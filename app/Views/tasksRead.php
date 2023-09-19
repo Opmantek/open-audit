@@ -27,30 +27,53 @@ include 'shared/read_functions.php';
                             <?php } ?>
 
                             <?php if ($resource->type === 'queries' or $resource->type === 'reports' or $resource->type === 'summaries') { ?>
-                                <?= read_field('options.email_address', $resource->options->email_address, $dictionary->columns->{'options.email_address'}, $update, __('Email Address')) ?>
+                                <?= read_field('email_address', $resource->email_address, $dictionary->columns->{'email_address'}, $update, __('Email Address')) ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="options.format" class="form-label"><?= __('Format') ?></label>
+                                        <label for="format" class="form-label"><?= __('Format') ?></label>
                                         <div class="input-group">
-                                            <select class="form-select" id="options.format" name="options.format" multiple disabled>
-                                                <option value="csv" <?php if ($resource->options->format === 'csv') { echo "selected"; } ?>>CSV</option>
-                                                <option value="json" <?php if ($resource->options->format === 'json') { echo "selected"; } ?>>JSON</option>
-                                                <option value="html" <?php if ($resource->options->format === 'html') { echo "selected"; } ?>>HTML</option>
-                                                <option value="xml" <?php if ($resource->options->format === 'xml') { echo "selected"; } ?>>XML</option>
+                                            <select class="form-select" id="format" name="format" disabled>
+                                                <option value="csv" <?php if ($resource->format === 'csv') { echo "selected"; } ?>>CSV</option>
+                                                <option value="json" <?php if ($resource->format === 'json') { echo "selected"; } ?>>JSON</option>
+                                                <option value="html" <?php if ($resource->format === 'html') { echo "selected"; } ?>>HTML</option>
+                                                <option value="xml" <?php if ($resource->format === 'xml') { echo "selected"; } ?>>XML</option>
                                             </select>
                                             <?php if ($update) { ?>
                                             <div class="pull-right" style="padding-left:4px;">
-                                                <div data-attribute="options.format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                <div data-attribute="options.format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                <div data-attribute="options.format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                <div data-attribute="format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                                <div data-attribute="format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                                <div data-attribute="format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="minute[]" data-dictionary="<?= $dictionary->columns->minute ?>"><span><br /></span></div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="format[]" data-dictionary="<?= $dictionary->columns->format ?>"><span><br /></span></div>
                                     </div>
                                 </div>
                             <?php } ?>
 
+
+                            <?php if ($resource->type === 'baselines') { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <label for="group_id" class="form-label"><?= __('Group') ?></label>
+                                        <div class="input-group">
+                                            <select class="form-select" id="group_id" name="group_id" disabled>
+                                                <?php foreach ($included['groups'] as $group) { ?>
+                                                <option value="<?= intval($group->id) ?>" <?php if (intval($resource->group_id) === intval($group->id)) { echo "selected"; } ?>><?= $group->attributes->name ?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <?php if ($update) { ?>
+                                            <div class="pull-right" style="padding-left:4px;">
+                                                <div data-attribute="group_id" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                                <div data-attribute="group_id" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                                <div data-attribute="group_id" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="group_id[]" data-dictionary="<?= $dictionary->columns->group_id ?>"><span><br /></span></div>
+                                    </div>
+                                </div>
+                            <?php } ?>
 
                             <?php if (strpos($resource->minute, "*/") === false) { ?>
                             <div class="row" style="padding-top:16px;">

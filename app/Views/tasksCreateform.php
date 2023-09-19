@@ -47,7 +47,7 @@ include 'shared/create_functions.php';
                                             <div class="offset-2 col-8" style="position:relative;">
                                                 <label for="data[attributes][uuid]" class="form-label"><?= __('Collector') ?> <span style="color: #d9534f;">*</span></label>
                                                 <select class="form-select" id="data[attributes][uuid]" name="data[attributes][uuid]">
-                                                <option value="<?= $self->config_item('uuid') ?>" selected><?= __('Local') ?></option>
+                                                <option value="<?= config('Openaudit')->uuid ?>" selected><?= __('Local') ?></option>
                                                 <?php foreach ($included['collectors'] as $item) { ?>
                                                 <option value="<?= $item->attributes->uuid ?>"><?= $item->attributes->name ?></option>
                                                 <?php } ?>
@@ -86,7 +86,7 @@ include 'shared/create_functions.php';
                                 <div class="row" style="padding-top:16px;" id="div_minute">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][minute][]" class="form-label"><?= __('Minute') ?> <span style="color: #dc3545;">*</span></label><br />
-                                        <select class="form-select" name="data[attributes][minute][]" id="data[attributes][minute][]">
+                                        <select class="form-select" multiple name="data[attributes][minute][]" id="data[attributes][minute][]">
                                             <option value="*">*</option>
                                             <option value="0" selected>0</option>
                                             <?php for ($i=1; $i <= 59; $i++) { ?>
@@ -102,7 +102,7 @@ include 'shared/create_functions.php';
                                 <div class="row" style="padding-top:16px;" id="div_hour">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][hour][]" class="form-label"><?= __('Hour') ?> <span style="color: #dc3545;">*</span></label><br />
-                                        <select class="form-select" name="data[attributes][hour][]" id="data[attributes][hour][]">
+                                        <select class="form-select" multiple name="data[attributes][hour][]" id="data[attributes][hour][]">
                                             <option value="*">*</option>
                                             <option value="0" selected>0</option>
                                             <?php for ($i=1; $i <= 23; $i++) { ?>
@@ -118,7 +118,7 @@ include 'shared/create_functions.php';
                                 <div class="row" style="padding-top:16px;" id="div_day_of_month">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][day_of_month][]" class="form-label"><?= __('Day of Month') ?> <span style="color: #dc3545;">*</span></label><br />
-                                        <select class="form-select" name="data[attributes][day_of_month][]" id="data[attributes][day_of_month][]">
+                                        <select class="form-select" multiple name="data[attributes][day_of_month][]" id="data[attributes][day_of_month][]">
                                             <option value="*">*</option>
                                             <option value="0" selected>0</option>
                                             <?php for ($i=1; $i <= 31; $i++) { ?>
@@ -133,7 +133,7 @@ include 'shared/create_functions.php';
                                 <div class="row" style="padding-top:16px;" id="div_month">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][month][]" class="form-label"><?= __('Month') ?> <span style="color: #dc3545;">*</span></label><br />
-                                        <select class="form-select" name="data[attributes][month][]" id="data[attributes][month][]">
+                                        <select class="form-select" multiple name="data[attributes][month][]" id="data[attributes][month][]">
                                             <option value="*" selected>*</option>
                                             <option value="1"><?= __('January') ?></option>
                                             <option value="2"><?= __('February') ?></option>
@@ -156,7 +156,7 @@ include 'shared/create_functions.php';
                                 <div class="row" style="padding-top:16px;" id="div_day_of_week">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][day_of_week][]" class="form-label"><?= __('Day Of Week') ?> <span style="color: #dc3545;">*</span></label><br />
-                                        <select class="form-select" name="data[attributes][day_of_week][]" id="data[attributes][day_of_week][]">
+                                        <select class="form-select" multiple name="data[attributes][day_of_week][]" id="data[attributes][day_of_week][]">
                                             <option value="*" selected>*</option>
                                             <option value="0"><?= __('Sunday') ?></option>
                                             <option value="1"><?= __('Monday') ?></option>
@@ -273,15 +273,14 @@ window.onload = function () {
         });
 
 
-        var email_format = '<?= str_replace("\n", "\\\n", create_text_field('data[attributes][options][email_address]', __('Email Address'), $dictionary->attributes->create)) ?>\
+        var email_format = '<?= str_replace("\n", "\\\n", create_text_field('data[attributes][email_address]', __('Email Address'), $dictionary->attributes->create)) ?>\
                                 <div class=\"row\" style=\"padding-top:16px;\">\
                                     <div class=\"offset-2 col-8\" style=\"position:relative;\">\
-                                        <label for=\"data[attributes][options][format]\" class=\"form-label\"><?= __('Format') ?> <span style=\"color: #dc3545;\">*</span></label><br />\
-                                        <select class=\"form-select\" name=\"data[attributes][options][format]\" id=\"data[attributes][options][format]\">\
+                                        <label for=\"data[attributes][format]\" class=\"form-label\"><?= __('Format') ?> <span style=\"color: #dc3545;\">*</span></label><br />\
+                                        <select class=\"form-select\" name=\"data[attributes][format]\" id=\"data[attributes][format]\">\
                                             <option value="csv" selected >Excel / CSV</option>\
                                             <option value="json" >JSON</option>\
                                             <option value="html" >HTML</option>\
-                                            <option value="xml" >XML</option>\
                                         </select>\
                                     </div>\
                                 </div>';
@@ -295,10 +294,10 @@ window.onload = function () {
                                             <?php foreach ($included['baselines'] as $item) { ?><option value="<?= $item->id ?>"><?= $item->attributes->name ?></option><?php } ?>\
                                         </select>\
                                     </div>\
-                                </div>\
+                                </div><br />\
                                                    <div class="offset-2 col-8" style="position:relative;">\
-                                        <label for="data[attributes][options][group_id]" class="form-label"><?= __('Group') ?> <span style="color: #dc3545;">*</span></label><br />\
-                                        <select class="form-select" name="data[attributes][options][group_id]" id="data[attributes][options][group_id]">\
+                                        <label for="data[attributes][group_id]" class="form-label"><?= __('Group') ?> <span style="color: #dc3545;">*</span></label><br />\
+                                        <select class="form-select" name="data[attributes][group_id]" id="data[attributes][group_id]">\
                                             <option value=""> </option>\
                                             <?php foreach ($included['groups'] as $item) { ?><option value="<?= $item->id ?>"><?= $item->attributes->name ?></option><?php } ?>\
                                         </select>\

@@ -111,6 +111,9 @@ $routes->post('util/google', 'Util::google');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
+$routes->cli('tasks/execute', 'Cli::executeTasks', ['as' => 'executeTasks']);
+$routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 'executeDiscovery']);
+$routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' => 'executeIntegration']);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character

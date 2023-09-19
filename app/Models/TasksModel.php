@@ -86,44 +86,7 @@ class TasksModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        if (!empty($data->options) and is_string($data->options)) {
-            $data->options = str_replace('\"', '"', $data->options);
-            $data->options = my_json_decode($data->options);
-            $data->options = json_encode($data->options);
-        } else if (!empty($data->options)) {
-            $data->options = json_encode($data->options);
-        } else {
-            $data->options = new \stdClass();
-            $data->options = json_encode($data->options);
-        }
-        if (!empty($data->minute) && is_array($data->minute)) {
-            $data->minute = implode(',', $data->minute);
-        }
-        if (!empty($data->hour) && is_array($data->hour)) {
-            $data->hour = implode(',', $data->hour);
-        }
-        if (!empty($data->day_of_month) && is_array($data->day_of_month)) {
-            $data->day_of_month = implode(',', $data->day_of_month);
-        }
-        if (!empty($data->month) && is_array($data->month)) {
-            $data->month = implode(',', $data->month);
-        }
-        if (!empty($data->day_of_week) && is_array($data->day_of_week)) {
-            $data->day_of_week = implode(',', $data->day_of_week);
-        }
-        if (empty($data->uuid)) {
-            $data->uuid = config('Openaudit')->uuid;
-        }
-        $data = $this->createFieldData('tasks', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
@@ -158,6 +121,11 @@ class TasksModel extends BaseModel
         $namespace = "\\App\\Models\\" . $type . "Model";
         $typeModel = new $namespace;
         $included[strtolower($type)] = $typeModel->listUser();
+
+        if ($type === 'Baselines') {
+            $groupsModel = new \App\Models\GroupsModel();
+            $included['groups'] = $groupsModel->listUser();
+        }
         return $included;
     }
 
@@ -403,7 +371,9 @@ class TasksModel extends BaseModel
         $dictionary->columns->expire_minutes = 'Unused.';
         $dictionary->columns->first_run = "The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to '2017-06-01 09:59:00'. This value should be zero padded (ie, 09, not 9). This value defaults to '2001-01-01 00:00:00' which means by default, a scheduled task will run at next scheduled execution time.";
         $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
-        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->email_address = 'The email address of the reciever';
+        $dictionary->columns->format = 'The format used for the output to be emailed.';
+        $dictionary->columns->group_id = 'The Group used to run the Baseline. Links to <code>groups.id</code>.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

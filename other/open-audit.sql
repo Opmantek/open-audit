@@ -1530,6 +1530,33 @@ LOCK TABLES `edit_log` WRITE;
 /*!40000 ALTER TABLE `edit_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- Table structure for table `enterprise`
+--
+
+DROP TABLE IF EXISTS `enterprise`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `enterprise` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `request` text NOT NULL,
+  `response` text NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
+  `output` varchar(65500) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `edit_log`
+--
+
+LOCK TABLES `enterprise` WRITE;
+/*!40000 ALTER TABLE `enterprise` DISABLE KEYS */;
+/*!40000 ALTER TABLE `enterprise` ENABLE KEYS */;
+UNLOCK TABLES;
+
 --
 -- Table structure for table `field`
 --
@@ -3603,9 +3630,11 @@ CREATE TABLE `tasks` (
   `expire_minutes` int(10) unsigned NOT NULL DEFAULT '0',
   `first_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `email_address` varchar(100) NOT NULL DEFAULT '',
+  `format` varchar(100) NOT NULL DEFAULT '',
+  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `options` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

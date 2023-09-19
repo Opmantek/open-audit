@@ -10,6 +10,8 @@ use CodeIgniter\Controller;
 
 use \FilesystemIterator;
 
+use \stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -73,5 +75,63 @@ class Cli extends Controller
             log_message('info', $logMessage);
             $count++;
         }
+    }
+
+    public function executeTasks()
+    {
+        $this->config = new \Config\OpenAudit();
+        echo "Binary is: " . config('Openaudit')->enterprise_binary . "\n";
+        if (empty(config('Openaudit')->enterprise_binary)) {
+            return;
+        }
+        $response = new stdClass();
+        $response->meta = new stdClass();
+        $response->meta->collection = 'tasks';
+        $response->meta->action = 'execute';
+        $response->meta->uuid = config('Openaudit')->uuid;
+
+        echo json_encode($response) . "\n";
+
+        $db = db_connect() or die("Cannot establish a database connection.");
+        // Insert the entry
+        $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+        $db->query($sql, [json_encode($response)]);
+        $id = $db->insertID();
+        echo "ID: $id\n";
+        // Call the binary and wait for it's response
+        if (php_uname('s') === 'Windows NT') {
+            $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " $id";
+            @exec($command, $output);
+            pclose(popen($command, 'r'));
+        } else {
+            $command = config('Openaudit')->enterprise_binary . " $id";
+            @exec($command, $output);
+        }
+        if (!empty($output)) {
+            log_message('error', 'Output: ' . json_encode($output));
+        }
+        // Delete the DB entry
+        $sql = "DELETE FROM enterprise WHERE id = $id";
+        $db->query($sql);
+    }
+
+    public function executeDiscovery($id)
+    {
+        $id = intval($id);
+        helper('utility');
+        helper('network');
+        $this->discoveriesModel = model('DiscoveriesModel');
+        $this->discoveriesModel->queue($id);
+        $this->queueModel = model('QueueModel');
+        $this->queueModel->start();
+    }
+
+    public function executeIntegration($id)
+    {
+        $id = intval($id);
+        $this->IntegrationsModel = model('IntegrationsModel');
+        $this->integrationsModel->queue(intval($id));
+        $this->queueModel = model('App\Models\QueueModel');
+        $this->queueModel->start();
     }
 }
