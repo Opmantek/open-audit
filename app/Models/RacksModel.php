@@ -57,19 +57,17 @@ class RacksModel extends BaseModel
         $count = count($racks);
         for ($i=0; $i < $count; $i++) {
             $height = $racks[$i]->ru_height;
-            log_message('error', "Rack: " . $racks[$i]->id . ", height: " . $racks[$i]->ru_height);
+            # log_message('error', "Rack: " . $racks[$i]->id . ", height: " . $racks[$i]->ru_height);
             $sql = "SELECT * FROM rack_devices WHERE rack_id = ? ORDER BY position";
             $devices = $this->db->query($sql, [$racks[$i]->id])->getResult();
             $spaces = array();
             $space = 0;
             if (!empty($devices)) {
-                log_message('error', 'Staring devices loop');
                 for ($j=0; $j < $height; $j++) {
-                    log_message('error', 'Testing position ' . $j);
                     $hit = false;
                     foreach ($devices as $device) {
                         if (intval($device->position) === $j or (intval($device->position) < $j and (intval($device->position) + intval($device->height)) >= $j)) {
-                            log_message('error', 'TRUE - position is ' . $j . ' and device position is ' . $device->position . ' and device height is ' . $device->height);
+                            # log_message('error', 'TRUE - position is ' . $j . ' and device position is ' . $device->position . ' and device height is ' . $device->height);
                             $hit = true;
                             if ($space > 0) {
                                 $spaces[] = $space;
@@ -80,10 +78,8 @@ class RacksModel extends BaseModel
                     if (!$hit) {
                         $space += 1;
                     }
-                    log_message('error', 'Space is now ' . $space);
                 }
                 $spaces[] = $space;
-                log_message('error', json_encode($spaces));
             }
             if (!empty($spaces)) {
                 $racks[$i]->lcs = max($spaces);
@@ -101,16 +97,7 @@ class RacksModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('racks', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
