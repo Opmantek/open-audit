@@ -545,8 +545,13 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         </thead>
                                         <tbody>
                                             <?php foreach ($included['issues'] as $issue) { ?>
+                                                <?php
+                                                $link = url_to('devicesCollection');
+                                                if (!empty($issue->{'devices.id'})) {
+                                                    $link = url_to('devicesRead', $issue->{'devices.id'});
+                                                } ?>
                                                 <tr>
-                                                    <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $issue->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
                                                     <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
                                                     <td><span style="display:none;"><?= @$issue->padded_ip ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
                                                     <td><?= $issue->{'devices.name'} ?></td>
