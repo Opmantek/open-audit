@@ -418,21 +418,25 @@ if (!function_exists('response_create')) {
             $db->query($sql, [json_encode($response)]);
             $id = $db->insertID();
             // Call the binary and wait for it's response
+            unset($output);
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " $id";
+                if ($_SERVER['CI_ENVIRONMENT'] === 'development') {
+                    $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " --debug $id";
+                }
                 @exec($command, $output);
                 pclose(popen($command, 'r'));
-            } else if (php_uname('s') === 'Darwin') {
-                $command = config('Openaudit')->enterprise_binary . " $id";
-                @exec($command, $output);
             } else {
                 $command = config('Openaudit')->enterprise_binary . " $id";
+                if ($_SERVER['CI_ENVIRONMENT'] === 'development') {
+                    $command = config('Openaudit')->enterprise_binary . " --debug $id";
+                }
                 log_message('debug', $command);
                 @exec($command, $output);
             }
-            // if (!empty($output)) {
-            //     log_message('error', 'Output: ' . json_encode($output));
-            // }
+            if (!empty($output)) {
+                log_message('error', 'Output: ' . json_encode($output));
+            }
             $sql = "SELECT * FROM enterprise WHERE id = $id";
             $result = $db->query($sql)->getResult();
             // Convert the response
