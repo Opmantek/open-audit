@@ -56,16 +56,7 @@ class ClustersModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('clusters', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
