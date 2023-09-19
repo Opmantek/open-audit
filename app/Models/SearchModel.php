@@ -58,7 +58,7 @@ class SearchModel extends BaseModel
             $sql = "SELECT devices.id, devices.icon, devices.type, devices.name, devices.hostname, devices.domain, devices.ip, devices.os_family, devices.status, devices.dns_hostname, devices.dns_domain, devices.sysName, ip.ip AS `ip.ip` FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y' AND (ip.ip LIKE ? or ip.ip LIKE ?)) WHERE devices.org_id IN ({$instance->user->org_list}) AND ( devices.name LIKE ? OR devices.hostname LIKE ? OR  devices.dns_hostname LIKE ? OR  devices.sysName LIKE ? OR  devices.domain LIKE ? OR  devices.dns_domain LIKE ? OR devices.ip LIKE ? OR devices.ip LIKE ? OR ip.ip LIKE ? or ip.ip LIKE ?)";
             $value = '%' . $value . '%';
             $result = $this->db->query($sql, [$value, $padded_ip, $value, $value, $value, $value, $value, $value, $padded_ip, $value, $value, $padded_ip])->getResult();
-            log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+            # log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             $return = format_data($result, 'devices');
         } else {
             $instance->resp->meta->data_order = array('devices.id', 'devices.icon', 'devices.type', 'devices.name', 'table', 'column', 'value');

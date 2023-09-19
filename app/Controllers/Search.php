@@ -51,6 +51,9 @@ class Search extends BaseController
                 $this->resp->meta->data_order[] = $key;
             }
         }
+        // echo "<pre>\n";
+        // print_r($this->resp);
+        // exit;
         $this->resp->meta->collection = 'devices';
         return view('shared/header', [
             'config' => $this->config,
@@ -60,7 +63,7 @@ class Search extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('devicesCollection', ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)])
+            view('searchCreate', ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 }

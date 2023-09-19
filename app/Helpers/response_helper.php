@@ -393,7 +393,7 @@ if (!function_exists('response_create')) {
         # Enterprise
         // $enterprise = APPPATH . '/other/enterprise.exe';
         // $enterprise = '/usr/local/opmojo/private/enterprise.pl';
-        if (!empty(config('Openaudit')->enterprise_binary)) {
+        if (!empty(config('Openaudit')->enterprise_binary) and $instance->collections->{$response->meta->collection}->edition !== 'Community') {
             // TODO - fix this
             if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
@@ -434,6 +434,10 @@ if (!function_exists('response_create')) {
             $result = $db->query($sql)->getResult();
             // Convert the response
             $response = json_decode($result[0]->response);
+            if (!$response) {
+                log_message('error', 'Could not decode JSON response from enterprise.');
+                log_message('error', "\n" . $result[0]->response . "\n");
+            }
             $response->meta->permission_requested = json_decode(json_encode($response->meta->permission_requested), true);
             if (!empty($response->meta->license)) {
                 config('Openaudit')->license = $response->meta->license;
