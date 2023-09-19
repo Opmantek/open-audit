@@ -91,6 +91,14 @@ class OpenAudit extends BaseConfig
             }
         }
 
+        $this->enterprise_binary = '';
+        $binaries = array('/usr/local/opmojo/private/enterprise.pl', '/usr/local/open-audit/other/enterprise.bin', 'c:\\xampp\\open-audit\\enterprise.exe');
+        foreach ($binaries as $binary) {
+            if (file_exists($binary)) {
+                $this->enterprise_binary = $binary;
+            }
+        }
+
         $this->enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
 
         $this->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');

@@ -391,15 +391,23 @@ if (!function_exists('response_create')) {
         }
 
         # Enterprise
-        $enterprise = APPPATH . '/other/enterprise.exe';
-        $enterprise = '/usr/local/opmojo/private/enterprise.pl';
-        if (file_exists($enterprise)) {
+        // $enterprise = APPPATH . '/other/enterprise.exe';
+        // $enterprise = '/usr/local/opmojo/private/enterprise.pl';
+        if (!empty(config('Openaudit')->enterprise_binary)) {
             // TODO - fix this
             if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
-
+            if ($response->meta->collection === 'reports' and $response->meta->action === 'execute') {
+                $response->meta->orgs = response_get_org_list($instance->user, 'devices');
+            }
+            if ($response->meta->collection === 'tasks' and $response->meta->action === 'execute') {
+                $response->meta->orgs = response_get_org_list($instance->user, 'devices');
+            }
+            if ($response->meta->collection === 'baselines' and $response->meta->action === 'execute') {
+                $response->meta->orgs = response_get_org_list($instance->user, 'devices');
+            }
             // log_message('debug', "Calling external enterprise function.");
             $db = db_connect();
             // Insert the entry
@@ -408,17 +416,20 @@ if (!function_exists('response_create')) {
             $id = $db->insertID();
             // Call the binary and wait for it's response
             if (php_uname('s') === 'Windows NT') {
-                $command = "%comspec% /c start /b $enterprise $id";
+                $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " $id";
                 @exec($command, $output);
                 pclose(popen($command, 'r'));
             } else if (php_uname('s') === 'Darwin') {
-                $command = "$enterprise $id";
+                $command = config('Openaudit')->enterprise_binary . " $id";
                 @exec($command, $output);
             } else {
-                $command = "$enterprise $id";
+                $command = config('Openaudit')->enterprise_binary . " $id";
+                log_message('debug', $command);
                 @exec($command, $output);
             }
-            // log_message('error', 'Output: ' . json_encode($output));
+            // if (!empty($output)) {
+            //     log_message('error', 'Output: ' . json_encode($output));
+            // }
             $sql = "SELECT * FROM enterprise WHERE id = $id";
             $result = $db->query($sql)->getResult();
             // Convert the response
