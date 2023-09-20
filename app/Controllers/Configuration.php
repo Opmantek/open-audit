@@ -99,4 +99,37 @@ class Configuration extends BaseController
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
+
+
+    /**
+     * Provide the custom form for licenses
+     *
+     * @access public
+     * @return void
+     */
+    public function readServers()
+    {
+        $db = db_connect();
+        $sql = "SELECT * FROM configuration WHERE name = 'servers'";
+        $result = $db->query($sql)->getResult();
+        $this->resp->data = format_data($result, 'configuration');
+        $update = false;
+        if (strpos($this->user->permissions['configuration'], 'u') !== false and strpos($this->collections->collectors->actions->{config('Openaudit')->product}, 'u') !== false) {
+            $update = true;
+        }
+        $dictionary = $this->configurationModel->dictionary();
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'dictionary' => $dictionary,
+            'included' => filter_response($this->resp->included),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user),
+            'name' => @$this->resp->data[0]->attributes->name]) .
+            view('configurationReadServers', ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
 }

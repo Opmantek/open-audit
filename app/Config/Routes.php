@@ -56,6 +56,7 @@ $routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter
 $routes->get('components/(:num)/(:any)/download', 'Components::download/$1/$2');
 
 $routes->get('configuration/license_string', 'Configuration::readLicense', ['filter' => \App\Filters\Session::class, 'as' => 'configurationReadLicense']);
+$routes->get('configuration/servers', 'Configuration::readServers', ['filter' => \App\Filters\Session::class, 'as' => 'configurationReadServers']);
 $routes->get('configuration/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'configurationRead']);
 
 $routes->get('database/update', 'Database::update/get', ['filter' => \App\Filters\Session::class, 'as' => 'databaseUpdate']);

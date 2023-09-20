@@ -33,9 +33,27 @@ if (!function_exists('response_create')) {
         $response->meta->action = strtolower($instance->method);
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
         $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
-
-        if ($response->meta->collection === 'configuration' and $response->meta->action === 'readlicense') {
+        if (is_cli()) {
+            $response->meta->request_method = 'CLI';
+        }
+        if ($response->meta->collection === 'configuration' and ($response->meta->action === 'readlicense' or $response->meta->action === 'readservers')) {
             $response->meta->action = 'read';
+        }
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $response->meta->remote_addr = $_SERVER['REMOTE_ADDR'];
+        }
+
+        $response->meta->remote_addr = '';
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $response->meta->remote_addr = $_SERVER['HTTP_CLIENT_IP'];
+        } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $response->meta->remote_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $response->meta->remote_addr = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        } else if (!empty($_SERVER['HTTP_FORWARDED_FOR'])) {
+            $response->meta->remote_addr = $_SERVER['HTTP_FORWARDED_FOR'];
+        } else if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $response->meta->remote_addr = $_SERVER['REMOTE_ADDR'];
         }
 
         // no dependencies - set in GET or POST or HEADERS or CLI
@@ -132,9 +150,6 @@ if (!function_exists('response_create')) {
         // NOTE see response_get_query_filter for why we do the below with the query string
         $response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         $response->meta->query_string = str_replace('&amp;', '&', $response->meta->query_string);
-        if (is_cli()) {
-            $response->meta->request_method = 'CLI';
-        }
         $response->meta->requestor = '';
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
@@ -411,6 +426,8 @@ if (!function_exists('response_create')) {
             if ($response->meta->collection === 'baselines' and $response->meta->action === 'execute') {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
             }
+            $response->meta->user_details = $instance->user;
+            $response->meta->config = config('Openaudit');
             // log_message('debug', "Calling external enterprise function.");
             $db = db_connect();
             // Insert the entry
@@ -468,7 +485,8 @@ if (!function_exists('response_create')) {
             }
             // TODO - Why does enterprise return this as a string?
             $response->meta->limit = intval($response->meta->limit);
-            #config('Openaudit')->product = 'professional';
+            unset($response->meta->user_details);
+            unset($response->meta->config);
         } else {
             config('Openaudit')->license = 'none';
             config('Openaudit')->product = 'community';

@@ -59,16 +59,7 @@ class CollectorsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('collectors', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
@@ -218,8 +209,8 @@ class CollectorsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'purpose', 'status', 'orgs.name');
-        $dictionary->attributes->create = array('name', 'org_id', 'status'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'type', 'ip', 'status', 'orgs.name');
+        $dictionary->attributes->create = array('name', 'org_id', 'type', 'host', 'community', 'username', 'password'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
