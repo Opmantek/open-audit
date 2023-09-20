@@ -28,6 +28,12 @@ class OpenAudit extends BaseConfig
             }
         }
 
+        $this->collector_connect_timeout = 10;
+        $this->collector_request_timeout = 240;
+        $this->collector_inactivity_timeout = 30;
+        $this->collector_insecure = 1;
+
+
         if (!empty($this->oae_product)) {
             $this->product = $this->oae_product;
         }
@@ -69,6 +75,21 @@ class OpenAudit extends BaseConfig
 
         // get the server OS
         $this->server_os = php_uname('s');
+
+        if ($this->server_os === 'Windows NT') {
+            $command = 'wmic os get name';
+            exec($command, $output);
+            if (!empty($output[1])) {
+                $os = explode('|', $output[1]);
+                $this->server_platform = $os[0];
+            }
+        } else {
+            $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $this->server_platform = $output[0];
+            }
+        }
 
         // get the total number of devices
         $this->device_count = 0;
