@@ -239,7 +239,17 @@ if (!function_exists('output')) {
             $data->data = $instance->resp->data;
             $data->included = $instance->resp->included;
             $instance->resp->data = $data;
+            $instance->response->setContentType('application/json');
+            $instance->response->noCache();
+            $instance->response->setHeader('Content-Disposition', 'attachment;filename="discovery_support.json"');
             echo json_encode($data);
+            return;
+        }
+        if ($instance->resp->meta->format === 'json_data' and $instance->resp->meta->collection === 'support') {
+            $instance->response->setContentType('application/json');
+            $instance->response->noCache();
+            $instance->response->setHeader('Content-Disposition', 'attachment;filename="support.json"');
+            echo json_encode($instance->resp->data);
             return;
         }
         echo json_encode($instance->resp->data);
