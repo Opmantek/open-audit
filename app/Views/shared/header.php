@@ -450,13 +450,19 @@ $categories = array_unique($categories);
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle " href="#" id="navbarAdmin" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Admin') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarAdmin">
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Collectors') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('collectors', 'r', $user, 'collectorsCollection', __('List') . ' ' . __('collectors')) ?>
+                                        <?= menuItem('collectors', 'c', $user, 'collectorsCreateForm', __('Make this install a Collector')) ?>
+                                        <?= menuItem('collectors', '', $user, 'collectorsHelp', __('Learn About') . ' ' . __('Collectors')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Configuration') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('List') . ' ' . __('Configuration')) ?>
                                         <?= menuItem('configuration', 'd', $user, 'configurationDefaults', 'Default Configuration') ?>
                                     </ul>
                                 </li>
-
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Database') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('database', 'r', $user, 'databaseCollection', __('List') . ' ' . __('Database Tables')) ?>
