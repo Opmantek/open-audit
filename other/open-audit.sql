@@ -755,6 +755,7 @@ CREATE TABLE `collectors` (
   `uuid` text NOT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `os` varchar(100) NOT NULL DEFAULT '',
+  `type` enum('collector','stand-alone','') NOT NULL DEFAULT 'collector',
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

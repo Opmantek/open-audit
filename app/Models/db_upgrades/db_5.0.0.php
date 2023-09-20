@@ -140,6 +140,13 @@ if ($db->fieldExists('clusters_id', 'cluster')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('type', 'collectors')) {
+    $sql = "ALTER TABLE `collectors` ADD `type` enum('collector','stand-alone','') NOT NULL DEFAULT 'collector' AFTER `os`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if ($db->fieldExists('system_id_a', 'connections')) {
     $sql = "ALTER TABLE `connections` RENAME COLUMN `system_id_a` TO `device_id_a`";
     $query = $db->query($sql);
