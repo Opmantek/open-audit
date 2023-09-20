@@ -62,6 +62,15 @@ class Discoveries extends BaseController
         $id = intval($id);
         $this->resp->data = $this->discoveriesModel->read($id);
         $this->resp->included = $this->discoveriesModel->includedRead($id);
+        $supportModel = new \App\Models\SupportModel();
+        $this->resp->included['support'] = $supportModel->collection($this->resp);
+        if (!empty(config('Openaudit')->maps_api_key)) {
+            config('Openaudit')->maps_api_key = 'Removed from display, but has been set';
+        }
+        if (!empty(config('Openaudit')->mail_password)) {
+            config('Openaudit')->mail_password = 'Removed from display, but has been set';
+        }
+        $this->resp->included['configuration'] = config('Openaudit');
         output($this);
         return;
     }
