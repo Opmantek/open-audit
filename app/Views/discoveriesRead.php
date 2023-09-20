@@ -32,6 +32,17 @@ if ($style === 'icontext') {
     $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" >' . __('Issues')  . '</a></li>';
 }
 
+
+
+if ($style === 'icontext') {
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-comments text-primary\"></span>" . __("Support") . "</a>";
+} else if ($style === 'icon') {
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span class=\"fa-solid fa-person-circle-exclamation text-primary\"></span></a>";
+} else {
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\">" . __("Support") . "</a>";
+}
+
+
 $options = array();
 $no = new stdClass();
 $no->id = 'n';
@@ -594,6 +605,8 @@ window.onload = function () {
         $(".nav-link").click(function(e) {
             window.scrollTo(0, 0);
         });
+
+        $(".page-title-right").append('<?= $support_button ?>');
     });
 }
 </script>

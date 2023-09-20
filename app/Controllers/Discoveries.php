@@ -50,4 +50,19 @@ class Discoveries extends BaseController
         \Config\Services::session()->setFlashdata('success', 'Discovery started.');
         return redirect()->route('discoveriesRead', [$id]);
     }
+
+    /**
+     * Download a discovery including all, for support
+     *
+     * @access public
+     * @return void
+     */
+    public function download($id)
+    {
+        $id = intval($id);
+        $this->resp->data = $this->discoveriesModel->read($id);
+        $this->resp->included = $this->discoveriesModel->includedRead($id);
+        output($this);
+        return;
+    }
 }

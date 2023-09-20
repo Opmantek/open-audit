@@ -232,9 +232,17 @@ if (!function_exists('output')) {
         unset($instance->resp->meta->user);
         if ($instance->resp->meta->format === 'json') {
             echo json_encode($instance->resp);
-        } else {
-            echo json_encode($instance->resp->data);
+            return;
         }
+        if ($instance->resp->meta->action === 'download') {
+            $data = new \stdClass();
+            $data->data = $instance->resp->data;
+            $data->included = $instance->resp->included;
+            $instance->resp->data = $data;
+            echo json_encode($data);
+            return;
+        }
+        echo json_encode($instance->resp->data);
     }
 
     function formatHighchartsLine($data)

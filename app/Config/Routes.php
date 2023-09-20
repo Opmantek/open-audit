@@ -78,6 +78,8 @@ $routes->post('devices/delete', 'Devices::delete', ['filter' => \App\Filters\Ses
 $routes->get('devices/importnmis', 'Devices::importNMISForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMISForm']);
 $routes->post('devices/importnmis', 'Devices::importNMIS', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMIS']);
 
+$routes->get('discoveries/(:any)/download', 'Discoveries::download/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesDownload']);
+
 $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
 
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
