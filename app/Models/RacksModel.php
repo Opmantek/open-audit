@@ -56,7 +56,10 @@ class RacksModel extends BaseModel
         $racks = $query->getResult();
         $count = count($racks);
         for ($i=0; $i < $count; $i++) {
-            $height = $racks[$i]->ru_height;
+            if (empty($racks[$i]->ru_height)) {
+                $racks[$i]->ru_height = 0;
+            }
+            $height = intval($racks[$i]->ru_height);
             # log_message('error', "Rack: " . $racks[$i]->id . ", height: " . $racks[$i]->ru_height);
             $sql = "SELECT * FROM rack_devices WHERE rack_id = ? ORDER BY position";
             $devices = $this->db->query($sql, [$racks[$i]->id])->getResult();
