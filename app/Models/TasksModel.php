@@ -49,7 +49,7 @@ class TasksModel extends BaseModel
         $result = $query->getResult();
         for ($i=0; $i < count($result); $i++) {
             // SubResources
-            if ($this->db->tableExists($result[$i]->type)) {
+            if (!empty($result[$i]->type) and $this->db->tableExists($result[$i]->type)) {
                 $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                 $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
                 if (!empty($data_result[0]->name)) {
@@ -65,7 +65,7 @@ class TasksModel extends BaseModel
             // Collectors
             $result[$i]->{'collectors.name'} = 'localhost';
             $result[$i]->{'collectors.id'} = 0;
-            if ($result[$i]->uuid !== config('Openaudit')->uuid) {
+            if (!empty($result[$i]->uuid) and $result[$i]->uuid !== config('Openaudit')->uuid) {
                 $sql = 'SELECT id, name FROM collectors WHERE uuid = ? LIMIT 1';
                 $data_result = $this->db->query($sql, [$result[$i]->uuid])->getResult();
                 if (!empty($data_result[0]->name)) {
