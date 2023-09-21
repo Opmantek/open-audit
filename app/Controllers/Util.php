@@ -68,16 +68,66 @@ class Util extends Controller
         return;
     }
 
+    public function amazon()
+    {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
+            exit;
+        }
+        $credentials = $this->request->getPost('credentials');
+        if (empty($credentials)) {
+            log_message('error', 'A request for the Amazon API was received, but no credentials we present in the POST.');
+            $response->errors = 'A request for the Amazon API was received, but no credentials we present in the POST.';
+            $response->meta->header = 400;
+            $response->setStatusCode($response->meta->header);
+            print_r(json_encode($response));
+            return;
+        }
+
+        $jsonKey = json_decode($credentials, true);
+
+        $projects = array();
+        $projects[0] = new stdClass();
+        $projects[0]->instances = array();
+        $projects[0]->networks = array();
+        $projects[0]->zones = array();
+        $instances = array();
+        $zones = array();
+        $regions = array();
+    }
+
+    public function microsoft()
+    {
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
+            exit;
+        }
+        $credentials = $this->request->getPost('credentials');
+        if (empty($credentials)) {
+            log_message('error', 'A request for the Microsoft API was received, but no credentials we present in the POST.');
+            $response->errors = 'A request for the Microsoft API was received, but no credentials we present in the POST.';
+            $response->meta->header = 400;
+            $response->setStatusCode($response->meta->header);
+            print_r(json_encode($response));
+            return;
+        }
+
+        $jsonKey = json_decode($credentials, true);
+
+        $projects = array();
+        $projects[0] = new stdClass();
+        $projects[0]->instances = array();
+        $projects[0]->networks = array();
+        $projects[0]->zones = array();
+        $instances = array();
+        $zones = array();
+        $regions = array();
+    }
+
     public function google()
     {
         if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' and $_SERVER['REMOTE_ADDR'] !== '127.0.1.1' and $_SERVER['REMOTE_ADDR'] !== '::1' and $_SERVER['REMOTE_ADDR'] !== 'localhost')) {
             exit;
         }
-
-        log_message('info', 'ACCESS:util:google::' . $this->user->username);
-
         $credentials = $this->request->getPost('credentials');
-
         if (empty($credentials)) {
             log_message('error', 'A request for the Google API was received, but no credentials we present in the POST.');
             $response->errors = 'A request for the Google API was received, but no credentials we present in the POST.';
@@ -87,7 +137,6 @@ class Util extends Controller
             return;
         }
 
-        // Define the Google Application Credentials array
         $jsonKey = json_decode($credentials, true);
 
         $projects = array();

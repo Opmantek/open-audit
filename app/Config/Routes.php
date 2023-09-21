@@ -111,6 +111,8 @@ $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::cla
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->post('util/google', 'Util::google');
+$routes->post('util/amazon', 'Util::amazon');
+$routes->post('util/microsoft', 'Util::micosoft');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
