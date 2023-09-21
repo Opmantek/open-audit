@@ -748,6 +748,9 @@ if (!function_exists('response_get_format')) {
             $summary = "Set format according to POST ($format).";
         }
         $valid_formats = response_valid_formats();
+        if (in_array($header, $valid_formats)) {
+            $format = $header;
+        }
         if (!in_array($format, $valid_formats)) {
             $summary = 'Set format to json, because unknown format: ' . $format;
             $format = 'json';
