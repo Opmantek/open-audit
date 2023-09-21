@@ -51,10 +51,12 @@ class BaselinesResultsModel extends BaseModel
         $result = $query->getResult();
         $count = count($result);
         for ($i=0; $i < $count; $i++) {
-            $json = json_decode($result[$i]->result);
-            unset($json->device_list);
-            unset($json->policy);
-            $result[$i]->result = json_encode($json);
+            if (!empty($result[$i]->result)) {
+                $json = json_decode($result[$i]->result);
+                unset($json->device_list);
+                unset($json->policy);
+                $result[$i]->result = json_encode($json);
+            }
         }
         return format_data($result, 'baselines_results');
     }
