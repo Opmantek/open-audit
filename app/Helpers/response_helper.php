@@ -428,6 +428,7 @@ if (!function_exists('response_create')) {
             }
             $response->meta->user_details = $instance->user;
             $response->meta->config = config('Openaudit');
+            unset($response->meta->config->modules);
             // log_message('debug', "Calling external enterprise function.");
             $db = db_connect();
             // Insert the entry
@@ -883,6 +884,16 @@ if (!function_exists('response_get_id')) {
                         $id = intval($result[0]->id);
                     } else {
                         log_message('warning', "No ID to Name match in orgs (Provided ID: $id).");
+                        $id = null;
+                    }
+                } else if ($collection === 'collectors') {
+                    $sql = "SELECT id FROM collectors WHERE uuid = ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to Name match in collectors (Provided UUID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', "No UUID match in collectors (Provided UUID: $id).");
                         $id = null;
                     }
                 } else if ($collection === 'baselines_policies') {
