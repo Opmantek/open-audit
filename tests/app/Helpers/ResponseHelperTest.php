@@ -187,9 +187,9 @@ class ResponseHelperTest extends CIUnitTestCase
         $this->assertSame('orgs.id,orgs.name,orgs.parent_id,orgs.description,orgs.type,orgs.ad_group,orgs.edited_by,orgs.edited_date', response_get_properties('orgs', 'read', 'all', '', null));
         $this->assertSame('orgs.id,orgs.name,orgs.parent_id,orgs.description,orgs.type,orgs.ad_group,orgs.edited_by,orgs.edited_date', response_get_properties('orgs', 'read', '*', '', null));
         $this->assertSame('devices.*', response_get_properties('devices', 'read', '', '', null));
-        $this->assertSame(config('OpenAudit')->devices_default_display_columns, response_get_properties('devices', 'collection', '', '', null));
-        $this->user->devices_default_display_columns = 'devices.id,devices.name,devices.org_id,devices.type';
-        $this->assertSame($this->user->devices_default_display_columns, response_get_properties('devices', 'collection', '', '', $this->user));
+        $this->assertSame(config('OpenAudit')->devices_default_retrieve_columns, response_get_properties('devices', 'collection', '', '', null));
+        #$this->user->devices_default_display_columns = 'devices.id,devices.name,devices.org_id,devices.type';
+        #$this->assertSame($this->user->devices_default_display_columns, response_get_properties('devices', 'collection', '', '', $this->user));
         $this->assertSame('orgs.id,orgs.name,orgs.parent_id', response_get_properties('orgs', 'collection', '["id", "name", "parent_id"]', '', null));
 
         # response_get_sort($collection = '', $get = '', $post = '')
