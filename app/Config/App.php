@@ -60,8 +60,7 @@ class App extends BaseConfig
      *
      * WARNING: If you set this to 'PATH_INFO', URIs will always be URL-decoded!
      */
-    # public $uriProtocol = 'REQUEST_URI';
-    public $uriProtocol = 'AUTO';
+    public string $uriProtocol = 'AUTO';
 
     /**
      * --------------------------------------------------------------------------
@@ -95,6 +94,8 @@ class App extends BaseConfig
      * If $negotiateLocale is true, this array lists the locales supported
      * by the application in descending order of priority. If no match is
      * found, the first locale will be used.
+     *
+     * IncomingRequest::setLocale() also uses this list.
      *
      * @var string[]
      */
