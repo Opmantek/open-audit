@@ -853,6 +853,27 @@ if (!function_exists('response_get_id')) {
                     } else {
                         log_message('debug', "ID to Name match in database (Provided ID: $id).");
                     }
+                } else if ($collection === 'baselines_policies') {
+                    // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
+                    $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to Name match in baselines_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', 'No ID to Name match in baselines_policies.');
+                        $id = null;
+                    }
+                } else if ($collection === 'collectors') {
+                    $sql = "SELECT id FROM collectors WHERE uuid = ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to Name match in collectors (Provided UUID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', "No UUID match in collectors (Provided UUID: $id).");
+                        $id = null;
+                    }
                 } else if ($collection === 'devices') {
                     // devices
                     $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
@@ -862,6 +883,17 @@ if (!function_exists('response_get_id')) {
                         $id = intval($result[0]->id);
                     } else {
                         log_message('warning', "No ID to Name match in devices (Provided ID: $id).");
+                        $id = null;
+                    }
+                } else if ($collection === 'orgs') {
+                    // orgs.id, not *.org_id
+                    $sql = "SELECT id FROM orgs WHERE name LIKE ? AND id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to Name match in orgs (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', "No ID to Name match in orgs (Provided ID: $id).");
                         $id = null;
                     }
                 } else if ($collection === 'users') {
@@ -876,38 +908,6 @@ if (!function_exists('response_get_id')) {
                         $id = intval($result[0]->id);
                     } else {
                         log_message('warning', "No ID to Name match in users (Provided ID: $id).");
-                        $id = null;
-                    }
-                } else if ($collection === 'orgs') {
-                    // orgs.id, not *.org_id
-                    $sql = "SELECT id FROM orgs WHERE name LIKE ? AND id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
-                    if (!empty($result)) {
-                        log_message('debug', "ID to Name match in orgs (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
-                        $id = intval($result[0]->id);
-                    } else {
-                        log_message('warning', "No ID to Name match in orgs (Provided ID: $id).");
-                        $id = null;
-                    }
-                } else if ($collection === 'collectors') {
-                    $sql = "SELECT id FROM collectors WHERE uuid = ? ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
-                    if (!empty($result)) {
-                        log_message('debug', "ID to Name match in collectors (Provided UUID: $id, Database ID: " . intval($result[0]->id) . ").");
-                        $id = intval($result[0]->id);
-                    } else {
-                        log_message('warning', "No UUID match in collectors (Provided UUID: $id).");
-                        $id = null;
-                    }
-                } else if ($collection === 'baselines_policies') {
-                    // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
-                    $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
-                    if (!empty($result)) {
-                        log_message('debug', "ID to Name match in baselines_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
-                        $id = intval($result[0]->id);
-                    } else {
-                        log_message('warning', 'No ID to Name match in baselines_policies.');
                         $id = null;
                     }
                 } else if (in_array($collection, $no_org_id)) {
