@@ -10,7 +10,8 @@
         "ext-json": "*",
         "phpseclib/phpseclib": "^3.0",
         "google/auth": "^1.28",
-        "aws/aws-sdk-php": "^3.281"
+        "aws/aws-sdk-php": "^3.281",
+        "kint-php/kint": "^5.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",
