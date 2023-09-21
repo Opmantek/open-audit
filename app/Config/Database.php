@@ -48,6 +48,7 @@ class Database extends Config
     /**
      * This database connection is used when
      * running PHPUnit database tests.
+     */
     public $tests = [
         'DSN'         => '',
         'hostname'    => '127.0.0.1',
