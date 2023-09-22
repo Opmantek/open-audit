@@ -490,11 +490,6 @@ $categories = array_unique($categories);
                             <!-- Community -->
                             <ul class="dropdown-menu" aria-labelledby="navbarHelp">
                                 <li><a class="dropdown-item" href="<?= url_to('about') ?>"><?= __('About') ?></a></li>
-                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Home"><?= __('Documentation') ?></a></li>
-                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Getting+Started"><?= __('Getting Started') ?></a></li>
-                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Open-AudIT+FAQ"><?= __('FAQ') ?></a></li>
-                                <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
-                                <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Defaults') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
@@ -513,6 +508,11 @@ $categories = array_unique($categories);
                                         <?= menuItem('widgets', '', $user, 'widgetsDefaults', 'Widgets') ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Home"><?= __('Documentation') ?></a></li>
+                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Open-AudIT+FAQ"><?= __('FAQ') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
+                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Getting+Started"><?= __('Getting Started') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
                             </ul>
 
