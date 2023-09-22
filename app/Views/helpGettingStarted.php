@@ -14,7 +14,7 @@ include 'shared/collection_functions.php';
                             <br />
                             <p><strong><i>Get familiar with the Open-AudIT platform and explore some of its features.</i></strong><br />
                                 <br />
-                                Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell what is on your network, how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.<br />
+                                Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell "What's On Your Network?", how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.<br />
                                 <br />
                                 Interactive dashboards provide instant visibility into the status of network inventory allowing IT teams to spot newly discovered devices and unusual device behaviour at a glance.<br />
                                 <br />
@@ -45,7 +45,7 @@ include 'shared/collection_functions.php';
                                 Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect. <a href="<?= url_to('credentialsHelp') ?>">More Information</a>.<br />
                                 <br />
                                 <h4><small>Create a Discovery</small></h4>
-                                Discoveries are at the very heart of what Open-AudIT does. How else would you know "What is on my network?" <a href="<?= url_to('discoveriesHelp') ?>">More Information</a>.<br />
+                                Discoveries are at the very heart of what Open-AudIT does. How else would you know "What's On Your Network?" <a href="<?= url_to('discoveriesHelp') ?>">More Information</a>.<br />
                                 <br />
                                 <h4><small>Run Your Discovery</small></h4>
                                 Easily run a discovery upon a network in a single click, without entering the details of that network each and every time. <a href="<?= url_to('discoveriesHelp') ?>">More Information</a>.<br />

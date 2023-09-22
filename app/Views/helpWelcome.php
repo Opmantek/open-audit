@@ -21,7 +21,7 @@ include 'shared/create_functions.php';
                             <div class="row">
                                 <div class="col-12 text-center align-self-center">
                                     <h2><?= __('Want to know more?') ?></h2>
-                                    <p><?= __('Follow any of the links below and discover how to use Open-AudIT to find out "What\'s on your network?"') ?><br /><br /></p>
+                                    <p><?= __('Follow any of the links below and discover how to use Open-AudIT to find out "What\'s On Your Network?"') ?><br /><br /></p>
                                 </div>
                             </div>
 
@@ -49,7 +49,7 @@ include 'shared/create_functions.php';
                                 <div class="col-3">
                                     <div class="card text-center">
                                         <div class="card-body">
-                                            <?= __('Run the default discovery and find out "what\'s on your network?".') ?>
+                                            <?= __('Run the default discovery and find out "What\'s On Your Network?".') ?>
                                         </div>
                                         <div class="card-footer">
                                             <a role="button" class="btn btn-primary btn-lg" href="<?= url_to('discoveriesCollection') ?>"><?= __('Discover Networks') ?></a>
