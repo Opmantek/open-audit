@@ -427,7 +427,7 @@ if (!function_exists('response_create')) {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
             }
             $response->meta->user_details = $instance->user;
-            $response->meta->config = config('Openaudit');
+            $response->meta->config = clone config('Openaudit');
             unset($response->meta->config->modules);
             // Insert the entry
             $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";

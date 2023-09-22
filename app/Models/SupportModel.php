@@ -42,7 +42,9 @@ class SupportModel extends BaseModel
         $config = clone config('Openaudit');
         unset($config->enterprise_collections);
         unset($config->professional_collections);
-        $config->modules = json_decode($config->modules);
+        if (!empty($config->modules) and is_string($config->modules)) {
+            $config->modules = json_decode($config->modules);
+        }
         $modules = array();
         if (!empty($config->modules)) {
             foreach ($config->modules as $key => $value) {
