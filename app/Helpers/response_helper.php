@@ -406,8 +406,8 @@ if (!function_exists('response_create')) {
         }
 
         # Enterprise
-        // if (!empty(config('Openaudit')->enterprise_binary) and $instance->collections->{$response->meta->collection}->edition !== 'Community') {
-        if (!empty(config('Openaudit')->enterprise_binary)) {
+        $db = db_connect();
+        if (!empty(config('Openaudit')->enterprise_binary) and $db->tableExists('enterprise')) {
             // TODO - fix this
             if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
@@ -429,8 +429,6 @@ if (!function_exists('response_create')) {
             $response->meta->user_details = $instance->user;
             $response->meta->config = config('Openaudit');
             unset($response->meta->config->modules);
-            // log_message('debug', "Calling external enterprise function.");
-            $db = db_connect();
             // Insert the entry
             $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
             $db->query($sql, [json_encode($response)]);
