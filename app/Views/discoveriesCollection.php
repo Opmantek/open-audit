@@ -20,7 +20,7 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body collapse" id="advanced">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="row">
                                 <div class="offset-3 col-6">
                                     <label for="queue_limit" class="form-label"><?= __('Queue Limit') ?></label>
@@ -49,24 +49,12 @@ include 'shared/collection_functions.php';
                                     </div>
                                 </div>
                                 <span><br /></span>
+
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="row">
 
-                                <div class="offset-3 col-6">
-                                    <label for="queue_items" class="form-label"><?= __('All Queued Items') ?></label>
-                                    <div class="input-group">
-                                        <input disabled title="<?= __('Queued Items') ?>" type="text" class="form-control"  id="queue_items" name="queue_items" value="<?= $included['queue_items'] ?>">
-                                        <span class="pull-right">
-                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and $included['queue_items'] > 0) { ?>
-                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
-                                            <?php } ?>
-                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of discovery queue items waiting to be processed.">?</button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <span><br /></span>
 
                                 <div class="offset-3 col-6">
                                     <label for="ip_scan" class="form-label"><?= __('Queued IP Scans') ?></label>
@@ -92,6 +80,28 @@ include 'shared/collection_functions.php';
 
                             </div>
                         </div>
+
+                        <div class="col-4">
+                            <div class="row">
+
+
+                                <div class="offset-3 col-6">
+                                    <label for="queue_items" class="form-label"><?= __('All Queued Items') ?></label>
+                                    <div class="input-group">
+                                        <input disabled title="<?= __('Queued Items') ?>" type="text" class="form-control"  id="queue_items" name="queue_items" value="<?= $included['queue_items'] ?>">
+                                        <span class="pull-right">
+                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and $included['queue_items'] > 0) { ?>
+                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
+                                            <?php } ?>
+                                            <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of discovery queue items waiting to be processed.">?</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span><br /></span>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

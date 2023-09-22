@@ -19,7 +19,7 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body collapse" id="advanced">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="row">
                                 <div class="offset-3 col-6">
                                     <label for="devices_not_audited" class="form-label"><?= __('Devices Not Audited') ?></label>
@@ -60,7 +60,7 @@ include 'shared/collection_functions.php';
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="row">
                                 <div class="offset-3 col-6">
                                     <label for="devices_stopped" class="form-label"><?= __('Devices in Stopped State') ?></label>
@@ -85,6 +85,11 @@ include 'shared/collection_functions.php';
                                 </div>
                                 <span><br /></span>
                             </div>
+                        </div>
+
+
+                        <div class="col-4">
+
                             <div class="row">
                                 <div class="offset-3 col-6">
                                     <label for="locations" class="form-label"><?= __('Locations') ?></label>
@@ -110,6 +115,9 @@ include 'shared/collection_functions.php';
                                 <span><br /></span>
                             </div>
                         </div>
+
+
+
                     </div>
                 </div>
             </div>
