@@ -46,7 +46,7 @@ include 'shared/read_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#menu_category").val("<?= $resource->menu_category ?>");

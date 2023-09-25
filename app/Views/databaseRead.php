@@ -125,7 +125,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                 </div>
             </div>
         </main>
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     document.getElementById('<?= $data[0]->id ?>ResetForm').addEventListener('submit', function(e){
         if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $data[0]->id ?> table and insert the original rows.") == true) {

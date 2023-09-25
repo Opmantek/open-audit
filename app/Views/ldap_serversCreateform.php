@@ -117,7 +117,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#data\\[attributes\\]\\[user_dn\\]").val('cn=@username,ou=people');

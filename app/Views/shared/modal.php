@@ -238,7 +238,7 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and co
     </div>
 </div>
 
-<script>
+<script {csp-script-nonce}>
 /* inline edit */
 window.onload = function () {
     $(document).ready(function () {

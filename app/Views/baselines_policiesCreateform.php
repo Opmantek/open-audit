@@ -147,7 +147,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 <?php if ($type === 'single') { ?>
 window.onload = function () {
     $(document).ready(function () {

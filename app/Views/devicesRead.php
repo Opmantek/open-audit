@@ -2282,7 +2282,7 @@ if (!empty($included['fields'])) {
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     /* Show / Hide section on device details */
     $(document).on('click', '.section_toggle', function (e) {

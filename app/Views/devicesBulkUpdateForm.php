@@ -162,7 +162,7 @@ $ids = implode(',', $id);
 
 
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         /* Remove these panel header buttons */

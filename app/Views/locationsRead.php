@@ -100,7 +100,7 @@ if ($user->toolbar_style === 'icontext') {
 <?php if ($disabled === '') { ?>
 <script src="https://maps.google.com/maps/api/js?key=<?= config('Openaudit')->maps_api_key ?>"></script>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     /* Get Lat/Long from Google Maps API on update locations page */
     $(document).ready(function () {
@@ -144,7 +144,7 @@ window.onload = function () {
 <?php } ?>
 
 <?php if ($disabled === 'disabled') { ?>
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     /* Get Lat/Long from Google Maps API on update locations page */
     $(document).ready(function () {

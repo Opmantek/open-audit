@@ -109,7 +109,7 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
         $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= config('Openaudit')->discovery_default_scan_option ?>);

@@ -119,7 +119,7 @@ include 'shared/read_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#org_descendants").val("<?= $resource->org_descendants ?>");

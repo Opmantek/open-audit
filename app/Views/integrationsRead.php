@@ -243,7 +243,7 @@ if ($resource->type === 'nmis') {
         </main>
 
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
 

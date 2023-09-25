@@ -243,7 +243,7 @@ include 'shared/collection_functions.php';
         </main>
 
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
 

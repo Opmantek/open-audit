@@ -111,7 +111,7 @@ include 'shared/create_functions.php';
         </main>
 
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $('#data\\[attributes\\]\\[org_id\\]').val('1');
 }

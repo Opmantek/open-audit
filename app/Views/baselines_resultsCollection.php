@@ -54,7 +54,7 @@ include 'shared/collection_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#button_import_csv").remove();

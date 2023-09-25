@@ -71,7 +71,7 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function(){
         var $snmp_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][community]', __('Community String'), $dictionary->attributes->create)) ?>';

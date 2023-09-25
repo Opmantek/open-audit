@@ -2,9 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-// echo "<pre>\n";
-// print_r($data);
-// exit;
+
 if (empty($data[0]->attributes->latitude)) {
     $data[0]->attributes->latitude = '-28.017260';
 }
@@ -13,11 +11,11 @@ if (empty($data[0]->attributes->longitude)) {
 }
 ?>
 <link type="text/css" rel="stylesheet" href="/open-audit/css/map.css" />
-<style>
+<style {csp-style-nonce}>
 img[src*="gstatic.com/"] img[src*="googleapis.com/"] {
     max-width: none;
 }
-</style>
+</style {csp-style-nonce}>
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
@@ -32,7 +30,7 @@ img[src*="gstatic.com/"] img[src*="googleapis.com/"] {
         </main>
 
 
-<script>
+<script {csp-script-nonce}>
     /**
     * the following are all valid map types
     * ROADMAP (normal, default 2D map)

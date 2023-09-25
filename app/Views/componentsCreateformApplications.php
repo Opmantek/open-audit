@@ -101,7 +101,7 @@ if (stripos($meta->query_string, 'type=application') !== false) {
         </main>
 
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         <?php if (!empty($org_id)) { ?>

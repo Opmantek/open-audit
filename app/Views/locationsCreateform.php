@@ -57,7 +57,7 @@ foreach ($included['types'] as $type) {
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#data\\[attributes\\]\\[type\\]").val("Office");

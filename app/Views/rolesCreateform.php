@@ -142,7 +142,7 @@ $permissions = array('c', 'r', 'u', 'd');
             </form>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 function select_all_click($permission) {
     $(':checkbox').each(
         function () {

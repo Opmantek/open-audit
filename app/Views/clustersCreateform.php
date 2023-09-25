@@ -117,7 +117,7 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
         $(document).on('change', "#data\\[attributes\\]\\[resource\\]", function () {

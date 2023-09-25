@@ -89,7 +89,7 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
         var $microsoft = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][subscription_id]', __('Subscription ID'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][tenant_id]', __('Tennant ID'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][client_id]', __('Client ID'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][client_secret]', __('Client Secret'), $dictionary->attributes->create)) ?>';

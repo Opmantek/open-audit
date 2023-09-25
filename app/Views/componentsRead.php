@@ -55,7 +55,7 @@ $user->permissions['components'] = '';
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#button_list").remove();

@@ -316,7 +316,7 @@ if ($style === 'icontext') {
             </div>
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
 

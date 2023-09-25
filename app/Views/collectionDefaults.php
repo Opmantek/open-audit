@@ -65,7 +65,7 @@ include 'shared/read_functions.php';
             </div>
         </main>
 <?php if (strpos($user->permissions[$meta->collection], 'u') !== false) { ?>
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>

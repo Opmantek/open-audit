@@ -156,7 +156,7 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 }
 ?>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
 

@@ -582,7 +582,7 @@ foreach ($included['discovery_scan_options'] as $item) {
 
         </main>
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
         $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
