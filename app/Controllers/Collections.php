@@ -131,6 +131,11 @@ class Collections extends BaseController
         if ($export === 'export') {
             $view = 'collectionExport';
         }
+        if ($this->resp->meta->collection === 'maps') {
+            # Disable CSP as Google and FontAwesome do not play nice on the template
+            $csp = $this->response->getCSP();
+            $csp->reportOnly(true);
+        }
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),

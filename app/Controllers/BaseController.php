@@ -56,6 +56,8 @@ abstract class BaseController extends Controller
         // Register the instance so we can call it from models, et al.
         register_ci_instance($this);
 
+        $this->response->setHeader('X-Content-Type-Options', 'nosniff');
+
         $router = \Config\Services::router();
         $this->controller = $router->controllerName();
         $this->method = $router->methodName();
