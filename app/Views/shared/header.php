@@ -1,79 +1,7 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
-$header = "
-    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com maps.googleapis.com;
-    font-src 'self' fonts.gstatic.com;
-    form-action 'self';
-    frame-ancestors 'none';
-    frame-src 'none';
-    img-src 'self' data: *.gstatic.com *.googleapis.com;
-    manifest-src 'none';
-    media-src 'none';
-    object-src 'none';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com maps.google.com;
-    style-src 'self' 'unsafe-inline' fonts.googleapis.com;
-    worker-src 'self';
-    ";
-    # prefetch-src 'self'; # removed as still marked as experimental and not supported in any browsers
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/prefetch-src#browser_compatibility
-$header = str_replace(PHP_EOL, "", $header);
-header("Content-Security-Policy: {$header}");
-header('X-Frame-Options: DENY');
-header('X-Content-Type-Options: nosniff');
-
-
-$langFile = APPPATH . 'Views/lang/en.inc';
-$user->lang = 'en';
-if (!empty($user->lang)) {
-    $langFile = APPPATH . 'Views/lang/' . $user->lang . '.inc';
-}
-include($langFile);
-if (!function_exists('__')) {
-    function __($word)
-    {
-        $language_learning_mode = false;
-        if (ENVIRONMENT === 'development') {
-            $language_learning_mode = true;
-        }
-        $language_file = APPPATH . 'Views/lang/en.inc';
-        $word = (string)$word;
-        if (isset($GLOBALS['lang'][$word])) {
-            return $GLOBALS['lang'][$word];
-        } else {
-            if ($language_learning_mode === true and !empty($word)) {
-                if (is_writable($language_file)) {
-                    unset($lang_array);
-                    $lang_array = file($language_file);
-                    $lang_array = array_unique($lang_array);
-                    $match = '$GLOBALS["lang"]["' . $word . '"]="' . $word . "\";\n";
-                    if (!in_array($match, $lang_array)) {
-                        $lang_array[] = $match;
-                        sort($lang_array, SORT_NATURAL | SORT_FLAG_CASE);
-                        for ($i=0; $i < count($lang_array); $i++) {
-                            if ($lang_array[$i] === '') {
-                                unset($lang_array[$i]);
-                            }
-                            if ($lang_array[$i] === '<?php' or $lang_array[$i] === "<?php\n") {
-                                unset($lang_array[$i]);
-                            }
-                        }
-                        $lang_array = array_unique($lang_array);
-                        $file_contents = "<?php\n" . implode("", $lang_array);
-                        $handle = fopen($language_file, 'w');
-                        fwrite($handle, $file_contents);
-                        fclose($handle);
-                    }
-                } else {
-                    log_message('error', "Language-Learning-Mode, but $language_file not writeable");
-                    echo "Language-Learning-Mode, but $language_file not writeable";
-                    die("Language-Learning-Mode, but $language_file not writeable");
-                }
-            }
-            return $word;
-        }
-    }
-}
+include('lang.php');
 
 // sort our queries, summaries and reports
 $reports = array();
@@ -104,14 +32,14 @@ $categories = array_unique($categories);
         <title>Open-AudIT</title>
 
         <!-- JS -->
-        <script defer src="<?= base_url('js/jquery.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/popper.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
-        <script defer src="<?= base_url('js/open-audit.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/jquery.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
@@ -121,7 +49,7 @@ $categories = array_unique($categories);
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
         <!-- Open-AudIT specific items -->
-        <script>
+        <script {csp-script-nonce}>
         <?php if (isset($meta->id) and !is_null($meta->id)) {
                 echo "  var id = '" . $meta->id . "';\n";
         }
@@ -554,7 +482,7 @@ if (!empty(config('Openaudit')->modules)) {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarUser" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">User: <?= htmlentities($user->name) ?></a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= url_to('usersRead', $user->id) ?>"><?= __('Preferences'); ?></a></li>
-                                <li><a class="dropdown-item" onclick="logout();" href="<?= url_to('logoff') ?>" role="button"><?= __('Logout'); ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('logoff') ?>" role="button"><?= __('Logout'); ?></a></li>
                                 <li><a class="dropdown-item debug" href="#"><?= __('Debug'); ?></a></li>
                             </ul>
                         </li>
