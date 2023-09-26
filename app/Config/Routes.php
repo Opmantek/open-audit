@@ -95,15 +95,14 @@ $routes->get('scripts/(:any)/download', 'Scripts::download/$1');
 $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
-$routes->post('util/google', 'Util::google');
-$routes->post('util/amazon', 'Util::amazon');
-$routes->post('util/microsoft', 'Util::micosoft');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
 $routes->cli('tasks/execute', 'Cli::executeTasks', ['as' => 'executeTasks']);
 $routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 'executeDiscovery']);
 $routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' => 'executeIntegration']);
+$routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeCloud']);
+$routes->cli('devices/(:num)/cloudDevice', 'Cli::cloudDevice/$1', ['as' => 'cloudDevice']);
 
 foreach ($routes->collections as $collection) {
     // Account for users editing the config and including a space character

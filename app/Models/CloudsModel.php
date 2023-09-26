@@ -179,7 +179,18 @@ class CloudsModel extends BaseModel
     {
         $included = array();
         $sql = "SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY id";
-        $included['cloud_log'] = $this->db->query($sql, [$id])->getResult();
+        $included['logs'] = $this->db->query($sql, [$id])->getResult();
+
+        $sql = "SELECT devices.id AS `devices.id`, devices.ip AS `devices.ip`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon` FROM `devices` WHERE devices.cloud_id = ?";
+        $query = $this->db->query($sql, [$id]);
+        $devices = $query->getResult();
+        $count = count($devices);
+        for ($i=0; $i < $count; $i++) {
+            $devices[$i]->{'devices.padded_ip'} = $devices[$i]->{'devices.ip'};
+            $devices[$i]->{'devices.ip'} = ip_address_from_db($devices[$i]->{'devices.ip'});
+        }
+        $included['devices'] = $devices;
+
         return $included;
     }
 
