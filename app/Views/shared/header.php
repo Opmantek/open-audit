@@ -62,7 +62,7 @@ $categories = array_unique($categories);
             echo "            var baseurl = '';\n";
         } ?>
         var web_folder = '<?= base_url() ?>';
-        var device_auto_delete = '<?= config('Openaudit')->device_auto_delete; ?>';
+        var device_auto_delete = '<?= $config->device_auto_delete; ?>';
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -72,13 +72,13 @@ $categories = array_unique($categories);
             <div class="container-fluid">
                 <?php
                 $homepage = url_to('summariesCollection');
-                if (config('Openaudit')->product !== 'community') {
+                if ($config->product !== 'community') {
                     $dashboard = (!empty($user->dashboard_id)) ? $user->dashboard_id : 1;
                     $homepage = url_to('dashboardsExecute', $dashboard);
                 } ?>
                 <a class="navbar-brand" style="color: white;" href="<?= $homepage ?>">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
-                    Open-AudIT <?= ucfirst(config('Openaudit')->product) ?> <?= config('Openaudit')->display_version . "\n" ?>
+                    Open-AudIT <?= ucfirst($config->product) ?> <?= $config->display_version . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
@@ -88,7 +88,7 @@ $categories = array_unique($categories);
                                 <?php if (!empty($dashboards)) { ?>
                                     <?php foreach ($dashboards as $dashboard) {
                                         if ($dashboard->type === 'dashboards') {
-                                            if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
+                                            if ($config->product === 'enterprise' or $config->product === 'professional') {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
@@ -165,7 +165,7 @@ $categories = array_unique($categories);
                                     $link = $report->type . 'Execute';
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
-                                            if (config('Openaudit')->license !== 'commercial') {
+                                            if ($config->license !== 'commercial') {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
@@ -448,8 +448,8 @@ $categories = array_unique($categories);
                             <a class="nav-link dropdown-toggle" href="#" id="navbarModules" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Modules') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarModules">
 <?php
-if (!empty(config('Openaudit')->modules)) {
-    $modules = config('Openaudit')->modules;
+if (!empty($config->modules)) {
+    $modules = $config->modules;
     if (is_string($modules)) {
         $modules = json_decode($modules);
     }
@@ -469,7 +469,7 @@ if (!empty(config('Openaudit')->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if (config('Openaudit')->license === 'none') { ?>
+<?php if ($config->license === 'none') { ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Activate Free License')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Manage Licenses')?></a></li>
@@ -533,7 +533,7 @@ if (!empty(config('Openaudit')->modules)) {
                                     if (!empty($dashboards)) {
                                         foreach ($dashboards as $dashboard) {
                                             if ($dashboard->type === 'dashboards') {
-                                                if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
+                                                if ($config->product === 'enterprise' or $config->product === 'professional') {
                                                     echo "                                    <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
                                                 } else {
                                                     echo "                                    <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
@@ -648,11 +648,11 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
     // Check if feature matches license
-    if (strpos($instance->collections->{$collection}->actions->{config('Openaudit')->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
+    if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
         $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
     }
     // Check if use has permission and a license
-    if (strpos($instance->collections->{$collection}->actions->{config('Openaudit')->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
+    if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
         if (get_user_permission($collection, $permission, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
         }

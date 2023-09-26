@@ -28,6 +28,7 @@ class IntegrationsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        $instance = & get_instance();
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
@@ -46,7 +47,7 @@ class IntegrationsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        if (config('Openaudit')->decrypt_credentials === 'y') {
+        if ($instance->config->decrypt_credentials === 'y') {
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
@@ -323,7 +324,7 @@ class IntegrationsModel extends BaseModel
                 // The (possibly) remote system has itself as a device, see if we can determine an actual IP
                 if (stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or stripos($integration->attributes->attributes->url, 'localhost') !== false) {
                     // We're talking to ourselves
-                    $ip = explode(',', config('Openaudit')->ip);
+                    $ip = explode(',', $instance->config->ip);
                     if (!empty($ip[0])) {
                         $device->devices->ip = $ip[0];
                     }
@@ -345,7 +346,7 @@ class IntegrationsModel extends BaseModel
                     unset($exploded_url);
                 }
                 if ($device->devices->ip === '127.0.0.1' or $device->devices->ip === '127.0.1.1') {
-                    $ip = explode(',', config('Openaudit')->ip);
+                    $ip = explode(',', $instance->config->ip);
                     if (!empty($ip[0])) {
                         $device->devices->ip = $ip[0];
                     }
@@ -522,7 +523,7 @@ class IntegrationsModel extends BaseModel
             $this->db->query($sql, [$integration->attributes->discovery_id]);
 
             $sql = "INSERT INTO discovery_log VALUES (null, ?, null, ?, 6, 'notice', '', '127.0.0.1', 'm_integrations', 'execute', ?, '', 'notice', 0, '')";
-            $this->db->query($sql, [$integration->attributes->discovery_id, config('Openaudit')->timestamp, 'Starting discovery for ' . $integration->attributes->name]);
+            $this->db->query($sql, [$integration->attributes->discovery_id, $instance->config->timestamp, 'Starting discovery for ' . $integration->attributes->name]);
 
             // put each device in the queue
             $count = 0;
@@ -1112,6 +1113,7 @@ class IntegrationsModel extends BaseModel
 
     public function internalToExternal($integration, $internal_devices)
     {
+        $instance = & get_instance();
         $newdevices = array();
         foreach ($internal_devices as &$internal_device) {
             $newdevice = new \stdClass();
@@ -1171,7 +1173,7 @@ class IntegrationsModel extends BaseModel
                                     break;
 
                                 case 'datetime_now':
-                                    $newdevice = $this->setValue($newdevice, $field->external_field_name, config('Openaudit')->timestamp);
+                                    $newdevice = $this->setValue($newdevice, $field->external_field_name, $instance->config->timestamp);
                                     break;
 
                                 case 'datetime_Y-m-d H:i:s':
@@ -1180,7 +1182,7 @@ class IntegrationsModel extends BaseModel
                                     break;
 
                                 case 'date_now':
-                                    $value = date_create_from_format("Y-m-d", config('Openaudit')->timestamp);
+                                    $value = date_create_from_format("Y-m-d", $instance->config->timestamp);
                                     $newdevice = $this->setValue($newdevice, $field->external_field_name, $value);
                                     break;
 
@@ -1299,6 +1301,7 @@ class IntegrationsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
+        $instance = & get_instance();
         $properties = array();
         $properties[] = 'integrations.*';
         $properties[] = 'orgs.name as `orgs.name`';
@@ -1312,7 +1315,7 @@ class IntegrationsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        if (config('Openaudit')->decrypt_credentials === 'y') {
+        if ($instance->config->decrypt_credentials === 'y') {
             if (!empty($query[0]->credentials)) {
                 $query[0]->credentials = simpleDecrypt($query[0]->credentials, config('Encryption')->key);
                 $query[0]->credentials = json_decode($query[0]->credentials);

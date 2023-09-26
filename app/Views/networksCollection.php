@@ -4,7 +4,7 @@
 include 'shared/collection_functions.php';
 ?>
         <main class="container-fluid">
-            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none') { ?>
+            <?php if (!empty($config->license) and $config->license !== 'none') { ?>
             <div class="card">
                 <div class="card-header" style="height:57px;">
                     <div class="row">

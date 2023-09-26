@@ -71,10 +71,10 @@ class Queue extends BaseController
         // queue count is the number of registered processes
         // queue limit is set by the user
         // check it config['queue_count'] > config['queue_limit']
-        log_message('debug', "$microtime Initial Queue Count: " . config('Openaudit')->queue_count . " Initial Queue Limit: " . config('Openaudit')->queue_limit);
+        log_message('debug', "$microtime Initial Queue Count: " . $this->config->queue_count . " Initial Queue Limit: " . $this->config->queue_limit);
 
-        if (intval(config('Openaudit')->queue_count) >= intval(config('Openaudit')->queue_limit)) {
-            log_message('debug', "$microtime QueueCount: " . config('Openaudit')->queue_count . " Limit: " . config('Openaudit')->queue_limit . " EXITING.");
+        if (intval($this->config->queue_count) >= intval($this->config->queue_limit)) {
+            log_message('debug', "$microtime QueueCount: " . $this->config->queue_count . " Limit: " . $this->config->queue_limit . " EXITING.");
             exit;
         }
         // Increase the queue count in the config table

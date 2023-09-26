@@ -103,6 +103,7 @@ class ComponentsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        $instance = & get_instance();
         $device_ids = array();
         if (!empty($data->device_id)) {
             $device_ids[] = $data->device_id;
@@ -123,8 +124,6 @@ class ComponentsModel extends BaseModel
             redirect()->route('devicesCollection');
             return null;
         }
-
-        $instance = & get_instance();
 
         if ($data->component_type === 'application') {
             $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
@@ -418,7 +417,6 @@ class ComponentsModel extends BaseModel
         }
         $sql = "SELECT `$type`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$type` LEFT JOIN devices ON (`$type`.device_id = devices.id) WHERE `$type`.id = ?";
         $query = $this->db->query($sql, [$id]);
-        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -521,10 +519,10 @@ class ComponentsModel extends BaseModel
         $log->timestamp = null;
 
         $create_change_log = true;
-        if (!empty(config('Openaudit')->{'create_change_log_' . $table}) and config('Openaudit')->{'create_change_log_' . $table} === 'n') {
+        if (!empty($instance->config->{'create_change_log_' . $table}) and $instance->config->{'create_change_log_' . $table} === 'n') {
             $create_change_log = false;
         }
-        if (!empty(config('Openaudit')->create_change_log) and config('Openaudit')->create_change_log === 'n') {
+        if (!empty($instance->config->create_change_log) and $instance->config->create_change_log === 'n') {
             $create_change_log = false;
         }
 
@@ -830,7 +828,7 @@ class ComponentsModel extends BaseModel
                     unset($data[$item]);
                     continue;
                 }
-                if (isset(config('Openaudit')->process_netstat_windows_dns) and config('Openaudit')->process_netstat_windows_dns === 'n') {
+                if (isset($instance->config->process_netstat_windows_dns) and $instance->config->process_netstat_windows_dns === 'n') {
                     if (stripos($attributes->program, 'dns.exe') !== false and intval($attributes->port) > 1000) {
                         unset($data[$item]);
                         continue;
@@ -1231,13 +1229,13 @@ class ComponentsModel extends BaseModel
                 // these are our special rules - currently only for netstat
                 $special = true;
                 if ($table === 'netstat') {
-                    if (!empty(config('Openaudit')->create_change_log_netstat_well_known) and config('Openaudit')->create_change_log_netstat_well_known === 'n' and isset($data_item->port) and intval($data_item->port) < 1024) {
+                    if (!empty($instance->config->create_change_log_netstat_well_known) and $instance->config->create_change_log_netstat_well_known === 'n' and isset($data_item->port) and intval($data_item->port) < 1024) {
                         $special = false;
                     }
-                    if (!empty(config('Openaudit')->create_change_log_netstat_registered) and config('Openaudit')->create_change_log_netstat_registered === 'n' and isset($data_item->port) and intval($data_item->port) > 1023 and intval($data_item->port) < 49152) {
+                    if (!empty($instance->config->create_change_log_netstat_registered) and $instance->config->create_change_log_netstat_registered === 'n' and isset($data_item->port) and intval($data_item->port) > 1023 and intval($data_item->port) < 49152) {
                         $special = false;
                     }
-                    if (!empty(config('Openaudit')->create_change_log_netstat_dynamic) and config('Openaudit')->create_change_log_netstat_dynamic === 'n' and isset($data_item->port) and intval($data_item->port) > 49151) {
+                    if (!empty($instance->config->create_change_log_netstat_dynamic) and $instance->config->create_change_log_netstat_dynamic === 'n' and isset($data_item->port) and intval($data_item->port) > 49151) {
                         $special = false;
                     }
                 }
@@ -1290,7 +1288,7 @@ class ComponentsModel extends BaseModel
         }
 
         // Global
-        if (!empty(config('Openaudit')->delete_noncurrent) and strtolower(config('Openaudit')->delete_noncurrent) === 'y') {
+        if (!empty($instance->config->delete_noncurrent) and strtolower($instance->config->delete_noncurrent) === 'y') {
             $id_array = array();
             foreach ($db_result as $key => $value) {
                 if (!empty($value->id)) {
@@ -1306,7 +1304,7 @@ class ComponentsModel extends BaseModel
             return true;
         }
         // Individual table
-        if (!empty(config('Openaudit')->{'delete_noncurrent_' . $table}) and strtolower(config('Openaudit')->{'delete_noncurrent_' . $table}) === 'y') {
+        if (!empty($instance->config->{'delete_noncurrent_' . $table}) and strtolower($instance->config->{'delete_noncurrent_' . $table}) === 'y') {
             $id_array = array();
             foreach ($db_result as $key => $value) {
                 if (!empty($value->id)) {
@@ -1339,13 +1337,13 @@ class ComponentsModel extends BaseModel
             // these are our special rules - currently only for netstat
             $special = true;
             if ($table === 'netstat') {
-                if (!empty(config('Openaudit')->create_change_log_netstat_well_known) and config('Openaudit')->create_change_log_netstat_well_known === 'n' and isset($db_item->port) and intval($db_item->port) < 1024) {
+                if (!empty($instance->config->create_change_log_netstat_well_known) and $instance->config->create_change_log_netstat_well_known === 'n' and isset($db_item->port) and intval($db_item->port) < 1024) {
                     $special = false;
                 }
-                if (!empty(config('Openaudit')->create_change_log_netstat_registered) and config('Openaudit')->create_change_log_netstat_registered === 'n' and isset($db_item->port) and intval($db_item->port) > 1023 and intval($db_item->port < 49152)) {
+                if (!empty($instance->config->create_change_log_netstat_registered) and $instance->config->create_change_log_netstat_registered === 'n' and isset($db_item->port) and intval($db_item->port) > 1023 and intval($db_item->port < 49152)) {
                     $special = false;
                 }
-                if (!empty(config('Openaudit')->create_change_log_netstat_dynamic) and config('Openaudit')->create_change_log_netstat_dynamic === 'n' and isset($db_item->port) and intval($db_item->port) > 49151) {
+                if (!empty($instance->config->create_change_log_netstat_dynamic) and $instance->config->create_change_log_netstat_dynamic === 'n' and isset($db_item->port) and intval($db_item->port) > 49151) {
                     $special = false;
                 }
             }

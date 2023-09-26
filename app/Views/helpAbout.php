@@ -26,11 +26,11 @@ if (php_uname('s') == "Windows NT") {
                             <br>
 
 
-                You are running version <?= config('Openaudit')->display_version ?> of Open-AudIT.<br />
+                You are running version <?= $config->display_version ?> of Open-AudIT.<br />
                 Your Host is: <?= php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
                 Your database platform is <?= $this->db->getPlatform()." (version ".$this->db->getVersion().")"; ?>.<br />
                 Your web server is <?= getenv("SERVER_SOFTWARE") ?> .<br />
-                Your PHP version is <?= phpversion(); ?> and it's current time is <?= config('Openaudit')->timestamp ?>.<br /><br />
+                Your PHP version is <?= phpversion(); ?> and it's current time is <?= $config->timestamp ?>.<br /><br />
                 <?php
                 if (!extension_loaded('snmp')) {
                     echo "<i>You do not have the PHP SNMP extension installed. This extension is highly recommended.</i><br />";

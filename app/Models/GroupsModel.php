@@ -97,7 +97,7 @@ class GroupsModel extends BaseModel
     public function execute(int $id = 0, object $user = null): array
     {
         $instance = & get_instance();
-        $properties = config('Openaudit')->devices_default_group_columns;
+        $properties = $instance->config->devices_default_group_columns;
         $result = $this->builder->getWhere(['id' => intval($id)])->getResult();
         if ($this->sqlError($this->db->error())) {
             return array();

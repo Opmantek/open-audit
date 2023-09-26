@@ -290,7 +290,7 @@ class Devices extends BaseController
             $device->nmis_notes = (!empty($node['configuration']['notes'])) ? $node['configuration']['notes'] : '';
             $device->nmis_business_service = (!empty($node['configuration']['businessService'])) ? $node['configuration']['businessService'] : '';
             $device->last_seen_by = 'nmis';
-            $device->last_seen = config('Openaudit')->timestamp;
+            $device->last_seen = $this->config->timestamp;
 
             $device->credentials = new stdClass();
             $device->credentials->description = 'Imported from NMIS 9';
@@ -367,7 +367,7 @@ class Devices extends BaseController
                 // $this->db->query($sql, $data);
             }
             if (empty($device->id)) {
-                $device->first_seen = config('Openaudit')->timestamp;
+                $device->first_seen = $this->config->timestamp;
                 $device->id = $devicesModel->create($device);
                 $inserted++;
                 // need to update the discovery log with our system.id
@@ -418,6 +418,6 @@ class Devices extends BaseController
             return;
         }
         \Config\Services::session()->setFlashdata('success', $this->resp->meta->total . ' devices imported (' . $this->resp->meta->inserted . ' inserted and ' . $this->resp->meta->updated . ' updated).');
-        return redirect()->to(site_url() . '/devices?devices.last_seen=' . config('Openaudit')->timestamp . '&devices.last_seen_by=nmis&properties=devices.id,devices.icon,devices.type,devices.name,nmis_name,devices.ip,devices.nmis_business_service,devices.nmis_group,devices.nmis_role,devices.nmis_notes');
+        return redirect()->to(site_url() . '/devices?devices.last_seen=' . $this->config->timestamp . '&devices.last_seen_by=nmis&properties=devices.id,devices.icon,devices.type,devices.name,nmis_name,devices.ip,devices.nmis_business_service,devices.nmis_group,devices.nmis_role,devices.nmis_notes');
     }
 }

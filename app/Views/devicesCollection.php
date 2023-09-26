@@ -4,10 +4,10 @@
 include 'shared/collection_functions.php';
 
 $display_columns = array();
-if (config('Openaudit')->devices_default_retrieve_columns === implode(',', $meta->properties)) {
+if ($config->devices_default_retrieve_columns === implode(',', $meta->properties)) {
     // We have a default request. No specific columns requested
-    if (!empty(config('Openaudit')->devices_default_display_columns)) {
-        $display_columns = explode(',', config('Openaudit')->devices_default_display_columns);
+    if (!empty($config->devices_default_display_columns)) {
+        $display_columns = explode(',', $config->devices_default_display_columns);
     }
     if (!empty($user->devices_default_display_columns)) {
         $display_columns = explode(',', $user->devices_default_display_columns);
@@ -26,7 +26,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
 }
 ?>
         <main class="container-fluid">
-            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none') { ?>
+            <?php if (!empty($config->license) and $config->license !== 'none') { ?>
             <div class="card oa-card-advanced">
                 <div class="card-header" style="height:57px;">
                     <div class="row">
@@ -199,7 +199,7 @@ window.onload = function () {
 
         var table = $('.MyDataTable').DataTable( {
             "pagingType": "full",
-            "pageLength": <?= (!empty(config('Openaudit')->page_size)) ? intval(config('Openaudit')->page_size) : 50 ?>,
+            "pageLength": <?= (!empty($config->page_size)) ? intval($config->page_size) : 50 ?>,
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
             "columnDefs": [
                 <?php $i = 0;
@@ -292,7 +292,7 @@ window.onload = function () {
             });
         });
 
-        <?php if (($user->devices_default_display_columns !== config('Openaudit')->devices_default_display_columns) and $user->devices_default_display_columns !== '') { ?>
+        <?php if (($user->devices_default_display_columns !== $config->devices_default_display_columns) and $user->devices_default_display_columns !== '') { ?>
             $('#reset_my_devices_default_display_columns').removeClass("disabled");
             $('#reset_my_devices_default_display_columns').removeClass("btn-default");
             $('#reset_my_devices_default_display_columns').addClass("btn-warning");

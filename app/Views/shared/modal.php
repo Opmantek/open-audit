@@ -20,8 +20,8 @@ $btnEntStyle = '';
 $btnEntText = __('Upgrade');
 
 $message = '';
-$license = (!empty(config('Openaudit')->license)) ? strtolower(config('Openaudit')->license) : 'none';
-$product = (!empty(config('Openaudit')->product)) ? config('Openaudit')->product : 'community';
+$license = (!empty($config->license)) ? strtolower($config->license) : 'none';
+$product = (!empty($config->product)) ? $config->product : 'community';
 
 if ($product === 'enterprise' and $license !== 'free') {
     $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
@@ -55,7 +55,7 @@ if ($product === 'community') {
 
 $button_prompt_never = '';
 $button_prompt_later = '';
-if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
     $button_prompt_never = '<span id="button_prompt_never"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
     $button_prompt_later = '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')) . '">' . __('Ask me later') . '</a></span>';
 }
@@ -73,13 +73,13 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and co
                 <br>
                 <div class="row">
                     <div class="col-6 clearfix pull-left">
-                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
                             echo $button_prompt_later;
                         } ?>
                     </div>
                     <div class="col-6 clearfix pull-right">
                         <div class="float-end">
-                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
                                 echo $button_prompt_never;
                             } ?>
                         </div>
@@ -244,7 +244,7 @@ window.onload = function () {
     $(document).ready(function () {
 
         <?php
-        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and config('Openaudit')->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
             echo "\n            $('#myModalLicense').modal('show');\n";
         } ?>
 
@@ -253,14 +253,14 @@ window.onload = function () {
             //alert("Value is:"+value);
             var data = {};
             data["data"] = {};
-            data["data"]["id"] = "<?= config('Openaudit')->oae_prompt_id ?>";
+            data["data"]["id"] = "<?= $config->oae_prompt_id ?>";
             data["data"]["type"] = "configuration";
             data["data"]["attributes"] = {};
             data["data"]["attributes"]["value"] = value;
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: "<?= base_url() ?>index.php/configuration/<?= config('Openaudit')->oae_prompt_id ?>",
+                url: "<?= base_url() ?>index.php/configuration/<?= $config->oae_prompt_id ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 $disabled = 'disabled';
-if (!empty(config('Openaudit')->maps_api_key) and (config('Openaudit')->product === 'professional' or config('Openaudit')->product === 'enterprise')) {
+if (!empty($config->maps_api_key) and ($config->product === 'professional' or $config->product === 'enterprise')) {
     $disabled = '';
 }
 if ($user->toolbar_style === 'icontext') {
@@ -98,7 +98,7 @@ if ($user->toolbar_style === 'icontext') {
         </main>
 
 <?php if ($disabled === '') { ?>
-<script src="https://maps.google.com/maps/api/js?key=<?= config('Openaudit')->maps_api_key ?>"></script>
+<script src="https://maps.google.com/maps/api/js?key=<?= $config->maps_api_key ?>"></script>
 
 <script {csp-script-nonce}>
 window.onload = function () {
@@ -150,7 +150,7 @@ window.onload = function () {
     $(document).ready(function () {
         header = "<?= __('License Required') ?>";
         body = "<?= __('This feature requires a Professional or an Enterprise license.') ?>";
-        <?php if (empty(config('Openaudit')->maps_api_key)) { ?>
+        <?php if (empty($config->maps_api_key)) { ?>
             header = "<?= __('API Key required.') ?>";
             body = "<?= __('A Google Maps API Key is required for this function.') ?>";
         <?php } ?>

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 $disabled = 'disabled';
-if (!empty(config('Openaudit')->maps_api_key) and (config('Openaudit')->product === 'professional' or config('Openaudit')->product === 'enterprise')) {
+if (!empty($config->maps_api_key) and ($config->product === 'professional' or $config->product === 'enterprise')) {
     $disabled = '';
 }
 

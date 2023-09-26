@@ -33,8 +33,8 @@ include 'shared/create_functions.php';
                                 <?= create_text_field('data[attributes][os]', __('OS'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][uuid]', __('UUID'), $dictionary->attributes->create) ?>
 
-                                <input type="hidden" value="<?= config('Openaudit')->server_platform ?>" id="data[attributes][os]" name="data[attributes][os]" />
-                                <input type="hidden" value="<?= config('Openaudit')->uuid ?>" id="data[attributes][uuid]" name="data[attributes][uuid]" />
+                                <input type="hidden" value="<?= $config->server_platform ?>" id="data[attributes][os]" name="data[attributes][os]" />
+                                <input type="hidden" value="<?= $config->uuid ?>" id="data[attributes][uuid]" name="data[attributes][uuid]" />
                                 <br>
                                 <div class="row">
                                     <div class="offset-2 col-8">
@@ -72,8 +72,8 @@ include 'shared/create_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         $("#data\\[attributes\\]\\[name\\]").val("<?= @$_SERVER['SERVER_NAME'] ?>");
-        $("#data\\[attributes\\]\\[os\\]").val("<?= config('Openaudit')->server_platform ?>");
-        $("#data\\[attributes\\]\\[uuid\\]").val("<?= config('Openaudit')->uuid ?>");
+        $("#data\\[attributes\\]\\[os\\]").val("<?= $config->server_platform ?>");
+        $("#data\\[attributes\\]\\[uuid\\]").val("<?= $config->uuid ?>");
         $("#data\\[attributes\\]\\[community\\]").val("/open-audit");
         $("#data\\[attributes\\]\\[host\\]").val("http://");
     });

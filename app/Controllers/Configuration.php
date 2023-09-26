@@ -114,7 +114,7 @@ class Configuration extends BaseController
         $result = $db->query($sql)->getResult();
         $this->resp->data = format_data($result, 'configuration');
         $update = false;
-        if (strpos($this->user->permissions['configuration'], 'u') !== false and strpos($this->collections->collectors->actions->{config('Openaudit')->product}, 'u') !== false) {
+        if (strpos($this->user->permissions['configuration'], 'u') !== false and strpos($this->collections->collectors->actions->{$this->config->product}, 'u') !== false) {
             $update = true;
         }
         $dictionary = $this->configurationModel->dictionary();

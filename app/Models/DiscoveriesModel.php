@@ -74,8 +74,8 @@ class DiscoveriesModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', 'Invalid type provided to Discoveries::Create.');
             return null;
         }
-        if (empty(config('Openaudit')->discovery_default_scan_option)) {
-            config('Openaudit')->discovery_default_scan_option = 1;
+        if (empty($instance->config->discovery_default_scan_option)) {
+            $instance->config->discovery_default_scan_option = 1;
         }
         if (empty($data->devices_assigned_to_org)) {
             unset($data->devices_assigned_to_org);
@@ -120,10 +120,10 @@ class DiscoveriesModel extends BaseModel
         }
         if (empty($data->scan_options)) {
             $data->scan_options = new \stdClass();
-            $data->scan_options->id = intval(config('Openaudit')->discovery_default_scan_option);
+            $data->scan_options->id = intval($instance->config->discovery_default_scan_option);
         }
         if (!isset($data->scan_options->id)) {
-            $data->scan_options->id = intval(config('Openaudit')->discovery_default_scan_option);
+            $data->scan_options->id = intval($instance->config->discovery_default_scan_option);
         }
         if (isset($data->scan_options->ping)) {
             if ($data->scan_options->ping !== 'y' && $data->scan_options->ping !== 'n') {
@@ -345,7 +345,7 @@ class DiscoveriesModel extends BaseModel
             if (stripos($data->subnet, '-') !== false) {
                 // We have a range and cannot insert a network
                 $warning = 'IP range, instead of subnet supplied. No network entry created.';
-                if (config('Openaudit')->blessed_subnets_use !== 'n') {
+                if ($instance->config->blessed_subnets_use !== 'n') {
                     $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
                 }
                 \Config\Services::session()->setFlashdata('warning', $warning);
@@ -495,6 +495,7 @@ class DiscoveriesModel extends BaseModel
      */
     public function includedCollection(int $id = 0): array
     {
+        $instance = & get_instance();
         $included = array();
         $sql = 'SELECT COUNT(id) AS `count` FROM `queue`';
         $included['queue_items'] = $this->db->query($sql)->getResult()[0]->count;
@@ -508,7 +509,7 @@ class DiscoveriesModel extends BaseModel
         $sql = 'SELECT TIMESTAMPDIFF(SECOND, (SELECT `timestamp` FROM discovery_log ORDER BY id DESC LIMIT 1), NOW()) AS `seconds`';
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
-            if (intval($result[0]->seconds) > 6000 and intval(config('Openaudit')->queue_count) > 0) {
+            if (intval($result[0]->seconds) > 6000 and intval($instance->config->queue_count) > 0) {
                 $_SESSION['warning'] = 'You have running processes, but no discovery log has occurred for more than 10 minutes. See <a href="https://community.opmantek.com/display/OA/Troubleshooting#Troubleshooting-Problemswitharunawayqueue" target="_blank">here</a> for more information.';
             }
         }
@@ -893,12 +894,16 @@ class DiscoveriesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
+        $instance = & get_instance();
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
         $result = format_data($query->getResult(), 'discoveries');
-        $scan_options_id = (!empty($result[0]->attributes->scan_options->id)) ? $result[0]->attributes->scan_options->id : config('Openaudit')->discovery_default_scan_option;
+        $scan_options_id = (!empty($result[0]->attributes->scan_options->id)) ? $result[0]->attributes->scan_options->id : 0;
+        if (empty($scan_options_id)) {
+            $scan_options_id = (!empty($instance->config->discovery_default_scan_option)) ? $instance->config->discovery_default_scan_option : 1;
+        }
         $sql = "SELECT discovery_scan_options.name from discovery_scan_options where id = ?";
         $query = $this->db->query($sql, [$scan_options_id]);
         $dco = $query->getResult();
@@ -920,6 +925,7 @@ class DiscoveriesModel extends BaseModel
      */
     public function readForDiscovery(int $id = 0): array
     {
+        $instance = & get_instance();
         $result = $this->builder->getWhere(['id' => intval($id)])->getResult();
         if (empty($result)) {
             log_message('error', 'Bad ID provided to readForDiscovery (' . $id . ').');
@@ -956,8 +962,8 @@ class DiscoveriesModel extends BaseModel
             $result[0]->match_options = json_decode($result[0]->match_options);
         }
         if (!isset($result[0]->scan_options->id) or !is_numeric($result[0]->scan_options->id)) {
-            if (!empty(config('Openaudit')->discovery_default_scan_option)) {
-                $result[0]->scan_options->id = intval(config('Openaudit')->discovery_default_scan_option);
+            if (!empty($instance->config->discovery_default_scan_option)) {
+                $result[0]->scan_options->id = intval($instance->config->discovery_default_scan_option);
             } else {
                 $result[0]->scan_options->id = 1;
             }
@@ -967,9 +973,9 @@ class DiscoveriesModel extends BaseModel
         if (!empty($options)) {
             $discovery_scan_options = $options[0];
         } else {
-            if (!empty(config('Openaudit')->discovery_default_scan_option)) {
+            if (!empty($instance->config->discovery_default_scan_option)) {
                 $sql = "SELECT * FROM discovery_scan_options WHERE id = ?";
-                $options = $this->db->query($sql, [config('Openaudit')->discovery_default_scan_option])->getResult();
+                $options = $this->db->query($sql, [$instance->config->discovery_default_scan_option])->getResult();
                 $discovery_scan_options = $options[0];
             }
             if (empty($options)) {
@@ -1011,9 +1017,9 @@ class DiscoveriesModel extends BaseModel
                 }
             }
         }
-        if (!empty(config('Openaudit')->discovery_ip_exclude)) {
+        if (!empty($instance->config->discovery_ip_exclude)) {
             // Account for users adding multiple spaces which would be converted to multiple comma's.
-            $exclude_ip = preg_replace('!\s+!', ' ', config('Openaudit')->discovery_ip_exclude);
+            $exclude_ip = preg_replace('!\s+!', ' ', $instance->config->discovery_ip_exclude);
             // Convert spaces to comma's
             $exclude_ip = str_replace(' ', ',', $exclude_ip);
             if (!empty($result[0]->scan_options->exclude_ip)) {

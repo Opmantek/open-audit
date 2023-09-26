@@ -58,7 +58,7 @@ class BaselinesResults extends BaseController
                 $test1 = (!empty($r->test1)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->test1))) : '';
                 $test2 = (!empty($r->test2)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->test2))) : '';
                 $test3 = (!empty($r->test3)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->test3))) : '';
-                if (!empty(config('Openaudit')->output_escape_csv) and config('Openaudit')->output_escape_csv === 'y') {
+                if (!empty($this->config->output_escape_csv) and $this->config->output_escape_csv === 'y') {
                     if (strpos($id, '=') === 0 or strpos($id, '+') === 0 or strpos($id, '-') === 0 or strpos($id, '@') === 0) {
                         $id = "'" . $id;
                     }

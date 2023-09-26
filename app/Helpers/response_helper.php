@@ -28,6 +28,13 @@ if (!function_exists('response_create')) {
         //     parse_str(substr(strrchr($_SERVER['REQUEST_URI'], '?'), 1), $_GET);
         // }
 
+        if (!empty($instance->config)) {
+            $config = $instance->config;
+        }
+        if (empty($config)) {
+            $config = config('Openaudit');
+        }
+
         $response = new \StdClass();
         $response->meta = new \StdClass();
         $response->meta->action = strtolower($instance->method);
@@ -83,7 +90,7 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
             if (empty($response->meta->collection)) {
-                $response->meta->collection = (!empty(config('OpenAudit')->homepage)) ? config('OpenAudit')->homepage : 'orgs';
+                $response->meta->collection = (!empty($config->homepage)) ? $config->homepage : 'orgs';
             }
         }
         $valid_collections = response_valid_collections();
@@ -144,7 +151,7 @@ if (!function_exists('response_create')) {
         // $response->meta->ids = null; // Only set below if it contains data
         $response->meta->include = '';
         $response->meta->limit = '';
-        $response->meta->microtime = config('OpenAudit')->microtime;
+        $response->meta->microtime = $config->microtime;
         $response->meta->offset = 0;
         $response->meta->properties = '';
         // NOTE see response_get_query_filter for why we do the below with the query string
@@ -154,7 +161,7 @@ if (!function_exists('response_create')) {
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
         }
-        $response->meta->server_app_version = config('Openaudit')->display_version;
+        $response->meta->server_app_version = $config->display_version;
         $response->meta->server_platform = php_uname('s');
         if ($response->meta->server_platform === 'Windows NT') {
             $command = 'wmic os get name';
@@ -180,8 +187,8 @@ if (!function_exists('response_create')) {
         $response->meta->time_end = 0;
         $response->meta->time_elapsed = 0;
         $response->meta->total = 0;
-        $response->meta->timestamp = config('OpenAudit')->timestamp;
-        $response->meta->timezone = config('OpenAudit')->timezone;
+        $response->meta->timestamp = $config->timestamp;
+        $response->meta->timezone = $config->timezone;
         $response->meta->version = 1;
         $response->meta->filter = array();
         $response->meta->received_data = array();
@@ -230,7 +237,7 @@ if (!function_exists('response_create')) {
         // If we're creating data (POST), we should have an access token (configuration depending)
         if (!empty($response->meta->received_data)) {
             $session = \Config\Services::session();
-            if ($response->meta->request_method === 'POST' && !empty(config('OpenAudit')->access_token_enable) && config('OpenAudit')->access_token_enable === 'y') {
+            if ($response->meta->request_method === 'POST' && !empty($config->access_token_enable) && $config->access_token_enable === 'y') {
                 if (empty($response->meta->received_data->access_token)) {
                     $message = 'No access token provided when creating ' . $response->meta->collection . ', refresh the form and try again.';
                     log_message('error', $message);
@@ -296,7 +303,7 @@ if (!function_exists('response_create')) {
             $request->getGet('limit'),
             $request->getPost('limit'),
             $response->meta->format,
-            config('OpenAudit')->page_size
+            $config->page_size
         );
 
         // depends on collection
@@ -407,7 +414,7 @@ if (!function_exists('response_create')) {
 
         # Enterprise
         $db = db_connect();
-        if (!empty(config('Openaudit')->enterprise_binary) and $db->tableExists('enterprise')) {
+        if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             // TODO - fix this
             if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
@@ -427,7 +434,7 @@ if (!function_exists('response_create')) {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
             }
             $response->meta->user_details = $instance->user;
-            $response->meta->config = clone config('Openaudit');
+            $response->meta->config = clone $config;
             unset($response->meta->config->modules);
             // Insert the entry
             $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
@@ -436,17 +443,17 @@ if (!function_exists('response_create')) {
             // Call the binary and wait for it's response
             unset($output);
             if (php_uname('s') === 'Windows NT') {
-                $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " $id";
+                $command = "%comspec% /c start /b " . $config->enterprise_binary . " $id";
                 if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
-                    $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " --debug $id";
+                    $command = "%comspec% /c start /b " . $config->enterprise_binary . " --debug $id";
                     log_message('debug', $command);
                 }
                 @exec($command, $output);
                 pclose(popen($command, 'r'));
             } else {
-                $command = config('Openaudit')->enterprise_binary . " $id";
+                $command = $config->enterprise_binary . " $id";
                 if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
-                    $command = config('Openaudit')->enterprise_binary . " --debug $id";
+                    $command = $config->enterprise_binary . " --debug $id";
                     log_message('debug', $command);
                 }
                 @exec($command, $output);
@@ -464,11 +471,11 @@ if (!function_exists('response_create')) {
             }
             $response->meta->permission_requested = json_decode(json_encode($response->meta->permission_requested), true);
             if (!empty($response->meta->license)) {
-                config('Openaudit')->license = $response->meta->license;
+                $config->license = $response->meta->license;
                 unset($response->meta->license);
             }
             if (!empty($response->meta->product)) {
-                config('Openaudit')->product = $response->meta->product;
+                $config->product = $response->meta->product;
                 unset($response->meta->product);
             }
             // Delete the DB entry
@@ -487,8 +494,8 @@ if (!function_exists('response_create')) {
             unset($response->meta->user_details);
             unset($response->meta->config);
         } else {
-            config('Openaudit')->license = 'none';
-            config('Openaudit')->product = 'community';
+            $config->license = 'none';
+            $config->product = 'community';
             $response->meta->license_string = '';
         }
         return $response;

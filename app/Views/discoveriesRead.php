@@ -163,7 +163,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="scan" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
-                                    <?php if (config('Openaudit')->product === 'professional' or config('Openaudit')->product === 'enterprise') { ?>
+                                    <?php if ($config->product === 'professional' or $config->product === 'enterprise') { ?>
                                         <?= read_select('scan_options.id', $resource->scan_options->id, $dictionary->columns->{'scan_options.id'}, $update, __('Scan Options'), $included['discovery_scan_options']) ?>
                                     <?php } else { ?>
                                         <?= read_field('scan_options_orig', $resource->scan_options->{'discovery_scan_options.name'}, $dictionary->columns->{'scan_options.id'}) ?>
@@ -188,7 +188,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         }
                                         $new_options = $options;
                                         $new_options[] = $default;
-                                        if (config('Openaudit')->product === 'enterprise') {
+                                        if ($config->product === 'enterprise') {
                                             echo read_select('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, __($value), $new_options);
                                         } else {
                                             echo read_field('scan_options.' . $key, $default->attributes->name, '', false, __($value));
@@ -212,7 +212,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <option value="4" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '4') { echo "selected"; } ?>><?= __('Aggressive') ?></option>
                                                     <option value="5" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '5') { echo "selected"; } ?>><?= __('Insane') ?></option>
                                                 </select>
-                                                <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="scan_options.timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                                     <div data-attribute="scan_options.timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
@@ -239,7 +239,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <option value="100" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '2') { echo "selected"; } ?>>100</option>
                                                     <option value="1000" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '3') { echo "selected"; } ?>>1000</option>
                                                 </select>
-                                                <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                                     <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
@@ -266,7 +266,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <option value="100" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '2') { echo "selected"; } ?>>100</option>
                                                     <option value="1000" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '3') { echo "selected"; } ?>>1000</option>
                                                 </select>
-                                                <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                                     <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
@@ -294,7 +294,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         } else {
                                             $placeholder = 'Not Set';
                                         }
-                                        if (config('Openaudit')->product === 'enterprise') {
+                                        if ($config->product === 'enterprise') {
                                             echo read_field('scan_options' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder);
                                         } else {
                                             echo read_field('scan_options' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder);
@@ -332,9 +332,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= @$resource->scan_options->{$match} ?>" disabled>
                                                     <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
                                                     <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
-                                                    <option value=""  <?php if ($field === '')  { echo 'selected'; } ?>><?= __('Config Default, currently \'' . config('Openaudit')->{$match} . '\'') ?></option>
+                                                    <option value=""  <?php if ($field === '')  { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
                                                 </select>
-                                                <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                                     <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>

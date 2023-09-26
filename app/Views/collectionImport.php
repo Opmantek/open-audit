@@ -113,8 +113,8 @@ if ($collection === "summaries") {
 
 if ($collection === "tasks") {
     $sample = ' <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"name","org_id","description","enabled","type","sub_resource_id","first_run","minute","hour","day_of_month","month","day_of_week","uuid","options"</td></tr>
-                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"My Test Discovery","1","This is a test for discovering my local subnet each weekday at 10:05 am.","y","discoveries","1","2017-06-01","5","10","*","*","1,2,3,4,5","' . $config('Openaudit')->uuid . '"</td></tr>
-                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"New Devices","1","Email me the new devices report each week.","y","reports","10002","2017-06-01","5","9","*","*","5","' . $config('Openaudit')->uuid . '","{\'email_address\':\'my.email.address@open-audit.com\',\'format\':\'csv\'}"</td></tr>';
+                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"My Test Discovery","1","This is a test for discovering my local subnet each weekday at 10:05 am.","y","discoveries","1","2017-06-01","5","10","*","*","1,2,3,4,5","' . $config->uuid . '"</td></tr>
+                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"New Devices","1","Email me the new devices report each week.","y","reports","10002","2017-06-01","5","9","*","*","5","' . $config->uuid . '","{\'email_address\':\'my.email.address@open-audit.com\',\'format\':\'csv\'}"</td></tr>';
 }
 
 if ($collection === "users") {

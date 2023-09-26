@@ -64,11 +64,11 @@ class Discoveries extends BaseController
         $this->resp->included = $this->discoveriesModel->includedRead($id);
         $supportModel = new \App\Models\SupportModel();
         $this->resp->included['support'] = $supportModel->collection($this->resp);
-        if (!empty(config('Openaudit')->maps_api_key)) {
-            config('Openaudit')->maps_api_key = 'Removed from display, but has been set';
+        if (!empty($this->config->maps_api_key)) {
+            $this->config->maps_api_key = 'Removed from display, but has been set';
         }
-        if (!empty(config('Openaudit')->mail_password)) {
-            config('Openaudit')->mail_password = 'Removed from display, but has been set';
+        if (!empty($this->config->mail_password)) {
+            $this->config->mail_password = 'Removed from display, but has been set';
         }
         $this->resp->included['configuration'] = config('Openaudit');
         output($this);

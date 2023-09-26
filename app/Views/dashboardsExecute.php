@@ -138,7 +138,7 @@ foreach ($checks as $key => $value) {
                                 }
                                 echo "</ul>\n";
 
-                                if (config('Openaudit')->rss_enable !== "n") { ?>
+                                if ($config->rss_enable !== "n") { ?>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <br /><h5><?= __('News Feed') ?></h5>
@@ -243,7 +243,7 @@ window.onload = function () {
             }
         } ?>
 
-<?php if (config('Openaudit')->rss_enable !== "n") { ?>
+<?php if ($config->rss_enable !== "n") { ?>
         function getDate(days)
         {
             if (days == "") { days = 0; }
@@ -293,9 +293,9 @@ window.onload = function () {
             }
         })(jQuery)
 
-        var rssurl = "<?= config('Openaudit')->rss_url ?>";
+        var rssurl = "<?= $config->rss_url ?>";
         var rssfeed = $.ajax({
-            url: "<?= config('Openaudit')->rss_url ?>",
+            url: "<?= $config->rss_url ?>",
             ifModified: true
         })
         .done(function(data) {

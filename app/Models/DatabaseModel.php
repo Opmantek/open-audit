@@ -89,6 +89,7 @@ class DatabaseModel extends BaseModel
      */
     public function export(string $table = ''): array
     {
+        $instance = & get_instance();
         $db = db_connect();
         if (!$db->tableExists($table)) {
             return array();
@@ -99,7 +100,7 @@ class DatabaseModel extends BaseModel
         $count = count($result);
         // Credentials Clouds both use an encrypted JSON string in the credentials column. Decode this.
         if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
-            if (config('Openaudit')->decrypt_credentials === 'y') {
+            if ($instance->config->decrypt_credentials === 'y') {
                 for ($i=0; $i < $count; $i++) {
                     $result[$i]->credentials = simpleDecrypt($result[$i]->credentials, config('Encryption')->key);
                     $result[$i]->credentials = json_decode($result[$i]->credentials);

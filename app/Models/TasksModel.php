@@ -28,6 +28,7 @@ class TasksModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        $instance = & get_instance();
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
@@ -65,7 +66,7 @@ class TasksModel extends BaseModel
             // Collectors
             $result[$i]->{'collectors.name'} = 'localhost';
             $result[$i]->{'collectors.id'} = 0;
-            if (!empty($result[$i]->uuid) and $result[$i]->uuid !== config('Openaudit')->uuid) {
+            if (!empty($result[$i]->uuid) and $result[$i]->uuid !== $instance->config->uuid) {
                 $sql = 'SELECT id, name FROM collectors WHERE uuid = ? LIMIT 1';
                 $data_result = $this->db->query($sql, [$result[$i]->uuid])->getResult();
                 if (!empty($data_result[0]->name)) {

@@ -181,7 +181,7 @@ class Database extends BaseController
                 $return[] = $item;
             }
             $this->resp->data = $return;
-            config('Openaudit')->output_escape_csv = 'n';
+            $this->config->output_escape_csv = 'n';
             output($this);
         }
         if ($this->resp->meta->format === 'json' or $this->resp->meta->format === 'json_data') {
@@ -239,7 +239,7 @@ class Database extends BaseController
         if ($action === 'post') {
             $output = $this->databaseModel->update();
             $errors = array();
-            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
+            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . $this->config->display_version . " (" . $this->config->internal_version . ").");
             return view('shared/header', [
                 'config' => $this->config,
                 'dashboards' => filter_response($this->dashboards),

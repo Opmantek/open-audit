@@ -66,9 +66,10 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         $this->session = session();
+
         $this->config = new \Config\OpenAudit();
 
-        $this->config->homepage = 'orgsCollection';
+        $this->config->homepage = 'orgs';
 
         $this->usersModel = model('App\Models\UsersModel');
         $this->user = $this->usersModel->userValidate();
@@ -85,7 +86,7 @@ abstract class BaseController extends Controller
             define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
         }
 
-        if (config('Openaudit')->internal_version > 20230614) {
+        if ($this->config->internal_version > 20230614) {
             $this->orgs = $this->orgsModel->listAll();
         }
 
@@ -244,8 +245,8 @@ abstract class BaseController extends Controller
             $this->resp->meta->action !== 'defaults') {
             $action = $this->resp->meta->permission_requested[$this->resp->meta->action];
 
-            if (strpos($this->collections->{$this->resp->meta->collection}->actions->{config('Openaudit')->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
-                log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . config('Openaudit')->product . ' license.');
+            if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+                log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
                 header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
                 exit();

@@ -32,7 +32,7 @@ include 'shared/read_functions.php';
                                             <option value="4" <?php if ($resource->{'timing'} == '4') { ?> selected <?php } ?>><?= __('Aggressive') ?></option>
                                             <option value="5" <?php if ($resource->{'timing'} == '5') { ?> selected <?php } ?>><?= __('Insane') ?></option>
                                         </select>
-                                        <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                        <?php if ($update and $config->product === 'enterprise') { ?>
                                         <div class="pull-right" style="padding-left:4px;">
                                             <div data-attribute="timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                             <div data-attribute="timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
@@ -54,7 +54,7 @@ include 'shared/read_functions.php';
                                             <option value="100" <?php if ($resource->{'nmap_tcp_ports'} == '100') { ?> selected <?php } ?>>100</option>
                                             <option value="1000" <?php if ($resource->{'nmap_tcp_ports'} == '1000') { ?> selected <?php } ?>>1000</option>
                                         </select>
-                                        <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                        <?php if ($update and $config->product === 'enterprise') { ?>
                                         <div class="pull-right" style="padding-left:4px;">
                                             <div data-attribute="nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                             <div data-attribute="nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
@@ -76,7 +76,7 @@ include 'shared/read_functions.php';
                                             <option value="100" <?php if ($resource->{'nmap_udp_ports'} == '100') { ?> selected <?php } ?>>100</option>
                                             <option value="1000" <?php if ($resource->{'nmap_udp_ports'} == '1000') { ?> selected <?php } ?>>1000</option>
                                         </select>
-                                        <?php if ($update and config('Openaudit')->product === 'enterprise') { ?>
+                                        <?php if ($update and $config->product === 'enterprise') { ?>
                                         <div class="pull-right" style="padding-left:4px;">
                                             <div data-attribute="nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
                                             <div data-attribute="nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>

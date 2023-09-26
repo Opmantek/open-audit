@@ -12,7 +12,6 @@ use CodeIgniter\Model;
 
 class BaseModel extends Model
 {
-
     public function __construct()
     {
         $this->sql_file = APPPATH . '../other/open-audit.sql';
@@ -72,7 +71,7 @@ class BaseModel extends Model
             }
         }
         if ($db->fieldExists('edited_date', $table)) {
-            $insert_data->edited_date = config('Openaudit')->timestamp;
+            $insert_data->edited_date = $instance->config->timestamp;
         }
         return $insert_data;
     }
@@ -106,7 +105,7 @@ class BaseModel extends Model
             }
         }
         if ($db->fieldExists('edited_date', $table)) {
-            $update_data->edited_date = config('Openaudit')->timestamp;
+            $update_data->edited_date = $instance->config->timestamp;
         }
         return $update_data;
     }

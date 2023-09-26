@@ -88,31 +88,29 @@ class Cli extends Controller
     public function executeTasks()
     {
         $this->config = new \Config\OpenAudit();
-        echo "Binary is: " . config('Openaudit')->enterprise_binary . "\n";
-        if (empty(config('Openaudit')->enterprise_binary)) {
+        if (empty($this->config->enterprise_binary)) {
             return;
         }
         $response = new stdClass();
         $response->meta = new stdClass();
         $response->meta->collection = 'tasks';
         $response->meta->action = 'execute';
-        $response->meta->uuid = config('Openaudit')->uuid;
+        $response->meta->uuid = $this->config->uuid;
 
-        echo json_encode($response) . "\n";
+        # echo json_encode($response) . "\n";
 
         $db = db_connect() or die("Cannot establish a database connection.");
         // Insert the entry
         $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
         $db->query($sql, [json_encode($response)]);
         $id = $db->insertID();
-        echo "ID: $id\n";
         // Call the binary and wait for it's response
         if (php_uname('s') === 'Windows NT') {
-            $command = "%comspec% /c start /b " . config('Openaudit')->enterprise_binary . " $id";
+            $command = "%comspec% /c start /b " . $this->config->enterprise_binary . " $id";
             @exec($command, $output);
             pclose(popen($command, 'r'));
         } else {
-            $command = config('Openaudit')->enterprise_binary . " $id";
+            $command = $this->config->enterprise_binary . " $id";
             @exec($command, $output);
         }
         if (!empty($output)) {

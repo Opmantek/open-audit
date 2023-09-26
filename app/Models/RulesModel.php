@@ -576,7 +576,7 @@ class RulesModel extends BaseModel
                             
                             case 'timestamp':
                                 if ($output->value == '') {
-                                    $newdevice->{$output->attribute} = config('Openaudit')->timestamp;
+                                    $newdevice->{$output->attribute} = $instance->config->timestamp;
                                 } else {
                                     $newdevice->{$output->attribute} = intval($output->value);
                                 }

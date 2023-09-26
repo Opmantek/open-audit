@@ -155,7 +155,7 @@ class DiscoveryLogModel extends BaseModel
 
         // TODO - enable
         // If we are a collector, forward the log
-        if (!empty(config('Openaudit')->servers)) {
+        if (!empty($instance->config->servers)) {
             $log = $newdata;
             $post_items = array();
             $post_items[] = 'type=discovery';
@@ -172,7 +172,7 @@ class DiscoveryLogModel extends BaseModel
                 }
             }
             $post = implode('&', $post_items);
-            $server = config('Openaudit')->servers;
+            $server = $instance->config->servers;
             if (!empty($server->host) and !empty($server->community)) {
                 $connection = curl_init($server->host . $server->community . '/index.php/input/logs');
                 curl_setopt($connection, CURLOPT_CONNECTTIMEOUT, 30);

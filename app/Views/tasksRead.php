@@ -23,7 +23,7 @@ include 'shared/read_functions.php';
                             <?php if (!empty($included['collectors']) and $resource->type === 'discoveries') { ?>
                                 <?= read_select('uuid', $resource->uuid, $dictionary->columns->uuid, $update, __('Collector (UUID)'), $included['collectors']) ?>
                             <?php } else { ?>
-                            <input type="hidden" value="<?= config('Openaudit')->uuid ?>" id="uuid" name="uuid" />
+                            <input type="hidden" value="<?= $config->uuid ?>" id="uuid" name="uuid" />
                             <?php } ?>
 
                             <?php if ($resource->type === 'queries' or $resource->type === 'reports' or $resource->type === 'summaries') { ?>

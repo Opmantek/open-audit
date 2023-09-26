@@ -12,13 +12,13 @@ include 'shared/read_functions.php';
                     <div class="row">
                         <div class="col-6">
                             <form class="form-horizontal" id="form_update" method="post" action="<?= url_to('databaseUpdate') ?>">
-                                <?= read_field('Open-AudIT Current Version', $data->current_version . ' (' . config('Openaudit')->internal_version . ')', '', '') ?>
-                                <?php if (intval(config('Openaudit')->internal_version) < intval(config('Openaudit')->appVersion)) {
-                                    echo read_field('Open-AudIT Upgrade to Version', $data->new_version . ' (' . config('Openaudit')->appVersion . ')', '', '');
+                                <?= read_field('Open-AudIT Current Version', $data->current_version . ' (' . $config->internal_version . ')', '', '') ?>
+                                <?php if (intval($config->internal_version) < intval($config->appVersion)) {
+                                    echo read_field('Open-AudIT Upgrade to Version', $data->new_version . ' (' . $config->appVersion . ')', '', '');
                                 } ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                    <?php if (intval(config('Openaudit')->internal_version) < intval(config('Openaudit')->appVersion)) {
+                                    <?php if (intval($config->internal_version) < intval($config->appVersion)) {
                                         if (strpos($user->permissions['database'], 'u') === false) { ?>
                                             <br />
                                             <?= __('The database version and web version are inconsistent.') ?>

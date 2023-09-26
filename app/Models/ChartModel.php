@@ -59,7 +59,7 @@ class ChartModel extends BaseModel
             $filter = new \stdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
-            $temp = config('Openaudit')->graph_days;
+            $temp = $instance->config->graph_days;
             $days = intval($temp);
             if (empty($temp)) {
                 $days = 30;

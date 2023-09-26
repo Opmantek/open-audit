@@ -65,7 +65,7 @@ header('X-Content-Type-Options: nosniff');
                     location.href = "<?= base_url() ?>index.php/scripts/osx/download";
                 }
             }
-            <?php if (config('Openaudit')->device_count === 0) { ?>
+            <?php if ($config->device_count === 0) { ?>
             document.getElementById("username").value = "admin";
             document.getElementById("password").value = "password";
             <?php } ?>
@@ -106,14 +106,14 @@ header('X-Content-Type-Options: nosniff');
                                         <div class="offset-5 col-2" style="position:relative;">
                                             <label class="form-label" for="submit"></label>
                                                 <?php $disabled = '';
-                                                if (empty(config('Openaudit')->internal_version)) {
+                                                if (empty($config->internal_version)) {
                                                     $disabled = 'disabled';
                                                 } ?>
                                             <button type="submit" class="btn btn-primary" id="submit" name="submit" <?php echo $disabled; ?>>Submit</button>
                                         </div>
                                     </div>
 
-                                    <?php if (config('Openaudit')->device_count === 0) { ?>
+                                    <?php if ($config->device_count === 0) { ?>
                                     <div class="row">
                                         <div class="offset-5 col-2" style="position:relative;">
                                             <div class="well well-sm" style="padding:10px; margin:4px; background:#d9edf7;">No devices are in the database.</div>
@@ -127,7 +127,7 @@ header('X-Content-Type-Options: nosniff');
                                         <div class="offset-2 col-8" style="position:relative;">
                                         <br>Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
                                         </div>
-                                        <?php if (!empty(config('Openaudit')->default_network_address) and strpos(config('Openaudit')->default_network_address, '127.0.0.1') === false and strpos(config('Openaudit')->default_network_address, 'localhost') === false and !empty(config('Openaudit')->default_network_address)) { ?>
+                                        <?php if (!empty($config->default_network_address) and strpos($config->default_network_address, '127.0.0.1') === false and strpos($config->default_network_address, 'localhost') === false and !empty($config->default_network_address)) { ?>
                                         <span align='center'>
                                             <br>
                                             <input type="button" class="btn btn-sm btn-primary" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" />

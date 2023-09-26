@@ -235,6 +235,7 @@ class UsersModel extends BaseModel
      */
     public function userValidate()
     {
+        $instance = & get_instance();
         $session = \Config\Services::session();
         $request = \Config\Services::request();
         $uri = $request->getUri();
@@ -355,7 +356,7 @@ class UsersModel extends BaseModel
                 $temp = bin2hex(openssl_random_pseudo_bytes(30));
                 $user->access_token = $temp;
                 $access_token[] = $temp;
-                $access_token = array_slice($access_token, -intval(config('Openaudit')->access_token_count));
+                $access_token = array_slice($access_token, -intval($instance->config->access_token_count));
                 $userdata = array('user_id' => $user->id, 'access_token' => $access_token);
                 $session->set($userdata);
                 return $user;

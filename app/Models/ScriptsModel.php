@@ -341,8 +341,8 @@ class ScriptsModel extends BaseModel
             $options->url ===  'http://localhost/open-audit/index.php/input/devices' or
             $options->url === 'https://localhost/open-audit/index.php/input/devices') {
             // inject our default network address
-            if (!empty(config('Openaudit')->default_network_address)) {
-                $options->url = config('Openaudit')->default_network_address . 'index.php/input/devices';
+            if (!empty($instance->config->default_network_address)) {
+                $options->url = $instance->config->default_network_address . 'index.php/input/devices';
             } else {
                 unset($options->url);
             }

@@ -38,7 +38,7 @@ include 'shared/create_functions.php';
 
                                 <?php
                                 $disabled = 'disabled';
-                                if (config('Openaudit')->product === 'enterprise' or config('Openaudit')->product === 'professional') {
+                                if ($config->product === 'enterprise' or $config->product === 'professional') {
                                     $disabled = '';
                                 } ?>
                                 <div class="row" style="padding-top:16px;">
@@ -112,7 +112,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
-        $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= config('Openaudit')->discovery_default_scan_option ?>);
+        $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= $config->discovery_default_scan_option ?>);
         $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").append($('<option>', { value: '', text: ''}));
         $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").val("");
         $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").append($('<option>', { value: '', text: ''}));

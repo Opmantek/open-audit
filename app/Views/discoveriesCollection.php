@@ -4,7 +4,7 @@
 include 'shared/collection_functions.php';
 ?>
         <main class="container-fluid">
-            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none') { ?>
+            <?php if (!empty($config->license) and $config->license !== 'none') { ?>
             <div class="card">
                 <div class="card-header" style="height:57px;">
                     <div class="row">
@@ -25,7 +25,7 @@ include 'shared/collection_functions.php';
                                 <div class="offset-3 col-6">
                                     <label for="queue_limit" class="form-label"><?= __('Queue Limit') ?></label>
                                     <div class="input-group">
-                                        <input disabled title="<?= __('Queue Limit') ?>" type="text" class="form-control"  id="queue_limit" name="queue_limit" value="<?= config('Openaudit')->queue_limit ?>">
+                                        <input disabled title="<?= __('Queue Limit') ?>" type="text" class="form-control"  id="queue_limit" name="queue_limit" value="<?= $config->queue_limit ?>">
                                         <span class="pull-right">
                                             <?php if (strpos($user->permissions['configuration'], 'u') !== false) { ?>
                                             <a href="<?= url_to('configurationCollection') ?>/queue_limit" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-cog" aria-hidden="true"></span></a>
@@ -39,9 +39,9 @@ include 'shared/collection_functions.php';
                                 <div class="offset-3 col-6">
                                     <label for="queue_count" class="form-label"><?= __('Current Discovery Processes') ?></label>
                                     <div class="input-group">
-                                        <input disabled title="<?= __('Current Discovery Processes') ?>" type="text" class="form-control"  id="queue_count" name="queue_count" value="<?= config('Openaudit')->queue_count ?>">
+                                        <input disabled title="<?= __('Current Discovery Processes') ?>" type="text" class="form-control"  id="queue_count" name="queue_count" value="<?= $config->queue_count ?>">
                                         <span class="pull-right">
-                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and intval(config('Openaudit')->queue_count) > 0) { ?>
+                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and intval($config->queue_count) > 0) { ?>
                                             <a id="delete_queue_count" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Count') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The number of running discovery threads.">?</button>
@@ -108,7 +108,7 @@ include 'shared/collection_functions.php';
             <br />
             <?php } ?>
 
-            <?php if (!empty(config('Openaudit')->license) and config('Openaudit')->license !== 'none' and !empty($included['issues'])) { ?>
+            <?php if (!empty($config->license) and $config->license !== 'none' and !empty($included['issues'])) { ?>
             <div class="card">
                 <div class="card-header" style="height:57px;">
                     <div class="row">

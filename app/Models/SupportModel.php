@@ -39,7 +39,7 @@ class SupportModel extends BaseModel
         $data->webserver = new stdClass();
         $data->stats = new stdClass();
 
-        $config = clone config('Openaudit');
+        $config = clone $instance->config;
         unset($config->enterprise_collections);
         unset($config->professional_collections);
         if (!empty($config->modules) and is_string($config->modules)) {

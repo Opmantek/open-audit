@@ -20,7 +20,7 @@ include 'shared/create_functions.php';
                                 <h5><?= __('Your Licenses') ?></h5><br />
                                 <div id="license_string">
                                 <?php
-                                if (!empty(config('Openaudit')->license_string)) {
+                                if (!empty($config->license_string)) {
                                     $disabled = 'disabled';
                                     $valid = '<span class="text-success">' . __('valid') . '</span>';
                                     if (intval($license->expires) < intval(time())) {

@@ -185,7 +185,7 @@ window.onload = function () {
     url_text = '                                <div class="row" style="padding-top:16px">\
                             <div class="offset-1 col-10">\
                                 <label for="data[attributes][options][url]" class="form-label">URL</label><br>\
-                                <input class="form-control" type="text" id="data[attributes][options][url]" name="data[attributes][options][url]" value="http://<?= config('Openaudit')->server_ip ?>/open-audit/index.php/input/devices">\
+                                <input class="form-control" type="text" id="data[attributes][options][url]" name="data[attributes][options][url]" value="http://<?= $config->server_ip ?>/open-audit/index.php/input/devices">\
                                 The address of the Open-AudIT server "submit" page.\
                             </div>\
                         </div>\
