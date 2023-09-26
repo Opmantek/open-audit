@@ -38,6 +38,9 @@ if (!empty($included['fields'])) {
                                                     <li class="list-group-item section_toggle" data-section="audit_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/audit_log.svg" alt=""> <a href="#"><?= __('Audit Log') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="cell_details_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/cell_details.svg" alt=""> <a href="#"><?= __('Cellular Details') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="change_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/change_log.svg" alt=""> <a href="#"><?= __('Change Log') ?></a></li>
+                                                    <?php if (!empty($resource->instance_type)) { ?>
+                                                    <li class="list-group-item section_toggle" data-section="cloud_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/cloud.svg" alt=""> <a href="#"><?= __('Cloud Details') ?></a></li>
+                                                    <?php } ?>
                                                     <li class="list-group-item section_toggle" data-section="cluster_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/cluster.svg" alt=""> <a href="#"><?= __('Cluster') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="credentials_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/credentials.svg" alt=""> <a href="#"><?= __('Credentials') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="discovery_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/discovery_log.svg" alt=""> <a href="#"><?= __('Discovery Log') ?></a></li>
@@ -373,6 +376,54 @@ if (!empty($included['fields'])) {
                                             <?php } ?>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="cloud_section">
+                                <?=  device_panel('cloud', $user->toolbar_style); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_provider=" . urlencode($resource->instance_provider) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('instance_provider', $resource->instance_provider, '', false, '', $link) ?>
+
+                                            <?= read_field('instance_ident', $resource->instance_ident) ?>
+
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_state=" . $resource->instance_state . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('instance_state', $resource->instance_state, '', false, '', $link) ?>
+
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_type=" . $resource->instance_type . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('instance_type', $resource->instance_type, '', false, '', $link) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="row" style="padding-top:16px;">
+                                                <div class="offset-2 col-8" style="position:relative;">
+                                                    <label for="sql" class="form-label"><?= __('API Result') ?></label>
+                                                    <div class="input-group">
+                                                        <textarea class="form-control" rows="12" id="instance_options" name="instance_options" disabled><?= html_entity_decode(json_encode($resource->instance_options, JSON_PRETTY_PRINT)) ?></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <?php $tags = $resource->instance_tags;
+                                            if ($resource->{'instance_provider'} === 'Microsoft Azure') {
+                                                foreach ($tags as $key => $value) {
+                                                    echo read_field(__('Tags :: ') . $key, $value);
+                                                }
+                                            }
+                                            if ($resource->{'instance_provider'} === 'Google Compute') {
+                                                foreach ($tags as $key => $value) {
+                                                    echo read_field(__('Tags :: ') . $key, $value);
+                                                }
+                                            }
+                                            if ($resource->instance_provider === 'Amazon AWS') {
+                                                foreach ($tags as $tag) {
+                                                    echo read_field(__('Tags') . ' :: ' . $tag->Key, $tag->Value);
+                                                }
+                                            } ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
