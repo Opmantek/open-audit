@@ -26,6 +26,7 @@ class DevicesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        $instance = & get_instance();
         $properties = $resp->meta->properties;
         $count = count($properties);
         for ($i=0; $i < $count; $i++) {
@@ -70,7 +71,7 @@ class DevicesModel extends BaseModel
         }
         $result = $query->getResult();
 
-        if (isset($result[0]->type) and isset($result[0]->last_seen_by) and config('Openaudit')->product !== 'community') {
+        if (isset($result[0]->type) and isset($result[0]->last_seen_by) and $instance->config->product !== 'community') {
             for ($i=0; $i < count($result); $i++) {
                 # BAD
                 if ($result[$i]->last_seen_by === 'nmap' and ($result[$i]->type === 'unclassified' or $result[$i]->type === 'unknown')) {
@@ -697,7 +698,7 @@ class DevicesModel extends BaseModel
             $data->timestamp = $data->last_seen;
         }
         if (empty($data->timestamp)) {
-            $data->timestamp = config('Openaudit')->timestamp;
+            $data->timestamp = $instance->config->timestamp;
         }
         // Get the lastest edit_log data
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE device_id = ? AND `db_table` = 'devices' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
