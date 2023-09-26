@@ -445,7 +445,15 @@ function check_ip(string $ip = ''): bool
     if (empty($ip)) {
         return false;
     }
-    if (empty(config('Openaudit')->blessed_subnets_use) or trim(strtolower(config('Openaudit')->blessed_subnets_use)) !== 'y') {
+
+    if (function_exists('get_instance')) {
+        $instance = & get_instance();
+    } else {
+        $instance = new stdClass();
+        $instance->config = config('Openaudit');
+    }
+
+    if (empty($instance->config->blessed_subnets_use) or trim(strtolower($instance->config->blessed_subnets_use)) !== 'y') {
         return true;
     }
     if ($ip === '127.0.0.1' or $ip === '127.0.1.1') {

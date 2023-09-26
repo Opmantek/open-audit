@@ -189,7 +189,7 @@ if (!function_exists('output')) {
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
 
         // Each individual data line
-        $output_escape_csv = @config('Openaudit')->output_escape_csv;
+        $output_escape_csv = @$instance->config->output_escape_csv;
         if (!empty($instance->resp->data)) {
             foreach ($instance->resp->data as $item) {
                 $line_array = array();
@@ -601,7 +601,7 @@ if (!function_exists('output')) {
             $output .= "\t</item>\n";
         }
         $output .=  "</" . $instance->resp->meta->collection . ">\n";
-        if ((string) config('Openaudit')->download_reports === 'y') {
+        if ((string)$instance->config->download_reports === 'y') {
             $instance->response->setContentType('text/xml');
             $instance->response->noCache();
             $instance->response->setHeader('Content-Disposition', 'attachment;filename="' . $filename . '.xml"');

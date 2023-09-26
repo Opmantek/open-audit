@@ -82,6 +82,13 @@ if (! function_exists('execute_windows')) {
         $log->command = '';
         $log->discovery_id = $discovery_id;
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         if (empty($ip)) {
             log_message('warning', 'No IP supplied to wmi_helper::execute_windows');
             return false;
@@ -161,8 +168,8 @@ if (! function_exists('execute_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command_string  = config('Openaudit')->base_path . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
-            $log->command    = config('Openaudit')->base_path . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
+            $command_string  = $instance->config->base_path . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
+            $log->command    = $instance->config->base_path . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
             exec($command_string, $output, $return_var);
             $log->message = 'Running command script on ' . $ip;
             $log->command_output = json_encode($output);

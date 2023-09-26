@@ -205,6 +205,13 @@ if (! function_exists('deviceMatch')) {
         }
         $details->id = '';
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         // if (empty($log) and empty($discovery_id)) {
         //     log_message('error', 'Function deviceMatch called without log object or discovery id.');
         //     return false;
@@ -229,7 +236,7 @@ if (! function_exists('deviceMatch')) {
         $log->function = 'deviceMatch';
         $log->severity = 7;
         $log->ip = (!empty($details->ip)) ? $details->ip : '';
-        $log->timestamp = (!empty($details->last_seen)) ? $details->last_seen : @config('OpenAudit')->timestamp;
+        $log->timestamp = (!empty($details->last_seen)) ? $details->last_seen : @$instance->config->timestamp;
         $log_message = array(); // we will store our messages until we get a devices.id, then write them to the log
 
         $message = new \StdClass();
@@ -246,7 +253,7 @@ if (! function_exists('deviceMatch')) {
         $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
         foreach ($matches as $item) {
             if (empty($match->{$item})) {
-                $match->{$item} = @config('OpenAudit')->{$item};
+                $match->{$item} = @$instance->config->{$item};
             }
         }
         $invalid_strings = array('To be filled by O.E.M.');
@@ -575,8 +582,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -634,8 +641,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -693,8 +700,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -753,8 +760,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -813,8 +820,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -885,8 +892,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1013,8 +1020,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1314,8 +1321,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     if (!empty($details->device_id)) {
                         $log->device_id = $details->id;
@@ -1325,7 +1332,7 @@ if (! function_exists('deviceMatch')) {
                     $message = new \StdClass();
                     $message->message = 'HIT on IP Address (network table).';
                     $message->command_status = 'success';
-                    $message->command_output = 'IP: ' . $details->ip . ', ID: ' . $details->id . ' OrgID: ' . @$details->org_id . ', Config: ' . config('Openaudit')->discovery_use_org_id_match . ', Potential OrgID: ' . $row->org_id;
+                    $message->command_output = 'IP: ' . $details->ip . ', ID: ' . $details->id . ' OrgID: ' . @$details->org_id . ', Config: ' . $instance->config->discovery_use_org_id_match . ', Potential OrgID: ' . $row->org_id;
                     $log_message[] = $message;
                     log_array($log, $log_message);
                     return intval($details->id);
@@ -1347,8 +1354,8 @@ if (! function_exists('deviceMatch')) {
                 $row = $query->getRow();
                 if (!empty($row->id)) {
                     if ((empty($details->org_id)) or
-                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                        (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                        (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                         $details->id = $row->id;
                         $log->device_id = $details->id;
                         $message = new \StdClass();
@@ -1408,8 +1415,8 @@ if (! function_exists('deviceMatch')) {
             $row = $query->getRow();
             if (!empty($row->id)) {
                 if ((empty($details->org_id)) or
-                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                    (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                    (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1479,8 +1486,8 @@ if (! function_exists('deviceMatch')) {
                 $row = $query->getRow();
                 if (!empty($row->id)) {
                     if ((empty($details->org_id)) or
-                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty(config('Openaudit')->discovery_use_org_id_match) and config('Openaudit')->discovery_use_org_id_match === 'y') or
-                        (empty(config('Openaudit')->discovery_use_org_id_match) or config('Openaudit')->discovery_use_org_id_match === 'n')) {
+                        (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
+                        (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
                         $details->id = $row->id;
                         $log->device_id = $details->id;
                         $message = new \StdClass();

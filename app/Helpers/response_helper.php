@@ -564,20 +564,14 @@ function response_get_debug($get = '', $post = '', $header = '')
     $debug = false;
     if (!empty($get) && strtolower($get) === 'true') {
         $summary = 'Set debug TRUE according to GET.';
-        #config('Openaudit')->log_level = 9;
-        #config('Logger')->threshold = 9;
         $debug = true;
     }
     if (!empty($post) && strtolower($post) === 'true') {
         $summary = 'Set debug TRUE according to POST.';
-        #config('Openaudit')->log_level = 9;
-        #config('Logger')->threshold = 9;
         $debug = true;
     }
     if (!empty($header) && strtolower($header) === 'true') {
         $summary = 'Set debug TRUE according to HEADER.';
-        #config('Openaudit')->log_level = 9;
-        #config('Logger')->threshold = 9;
         $debug = true;
     }
     if ($debug) {
@@ -1300,6 +1294,13 @@ if (!function_exists('response_get_properties')) {
         $properties = '';
         $summary = '';
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         if (!empty($get)) {
             $properties = $get;
             $summary = "Set properties according to GET.";
@@ -1321,9 +1322,9 @@ if (!function_exists('response_get_properties')) {
         if ($collection === 'devices' and $action === 'collection' and ($properties === 'default' or $properties === '')) {
                 $summary = 'Set properties to default because neither user nor config are set.';
                 $properties = 'devices.id,devices.uuid,devices.name,devices.ip,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.type,devices.icon,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification';
-            if (!empty(config('Openaudit')->devices_default_retrieve_columns)) {
+            if (!empty($instance->config->devices_default_retrieve_columns)) {
                 $summary = 'Set properties to config DEFAULT.';
-                $properties = config('Openaudit')->devices_default_retrieve_columns;
+                $properties = $instance->config->devices_default_retrieve_columns;
             }
             // if ($properties === 'default') {
             //     $summary = 'Set properties to config DEFAULT.';

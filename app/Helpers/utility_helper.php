@@ -28,7 +28,14 @@ function prereqCheck()
 
 function nmapInstalled()
 {
-    if (!empty(config('Openaudit')->discovery_override_nmap) && config('Openaudit')->discovery_override_nmap === 'y') {
+    if (function_exists('get_instance')) {
+        $instance = & get_instance();
+    } else {
+        $instance = new stdClass();
+        $instance->config = config('Openaudit');
+    }
+
+    if (!empty($instance->config->discovery_override_nmap) && $instance->config->discovery_override_nmap === 'y') {
         return 'y';
     }
     $nmap_installed = 'n';
@@ -72,7 +79,13 @@ function nmapSuid()
     if (php_uname('s') === 'Windows NT') {
         return 'y';
     }
-    if (!empty(config('Openaudit')->discovery_override_nmap) && config('Openaudit')->discovery_override_nmap === 'y') {
+    if (function_exists('get_instance')) {
+        $instance = & get_instance();
+    } else {
+        $instance = new stdClass();
+        $instance->config = config('Openaudit');
+    }
+    if (!empty($instance->config->discovery_override_nmap) && $instance->config->discovery_override_nmap === 'y') {
         return 'y';
     }
     $suid = 'n';

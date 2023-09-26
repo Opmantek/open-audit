@@ -47,8 +47,8 @@ if (! function_exists('scp')) {
         if (!empty($parameters->timeout)) {
             $timeout = intval($parameters->timeout);
         } else {
-            if (!empty(config('Openaudit]')->discovery_ssh_timeout)) {
-                $timeout = intval(config('Openaudit]')->discovery_ssh_timeout);
+            if (!empty($instance->config->discovery_ssh_timeout)) {
+                $timeout = intval($instance->config->discovery_ssh_timeout);
             }
         }
 
@@ -161,6 +161,14 @@ if (! function_exists('scp_get')) {
     function scp_get($parameters)
     {
         $item_start = microtime(true);
+
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $message = '';
         if (empty($parameters->ip)) {
@@ -213,8 +221,8 @@ if (! function_exists('scp_get')) {
         if (!empty($parameters->timeout)) {
             $timeout = intval($parameters->timeout);
         } else {
-            if (!empty(config('Openaudit')->discovery_ssh_timeout)) {
-                $timeout = intval(config('Openaudit')->discovery_ssh_timeout);
+            if (!empty($instance->config->discovery_ssh_timeout)) {
+                $timeout = intval($instance->config->discovery_ssh_timeout);
             }
         }
 
@@ -338,8 +346,8 @@ if (! function_exists('ssh_command')) {
         if (!empty($parameters->timeout)) {
             $timeout = intval($parameters->timeout);
         } else {
-            if (!empty(config('Openaudit')->discovery_ssh_timeout)) {
-                $timeout = intval(config('Openaudit')->discovery_ssh_timeout);
+            if (!empty($instance->config->discovery_ssh_timeout)) {
+                $timeout = intval($instance->config->discovery_ssh_timeout);
             }
         }
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
@@ -467,6 +475,13 @@ if (! function_exists('ssh_audit')) {
         $instance = & get_instance();
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         if (empty($parameters->credentials)) {
             $log = new \StdClass();
             $log->discovery_id = $parameters->discovery_id;
@@ -541,8 +556,8 @@ if (! function_exists('ssh_audit')) {
         if (!empty($parameters->timeout)) {
             $timeout = intval($parameters->timeout);
         } else {
-            if (!empty(config('Openaudit')->discovery_ssh_timeout)) {
-                $timeout = config('Openaudit')->discovery_ssh_timeout;
+            if (!empty($instance->config->discovery_ssh_timeout)) {
+                $timeout = $instance->config->discovery_ssh_timeout;
             }
         }
 
@@ -1197,8 +1212,8 @@ if (! function_exists('ssh_audit')) {
         $device->use_sudo = false;
         $command = '';
 
-        if (empty($device->which_sudo) and ! empty(config('Openaudit')->discovery_sudo_path)) {
-            $sudo_paths = explode(',', config('Openaudit')->discovery_sudo_path);
+        if (empty($device->which_sudo) and ! empty($instance->config->discovery_sudo_path)) {
+            $sudo_paths = explode(',', $instance->config->discovery_sudo_path);
             foreach ($sudo_paths as $sudo_path) {
                 if (strpos($device->shell, 'bash') === false && $device->bash !== '') {
                     $command = $device->bash . " -c 'ls {$sudo_path} 2>/dev/null'";
@@ -1234,8 +1249,8 @@ if (! function_exists('ssh_audit')) {
         }
 
         if ($username !== 'root') {
-            if ((config('Openaudit')->discovery_linux_use_sudo === 'y' and strtolower($device->os_group) === 'linux') or
-                (config('Openaudit')->discovery_sunos_use_sudo === 'y' and strtolower($device->os_group) === 'sunos') or
+            if (($instance->config->discovery_linux_use_sudo === 'y' and strtolower($device->os_group) === 'linux') or
+                ($instance->config->discovery_sunos_use_sudo === 'y' and strtolower($device->os_group) === 'sunos') or
                 (strtolower($device->os_group) !== 'linux' && strtolower($device->os_group) !== 'sunos')) {
                 if (!empty($device->which_sudo)) {
                     $item_start = microtime(true);

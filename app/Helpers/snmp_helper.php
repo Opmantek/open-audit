@@ -466,6 +466,13 @@ if (!function_exists('snmp_audit')) {
         $log->function = 'snmp_audit';
         $log->severity = 7;
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         if (!extension_loaded('snmp')) {
             log_message('error', 'SNMP PHP function not loaded hence not attempting to run snmp_helper::snmp_audit function.');
             $log->message = 'SNMP PHP function not loaded hence not attempting to run snmp_helper::snmp_audit function';
@@ -1547,8 +1554,8 @@ if (!function_exists('snmp_audit')) {
 
         $retrieve_routes = 0;
         $config_value = 20;
-        if (!empty(config('Openaudit')->discovery_route_retrieve_limit)) {
-            $config_value = config('Openaudit')->discovery_route_retrieve_limit;
+        if (!empty($instance->config->discovery_route_retrieve_limit)) {
+            $config_value = $instance->config->discovery_route_retrieve_limit;
         }
 
         $item_start = microtime(true);

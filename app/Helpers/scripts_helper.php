@@ -7,6 +7,14 @@ declare(strict_types=1);
 if (!function_exists('scripts_options')) {
     function scripts_options()
     {
+
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         $options = array();
 
         $options['audit_dns'] = new \stdClass();
@@ -172,7 +180,7 @@ if (!function_exists('scripts_options')) {
 
         $options['url'] = new \stdClass();
         $options['url']->name = 'url';
-        $options['url']->default = @config('Openaudit')->default_network_address . 'index.php/input/devices';
+        $options['url']->default = $instance->config->default_network_address . 'index.php/input/devices';
         $options['url']->help = 'The address of the Open-AudIT server "submit" page.';
         $options['url']->type = 'url';
         $options['url']->values = '';

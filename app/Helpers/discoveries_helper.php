@@ -865,7 +865,7 @@ if (! function_exists('ip_audit')) {
             $device->location_id = intval($discovery->devices_assigned_to_location);
         }
 
-        if (Config('Openaudit')->discovery_use_dns === 'y') {
+        if ($instance->config->discovery_use_dns === 'y') {
             $log->message = 'Checking DNS';
             $discoveryLogModel->create($log);
             $device = dns_validate($device);
@@ -1363,7 +1363,7 @@ if (! function_exists('ip_audit')) {
             $discoveryLogModel->create($log);
             $destination = 'audit_windows.vbs';
             $output = false;
-            if (php_uname('s') === 'Windows NT' and ! empty(config('Openaudit')->discovery_use_vintage_service) and config('Openaudit')->discovery_use_vintage_service === 'y') {
+            if (php_uname('s') === 'Windows NT' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                 // Windows Server (likely) running on the LocalSystem account.
                 // We cannot copy the audit script to the target and then run it,
                 // We _must_ run the script locally and use $device->ip as the script target
@@ -1454,7 +1454,7 @@ if (! function_exists('ip_audit')) {
                 if (php_uname('s') === 'Windows NT') {
                     $destination = $filepath . '\\scripts\\' . end($temp);
                 }
-                if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty(config('Openaudit')->discovery_use_vintage_service) and config('Openaudit')->discovery_use_vintage_service === 'y') {
+                if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                     if (rename($audit_file, $destination)) {
                         $copy = true;
                     }
@@ -1483,7 +1483,7 @@ if (! function_exists('ip_audit')) {
                     $discoveryLogModel->create($log);
                     $log->severity = 7;
                 }
-                if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty(config('Openaudit')->discovery_use_vintage_service) and config('Openaudit')->discovery_use_vintage_service === 'y') {
+                if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                     // no need to delete the remote file
                 } else {
                     // delete the remote audit result
@@ -1518,7 +1518,7 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Starting SSH audit script for ' . $device->ip;
             $discoveryLogModel->create($log);
             // copy the audit script to the target ip
-            $destination = config('Openaudit')->discovery_linux_script_directory;
+            $destination = $instance->config->discovery_linux_script_directory;
             if (substr($destination, -1) !== '/') {
                 $destination .= '/';
             }
@@ -1542,7 +1542,7 @@ if (! function_exists('ip_audit')) {
                 $log->command_status = 'notice';
             } else {
                 // Successfully copied the audit script, now chmod it
-                $command = 'chmod ' . config('Openaudit')->discovery_linux_script_permissions . ' ' . $destination;
+                $command = 'chmod ' . $instance->config->discovery_linux_script_permissions . ' ' . $destination;
                 // No use testing for a result as a chmod produces no output
                 $parameters = new \StdClass();
                 $parameters->discovery_id = $discovery->id;
@@ -1564,7 +1564,7 @@ if (! function_exists('ip_audit')) {
             }
             unset($destination);
             if ($audit_script !== '') {
-                $command = config('Openaudit')->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                $command = $instance->config->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
                 $log->command_output = '';
                 $log->command_status = 'notice';
@@ -1630,10 +1630,10 @@ if (! function_exists('ip_audit')) {
                     $parameters->discovery_id = $discovery->id;
                     $parameters->ssh_port = $ip_scan->ssh_port;
                     // Allow 20 seconds to copy the file
-                    $timeout = config('Openaudit')->discovery_ssh_timeout;
-                    config('Openaudit')->discovery_ssh_timeout = 20;
+                    $timeout = $instance->config->discovery_ssh_timeout;
+                    $instance->config->discovery_ssh_timeout = 20;
                     $temp = scp_get($parameters);
-                    config('Openaudit')->discovery_ssh_timeout = $timeout;
+                    $instance->config->discovery_ssh_timeout = $timeout;
                     if ($temp) {
                         $audit_result = file_get_contents($destination);
                         if (empty($audit_result)) {
@@ -1665,8 +1665,8 @@ if (! function_exists('ip_audit')) {
                         // add sudo, we need this if we have run the audit using sudo
                         $command = "{$device->which_sudo} " . $command;
                         // Allow 10 seconds to run the command
-                        $temp = intval(config('Openaudit')->discovery_ssh_timeout);
-                        config('Openaudit')->discovery_ssh_timeout = 5;
+                        $temp = intval($instance->config->discovery_ssh_timeout);
+                        $instance->config->discovery_ssh_timeout = 5;
                     }
                     $parameters = new \StdClass();
                     $parameters->discovery_id = $discovery->id;
@@ -1676,7 +1676,7 @@ if (! function_exists('ip_audit')) {
                     $parameters->ssh_port = $ip_scan->ssh_port;
                     ssh_command($parameters);
                     if ($temp > 0) {
-                        config('Openaudit')->discovery_ssh_timeout = $temp;
+                        $instance->config->discovery_ssh_timeout = $temp;
                     }
                 }
             }
@@ -1862,7 +1862,7 @@ if (! function_exists('ip_audit')) {
 
         // Generate any DNS entries required - only if this is a collector or the audit is NOT from a collector
         // TODO
-        // if (!empty(config('Openaudit')->servers) or empty($audit->system->collector_uuid)) {
+        // if (!empty($instance->config->servers) or empty($audit->system->collector_uuid)) {
         //     if (!empty($audit->system->id)) {
         //         $dns_entries = $CI->m_devices_components->create_dns_entries((int)$audit->system->id);
         //     } else if (!empty($device->id)) {
@@ -1893,8 +1893,8 @@ if (! function_exists('ip_audit')) {
         // }
 
         // If we are configured as a collector, forward the information to the server
-        if (!empty(config('Openaudit')->servers)) {
-            $server = config('Openaudit')->servers;
+        if (!empty($instance->config->servers)) {
+            $server = $instance->config->servers;
             $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
             $discoveryLogModel->create($log);
 
@@ -1907,7 +1907,7 @@ if (! function_exists('ip_audit')) {
                         $device_json->system->{$key} = $value;
                     }
                 }
-                $device_json->system->collector_uuid = config('Openaudit')->uuid;
+                $device_json->system->collector_uuid = $instance->config->uuid;
                 if (count($nmap_result) > 0) {
                     $device_json->nmap = new \StdClass();
                     $device_json->nmap = array();
@@ -1953,7 +1953,7 @@ if (! function_exists('ip_audit')) {
                 unset($audit->system->original_last_seen_by);
                 unset($audit->system->original_last_seen);
                 unset($audit->system->first_seen);
-                $audit->system->collector_uuid = config('Openaudit')->uuid;
+                $audit->system->collector_uuid = $instance->config->uuid;
                 $device_json = json_encode($audit);
             }
 

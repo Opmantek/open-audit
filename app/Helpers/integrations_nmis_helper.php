@@ -63,6 +63,13 @@ if (!function_exists('integrations_pre')) {
         $locationsModel = new \App\Models\LocationsModel();
         $db = db_connect();
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         // Get our devices
         $url = $integration->attributes->attributes->url;
         $url .= 'admin';
@@ -281,7 +288,7 @@ if (!function_exists('integrations_pre')) {
                 $myLocation->geo = $external_location->Geocode;
                 $myLocation->cloud_id = '';
                 $myLocation->edited_by = 'system';
-                $myLocation->edited_date = config('Openaudit')->timestamp;
+                $myLocation->edited_date = $instance->config->timestamp;
                 $location_ids[] = $locationsModel->create($myLocation);
 
                 if ($integration->log) {
@@ -1005,6 +1012,13 @@ if (!function_exists('integrations_post')) {
         $orgsModel = new \App\Models\OrgsModel();
         $locationsModel = new \App\Models\LocationsModel();
 
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
+
         // Get our devices
         $url = $integration->attributes->attributes->url;
         $url .= 'admin';
@@ -1198,7 +1212,7 @@ if (!function_exists('integrations_post')) {
                 $myLocation->geo = $external_location->Geocode;
                 $myLocation->cloud_id = '';
                 $myLocation->edited_by = 'system';
-                $myLocation->edited_date = config('Openaudit')->timestamp;
+                $myLocation->edited_date = $instance->config->timestamp;
                 $location_ids[] = $locationsModel->create($myLocation);
 
                 $message = "[integrations_post] " . 'Created new location: ' . $external_location->_id;
