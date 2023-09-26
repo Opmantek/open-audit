@@ -564,7 +564,14 @@ class DevicesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'devices');
+        $device = $query->getResult();
+        if (!empty($device[0]->instance_tags)) {
+            $device[0]->instance_tags = json_decode($device[0]->instance_tags);
+        }
+        if (!empty($device[0]->instance_options)) {
+            $device[0]->instance_options = json_decode($device[0]->instance_options);
+        }
+        return format_data($device, 'devices');
     }
 
     /**
@@ -716,6 +723,9 @@ class DevicesModel extends BaseModel
                     }
                     // calculate the weight
                     $weight = intval(weight($source));
+                    if (!is_string($value)) {
+                        $value = json_encode($value);
+                    }
                     if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
                         $update_device->$key = $value;
                         $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
