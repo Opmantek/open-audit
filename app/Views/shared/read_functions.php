@@ -196,14 +196,14 @@ function read_select(string $name = '', string $value = '', string $dictionary =
             if ($item->attributes->value === '') {
                 $selected .= ' label="none"';
             }
-            $return .= "                                            <option value=\"{$item->attributes->value}\"{$selected}>{$item->attributes->name}</option>\n";
+            $return .= "                                            <option value=\"{$item->attributes->value}\"{$selected}>" . __($item->attributes->name) . "</option>\n";
         } else if (!empty($item->type) and $item->type === 'discovery_scan_options') {
             $return .= "                                            <option value=\"{$item->attributes->id}\"{$selected}>{$item->attributes->name}</option>\n";
         } else {
             if ($item->id === '') {
                 $selected .= ' label="none"';
             }
-            $return .= "                                            <option value=\"{$item->id}\"{$selected}>{$item->attributes->name}</option>\n";
+            $return .= "                                            <option value=\"{$item->id}\"{$selected}>" . __($item->attributes->name) . "</option>\n";
         }
     }
     $return .= "                                        </select>\n";
