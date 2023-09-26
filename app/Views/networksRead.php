@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 $types = array('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network');
+$environments = array('Development', 'Disaster Recovery', 'Evaluation', 'Pre-Production', 'Production', 'Testing', 'Training', 'User Acceptance Testing');
+$statuses = array('allocated', 'delegated', 'planning', 'reserved', 'unallocated', 'unknown', 'unmanaged');
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -11,11 +13,33 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             <?= read_field('network', $resource->network, $dictionary->columns->network, $update) ?>
+                            <?= read_field('location', $resource->{'locations.name'}, '') ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <label for="type" class="form-label"><?= __('Environment') ?></label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="environment" name="environment" data-original-value="<?= $resource->environment ?>" disabled>
+                                        <?php foreach ($environments as $environment) {
+                                            echo "<option value=\"$environment\">$environment</option>\n";
+                                        } ?>
+                                        </select>
+                                        <?php if ($update) { ?>
+                                        <div class="float-right" style="padding-left:4px;">
+                                            <div data-attribute="environment" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="environment" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="environment" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br></span></div>
+                                </div>
+                            </div>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
@@ -38,10 +62,40 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                 </div>
                             </div>
 
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <label for="admin_status" class="form-label"><?= __('Admin Status') ?></label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="admin_status" name="admin_status" data-original-value="<?= $resource->type ?>" disabled>
+                                        <?php foreach ($statuses as $status) {
+                                            echo "<option value=\"$status\">$status</option>\n";
+                                        } ?>
+                                        </select>
+                                        <?php if ($update) { ?>
+                                        <div class="float-right" style="padding-left:4px;">
+                                            <div data-attribute="admin_status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="admin_status" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="admin_status" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="admin_status" data-dictionary="<?= $dictionary->columns->admin_status ?>"><span><br></span></div>
+                                </div>
+                            </div>
+                            <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update) ?>
+                            <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update) ?>
+                        </div>
+                        <div class="col-4">
+                            <?= read_field('DHCP Servers', $resource->dhcp_servers, $dictionary->columns->dhcp_servers, false) ?>
+                            <?= read_field('DNS Servers', $resource->dns_servers, $dictionary->columns->dns_servers, false) ?>
+                            <?= read_field('Gateways', $resource->gateways, $dictionary->columns->gateways, false) ?>
+                            <?= read_field('IPs Total', $resource->ip_total_count, $dictionary->columns->ip_total_count, false) ?>
+                            <?= read_field('IPs Used', $resource->device_count, $dictionary->columns->device_count, false) ?>
+                            <?= read_field('IPs Available', $resource->ip_available_count, $dictionary->columns->ip_available_count, false) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
@@ -64,12 +118,63 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                     </div>
                 </div>
             </div>
+            <br />
+
+            <div class="card">
+                <div class="card-header" style="height:57px;">
+                    <div class="row">
+                        <div class="col-9 clearfix">
+                            <h6 style="padding-top:10px;"><span class="fa fa-desktop oa-icon"></span><?= __('Devices') ?></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <br />
+                    <div class="table-responsive">
+                    <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                        <thead>
+                            <tr>
+                                <th class="text-center"><?= __('View') ?></th>
+                                <th class="text-center"><?= __('Icon') ?></th>
+                                <th><?= __('Name') ?></th>
+                                <th><?= __('DNS FQDN') ?></th>
+                                <th><?= __('IP') ?></th>
+                                <th><?= __('IP Set By') ?></th>
+                                <th><?= __('Mac Address') ?></th>
+                                <th><?= __('Interface') ?></th>
+                                <th><?= __('Device Status') ?></th>
+                                <th><?= __('IP Last Seen') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($included['devices'] as $item) { ?>
+                            <tr>
+                                <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                <td><img src="<?= base_url() ?>device_images/<?= $item->attributes->icon ?>.svg" style="width:40px" alt="<?= $item->attributes->icon ?>"></td>
+                                <td><?= $item->attributes->{'name'} ?></td>
+                                <td><?= $item->attributes->{'dns_fqdn'} ?></td>
+                                <td><?= $item->attributes->{'ip.ip'} ?></td>
+                                <td><?= $item->attributes->{'ip.set_by'} ?></td>
+                                <td><?= $item->attributes->{'ip.mac'} ?></td>
+                                <td><?= $item->attributes->{'network.connection'} ?></td>
+                                <td><?= $item->attributes->{'status'} ?></td>
+                                <td><?= $item->attributes->{'ip.last_seen'} ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+
+
         </main>
 
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
         $("#type").val("<?= $resource->type ?>");
+        $("#environment").val("<?= $resource->environment ?>");
     });
 }
 </script>
