@@ -686,6 +686,11 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "UPDATE `configuration` SET description = 'Override the detection of Nmap to enable discoveries.' WHERE name = 'discovery_override_nmap'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "UPDATE `configuration` SET name = 'license' WHERE name = 'oae_license'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
