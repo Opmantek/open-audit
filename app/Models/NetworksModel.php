@@ -235,6 +235,7 @@ class NetworksModel extends BaseModel
         $result[0]->ip_available_count = $result[0]->ip_total_count - $result[0]->device_count;
 
         // Get the DHCP Servers for this network
+        $result[0]->dhcp_servers = '';
         $sql = "SELECT GROUP_CONCAT(DISTINCT(network.dhcp_server) SEPARATOR ', ') AS `dhcp_server` FROM devices LEFT JOIN network ON (devices.id = network.device_id and network.current = 'y') WHERE devices.org_id IN ($org_list) AND network.dhcp_server != '' AND INET_ATON(network.dhcp_server) >= INET_ATON(?) AND INET_ATON(network.dhcp_server) <= INET_ATON(?) GROUP BY network.dhcp_server ORDER BY network.dhcp_server";
         $dhcp_results = $this->db->query($sql, [$network->host_min, $network->host_max])->getResult();
         if (!empty($dhcp_results[0]->dhcp_server)) {
@@ -242,6 +243,7 @@ class NetworksModel extends BaseModel
         }
 
         // Get the DNS Servers for this network
+        $result[0]->dns_servers = '';
         $sql = "SELECT GROUP_CONCAT(DISTINCT(network.dns_server) SEPARATOR ', ') AS `dns_server` FROM devices LEFT JOIN network ON (devices.id = network.device_id and network.current = 'y') WHERE devices.org_id IN ($org_list) AND network.dns_server != '' AND INET_ATON(network.dns_server) >= INET_ATON(?) AND INET_ATON(network.dns_server) <= INET_ATON(?) ORDER BY network.dns_server";
         $dns_results = $this->db->query($sql, [$network->host_min, $network->host_max])->getResult();
         if (!empty($dns_results[0]->dns_server)) {
@@ -249,6 +251,7 @@ class NetworksModel extends BaseModel
         }
 
         // Get the Gateways for this network
+        $result[0]->gateways = '';
         $sql = "SELECT GROUP_CONCAT(DISTINCT(route.next_hop) SEPARATOR ', ') AS `gateway` FROM devices LEFT JOIN route ON (route.device_id = devices.id AND route.current= 'y') WHERE devices.org_id IN ($org_list) AND route.next_hop != '' AND route.next_hop != '0.0.0.0' AND INET_ATON(route.next_hop) >= INET_ATON(?) AND INET_ATON(route.next_hop) <= INET_ATON(?) ORDER BY route.next_hop";
         $gateway_results = $this->db->query($sql, [$network->host_min, $network->host_max])->getResult();
         if (!empty($gateway_results[0]->gateway)) {
