@@ -1352,7 +1352,7 @@ class ComponentsModel extends BaseModel
                 $alert_details = '';
                 foreach ($match_columns as $key => $value) {
                     if (!empty($db_item->$value)) {
-                        $log_value = $data_item->$value;
+                        $log_value = $db_item->$value;
                         if ($value === 'ip') {
                             $log_value = @ip_address_from_db($db_item->$value);
                         }
