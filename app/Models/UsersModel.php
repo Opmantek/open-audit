@@ -235,7 +235,12 @@ class UsersModel extends BaseModel
      */
     public function userValidate()
     {
-        $instance = & get_instance();
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
         $session = \Config\Services::session();
         $request = \Config\Services::request();
         $uri = $request->getUri();
