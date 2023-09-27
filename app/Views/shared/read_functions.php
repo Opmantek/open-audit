@@ -64,7 +64,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
     }
 
-    if (($collection === 'baselines' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'queries') and !empty($id)) {
+    if (($collection === 'baselines' or $collection === 'clouds' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'queries') and !empty($id)) {
         if ($style === 'icontext') {
             $collection_button .= "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play text-success\"></span>" . __("Execute") . "</a>";
         } else if ($style === 'icon') {
