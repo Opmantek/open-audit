@@ -637,8 +637,8 @@ if (!function_exists('collections_list')) {
         $collections->files->orgs = 'b';
         $collections->files->actions = new \stdClass();
         $collections->files->actions->enterprise = 'crud';
-        $collections->files->actions->professional = 'r';
-        $collections->files->actions->community = 'r';
+        $collections->files->actions->professional = '';
+        $collections->files->actions->community = '';
 
         $collections->groups = new \StdClass();
         $collections->groups->icon = 'fa fa-tags';
@@ -851,7 +851,7 @@ if (!function_exists('collections_list')) {
         $collections->users->actions->community = 'crud';
 
         $collections->widgets = new \StdClass();
-        $collections->widgets->icon = 'fa fa-bar-chart';
+        $collections->widgets->icon = 'fa fa-chart-column';
         $collections->widgets->name = 'Widgets';
         $collections->widgets->edition = 'Professional';
         $collections->widgets->orgs = 'b';
