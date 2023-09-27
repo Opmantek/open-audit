@@ -29,7 +29,9 @@ include 'shared/read_functions.php';
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="add_inputs" class="form-label"><?= __('If') ?></label>
+                                    <?php if ($update) { ?>
                                     <button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    <?php } ?>
                                     <div id="inputs" class="input-group">
                                         <?php
                                         $input_count = 0;
@@ -48,6 +50,7 @@ include 'shared/read_functions.php';
                                                     <select class="form-select" id="inputs[<?= $input_count ?>][attribute]" name="inputs[<?= $input_count ?>][attribute]" disabled>
                                                     </select>
                                                 </div>
+                                                <?php if ($update) { ?>
                                                 <div class="col-2 text-center">
                                                     <button type="button" data-delete="#inputs_<?= $input_count ?>" data-name="<?= $input->{'table'} ?>.<?= $input->{'attribute'} ?>" class="inputDelete btn btn-sm btn-danger" title="<?= __('Delete') ?>">
                                                         <i class="fa fa-trash" aria-hidden="true"></i>
@@ -56,6 +59,7 @@ include 'shared/read_functions.php';
                                                         <i class="fa fa-remove" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
+                                                <?php } ?>
                                             </div>
                                             <br />
                                             <div class="row">
@@ -77,6 +81,7 @@ include 'shared/read_functions.php';
                                                 <div class="col-4">
                                                     <input type="text" class="form-control" id="inputs[<?= $input_count ?>][value]" name="inputs[<?= $input_count ?>][value]" disabled/>
                                                 </div>
+                                                <?php if ($update) { ?>
                                                 <div class="col-2 text-center">
                                                     <button type="button" data-action="edit" id="inputs_edit_<?= $input_count ?>" data-row="<?= $input_count ?>" class="edit_input btn btn-sm btn-default" title="<?= __('Edit') ?>">
                                                         <i class="fa fa-edit" aria-hidden="true"></i>
@@ -85,6 +90,7 @@ include 'shared/read_functions.php';
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
+                                                <?php } ?>
                                             </div>
                                             <!--<hr />-->
                                         </div>
@@ -102,7 +108,9 @@ include 'shared/read_functions.php';
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="add_outputs" class="form-label"><?= __('Then') ?></label>
+                                    <?php if ($update) { ?>
                                     <button type="button" id="add_outputs" name="add_outputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    <?php } ?>
                                     <div id="outputs" class="input-group">
                                         <?php
                                         $output_count = 0;
@@ -122,6 +130,7 @@ include 'shared/read_functions.php';
                                                     <select class="form-control" id="outputs[<?= $output_count ?>][attribute]" name="outputs[<?= $output_count ?>][attribute]" disabled>
                                                     </select>
                                                 </div>
+                                                <?php if ($update) { ?>
                                                 <div class="col-2 text-center" id="delete_outputs_<?= $output_count ?>">
                                                     <button type="button" data-delete="#outputs_<?= $output_count ?>" data-name="<?= $output->{'table'} ?>.<?= $output->{'attribute'} ?>" class="outputDelete btn btn-sm btn-danger" title="<?= __('Delete') ?>">
                                                         <i class="fa fa-trash" aria-hidden="true"></i>
@@ -130,6 +139,7 @@ include 'shared/read_functions.php';
                                                         <i class="fa fa-remove" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
+                                                <?php } ?>
                                             </div>
                                             <br />
                                             <div class="row">
@@ -143,6 +153,7 @@ include 'shared/read_functions.php';
                                                         <option value="timestamp"><?= __('timestamp') ?></option>
                                                     </select>
                                                 </div>
+                                                <?php if ($update) { ?>
                                                 <div class="col-2 text-center" id="edit_outputs_<?= $output_count ?>">
                                                     <button type="button" data-action="edit" id="outputs_edit_<?= $output_count ?>" data-row="<?= $output_count ?>" class="edit_output btn btn-sm btn-default" title="<?= __('Edit') ?>">
                                                         <i class="fa fa-edit" aria-hidden="true"></i>
@@ -151,6 +162,7 @@ include 'shared/read_functions.php';
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
+                                                <?php } ?>
                                             </div>
                                         </div>
                                         <?php } ?>
