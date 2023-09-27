@@ -166,6 +166,7 @@ class Devices extends BaseController
         $db = db_connect();
         $count = 0;
         $files = glob('/usr/local/open-audit/other/example_devices/*.{xml,json}', GLOB_BRACE);
+        $this->config->discovery_use_dns = 'n';
         foreach ($files as $file) {
             $device = file_get_contents($file);
             if ($device === false) {
