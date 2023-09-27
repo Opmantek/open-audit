@@ -106,7 +106,8 @@ class Collections extends BaseController
         }
         if ($this->resp->meta->collection === 'clouds' or
             $this->resp->meta->collection === 'discoveries' or
-            $this->resp->meta->collection === 'networks') {
+            $this->resp->meta->collection === 'networks' or
+            $this->resp->meta->collection === 'summaries') {
             $this->resp->included = array_merge($this->resp->included, $this->{strtolower($this->resp->meta->collection) . "Model"}->includedCollection());
         }
 

@@ -6,6 +6,75 @@ include 'shared/collection_functions.php';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
+                    <div class="row">
+                        <div class="col-4 clearfix">
+                                <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Resources') ?></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    <?php
+                    $i = 0;
+                    foreach ($included['collections'] as $name => $collection) {
+                        $i++;
+                        $color = 'darkgrey';
+                        $link = '#';
+                        $pill = 'text-bg-secondary';
+                        $badge = 'color: RGBA(108, 117, 125, var(--bs-bg-opacity, 1)) !important;';
+                        $toast = 'toast' . $collection->edition;
+                        if ($collection->edition === 'Community') {
+                            $link = url_to($name . 'Collection');
+                            $color = 'dimgrey';
+                            $pill = 'text-bg-success';
+                            $badge = 'color:#8cc152;';
+                            $toast = '';
+                        }
+                        if ($collection->edition === 'Professional' and $config->product === 'professional' or $config->product === 'enterprise') {
+                            $link = url_to($name . 'Collection');
+                            $color = 'dimgrey';
+                            $pill = 'text-bg-success';
+                            $badge = 'color:#8cc152;';
+                            $toast = '';
+                        }
+                        if ($collection->edition === 'Enterprise' and $config->product === 'enterprise') {
+                            $link = url_to($name . 'Collection');
+                            $color = 'dimgrey';
+                            $pill = 'text-bg-success';
+                            $badge = 'color:#8cc152;';
+                            $toast = '';
+                        }
+                        if ($collection->name === 'Discovery Log') {
+                            $link = 'discoveries';
+                        }
+                        if ($collection->name === 'Baselines Policies') {
+                            $collection->name = 'Base Policies';
+                        }
+                        if ($collection->name === 'Baselines Results') {
+                            $collection->name = 'Base Results';
+                        }
+                        ?>
+                        <div class="col-lg-1 text-center">
+                            <?= __($collection->name) ?><br />
+                            <div>
+                                <a role="button" href="<?= $link ?>" class="btn btn-default position-relative <?= $toast ?>" style="border-color: #8cc152;">
+                                    <span class="<?= $collection->icon ?> fa-3x fa-fw" style="font-size:2vw; <?= $badge ?>"></span>
+                                    <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill <?= $pill ?>"><?= $collection->count ?></span>
+                                </a>
+                            </div>
+                        </div>
+                        <?php
+                        if ($i === 12 or $i === 24 or $i === 36) {
+                            echo "</div><br /><br /><div class=\"row\">";
+                        }
+                    }
+                    ?>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="card">
+                <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
@@ -55,4 +124,7 @@ include 'shared/collection_functions.php';
                     </div>
                 </div>
             </div>
+            <pre>
+                <?= print_r($included) ?>
+            </pre>
         </main>

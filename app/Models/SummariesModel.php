@@ -206,6 +206,63 @@ class SummariesModel extends BaseModel
      * @param  int $id The ID of the requested item
      * @return array  An array of anything needed for screen output
      */
+    public function includedCollection(): array
+    {
+        $instance = & get_instance();
+        $collections = collections_list();
+        foreach ($collections as $name => $collection) {
+            if ($name !== 'reports') {
+                if (!$this->db->tableExists($name) or !$this->db->fieldExists('org_id', $name) and ($name !== 'orgs' and $name !== 'roles')) {
+                    unset($collections->{$name});
+                }
+            }
+        }
+        foreach ($collections as $name => $collection) {
+            if ($this->db->tableExists($name) and $this->db->fieldExists('org_id', $name)) {
+                $collection->count = 0;
+                $table = str_replace(' ', '_', strtolower($name));
+                $orgs = array();
+                if ($collection->orgs === 'd') {
+                    $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+                }
+                if ($collection->orgs === 'u') {
+                    $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
+                }
+                if ($collection->orgs === 'b') {
+                    $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+                    $orgs = array_unique(array_merge($orgs, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
+                }
+                if (empty($orgs)) {
+                    $orgs = $instance->user->orgs;
+                }
+                $sql = "SELECT COUNT(*) AS `count` FROM `$table` WHERE `org_id` IN (" . implode(',', $orgs) . ")";
+                $count = intval($this->db->query($sql)->getResult()[0]->count);
+                $collection->count = $count;
+            }
+        }
+        $collections->maps->count = 1;
+        $collections->reports->count = 12;
+        $sql = "SELECT COUNT(*) AS `count` FROM `orgs` WHERE `id` IN (" . implode(',', $orgs) . ")";
+        $count = intval($this->db->query($sql)->getResult()[0]->count);
+        $collections->orgs->count = $count;
+        $sql = "SELECT COUNT(*) AS `count` FROM `roles`";
+        $count = intval($this->db->query($sql)->getResult()[0]->count);
+        $collections->roles->count = $count;
+        unset($collections->baselines_policies);
+        unset($collections->baselines_results);
+        unset($collections->rack_devices);
+
+        $included = array();
+        $included['collections'] = $collections;
+        return $included;
+    }
+
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
     public function includedCreateForm(int $id = 0): array
     {
         $include = array();
