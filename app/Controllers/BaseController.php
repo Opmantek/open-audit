@@ -72,7 +72,6 @@ abstract class BaseController extends Controller
         $this->config->homepage = 'orgs';
 
         $this->usersModel = model('App\Models\UsersModel');
-        $this->user = $this->usersModel->userValidate();
         $this->orgsModel = model('App\Models\OrgsModel');
         $this->queriesModel = model('App\Models\QueriesModel');
         $this->reportsModel = model('App\Models\ReportsModel');
@@ -104,6 +103,8 @@ abstract class BaseController extends Controller
             // Anyone can download a script
             return;
         }
+
+        $this->user = $this->usersModel->userValidate();
 
         // Map the user to roles to collections
         $userRoles = array();
