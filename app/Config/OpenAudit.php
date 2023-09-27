@@ -93,12 +93,21 @@ class OpenAudit extends BaseConfig
 
         // get the total number of devices
         $this->device_count = 0;
+        $this->device_known = 0;
+        $this->device_license = 0;
         if ($this->internal_version < 20230615) {
             $query = $db->query('SELECT count(*) as device_count FROM `system`');
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
                     $this->device_count = intval($result->device_count);
+                }
+            }
+            $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified')");
+            if (!empty($query)) {
+                $result = $query->getRow();
+                if (!empty($result->device_count)) {
+                    $this->device_known = intval($result->device_known);
                 }
             }
         }
@@ -108,6 +117,13 @@ class OpenAudit extends BaseConfig
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
                     $this->device_count = intval($result->device_count);
+                }
+            }
+            $query = $db->query("SELECT count(*) as device_count FROM `devices` WHERE `type` NOT IN ('unknown', 'unclassified')");
+            if (!empty($query)) {
+                $result = $query->getRow();
+                if (!empty($result->device_count)) {
+                    $this->device_known = intval($result->device_count);
                 }
             }
         }

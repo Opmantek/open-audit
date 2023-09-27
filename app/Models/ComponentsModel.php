@@ -29,9 +29,11 @@ class ComponentsModel extends BaseModel
         $tables = array();
         $result = array();
         $count = count($resp->meta->filter);
+        $instance = & get_instance();
         for ($i=0; $i < $count; $i++) {
             if ($resp->meta->filter[$i]->name === 'type' or $resp->meta->filter[$i]->name === 'components.type') {
                 // The request has populated components.type=memory or components.type=memory,processor - get those into the $table variable
+                // NOTE - Only usable via the JSON API
                 if (strpos($resp->meta->filter[$i]->value, ',') !== false) {
                     # We have a comma separated list of tables
                     $tables = explode(',', $resp->meta->filter[$i]->value);
@@ -62,7 +64,10 @@ class ComponentsModel extends BaseModel
             }
         }
         if (empty($tables)) {
-            $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) $device_sql";
+            $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) $device_sql LIMIT " . $resp->meta->limit;
+            if ($instance->config->device_known > $instance->config->device_license and $instance->config->device_license > 0) {
+                $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (" . implode(',', $orgs) . ") $device_sql LIMIT " . $resp->meta->limit;
+            }
             $query = $this->db->query($sql, [implode(',', $orgs)]);
             if ($this->sqlError($this->db->error())) {
                 return array();
@@ -72,20 +77,22 @@ class ComponentsModel extends BaseModel
         } else {
             foreach ($tables as $table) {
                 if (empty($device_id)) {
-                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?)";
+                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) LIMIT " . $resp->meta->limit;
+                    if ($instance->config->device_known > $instance->config->device_license and $instance->config->device_license > 0) {
+                        $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (?) LIMIT " . $resp->meta->limit;
+                    }
                 } else {
-                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) AND devices.id = $device_id";
+                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) AND devices.id = $device_id LIMIT " . $resp->meta->limit;
+                    if ($instance->config->device_known > $instance->config->device_license and $instance->config->device_license > 0) {
+                        $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (?) AND devices.id = $device_id LIMIT " . $resp->meta->limit;
+                    }
                 }
                 $query = $this->db->query($sql, [implode(',', $orgs)]);
                 log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
                 if ($this->sqlError($this->db->error())) {
                     return array();
                 }
-                foreach ($query->getResult() as $value) {
-                    if (!empty($value)) {
-                        $result[] = format_data($value, $value->table);
-                    }
-                }
+                $result = array_merge($result, format_data($query->getResult(), $table));
             }
             return $result;
         }

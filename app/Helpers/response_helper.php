@@ -491,6 +491,9 @@ if (!function_exists('response_create')) {
             }
             // TODO - Why does enterprise return this as a string?
             $response->meta->limit = intval($response->meta->limit);
+            if (!empty($response->errors)) {
+                \Config\Services::session()->setFlashdata('error', $response->errors);
+            }
             unset($response->meta->user_details);
             unset($response->meta->config);
         } else {

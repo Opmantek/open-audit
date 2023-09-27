@@ -90,10 +90,6 @@ class Collections extends BaseController
             $_SESSION['success'] = 'Result limited to ' . $this->config->page_size . ' items as per configuration. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
         }
 
-        if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['success']) and $this->resp->meta->collection === 'devices') {
-            $_SESSION['warning'] = 'Result restricted to ' . $this->resp->meta->limit . ' items as per license. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
-        }
-
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if (empty($this->resp->meta->properties[0]) or $this->resp->meta->properties[0] === $this->resp->meta->collection . '.*') {
             $this->resp->meta->data_order = $dictionary->attributes->collection;

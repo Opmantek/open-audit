@@ -170,6 +170,7 @@ abstract class BaseController extends Controller
         if (!empty($this->resp->meta->licenses)) {
             $this->licenses = $this->resp->meta->licenses;
             unset($this->resp->meta->licenses);
+            $this->config->device_license = intval($this->licenses->count);
         }
 
         # log this request

@@ -52,9 +52,6 @@ class Queries extends BaseController
             \Config\Services::session()->setFlashdata('error', 'No data returned when running query.');
             return redirect()->route($this->resp->meta->collection.'Collection');
         }
-        if ($this->resp->meta->filtered === $this->resp->meta->limit) {
-            $_SESSION['warning'] = 'Result restricted to ' . $this->resp->meta->limit . ' items as per license.';
-        }
         return view('shared/header', [
             'config' => $this->config,
             'dictionary' => $this->queriesModel->dictionary(),
