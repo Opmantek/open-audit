@@ -102,7 +102,7 @@ if (!function_exists('response_create')) {
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
-        if (($response->meta->collection === 'widgets' or $response->meta->collection === 'reports') and $response->meta->action === 'execute') {
+        if (($response->meta->collection === 'dashboards' or $response->meta->collection === 'reports' or $response->meta->collection === 'widgets') and $response->meta->action === 'execute') {
             $permission_requested['execute'] = 'r';
         }
 
