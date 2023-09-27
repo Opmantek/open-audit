@@ -568,7 +568,7 @@ if (!function_exists('collections_list')) {
         $collections->dashboards->actions = new \stdClass();
         $collections->dashboards->actions->enterprise = 'crud';
         $collections->dashboards->actions->professional = 'r';
-        $collections->dashboards->actions->community = 'r';
+        $collections->dashboards->actions->community = '';
 
         $collections->database = new \StdClass();
         $collections->database->icon = 'fa fa-database';
