@@ -255,11 +255,11 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     }
     $panel_add_button = '';
     if ($update) {
-        if ($name === 'applications' or $name === 'attachments' or $name === 'credentials' or $name === 'clusters' or $name === 'images') {
+        if ($name === 'applications' or $name === 'attachments' or $name === 'credentials' or $name === 'cluster' or $name === 'images') {
             if ($toolbar === 'icontext') {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __("Add") . "</a>";
             } else if ($toolbar === 'icon') {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus\"></span></a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
             } else {
                 $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\">" . __("Add") . "</a>";
             }
