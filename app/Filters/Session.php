@@ -15,6 +15,7 @@ class Session implements FilterInterface
             $usersModel = new \App\Models\UsersModel();
             $user = $usersModel->userValidate();
             if (empty($user)) {
+                sleep(5);
                 \Config\Services::session()->setFlashdata('url', $_SERVER['REQUEST_URI']);
                 return redirect()->to(site_url('logon'));
             }
