@@ -134,7 +134,7 @@ function dirPermLinux()
         $perm['attachments_dir'] = 'y';
     }
     $perm['uploads_dir'] = 'n';
-    if (is_writable('/usr/local/open-audit/app/Uploads')) {
+    if (is_writable('/usr/local/open-audit/writable/uploads')) {
         $perm['uploads_dir'] = 'y';
     }
     $perm['scripts_dir'] = 'n';

@@ -40,7 +40,7 @@ if (php_uname('s') == "Windows NT") {
                             <p>This is the directory where we store any attachments to devices.</p>
                             <pre>chmod 777 /usr/local/open-audit/app/Attachments</pre><br />
                             <p>Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.</p>
-                            <pre>chmod 777 /usr/local/open-audit/app/Uploads</pre><br />
+                            <pre>chmod 777 /usr/local/open-audit/writable/uploads</pre><br />
                             <p>The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.</p>
                             <pre>chmod 777 /usr/local/open-audit/other/scripts</pre><br />
                             <p>Any user uploaded images are placed here.</p>

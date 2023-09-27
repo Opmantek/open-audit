@@ -310,7 +310,7 @@ class SupportModel extends BaseModel
             unset($output);
             unset($command_string);
             // Uploads - should be drwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/app | grep Uploads | cut -d" " -f1';
+            $command_string = 'ls -l /usr/local/open-audit/writable | grep uploads | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             $data->permissions->uploads = 'Error - missing directory';
             if (!empty($output[0])) {
