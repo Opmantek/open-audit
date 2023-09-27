@@ -65,6 +65,10 @@ h1,
     color: var(--bs-heading-color, inherit);
 }
 
+.text-oa-success {
+    color:#8cc152;
+}
+
 /* the custom 'devices' type button */
 .btn-devices,
 .btn-devices:active,

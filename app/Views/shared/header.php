@@ -592,7 +592,7 @@ if (!empty($config->modules)) {
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container top-0 end-0 p-3">
                 <div class="toast toast-ent" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastEnterprise">
-                    <div class="toast-header" style="background-color: var(--bs-primary-bg-subtle); --bs-border-color: var(--bs-primary-border-subtle); color: var(--bs-primary-text);">
+                    <div class="toast-header" style="background-color: var(--bs-success-bg-subtle); --bs-border-color: var(--bs-primary-border-subtle); color: var(--bs-success-text);">
                         <strong class="me-auto">Enterprise Feature</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
