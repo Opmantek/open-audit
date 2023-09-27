@@ -58,7 +58,12 @@ class DiscoveryLogModel extends BaseModel
     public function create($data = null): ?int
     {
         $router = \Config\Services::router();
-        $instance = & get_instance();
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('Openaudit');
+        }
 
         if (empty($data)) {
             return null;
