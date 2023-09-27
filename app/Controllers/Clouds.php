@@ -30,5 +30,14 @@ namespace App\Controllers;
  */
 class Clouds extends BaseController
 {
-
+    /**
+     * Return to Clouds::Read
+     *
+     * @access public
+     * @return void
+     */
+    public function execute($id)
+    {
+        return redirect()->route('cloudsRead', [$id]);
+    }
 }
