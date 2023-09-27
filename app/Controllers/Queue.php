@@ -116,16 +116,16 @@ class Queue extends BaseController
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . " index.php queue start";
                 @exec($command, $output);
-                log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
+                log_message('debug', $microtime . " Spawning process " . $command . " " . json_encode($output));
                 pclose(popen($command, 'r'));
             } else if (php_uname('s') === 'Darwin') {
                 $command = 'php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
                 @exec($command, $output);
-                log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
+                log_message('debug', $microtime . " Spawning process " . $command . " " . json_encode($output));
             } else {
                 $command = 'nohup php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
                 @exec($command, $output);
-                log_message('debug', $microtime . " SPAWNING PROCESS " . $command . " " . json_encode($output));
+                log_message('debug', $microtime . " Spawning process " . $command . " " . json_encode($output));
             }
 
             if ($item->type === 'subnet') {
