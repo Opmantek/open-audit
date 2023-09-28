@@ -158,9 +158,35 @@ class Logon extends Controller
 
     public function delete()
     {
-
         $this->session = session();
         $this->session->destroy();
         return redirect()->to(site_url('logon'));
+    }
+
+    public function license()
+    {
+        $this->response->setContentType('application/json');
+        $json = '{"license":"none","product":"free"}';
+        $enterprise_binary = '';
+        $binaries = array('/usr/local/opmojo/private/enterprise.pl', '/usr/local/open-audit/other/enterprise.bin', 'c:\\xampp\\open-audit\\enterprise.exe');
+        foreach ($binaries as $binary) {
+            if (file_exists($binary)) {
+                $enterprise_binary = $binary;
+            }
+        }
+        if (!empty($enterprise_binary)) {
+            if (php_uname('s') === 'Windows NT') {
+                $command = "%comspec% /c start /b " . $enterprise_binary . " --license";
+                exec($command, $output);
+                pclose(popen($command, 'r'));
+            } else {
+                $command = $enterprise_binary . " --license";
+                exec($command, $output);
+            }
+            if (!empty($output)) {
+                $json = $output[0];
+            }
+        }
+        echo $json;
     }
 }

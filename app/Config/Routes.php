@@ -86,6 +86,8 @@ $routes->post('input/logs', 'Input::logs');
 $routes->delete('integrations/(:num)/fields/(:num)', 'Integrations::update/$1', ['filter' => \App\Filters\Session::class]);
 $routes->post('integrations_log/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'integrations_logReset']);
 
+$routes->get('license', 'Logon::license');
+
 $routes->get('logon', 'Logon::createForm', ['as' => 'logon']);
 $routes->get('logoff', 'Logon::delete', ['as' => 'logoff']);
 $routes->get('login', 'Logon::createForm');
