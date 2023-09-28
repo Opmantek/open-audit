@@ -23,9 +23,6 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][type]"><?= __('Type'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
-                                        <?php if (!empty($included['collectors'])) { ?>
-                                            <option value="collector" selected><?= __('Collector') ?></option>
-                                        <?php } else { ?>
                                             <option value=""><?= __('Select') ?></option>
                                             <option value="baselines"><?= __('Baseline') ?></option>
                                             <option value="clouds"><?= __('Cloud Discovery') ?></option>
@@ -34,7 +31,6 @@ include 'shared/create_functions.php';
                                             <option value="reports"><?= __('Report') ?></option>
                                             <option value="queries"><?= __('Query') ?></option>
                                             <option value="summaries"><?= __('Summary') ?></option>
-                                        <?php } ?>
                                         </select>
                                     </div>
                                 </div>
