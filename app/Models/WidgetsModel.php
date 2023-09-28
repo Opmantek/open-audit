@@ -597,12 +597,6 @@ class WidgetsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('widgets', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

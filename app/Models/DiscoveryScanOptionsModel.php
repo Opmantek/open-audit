@@ -181,13 +181,6 @@ class DiscoveryScanOptionsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('discovery_scan_options', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 
