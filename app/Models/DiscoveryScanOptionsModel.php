@@ -56,16 +56,7 @@ class DiscoveryScanOptionsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('discovery_scan_options', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**

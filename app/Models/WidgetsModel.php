@@ -75,33 +75,7 @@ class WidgetsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        if (!empty($data->sql)) {
-            if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
-                log_message('error', 'SQL cannot contain UPDATE clause');
-                \Config\Services::session()->setFlashdata('error', 'SQL cannot contain UPDATE clause');
-                return false;
-            }
-            if (stripos($data->sql, 'delete from ') !== false or stripos($data->sql, 'delete from`') !== false) {
-                log_message('error', 'SQL cannot contain DELETE clause.');
-                \Config\Services::session()->setFlashdata('error', 'SQL cannot contain DELETE clause');
-                return false;
-            }
-            if (stripos($data->sql, 'insert into ') !== false or stripos($data->sql, 'insert into`') !== false) {
-                log_message('error', 'SQL cannot contain INSERT clause.');
-                \Config\Services::session()->setFlashdata('error', 'SQL cannot contain INSERT clause');
-                return false;
-            }
-        }
-        $data = $this->createFieldData('widgets', $data);
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return ($this->db->insertID());
+        return null;
     }
 
     /**
