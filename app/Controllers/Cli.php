@@ -111,6 +111,10 @@ class Cli extends Controller
             pclose(popen($command, 'r'));
         } else {
             $command = $this->config->enterprise_binary . " $id";
+            if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
+                $command = $this->config->enterprise_binary . " --debug $id";
+                log_message('debug', $command);
+            }
             @exec($command, $output);
         }
         if (!empty($output)) {
