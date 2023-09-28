@@ -29,7 +29,7 @@ include 'shared/create_functions.php';
                                 </div>
 
                                 <?= create_text_field('data[attributes][username]', __('Username'), $dictionary->attributes->create) ?>
-                                <?= create_text_field('data[attributes][password]', __('Password'), $dictionary->attributes->create) ?>
+                                <?= create_text_field('data[attributes][password]', __('Password'), $dictionary->attributes->create, '', 'password') ?>
                                 <?= create_text_field('data[attributes][os]', __('OS'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][uuid]', __('UUID'), $dictionary->attributes->create) ?>
 

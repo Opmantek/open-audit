@@ -65,6 +65,8 @@ $routes->get('devices/importnmis', 'Devices::importNMISForm', ['filter' => \App\
 $routes->post('devices/importnmis', 'Devices::importNMIS', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMIS']);
 
 $routes->get('discoveries/(:any)/download', 'Discoveries::download/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesDownload']);
+$routes->get('discoveries/(:num)/executeForm', 'Discoveries::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteForm']);
+$routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteCollector']);
 
 $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
 

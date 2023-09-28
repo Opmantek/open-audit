@@ -39,7 +39,12 @@ class Discoveries extends BaseController
     public function execute($id)
     {
         $id = intval($id);
-        $this->discoveriesModel->queue(intval($id));
+        $collectorsModel = new \App\Models\CollectorsModel();
+        $collectors = $collectorsModel->listUser();
+        if (!empty($collectors)) {
+            return redirect()->route('discoveriesExecuteForm', [$id]);
+        }
+        $this->discoveriesModel->queue($id);
         $this->queueModel = model('App\Models\QueueModel');
         $this->queueModel->start();
         if ($this->resp->meta->format !== 'html') {
@@ -48,6 +53,90 @@ class Discoveries extends BaseController
             return;
         }
         \Config\Services::session()->setFlashdata('success', 'Discovery started.');
+        return redirect()->route('discoveriesRead', [$id]);
+    }
+
+    /**
+     * Choose a Collector (or localhost) to execute a discovery
+     *
+     * @access public
+     * @return void
+     */
+    public function executeForm($id)
+    {
+        $id = intval($id);
+        $collectorsModel = new \App\Models\CollectorsModel();
+        $this->resp->included['collectors'] = $collectorsModel->listUser();
+        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'dictionary' => $dictionary,
+            'included' => filter_response($this->resp->included),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user),
+            'name' => @$this->resp->data[0]->attributes->name]) .
+            view('discoveriesExecuteForm', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    /**
+     * Schedule the discovery on a Collector or execute it locally
+     *
+     * @access public
+     * @return void
+     */
+    public function executeCollector($id)
+    {
+        $id = intval($id);
+        if ($this->resp->meta->received_data->attributes->uuid === $this->config->uuid) {
+            $this->discoveriesModel->queue($id);
+            $this->queueModel = model('App\Models\QueueModel');
+            $this->queueModel->start();
+            \Config\Services::session()->setFlashdata('success', 'Discovery started.');
+        }
+        if ($this->resp->meta->received_data->attributes->uuid !== $this->config->uuid) {
+            $db = db_connect();
+            $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` = ?";
+            $db->query($sql, [$id]);
+
+            $sql = "SELECT * FROM `collectors` WHERE `uuid` = ?";
+            $collector = $db->query($sql, [$this->resp->meta->received_data->attributes->uuid])->getResult()[0];
+
+            $sql = "SELECT * FROM `discoveries` WHERE `id` = ?";
+            $discovery = $db->query($sql, [$id])->getResult()[0];
+
+            $now = time();
+            $next = intval(round(ceil(($now + 60) / 300) * 300));
+            $minute = date('i', $next);
+            $hour = date('H', $next);
+            $day_of_month = date('d', $next);
+            $month = date('m', $next);
+
+            $sql = "INSERT INTO tasks (`name`, `org_id`, `description`, `sub_resource_id`, `uuid`, `enabled`, `type`, `minute`, `hour`, `day_of_month`, `month`, `day_of_week`, `first_run`, `edited_by`, `edited_date`) VALUES (?, ?, ?, ?, ?, 'y', 'discoveries', ?, ?, ?, ?, '*', '2000-01-01 12:00:00', ?, NOW())";
+            $attributes = [
+                'Instant Discovery on ' . $collector->name,
+                $discovery->org_id,
+                $discovery->description,
+                $id,
+                $this->resp->meta->received_data->attributes->uuid,
+                $minute,
+                $hour,
+                $day_of_month,
+                $month,
+                $this->user->name
+            ];
+            $db->query($sql, $attributes);
+            \Config\Services::session()->setFlashdata('success', 'Discovery scheduled to execute on collector ' . $collector->name . ' at ' . date('Y-m-d H:i', $next) . '.');
+        }
+        if ($this->resp->meta->format !== 'html') {
+            $this->resp->data = $this->discoveriesModel->read($id);
+            output($this);
+            return;
+        }
         return redirect()->route('discoveriesRead', [$id]);
     }
 

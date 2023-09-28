@@ -1531,11 +1531,12 @@ if (!function_exists('response_valid_permissions')) {
         $permission['delete'] = 'd';
         $permission['deleteform'] = 'd';
         $permission['dictionary'] = 'r';
+        $permission['download'] = 'r';
         $permission['example'] = 'c';
         $permission['exampleform'] = 'c';
-        $permission['download'] = 'r';
         $permission['execute'] = 'u';
         $permission['executeform'] = 'u';
+        $permission['executecollector'] = 'u';
         $permission['export'] = 'r';
         $permission['features'] = 'r';
         $permission['help'] = 'r';
