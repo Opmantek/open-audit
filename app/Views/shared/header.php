@@ -388,6 +388,7 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Configuration') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('List') . ' ' . __('Configuration')) ?>
+                                        <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Email Configuration'), '?configuration.name=likemail') ?>
                                         <?= menuItem('configuration', 'd', $user, 'configurationDefaults', 'Default Configuration') ?>
                                     </ul>
                                 </li>

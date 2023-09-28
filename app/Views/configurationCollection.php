@@ -35,6 +35,9 @@ include 'shared/collection_functions.php';
                                         if ($key === 'id') {
                                             continue;
                                         }
+                                        if ($item->attributes->name === 'mail_password' and !empty($item->attributes->value)) {
+                                            $item->attributes->value = 'removed from display, but has been set';
+                                        }
                                         if ($key === 'value') {
                                             if (strlen($item->attributes->value) > 60) {
                                                 $item->attributes->value = mb_substr($item->attributes->value, 0, 60) . '...';
@@ -57,3 +60,18 @@ include 'shared/collection_functions.php';
             </div>
         </main>
 
+<?php if (strpos($meta->query_string, 'configuration.name=likemail') !== false) { ?>
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-envelope text-primary\"></span><?= __("Test Email") ?></a>");
+        <?php } else if ($user->toolbar_style === 'icon') { ?>
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span class=\"fa-regular fa-envelope text-primary\"></span></a>");
+        <?php } else if ($user->toolbar_style === 'text') { ?>
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><?= __("Test Email") ?></a>");
+        <?php } ?>
+    });
+}
+</script>
+<?php } ?>

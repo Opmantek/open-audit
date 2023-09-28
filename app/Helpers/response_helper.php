@@ -106,6 +106,14 @@ if (!function_exists('response_create')) {
             $permission_requested['execute'] = 'r';
         }
 
+        if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeformemail') {
+            $response->meta->action = 'read';
+        }
+
+        if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeemail') {
+            $response->meta->action = 'create';
+        }
+
         // log_message('debug', 'Action: ' . $response->meta->action);
         // log_message('debug', 'Collection: ' . $response->meta->collection);
         // log_message('debug', 'Permission Requested: ' . $permission_requested[$response->meta->action]);

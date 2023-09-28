@@ -912,7 +912,7 @@ INSERT INTO `configuration` VALUES (NULL,'display_version','5.0.0','text','n','s
 INSERT INTO `configuration` VALUES (NULL,'download_reports','n','bool','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.');
 INSERT INTO `configuration` VALUES (NULL,'mail_domain','','text','y','system','2000-01-01 00:00:00','Email domain to use.');
 INSERT INTO `configuration` VALUES (NULL,'mail_from','','text','y','system','2000-01-01 00:00:00','Email address used for as the sender.');
-INSERT INTO `configuration` VALUES (NULL,'mail_password','','text','y','system','2000-01-01 00:00:00','Email passowrd for the email account.');
+INSERT INTO `configuration` VALUES (NULL,'mail_password','','text','y','system','2000-01-01 00:00:00','Email password for the email account.');
 INSERT INTO `configuration` VALUES (NULL,'mail_server','','text','y','system','2000-01-01 00:00:00','Email server to use to send email.');
 INSERT INTO `configuration` VALUES (NULL,'mail_server_port','25','text','y','system','2000-01-01 00:00:00','Email server port to use to send email.');
 INSERT INTO `configuration` VALUES (NULL,'mail_use_tls','y','bool','y','system','2000-01-01 00:00:00','Email use TLS or not.');

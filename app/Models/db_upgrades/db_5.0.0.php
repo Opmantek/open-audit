@@ -731,7 +731,7 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_password','','text','y','system','2000-01-01 00:00:00','Email passowrd for the email account.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'mail_password','','text','y','system','2000-01-01 00:00:00','Email password for the email account.')";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
