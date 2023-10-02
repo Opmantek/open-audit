@@ -378,6 +378,9 @@ class DiscoveriesModel extends BaseModel
         // Delete any associated tasks
         $sql = "DELETE FROM tasks WHERE sub_resource_id = ? and type = 'discoveries'";
         $result = $this->db->query($sql, [$id]);
+        // Delete any associated logs
+        $sql = "DELETE FROM discovery_log WHERE discovery_id = ?";
+        $result = $this->db->query($sql, [$id]);
         // Delete the discovery itself
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
@@ -506,13 +509,17 @@ class DiscoveriesModel extends BaseModel
             $included[$item->{'type'}] = $item->{'count'};
         }
 
-        $sql = 'SELECT TIMESTAMPDIFF(SECOND, (SELECT `timestamp` FROM discovery_log ORDER BY id DESC LIMIT 1), NOW()) AS `seconds`';
+        # TODO - Should we delete orphaned logs?
+        # $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` IN (SELECT discovery_log.discovery_id FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.name IS NULL GROUP BY discovery_log.discovery_id)";
+
+        # TODO - Should we mark as completed any discoveries with status = running and last logged > 1 hour ago? (yes)
+        $sql = "SELECT TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) AS `diff`, MAX(discovery_log.id), discovery_log.timestamp, discovery_log.discovery_id FROM discovery_log LEFT JOIN `discoveries` ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) > 1 GROUP BY discovery_log.discovery_id";
         $result = $this->db->query($sql)->getResult();
-        if (!empty($result)) {
-            if (intval($result[0]->seconds) > 6000 and intval($instance->config->queue_count) > 0) {
-                $_SESSION['warning'] = 'You have running processes, but no discovery log has occurred for more than 10 minutes. See <a href="https://community.opmantek.com/display/OA/Troubleshooting#Troubleshooting-Problemswitharunawayqueue" target="_blank">here</a> for more information.';
-            }
+        foreach ($result as $discovery) {
+            $sql = "UPDATE `discoveries` SET `status` = 'killed' WHERE id = ?";
+            $query = $this->db->query($sql, [$discovery->discovery_id]);
         }
+
         return $included;
     }
 
@@ -595,7 +602,7 @@ class DiscoveriesModel extends BaseModel
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list[] = 1;
         $org_list = array_unique($org_list);
-        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `devices.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`org_id` IN (" . implode(',', $org_list) . ") AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 50;";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `devices.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`org_id` IN (" . implode(',', $org_list) . ") AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 100;";
         $issues = $this->db->query($sql)->getResult();
         for ($i=0; $i < count($issues); $i++) {
             // Derive the description and action

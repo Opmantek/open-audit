@@ -113,7 +113,7 @@ include 'shared/collection_functions.php';
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa-solid fa-triangle-exclamation oa-icon"></span><?= __('Discovery Issues') . ' (' . count($included['issues']) . ')' ?></h6>
+                            <h6 style="padding-top:10px;"><span class="fa-solid fa-triangle-exclamation oa-icon"></span><?= __('Discovery Issues') . ' (<span class="text-danger">' . count($included['issues']) . '</span>)' ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
@@ -133,7 +133,7 @@ include 'shared/collection_functions.php';
                         <div class="row">
                             <div class="col-md-12">
                                 <br />
-                                <table class="table table-striped table-hover dataTable" id="table_issue" data-order='[[3,"asc"]]'>
+                                <table class="table table-striped table-hover dataTableIssues" id="table_issue" data-order='[[3,"asc"]]'>
                                     <thead>
                                         <tr>
                                             <th data-orderable="false" class="text-center"><?= __('View Discovery') ?></th>
@@ -248,6 +248,15 @@ include 'shared/collection_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+
+    $('.dataTableIssues').dataTable( {
+        "paging": true,
+        "searching": true,
+        "order": [[ 1, 'asc' ]],
+        "info": true,
+        "pageLength": 10,
+        "autoWidth": false
+    });
 
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
