@@ -45,17 +45,11 @@ if (php_uname('s') == "Windows NT") {
                     Most of Open-AudIT is Licensed with GNU AGPL.<br>
                     Written in the PHP scripting language.<br>
                     Uses the CodeIgniter PHP Framework.<br>
+                    Various <a href="<?= url_to('appLicenses') ?>">licenses</a> are used.<br />
                 </p>
                 <br />
-                Some other technologies Open-AudIT uses are:
-                <p>
-                    jQuery javascript framework<br>
-                    MariaDB - our default database<br>
-                    Apache - our default webserver<br>
-                    xHTML W3C standards<br>
-                </p>
-                Please visit the homepage at <a target="_blank" href="http://www.open-audit.org" style="color: blue;">http://www.open-audit.org</a>.<br />
-                Consulting, implementation and other services are available through <a target="_blank" href="https://www.firstwave.com" style="color: blue;">Firstwave</a>.<br /><br />
+                Please visit the homepage at <a target="_blank" href="http://www.open-audit.org">http://www.open-audit.org</a> or the GitHub page at <a target="_blank" href="https://github.com/Opmantek/open-audit">https://github.com/Opmantek/open-audit</a>.<br />
+                Consulting, implementation and other services are available through <a target="_blank" href="https://www.firstwave.com">Firstwave</a>.<br /><br />
                 We hope you find Open-AudIT as useful as we do.<br /><br /><br />
 
                         </div>
@@ -71,7 +65,6 @@ if (php_uname('s') == "Windows NT") {
                                         <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?= base_url() ?>images/logo-code_igniter.png' style='width:120px' alt=''/></a></td>
                                         <td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?= base_url() ?>images/logo-jquery.png' style='width:120px' alt=''/></a></td>
                                         <td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?= base_url() ?>images/logo-w3c.png' style='width:120px' alt=''/></a></td>
-                                        <td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?= base_url() ?>images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>
                                     </tr>
                                 </tbody>
                             </table>
