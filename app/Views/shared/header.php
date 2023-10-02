@@ -443,6 +443,7 @@ $categories = array_unique($categories);
                                 <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Getting+Started"><?= __('Getting Started') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('util/test_windows_client') ?>"><?= __('Windows Test Script') ?></a></li>
                             </ul>
 
                         <li class="nav-item dropdown">

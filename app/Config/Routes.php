@@ -102,6 +102,7 @@ $routes->get('scripts/(:any)/download', 'Scripts::download/$1');
 $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
+$routes->get('util/test_windows_client', 'Util::testWindowsClient');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
