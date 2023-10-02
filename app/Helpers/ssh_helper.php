@@ -232,9 +232,8 @@ if (! function_exists('scp_get')) {
         $ssh = new SFTP($ip, $ssh_port);
         if (empty($ssh)) {
             $log->message = 'Could not instanciate SFTP to ' . $ip . ':' . $ssh_port . '.';
-            $log->severity = 3;
+            $log->severity = 5;
             $discoveryLogModel->create($log);
-            $log->severity = 7;
             return false;
         }
         if ($timeout > 0) {
@@ -253,8 +252,9 @@ if (! function_exists('scp_get')) {
                 $password = @$credentials->credentials->password;
             } else {
                 $log->message = "Failure, scp_get credentials named {$credentials->name} (key) not used to log in to {$ip}.";
-                $log->command_status = 'fail';
-                $log->command =  $ssh->getLog();
+                $log->command_status = 'issue';
+                $log->severity = 5;
+                $log->command_output = $ssh->getLog();
                 $discoveryLogModel->create($log);
                 return false;
             }
@@ -265,37 +265,41 @@ if (! function_exists('scp_get')) {
                 $ssh->login($credentials->credentials->username, $credentials->credentials->password);
             } catch (Exception $error) {
                 $log->message = "Failure, scp_get credentials named {$username} not used to log in to {$ip}.";
-                $log->severity = 3;
+                $log->command_output = json_encode($error);
+                $log->command_status = 'issue';
+                $log->severity = 5;
                 $discoveryLogModel->create($log);
-                $log->severity = 7;
                 return false;
             }
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to scp_get function.';
-            $log->severity = 3;
+            $log->severity = 5;
             $discoveryLogModel->create($log);
             $log->severity = 7;
             return false;
         }
 
         $log->command = 'sftp ' . @$username . '@' . @$ip . ':' . @$source . ' to ' . $destination;
-        $log->command_status = 'success';
         $log->message = 'Copy file from ' . $ip;
         $log->command_status = 'success';
         try {
             $output = $ssh->get($source, $destination);
         } catch (Exception $error) {
-            $log->command = $ssh->getLog();
-            $log->command_output = $output;
-            $log->command_status = 'fail';
-            $log->message = 'Attempt to copy file from ' . $ip;
+            $log->message = 'Attempt to copy file from ' . $ip . ' failed.';
+            $log->command = $output;
+            $log->command_output = $ssh->getLog();
+            $log->command_status = 'issue';
+            $log->severity = 5;
             $output = false;
         }
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
         if ($log->command_status === 'success') {
+            $log->message = 'Attempt to copy file from ' . $ip . ' succeeded.';
             $log->command_output = $output;
+            $log->command_status = 'notice';
+            $log->severity = 7;
             if (empty($output)) {
                 $log->command_output = 1;
             }
@@ -421,6 +425,7 @@ if (! function_exists('ssh_command')) {
 
         $log->command = $command;
         $log->command_status = '';
+        $log->severity = 7;
         $log->message = 'Executing SSH command';
         $item_start = microtime(true);
         if (strpos($command, 'sudo') === false) {
@@ -614,9 +619,10 @@ if (! function_exists('ssh_audit')) {
         }
 
         if (empty($username)) {
+            $log->severity = 5;
             $log->command = '';
-            $log->command_output = '';
-            $log->command_status = 'warning';
+            $log->command_output = "SSH detected but no valid SSH credentials for {$ip}.";
+            $log->command_status = 'issue';
             $log->message = "SSH detected but no valid SSH credentials for {$ip}.";
             $discoveryLogModel->create($log);
             return false;

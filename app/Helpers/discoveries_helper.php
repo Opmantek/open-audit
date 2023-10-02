@@ -101,6 +101,7 @@ if (! function_exists('responding_ip_list')) {
                     }
                 }
             } else {
+                $log->command_output = json_encode($output);
                 $discoveryLogModel->create($log);
                 return false;
             }
@@ -158,7 +159,7 @@ if (! function_exists('update_non_responding')) {
         $log->ip = '127.0.0.1';
         $id = $discoveryLogModel->create($log);
         foreach ($all_ip_list as $ip) {
-            if (! in_array($ip, $responding_ip_list)) {
+            if (!in_array($ip, $responding_ip_list)) {
                 // Update the discovery log to show this IP not responding
                 $log->message = "IP {$ip} not responding, ignoring.";
                 $log->ip = $ip;
@@ -1299,14 +1300,16 @@ if (! function_exists('ip_audit')) {
 
         if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
             if ($ip_scan->snmp_status === 'true' or $ip_scan->ssh_status === 'true' or $ip_scan->wmi_status === 'true') {
-                $log->command_status = 'fail';
+                $log->command_status = 'warning';
                 $log->severity = 5;
                 $log->message = 'No valid credentials for ' . $device->ip;
+                $log->command_output = 'No valid credentials for ' . $device->ip;
                 $discoveryLogModel->create($log);
             } else {
-                $log->command_status = 'fail';
+                $log->command_status = 'issue';
                 $log->severity = 5;
                 $log->message = 'No management protocols for ' . $device->ip;
+                $log->command_output = 'No management protocols for ' . $device->ip;
                 $discoveryLogModel->create($log);
             }
         }
@@ -1605,7 +1608,7 @@ if (! function_exists('ip_audit')) {
                     }
                 }
                 if ($audit_file === '') {
-                    $log->severity = 5;
+                    $log->severity = 4;
                     $log->message = 'No audit file returned in output.';
                     $log->command_status = 'fail';
                     $discoveryLogModel->create($log);
@@ -1652,7 +1655,8 @@ if (! function_exists('ip_audit')) {
                     } else {
                         $log->severity = 5;
                         $log->message = 'Could not SCP GET to ' . $destination;
-                        $log->command_status = 'fail';
+                        $log->command_output = 'Could not SCP GET to ' . $destination;
+                        $log->command_status = 'issue';
                         $discoveryLogModel->create($log);
                         $log->severity = 7;
                         $log->message = '';
@@ -2060,6 +2064,7 @@ if (! function_exists('ip_audit')) {
                             $log->function = 'ip_audit';
                             $discoveryLogModel->create($log);
                         } else {
+                            $log->severity = 7;
                             $temp_device_id = @$log->device_id;
                             $log->device_id = '';
                             $log->ip = $value;

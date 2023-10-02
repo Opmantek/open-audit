@@ -94,8 +94,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="summary" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name_orig', $resource->name) ?>
-                                    <?= read_field('status_orig', $resource->status) ?>
+                                    <?= read_field('name_orig', $resource->name, '', '', 'Name') ?>
+                                    <?= read_field('status', $resource->status) ?>
                                     <?= read_field('last_run', $resource->last_run, '', false, __('Started On')) ?>
                                     <?= read_field('duration', $resource->duration) ?>
                                     <?= read_field('last_finished', $resource->last_finished, '', false, __('Completed On')) ?>
@@ -487,7 +487,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($included['devices'] as $device) { ?>
+                                            <?php foreach ($included['ips'] as $device) { ?>
                                                 <tr>
                                                     <td class="text-center">
                                                         <?php if (!empty($device->{'devices.id'})) { ?>
@@ -543,7 +543,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="issues" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                    <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                                         <thead>
                                             <tr>
                                                 <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
@@ -564,7 +564,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
                                                     <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
-                                                    <td><span style="display:none;"><?= @$issue->padded_ip ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
+                                                    <td><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
                                                     <td><?= $issue->{'devices.name'} ?></td>
                                                     <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>
                                                     <td><?php if ($issue->action === 'add credentials') { ?>

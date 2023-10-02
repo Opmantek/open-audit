@@ -31,14 +31,17 @@ if (!function_exists('snmp_credentials')) {
             log_message('error', 'SNMP extension for PHP is not present, aborting credential test on ' . $ip . '.');
             $log->message = 'SNMP extension for PHP is not present, aborting credential test on ' . $ip;
             $log->command_status = 'error';
+            $log->severity = 4;
             $discoveryLogModel->create($log);
             return false;
         }
 
         if (empty($credentials)) {
             log_message('warning', 'No credentials array passed to snmp_credentials for ' . $ip . '.');
-            $log->message = 'No credentials array passed to snmp_credentials.';
+            $log->message = 'No credentials array passed to snmp_credentials for ' . $ip . '.';
+            $log->command_output = 'No credentials array passed to snmp_credentials for ' . $ip . '.';
             $log->command_status = 'warning';
+            $log->severity = 4;
             $discoveryLogModel->create($log);
             return false;
         }
@@ -46,6 +49,7 @@ if (!function_exists('snmp_credentials')) {
             log_message('error', 'Invalid or blank IP passed to snmp_credentials.');
             $log->message = 'No IP or bad IP passed to snmp_credentials.';
             $log->command_status = 'error';
+            $log->severity = 4;
             $discoveryLogModel->create($log);
             return false;
         }
@@ -71,6 +75,7 @@ if (!function_exists('snmp_credentials')) {
             $log->command_status = 'notice';
             $log->command_output = 'php_uname(\'s\');';
             $log->command = php_uname('s');
+            $log->severity = 6;
             $discoveryLogModel->create($log);
 
             // Use net-snmp instead of calling with PHP
@@ -104,12 +109,14 @@ if (!function_exists('snmp_credentials')) {
                         $credential->credentials->version = 3;
                         $log->message = 'Credential set for SNMPv3 ' . $from . ' working on ' . $ip;
                         $log->command_status = 'success';
+                        $log->severity = 7;
                         $log->command_output = $output[0];
                         $discoveryLogModel->create($log);
                         return $credential;
                     } else {
                         $log->message = 'Credential set for SNMPv3 ' . $from . ' not working on ' . $ip;
                         $log->command_status = 'notice';
+                        $log->severity = 6;
                         $log->command_output = @$output[0];
                         $discoveryLogModel->create($log);
                     }
@@ -119,6 +126,7 @@ if (!function_exists('snmp_credentials')) {
             if ($multiple and php_uname('s') === 'Windows NT') {
                 $log->message = 'Multiple identical security usernames detected for SNMPv3. This is likely to not work. You should add a specific set of credentials per device.';
                 $log->command_status = 'warning';
+                $log->severity = 5;
                 $log->command_output = json_encode($users);
                 $log->command = php_uname('s');
                 $discoveryLogModel->create($log);
@@ -156,11 +164,13 @@ if (!function_exists('snmp_credentials')) {
                     unset($session);
                     if (!empty($result)) {
                         $credential->credentials->version = 3;
+                        $log->severity = 7;
                         $log->message = 'Credential set for SNMPv3 ' . $from . ' working on ' . $ip;
                         $log->command_status = 'success';
                         $discoveryLogModel->create($log);
                         return $credential;
                     } else {
+                        $log->severity = 6;
                         $log->message = 'Credential set for SNMPv3 ' . $from . ' not working on ' . $ip;
                         $log->command_status = 'notice';
                         $discoveryLogModel->create($log);
@@ -184,11 +194,13 @@ if (!function_exists('snmp_credentials')) {
             if (!empty($credential->type) && $credential->type === 'snmp') {
                 if (@snmp2_get($ip, $credential->credentials->community, $oid, $timeout, $retries)) {
                     $credential->credentials->version = 2;
+                    $log->severity = 7;
                     $log->message = 'Credential set for SNMPv2 ' . $from . ' working on ' . $ip;
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
                     return $credential;
                 } else {
+                    $log->severity = 6;
                     $log->message = 'Credential set for SNMPv2 ' . $from . ' not working on ' . $ip;
                     $log->command_status = 'notice';
                     $discoveryLogModel->create($log);
@@ -208,11 +220,13 @@ if (!function_exists('snmp_credentials')) {
             if (!empty($credential->type) && $credential->type === 'snmp') {
                 if (@snmpget($ip, $credential->credentials->community, $oid, $timeout, $retries)) {
                     $credential->credentials->version = 1;
+                    $log->severity = 7;
                     $log->message = 'Credential set for SNMPv1 ' . $from . ' working on ' . $ip;
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
                     return $credential;
                 } else {
+                    $log->severity = 6;
                     $log->message = 'Credential set for SNMPv1 ' . $from . ' not working on ' . $ip;
                     $log->command_status = 'notice';
                     $discoveryLogModel->create($log);
@@ -221,9 +235,11 @@ if (!function_exists('snmp_credentials')) {
         }
 
 
-        $log->command_status = 'warning';
+        $log->command_status = 'issue';
+        $log->severity = 5;
         $log->message = 'SNMP detected, but no valid SNMP credentials found for ' . $ip;
         $log->command = '';
+        $log->command_output = 'SNMP detected, but no valid SNMP credentials found for ' . $ip;
         $discoveryLogModel->create($log);
         return false;
     }

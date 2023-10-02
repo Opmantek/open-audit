@@ -54,11 +54,12 @@ if (! function_exists('windows_credentials')) {
             }
         }
         unset($log->command);
-        $log->command_status = 'warning';
+        $log->command_status = 'issue';
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
         $log->message = "WMI detected but no valid Windows credentials for $ip.";
-        $log->severity = 7;
+        $log->command_output = $wmi_result['output'][0];
+        $log->severity = 5;
         $discoveryLogModel->create($log);
         return false;
     }
@@ -144,6 +145,7 @@ if (! function_exists('execute_windows')) {
             $win = 'winexe-static';
             if ($return_var == 0) {
                 // Success, use SMB2
+                $log->severity = 7;
                 $log->message = 'Winexe 2 tested and working.';
                 $command_string = "timeout 15m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
                 $win = 'winexe-static-2';
@@ -158,7 +160,9 @@ if (! function_exists('execute_windows')) {
             $log->command_output = (json_encode($output)) ? json_encode($output) : '';
             $log->command_status = 'notice';
             $log->message = 'Attempting to execute command using ' . $win . ' succeeded.';
+            $log->severity = 7;
             if (empty($output)) {
+                $log->severity = 5;
                 $log->command_status = 'fail';
                 $log->message = 'Attempting to execute command using ' . $win . ' failed.';
             }
@@ -796,31 +800,6 @@ if (! function_exists('wmi_command')) {
         $log->ip = $ip;
         $log->message = 'Using credentials named ' . $credentials->name;
 
-        if (php_uname('s') == 'Darwin' and !file_exists('/usr/local/bin/winexe')) {
-            $log->message = 'Winexe not installed on OSX, cannot run wmi_command.';
-            $discoveryLogModel->create($log);
-            return false;
-        }
-        if (php_uname('s') == 'Darwin') {
-            $command_string = "/usr/local/bin/winexe";
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            $domain = $temp[1];
-            if ($domain != '') {
-                $domain .= '/';
-            }
-            unset($temp);
-            $password = escapeshellarg($credentials->credentials->password);
-            $username = escapeshellarg(str_replace("'", "", $username));
-            $command_string .= " -U ".$domain.$username."%****** --uninstall //".$ip." \"wmic $command\" ";
-            $log->command   = $command_string;
-            $log->message = "Attempting to execute command";
-            $discoveryLogModel->create($log);
-            $item_start = microtime(true);
-            $command_string = str_replace("******", $password, $command_string);
-            exec($command_string, $return['output'], $return['status']);
-        }
-
         if (php_uname('s') == 'Linux') {
             $filepath = APPPATH . '../other';
             $filename = credentials_file($ip, $credentials);
@@ -829,20 +808,19 @@ if (! function_exists('wmi_command')) {
             $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static-2';
             $item_start = microtime(true);
             exec($command_string, $return['output'], $return['status']);
-            if ($return['status'] != '0') {
-                $log->command_time_to_execute = (microtime(true) - $item_start);
-                $log->command_status = 'notice';
-                $log->command_output = json_encode($return['output']);
-                $discoveryLogModel->create($log);
-                unset($log->id, $log->command_status, $log->command_time_to_execute, $log->command_output);
-
-                $log->command   = str_replace('winexe-static-2', 'winexe-static', $log->command);
-                $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static';
-                $return['output'] = '';
-                $command_string = str_replace('winexe-static-2', 'winexe-static', $command_string);
-                $item_start = microtime(true);
-                exec($command_string, $return['output'], $return['status']);
-            }
+            // if ($return['status'] != '0') {
+            //     $log->command_time_to_execute = (microtime(true) - $item_start);
+            //     $log->command_status = 'notice';
+            //     $log->command_output = json_encode($return['output']);
+            //     $discoveryLogModel->create($log);
+            //     unset($log->id, $log->command_status, $log->command_time_to_execute, $log->command_output);
+            //     $log->command   = str_replace('winexe-static-2', 'winexe-static', $log->command);
+            //     $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static';
+            //     $return['output'] = '';
+            //     $command_string = str_replace('winexe-static-2', 'winexe-static', $command_string);
+            //     $item_start = microtime(true);
+            //     exec($command_string, $return['output'], $return['status']);
+            // }
             unlink($filename);
         }
 

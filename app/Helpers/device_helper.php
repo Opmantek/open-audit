@@ -70,6 +70,7 @@ if (!function_exists('audit_convert')) {
                 $log->device_id = (!empty($input->system->id)) ? intval($input->system->id) : '';
                 if (!empty($log->discovery_id) or !empty($log->device_id)) {
                     $log->message = 'Successfully converted audit result from JSON.';
+                    $log->severity = 7;
                     $discoveryLogModel->create($log);
                 }
             }
@@ -94,6 +95,7 @@ if (!function_exists('audit_convert')) {
                     $log->message = 'Could not convert string to XML';
                     $log->command_status = 'fail';
                     $log->command_output = $error->message . ' at ' . $error->line . ', column ' . $error->column . ', with code ' . $error->code;
+                    $log->severity = 5;
                     $discoveryLogModel->create($log);
                     log_message('error', $error->message . ' at ' . $error->line . ', column ' . $error->column . ', with code ' . $error->code);
                 }
@@ -163,6 +165,7 @@ if (!function_exists('audit_convert')) {
                 $log->device_id = (!empty($input->system->id)) ? intval($input->system->id) : null;
                 if (!empty($log->discovery_id) or !empty($log->device_id)) {
                     $log->command_status = 'notice';
+                    $log->severity = 7;
                     $log->message = 'Successfully converted audit result from XML.';
                     $discoveryLogModel->create($log);
                 }
@@ -174,7 +177,8 @@ if (!function_exists('audit_convert')) {
             // We have a string that could not be converted
             $log->severity = 5;
             $log->message = 'Could not convert string to JSON or XML';
-            $log->command_status = 'fail';
+            $log->command_output = 'Could not convert string to JSON or XML';
+            $log->command_status = 'issue';
             $discoveryLogModel->create($log);
             log_message('error', 'Could not convert string to JSON or XML');
             return false;
@@ -1886,6 +1890,7 @@ function audit_format_system($parameters)
         $input->vm_uuid = strtolower($input->vm_uuid);
         $input->vm_uuid = str_ireplace(' ', '', $input->vm_uuid);
         $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-'. substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
+        $log->severity = 7;
         $log->message = 'Windows VMware style serial detected, creating vm_uuid.';
         $log->command_output .= ' -> ' . $input->vm_uuid;
         $discoveryLogModel->create($log);

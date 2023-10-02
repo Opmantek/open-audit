@@ -149,6 +149,7 @@ include 'shared/collection_functions.php';
                                     </thead>
                                     <tbody>
                                     <?php foreach ($included['issues'] as $issue) { ?>
+                                        <?php if (!empty($issue->{'devices.id'})) { ?>
                                         <tr>
                                             <td class="text-center col-md-1"><a title="<?= __('Discovery') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('discoveriesRead', $issue->discovery_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
                                             <td class="col-md-1"><?= $issue->discovery_name ?></td>
@@ -169,13 +170,14 @@ include 'shared/collection_functions.php';
                                             <?php } ?>
                                             <td class="col-md-1"><?= $issue->{'devices.name'} ?></td>
                                             <td class="col-md-3"><?= $issue->output ?></td>
-                                            <td class="col-md-4"><?= $issue->description ?></td>
+                                            <td class="col-md-4"><?= html_entity_decode($issue->description) ?></td>
                                             <td class="text-center col-md-1">
                                             <?php if ($issue->action === 'add credentials') { ?>
                                                 <a role="button" class="btn btn-default btn-sm" href="<?= url_to('credentialsCreateForm') ?>"><?= __('Add Credentials') ?></a>
                                             <?php } ?>
                                             </td>
                                         </tr>
+                                        <?php } ?>
                                     <?php } ?>
                                     </tbody>
                                 </table>

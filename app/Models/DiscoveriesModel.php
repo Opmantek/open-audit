@@ -541,6 +541,11 @@ class DiscoveriesModel extends BaseModel
 
         $sql = "SELECT discovery_log.ip AS `discovery_log.ip`, discovery_log.message AS `discovery_log.message`, ROUND(discovery_log.command_time_to_execute, 1) AS `discovery_log.command_time_to_execute`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '% responding, %' AND discovery_log.discovery_id = ?";
         $query = $this->db->query($sql, [$id]);
+        $included['ips'] = $query->getResult();
+
+
+        $sql = "SELECT discovery_log.ip AS `discovery_log.ip`, discovery_log.message AS `discovery_log.message`, ROUND(discovery_log.command_time_to_execute, 1) AS `discovery_log.command_time_to_execute`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.id IN (SELECT MAX(discovery_log.id) FROM discovery_log WHERE discovery_log.message NOT LIKE '%not responding%' AND discovery_log.discovery_id = ? AND discovery_log.ip != '127.0.0.1' GROUP BY discovery_log.ip)";
+        $query = $this->db->query($sql, [$id]);
         $included['devices'] = $query->getResult();
 
         return $included;
@@ -571,124 +576,8 @@ class DiscoveriesModel extends BaseModel
 
     public function issuesRead(int $id = 0): array
     {
-        $issues = array();
-
-        # Windows issues from Linux
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.device_id IN (select device_id from discovery_log a where message LIKE '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command using winexe-static-2' AND discoveries.id = " . $id;
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`ip` AS `devices.ip`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `discovery_log.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`id` = $id AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC";
         $issues = $this->db->query($sql)->getResult();
-
-        # Windows issues from Windows
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, command_output AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.device_id IN (select device_id from discovery_log a where message LIKE '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command' AND discoveries.id = " . $id;
-        $result = $this->db->query($sql)->getResult();
-        $issues = array_merge($issues, $result);
-
-        # Invalid SSH Credentials
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%SSH detected but no valid SSH credentials%' AND discoveries.id = " . $id;
-        $result = $this->db->query($sql)->getResult();
-        $issues = array_merge($issues, $result);
-
-        # Invalid SNMP credentials
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%SNMP detected, but no valid SNMP credentials%' AND discoveries.id = " . $id;
-        $result = $this->db->query($sql)->getResult();
-        $issues = array_merge($issues, $result);
-
-        # No management protcols and an unknown or unidentified device
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%No management protocols%' AND (devices.type = 'unknown' OR devices.type = 'unclassified') AND discoveries.id = " . $id;
-        $result = $this->db->query($sql)->getResult();
-        $issues = array_merge($issues, $result);
-
-        # Could not copy audit result back to server
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%Could not SCP GET to%' AND command_status = 'fail' AND discoveries.id = " . $id;
-        $result = $this->db->query($sql)->getResult();
-        $issues = array_merge($issues, $result);
-
-        # Invalid result XML
-        $sql = "SELECT discovery_log.device_id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, discovery_log.timestamp AS `discovery_log.timestamp`, message AS `output` from discovery_log LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail' AND discoveries.id = " . $id;
-        $result = $this->db->query($sql)->getResult();
-        $issues = array_merge($issues, $result);
-
-        foreach ($issues as $issue) {
-            // Derive the description and action
-            $issue = $this->issueMap($issue);
-            // Format the IP
-            if (!empty($issue->{'devices.ip'})) {
-                $issue->padded_ip = $issue->{'devices.ip'};
-                $issue->{'devices.ip'} = ip_address_from_db($issue->{'devices.ip'});
-            }
-        }
-        return $issues;
-    }
-    public function issuesCollection(int $user_id = 0): array
-    {
-
-        $instance = & get_instance();
-
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
-
-        $issues = array();
-
-        # Windows issues, limited to the 50 most recent rows
-        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, discovery_log.timestamp AS `timestamp`, command_output AS `output`
-        FROM discovery_log
-            LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id)
-            LEFT JOIN devices ON (discovery_log.device_id = devices.id)
-        WHERE
-            (discovery_log.device_id IN (select device_id from discovery_log a where message like '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command using winexe-static-2' ) OR
-            (discovery_log.device_id IN (select device_id from discovery_log a where message like '%WMI detected but no valid Windows credentials%') AND discovery_log.message LIKE '%Attempting to execute command')
-        AND discoveries.org_id IN (" . implode(',', $org_list) . ") GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
-        $issues = $this->db->query($sql)->getResult();
-        $count = count($issues);
-        for ($i=0; $i < $count; $i++) {
-            if (empty($issues[$i]->discovery_name)) {
-                unset($issues[$i]);
-            }
-        }
-
-        # Other issues, limited to the 50 most recent rows
-        $sql = "SELECT discovery_log.id AS `discovery_log.id`, discovery_log.discovery_id AS `discovery_id`, discoveries.name AS `discovery_name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.type AS `devices.type`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, discovery_log.timestamp AS `timestamp`, `message` AS `output`
-        FROM discovery_log
-            LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id)
-            LEFT JOIN devices ON (discovery_log.device_id = devices.id)
-        WHERE
-            (discovery_log.message LIKE '%SSH detected but no valid SSH credentials%') OR
-            (discovery_log.message LIKE '%SNMP detected, but no valid SNMP credentials%') OR
-            (discovery_log.message LIKE '%No management protocols%' AND (devices.type = 'unknown' OR devices.type = 'unclassified')) OR
-            (discovery_log.message LIKE '%Could not SCP GET to%' AND command_status = 'fail') OR
-            (discovery_log.message LIKE '%Could not convert audit result from XML%' AND command_status = 'fail') OR
-            (discovery_log.message LIKE 'No credentials array passed to%') OR
-            (discovery_log.message LIKE 'No valid credentials for%')
-        AND discoveries.org_id IN (" . implode(',', $org_list) . ") 
-        GROUP BY devices.id ORDER BY discovery_log.id DESC LIMIT 50";
-        $result = $this->db->query($sql)->getResult();
-        $count = count($result);
-        for ($i=0; $i < $count; $i++) {
-            if (empty($result[$i]->discovery_name)) {
-                unset($result[$i]);
-            }
-        }
-        $issues = array_merge($issues, $result);
-
-        // Refine the issue list to the latest discovery_log.id per device
-        // $issue_devices[$device_id] = $discovery_log.id
-        // We want the highest discovery_log.id per device_id
-        $issue_devices = array();
-        foreach ($issues as $issue) {
-            if (empty($issue_devices[$issue->{'devices.id'}]) or $issue_devices[$issue->{'devices.id'}] < $issue->{'discovery_log.id'}) {
-                $issue_devices[$issue->{'devices.id'}] = $issue->{'discovery_log.id'};
-            }
-        }
-
-        // Select only items from $issues where they match discovery_log.id from $issue_devices
-        $new_issues = array();
-        for ($i=0; $i < count($issues); $i++) {
-            if ($issue_devices[$issues[$i]->{'devices.id'}] === $issues[$i]->{'discovery_log.id'}) {
-                $new_issues[] = $issues[$i];
-            }
-        }
-        $issues = $new_issues;
-
         for ($i=0; $i < count($issues); $i++) {
             // Derive the description and action
             $issues[$i] = $this->issueMap($issues[$i]);
@@ -697,9 +586,24 @@ class DiscoveriesModel extends BaseModel
                 $issues[$i]->{'devices.ip_padded'} = ip_address_to_db($issues[$i]->{'devices.ip'});
                 $issues[$i]->{'devices.ip'} = ip_address_from_db($issues[$i]->{'devices.ip'});
             }
-            // Need to do the below to cater to /discoveries/:id and /discoveries as the page URL when generating relative links
-            if (!empty($issues[$i]->description)) {
-                $issues[$i]->description = str_replace('../help', 'help', $issues[$i]->description);
+        }
+        return $issues;
+    }
+    public function issuesCollection(int $user_id = 0): array
+    {
+        $instance = & get_instance();
+        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $org_list[] = 1;
+        $org_list = array_unique($org_list);
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `devices.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`org_id` IN (" . implode(',', $org_list) . ") AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 50;";
+        $issues = $this->db->query($sql)->getResult();
+        for ($i=0; $i < count($issues); $i++) {
+            // Derive the description and action
+            $issues[$i] = $this->issueMap($issues[$i]);
+            // Format the IP
+            if (!empty($issues[$i]->{'devices.ip'})) {
+                $issues[$i]->{'devices.ip_padded'} = ip_address_to_db($issues[$i]->{'devices.ip'});
+                $issues[$i]->{'devices.ip'} = ip_address_from_db($issues[$i]->{'devices.ip'});
             }
         }
         return $issues;
@@ -710,19 +614,19 @@ class DiscoveriesModel extends BaseModel
         if (empty($issue)) {
             return new \stdclass();
         }
-        if ($issue->output === '["ERROR: Failed to open connection - NT_STATUS_LOGON_FAILURE"]') {
+        if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_LOGON_FAILURE') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_IO_TIMEOUT"]') {
+        } else if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_IO_TIMEOUT') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET"]') {
+        } else if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED"]') {
+        } else if (strpos($issue->{'output'}, 'ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="' . url_to('discoveryIssues', 3) . '">here</a>.';
             $issue->action = '';
