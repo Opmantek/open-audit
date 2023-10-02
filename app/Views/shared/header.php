@@ -419,6 +419,7 @@ $categories = array_unique($categories);
                             <!-- Community -->
                             <ul class="dropdown-menu" aria-labelledby="navbarHelp">
                                 <li><a class="dropdown-item" href="<?= url_to('about') ?>"><?= __('About') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('appLicenses') ?>"><?= __('Application Licenses') ?></a></li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Defaults') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
