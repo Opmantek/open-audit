@@ -955,6 +955,7 @@ INSERT INTO `configuration` VALUES (NULL,'nmis','n','bool','y','system','2000-01
 INSERT INTO `configuration` VALUES (NULL,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
 INSERT INTO `configuration` VALUES (NULL,'license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'license_string','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT (if used).');
+INSERT INTO `configuration` VALUES (NULL,'license_string_collector','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT Collectors (if used).');
 INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','y','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
