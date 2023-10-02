@@ -122,6 +122,31 @@ class Help extends BaseController
     }
 
     /**
+     * The Licenses page
+     *
+     * @access public
+     * @return NULL
+     */
+    public function licenses()
+    {
+        $license = (!empty($_GET['license'])) ? $_GET['license'] : '';
+        $license_contents = '';
+        if (!empty($license)) {
+            $license_contents = @file_get_contents(APPPATH . '../other/licenses/' . $license . '.txt');
+        }
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('helpLicenses', ['license' => $license, 'license_contents' => $license_contents])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    /**
      * The Features page
      *
      * @access public
