@@ -838,7 +838,7 @@ if (!function_exists('collections_list')) {
         $collections->tasks->actions = new \stdClass();
         $collections->tasks->actions->enterprise = 'crud';
         $collections->tasks->actions->professional = 'crud';
-        $collections->tasks->actions->community = 'r';
+        $collections->tasks->actions->community = '';
 
         $collections->users = new \StdClass();
         $collections->users->icon = 'fa fa-users';
