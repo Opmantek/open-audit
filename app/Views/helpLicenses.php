@@ -79,7 +79,7 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
         </tr>
         <tr>
             <td>HighCharts</td>
-            <td>Proprietary. If you want to modify HighCharts you may require a <a target="_blank" href="https://shop.highcharts.com/?_gl=1*1nbg2lw*_gcl_au*MTQ2NTM0NDAyOC4xNjk2MjE0ODk3">license</a>, you do not require a HighCharts license to use Firstwave products.</td>
+            <td>Proprietary. If you want to modify HighCharts you may require a <a target="_blank" href="https://shop.highcharts.com">license</a>, you do not require a HighCharts license to use Firstwave products. License <a href="https://shop.highcharts.com/license" target="_blank">details</a>.</td>
         </tr>
     </tbody>
 </table>
