@@ -44,24 +44,24 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                     <div class="row">
                         <?php $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard');
                         foreach ($components as $component) { ?>
-                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"/><br /><?= ucwords($component) ?></a></div>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= ucwords($component) ?></a></div>
                         <?php } ?>
                     </div>
-                    <br />
+                    <br>
                     <div class="row">
                         <?php $components = array('netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item');
                         foreach ($components as $component) { ?>
-                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"/><br /><?= ucwords($component) ?></a></div>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= ucwords($component) ?></a></div>
                         <?php } ?>
                     </div>
-                    <br />
+                    <br>
                     <div class="row">
                         <?php $components = array('service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                         foreach ($components as $component) { ?>
-                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"/><br /><?= ucwords($component) ?></a></div>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= ucwords($component) ?></a></div>
                         <?php } ?>
                     </div>
-                    <br />
+                    <br>
                 </div>
             </div>
             <?php } ?>
@@ -71,7 +71,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                     <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <?php if (!empty($audit_status)) {
@@ -97,7 +97,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                                             if (!empty($data[0]->id)) {
                                                     echo "\n                                        <th data-orderable=\"false\" class=\"text-center\">\n";
                                                     echo "                                            <button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
-                                                    echo "                                            <input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\"/>\n";
+                                                    echo "                                            <input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
                                                     echo "                                        </th>";
                                             }
                                         }
@@ -130,7 +130,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                                             }
                                         }
                                         if (strpos($user->permissions[$meta->collection], 'u') !== false and !empty($item->id)) {
-                                            echo "                                    <td style=\"text-align: center;\"><input aria-label='" . __('Select') . "' type='checkbox' id='ids[" . $item->id . "]' value='" . $item->id . "' name='ids[" . $item->id . "]' /></td>\n";
+                                            echo "                                    <td style=\"text-align: center;\"><input aria-label='" . __('Select') . "' type='checkbox' id='ids[" . $item->id . "]' value='" . $item->id . "' name='ids[" . $item->id . "]' ></td>\n";
                                         }
                                         if (strpos($user->permissions[$meta->collection], 'd') !== false) {
                                             echo "                                    " . collection_button_delete(intval($item->id)) . "\n";
@@ -211,7 +211,7 @@ window.onload = function () {
                     // <?= $attribute . "\n" ?>
                     "targets": [ <?= $i ?> ],
                     "visible": <?= (in_array($attribute, $display_columns)) ? "true" : "false" ?>,
-                    "searchable": false
+                    "searchable": true
                     },
                     <?php $i = $i + 1;
                 } ?>
