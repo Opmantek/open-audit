@@ -2,6 +2,17 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
+$advanced_button_color = '';
+if (intval($config->queue_count) > 0 or
+    !empty($included['ip_scan']) or
+    !empty($included['ip_audit']) or
+    intval($included['queue_items'])) {
+    $advanced_button_color = 'text-primary';
+}
+$issues_button_color = '';
+if (count($included['issues']) > 0) {
+    $issues_button_colour = 'text-warning';
+}
 ?>
         <main class="container-fluid">
             <?php if (!empty($config->license) and $config->license !== 'none') { ?>
@@ -13,7 +24,7 @@ include 'shared/collection_functions.php';
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $advanced_button_color ?>"></span></button>
                             </div>
                         </div>
                     </div>
@@ -113,11 +124,11 @@ include 'shared/collection_functions.php';
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa-solid fa-triangle-exclamation oa-icon"></span><?= __('Discovery Issues') . ' (<span class="text-danger">' . count($included['issues']) . '</span>)' ?></h6>
+                            <h6 style="padding-top:10px;"><span class="fa-solid fa-triangle-exclamation oa-icon"></span><?= __('Discovery Issues') . ' (<span style="color: #cc9a06;;">' . count($included['issues']) . '</span>)' ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $issues_button_colour ?>"></span></button>
                             </div>
                         </div>
                     </div>
