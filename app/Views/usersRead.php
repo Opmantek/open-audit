@@ -61,7 +61,7 @@ include 'shared/collection_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="toolbar_style" data-dictionary="<?= $dictionary->columns->toolbar_style ?>"><span><br></span></div>
                                 </div>
                             </div>
 
