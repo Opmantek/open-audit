@@ -133,3 +133,8 @@ foreach ($device as $key => $value) {
 
 $rulesModel = new \App\Models\RulesModel();
 $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
+
+# Because Rules may set the last_seen_by, update it here.
+$sql = "UPDATE devices SET last_seen_by = ? WHERE id = ?";
+$db->query($sql, [$device->system->last_seen_by, $device->system->id]);
+
