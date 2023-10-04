@@ -92,6 +92,7 @@ class Logon extends Controller
     {
         $this->session = session();
         $this->logonModel = model('App\Models\LogonModel');
+        $this->config =  new \Config\OpenAudit();
 
         $username = (!empty($_POST['username'])) ? $_POST['username'] : '';
         if (empty($username) && ! empty($_SERVER['HTTP_USERNAME'])) {
@@ -138,7 +139,11 @@ class Logon extends Controller
                     header('Location: ' . $_POST['url']);
                     exit;
                 }
-                return redirect()->to(url_to('home'));
+                if ($this->config->device_count === 0) {
+                    return redirect()->to(url_to('welcome'));
+                } else {
+                    return redirect()->to(url_to('home'));
+                }
             }
             if (!empty($user->id)) {
                 $user->id = intval($user->id);
