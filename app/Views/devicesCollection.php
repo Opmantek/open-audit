@@ -35,7 +35,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down text-primary"></span></button>
                             </div>
                         </div>
                     </div>

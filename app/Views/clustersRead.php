@@ -4,11 +4,11 @@
 include 'shared/read_functions.php';
 if ($update) {
     if ($user->toolbar_style === 'icontext') {
-        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add") . "</a>";
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add Device") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span style=\"margin-right:6px;\" class=\"fa fa-plus\"></span>" . __("Add Device") . "</a>";
     } else if ($user->toolbar_style === 'icon') {
-        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span class=\"fa fa-plus\"></span></a>";
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add Device") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\"><span class=\"fa fa-plus\"></span></a>";
     } else {
-        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\">" . __("Add") . "</a>";
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add Device") . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $resource->id) . "?type=cluster\">" . __("Add Device") . "</a>";
     }
 }
 ?>

@@ -2,6 +2,14 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
+$advanced_button_color = '';
+if (intval($included['devices_not_audited']) > 0 or
+    intval($included['devices_retrieved']) > 0 or
+    intval($included['devices_audited']) > 0 or
+    intval($included['devices_stopped']) > 0 or
+    intval($included['devices_running']) > 0) {
+    $advanced_button_color = 'text-primary';
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -12,7 +20,7 @@ include 'shared/collection_functions.php';
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down"></span></button>
+                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $advanced_button_color ?>"></span></button>
                             </div>
                         </div>
                     </div>
