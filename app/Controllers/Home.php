@@ -12,7 +12,7 @@ class Home extends Controller
 {
     public function index()
     {
-        redirect('orgsCollection');
+        redirect('summariesCollection');
         return;
     }
 }

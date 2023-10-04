@@ -69,7 +69,7 @@ abstract class BaseController extends Controller
 
         $this->config = new \Config\OpenAudit();
 
-        $this->config->homepage = 'orgs';
+        $this->config->homepage = 'summaries';
 
         $this->usersModel = model('App\Models\UsersModel');
         $this->orgsModel = model('App\Models\OrgsModel');
