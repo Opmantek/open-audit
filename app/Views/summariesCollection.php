@@ -20,28 +20,28 @@ include 'shared/collection_functions.php';
                         $i++;
                         $color = 'darkgrey';
                         $link = '#';
-                        $pill = 'text-bg-secondary';
+                        $pill = '';
                         $badge = 'color: RGBA(108, 117, 125, var(--bs-bg-opacity, 1)) !important;';
                         $toast = 'toast' . $collection->edition;
                         if ($collection->edition === 'Community') {
                             $link = url_to($name . 'Collection');
                             $color = 'dimgrey';
-                            $pill = 'text-bg-success';
-                            $badge = 'color:#8cc152;';
+                            $pill = 'background:#0a58ca';
+                            $badge = 'color:#3bafda;';
                             $toast = '';
                         }
                         if ($collection->edition === 'Professional' and $config->product === 'professional' or $config->product === 'enterprise') {
                             $link = url_to($name . 'Collection');
                             $color = 'dimgrey';
-                            $pill = 'text-bg-success';
-                            $badge = 'color:#8cc152;';
+                            $pill = 'background:#0a58ca';
+                            $badge = 'color:#3bafda;';
                             $toast = '';
                         }
                         if ($collection->edition === 'Enterprise' and $config->product === 'enterprise') {
                             $link = url_to($name . 'Collection');
                             $color = 'dimgrey';
-                            $pill = 'text-bg-success';
-                            $badge = 'color:#8cc152;';
+                            $pill = 'background:#0a58ca';
+                            $badge = 'color:#3bafda;';
                             $toast = '';
                         }
                         if ($collection->name === 'Discovery Log') {
@@ -57,9 +57,9 @@ include 'shared/collection_functions.php';
                         <div class="col-lg-1 text-center">
                             <?= __($collection->name) ?><br />
                             <div>
-                                <a role="button" href="<?= $link ?>" class="btn btn-default position-relative <?= $toast ?>" style="border-color: #8cc152;">
+                                <a role="button" href="<?= $link ?>" class="btn btn-default position-relative <?= $toast ?>" style="border-color: #8cc152; border-width:1px;">
                                     <span class="<?= $collection->icon ?> fa-3x fa-fw" style="font-size:2vw; <?= $badge ?>"></span>
-                                    <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill <?= $pill ?>"><?= $collection->count ?></span>
+                                    <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill" style="<?= $pill ?>"><?= $collection->count ?></span>
                                 </a>
                             </div>
                         </div>
