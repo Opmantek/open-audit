@@ -39,6 +39,10 @@ class Configuration extends BaseController
      */
     public function readLicense()
     {
+        if (empty($this->config->enterprise_binary)) {
+            $_SESSION['error'] = 'The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from <a href="https://firstwave.com">https://firstwave.com</a>.';
+            return redirect()->route('summariesCollection');
+        }
         $countries = array(
             "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra",
             "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia",
