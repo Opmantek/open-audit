@@ -129,7 +129,7 @@ class OpenAudit extends BaseConfig
         }
 
         $this->enterprise_binary = '';
-        $binaries = array('/usr/local/opmojo/private/enterprise.pl', '/usr/local/open-audit/other/enterprise.bin', 'c:\\xampp\\open-audit\\enterprise.exe');
+        $binaries = array('/usr/local/open-audit_commercial/enterprise.pl', '/usr/local/open-audit/other/enterprise.bin', 'c:\\xampp\\open-audit\\enterprise.exe');
         foreach ($binaries as $binary) {
             if (file_exists($binary)) {
                 $this->enterprise_binary = $binary;
