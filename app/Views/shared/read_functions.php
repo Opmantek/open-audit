@@ -28,7 +28,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
 
     $delete_button = "\n";
     if ($collection !== 'database' and strpos($user->permissions[$collection], 'd') !== false) {
-        if ((in_array($collection, ['orgs','locations','roles']) and $id == 1) or ($collection === 'scripts' and intval($id) < 8)) {
+        if ((in_array($collection, ['orgs','locations','roles']) and $id == 1) or ($collection === 'scripts' and intval($id) < 8) or ($collection === 'discovery_scan_options' and intval($id) < 8)) {
             // Not allowed to delete these
         } else {
             if ($style === 'icontext') {

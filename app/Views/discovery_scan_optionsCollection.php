@@ -45,8 +45,10 @@ include 'shared/collection_functions.php';
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false and $item->id > 7) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
+                                    <?php } else { ?>
+                                        <td></td>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
