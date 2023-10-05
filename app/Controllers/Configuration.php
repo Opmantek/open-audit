@@ -91,6 +91,13 @@ class Configuration extends BaseController
 
         $eu_countries = array('Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland,  Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia,Spain', 'Sweden', 'United Kingdom of Great Britain and Northern Ireland');
 
+        $db = db_connect();
+        $sql = "SELECT `id`, `name` FROM `configuration` WHERE `name` IN ('license_string', 'license_string_collector')";
+        $result = $db->query($sql)->getResult();
+        foreach ($result as $item) {
+            $this->resp->meta->{$item->name} = $item->id;
+        }
+
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -99,7 +106,7 @@ class Configuration extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('configurationReadLicense', ['license' => $this->licenses, 'countries' => $countries, 'eu_countries' => $eu_countries])
+            view('configurationReadLicense', ['license' => $this->licenses, 'license_collector' => $this->licenses_collector, 'countries' => $countries, 'eu_countries' => $eu_countries])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 

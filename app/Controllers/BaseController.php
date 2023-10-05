@@ -167,10 +167,19 @@ abstract class BaseController extends Controller
         # Parse the input and create our response
         $this->resp = response_create($this);
 
+        $this->licenses = new stdClass();
         if (!empty($this->resp->meta->licenses)) {
             $this->licenses = $this->resp->meta->licenses;
             unset($this->resp->meta->licenses);
-            $this->config->device_license = intval($this->licenses->count);
+            $this->config->device_license = 0;
+            if (!empty($this->licenses->count)) {
+                $this->config->device_license = intval($this->licenses->count);
+            }
+        }
+        $this->licenses_collector = new stdClass();
+        if (!empty($this->resp->meta->licenses_collector)) {
+            $this->licenses_collector = $this->resp->meta->licenses_collector;
+            unset($this->resp->meta->licenses_collector);
         }
 
         # log this request

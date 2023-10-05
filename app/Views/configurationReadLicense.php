@@ -18,26 +18,44 @@ include 'shared/create_functions.php';
                             <div class="offset-2 col-8">
                                 <br />
                                 <h5><?= __('Your Licenses') ?></h5><br />
-                                <div id="license_string">
                                 <?php
-                                if (!empty($config->license_string)) {
+                                if (!empty($license->product) and !empty($license_collector->product)) {
                                     $disabled = 'disabled';
+                                } else {
+                                    $disabled = '';
+                                }
+                                if (!empty($license->product)) {
                                     $valid = '<span class="text-success">' . __('valid') . '</span>';
                                     if (intval($license->expires) < intval(time())) {
                                         $valid = '<span class="text-danger">' . __('expired') . '</span>';
                                     }
+                                    echo '<div id="license_string">';
                                     echo "<strong>" . $license->product . "</strong><br />";
                                     echo '<div class="row"><div class="col-11">';
                                     echo $license->product . ' ' . __('is licensed to') . ' ' . $license->company . ' ' . __('for') . ' ' . $license->conditions . '.<br />';
                                     echo __('This license expires on') . ' ' . date('Y-m-d h:i:s', $license->expires) . ' - ' . $valid . '</div>';
-                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_string"><span class="fa fa-trash"></span></button></div></div>';
-                                    echo '<br /><br /><hr /><br />';
+                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_string" data-id="' . $meta->license_string . '"><span class="fa fa-trash"></span></button></div></div>';
+                                    echo '<br /><br /><hr /><br /></div>';
                                 } else {
-                                    echo '<span class="text-danger">' . __('None') . '</span><br /><br /><hr /><br />';
-                                    $disabled = '';
+                                    echo '<div id="license_string"><span class="text-danger">' . __('No License for Professional or Enterprise') . '</span><br /><br /><hr /><br /></div>';
                                 } ?>
-                                </div>
+                                <?php
+                                if (!empty($license_collector->product)) {
+                                    $valid = '<span class="text-success">' . __('valid') . '</span>';
+                                    if (intval($license_collector->expires) < intval(time())) {
+                                        $valid = '<span class="text-danger">' . __('expired') . '</span>';
+                                    }
+                                    echo '<div id="license_collector">';
+                                    echo "<strong>" . @$license_collector->product . "</strong><br />";
+                                    echo '<div class="row"><div class="col-11">';
+                                    echo $license_collector->product . ' ' . __('is licensed to') . ' ' . $license_collector->company . ' ' . __('for') . ' ' . $license_collector->conditions . '.<br />';
+                                    echo __('This license expires on') . ' ' . date('Y-m-d h:i:s', $license_collector->expires) . ' - ' . $valid . '</div>';
+                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_collector" data-id="' . $meta->license_string_collector . '"><span class="fa fa-trash"></span></button></div></div>';
+                                    echo '<br /><br /><hr /><br /></div>';
+                                } ?>
                             </div>
+                        </div>
+                        <div class="col-6">
                             <div class="offset-2 col-8">
                                 <br />
                                 <h5><?= __('Insert your Purchased license Key') ?></h5>
@@ -49,9 +67,8 @@ include 'shared/create_functions.php';
                                 <br />
                                 <label for="activate" class="form-label">&nbsp;</label>
                                 <button id="activate" name="activate" type="button" class="btn btn-primary" <?= $disabled ?>><?= __('Activate Key'); ?></button>
+                                <br /><br /><hr /><br />
                             </div>
-                        </div>
-                        <div class="col-6">
                             <div class="offset-2 col-8">
                                 <br />
                                 <h5><?= __('Get a Free License for 20 Devices') ?></h5>
@@ -101,9 +118,10 @@ window.onload = function () {
             if (confirm("<?= __("Are you sure?") ?>\n<?= __("This will permanently DELETE this license.") ?>") !== true) {
                 return;
             }
+            div = $(this).attr("data-name")
             var data = {};
             data["data"] = {};
-            data["data"]["id"] = <?= $meta->id ?>;
+            data["data"]["id"] = $(this).attr("data-id");
             data["data"]["type"] = "configuration";
             data["data"]["attributes"] = {};
             data["data"]["attributes"]["value"] = "";
@@ -114,7 +132,7 @@ window.onload = function () {
                 contentType: "application/json",
                 data: {data : data},
                 success: function(data, textStatus) {
-                    $("#license_string").html('<span class="text-danger"><?= __('None') ?></span><br /><br /><hr /><br />');
+                    $("#" + div).html('');
                     $("#data\\[attributes\\]\\[country\\]").prop("disabled", false);
                     $("#data\\[attributes\\]\\[license_string\\]").prop("disabled", false);
                     $("#activate").prop("disabled", false);
@@ -130,7 +148,6 @@ window.onload = function () {
         });
 
         $('#activate').click(function (e) {
-            console.log($("#data\\[attributes\\]\\[license_string\\]").val());
             if ($("#data\\[attributes\\]\\[license_string\\]").val() !== "") {
                 var data = {};
                 data["data"] = {};
