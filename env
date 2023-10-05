@@ -14,7 +14,8 @@
 # ENVIRONMENT
 #--------------------------------------------------------------------
 
-CI_ENVIRONMENT = development
+# CI_ENVIRONMENT = development
+# app.CSPEnabled = false
 
 #--------------------------------------------------------------------
 # APP
