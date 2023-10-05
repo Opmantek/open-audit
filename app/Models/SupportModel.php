@@ -282,8 +282,9 @@ class SupportModel extends BaseModel
             unset($output);
             unset($command_string);
             // nmap perms - should be -rwsr-xr-x
+            $data->permissions->nmap = '';
             if (!empty($data->prereq->nmap) && $data->prereq->nmap !== 'n') {
-                $command_string = 'ls -l '.$data->prereq->nmap.' | cut -d" " -f1';
+                $command_string = 'ls -l `which nmap` | cut -d" " -f1';
                 exec($command_string, $output, $return_var);
                 if (isset($output[0])) {
                     $data->permissions->nmap = $output[0];
@@ -291,51 +292,31 @@ class SupportModel extends BaseModel
                 unset($output);
                 unset($command_string);
             }
-            // scripts perms - should be drwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/other | grep scripts | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            $data->permissions->scripts = 'Error - missing directory';
-            if (!empty($output[0])) {
-                $data->permissions->scripts = $output[0];
+            // Scripts perms - should be writable
+            $data->permissions->scripts = '/usr/local/open-audit/other - FAIL';
+            if (is_writable('/usr/local/open-audit/other')) {
+                $data->permissions->scripts = '/usr/local/open-audit/other - PASS';
             }
-            unset($output);
-            unset($command_string);
-            // Attachments - should be drwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/app | grep Attachments | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            $data->permissions->attachments = 'Error - missing directory';
-            if (!empty($output[0])) {
-                $data->permissions->attachments = $output[0];
+            // Attachments perms - should be writable
+            $data->permissions->attachments = '/usr/local/open-audit/app/Attachments - FAIL';
+            if (is_writable('/usr/local/open-audit/app/Attachments')) {
+                $data->permissions->attachments = '/usr/local/open-audit/app/Attachments - PASS';
             }
-            unset($output);
-            unset($command_string);
-            // Uploads - should be drwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/writable | grep uploads | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            $data->permissions->uploads = 'Error - missing directory';
-            if (!empty($output[0])) {
-                $data->permissions->uploads = $output[0];
+            // Uploads perms - should be writable
+            $data->permissions->uploads = '/usr/local/open-audit/writable/uploads - FAIL';
+            if (is_writable('/usr/local/open-audit/writable/uploads')) {
+                $data->permissions->uploads = '/usr/local/open-audit/writable/uploads - PASS';
             }
-            unset($output);
-            unset($command_string);
-            // custom images - should be drwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/public | grep custom_images | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            $data->permissions->custom_images = 'Error - missing directory';
-            if (!empty($output[0])) {
-                $data->permissions->custom_images = $output[0];
+            // Custom Images perms - should be writable
+            $data->permissions->custom_images = '/usr/local/open-audit/public/custom_images - FAIL';
+            if (is_writable('/usr/local/open-audit/public/custom_images')) {
+                $data->permissions->custom_images = '/usr/local/open-audit/public/custom_images - PASS';
             }
-            unset($output);
-            unset($command_string);
-            // logs - should be drwxrwxrwx
-            $command_string = 'ls -l /usr/local/open-audit/writable | grep logs | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            $data->permissions->custom_images = 'Error - missing directory';
-            if (!empty($output[0])) {
-                $data->permissions->custom_images = $output[0];
+            // Logs perms - should be writable
+            $data->permissions->logs = '/usr/local/open-audit/writable/logs - FAIL';
+            if (is_writable('/usr/local/open-audit/writable/logs')) {
+                $data->permissions->logs = '/usr/local/open-audit/writable/logs - PASS';
             }
-            unset($output);
-            unset($command_string);
         }
         return array($data);
     }
