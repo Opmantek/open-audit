@@ -34,7 +34,11 @@ include 'shared/read_functions.php';
                                     <td><?= $column->primary_key ?></td>
                                     <td><?= @$column->values ?></td>
                                     <td class="text-center"><?php if (in_array($column->name, $dictionary->attributes->create)) { ?><span class="fa fa-check text-success"></span><?php } ?></td>
+                                    <?php if (is_string($dictionary->columns->{$column->name})) { ?>
                                     <td><?= $dictionary->columns->{$column->name} ?></td>
+                                    <?php } else { ?>
+                                    <td><pre><?= json_encode($dictionary->columns->{$column->name}) ?></td>
+                                    <?php } ?>
                                 </tr>
                                 <?php } ?>
                             </tbody>
