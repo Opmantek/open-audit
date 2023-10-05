@@ -47,7 +47,7 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]|null
      */
-    public $defaultSrc = "'self' maps.googleapis.com";
+    public $defaultSrc = "'self' maps.googleapis.com community.opmantek.com";
 
     /**
      * Lists allowed scripts' URLs.
