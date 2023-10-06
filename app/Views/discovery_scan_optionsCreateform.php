@@ -26,6 +26,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][timing]"><?= __('Timing'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][timing]" id="data[attributes][timing]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="0"><?= __('Paranoid') ?></option>
                                             <option value="1"><?= __('Sneaky') ?></option>
                                             <option value="2"><?= __('Polite') ?></option>
@@ -40,6 +41,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][nmap_tcp_ports]"><?= __('Top Nmap TCP Ports'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][nmap_tcp_ports]" id="data[attributes][nmap_tcp_ports]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="0"><?= __('None') ?></option>
                                             <option value="10" selected>10</option>
                                             <option value="100">100</option>
@@ -52,6 +54,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][nmap_udp_ports]"><?= __('Top Nmap UDP Ports'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][nmap_udp_ports]" id="data[attributes][nmap_udp_ports]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="0"><?= __('None') ?></option>
                                             <option value="10" selected>10</option>
                                             <option value="100">100</option>
@@ -111,6 +114,12 @@ window.onload = function () {
         $("#data\\[attributes\\]\\[tcp_ports\\]").val('22,135,62078');
         $("#data\\[attributes\\]\\[udp_ports\\]").val('161');
         $("#data\\[attributes\\]\\[ssh_ports\\]").val('22');
+
+        $("#data\\[attributes\\]\\[ping\\]").val('y');
+        $("#data\\[attributes\\]\\[service_version\\]").val('n');
+        $("#data\\[attributes\\]\\[org_id\\]").val('1');
+        $("#data\\[attributes\\]\\[open\\|filtered\\]").val('y');
+        $("#data\\[attributes\\]\\[filtered\\]").val('y');
     });
 }
 </script>

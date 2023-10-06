@@ -177,8 +177,12 @@ class QueriesModel extends BaseModel
         $attributesModel = new \App\Models\AttributesModel();
         $return = array();
         $attributes = $attributesModel->listUser(['attributes.resource' => 'queries', 'attributes.type' => 'menu_category']);
-        # $included['attributes'] = format_data($attributes, 'attributes');
         $included['attributes'] = $attributes;
+        foreach ($included['attributes'] as $category) {
+            if (empty($category->attributes->value)) {
+                $category->attributes->name = '&nbsp;';
+            }
+        }
         return $included;
     }
 
@@ -349,7 +353,7 @@ class QueriesModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
         $dictionary->columns->link = 'Unused.';
-        $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Report" menu in the web interface.';
+        $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the Report menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

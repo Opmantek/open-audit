@@ -23,7 +23,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][type]"><?= __('Type'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
-                                            <option value=""><?= __('Select') ?></option>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="baselines"><?= __('Baseline') ?></option>
                                             <option value="clouds"><?= __('Cloud Discovery') ?></option>
                                             <option value="discoveries"><?= __('Discovery') ?></option>

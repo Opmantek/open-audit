@@ -75,7 +75,7 @@ include 'shared/create_functions.php';
                                             <?= __('Insert example data and discover all that Open-AudIT can tell you.') ?>
                                         </div>
                                         <div class="card-footer">
-                                            <a role="button" class="btn btn-default btn-lg" href="<%= url_for('open-audit_example_create_get') %>"><?= __('Import Example Data') ?></a>
+                                            <a role="button" class="btn btn-default btn-lg" href="<?= url_to('devicesExampleForm') ?>"><?= __('Import Example Data') ?></a>
                                         </div>
                                     </div>
                                 </div>

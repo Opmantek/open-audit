@@ -486,7 +486,7 @@ if (!empty($config->modules)) {
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= url_to('usersRead', $user->id) ?>"><?= __('Preferences'); ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('logoff') ?>" role="button"><?= __('Logout'); ?></a></li>
-                                <li><a class="dropdown-item debug" href="#"><?= __('Debug'); ?></a></li>
+                                <!--<li><a class="dropdown-item debug" href="#"><?= __('Debug'); ?></a></li>-->
                             </ul>
                         </li>
                     </ul>

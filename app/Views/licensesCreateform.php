@@ -22,7 +22,8 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][org_descendants]"><?= __('Organisation Descendants'); ?></label>
                                         <select class="form-select" name="data[attributes][org_descendants]" id="data[attributes][org_descendants]" required>
-                                            <option value="y"><?= __('Yes'); ?></option>
+                                            <option value=""><?= __('Choose') ?></option>
+                                            <option value="y" selected><?= __('Yes'); ?></option>
                                             <option value="n"><?= __('No'); ?></option>
                                         </select>
                                     </div>

@@ -21,7 +21,7 @@ include 'shared/read_functions.php';
                                 <div class="row">
                                     <div class="offset-2 col-8">
                                         <br><hr><br>
-                                        <h5 style="text-center"><?= __('Files') ?></h5>
+                                        <h5 class="text-center"><?= __('Files') ?></h5>
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
@@ -46,7 +46,7 @@ include 'shared/read_functions.php';
                             <div class="row">
                                 <div class="offset-2 col-8">
                                     <br>
-                                    <h5 style="text-center"><?= __('Options') ?></h5>
+                                    <h5 class="text-center"><?= __('Options') ?></h5>
                                 </div>
                             </div>
                             <?php foreach ($included['script_option'] as $script_option) {

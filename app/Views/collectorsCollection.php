@@ -58,3 +58,15 @@ include 'shared/collection_functions.php';
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        $("#button_import_csv").remove();
+        $("#button_export_csv").remove();
+        $("#button_import_json").remove();
+        $("#button_export_json").remove();
+        $("#button_create").remove();
+    });
+}
+</script>

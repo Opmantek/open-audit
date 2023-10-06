@@ -17,7 +17,7 @@ include 'shared/create_functions.php';
                         <br />
                         <br />
                         <form action="<?= url_to('devicesDeleteExample') ?>" method="post">
-                            <button id="submit" name="submit" type="submit" class="btn btn-danger" aria-label="<?= __('Delete') ?>" onClick="document.getElementById('statusmsg').innerHTML = '<br />Please wait while we delete the devices.<br /><br /><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';"><?= __('Delete') ?></button>
+                            <button id="submit" name="submit" type="submit" class="btn btn-danger" aria-label="<?= __('Delete') ?>"><?= __('Delete') ?></button>
                         </form>
                         <div id="statusmsg"></div>
                         <div class="table-responsive">
@@ -56,3 +56,13 @@ include 'shared/create_functions.php';
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function(){
+        $('#submit').click(function() {
+            document.getElementById('statusmsg').innerHTML = '<br />Please wait while we import the devices.<br /><br /><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';
+        });
+    });
+}
+</script>

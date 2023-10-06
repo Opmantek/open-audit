@@ -89,21 +89,21 @@ header('X-Content-Type-Options: nosniff');
 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
-                                        <div class="offset-5 col-2" style="position:relative;">
+                                        <div class="offset-4 col-4" style="position:relative;">
                                             <label class="form-label" for="username">Username</label>
                                             <input class="form-control" type="text" id="username" name="username" />
                                         </div>
                                     </div> 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
-                                        <div class="offset-5 col-2" style="position:relative;">
+                                        <div class="offset-4 col-4" style="position:relative;">
                                             <label class="form-label" for="password">Password</label>
                                             <input class="form-control" type="password" id="password" name="password" />
                                         </div>
                                     </div> 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
-                                        <div class="offset-5 col-2" style="position:relative;">
+                                        <div class="offset-4 col-4" style="position:relative;">
                                             <label class="form-label" for="submit"></label>
                                                 <?php $disabled = '';
                                                 if (empty($config->internal_version)) {
@@ -115,7 +115,7 @@ header('X-Content-Type-Options: nosniff');
 
                                     <?php if ($config->device_count === 0) { ?>
                                     <div class="row">
-                                        <div class="offset-5 col-2" style="position:relative;">
+                                        <div class="offset-4 col-4" style="position:relative;">
                                             <div class="well well-sm" style="padding:10px; margin:4px; background:#d9edf7;">No devices are in the database.</div>
                                             <div class="well well-sm" style="padding:10px; margin:4px; background:#dff0d8;">Initial login credentials are admin / password.</div>
                                             <div class="well well-sm" style="padding:10px; margin:4px; background:#f2dede;">Please log in and change these ASAP.</div>

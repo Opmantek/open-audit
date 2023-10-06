@@ -15,12 +15,22 @@ include 'shared/create_functions.php';
                         <p><?= __('Click the Import button below to populate Open-AudIT with example device data.') ?><br />
                         <br />
                         <form action="<?= url_to('devicesExample') ?>" method="post">
-                            <button id="submit" name="submit" type="submit" class="btn btn-primary" aria-label="<?= __('Import') ?>" onClick="document.getElementById('statusmsg').innerHTML = '<br />Please wait while we import the devices.<br /><br /><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';"><?= __('Import') ?></button>
+                            <button id="submit" name="submit" type="submit" class="btn btn-primary" aria-label="<?= __('Import') ?>"><?= __('Import') ?></button>
                         </form>
                         <br />
                         </p>
-                        <span id="statusmsg"></span>
+                        <span id="statusmsg">&nbsp;</span>
                     </div>
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function(){
+        $('#submit').click(function() {
+            document.getElementById('statusmsg').innerHTML = '<br />Please wait while we import the devices.<br /><br /><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';
+        });
+    });
+}
+</script>

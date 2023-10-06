@@ -60,18 +60,27 @@ include 'shared/collection_functions.php';
             </div>
         </main>
 
-<?php if (strpos($meta->query_string, 'configuration.name=likemail') !== false) { ?>
+
+
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-envelope text-primary\"></span><?= __("Test Email") ?></a>");
-        <?php } else if ($user->toolbar_style === 'icon') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span class=\"fa-regular fa-envelope text-primary\"></span></a>");
-        <?php } else if ($user->toolbar_style === 'text') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><?= __("Test Email") ?></a>");
+        $("#button_import_csv").remove();
+        $("#button_export_csv").remove();
+        $("#button_import_json").remove();
+        $("#button_export_json").remove();
+        $("#button_create").remove();
+        $("#button_default_items").remove();
+        $("#button_help").remove();
+        <?php if (strpos($meta->query_string, 'configuration.name=likemail') !== false) { ?>
+            <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
+                $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-envelope text-primary\"></span><?= __("Test Email") ?></a>");
+            <?php } else if ($user->toolbar_style === 'icon') { ?>
+                $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span class=\"fa-regular fa-envelope text-primary\"></span></a>");
+            <?php } else if ($user->toolbar_style === 'text') { ?>
+                $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><?= __("Test Email") ?></a>");
+            <?php } ?>
         <?php } ?>
     });
 }
 </script>
-<?php } ?>

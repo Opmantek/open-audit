@@ -82,7 +82,7 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                 <div class="card-body text-center">
                     <div class="row">
                         <div class="col-8 offset-2 text-center">
-                            <table class="table" id="feature_table">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <td></td>

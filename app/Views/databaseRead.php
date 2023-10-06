@@ -19,7 +19,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                     <div class="row">
                         <div class="col-6">
                             <?= read_field('name', $data[0]->id, '', false) ?>
-                            <?= read_field('Row Count', $data[0]->attributes->count, '', false) ?>
+                            <?= read_field('rowcount', $data[0]->attributes->count, '', false, __('Row Count')) ?>
 
                             <?php if ($data[0]->id === 'devices') { ?>
                                 <?php foreach ($data[0]->attributes->status as $status) { ?>

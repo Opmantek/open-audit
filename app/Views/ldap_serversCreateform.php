@@ -28,6 +28,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][secure]"><?= __('Use Secure (LDAPS)') ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][secure]" id="data[attributes][secure]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="n" selected><?= __('No') ?></option>
                                             <option value="y"><?= __('Yes') ?></option>
                                         </select>
@@ -38,6 +39,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][use_roles]"><?= __('Use LDAP for Roles') ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][use_roles]" id="data[attributes][use_roles]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="n" selected><?= __('No') ?></option>
                                             <option value="y"><?= __('Yes') ?></option>
                                         </select>
@@ -48,6 +50,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][use_auth]"><?= __('Use LDAP for Authentication') ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][use_auth]" id="data[attributes][use_auth]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="n"><?= __('No') ?></option>
                                             <option value="y" selected><?= __('Yes') ?></option>
                                         </select>
@@ -58,6 +61,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][type]"><?= __('Type') ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="active directory" selected><?= ('Active Directory') ?></option>
                                             <option value="openldap"><?= ('OpenLDAP') ?></option>
                                         </select>
@@ -74,6 +78,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][lang]"><?= __('Language') ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][lang]" id="data[attributes][lang]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value='de'><?= __('German') ?></option>
                                             <option value='en' selected><?= __('English') ?></option>
                                             <option value='es'><?= __('Spanish') ?></option>

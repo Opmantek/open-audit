@@ -91,7 +91,7 @@ foreach ($included['discovery_scan_options'] as $item) {
 
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="summary" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_field('name_orig', $resource->name, '', '', 'Name') ?>
@@ -122,7 +122,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
@@ -160,7 +160,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="scan" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="scan" role="tabpanel" tabindex="0" aria-labelledby="scan">
                             <div class="row">
                                 <div class="col-6">
                                     <?php if ($config->product === 'professional' or $config->product === 'enterprise') { ?>
@@ -319,7 +319,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="match" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="match" role="tabpanel" tabindex="0" aria-labelledby="match">
                             <div class="row">
                                 <div class="col-6">
                                     <?php $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
@@ -363,7 +363,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="logs" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -425,7 +425,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
@@ -472,7 +472,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="all_ips" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="all_ips" role="tabpanel" tabindex="0" aria-labelledby="all_ips">
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
@@ -540,7 +540,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="issues" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="issues" role="tabpanel" tabindex="0" aria-labelledby="issues">
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>

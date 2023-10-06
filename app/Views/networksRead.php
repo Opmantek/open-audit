@@ -35,7 +35,7 @@ if ($style === 'icontext') {
                     <br/>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-4">
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
@@ -110,12 +110,12 @@ if ($style === 'icontext') {
                                     <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update) ?>
                                 </div>
                                 <div class="col-4">
-                                    <?= read_field('DHCP Servers', $resource->dhcp_servers, $dictionary->columns->dhcp_servers, false) ?>
-                                    <?= read_field('DNS Servers', $resource->dns_servers, $dictionary->columns->dns_servers, false) ?>
+                                    <?= read_field('DHCP_servers', $resource->dhcp_servers, $dictionary->columns->dhcp_servers, false) ?>
+                                    <?= read_field('DNS_servers', $resource->dns_servers, $dictionary->columns->dns_servers, false) ?>
                                     <?= read_field('Gateways', $resource->gateways, $dictionary->columns->gateways, false) ?>
-                                    <?= read_field('IPs Total', $resource->ip_total_count, $dictionary->columns->ip_total_count, false) ?>
-                                    <?= read_field('IPs Used', $resource->device_count, $dictionary->columns->device_count, false) ?>
-                                    <?= read_field('IPs Available', $resource->ip_available_count, $dictionary->columns->ip_available_count, false) ?>
+                                    <?= read_field('IPs_total', $resource->ip_total_count, $dictionary->columns->ip_total_count, false) ?>
+                                    <?= read_field('IPs_used', $resource->device_count, $dictionary->columns->device_count, false) ?>
+                                    <?= read_field('IPs_available', $resource->ip_available_count, $dictionary->columns->ip_available_count, false) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                                 </div>
@@ -144,7 +144,7 @@ if ($style === 'icontext') {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
 
                             <div class="table-responsive">
                                 <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>

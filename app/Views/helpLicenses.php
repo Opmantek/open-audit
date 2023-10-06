@@ -15,7 +15,9 @@ $class = '';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4 offset-4">
+                            <?php if (!empty($license)) { ?>
                             <h1 class="text-center"><?= strtoupper($license) ?></h1>
+                            <?php } ?>
                             <br>
                             <pre class="<?= $class ?>" style="white-space: pre-wrap;">
 <?php if (!empty($license_contents)) { ?>
@@ -28,11 +30,12 @@ The purpose of this licensing page is to list the products and licenses included
 Open-AudIT is licensed from Firstwave under AGPLv3 or later with Enterprise and Professional functionality licensed under commercial terms.
 
 Open-AudIT when downloaded from FirstWave may include the following libraries and projects, which are supplied unmodified and licensed as indicated:
+</pre>
 
-<table width="100%">
+<table style="width:100%;">
     <thead>
         <tr>
-            <th width="50%"><?= __('Program') ?></th>
+            <th style="width:50%;"><?= __('Program') ?></th>
             <th><?= __('License') ?></th>
         </tr>
     </thead>
@@ -90,7 +93,6 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
 
 
 
-                            </pre>
                         </div>
                     </div>
                 </div>

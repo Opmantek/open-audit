@@ -429,7 +429,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="cluster_section">
-                                <?=  device_panel('cluster', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?= device_panel('clusters', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>

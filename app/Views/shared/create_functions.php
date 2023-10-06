@@ -9,14 +9,14 @@ function create_card_header(string $collection = '', string $icon = '', object $
     $collection_title = __($collection_title);
 
     if ($style === 'icontext') {
-        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a></button>";
-        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a></button>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
     } else if ($style === 'icon') {
-        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\"><span class=\"fa fa-list text-primary\"></span></a></button>";
-        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a></button>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span></a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span></a>";
     } else {
-        $collection_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\"><a href=\"" . url_to($collection.'Collection') . "\">" . __("List") . "</a></button>";
-        $help_button = "<button type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\"><a href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a></button>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\">" . __("List") . "</a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
     }
 
     $return = "<div class=\"row\">
@@ -48,6 +48,10 @@ function create_text_field(string $field, string $label = '', array $create_fiel
     $search = strtolower(str_replace('data[attributes][', '', $field));
     $search = str_replace(']', '', $search);
 
+    if (!empty($placeholder)) {
+        $placeholder = 'placeholder="' . $placeholder . '"';
+    }
+
     $required = '';
     if (in_array($search, $create_fields)) {
         $required = "required ";
@@ -57,7 +61,7 @@ function create_text_field(string $field, string $label = '', array $create_fiel
     $return_string = "\n                                <div class=\"row\" style=\"padding-top:16px; padding-bottom:4px;\">
                                     <div class=\"offset-2 col-8\" style=\"position:relative;\">
                                         <label class=\"form-label\" for=\"{$field}\">{$label}</label>
-                                        <input class=\"form-control\" type=\"" . $type . "\" id=\"{$field}\" name=\"{$field}\" {$required} placeholder=\"{$placeholder}\"/>
+                                        <input class=\"form-control\" type=\"" . $type . "\" id=\"{$field}\" name=\"{$field}\" {$required} " . $placeholder . "/>
                                     </div>
                                 </div>";
     return $return_string;
@@ -68,6 +72,12 @@ function create_select(string $field = '', string $label = '', $items = array(),
     if (empty($items)) {
         # No items passed, assuming a bool y|n.
         $items = array();
+        $select = new \StdClass();
+        $select->id = '';
+        $select->attributes = new \StdClass();
+        $select->attributes->name = 'Choose';
+        $items[] = $select;
+        unset($select);
         $select = new \StdClass();
         $select->id = 'n';
         $select->attributes = new \StdClass();
@@ -103,7 +113,7 @@ function create_select(string $field = '', string $label = '', $items = array(),
     $return_string = "\n                                <div class=\"row\" style=\"padding-top:16px; padding-bottom:4px;\">
                                     <div class=\"offset-2 col-8\">
                                         <label class=\"form-label\" for=\"{$field}\">" . $label . "</label>
-                                        <select class=\"form-select\" name=\"{$field}\" id=\"{$field}\" {$required}>\n";
+                                        <select class=\"form-select\" name=\"{$field}\" id=\"{$field}\" {$required}>\n                                            <option value=\"\">" . __('Choose') . "</option>\n";
     foreach ($items as $item) {
         $return_string .= "                                            <option value=\"" . $item->id . "\">" . $item->attributes->name . "</option>\n";
     }

@@ -230,7 +230,7 @@ if ($update) {
                             <h6 style="padding-top:10px;"><span class="fa fa-desktop oa-icon"></span><?= __('Devices') ?></h6>
                         </div>
                         <div class="col-3 clearfix">
-                            <div class="btn-group btn-group-sm float-end" role="group" id="device_panel_' . $name . '">
+                            <div class="btn-group btn-group-sm float-end" role="group" id="device_panel">
                                 <div class="page-title-right float-right">
                                     <?= $panel_add_button ?>
                                 </div>

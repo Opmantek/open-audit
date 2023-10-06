@@ -16,8 +16,8 @@ include 'shared/create_functions.php';
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label class="form-label" for="data[attributes][type]"><?= __('File'); ?> <span style="color: #dc3545;">*</span></label>
-                                        <input tabindex="1" type="file" class="form-control" id="attachment" name="attachment" value="">
+                                        <label class="form-label" for="attachment"><?= __('File'); ?> <span style="color: #dc3545;">*</span></label>
+                                        <input tabindex="1" type="file" class="form-control" id="attachment" name="attachment">
                                     </div>
                                 </div>
                                 <br>

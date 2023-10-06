@@ -28,7 +28,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][table]"><?= __('Table'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][table]" id="data[attributes][table]" required>
-                                            <option value="" selected><?= __('Choose a Table'); ?></option>
+                                            <option value=""><?= __('Choose'); ?></option>
                                             <option value="netstat"><?= __('Netstat'); ?></option>
                                             <option value="software"><?= __('Software'); ?></option>
                                             <option value="user"><?= __('User'); ?></option>

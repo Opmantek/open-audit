@@ -22,7 +22,9 @@ if (php_uname('s') == "Windows NT") {
                 <div class="card-body text-center">
                     <div class="row">
                         <div class="col-8 offset-2 text-center">
+                            <?php if (!empty($meta->id)) { ?>
                             <h1><?= ucwords(str_replace('_', ' ', $meta->id)) ?></h1>
+                            <?php } ?>
                             <br>
 
 

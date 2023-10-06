@@ -20,7 +20,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][resource]"><?= __('Resource'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][resource]" id="data[attributes][resource]" required>
-                                            <option value="">Choose</option>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <option value="devices"><?= __('Devices'); ?></option>
                                             <option value="locations"><?= __('Locations'); ?></option>
                                             <option value="orgs"><?= __('Orgs'); ?></option>
@@ -33,6 +33,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][type]"><?= __('Type'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
+                                            <option value=""><?= __('Choose') ?></option>
                                         </select>
                                     </div>
                                 </div>

@@ -78,7 +78,7 @@ if ($resource->ru_start == 1) {
                 $row = $i + $j;
                 $rack->{$row}[1] = '<td class="text-center" style="vertical-align:middle;">' . $row . '</td>';
                 if ($j === 0) {
-                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . $device->attributes->height . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<a role="button" style="position:absolute; z-index:100; top:4px; right:0px;" href="#" tabindex="0" class="btn btn-xs btn-primary" role="button" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="fa fa-eye" aria-hidden="true"></span></a></span></div></td>';
+                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . $device->attributes->height . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<a role="button" style="position:absolute; z-index:100; top:4px; right:0px;" href="#" tabindex="0" class="btn btn-xs btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="fa fa-eye" aria-hidden="true"></span></a></span></div></td>';
                 } else {
                     $rack->{$row}[2] = '';
                 }
@@ -144,7 +144,7 @@ if ($resource->ru_start == 1) {
                 $row = intval($i - $j);
                 $rack->{$row}[1] = '<td class="text-center" style="vertical-align:middle;">' . $row . '</td>';
                 if ($j == 0) {
-                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . intval($device->attributes->height) . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<button type="button" style="position:absolute; z-index:100; top:4px; right:0px;" href="#" tabindex="0" class="btn btn-xs btn-primary" role="button" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="fa fa-eye" aria-hidden="true"></span></a></span></div></td>';
+                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . intval($device->attributes->height) . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<button style="position:absolute; z-index:100; top:4px; right:0px;" tabindex="0" class="btn btn-xs btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="fa fa-eye" aria-hidden="true"></span></button></span></div></td>';
                 } else {
                     $rack->{$row}[2] = '';
                 }

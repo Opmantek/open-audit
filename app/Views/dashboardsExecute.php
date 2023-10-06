@@ -193,7 +193,7 @@ foreach ($checks as $key => $value) {
             </div>
         </main>
 
-<script src="/open-audit/js/highcharts-9.3.1.min.js"></script>
+<script {csp-script-nonce} src="/open-audit/js/highcharts-9.3.1.min.js"></script>
 
 <script {csp-script-nonce}>
 window.onload = function () {

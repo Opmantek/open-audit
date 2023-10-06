@@ -21,7 +21,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][menu_category]"><?= __('Menu Category'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][menu_category]" id="data[attributes][menu_category]" required>
-                                            <option value="">Choose</option>
+                                            <option value=""><?= __('Choose') ?></option>
                                             <?php foreach ($included['attributes'] as $category) { ?>
                                                 <option value="<?= $category->attributes->value ?>"><?= __($category->attributes->name); ?></option>
                                             <?php } ?>

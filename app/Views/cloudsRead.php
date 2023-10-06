@@ -36,7 +36,7 @@ if ($style === 'icontext') {
                     <br/>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
@@ -99,7 +99,7 @@ if ($style === 'icontext') {
 
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="logs" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
@@ -128,7 +128,7 @@ if ($style === 'icontext') {
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>

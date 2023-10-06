@@ -25,6 +25,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][lang]"><?= __('Language'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][lang]" id="data[attributes][lang]" required>
+                                            <option value=''><?= __('Choose'); ?></option>
                                             <option value='cs'><?= __('Czech'); ?></option>
                                             <option value='de'><?= __('German'); ?></option>
                                             <option value='en' selected><?= __('English'); ?></option>
@@ -40,6 +41,7 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][toolbar_style]"><?= __('Toolbar Style'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][toolbar_style]" id="data[attributes][toolbar_style]" required>
+                                            <option value=''><?= __('Choose'); ?></option>
                                             <option value='icontext' selected><?= __('Icon and Text'); ?></option>
                                             <option value='icon'><?= __('Icon'); ?></option>
                                             <option value='text'><?= __('Text'); ?></option>
@@ -49,7 +51,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label class="form-label" for="data[attributes][roles]"><?= __('Roles'); ?> <span style="color: #dc3545;">*</span></label>
+                                        <label class="form-label" for="data[attributes][roles][]"><?= __('Roles'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" multiple size="6" name="data[attributes][roles][]" id="data[attributes][roles][]" required>
                                         <?php foreach ($included['roles'] as $role) { ?>
                                             <option value="<?= $role->attributes->name ?>"><?= $role->attributes->name ?></option>
@@ -60,7 +62,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label class="form-label" for="data[attributes][orgs]"><?= __('Orgs'); ?> <span style="color: #dc3545;">*</span></label>
+                                        <label class="form-label" for="data[attributes][orgs][]"><?= __('Orgs'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" multiple size="6" name="data[attributes][orgs][]" id="data[attributes][orgs][]" required>
                                         <?php foreach ($included['orgs'] as $org) { ?>
                                             <?php $parent = ($org->id != 1) ? ' (parent: ' . $org->attributes->parent_name . ')' : ''; ?>
