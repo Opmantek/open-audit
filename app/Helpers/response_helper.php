@@ -487,8 +487,10 @@ if (!function_exists('response_create')) {
                 unset($response->meta->product);
             }
             // Delete the DB entry
-            #$sql = "DELETE FROM enterprise WHERE id = $id";
-            #$db->query($sql);
+            if (empty($_SERVER['CI_ENVIRONMENT']) or $_SERVER['CI_ENVIRONMENT'] !== 'development') {
+                $sql = "DELETE FROM enterprise WHERE id = $id";
+                $db->query($sql);
+            }
 
             // TODO - fix this
             if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
