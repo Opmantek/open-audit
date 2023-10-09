@@ -44,21 +44,21 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                     <div class="row">
                         <?php $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard');
                         foreach ($components as $component) { ?>
-                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= ucwords($component) ?></a></div>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= __(ucwords(str_replace('_', ' ', $component))) ?></a></div>
                         <?php } ?>
                     </div>
                     <br>
                     <div class="row">
                         <?php $components = array('netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item');
                         foreach ($components as $component) { ?>
-                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= ucwords($component) ?></a></div>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= __(ucwords(str_replace('_', ' ', $component))) ?></a></div>
                         <?php } ?>
                     </div>
                     <br>
                     <div class="row">
                         <?php $components = array('service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                         foreach ($components as $component) { ?>
-                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= ucwords($component) ?></a></div>
+                            <div class="col-md-1 text-center"><a class="component_icon" href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>"><img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>"><br><?= __(ucwords(str_replace('_', ' ', $component))) ?></a></div>
                         <?php } ?>
                     </div>
                     <br>

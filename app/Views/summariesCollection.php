@@ -58,7 +58,8 @@ include 'shared/collection_functions.php';
                             <?= __($collection->name) ?><br />
                             <div>
                                 <a role="button" href="<?= $link ?>" class="btn btn-default position-relative <?= $toast ?>" style="border-color: #8cc152; border-width:1px;">
-                                    <span class="<?= $collection->icon ?> fa-3x fa-fw" style="font-size:2vw; <?= $badge ?>"></span>
+                                    <!--<span class="<?= $collection->icon ?> fa-3x fa-fw" style="font-size:2vw; <?= $badge ?>"></span>-->
+                                    <img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $name ?>.svg" alt="<?= $name ?>">
                                     <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill" style="<?= $pill ?>"><?= $collection->count ?></span>
                                 </a>
                             </div>
