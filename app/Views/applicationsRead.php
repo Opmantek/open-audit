@@ -60,7 +60,7 @@ if ($update) {
                         </div>
                         <div class="col-3 clearfix">
                             <div class="btn-group btn-group-sm float-end" role="group" id="device_panel">
-                                <div class="page-title-right float-right">
+                                <div class="page-title-right">
                                     <?= $panel_add_button ?>
                                 </div>
                             </div>
