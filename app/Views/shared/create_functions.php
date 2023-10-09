@@ -72,12 +72,12 @@ function create_select(string $field = '', string $label = '', $items = array(),
     if (empty($items)) {
         # No items passed, assuming a bool y|n.
         $items = array();
-        $select = new \StdClass();
-        $select->id = '';
-        $select->attributes = new \StdClass();
-        $select->attributes->name = 'Choose';
-        $items[] = $select;
-        unset($select);
+        // $select = new \StdClass();
+        // $select->id = '';
+        // $select->attributes = new \StdClass();
+        // $select->attributes->name = 'Choose';
+        // $items[] = $select;
+        // unset($select);
         $select = new \StdClass();
         $select->id = 'n';
         $select->attributes = new \StdClass();
