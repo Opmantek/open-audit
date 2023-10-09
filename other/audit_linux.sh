@@ -2702,9 +2702,8 @@ if hash systemctl 2>/dev/null; then
 	if [ "$debugging" -gt "1" ]; then
 		echo "    systemd services"
 	fi
-	# systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
-	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | grep "^ " | awk '{ print $1 }' | cut -d. -f1)
-	for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | grep "^ " | awk '{ print $1 }'); do
+	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | grep -v ● | awk '{ print $1 }' | cut -d. -f1)
+	for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | grep -v ● | awk '{ print $1 }'); do
 		description=$(systemctl show "$name" -p Description | cut -d= -f2)
 		description="$description (using systemd)"
 		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2 | sort -u)
@@ -2721,6 +2720,7 @@ if hash systemctl 2>/dev/null; then
 		service_name=$(lcase "$name")
 		suffix=".service"
 		service_name=${service_name%$suffix}
+		service_name=$(systemd-escape --unescape "$service_name")
 		{
 		echo "		<item>"
 		echo "			<name>$(escape_xml "$service_name")</name>"
@@ -2735,7 +2735,6 @@ if hash systemctl 2>/dev/null; then
 fi
 
 if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; then
-	#INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
 	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf 2>/dev/null)
 	# upstart services
 	if [ -n `which initctl 2>/dev/null` ]; then
