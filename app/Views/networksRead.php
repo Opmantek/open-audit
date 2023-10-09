@@ -54,14 +54,14 @@ if ($style === 'icontext') {
                                                 } ?>
                                                 </select>
                                                 <?php if ($update) { ?>
-                                                <div class="float-right" style="padding-left:4px;">
+                                                <div class="float-end" style="padding-left:4px;">
                                                     <div data-attribute="environment" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                                     <div data-attribute="environment" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                                     <div data-attribute="environment" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br></span></div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
@@ -75,14 +75,14 @@ if ($style === 'icontext') {
                                                 } ?>
                                                 </select>
                                                 <?php if ($update) { ?>
-                                                <div class="float-right" style="padding-left:4px;">
+                                                <div class="float-end" style="padding-left:4px;">
                                                     <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                                     <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                                     <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
@@ -96,14 +96,14 @@ if ($style === 'icontext') {
                                                 } ?>
                                                 </select>
                                                 <?php if ($update) { ?>
-                                                <div class="float-right" style="padding-left:4px;">
+                                                <div class="float-end" style="padding-left:4px;">
                                                     <div data-attribute="admin_status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                                     <div data-attribute="admin_status" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                                     <div data-attribute="admin_status" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="admin_status" data-dictionary="<?= $dictionary->columns->admin_status ?>"><span><br></span></div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="admin_status" data-dictionary="<?= $dictionary->columns->admin_status ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update) ?>

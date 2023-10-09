@@ -62,7 +62,7 @@ include 'shared/create_functions.php';
                                 <label class="form-label" for="data[attributes][license_string]"><?= __('License Key'); ?></label>
                                 <textarea class="form-control" rows="4" name="data[attributes][license_string]" id="data[attributes][license_string]" <?= $disabled ?>></textarea>
                                 <?php if ($disabled === 'disabled') { ?>
-                                    <div class="form-text form-help float-right"><span><?= __('You must delete your existing license before adding a new license.') ?></span></div>
+                                    <div class="form-text form-help float-end"><span><?= __('You must delete your existing license before adding a new license.') ?></span></div>
                                 <?php } ?>
                                 <br />
                                 <label for="activate" class="form-label">&nbsp;</label>
@@ -80,7 +80,7 @@ include 'shared/create_functions.php';
                                     <?php } ?>
                                 </select>
                                 <?php if ($disabled === 'disabled') { ?>
-                                    <div class="form-text form-help float-right"><span><?= __('You must delete your existing license before activating a free license.') ?></span></div>
+                                    <div class="form-text form-help float-end"><span><?= __('You must delete your existing license before activating a free license.') ?></span></div>
                                 <?php } ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div id="freeDiv" style="display:none;">

@@ -27,14 +27,14 @@ include 'shared/read_functions.php';
                                             <option value="y"><?= __('Yes') ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="secure" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="secure" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="secure" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="secure" data-dictionary="<?= $dictionary->columns->secure ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="secure" data-dictionary="<?= $dictionary->columns->secure ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <div class="row" style="padding-top:16px;">
@@ -46,14 +46,14 @@ include 'shared/read_functions.php';
                                             <option value="y"><?= __('Yes') ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="use_roles" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="use_roles" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="use_roles" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="use_roles" data-dictionary="<?= $dictionary->columns->use_roles ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_roles" data-dictionary="<?= $dictionary->columns->use_roles ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <div class="row" style="padding-top:16px;">
@@ -65,14 +65,14 @@ include 'shared/read_functions.php';
                                             <option value="y"><?= __('Yes') ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="use_auth" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="use_auth" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="use_auth" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="use_auth" data-dictionary="<?= $dictionary->columns->use_auth ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_auth" data-dictionary="<?= $dictionary->columns->use_auth ?>"><span><br></span></div>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@ include 'shared/read_functions.php';
                                             <option value="openldap"><?= __('OpenLDAP') ?></option>
                                         </select>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?= read_field('base_dn', $resource->base_dn, $dictionary->columns->base_dn, $update) ?>
@@ -109,14 +109,14 @@ include 'shared/read_functions.php';
                                             <option value='zh-tw'><?= __('Traditional Chinese') ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="lang" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="lang" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="lang" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>

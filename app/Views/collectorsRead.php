@@ -28,7 +28,7 @@ include 'shared/read_functions.php';
                                         </select>
                                         <!--
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
@@ -36,7 +36,7 @@ include 'shared/read_functions.php';
                                         <?php } ?>
                                     -->
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
 

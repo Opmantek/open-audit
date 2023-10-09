@@ -45,7 +45,7 @@ if ($user->toolbar_style === 'icontext') {
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['suburb', 'district', 'region', 'area'])) {
-                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-right\" style=\"padding-left:4px;\">
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
                                     <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
                                 }
                                 echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button) . "\n";
@@ -56,7 +56,7 @@ if ($user->toolbar_style === 'icontext') {
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['city', 'state', 'postcode', 'country'])) {
-                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-right\" style=\"padding-left:4px;\">
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
                                     <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
                                 }
                                 echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button) . "\n";

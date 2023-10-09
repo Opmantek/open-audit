@@ -33,14 +33,14 @@ include 'shared/collection_functions.php';
                                         <option value='zh-tw'><?php echo __('Traditional Chinese'); ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="lang" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="lang" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="lang" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -54,14 +54,14 @@ include 'shared/collection_functions.php';
                                         <option value='text'><?php echo __('Text'); ?></option>
                                         </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="toolbar_style" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="toolbar_style" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="toolbar_style" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="toolbar_style" data-dictionary="<?= $dictionary->columns->toolbar_style ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="toolbar_style" data-dictionary="<?= $dictionary->columns->toolbar_style ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -83,14 +83,14 @@ include 'shared/collection_functions.php';
                                         <?php } ?>
                                     </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="roles" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="roles" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="roles" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="roles" data-dictionary="<?= $dictionary->columns->roles ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="roles" data-dictionary="<?= $dictionary->columns->roles ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -108,14 +108,14 @@ include 'shared/collection_functions.php';
                                         } ?>
                                     </select>
                                         <?php if ($update) { ?>
-                                        <div class="float-right" style="padding-left:4px;">
+                                        <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="orgs" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="orgs" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
                                             <div data-attribute="orgs" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-right" style="position: absolute; right: 0;" data-attribute="orgs" data-dictionary="<?= $dictionary->columns->orgs ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="orgs" data-dictionary="<?= $dictionary->columns->orgs ?>"><span><br></span></div>
                                 </div>
                             </div>
 
