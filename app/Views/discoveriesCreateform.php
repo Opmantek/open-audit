@@ -21,20 +21,32 @@ include 'shared/create_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][type]"><?= __('Type'); ?></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]">
-                                            <option value="subnet"><?= __('Subnet'); ?></option>
                                             <option value="active directory"><?= __('Active Directory'); ?></option>
+                                            <?php if ($config->product === 'enterprise') { ?>
+                                            <option value="seed"><?= __('Device Seed'); ?></option>
+                                            <?php } ?>
+                                            <option value="subnet" selected><?= __('Subnet'); ?></option>
                                         </select>
                                     </div>
-                                </div>
-
-                                <div id="subnet">
-                                <?= create_text_field('data[attributes][subnet]', __('Subnet'), $dictionary->attributes->create) ?>
                                 </div>
 
                                 <div id="ad" style="display:none;">
                                 <?= create_text_field('data[attributes][ad_server]', __('Active Directory Server'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][ad_domain]', __('Active Directory Domain'), $dictionary->attributes->create) ?>
                                 </div>
+
+                                <div id="seed" style="display:none;">
+                                <?php if ($config->product === 'enterprise') { ?>
+                                    <?= create_text_field('data[attributes][seed_ip]', __('Device Seed IP'), $dictionary->attributes->create) ?>
+                                    <?= create_select('data[attributes][seed_restrict_to_subnet]', __('Restrict to Subnet'), [], $dictionary->attributes->create) ?>
+                                    <?= create_select('data[attributes][seed_restrict_to_private]', __('Restrict to Private'), [], $dictionary->attributes->create) ?>
+                                <?php } ?>
+                                </div>
+
+                                <div id="subnet">
+                                <?= create_text_field('data[attributes][subnet]', __('Subnet'), $dictionary->attributes->create) ?>
+                                </div>
+
 
                                 <?php
                                 $disabled = 'disabled';
@@ -112,9 +124,18 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        <?php if ($config->product === 'enterprise') { ?>
+            $("#data\\[attributes\\]\\[seed_restrict_to_subnet\\]").val('y');
+            $("#data\\[attributes\\]\\[seed_restrict_to_private\\]").val('y');
+        <?php } ?>
+
+
+
         $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= $config->discovery_default_scan_option ?>);
+        $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").find('option').get(0).remove();
         $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").append($('<option>', { value: '', text: ''}));
         $("#data\\[attributes\\]\\[devices_assigned_to_org\\]").val("");
+        $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").find('option').get(0).remove();
         $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").append($('<option>', { value: '', text: ''}));
         $("#data\\[attributes\\]\\[devices_assigned_to_location\\]").val("");
 
@@ -123,9 +144,15 @@ window.onload = function () {
             var $type = $(this).val();
             if ($type == "subnet") {
                 $("#ad").css("display", "none");
+                $("#seed").css("display", "none");
                 $("#subnet").css("display", "block");
             } else if ($type == "active directory") {
                 $("#ad").css("display", "block");
+                $("#seed").css("display", "none");
+                $("#subnet").css("display", "none");
+            } else if ($type == "seed") {
+                $("#ad").css("display", "none");
+                $("#seed").css("display", "block");
                 $("#subnet").css("display", "none");
             }
         });
