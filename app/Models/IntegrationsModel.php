@@ -64,7 +64,7 @@ class IntegrationsModel extends BaseModel
      *
      * @param  object $data The data attributes
      *
-     * @return int|null    The Integer ID of the newly created item, or false
+     * @return int|null     The Integer ID of the newly created item, or false
      */
     public function create(object $data = null): ?int
     {
@@ -1093,6 +1093,38 @@ class IntegrationsModel extends BaseModel
         $queriesModel = new \App\Models\QueriesModel();
         $include['queries'] = $queriesModel->listUser();
 
+        $include['devices_fields'] = $this->db->getFieldNames('devices');
+
+        if (php_uname('s') !== 'Windows NT') {
+            $auth_method = '';
+            $token_auth_method = '';
+            $config_file_contents = '';
+            $auth = '';
+            if (file_exists('/usr/local/omk/conf/opCommon.json')) {
+                $config_file_contents = file_get_contents('/usr/local/omk/conf/opCommon.json');
+            }
+            if (file_exists('/usr/local/opmojo/conf/opCommon.json')) {
+                $config_file_contents = file_get_contents('/usr/local/opmojo/conf/opCommon.json');
+            }
+            if (!empty($config_file_contents)) {
+                $config = json_decode($config_file_contents);
+            }
+            if (!empty($config->authentication->auth_method_1) and $config->authentication->auth_method_1 === 'token') {
+                $auth = 'auth_method_1';
+            }
+            if (!empty($config->authentication->auth_method_2) and $config->authentication->auth_method_2 === 'token') {
+                $auth = 'auth_method_2';
+            }
+            if (!empty($config->authentication->auth_method_3) and $config->authentication->auth_method_3 === 'token') {
+                $auth = 'auth_method_3';
+            }
+            if ($auth === '') {
+                $include['warning'] = 'Please set auth_method_1 (or 2 or 3) in the config (/usr/local/omk/config/opCommon.json) to token to avoid having to use credentials for local NMIS Integrations.';
+            }
+            if (empty($config->authentication->auth_token_key)) {
+                $include['warning'] = 'Please set an auth_token_key in the config (/usr/local/omk/config/opCommon.json) to avoid having to use credentials for local NMIS Integrations.';
+            }
+        }
         return $include;
     }
 
@@ -1639,6 +1671,8 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->attributes->url = 'The URL of the external system.';
         $dictionary->columns->attributes->username = 'The username used to access the external system.';
         $dictionary->columns->attributes->password = 'The password used to access the external system.';
+
+        $dictionary->columns->server = 'Is the NMIS server local (on this Open-AudIT server) or remote?';
 
         $dictionary->columns->create_internal_from_external = 'When integrating devices from the external system, if the device doesn\'t exist in Open-AudIT should we create it?';
         $dictionary->columns->update_internal_from_external = 'When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?';
