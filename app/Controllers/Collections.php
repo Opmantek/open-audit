@@ -105,6 +105,7 @@ class Collections extends BaseController
             // $this->resp->included['collectors'] = $this->collectorsModel->listUser();
         }
         if ($this->resp->meta->collection === 'clouds' or
+            $this->resp->meta->collection === 'devices' or
             $this->resp->meta->collection === 'discoveries' or
             $this->resp->meta->collection === 'networks' or
             $this->resp->meta->collection === 'summaries') {

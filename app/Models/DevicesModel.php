@@ -296,6 +296,26 @@ class DevicesModel extends BaseModel
         return $include;
     }
 
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
+    public function includedCollection(): array
+    {
+        $included = array();
+        // No file, radio, san, scsi, usb
+        $current = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+
+        foreach ($current as $table) {
+            $sql = "SELECT count(*) AS `count` FROM `$table`";
+            $query = $this->db->query($sql);
+            $result = $query->getResult();
+            $included[$table] = intval($result[0]->count);
+        }
+        return $included;
+    }
 
     /**
      * Return an array containing arrays of related items to be stored in resp->included
