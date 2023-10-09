@@ -3,9 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 $class = '';
-// if ($license === '') {
-//     $license = 'All';
-// }
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -21,10 +18,8 @@ $class = '';
                             <br>
                             <pre class="<?= $class ?>" style="white-space: pre-wrap;">
 <?php if (!empty($license_contents)) { ?>
-<?= $license_contents ?>
+    <?= $license_contents ?>
 <?php } else { ?>
-
-
 The purpose of this licensing page is to list the products and licenses included in Firstwave Commercial products including products based upon open source works.
 
 Open-AudIT is licensed from Firstwave under AGPLv3 or later with Enterprise and Professional functionality licensed under commercial terms.
@@ -65,8 +60,12 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
             <td><a href="<?= url_to('appLicenses') ?>?license=mit">MIT</a></td>
         </tr>
         <tr>
-            <td>Tango Icons</td>
-            <td><a target="_blank" href="https://en.wikipedia.org/wiki/Public_domain">Public Domain</a></td>
+            <td>Popper JS</td>
+            <td><a href="<?= url_to('appLicenses') ?>?license=mit">MIT</a></td>
+        </tr>
+        <tr>
+            <td>Newaita Reborn Icons</td>
+            <td><a href="<?= url_to('appLicenses') ?>?license=gpl">GPL</a></td>
         </tr>
         <tr>
             <td>Map Icons</td>
@@ -75,10 +74,6 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
         <tr>
             <td>Font Awesome Free</td>
             <td><a href="<?= url_to('appLicenses') ?>?license=font-awesome">SIL Open Font License</a></td>
-        </tr>
-        <tr>
-            <td>Popper JS</td>
-            <td><a href="<?= url_to('appLicenses') ?>?license=mit">MIT</a></td>
         </tr>
         <tr>
             <td>HighCharts</td>
