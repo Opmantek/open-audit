@@ -26,21 +26,21 @@ include 'shared/collection_functions.php';
                         if ($collection->edition === 'Community') {
                             $link = url_to($name . 'Collection');
                             $color = 'dimgrey';
-                            $pill = 'background:#0a58ca';
+                            $pill = 'background:#3bafda';
                             $badge = 'color:#3bafda;';
                             $toast = '';
                         }
                         if ($collection->edition === 'Professional' and $config->product === 'professional' or $config->product === 'enterprise') {
                             $link = url_to($name . 'Collection');
                             $color = 'dimgrey';
-                            $pill = 'background:#0a58ca';
+                            $pill = 'background:#3bafda';
                             $badge = 'color:#3bafda;';
                             $toast = '';
                         }
                         if ($collection->edition === 'Enterprise' and $config->product === 'enterprise') {
                             $link = url_to($name . 'Collection');
                             $color = 'dimgrey';
-                            $pill = 'background:#0a58ca';
+                            $pill = 'background:#3bafda';
                             $badge = 'color:#3bafda;';
                             $toast = '';
                         }
@@ -55,18 +55,17 @@ include 'shared/collection_functions.php';
                         }
                         ?>
                         <div class="col-lg-1 text-center">
-                            <?= __($collection->name) ?><br />
                             <div>
-                                <a role="button" href="<?= $link ?>" class="btn btn-default position-relative <?= $toast ?>" style="border-color: #8cc152; border-width:1px;">
-                                    <!--<span class="<?= $collection->icon ?> fa-3x fa-fw" style="font-size:2vw; <?= $badge ?>"></span>-->
+                                <a href="<?= $link ?>" class="position-relative <?= $toast ?>">
                                     <img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $name ?>.svg" alt="<?= $name ?>">
-                                    <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill" style="<?= $pill ?>"><?= $collection->count ?></span>
+                                    <br><?= __($collection->name) ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="<?= $pill ?>"><?= $collection->count ?></span>
                                 </a>
                             </div>
                         </div>
                         <?php
                         if ($i === 12 or $i === 24 or $i === 36) {
-                            echo "</div><br /><br /><div class=\"row\">";
+                            echo "</div><br /><div class=\"row\">";
                         }
                     }
                     ?>
