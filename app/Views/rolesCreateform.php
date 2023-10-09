@@ -36,10 +36,10 @@ $permissions = array('c', 'r', 'u', 'd');
                                             <thead>
                                                 <tr>
                                                     <th>Endpoint</th>
-                                                    <th data-orderable="false" class="text-center"><?= __('Create') ?> <input type="checkbox" name="select_c" id="select_c" onclick="select_all_click('c');"/></th>
-                                                    <th data-orderable="false" class="text-center"><?= __('Read') ?> <input type="checkbox" name="select_r" id="select_r" onclick="select_all_click('r');"/></th>
-                                                    <th data-orderable="false" class="text-center"><?= __('Update') ?> <input type="checkbox" name="select_u" id="select_u" onclick="select_all_click('u');"/></th>
-                                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?> <input type="checkbox" name="select_d" id="select_d" onclick="select_all_click('d');"/></th>
+                                                    <th data-orderable="false" class="text-center"><?= __('Create') ?> <input type="checkbox" name="select_c" id="select_c"/></th>
+                                                    <th data-orderable="false" class="text-center"><?= __('Read')   ?> <input type="checkbox" name="select_r" id="select_r"/></th>
+                                                    <th data-orderable="false" class="text-center"><?= __('Update') ?> <input type="checkbox" name="select_u" id="select_u"/></th>
+                                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?> <input type="checkbox" name="select_d" id="select_d"/></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -68,7 +68,6 @@ $permissions = array('c', 'r', 'u', 'd');
                                         </table>
                                     </div>
                                 </div>
-
                             </form>
                         </div>
 
@@ -91,65 +90,32 @@ $permissions = array('c', 'r', 'u', 'd');
                     </div>
                 </div>
             </div>
-            <br />
-            <div class="card">
-                <div class="card-header">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-dark oa-card-button"><?= __('Role Permissions') ?></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <table class="table table-striped dataTable">
-                            <thead>
-                                <tr>
-                                    <th>Endpoint</th>
-                                    <th data-orderable="false" class="text-center"><?= __('Create') ?> <input type="checkbox" name="select_c" id="select_c" onclick="select_all_click('c');"/></th>
-                                    <th data-orderable="false" class="text-center"><?= __('Read') ?> <input type="checkbox" name="select_r" id="select_r" onclick="select_all_click('r');"/></th>
-                                    <th data-orderable="false" class="text-center"><?= __('Update') ?> <input type="checkbox" name="select_u" id="select_u" onclick="select_all_click('u');"/></th>
-                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?> <input type="checkbox" name="select_d" id="select_d" onclick="select_all_click('d');"/></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($endpoints as $endpoint) { ?>
-                                <tr><td><strong><?= $endpoint ?></strong></td>
-                                    <?php foreach ($permissions as $permission) {
-                                        $checked = '';
-                                        if (($endpoint === 'dashboards' and $permission === 'r') or
-                                        ($endpoint === 'devices' and $permission === 'r') or
-                                        ($endpoint === 'queries' and $permission === 'r') or
-                                        ($endpoint === 'reports' and $permission === 'r') or
-                                        ($endpoint === 'search') or
-                                        ($endpoint === 'sessions') or
-                                        ($endpoint === 'summaries' and $permission === 'r') or
-                                        ($endpoint === 'widgets' and $permission === 'r')
-                                        ) {
-                                            $checked = ' checked';
-                                        } else {
-                                            $checked = '';
-                                        } ?>
-                                    <td class="text-center"><input data-permission="<?= $permission ?>" id="data[attributes][permissions][<?= $endpoint ?>][<?= $permission ?>]" name="data[attributes][permissions][<?= $endpoint ?>][<?= $permission ?>]" type="checkbox" value="y" <?= $checked ?>></td>
-                                    <?php } ?>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            </form>
         </main>
 
 <script {csp-script-nonce}>
-function select_all_click($permission) {
-    $(':checkbox').each(
-        function () {
-            if ($(this).data("permission") === $permission) {
-                this.checked = !this.checked;
-            }
+window.onload = function () {
+    $(document).ready(function () {
+        function select_all_click($permission) {
+            $(':checkbox').each(
+                function () {
+                    if ($(this).data("permission") === $permission) {
+                        this.checked = !this.checked;
+                    }
+                }
+            )
         }
-    )
+        $("#select_c").click(function() {
+            select_all_click('c');
+        })
+        $("#select_r").click(function() {
+            select_all_click('r');
+        })
+        $("#select_u").click(function() {
+            select_all_click('u');
+        })
+        $("#select_d").click(function() {
+            select_all_click('d');
+        })
+    });
 }
 </script>
