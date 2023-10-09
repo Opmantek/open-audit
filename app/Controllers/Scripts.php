@@ -32,7 +32,6 @@ class Scripts extends BaseController
 {
     public function download($id)
     {
-        $id = intval($id);
         if (empty($this->scriptsModel)) {
             $this->scriptsModel = model('App\Models\ScriptsModel');
         }
