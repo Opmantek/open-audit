@@ -67,12 +67,14 @@ include 'shared/create_functions.php';
                                 </div>
 
                                 <br>
-                                <div class="row">
+                                <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="submit" class="form-label">&nbsp;</label>
-                                        <button id="submit" name="submit" type="submit" class="btn btn-primary"><?= __('Submit'); ?></button>
+                                        <button id="submit" name="submit" type="submit" class="btn btn-primary" aria-label="<?= __('Submit') ?>"><?= __('Submit') ?></button>
+                                        &nbsp;<button class="btn btn-default float-end" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced" id="advanced_button" name="advanced_button"><?= __('Advanced') ?></button>
                                     </div>
                                 </div>
+
+
                             </form>
                         </div>
 
