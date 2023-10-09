@@ -743,3 +743,67 @@ table.dataTable > thead .sorting_desc_disabled::after
 {
     right: .2em;
 }
+
+
+
+
+
+
+@media (prefers-color-scheme: dark) {
+
+    a.component_icon {
+        text-decoration: none;
+    }
+
+    .btn-outline-dark {
+        color: #d8caca;
+        border-color: #3b3b3b;
+    }
+
+    .link-secondary {
+        color: #d8caca;
+    }
+
+    .btn-outline-secondary {
+        color: #d8caca;
+        border-color: #626262;
+    }
+
+    .oa-li-hover > a {
+        text-decoration: none;
+    }
+
+    .btn-devices {
+        color: #ffffff;
+        background-color: #9265CE;
+        border-color: #9265CE;
+    }
+
+    .dropdown-item {
+        color: #d8caca;
+    }
+
+    .dropdown-menu {
+        background-color: #3b3b3b;
+    }
+
+    .col-10 > a {
+        text-decoration: none;
+    }
+
+    .oa-li-hover:hover {
+        background-color: #626262;
+        cursor: pointer;
+        cursor: hand;
+    }
+
+    /*
+    .card-header {
+        background-color: #333;
+    }
+
+    .second-nav {
+        background-color: #444;
+    }*/
+
+}
