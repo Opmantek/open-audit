@@ -21,6 +21,7 @@ $header = str_replace(PHP_EOL, "", $header);
 header("Content-Security-Policy: {$header}");
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
+include('shared/lang.php');
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -33,14 +34,14 @@ header('X-Content-Type-Options: nosniff');
         <title>Open-AudIT</title>
 
         <!-- JS -->
-        <script src="<?= base_url('js/jquery.min.js') ?>"></script>
-        <script src="<?= base_url('js/popper.min.js') ?>"></script>
-        <script src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
-        <script src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
-        <script src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
-        <script src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
-        <script src="<?= base_url('js/fa-v4-shims.js') ?>"></script>
-        <script src="<?= base_url('js/open-audit.js') . '?v=' . time() ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/jquery.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/popper.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/fa-v4-shims.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/open-audit.js') . '?v=' . time() ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>"                     rel="stylesheet">
@@ -49,30 +50,52 @@ header('X-Content-Type-Options: nosniff');
         <link href="<?= base_url('css/font-awesome.css') ?>"              rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') . '?v=' . time() ?>" rel="stylesheet">
 
-        <script type="text/javascript">
-            function audit_my_pc()
-            {
-                var testWin = navigator.userAgent.match(/Windows NT/i);
-                if (testWin) {
-                    location.href = "<?= base_url() ?>index.php/scripts/windows/download";
-                }
-                var testLin = navigator.userAgent.match(/Linux /i);
-                if (testLin) {
-                    location.href = "<?= base_url() ?>index.php/scripts/linux/download";
-                }
-                var testOsx = navigator.userAgent.match(/Mac OS X/i);
-                if (testOsx) {
-                    location.href = "<?= base_url() ?>index.php/scripts/osx/download";
-                }
-            }
+        <script {csp-script-nonce}>
             <?php if ($config->device_count === 0) { ?>
             document.getElementById("username").value = "admin";
             document.getElementById("password").value = "password";
             <?php } ?>
+            window.onload = function () {
+                $(document).ready(function () {
+
+                    var testWin = navigator.userAgent.match(/Windows NT/i);
+                    if (testWin) {
+                        $("#script_type").val("windows");
+                        $("#go_button").attr("href", "<?= site_url() ?>/scripts/windows/download");
+                        $("#go_link").attr("href", "<?= site_url() ?>/scripts/windows/download");
+                        $("#go_link").html("<?= site_url() ?>/scripts/windows/download");
+                    }
+
+                    var testLin = navigator.userAgent.match(/Linux /i);
+                    if (testLin) {
+                        $("#go_button").attr("href", "<?= site_url() ?>/scripts/linux/download");
+                        $("#go_link").attr("href", "<?= site_url() ?>/scripts/linux/download");
+                        $("#go_link").html("<?= site_url() ?>/scripts/linux/download");
+                        $("#script_type").val("linux");
+                    }
+
+                    var testOsx = navigator.userAgent.match(/Mac OS X/i);
+                    if (testOsx) {
+                        $("#go_button").attr("href", "<?= site_url() ?>/scripts/osx/download");
+                        $("#go_link").attr("href", "<?= site_url() ?>/scripts/osx/download");
+                        $("#go_link").html("<?= site_url() ?>/scripts/osx/download");
+                        $("#script_type").val("osx");
+                    }
+
+                    $( "#script_type" ).change(function() {
+                        $("#go_button").attr("href", "<?= site_url() ?>/scripts/" + $(this).val() + "/download");
+                        $("#go_link").attr("href", "<?= site_url() ?>/scripts/" + $(this).val() + "/download");
+                        $("#go_link").html("<?= site_url() ?>/scripts/" + $(this).val() + "/download");
+                    });
+
+
+                    document.form.username.focus();
+                });
+            }
         </script>
 
     </head>
-    <body class="d-flex flex-column h-100" onload="document.form.username.focus();">
+    <body class="d-flex flex-column h-100">
         <br>
         <form class="form-horizontal" id="form" name="form" method="post" action="logon">
             <input type="hidden" name="url" id="url" value="<?= @$_SESSION['url'] ?>" />
@@ -130,7 +153,30 @@ header('X-Content-Type-Options: nosniff');
                                         <?php if (!empty($config->default_network_address) and strpos($config->default_network_address, '127.0.0.1') === false and strpos($config->default_network_address, 'localhost') === false and !empty($config->default_network_address)) { ?>
                                         <span align='center'>
                                             <br>
-                                            <input type="button" class="btn btn-sm btn-primary" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" />
+                                            <button id="audit" name="audit" type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#audit_select"><?= __('Audit My PC') ?></button>
+                                            <div class="collapse" id="audit_select">
+                                                <div class="row" style="padding-top:16px;">
+                                                    <form>
+                                                        <div class="offset-4 col-4">
+                                                            <div class="input-group">
+                                                                <select class="form-select" name="script_type" id="script_type" required>
+                                                                    <option value="aix"><?= __('AIX') ?></option>
+                                                                    <option value="esxi"><?= __('ESXi') ?></option>
+                                                                    <option value="hpux"><?= __('HP-UX') ?></option>
+                                                                    <option value="linux"><?= __('Linux') ?></option>
+                                                                    <option value="osx"><?= __('MacOS') ?></option>
+                                                                    <option value="solaris"><?= __('Solaris') ?></option>
+                                                                    <option value="windows"><?= __('Windows') ?></option>
+                                                                </select>
+                                                                <a href="#" id="go_button" role="button" class="btn btn-success float-end"><?= __('Go') ?></a>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <br />
+                                                <?= __('The direct link for the script is') ?><br /><a href="#" id="go_link">#</a><br />
+                                                <?= __('You may want to copy and paste this URL in an email to your staff.') ?>
+                                            </div>
                                         </span>
                                         <?php } ?>
                                         <br>&nbsp;
