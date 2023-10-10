@@ -147,7 +147,7 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
 
                             <div class="table-responsive">
-                                <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                     <thead>
                                         <tr>
                                             <th class="text-center"><?= __('View') ?></th>

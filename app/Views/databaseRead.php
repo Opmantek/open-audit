@@ -94,7 +94,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
-                            <table class="table table-striped">
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped">
                                 <thead>
                                     <tr>
                                         <td><?= __('Name') ?></td>

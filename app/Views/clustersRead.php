@@ -241,7 +241,7 @@ if ($update) {
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" data-order='[[1,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th class="text-center"><?= __('View') ?></th>
@@ -257,13 +257,13 @@ if ($update) {
                             <tbody>
                                 <?php foreach ($included['devices'] as $item) { ?>
                                 <tr>
-                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
                                     <td><?= $item->attributes->{'devices.name'} ?></td>
                                     <td><?= $item->attributes->{'devices.ip'} ?></td>
                                     <td><?= $item->attributes->{'cluster.role'} ?></td>
                                     <td><?= $item->attributes->{'devices.description'} ?></td>
                                     <?php if ($update) { ?>
-                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
+                                    <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
                                     <?php } ?>                                    
                                 </tr>
                                 <?php } ?>
@@ -287,7 +287,7 @@ if ($update) {
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped dataTable" data-order='[[2,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" data-order='[[2,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th class="text-center"><?= __('View') ?></th>
@@ -310,7 +310,7 @@ if ($update) {
                                 <?php foreach ($included['members'] as $item) { ?>
                                     <?php $memory = round(($item->attributes->{'devices.memory_count'} / 1024 / 1024), 2) . ' GB'; ?>
                                 <tr>
-                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
                                     <td class="text-center"><img src="/open-audit/device_images/<?= $item->attributes->{'devices.icon'} ?>.svg" style="border-width:0px; width:24px; height:24px" title="<?= __('Icon') ?>" alt="<?= __('Icon') ?>" /></td>
                                     <td><?= $item->attributes->{'cluster.role'} ?></td>
                                     <td><?= $item->attributes->{'devices.name'} ?></td>
@@ -322,7 +322,7 @@ if ($update) {
                                     <td><?= $item->attributes->{'processor.hyperthreading'} ?></td>
                                     <td><?= $item->attributes->{'devices.os_family'} ?></td>
                                     <?php if ($update) { ?>
-                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
+                                    <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
@@ -346,7 +346,7 @@ if ($update) {
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped dataTable" data-order='[[2,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" data-order='[[2,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th class="text-center"><?= __('View') ?></th>
@@ -366,7 +366,7 @@ if ($update) {
                                     <?php $memory = round(($item->attributes->{'vm.memory_count'} / 1024), 2) . ' GB'; ?>
                                     <?php $icon = (!empty($item->attributes->{'guest.icon'})) ? '<img src="/open-audit/device_images/' . $item->attributes->{'guest.icon'} . '.svg" style="border-width:0px; width:24px; height:24px" title="' . __('Icon') . '" alt="' . __('Icon') . '" />' : ''; ?>
                                 <tr>
-                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'vm.guest_device_id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'vm.guest_device_id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
                                     <td class="text-center"><?= $icon ?></td>
                                     <td><?= $item->attributes->{'vm.name'} ?></td>
                                     <td><span style="display:none;"><?= $item->attributes->{'guest.ip_padded'} ?></span><?= $item->attributes->{'guest.ip'} ?></td>

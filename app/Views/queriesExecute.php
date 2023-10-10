@@ -11,7 +11,7 @@ include 'shared/read_functions.php';
                 </div>
                 <div class="card-body">
                     <?php if (!empty($data)) { ?>
-                    <table class="table table-striped dataTable">
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
                         <thead>
                             <tr>
                                 <?php foreach ($data[0]->attributes as $key => $value) {

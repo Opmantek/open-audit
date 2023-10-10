@@ -11,7 +11,7 @@ include 'shared/collection_functions.php';
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
@@ -39,8 +39,8 @@ include 'shared/collection_functions.php';
                                     <?php echo "<td class=\"text-center\">" . $item->attributes->result->devices . "</td>\n"; ?>
                                     <?php echo "<td class=\"text-center text-success\">" . $item->attributes->result->pass . "</td>\n"; ?>
                                     <?php echo "<td class=\"text-center text-danger\">" . $item->attributes->result->fail . "</td>\n"; ?>
-                                    <?php echo "<td class=\"text-center\"><a class=\"btn btn-sm btn-primary\" title=\"" . __('Export by Policy') . "\" role=\"button\" href=\"" . url_to('baselines_resultsExportPolicy', $item->attributes->id) . "\"><span style=\"width:1rem;\" class=\"fa fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a></td>"; ?>
-                                    <?php echo "<td class=\"text-center\"><a class=\"btn btn-sm btn-primary\" title=\"" . __('Export by Device') . "\" role=\"button\" href=\"" . url_to('baselines_resultsExportDevice', $item->attributes->id) . "\"><span style=\"width:1rem;\" class=\"fa fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a></td>"; ?>
+                                    <?php echo "<td class=\"text-center\"><a class=\"btn " . $GLOBALS['button'] . " btn-primary\" title=\"" . __('Export by Policy') . "\" role=\"button\" href=\"" . url_to('baselines_resultsExportPolicy', $item->attributes->id) . "\"><span style=\"width:1rem;\" class=\"fa fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a></td>"; ?>
+                                    <?php echo "<td class=\"text-center\"><a class=\"btn " . $GLOBALS['button'] . " btn-primary\" title=\"" . __('Export by Device') . "\" role=\"button\" href=\"" . url_to('baselines_resultsExportDevice', $item->attributes->id) . "\"><span style=\"width:1rem;\" class=\"fa fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a></td>"; ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>

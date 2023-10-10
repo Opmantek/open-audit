@@ -146,7 +146,7 @@ if ($resource->type === 'nmis') {
                         <div class="tab-pane" id="fields" role="tabpanel" tabindex="0">
                             <br>
                             <div class="table-responsive">
-                                <table class="table dataTable table-striped" id="fieldstable" data-order='[[0,"asc"]]'>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" id="fieldstable" data-order='[[0,"asc"]]'>
                                     <thead>
                                         <tr>
                                             <th><?= __('Open-AudIT Field Name') ?></th>
@@ -178,7 +178,7 @@ if ($resource->type === 'nmis') {
                                                 <?= $field->matching_attribute  ?>
                                             <?php } ?>
                                             </td>
-                                            <td class="text-center"><button type="button" class="field_delete_link btn btn-sm btn-danger" data-internal_field_name="<?= $field->internal_field_name ?>" data-external_field_name="<?= $field->external_field_name ?>" data-external_field_type="<?= $field->external_field_type ?>" data-default_value="<?= $field->default_value ?>" data-priority="<?= $field->priority ?>" data-matching_attribute="<?= $field->matching_attribute ?>" ><i class="fa fa-trash" aria-hidden="true">&nbsp;</i></button></td>
+                                            <td class="text-center"><button type="button" class="field_delete_link btn <?= $GLOBALS['button'] ?> btn-danger" data-internal_field_name="<?= $field->internal_field_name ?>" data-external_field_name="<?= $field->external_field_name ?>" data-external_field_type="<?= $field->external_field_type ?>" data-default_value="<?= $field->default_value ?>" data-priority="<?= $field->priority ?>" data-matching_attribute="<?= $field->matching_attribute ?>" ><i class="fa fa-trash" aria-hidden="true">&nbsp;</i></button></td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
@@ -189,7 +189,7 @@ if ($resource->type === 'nmis') {
 
                         <div class="tab-pane" id="logs" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table table-striped logsTable dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped logsTable dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('ID') ?></th>
@@ -215,7 +215,7 @@ if ($resource->type === 'nmis') {
 
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="4">
                             <br>
-                            <table class="table table-striped logsTable dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>

@@ -200,7 +200,7 @@ if ($resource->ru_start == 1) {
                             ?>
                         </div>
                         <div class="col-4">
-                            <table class="table table-bordered table-condensed">
+                            <table class="table table-bordered">
                                 <tbody>
                                     <tr>
                                         <td></td>

@@ -107,29 +107,25 @@ function collection_card_header(string $collection = '', string $icon = '', obje
 // Note, below $id is not an int because database collection supplies the table name
 function collection_button_read(string $collection = '', string $id = ''): string
 {
-    $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"" . url_to($collection.'Read', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
+    $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-primary\" href=\"" . url_to($collection.'Read', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 
 function collection_button_execute(string $collection = '', int $id = 0): string
 {
-    $return = "<td class=\"text-center\"><a title=\"" . __('Execute') . "\" role=\"button\" class=\"btn btn-sm btn-success\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('Execute') . "\" class=\"fa fa-play\" aria-hidden=\"true\"></span></a></td>";
+    $return = "<td class=\"text-center\"><a title=\"" . __('Execute') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-success\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('Execute') . "\" class=\"fa fa-play\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 
 function collection_button_devices(string $link = ''): string
 {
-    $return = "<td class=\"text-center\"><a title=\"" . __('Devices') . "\" role=\"button\" class=\"btn btn-sm btn-devices\" href=\"" . $link . "\"><span style=\"width:1rem;\" title=\"" . __('Devices') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a></td>";
+    $return = "<td class=\"text-center\"><a title=\"" . __('Devices') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . $link . "\"><span style=\"width:1rem;\" title=\"" . __('Devices') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 
 function collection_button_delete(int $id = 0): string
 {
-    $return = "<td class=\"text-center\">
-                                        <button type=\"button\" class=\"btn btn-sm btn-danger delete_link\" data-id=\"$id\">
-                                            <span style=\"width:1rem;\" title=\"" . __('Delete') . "\" class=\"fa fa-trash\"></span>
-                                        </button>
-                                    </td>";
+    $return = "<td class=\"text-center\"><button type=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-danger delete_link\" data-id=\"$id\"><span style=\"width:1rem;\" title=\"" . __('Delete') . "\" class=\"fa fa-trash\"></span></button></td>";
     return $return;
 }
 

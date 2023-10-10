@@ -32,7 +32,7 @@ $permissions = array('c', 'r', 'u', 'd');
                                 <br />
                                 <div class="row">
                                     <div class="offset-2 col-8">
-                                        <table class="table table-striped dataTable">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
                                             <thead>
                                                 <tr>
                                                     <th>Endpoint</th>

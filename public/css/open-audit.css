@@ -69,6 +69,15 @@ h1,
     color:#8cc152;
 }
 
+/* Used when $user->list_table_size === 'compact', otherwise use btn-sm */
+.btn-xs, .btn-group-xs > .btn {
+  --bs-btn-padding-y: 0.0;
+  --bs-btn-padding-x: 0.2rem;
+  --bs-btn-font-size: 0.875rem;
+  --bs-btn-border-radius: 0.25rem;
+}
+
+
 /* the custom 'devices' type button */
 .btn-devices,
 .btn-devices:active,

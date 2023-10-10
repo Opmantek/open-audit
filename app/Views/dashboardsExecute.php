@@ -30,7 +30,7 @@ foreach ($checks as $key => $value) {
                 <div class="card-body">
                     <div class="row">
                         <?php if ($resource->sidebar === 'y') { ?>
-                        <div class="col-2">
+                        <div class="col-3">
                              <ul class="list-group list-group-flush">
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
@@ -150,7 +150,7 @@ foreach ($checks as $key => $value) {
                             </ul>
                                 <?php } ?>
                         </div>
-                        <div class="col-10" id="dashboard">
+                        <div class="col-9" id="dashboard">
                         <?php } ?>
                         <?php if ($resource->sidebar !== 'y') { ?>
                         <div class="col-12" id="dashboard">
@@ -172,6 +172,7 @@ foreach ($checks as $key => $value) {
                                 }
                             } ?>
                             </div>
+                            <br>
                             <div class="row">
                             <?php
                             echo "\n";

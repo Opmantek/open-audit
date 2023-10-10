@@ -58,7 +58,7 @@ $item_permissions = $resource->permissions;
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped dataTable" id="table_result">
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" id="table_result">
                         <thead>
                             <tr>
                                 <th>Endpoint</th>
@@ -70,7 +70,7 @@ $item_permissions = $resource->permissions;
                         </thead>
                         <tbody>
                         <?php foreach ($endpoints as $endpoint) { ?>
-                            <tr><td><strong><?= $endpoint ?></strong></td>
+                            <tr><td><?= $endpoint ?></td>
                                 <?php foreach ($permissions as $permission) {
                                     $checked = '';
                                     if (!empty($item_permissions->{$endpoint}) and strpos($item_permissions->{$endpoint}, $permission) !== false) {

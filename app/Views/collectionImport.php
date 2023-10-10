@@ -131,7 +131,7 @@ if ($extra !== '') {
     $example .= $extra . '<br><br>';
 }
 $example .= 'You should use a header line containing the names of the columns you wish to populate, then your data lines below that.<br><br>
-<table class="table table-striped"><tbody>' . $sample . '</tbody></table>';
+<table class="table ' . $GLOBALS['table'] . ' table-striped table-hover"><tbody>' . $sample . '</tbody></table>';
 ?>
 <main class="container-fluid">
     <div class="card">
@@ -149,21 +149,16 @@ $example .= 'You should use a header line containing the names of the columns yo
                                 <input class="form-control" type="file" id="file_import" name="file_import" required />
                             </div>
                         </div>
-
                         <div class="row" style="padding-top:16px;">
                             <div class="offset-2 col-8">
                                 <button id="submit" name="submit" type="submit" class="btn btn-primary" aria-label="<?= __('Submit') ?>"><?= __('Submit') ?></button>
                             </div>
                         </div>
-
-
                         <div class="row" style="padding-top:16px">
                             <div class="offset-2 col-8">
                                 <?= $example ?>
                             </div>
                         </div>
-
-
                     </form>
                 </div>
                 <div class="col-6">
@@ -199,7 +194,7 @@ $example .= 'You should use a header line containing the names of the columns yo
         <div class="card-body">
     <div class="row">
         <div class="offset-1 col-10">
-            <table class="table table-striped">
+            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
                 <thead>
                     <tr>
                         <th><?= __('Name') ?></th>

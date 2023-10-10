@@ -47,7 +47,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -62,7 +62,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -77,7 +77,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:3rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -99,9 +99,9 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <?php if (!empty($audit_status)) {
-                                echo '<table class="table table-striped table-hover MyDataTable display" id="table_result" data-order=\'[[4,"asc"]]\' style="width:100%">';
+                                echo '<table class="table ' . $GLOBALS['table'] . ' table-striped table-hover MyDataTable display" id="table_result" data-order=\'[[4,"asc"]]\' style="width:100%">';
                             } else {
-                                echo '<table class="table table-striped table-hover MyDataTable display" id="table_result" data-order=\'[[3,"asc"]]\' style="width:100%">';
+                                echo '<table class="table ' . $GLOBALS['table'] . ' table-striped table-hover MyDataTable display" id="table_result" data-order=\'[[3,"asc"]]\' style="width:100%">';
                             }
                             echo "\n"; ?>
                                 <thead>
@@ -146,7 +146,11 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                                                 continue;
                                             }
                                             if ($key === 'icon') {
-                                                echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
+                                                if (!empty($user->list_table_size) and $user->list_table_size === 'compact') {
+                                                    echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:20px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
+                                                } else {
+                                                    echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
+                                                }
                                             } else if ($key === 'ip' and !empty($item->attributes->ip_padded)) {
                                                 echo "                                    <td><span style=\"display:none;\">" . $item->attributes->ip_padded . "</span>" . $item->attributes->{$key} . "</td>\n";
                                             } else {

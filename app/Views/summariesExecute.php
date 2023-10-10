@@ -9,7 +9,7 @@ include 'shared/collection_functions.php';
                     <?= collection_card_header($meta->collection, $meta->icon, $user, $meta->name) ?>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped dataTable">
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
                         <thead>
                             <tr>
                                 <th class="text-center"><?= __('Details') ?></th>

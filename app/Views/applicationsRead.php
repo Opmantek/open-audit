@@ -70,7 +70,7 @@ if ($update) {
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                    <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                         <thead>
                             <tr>
                                 <th class="text-center"><?= __('View') ?></th>

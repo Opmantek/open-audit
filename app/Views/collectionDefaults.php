@@ -11,7 +11,7 @@ include 'shared/read_functions.php';
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
                             <thead>
                                 <tr>
                                     <td><?= __('Name') ?></td>

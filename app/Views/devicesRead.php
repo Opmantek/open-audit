@@ -226,7 +226,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('applications', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -256,7 +256,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('attachments', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"><?= __('Download') ?></th>
@@ -290,7 +290,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('audit_log', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -350,7 +350,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('change_log', $user->toolbar_style, $resource->id); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -432,7 +432,7 @@ if (!empty($included['fields'])) {
                                 <?= device_panel('clusters', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -468,7 +468,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('credentials', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th><?= __('Name') ?></th>
@@ -500,7 +500,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('discovery_log', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"><?= __('ID') ?></th>
@@ -550,7 +550,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('edit_log', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -741,7 +741,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('images', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -775,7 +775,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('ip', $user->toolbar_style, $resource->id, base_url() . 'icons/ip.svg', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1002,7 +1002,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('disk', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1046,7 +1046,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('memory', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1093,7 +1093,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('module', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1137,7 +1137,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('monitor', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1197,7 +1197,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('network', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1248,7 +1248,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('optical', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1280,7 +1280,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('partition', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1349,7 +1349,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('radio', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1395,7 +1395,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('scsi', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1427,7 +1427,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('sound', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1457,7 +1457,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('usb', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1497,7 +1497,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('video', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1529,7 +1529,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('service', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1563,7 +1563,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('software', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1606,7 +1606,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('software_key', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1638,7 +1638,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('certificate', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1670,7 +1670,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('dns', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1700,7 +1700,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('file', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1738,7 +1738,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('log', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1772,7 +1772,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('netstat', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"],[3,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"],[3,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1804,7 +1804,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('nmap', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1836,7 +1836,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('pagefile', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1868,7 +1868,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('policy', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1898,7 +1898,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('print_queue', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -1934,7 +1934,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('route', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -2000,7 +2000,7 @@ if (!empty($included['fields'])) {
                                         <br>
                                         <div class="row">
                                             <div class="col-12">
-                                                <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                                     <thead>
                                                         <tr>
                                                             <?php if ($row->type === 'web') { ?>
@@ -2068,7 +2068,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('share', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -2102,7 +2102,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('task', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -2138,7 +2138,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('user', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <?php if ($resource->os_group === 'Windows') { ?>
                                                 <tr>
@@ -2224,7 +2224,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('user_group', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -2256,7 +2256,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('variable', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -2286,7 +2286,7 @@ if (!empty($included['fields'])) {
                                 <?=  device_panel('vm', $user->toolbar_style); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped dataTable" data-order='[[2,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>

@@ -125,7 +125,7 @@ if ($style === 'icontext') {
                             <div class="row">
                                 <h3 class="text-center">Policies: <?= $resource->result->policies ?>, Pass: <span class="text-success"><?= $resource->result->pass ?></span>, Fail: <span class="text-danger"><?= $resource->result->fail ?></span></h3><br />
                             </div>
-                            <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>
@@ -156,7 +156,7 @@ if ($style === 'icontext') {
                             <div class="row">
                                 <h3 class="text-center">Devices: <?= $resource->result->devices ?>, Pass: <span class="text-success"><?= $resource->result->pass ?></span>, Fail: <span class="text-danger"><?= $resource->result->fail ?></span></h3><br />
                             </div>
-                            <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>
@@ -186,7 +186,7 @@ if ($style === 'icontext') {
                             <div class="row">
                                 <h3 class="text-center"><?= html_entity_decode($policy->name) ?>, Pass: <span class="text-success"><?= $policy->pass ?></span>, Fail: <span class="text-danger"><?= $policy->fail ?></span></h3><br />
                             </div>
-                            <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>
@@ -241,7 +241,7 @@ if ($style === 'icontext') {
                         <?php if ($extra === 'device') { ?>
                         <div class="tab-pane" id="device" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table table-striped dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>

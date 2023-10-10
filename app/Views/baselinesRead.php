@@ -118,7 +118,7 @@ if ($style === 'icontext') {
 
                         <div class="tab-pane" id="results" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table table-striped resultsTable dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable resultsTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>
@@ -135,15 +135,15 @@ if ($style === 'icontext') {
                                 <tbody>
                                     <?php foreach ($included['baselines_results'] as $result) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Results') ?>" href="<?= url_to('baselines_resultsRead', $result->id) ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Results') ?>" href="<?= url_to('baselines_resultsRead', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
                                         <td><?= $result->attributes->timestamp ?></td>
                                         <td><?= $result->attributes->result->group_name ?></td>
                                         <td class="text-center"><?= $result->attributes->result->devices ?></td>
                                         <td class="text-center"><strong class="text-success"><?= $result->attributes->result->pass ?></strong></td>
                                         <td class="text-center"><strong class="text-warning"><?= $result->attributes->result->fail ?></strong></td>
-                                        <td class="text-center"><a title="<?= __('Export by Policy') ?>" href="<?= url_to('baselines_resultsExportPolicy', $result->id) ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-arrow-up-right-from-square" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
-                                        <td class="text-center"><a title="<?= __('Export by Device') ?>" href="<?= url_to('baselines_resultsExportDevice', $result->id) ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-arrow-up-right-from-square" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
-                                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?= $result->id ?>" data-name="<?= $result->id ?>" data-collection="baselines_results"><span class="fa fa-trash" style="margin-right: 0px;"></span></button></td>
+                                        <td class="text-center"><a title="<?= __('Export by Policy') ?>" href="<?= url_to('baselines_resultsExportPolicy', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="fa fa-arrow-up-right-from-square" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Export by Device') ?>" href="<?= url_to('baselines_resultsExportDevice', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="fa fa-arrow-up-right-from-square" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-id="<?= $result->id ?>" data-name="<?= $result->id ?>" data-collection="baselines_results"><span class="fa fa-trash" style="margin-right: 0px;"></span></button></td>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
@@ -152,7 +152,7 @@ if ($style === 'icontext') {
 
                         <div class="tab-pane" id="netstat" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table table-striped policiesTable dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable policiesTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('Details') ?></th>
@@ -169,7 +169,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($netstat as $policy) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('baselines_policiesRead', $policy->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
                                             if ($test->column === 'program') { ?>
                                                 <td><?= $test->value ?></td>
@@ -189,7 +189,7 @@ if ($style === 'icontext') {
                                         <td><?= $policy->{'attributes'}->{'documentation'} ?></td>
                                         <?php if ($delete) { ?>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->{'id'} ?>" data-name="<?= $policy->{'attributes'}->{'name'} ?>">
+                                                <button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->{'id'} ?>" data-name="<?= $policy->{'attributes'}->{'name'} ?>">
                                                     <span class="fa fa-trash" style="margin-right: 0px;"></span>
                                                 </button>
                                             </td>
@@ -202,7 +202,7 @@ if ($style === 'icontext') {
 
                         <div class="tab-pane" id="software" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table table-striped policiesTable dataTable" data-order='[[1,"asc"],[3,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable policiesTable" data-order='[[1,"asc"],[3,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('Details') ?></th>
@@ -219,7 +219,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($software as $policy) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
                                             if ($test->column ==='name') { ?>
                                                 <td><?= $test->{'value'} ?></td>
@@ -233,7 +233,7 @@ if ($style === 'icontext') {
                                         <td><?= $policy->attributes->documentation ?></td>
                                         <?php if ($delete) { ?>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->id ?>" data-name="<?= $policy->attributes->name ?>">
+                                                <button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->id ?>" data-name="<?= $policy->attributes->name ?>">
                                                     <span class="fa fa-trash" style="margin-right: 0px;"></span>
                                                 </button>
                                             </td>
@@ -246,7 +246,7 @@ if ($style === 'icontext') {
 
                         <div class="tab-pane" id="user" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table table-striped policiesTable dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable policiesTable" data-order='[[1,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('Details') ?></th>
@@ -266,7 +266,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($users as $policy) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Policy') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Policy') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
                                             if ($test->column === 'name') {
                                                 echo "<td>" . $test->{'value'} . "</td>\n";
@@ -301,7 +301,7 @@ if ($style === 'icontext') {
                                         <td><?= $policy->attributes->documentation ?></td>
                                         <?php if ($delete) { ?>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->id ?>" data-name="<?= $policy->attributes->name ?>">
+                                                <button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->id ?>" data-name="<?= $policy->attributes->name ?>">
                                                     <span class="fa fa-trash" style="margin-right: 0px;"></span>
                                                 </button>
                                             </td>

@@ -80,7 +80,7 @@ include 'shared/create_functions.php';
                                 </div>
                                 <div class="card-body">
                                     <div id="files">
-                                    <table class="table table-striped">
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
                                         <thead>
                                             <tr>
                                                 <td><?= __('Select') ?></td>

@@ -102,7 +102,7 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
                                         <thead>
                                             <tr>
                                                 <th><?= __('ID') ?></th>
@@ -131,7 +131,7 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                                         <thead>
                                             <tr>
                                                 <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>

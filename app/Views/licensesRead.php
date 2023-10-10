@@ -36,7 +36,6 @@ include 'shared/read_functions.php';
                             </div>
                             <?= read_field('purchase_count', $resource->purchase_count, $dictionary->columns->purchase_count, $update) ?>
 
-
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="used_count" class="form-label"><?= __('Used Count') ?></label>
@@ -49,9 +48,6 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
 
-
-
-                            
                             <?= read_field('match_string', $resource->match_string, $dictionary->columns->match_string, $update) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
@@ -91,7 +87,7 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
-                            <table class="table table-striped">
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped">
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?php echo __('View'); ?></th>
@@ -104,7 +100,7 @@ include 'shared/read_functions.php';
                                     <?php
                                     foreach ($included['devices'] as $item) {
                                         echo "<tr>\n";
-                                        echo "<td class=\"text-center\"><a title=\"" . __('Devices') . "\" role=\"button\" class=\"btn btn-sm btn-devices\" href=\"" . url_to('devicesRead', $item->id) . "\"><span style=\"width:1rem;\" title=\"" . __('Devices') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a></td>\n";
+                                        echo "<td class=\"text-center\"><a title=\"" . __('Devices') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . url_to('devicesRead', $item->id) . "\"><span style=\"width:1rem;\" title=\"" . __('Devices') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a></td>\n";
                                         echo "    <td>" . $item->{'attributes'}->{'devices.name'} . "</td>\n";
                                         echo "    <td>" . $item->{'attributes'}->{'software.name'} . "</td>\n";
                                         echo "    <td>" . $item->{'attributes'}->{'software.version'} . "</td>\n";

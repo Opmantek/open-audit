@@ -144,7 +144,7 @@ if (count($included['issues']) > 0) {
                         <div class="row">
                             <div class="col-md-12">
                                 <br />
-                                <table class="table table-striped table-hover dataTableIssues" id="table_issue" data-order='[[3,"asc"]]'>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIssues" id="table_issue" data-order='[[3,"asc"]]'>
                                     <thead>
                                         <tr>
                                             <th data-orderable="false" class="text-center"><?= __('View Discovery') ?></th>
@@ -207,7 +207,7 @@ if (count($included['issues']) > 0) {
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[3,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[3,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>

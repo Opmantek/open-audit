@@ -11,7 +11,7 @@ include 'shared/collection_functions.php';
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>

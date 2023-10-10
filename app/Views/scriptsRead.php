@@ -22,7 +22,7 @@ include 'shared/read_functions.php';
                                     <div class="offset-2 col-8">
                                         <br><hr><br>
                                         <h5 class="text-center"><?= __('Files') ?></h5>
-                                        <table class="table table-striped">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
                                             <thead>
                                                 <tr>
                                                     <th><?= __('Name') ?></th>

@@ -11,7 +11,7 @@ include 'shared/collection_functions.php';
                 <div class="card-body">
                     <br />
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
@@ -20,9 +20,6 @@ include 'shared/collection_functions.php';
                                             continue;
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
-                                    <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
                             </thead>
@@ -41,9 +38,6 @@ include 'shared/collection_functions.php';
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         }
                                         ?>
-                                    <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>

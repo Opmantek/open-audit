@@ -14,9 +14,9 @@ include 'shared/read_functions.php';
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <?php if (!empty($audit_status)) {
-                                echo '<table class="table table-striped dataTable" id="table_result" data-order=\'[[4,"asc"]]\' style="width:100%">';
+                                echo '<table class="table ' . $GLOBALS['table'] . ' table-striped table-hover dataTable" id="table_result" data-order=\'[[4,"asc"]]\' style="width:100%">';
                             } else {
-                                echo '<table class="table table-striped dataTable" id="table_result" data-order=\'[[3,"asc"]]\' style="width:100%">';
+                                echo '<table class="table ' . $GLOBALS['table'] . ' table-striped table-hover dataTable" id="table_result" data-order=\'[[3,"asc"]]\' style="width:100%">';
                             }
                             echo "\n"; ?>
                                 <thead>
