@@ -524,8 +524,8 @@ if (!$db->fieldExists('toolbar_style', 'users')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-if (!$db->fieldExists('list_table_size', 'users')) {
-    $sql = "ALTER TABLE `users` ADD `list_table_size` enum('','compact') NOT NULL DEFAULT '' AFTER `toolbar_style`";
+if (!$db->fieldExists('list_table_format', 'users')) {
+    $sql = "ALTER TABLE `users` ADD `list_table_format` enum('','compact') NOT NULL DEFAULT '' AFTER `toolbar_style`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

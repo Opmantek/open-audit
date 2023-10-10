@@ -67,21 +67,21 @@ include 'shared/collection_functions.php';
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="list_table_size" class="form-label"><?= __('Table Sizing') ?></label>
+                                    <label for="list_table_format" class="form-label"><?= __('Table Sizing') ?></label>
                                     <div class="input-group">
-                                        <select class="form-select" id="list_table_size" name="list_table_size" data-original-value="<?= $resource->list_table_size ?>" disabled>
+                                        <select class="form-select" id="list_table_format" name="list_table_format" data-original-value="<?= $resource->list_table_format ?>" disabled>
                                         <option value=''><?= __('Standard') ?></option>
                                         <option value='compact'><?= __('Compact') ?></option>
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="list_table_size" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="list_table_size" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="list_table_size" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="list_table_format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="list_table_format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="list_table_format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="list_table_size" data-dictionary="<?= $dictionary->columns->list_table_size ?>"><span><br></span></div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="list_table_format" data-dictionary="<?= $dictionary->columns->list_table_format ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -176,8 +176,7 @@ window.onload = function () {
     $(document).ready(function() {
         $("#lang").val("<?= $resource->lang ?>");
         $("#toolbar_style").val("<?= $resource->toolbar_style ?>");
-        $("#list_table_size").val("<?= $resource->list_table_size ?>");
-
+        $("#list_table_format").val("<?= $resource->list_table_format ?>");
         <?php if (isset($resource->password)) {
             if ($resource->password !== '') { ?>
                 $("#password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");

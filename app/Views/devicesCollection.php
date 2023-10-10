@@ -146,7 +146,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                                                 continue;
                                             }
                                             if ($key === 'icon') {
-                                                if (!empty($user->list_table_size) and $user->list_table_size === 'compact') {
+                                                if (!empty($user->list_table_format) and $user->list_table_format === 'compact') {
                                                     echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:20px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
                                                 } else {
                                                     echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\" alt=\"" . $item->attributes->icon . "\"></td>\n";

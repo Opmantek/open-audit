@@ -244,7 +244,7 @@ abstract class BaseController extends Controller
         if ($this->resp->meta->format === 'html') {
             $GLOBALS['table'] = '';
             $GLOBALS['button'] = 'btn-sm';
-            if (!empty($this->user->list_table_size) and $this->user->list_table_size === 'compact') {
+            if (!empty($this->user->list_table_format) and $this->user->list_table_format === 'compact') {
                 $GLOBALS['table'] = 'table-sm';
                 $GLOBALS['button'] = 'btn-xs';
             }

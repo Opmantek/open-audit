@@ -334,7 +334,7 @@ class UsersModel extends BaseModel
         $dictionary->columns->email = 'The users email address.';
         $dictionary->columns->lang = 'The language to translate the web interface into for the user.';
         $dictionary->columns->toolbar_style = 'Icon only, text only or icon and text.';
-        $dictionary->columns->list_table_size = 'Set the size (normal or compact) of the tables on the List screens.';
+        $dictionary->columns->list_table_format = 'Set the size (normal or compact) of the tables on the List screens.';
         $dictionary->columns->roles = 'A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.';
         $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.';
         $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.';
