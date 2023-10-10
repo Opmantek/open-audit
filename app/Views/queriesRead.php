@@ -87,6 +87,7 @@ include 'shared/read_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         $("#menu_display").val("<?= $resource->menu_display ?>");
+        $("#button_export_csv").remove();
     });
 }
 </script>

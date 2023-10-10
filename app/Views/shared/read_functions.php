@@ -41,6 +41,17 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $export_csv_button = '';
+    if ($collection === 'queries') {
+        if ($style === 'icontext') {
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
+        } else if ($style === 'icon') {
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+        } else {
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\">" . __("Export CSV") . "</a>";
+        }
+    }
+
     $collection_button = "";
     $export_button = "";
     $help_button = "";
@@ -53,7 +64,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     } else if ($style === 'icon') {
         $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span class=\"fa fa-list text-primary\"></span></a>";
         if ($collection !== 'database') {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Export', intval($id)) . "\"><span class=\"fa-solid fa-angles-down text-primary\"></span></a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection.'Export', intval($id)) . "\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
         }
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
     } else {
@@ -85,6 +96,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                                     $create_button
                                     $delete_button
                                     $export_button
+                                    $export_csv_button
                                     $help_button
                                 </div>
                             </div>
