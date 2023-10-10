@@ -3788,6 +3788,7 @@ CREATE TABLE `users` (
   `dashboard_id` int(10) unsigned DEFAULT '1',
   `devices_default_display_columns` text NOT NULL,
   `toolbar_style` enum('','icon','text','icontext') NOT NULL DEFAULT 'icontext',
+  `list_table_size` enum('','compact') NOT NULL DEFAULT '',
   `access_token` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`access_token`)),
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

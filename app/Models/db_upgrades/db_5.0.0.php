@@ -518,7 +518,14 @@ if ($db->fieldExists('row_id', 'racks')) {
 }
 
 if (!$db->fieldExists('toolbar_style', 'users')) {
-    $sql = "ALTER TABLE users ADD toolbar_style enum('','icon','text','icontext') NOT NULL DEFAULT 'icontext' AFTER devices_default_display_columns";
+    $sql = "ALTER TABLE `users` ADD `toolbar_style` enum('','icon','text','icontext') NOT NULL DEFAULT 'icontext' AFTER `devices_default_display_columns`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('list_table_size', 'users')) {
+    $sql = "ALTER TABLE `users` ADD `list_table_size` enum('','compact') NOT NULL DEFAULT '' AFTER `toolbar_style`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

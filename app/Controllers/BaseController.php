@@ -242,6 +242,12 @@ abstract class BaseController extends Controller
         $this->resp->meta->icon = $this->collections->{strtolower($this->resp->meta->collection)}->icon;
 
         if ($this->resp->meta->format === 'html') {
+            $GLOBALS['table'] = '';
+            $GLOBALS['button'] = 'btn-sm';
+            if (!empty($this->user->list_table_size) and $this->user->list_table_size === 'compact') {
+                $GLOBALS['table'] = 'table-sm';
+                $GLOBALS['button'] = 'btn-xs';
+            }
             $this->queriesUser = $this->queriesModel->listUser();
             $this->queriesUser = array_merge($this->queriesUser, $this->reportsModel->listUser());
             $this->queriesUser = array_merge($this->queriesUser, $this->summariesModel->listUser());
