@@ -270,10 +270,21 @@ $(document).ready(function () {
     });
 
     /* DataTables Init Primary */
+    /*
     $('.dataTable').DataTable( {
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         "pageLength": 50,
         "pagingType": "full",
+        "autoWidth": false
+    });
+    */
+
+    $('.dataTable').dataTable( {
+        "paging": true,
+        "searching": true,
+        "order": [[ 1, 'asc' ]],
+        "info": true,
+        "pageLength": 10,
         "autoWidth": false
     });
 
