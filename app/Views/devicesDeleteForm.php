@@ -9,16 +9,18 @@ include 'shared/create_functions.php';
                 <div class="card-header">
                     <?= create_card_header('devices', 'fa fa-desktop', $user); ?>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body">
                     <div class="row">
-                        <p class="fs-2"><?= __('Delete Example Devices') ?></p>
+                        <p class="fs-2 text-center"><?= __('Delete Example Devices') ?></p>
                         <br />
-                        <p><?= __('Click the Delete button to remove the example devices from Open-AudIT.<br />This will remove the below devices from the database. ') ?></p>
+                        <p class="text-center"><?= __('Click the Delete button to remove the example devices from Open-AudIT.<br />This will remove the below devices from the database. ') ?></p>
                         <br />
                         <br />
-                        <form action="<?= url_to('devicesDeleteExample') ?>" method="post">
-                            <button id="submit" name="submit" type="submit" class="btn btn-danger" aria-label="<?= __('Delete') ?>"><?= __('Delete') ?></button>
-                        </form>
+                        <div class="text-center">
+                            <form action="<?= url_to('devicesDeleteExample') ?>" method="post">
+                                <button id="submit" name="submit" type="submit" class="btn btn-danger" aria-label="<?= __('Delete') ?>"><?= __('Delete') ?></button>
+                            </form>
+                        </div>
                         <div id="statusmsg"></div>
                         <div class="table-responsive">
                         <br />

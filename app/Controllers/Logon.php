@@ -50,8 +50,6 @@ class Logon extends Controller
 
     public function checkDefaults()
     {
-        // TODO - log rotation?
-
         $db = db_connect();
         $sql = "UPDATE configuration SET value = 'community' WHERE name = 'product'";
         $db->query($sql);

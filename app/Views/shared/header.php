@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include('lang.php');
 
+$title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_version;
+
 // sort our queries, summaries and reports
 $reports = array();
 $categories = array();
@@ -20,6 +22,11 @@ function my_comparison($asort, $bsort)
 usort($reports, 'my_comparison');
 asort($categories);
 $categories = array_unique($categories);
+$homepage = url_to('summariesCollection');
+if ($config->product !== 'community') {
+    $dashboard = (!empty($user->dashboard_id)) ? $user->dashboard_id : 1;
+    $homepage = url_to('dashboardsExecute', $dashboard);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -49,9 +56,10 @@ $categories = array_unique($categories);
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
         <!-- Open-AudIT specific items -->
-        <script {csp-script-nonce}>
-        <?php if (isset($meta->id) and !is_null($meta->id)) {
-                echo "  var id = '" . $meta->id . "';\n";
+        <script {csp-script-nonce}><?php
+        echo "\n";
+        if (isset($meta->id) and !is_null($meta->id)) {
+                echo "            var id = '" . $meta->id . "';\n";
         }
         if (!empty($meta->collection)) {
             echo "            var collection = '" . $meta->collection . "';\n";
@@ -61,8 +69,8 @@ $categories = array_unique($categories);
         } else {
             echo "            var baseurl = '';\n";
         } ?>
-        var web_folder = '<?= base_url() ?>';
-        var device_auto_delete = '<?= $config->device_auto_delete; ?>';
+            var web_folder = '<?= base_url() ?>';
+            var device_auto_delete = '<?= $config->device_auto_delete; ?>';
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -70,32 +78,26 @@ $categories = array_unique($categories);
         <!-- Menu -->
         <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
             <div class="container-fluid">
-                <?php
-                $homepage = url_to('summariesCollection');
-                if ($config->product !== 'community') {
-                    $dashboard = (!empty($user->dashboard_id)) ? $user->dashboard_id : 1;
-                    $homepage = url_to('dashboardsExecute', $dashboard);
-                } ?>
                 <a class="navbar-brand" style="color: white;" href="<?= $homepage ?>">
                     <img class="rounded-circle border border-white border-0" style="background: white; width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
-                    Open-AudIT <?= ucfirst($config->product) ?> <?= $config->display_version . "\n" ?>
+                    <?= $title . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarView" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Dashboards') ?></a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarView">
-                                <?php if (!empty($dashboards)) { ?>
-                                    <?php foreach ($dashboards as $dashboard) {
-                                        if ($dashboard->type === 'dashboards') {
-                                            if ($config->product === 'enterprise' or $config->product === 'professional') {
-                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
-                                            } else {
-                                                echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
-                                            }
+                            <ul class="dropdown-menu" aria-labelledby="navbarView"><?php if (!empty($dashboards)) {
+                                echo "\n";
+                                foreach ($dashboards as $dashboard) {
+                                    if ($dashboard->type === 'dashboards') {
+                                        if ($config->product === 'enterprise' or $config->product === 'professional') {
+                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
+                                        } else {
+                                            echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
                                         }
                                     }
-                                } ?>
+                                }
+                                                                                   } ?>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -516,7 +518,6 @@ if (!empty($config->modules)) {
                         </nav>
                     </div>
                     <div class="col-6 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
-                        <!-- TODO - fix the below search route -->
                         <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>">
                             <div class="btn-group" role="group">
                                 <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">

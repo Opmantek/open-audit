@@ -42,6 +42,10 @@ class ComponentsModel extends BaseModel
                 $properties[] = $table . '.*';
             }
         }
+        if ($table === '' and $resp->meta->format === 'html') {
+            $table = 'ip';
+            \Config\Services::session()->setFlashdata('warning', 'No components.type supplied, returning IP data.');
+        }
         if ($table === '') {
             // No components.type requested, return all the below
             $tables = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
