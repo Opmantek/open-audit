@@ -197,12 +197,15 @@ class Collections extends BaseController
                     }
                     return redirect()->route($this->resp->meta->collection.'Read', [$id]);
                 } else {
-                    \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
-                    if (!empty($this->resp->meta->received_data->attributes->device_id)) {
-                        return redirect()->route('devicesRead', [$this->resp->meta->received_data->attributes->device_id]);
-                    } else {
-                        return redirect()->route('devicesCollection');
+                    $collection = 'device';
+                    if (stripos($this->resp->meta->query_string, 'type=') !== false) {
+                        if (str_replace('type=', '', $this->resp->meta->query_string) === $this->resp->meta->received_data->attributes->component_type) {
+                            $collection = str_replace('type=', '', $this->resp->meta->query_string);
+                        }
                     }
+                    $id = $this->resp->meta->received_data->attributes->{$collection . '_id'};
+                    \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
+                    return redirect()->route($collection . 'sRead', [$id]);
                 }
             }
         } else {

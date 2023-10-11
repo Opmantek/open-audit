@@ -27,7 +27,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
                                     </h6>
                                 </div>
                             </div>
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>?type=<?= $type ?>" accept-charset="utf-8" enctype="multipart/form-data">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <input type="hidden" value="cluster" id="data[attributes][component_type]" name="data[attributes][component_type]" />
 
