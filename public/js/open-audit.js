@@ -284,7 +284,7 @@ $(document).ready(function () {
         "searching": true,
         "order": [[ 1, 'asc' ]],
         "info": true,
-        "pageLength": 10,
+        "pageLength": 50,
         "autoWidth": false
     });
 
