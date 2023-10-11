@@ -282,6 +282,13 @@ if ($update) {
                         <div class="col-9 clearfix">
                             <h6 style="padding-top:10px;"><span class="fa-solid fa-server oa-icon"></span><?= __('Hosts') ?></h6>
                         </div>
+                        <div class="col-3 clearfix">
+                            <div class="btn-group btn-group-sm float-end" role="group" id="device_panel">
+                                <div class="page-title-right float-end">
+                                    <?= $panel_add_button ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
