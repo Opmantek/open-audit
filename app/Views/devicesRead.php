@@ -305,7 +305,7 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['audit_log'])) {
                                                 foreach ($included['audit_log'] as $row) { ?>
                                                 <tr>
-                                                    <?= device_component_button_read('change_log', $row->id) ?>
+                                                    <?= device_component_button_read('audit_log', $row->id) ?>
                                                     <td><?= $row->timestamp ?></td>
                                                     <td><?= $row->username ?></td>
                                                     <td><?= $row->type ?></td>
@@ -448,7 +448,7 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['cluster'])) {
                                                 foreach ($included['cluster'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->id) ?>"><span class="fa fa-eye text-oa-success" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->purpose ?></td>
                                                     <td><?= $row->role ?></td>
