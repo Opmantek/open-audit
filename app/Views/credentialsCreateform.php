@@ -77,7 +77,7 @@ window.onload = function () {
     });
 
     $(document).ready(function(){
-        var $snmp_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][community]', __('Community String'), $dictionary->attributes->create)) ?>';
+        var $snmp_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][community]', __('Community String'), $dictionary->attributes->create, '', 'password')) ?>';
 
         var $snmp_v3_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][security_name]', __('Security Name'), $dictionary->attributes->create)) ?>\
                                     \
@@ -102,7 +102,7 @@ window.onload = function () {
                                         </div>\
                                     </div>\
                                     \
-                                    <?= str_replace("\n", "", create_text_field('data[attributes][credentials][authentication_passphrase]', __('Authentication Passphrase'), $dictionary->attributes->create)) ?>\
+                                    <?= str_replace("\n", "", create_text_field('data[attributes][credentials][authentication_passphrase]', __('Authentication Passphrase'), $dictionary->attributes->create, '', 'password')) ?>\
                                     \
                                     <div class="row" style="padding-top:16px;">\
                                         <div class="offset-2 col-8" style="position:relative;">\
@@ -114,9 +114,9 @@ window.onload = function () {
                                         </div>\
                                     </div>\
                                     \
-                                    <?= str_replace("\n", "", create_text_field('data[attributes][credentials][privacy_passphrase]', __('Privacy Passphrase'), $dictionary->attributes->create)) ?>';
+                                    <?= str_replace("\n", "", create_text_field('data[attributes][credentials][privacy_passphrase]', __('Privacy Passphrase'), $dictionary->attributes->create, '', 'password')) ?>';
 
-        var $ssh_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][username]', __('Username'), $dictionary->attributes->create)) . str_replace("\n", "", create_text_field('data[attributes][credentials][password]', __('Password'), $dictionary->attributes->create)) ?>';
+        var $ssh_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][username]', __('Username'), $dictionary->attributes->create)) . str_replace("\n", "", create_text_field('data[attributes][credentials][password]', __('Password'), $dictionary->attributes->create, '', 'password')) ?>';
 
         var $ssh_key_text = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][username]', __('Username'), $dictionary->attributes->create)) . '<div class="row" style="padding-top:16px;"><div class="offset-2 col-8" style="position:relative;"><label for="data[attributes][credentials][ssh_key]" class="form-label">' . __('Key') . '</label><div class="input-group"><textarea class="form-control" rows="14" id="data[attributes][credentials][ssh_key]" name="data[attributes][credentials][ssh_key]"></textarea></div></div></div>' . str_replace("\n", "", create_text_field('data[attributes][credentials][password]', __('Key Password (optional)'), $dictionary->attributes->create, '', 'password')) . str_replace("\n", "", create_text_field('data[attributes][credentials][sudo_password]', __('Sudo Password (optional)'), $dictionary->attributes->create, '', 'password')) ?>';
 
