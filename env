@@ -16,6 +16,7 @@
 
 # CI_ENVIRONMENT = development
 # app.CSPEnabled = false
+# logger.threshold = 9
 
 #--------------------------------------------------------------------
 # APP
