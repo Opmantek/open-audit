@@ -101,8 +101,6 @@ class ClustersModel extends BaseModel
         $return['types'] = $types;
 
         if ($cluster->attributes->purpose === 'virtualisation') {
-            $sql = 'SELECT system.id AS `system.id`, system.name AS `system.name`, system.memory_count AS `system.memory_count`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.icon AS `system.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, "host" AS `type`, SUM(memory.size) AS `memory.size` FROM `system` LEFT JOIN `orgs` ON (`system`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`system`.`id` = `cluster`.`system_id`) LEFT JOIN `processor` ON (`system`.`id` = `processor`.`system_id` AND `processor`.`current` = "y") LEFT JOIN `memory` ON (`system`.`id` = `memory`.`system_id` AND `memory`.`current` = "y") WHERE `orgs`.`id` IN (' . implode(',', $org_list) . ') AND `cluster`.`clusters_id` = ? GROUP BY `system`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
-
             $sql = "SELECT
                         devices.id AS `devices.id`,
                         devices.name AS `devices.name`,
