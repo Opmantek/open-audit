@@ -322,7 +322,9 @@ if ($update) {
                                     <td><?= $item->attributes->{'processor.hyperthreading'} ?></td>
                                     <td><?= $item->attributes->{'devices.os_family'} ?></td>
                                     <?php if ($update) { ?>
-                                    <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
+                                    <td class="text-center" data-orderable="false">
+                                        <button type="button" class="btn <?= $GLOBALS['button'] ?>  btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $item->attributes->{'cluster.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button>
+                                    </td>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>

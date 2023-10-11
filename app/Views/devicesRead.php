@@ -448,12 +448,12 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['cluster'])) {
                                                 foreach ($included['cluster'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->{'id'}) ?>"><span class="fa fa-eye text-oa-success" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->id) ?>"><span class="fa fa-eye text-oa-success" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->purpose ?></td>
                                                     <td><?= $row->role ?></td>
                                                     <?php if ($update) { ?>
-                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $row->{'cluster.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
                                                     <?php } ?>
                                                 </tr>
                                                 <?php } ?>
@@ -2304,7 +2304,7 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['vm'])) {
                                                 foreach ($included['vm'] as $row) { ?>
                                                     <?php if ($row->icon !== '') {
-                                                        $row->icon = '<img src="' . base_url() . 'device_images/' . $key->{'icon'} . '.svg" alt="' . $key->{'icon'} . '" style="width:24px;">';
+                                                        $row->icon = '<img src="' . base_url() . 'device_images/' . $row->{'icon'} . '.svg" alt="' . $row->{'icon'} . '" style="width:24px;">';
                                                     } ?>
                                                 <tr>
                                                     <?= device_component_button_read('vm', $row->id) ?>

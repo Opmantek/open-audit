@@ -87,8 +87,11 @@ if ($update) {
                                 <td><?= $item->attributes->{'devices.name'} ?></td>
                                 <td><?= $item->attributes->{'devices.ip'} ?></td>
                                 <td><?= $item->attributes->{'devices.description'} ?></td>
-                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'application.id'} ?>" data-sub-resource="application" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
-                                
+                                <?php if ($update) { ?>
+                                    <td class="text-center" data-orderable="false">
+                                        <button type="button" class="btn <?= $GLOBALS['button'] ?>  btn-danger delete_component_link" data-type="application" data-component_type="application" data-id="<?= $item->attributes->{'application.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button>
+                                    </td>
+                                <?php } ?>
                             </tr>
                             <?php } ?>
                         </tbody>
