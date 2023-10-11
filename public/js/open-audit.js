@@ -200,7 +200,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function(data, textStatus) { 
                 $("#liveToastSuccess-header").text("Delete Succeeded");
-                $("#liveToastSuccess-body").text($type + " has been deleted.");
+                $("#liveToastSuccess-body").text($type + " has been deleted. Refresh page to update.");
                 var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
                 var toastList = toastElList.map(function(toastEl) {
                     return new bootstrap.Toast(toastEl)
