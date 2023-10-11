@@ -107,7 +107,11 @@ function collection_card_header(string $collection = '', string $icon = '', obje
 // Note, below $id is not an int because database collection supplies the table name
 function collection_button_read(string $collection = '', string $id = ''): string
 {
-    $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-primary\" href=\"" . url_to($collection.'Read', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
+    $class="btn-primary";
+    if ($collection === 'devices') {
+        $class = "btn-devices";
+    }
+    $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " " . $class . "\" href=\"" . url_to($collection.'Read', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 
