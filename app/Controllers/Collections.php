@@ -323,13 +323,15 @@ class Collections extends BaseController
             $this->resp->data[] = $temp;
         } else {
             $this->resp->meta->header = 500;
-            \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not deleted.');
             if (!empty(\Config\Services::session()->getFlashdata('error'))) {
                 $this->resp->errors = \Config\Services::session()->getFlashdata('error');
             } else if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
                 $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
             } else {
                 $this->resp->errors = 'Item in ' . $this->resp->meta->collection . ' not deleted.';
+            }
+            if (empty(\Config\Services::session()->getFlashdata('error')) and empty(\Config\Services::session()->getFlashdata('warning'))) {
+                \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not deleted.');
             }
         }
         output($this);

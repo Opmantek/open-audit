@@ -64,7 +64,6 @@ class Components extends BaseController
         $this->resp->meta->sub_resource = $type;
         $test = $this->{'componentsModel'}->delete($id);
         if ($test) {
-            \Config\Services::session()->setFlashdata('success', 'Item deleted.');
             $this->response->setStatusCode(200);
             $temp = new stdClass();
             $temp->type = $type;
