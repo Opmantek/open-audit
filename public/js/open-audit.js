@@ -199,9 +199,6 @@ $(document).ready(function () {
             url: $url,
             dataType: 'json',
             success: function(data, textStatus) { 
-                // alert($type + ' deleted.');
-                // toast = '<div class="container-fluid"><div class="alert alert-success alert-dismissible fade show" role="alert">' + $type + ' deleted.<button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button></div></div>'
-                // $('#credentials_section').append(toast);
                 $("#liveToastSuccess-header").text("Delete Succeeded");
                 $("#liveToastSuccess-body").text($type + " has been deleted.");
                 var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
@@ -216,7 +213,8 @@ $(document).ready(function () {
                 console.log("errorThrown: " + errorThrown);
                 console.log(JSON.stringify(jqXHR));
                 alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
-                return false; }
+                return false;
+            }
         });
     });
 
