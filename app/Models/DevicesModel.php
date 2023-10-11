@@ -166,6 +166,9 @@ class DevicesModel extends BaseModel
         // Set the device icon
         reset_icons($id);
 
+        $sql = "INSERT INTO change_log VALUES (null, ?, 'devices', ?, 'create', 'Item added to devices', null, '2000-01-01 00:00:00', '', '', '', null, '', NOW())";
+        $this->db->query($sql, [$id, $id]);
+
         $weight = weight($data->last_seen_by);
         $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
         foreach ($data as $key => $value) {
@@ -174,8 +177,6 @@ class DevicesModel extends BaseModel
                 $query = $this->db->query($edit_sql, [intval($id), $data->last_seen_by, $weight, $key, $data->last_seen, $value]);
             }
         }
-
-
         return ($id);
     }
 
