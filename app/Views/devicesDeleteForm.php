@@ -21,10 +21,10 @@ include 'shared/create_functions.php';
                                 <button id="submit" name="submit" type="submit" class="btn btn-danger" aria-label="<?= __('Delete') ?>"><?= __('Delete') ?></button>
                             </form>
                         </div>
-                        <div id="statusmsg"></div>
+                        <div class="text-center" id="statusmsg"></div>
+                        <br />
+                        <br />
                         <div class="table-responsive">
-                        <br />
-                        <br />
                             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
                                 <thead>
                                     <tr>
