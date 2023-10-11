@@ -230,6 +230,7 @@ if (!function_exists('output')) {
         $instance->response->noCache();
         $instance->response->setStatusCode($instance->resp->meta->header);
         unset($instance->resp->meta->user);
+        unset($instance->resp->meta->permission_requested);
         if ($instance->resp->meta->format === 'json') {
             echo json_encode($instance->resp);
             return;
