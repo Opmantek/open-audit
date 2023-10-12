@@ -35,7 +35,7 @@ include 'shared/collection_functions.php';
                                     <?= collection_button_read($meta->collection, $item->id) ?>
                                     <?= collection_button_execute($meta->collection, intval($item->id)) ?>
 
-                                    <?= "<td class=\"text-center\"><a class=\"btn btn-sm btn-warning\" title=\"" . __('Results') . "\" role=\"button\" href=\"" . url_to('baselines_resultsCollection') . "?baselines.id=" . $item->attributes->id . "\"><span style=\"width:1rem;\" class=\"fa fa-list\" aria-hidden=\"true\"></span></a></td>" ?>
+                                    <?= "<td class=\"text-center\"><a class=\"btn " . $GLOBALS['button'] . " btn-warning\" title=\"" . __('Results') . "\" role=\"button\" href=\"" . url_to('baselines_resultsCollection') . "?baselines.id=" . $item->attributes->id . "\"><span style=\"width:1rem;\" class=\"fa fa-list\" aria-hidden=\"true\"></span></a></td>" ?>
 
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {

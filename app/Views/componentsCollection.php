@@ -30,7 +30,7 @@ $user->permissions['components'] = '';
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
-                                    <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('componentsRead', $item->id) ?>?components.type=<?= $item->type ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                    <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsRead', $item->id) ?>?components.type=<?= $item->type ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
                                     <?= collection_button_read('devices', $item->attributes->device_id) ?>
                                     <td><?= $item->attributes->{'devices.name'} ?></td>
                                     <?php foreach ($data[0]->attributes as $key => $value) {
