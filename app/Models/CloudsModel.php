@@ -115,7 +115,13 @@ class CloudsModel extends BaseModel
     public function delete($id = null, bool $purge = false): bool
     {
         // Delete any related discoveries
-        $sql = "DELETE FROM discoveries WHERE cloud_id = ?";
+        $sql = "DELETE FROM `discoveries` WHERE `cloud_id` = ?";
+        $this->db->query($sql, [$id]);
+
+        $sql = "DELETE FROM `tasks` WHERE `sub_resource_id` = ? AND `type` = 'clouds'";
+        $this->db->query($sql, [$id]);
+
+        $sql = 'DELETE FROM `cloud_log` WHERE `cloud_id` = ?';
         $this->db->query($sql, [$id]);
 
         $this->builder->delete(['id' => intval($id)]);
@@ -182,13 +188,51 @@ class CloudsModel extends BaseModel
         $sql = "SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY id";
         $included['logs'] = $this->db->query($sql, [$id])->getResult();
 
-        $sql = "SELECT devices.id AS `devices.id`, devices.ip AS `devices.ip`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon` FROM `devices` WHERE devices.cloud_id = ?";
+        $included['stats'] = new stdClass();
+        $included['stats']->devices_retrieved = 0;
+        $included['stats']->devices_audited = 0;
+        $included['stats']->devices_not_audited = 0;
+        $included['stats']->devices_running = 0;
+        $included['stats']->devices_stopped = 0;
+        $included['stats']->locations = 0;
+        $included['stats']->networks = 0;
+        $included['stats']->last_run = '';
+        $included['stats']->duration = '';
+
+        $sql = "SELECT COUNT(*) as `count` FROM `locations` WHERE `cloud_id` = ?";
+        $included['stats']->locations = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+
+        $sql = "SELECT COUNT(*) as `count` FROM `networks` WHERE `cloud_id` = ?";
+        $included['stats']->networks = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+
+        $sql = "SELECT `timestamp` FROM `cloud_log` WHERE `cloud_id` = ? ORDER BY `id` ASC LIMIT 1";
+        $included['stats']->last_run = $this->db->query($sql, [$id])->getResult()[0]->timestamp;
+
+        $sql = "SELECT `timestamp` FROM `cloud_log` WHERE `cloud_id` = ? ORDER BY `id` DESC LIMIT 1";
+        $finished = $this->db->query($sql, [$id])->getResult()[0]->timestamp;
+
+        $date = new \DateTime($included['stats']->last_run);
+        $date2 = new \DateTime($finished);
+        $included['stats']->duration = $date2->getTimestamp() - $date->getTimestamp();
+
+        $sql = "SELECT devices.id AS `devices.id`, devices.ip AS `devices.ip`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.serial AS `devices.serial`, devices.instance_state AS `devices.instance_state` FROM `devices` WHERE devices.cloud_id = ?";
         $query = $this->db->query($sql, [$id]);
         $devices = $query->getResult();
         $count = count($devices);
         for ($i=0; $i < $count; $i++) {
             $devices[$i]->{'devices.padded_ip'} = $devices[$i]->{'devices.ip'};
             $devices[$i]->{'devices.ip'} = ip_address_from_db($devices[$i]->{'devices.ip'});
+            $included['stats']->devices_retrieved += 1;
+            if (!empty($devices[$i]->serial)) {
+                $included['stats']->devices_audited += 1;
+            } else {
+                $included['stats']->devices_not_audited += 1;
+            }
+            if ($devices[$i]->instance_state === 'running') {
+                $included['stats']->devices_running += 1;
+            } else {
+                $included['stats']->devices_stopped += 1;
+            }
         }
         $included['devices'] = $devices;
 

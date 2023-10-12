@@ -4,14 +4,17 @@
 include 'shared/read_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa fa-eye text-primary"></span>' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="fa fa-bars text-primary" ></span>' . __('Logs')    . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
 } else if ($style === 'icon') {
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa fa-eye text-primary"></span></a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   ><span style="margin-right:6px;" title="' . __('Logs') .    '" class="fa fa-bars text-primary"></span></a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
 } else {
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   >' . __('Logs') .    '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
@@ -27,6 +30,7 @@ if ($style === 'icontext') {
                     <div class="row text-center">
                         <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                                <?= $summary_button ?>
                                 <?= $details_button ?>
                                 <?= $logs_button ?>
                                 <?= $devices_button ?>
@@ -34,6 +38,53 @@ if ($style === 'icontext') {
                         </div>
                     </div>
                     <br/>
+
+                    <div class="tab-content">
+                        <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
+                            <div class="row">
+                                <div class="col-6">
+                                    <?= read_field('name1', $resource->name, $dictionary->columns->name, false, 'Name') ?>
+                                    <?= read_field('current_status', $resource->status, $dictionary->columns->name, false) ?>
+                                    <?= read_field('last_run', $included['stats']->last_run, $dictionary->columns->name, false) ?>
+                                    <?= read_field('duration', $included['stats']->duration . __(' seconds'), $dictionary->columns->name, false) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"fa fa-building\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('locations', $included['stats']->locations, $dictionary->columns->name, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"fa fa-wifi\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('networks', $included['stats']->networks, $dictionary->columns->name, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('devices_retrieved', $included['stats']->devices_retrieved, $dictionary->columns->name, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.serial=!=\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('devices_audited', $included['stats']->devices_audited, $dictionary->columns->name, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.serial=\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('devices_not_audited', $included['stats']->devices_not_audited, $dictionary->columns->name, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_state=running\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('devices_running', $included['stats']->devices_running, $dictionary->columns->name, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_stats=!=running\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('devices_stopped', $included['stats']->devices_stopped, $dictionary->columns->name, false, '', $link) ?>
+                                </div>
+                                <div class="col-6">
+                                    <br />
+                                    <div class="offset-2 col-8">
+                                        <?php if (!empty($dictionary->about)) { ?>
+                                            <h4 class="text-center"><?= __('About') ?></h4><br />
+                                            <?= $dictionary->about ?>
+                                        <?php } ?>
+                                        <?php if (!empty($dictionary->notes)) { ?>
+                                            <h4 class="text-center"><?= __('Notes') ?></h4><br />
+                                            <?= $dictionary->notes ?>
+                                        <?php } ?>
+                                        <?php if (!empty($dictionary->columns)) { ?>
+                                            <?php $fields = array('name', 'org_id', 'type', 'edited_by', 'edited_date') ?>
+                                            <h4 class="text-center"><?= __('Fields') ?></h4><br />
+                                            <?php foreach ($fields as $key) { ?>
+                                            <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br /><br />
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="tab-content">
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
@@ -60,7 +111,7 @@ if ($style === 'icontext') {
                                     </div>
                                     <?php if ($resource->type === 'amazon') {
                                         echo read_field('credentials.key', $resource->credentials->key, $dictionary->columns->key, $update, __('Credentials Key'));
-                                        echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, __('Credentials Secret'), '', '', 'password');
+                                        echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, __('Credentials Secret'), '', 'password');
                                     } else if ($resource->type === 'microsoft') {
                                         echo read_field('credentials.subscription_id', $resource->credentials->subscription_id, $dictionary->columns->subscription_id, $update, __('Subscription ID'));
                                         echo read_field('credentials.tenant_id', $resource->credentials->tenant_id, $dictionary->columns->tenant_id, $update, __('Tenant ID'));
@@ -95,8 +146,6 @@ if ($style === 'icontext') {
                             </div>
                         </div>
                     </div>
-
-
 
                     <div class="tab-content">
                         <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
@@ -202,7 +251,7 @@ window.onload = function () {
 
         var hash = window.location.hash;
         if (hash == "") {
-            hash = "#details"
+            hash = "#summary"
         }
         hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
 
