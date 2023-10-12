@@ -564,7 +564,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
                                                     <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
-                                                    <td><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
+                                                    <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
                                                     <td><?= $issue->{'devices.name'} ?></td>
                                                     <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>
                                                     <td><?php if ($issue->action === 'add credentials') { ?>
