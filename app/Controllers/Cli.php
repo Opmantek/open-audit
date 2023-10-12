@@ -101,7 +101,7 @@ class Cli extends Controller
 
         $db = db_connect() or die("Cannot establish a database connection.");
         // Insert the entry
-        $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+        $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
         $db->query($sql, [json_encode($response)]);
         $id = $db->insertID();
         // Call the binary and wait for it's response
@@ -495,7 +495,7 @@ class Cli extends Controller
 
         if ($db->tableExists('enterprise')) {
             // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
             $db->query($sql, [json_encode($projects[0])]);
             $id = $db->insertID();
         }
@@ -724,7 +724,7 @@ class Cli extends Controller
 
         if ($db->tableExists('enterprise')) {
             // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
             $db->query($sql, [json_encode($projects[0])]);
             $id = $db->insertID();
         }
@@ -938,7 +938,7 @@ class Cli extends Controller
 
         if ($db->tableExists('enterprise')) {
             // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
             $db->query($sql, [json_encode($projects[0])]);
             $id = $db->insertID();
         }
