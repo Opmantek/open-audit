@@ -224,6 +224,7 @@ class Database extends BaseController
         $meta->action = 'updateForm';
         $meta->access_token = '';
         $meta->icon = 'fa fa-database';
+        $license_string = (!empty($this->resp->meta->license_string)) ? $this->resp->meta->license_string : '';
         if ($action !== 'post') {
             $this->data = $this->databaseModel->updateForm();
             return view('shared/header', [
@@ -234,12 +235,24 @@ class Database extends BaseController
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
                 view('databaseUpdateForm', ['data' => filter_response($this->data)])
-                . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+                . view('shared/footer', ['license_string' => $license_string]);
         }
         if ($action === 'post') {
             $output = $this->databaseModel->update();
+            $sql = "SELECT * FROM configuration WHERE `name` = 'license_eula'";
+            $db = db_connect();
+            $eula = $db->query($sql)->getResult()[0];
+            $item = new \stdClass();
+            if (!empty($eula->value) and $eula->value !== '') {
+                $item = json_decode($eula->value);
+            }
+            if (is_null($item)) {
+                $item = new stdClass();
+            }
+            $item->{"Open-AudIT--Commercial--" . config('Openaudit')->display_version} = time();
+            $eula->new_value = json_encode($item);
             $errors = array();
-            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . $this->config->display_version . " (" . $this->config->internal_version . ").");
+            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
             return view('shared/header', [
                 'config' => $this->config,
                 'dashboards' => filter_response($this->dashboards),
@@ -247,8 +260,8 @@ class Database extends BaseController
                 'queries' => array(),
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
-                view('databaseUpdate', ['data' => filter_response($this->data)])
-                . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+                view('databaseUpdate', ['data' => filter_response($this->data), 'eula' => $eula])
+                . view('shared/footer', ['license_string' => $license_string]);
         }
     }
 }

@@ -40,7 +40,7 @@ include 'shared/read_functions.php';
                         <div class="col-6">
                             <?= read_field('Hostname', $data->hostname, '', '') ?>
                             <?= read_field('OS Name', $data->operating_system, '', '') ?>
-                            <?= read_field('Database', $data->database_platform, '', '') ?>
+                            <?= read_field('Database Driver', $data->database_platform, '', '') ?>
                             <?= read_field('Database Version', $data->database_version, '', '') ?>
                             <?= read_field('Web Server', $data->web_server, '', '') ?>
                             <?= read_field('PHP Version', $data->php_version, '', '') ?>

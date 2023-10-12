@@ -565,27 +565,27 @@ foreach ($result as $item) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "UPDATE queries SET `sql` = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table = 'file'" WHERE `name` = 'Files'";
+$sql = "UPDATE `queries` SET `sql` = 'SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"devices?sub_resource=change_log&change_log.id=\", change_log.id) AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'file\'' WHERE `name` = 'Files'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE queries SET `sql` = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound', 'video')" WHERE `name` = 'Hardware'";
+$sql = "UPDATE queries SET `sql` = 'SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\')' WHERE `name` = 'Hardware'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE queries SET `sql` = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table = 'devices'" WHERE `name` = 'New Devices'";
+$sql = "UPDATE queries SET `sql` = 'SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'devices\'' WHERE `name` = 'New Devices'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE queries SET `sql` = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('dns', 'ip', 'log', 'netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group', 'variable')" WHERE `name` = 'Settings'";
+$sql = "UPDATE queries SET `sql` = 'SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'dns\', \'ip\', \'log\', \'netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\', \'variable\')' WHERE `name` = 'Settings'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE queries SET `sql` = "SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('service', 'server', 'server_item', 'software', 'software_key')" WHERE `name` = 'Software'";
+$sql = "UPDATE queries SET `sql` = 'SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id`, CONCAT(\"components/\", change_log.id, \"?components.type=change_log\") AS `link` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')' WHERE `name` = 'Software'";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -753,6 +753,15 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM `configuration` WHERE name = 'license_eula'";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'license_eula','','text','n','system','2000-01-01 00:00:00','The date of EULA acceptance.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "UPDATE `configuration` SET value = 'devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.dns_fqdn,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status' WHERE name = 'devices_default_display_columns'";
 $query = $db->query($sql);
@@ -802,14 +811,14 @@ log_message('info', (string)$db->getLastQuery());
 $email_config_items = array('mail_domain' => 'example.com', 'mail_from' => 'yourmailname@example.com', 'mail_password' => 'your_password', 'mail_server' => 'smtp.example.com', 'mail_server_port' => 25, 'mail_use_tls' => 'true', 'mail_user' => 'your_user_account@example.com');
 $files = array('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
 foreach ($files as $file) {
-    if ($file_exists($file)) {
+    if (file_exists($file)) {
         $contents = file_get_contents($file);
         if (!empty($contents)) {
             $json = json_decode($contents);
             foreach ($email_config_items as $key => $value) {
-                if (!empty($json->email->{$key}) and $json->email->{$key} !== $value) {
-                    $sql = "UPDATE configuration SET value = ? WHERE name = ?";
-                    $query = $db->query($sql, [$json->email->{$item}, $key]);
+                if (!empty($json->email->{$key}) and is_string($json->email->{$key}) and $json->email->{$key} !== $value) {
+                    $sql = "UPDATE configuration SET value = ? WHERE name = '$key'";
+                    $query = $db->query($sql, [$json->email->{$key}]);
                     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
                     log_message('info', (string)$db->getLastQuery());
                 }

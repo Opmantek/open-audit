@@ -422,9 +422,10 @@ if (!function_exists('response_create')) {
 
         # Enterprise
         $db = db_connect();
+        $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             // TODO - fix this
-            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards' or $response->meta->collection === 'configuration') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
@@ -445,7 +446,7 @@ if (!function_exists('response_create')) {
             $response->meta->config = clone $config;
             unset($response->meta->config->modules);
             // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW())";
+            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
             $db->query($sql, [json_encode($response)]);
             $id = $db->insertID();
             // Call the binary and wait for it's response
@@ -477,7 +478,7 @@ if (!function_exists('response_create')) {
                 log_message('error', 'Could not decode JSON response from enterprise.');
                 log_message('error', "\n" . $result[0]->response . "\n");
             }
-            $response->meta->permission_requested = json_decode(json_encode($response->meta->permission_requested), true);
+            $response->meta->permission_requested = $permission_requested;
             if (!empty($response->meta->license)) {
                 $config->license = $response->meta->license;
                 unset($response->meta->license);
@@ -493,7 +494,7 @@ if (!function_exists('response_create')) {
             }
 
             // TODO - fix this
-            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards' or $response->meta->collection === 'configuration') and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
             if ($response->meta->collection === 'search' and $response->meta->action === 'create') {

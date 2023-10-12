@@ -35,7 +35,7 @@ class OpenAudit extends BaseConfig
 
 
         if (!empty($this->oae_product)) {
-            $this->product = $this->oae_product;
+            $this->product = strtolower(str_replace('Open-AudIT ', '', $this->oae_product));
         }
         if (empty($this->product)) {
             $this->product = 'community';
@@ -43,6 +43,10 @@ class OpenAudit extends BaseConfig
 
         if (!empty($this->servers)) {
             $this->servers = json_decode($this->servers);
+        }
+
+        if (!empty($this->license_eula)) {
+            $this->license_eula = json_decode($this->license_eula);
         }
 
         if (empty($this->page_size)) {

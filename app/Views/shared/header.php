@@ -474,7 +474,7 @@ if (!empty($config->modules)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
-<?php if ($config->license === 'none') { ?>
+<?php if (empty($config->license) or $config->license === 'none') { ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Activate Free License')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Manage Licenses')?></a></li>
@@ -651,6 +651,12 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     $instance = & get_instance();
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
+    if (empty($instance->collections->{$collection}->actions->{$instance->config->product})) {
+        return $return;
+    }
+    if (empty($instance->resp->meta->permission_requested)) {
+        return $return;
+    }
     // Check if feature matches license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
         $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
