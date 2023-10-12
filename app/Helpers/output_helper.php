@@ -155,11 +155,13 @@ if (!function_exists('output')) {
                 unset($instance->resp->data[$i]->attributes->scan_options);
 
                 // Match options
-                foreach ($instance->resp->data[$i]->attributes->match_options as $key => $value) {
-                    if (is_string($instance->resp->data[$i]->attributes->match_options->{$key})) {
-                        $instance->resp->data[$i]->attributes->{'match_options.' . $key} = $value;
-                    } else {
-                        $instance->resp->data[$i]->attributes->{'match_options.' . $key} = json_encode($value);
+                if (!empty($instance->resp->data[$i]->attributes->match_options) and !is_string($instance->resp->data[$i]->attributes->match_options)) {
+                    foreach ($instance->resp->data[$i]->attributes->match_options as $key => $value) {
+                        if (is_string($instance->resp->data[$i]->attributes->match_options->{$key})) {
+                            $instance->resp->data[$i]->attributes->{'match_options.' . $key} = $value;
+                        } else {
+                            $instance->resp->data[$i]->attributes->{'match_options.' . $key} = json_encode($value);
+                        }
                     }
                 }
                 unset($instance->resp->data[$i]->attributes->match_options);
