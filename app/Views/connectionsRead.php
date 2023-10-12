@@ -10,7 +10,7 @@ include 'shared/read_functions.php';
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             
@@ -20,8 +20,11 @@ include 'shared/read_functions.php';
                                 <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update) ?>
                             <?php } ?>
                             <br>
-                            <div class="offset-2 col-8"><hr /></div>
 
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                        </div>
+                        <div class="col-4">
                             <?= read_select('location_id_a', $resource->location_id_a, $dictionary->columns->location_id_a, $update, __('Location A'), $included['locations']) ?>
                             <?php $fields = array('device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a'); ?>
                             <?php foreach ($fields as $field) {
@@ -56,12 +59,8 @@ include 'shared/read_functions.php';
                                 <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', $link) ?>
                             <?php } ?>
                             <br>
-                            <div class="offset-2 col-8"><hr /></div>
-
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <br>
                             <div class="offset-2 col-8">
                                 <?php if (!empty($dictionary->about)) { ?>
