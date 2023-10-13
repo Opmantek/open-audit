@@ -512,8 +512,8 @@ class DiscoveriesModel extends BaseModel
         # TODO - Should we delete orphaned logs?
         # $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` IN (SELECT discovery_log.discovery_id FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.name IS NULL GROUP BY discovery_log.discovery_id)";
 
-        # TODO - Should we mark as completed any discoveries with status = running and last logged > 1 hour ago? (yes)
-        $sql = "SELECT TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) AS `diff`, MAX(discovery_log.id), discovery_log.timestamp, discovery_log.discovery_id FROM discovery_log LEFT JOIN `discoveries` ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) > 1 GROUP BY discovery_log.discovery_id";
+        # TODO - Should we mark as completed any discoveries with status = running and last logged > 30 minutes ago? (yes)
+        $sql = "SELECT TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) AS `diff`, MAX(discovery_log.id), discovery_log.timestamp, discovery_log.discovery_id FROM discovery_log LEFT JOIN `discoveries` ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND TIMESTAMPDIFF(MINUTE, discovery_log.timestamp, now()) > 30 GROUP BY discovery_log.discovery_id";
         $result = $this->db->query($sql)->getResult();
         foreach ($result as $discovery) {
             $sql = "UPDATE `discoveries` SET `status` = 'killed' WHERE id = ?";
@@ -815,13 +815,17 @@ class DiscoveriesModel extends BaseModel
         if (empty($scan_options_id)) {
             $scan_options_id = (!empty($instance->config->discovery_default_scan_option)) ? $instance->config->discovery_default_scan_option : 1;
         }
-        $sql = "SELECT discovery_scan_options.name from discovery_scan_options where id = ?";
+        $sql = "SELECT discovery_scan_options.* from discovery_scan_options where id = ?";
         $query = $this->db->query($sql, [$scan_options_id]);
         $dco = $query->getResult();
         if (!empty($dco)) {
             if (empty($result[0]->attributes->scan_options)) {
                 $result[0]->attributes->scan_options = new \stdClass();
+                foreach ($dco[0] as $key => $value) {
+                    $result[0]->attributes->scan_options->{$key} = '';
+                }
             }
+            $result[0]->attributes->scan_options->id = $scan_options_id;
             $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
         }
         return $result;
