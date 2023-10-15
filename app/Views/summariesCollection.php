@@ -75,7 +75,7 @@ include 'shared/collection_functions.php';
             <br />
             <div class="card">
                 <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user) ?>
+                    <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
                     <br />

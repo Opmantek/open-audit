@@ -258,12 +258,23 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     if (empty($icon)) {
         $icon = base_url() . 'icons/' . strtolower($name) . '.svg';
     }
+    $temp = explode(' ', $name);
+    $export_name = strtolower($temp[0]);
     if ($toolbar === 'icontext') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
+
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>
+        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("View All") . "</a>";
     } else if ($toolbar === 'icon') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
+
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span></a>
+        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span></a>";
     } else {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
+
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\">" . __("Export CSV") . "</a>
+        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\">" . __("View All") . "</a>";
     }
     $panel_add_button = '';
     if ($update) {
@@ -277,6 +288,11 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
             }
         }
     }
+
+    if (!in_array(strtolower($export_name), ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows']) or empty($device_id)) {
+        $export_button = '';
+    }
+
     $human_name = read_column_name($name);
     $header = '<div class="card-header">
         <div class="row">
@@ -289,6 +305,7 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
                 <div class="btn-group btn-group-sm float-end" role="group" id="device_panel_' . $name . '">
                     <div class="page-title-right float-end">
                         ' . $panel_add_button . '
+                        ' . $export_button . '
                         ' . $panel_close_button . '
                     </div>
                 </div>
@@ -302,4 +319,13 @@ function device_component_button_read(string $collection = '', int $id = 0): str
 {
     $return = "<td class=\"text-center\"><span style=\"display:none;\">" . $id . "</span><a title=\"" . __('View') . "\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"" . url_to('componentsRead', $id) . "?components.type=$collection\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
     return $return;
+}
+
+function count_button($included = [])
+{
+    $button = '';
+    if (!empty($included)) {
+        $button = '<button class="btn btn-xs mb-2 btn-outline float-end">' . count($included) . '</button>';
+    }
+    return $button;
 }
