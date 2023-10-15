@@ -36,7 +36,7 @@ if (! function_exists('windows_credentials')) {
         $log->ip = $ip;
 
         foreach ($credentials as $credential) {
-            if ($credential->type == 'windows') {
+            if ($credential->type === 'windows') {
                 $log->file = 'wmi_helper';
                 $log->function = 'windows_credentials';
                 $log->message = 'Testing credential set ' . $credential->name;
@@ -58,7 +58,7 @@ if (! function_exists('windows_credentials')) {
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
         $log->message = "WMI detected but no valid Windows credentials for $ip.";
-        $log->command_output = $wmi_result['output'][0];
+        $log->command_output = @$wmi_result['output'][0];
         $log->severity = 5;
         $discoveryLogModel->create($log);
         return false;
