@@ -138,7 +138,12 @@ class DiscoveryLogModel extends BaseModel
         $data->command_output = (!empty($data->command_output)) ? $data->command_output : '';
         if (empty($data->timestamp)) {
             $data->timestamp = date('Y-m-d H:i:s');
+            #log_message('debug', 'timetamp is empty, log is: ' . $data->message . ' :: ' . $data->command);
+        } else {
+            #log_message('debug', 'timetamp is NOT empty, log is: ' . $data->message . ' :: ' . $data->command);
         }
+        // NOTE - Not using the above as it causes timestamp -> id order issues. May affect Collectors?
+        $data->timestamp = date('Y-m-d H:i:s');
 
         if (!empty($data->message) and stripos($data->message, 'Collector - Starting discovery') !== false and !empty($data->discovery_id)) {
             // Special clear of local discovery logs if start of a Collector discovery
