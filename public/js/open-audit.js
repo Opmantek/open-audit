@@ -278,6 +278,7 @@ $(document).ready(function () {
     */
 
     $('.dataTable').dataTable( {
+        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         "paging": true,
         "searching": true,
         "order": [[ 1, 'asc' ]],
