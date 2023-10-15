@@ -429,6 +429,11 @@ if (!function_exists('response_create')) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
+            if ($response->meta->collection === 'credentials' and $response->meta->action === 'create') {
+                $received_data = $response->meta->received_data;
+                $response->meta->received_data = array();
+            }
+
             if ($response->meta->collection === 'search' and $response->meta->action === 'create') {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
@@ -498,6 +503,9 @@ if (!function_exists('response_create')) {
                 $response->meta->received_data = $received_data;
             }
             if ($response->meta->collection === 'search' and $response->meta->action === 'create') {
+                $response->meta->received_data = $received_data;
+            }
+            if ($response->meta->collection === 'credentials' and $response->meta->action === 'create') {
                 $response->meta->received_data = $received_data;
             }
             // TODO - Why does enterprise return this as a string?
