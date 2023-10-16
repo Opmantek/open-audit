@@ -62,7 +62,8 @@ class DevicesModel extends BaseModel
                 $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
             }
         }
-        $this->builder->orderBy('mycount', $resp->meta->sort);
+        $this->builder->orderBy('mycount');
+        $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
         # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
