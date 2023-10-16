@@ -24,6 +24,11 @@ $audit_status = false;
 if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->audit_text)) {
     $audit_status = true;
 }
+$query_string = url_to('devicesCollection') . '?';
+if (!empty($meta->query_string)) {
+    $query_string .= $meta->query_string . '&';
+}
+
 ?>
         <main class="container-fluid">
             <?php if (!empty($config->license) and $config->license !== 'none') { ?>
@@ -154,7 +159,7 @@ if (isset($data[0]->attributes->audit_class) and isset($data[0]->attributes->aud
                                             } else if ($key === 'ip' and !empty($item->attributes->ip_padded)) {
                                                 echo "                                    <td><span style=\"display:none;\">" . $item->attributes->ip_padded . "</span>" . $item->attributes->{$key} . "</td>\n";
                                             } else {
-                                                echo "                                    <td>" . $item->attributes->{$key} . "</td>\n";
+                                                echo "                                    <td><span class=\"float-start\"><button type=\"button\" class=\"btn btn-xs btn-light\" data-bs-container=\"body\" data-bs-toggle=\"popover\" data-bs-html=\"true\" data-bs-placement=\"right\" data-bs-content=\"<a href='" . $query_string . "devices." . $key . "=" . $item->attributes->{$key} . "'>" . __('Include') . "</a><br><a href='" . $query_string . "devices." . $key . "=!=" . $item->attributes->{$key} . "'>" . __('Exclude') . "</a>\"><span class=\"fa fa-filter fa-xs\"></span></button></span>&nbsp;" . $item->attributes->{$key} . "</td>\n";
                                             }
                                         }
                                         if (strpos($user->permissions[$meta->collection], 'u') !== false and !empty($item->id)) {
@@ -187,6 +192,9 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
 
         $("#oa_panel_buttons").prepend('<div class="dropdown">\
             <button style="margin-right:6px;" class="btn btn-light mb-2 panel-button dropdown-toggle" type="button" id="columnSelectButton" data-bs-toggle="dropdown" aria-expanded="false">\
