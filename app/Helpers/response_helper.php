@@ -90,7 +90,7 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
             if (empty($response->meta->collection)) {
-                $response->meta->collection = (!empty($config->homepage)) ? $config->homepage : 'orgs';
+                $response->meta->collection = (!empty($config->homepage)) ? $config->homepage : 'summaries';
             }
         }
         $valid_collections = response_valid_collections();
@@ -425,7 +425,7 @@ if (!function_exists('response_create')) {
         $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             // TODO - fix this
-            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards' or $response->meta->collection === 'configuration') and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
@@ -499,7 +499,7 @@ if (!function_exists('response_create')) {
             }
 
             // TODO - fix this
-            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards' or $response->meta->collection === 'configuration') and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'rules' or $response->meta->collection === 'dashboards') and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
             if ($response->meta->collection === 'search' and $response->meta->action === 'create') {
