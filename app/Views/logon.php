@@ -31,12 +31,13 @@ include('shared/lang.php');
         <link href="<?= base_url('css/open-audit.css') . '?v=' . time() ?>" rel="stylesheet">
 
         <script {csp-script-nonce}>
-            <?php if ($config->device_count === 0) { ?>
-            document.getElementById("username").value = "admin";
-            document.getElementById("password").value = "password";
-            <?php } ?>
             window.onload = function () {
                 $(document).ready(function () {
+
+                    <?php if ($config->device_count === 0) { ?>
+                    $("#username").val("admin");
+                    $("#password").val("password");
+                    <?php } ?>
 
                     var testWin = navigator.userAgent.match(/Windows NT/i);
                     if (testWin) {
