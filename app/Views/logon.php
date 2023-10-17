@@ -1,26 +1,6 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
-$header = "
-    connect-src 'self' opmantek.com community.opmantek.com services.opmantek.com;
-    font-src 'self' fonts.gstatic.com;
-    form-action 'self';
-    frame-ancestors 'none';
-    frame-src 'none';
-    img-src 'self' data:;
-    manifest-src 'none';
-    media-src 'none';
-    object-src 'none';
-    script-src 'self' 'unsafe-inline' maps.googleapis.com maps.google.com;
-    style-src 'self' 'unsafe-inline' fonts.googleapis.com;
-    worker-src 'self';
-    ";
-    # prefetch-src 'self'; # removed as still marked as experimental and not supported in any browsers
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/prefetch-src#browser_compatibility
-$header = str_replace(PHP_EOL, "", $header);
-header("Content-Security-Policy: {$header}");
-header('X-Frame-Options: DENY');
-header('X-Content-Type-Options: nosniff');
 include('shared/lang.php');
 ?>
 <!DOCTYPE html>
@@ -89,7 +69,9 @@ include('shared/lang.php');
                     });
 
 
-                    document.form.username.focus();
+                    $(function() {
+                        $("#username").trigger("focus");
+                    });
                 });
             }
         </script>
