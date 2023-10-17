@@ -244,7 +244,8 @@ window.onload = function () {
             }
         } ?>
 
-<?php if ($config->rss_enable !== "n") { ?>
+<?php if ($config->rss_enable !== "n" and $resource->sidebar !== 'n') { ?>
+
         function getDate(days)
         {
             if (days == "") { days = 0; }
