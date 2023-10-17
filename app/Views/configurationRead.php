@@ -18,7 +18,12 @@ if (!$update or $resource->editable !== 'y') {
                             <?= read_field('description', $resource->description, $dictionary->columns->description, false) ?>
                             <?= read_field('editable', $resource->editable, $dictionary->columns->editable, false) ?>
                             <?= read_field('type', $resource->type, $dictionary->columns->type, false) ?>
-                            <?= read_field('value', $resource->value, $dictionary->columns->value, $update) ?>
+                            <?php if ($resource->type !== 'bool') { ?>
+                                <?= read_field('value', $resource->value, $dictionary->columns->value, $update) ?>
+                            <?php } ?>
+                            <?php if ($resource->type === 'bool') { ?>
+                                <?= read_select('value', $resource->value, $dictionary->columns->value, $update, '', array()) ?>
+                            <?php } ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
