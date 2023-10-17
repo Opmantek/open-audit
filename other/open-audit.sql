@@ -922,17 +922,7 @@ INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system'
 INSERT INTO `configuration` VALUES (NULL,'gui_trim_characters','25','number','y','system','2000-01-01 00:00:00','When showing a table of information in the web GUI, replace characters greater than this with \"...\".');
 INSERT INTO `configuration` VALUES (NULL,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
 INSERT INTO `configuration` VALUES (NULL,'internal_version','20230615','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
-INSERT INTO `configuration` VALUES (NULL,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_2','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 2.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_3','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 3.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_4','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 4.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_5','90','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 5.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_6','30','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 6.');
-INSERT INTO `configuration` VALUES (NULL,'log_retain_level_7','7','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 7.');
 INSERT INTO `configuration` VALUES (NULL,'maps_api_key','','text','y','system','2000-01-01 00:00:00','Your API key for Google Maps.');
-INSERT INTO `configuration` VALUES (NULL,'maps_url','/omk/open-audit/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
 INSERT INTO `configuration` VALUES (NULL,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
 INSERT INTO `configuration` VALUES (NULL,'match_dns_hostname','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS hostname.');
@@ -957,10 +947,8 @@ INSERT INTO `configuration` VALUES (NULL,'license','','text','n','system','2000-
 INSERT INTO `configuration` VALUES (NULL,'license_string','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT (if used).');
 INSERT INTO `configuration` VALUES (NULL,'license_string_collector','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT Collectors (if used).');
 INSERT INTO `configuration` VALUES (NULL,'license_eula','','text','n','system','2000-01-01 00:00:00','The date of EULA acceptance.');
-INSERT INTO `configuration` VALUES (NULL,'oae_location','','text','y','system','2000-01-01 00:00:00','The non-default location of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (NULL,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');
 INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
 INSERT INTO `configuration` VALUES (NULL,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
