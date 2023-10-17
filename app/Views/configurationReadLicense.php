@@ -128,7 +128,7 @@ window.onload = function () {
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: '<?= base_url() ?>configuration/<?= $meta->id ?>',
+                url: '<?= base_url() ?>index.php/configuration/<?= $meta->id ?>',
                 contentType: "application/json",
                 data: {data : data},
                 success: function(data, textStatus) {
@@ -158,7 +158,7 @@ window.onload = function () {
                 data = JSON.stringify(data);
                 $.ajax({
                     type: "PATCH",
-                    url: '<?= base_url() ?>configuration/<?= $meta->id ?>',
+                    url: '<?= base_url() ?>index.php/configuration/<?= $meta->id ?>',
                     contentType: "application/json",
                     data: {data : data},
                     success: function(data, textStatus) {
@@ -228,7 +228,7 @@ window.onload = function () {
             console.log(data);
             $.ajax({
                 type: "PATCH",
-                url: '<?= base_url() ?>configuration/<?= $meta->id ?>',
+                url: '<?= base_url() ?>index.php/configuration/<?= $meta->id ?>',
                 contentType: "application/json",
                 data: {data : data},
                 success: function(data, textStatus) {
