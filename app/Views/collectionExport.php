@@ -52,3 +52,13 @@ $id = (!empty($meta->id)) ? $meta->id : '';
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        $("#button_create").remove();
+        $("#button_delete").remove();
+        $("#button_export_json").remove();
+    });
+}
+</script>
