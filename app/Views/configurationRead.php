@@ -19,7 +19,7 @@ if (!$update or $resource->editable !== 'y') {
                             <?= read_field('editable', $resource->editable, $dictionary->columns->editable, false) ?>
                             <?= read_field('type', $resource->type, $dictionary->columns->type, false) ?>
                             <?php if ($resource->type !== 'bool') { ?>
-                                <?= read_field('value', $resource->value, $dictionary->columns->value, $update) ?>
+                                <?= read_field('value', $resource->value, $dictionary->columns->value, $update, '', '', '', $resource->type) ?>
                             <?php } ?>
                             <?php if ($resource->type === 'bool') { ?>
                                 <?= read_select('value', $resource->value, $dictionary->columns->value, $update, '', array()) ?>
