@@ -21,9 +21,6 @@ include 'shared/collection_functions.php';
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
-                                    <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,9 +42,6 @@ include 'shared/collection_functions.php';
                                         }
                                         echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         ?>
-                                    <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
