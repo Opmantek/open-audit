@@ -10,7 +10,7 @@ if ($db->tableExists('agents')) {
 }
 
 if ($db->fieldExists('applications_id', 'application')) {
-    $sql = "ALTER TABLE `application` RENAME COLUMN `applications_id` TO `application_id`";
+    $sql = "ALTER TABLE `application` CHANGE `applications_id` `application_id` int(10) unsigned NOT NULL DEFAULT '0'";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -134,7 +134,7 @@ if (!empty($baselines)) {
 }
 
 if ($db->fieldExists('clusters_id', 'cluster')) {
-    $sql = "ALTER TABLE `cluster` RENAME COLUMN `clusters_id` TO `cluster_id`";
+    $sql = "ALTER TABLE `cluster` CHANGE `clusters_id` `cluster_id` int(10) unsigned NOT NULL DEFAULT '0'";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -148,14 +148,14 @@ if (!$db->fieldExists('type', 'collectors')) {
 }
 
 if ($db->fieldExists('system_id_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` RENAME COLUMN `system_id_a` TO `device_id_a`";
+    $sql = "ALTER TABLE `connections` CHANGE `system_id_a` `device_id_a` int(10) unsigned DEFAULT NULL";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->fieldExists('system_id_b', 'connections')) {
-    $sql = "ALTER TABLE connections RENAME COLUMN system_id_b TO device_id_b";
+    $sql = "ALTER TABLE `connections` CHANGE `system_id_b` `device_id_b` int(10) unsigned DEFAULT NULL";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -167,32 +167,32 @@ if ($db->tableExists('system') and !$db->tableExists('devices')) {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "ALTER TABLE devices RENAME COLUMN attached_system_id TO attached_device_id";
+    $sql = "ALTER TABLE `devices` CHANGE `attached_system_id` `attached_device_id` int(10) unsigned DEFAULT NULL";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "ALTER TABLE devices RENAME COLUMN vm_system_id TO vm_device_id";
+    $sql = "ALTER TABLE `devices` CHANGE `vm_system_id` `vm_device_id` int(10) unsigned DEFAULT NULL";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "ALTER TABLE devices RENAME COLUMN switch_system_id TO switch_device_id";
+    $sql = "ALTER TABLE `devices` CHANGE `switch_system_id` `switch_device_id` int(10) unsigned DEFAULT NULL";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "ALTER TABLE devices CHANGE org_id org_id int(10) unsigned NOT NULL DEFAULT 1 AFTER name";
+    $sql = "ALTER TABLE `devices` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT 1 AFTER `name`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "ALTER TABLE devices CHANGE description description text NOT NULL AFTER org_id";
+    $sql = "ALTER TABLE `devices` CHANGE `description` `description` text NOT NULL AFTER `org_id`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "CREATE VIEW system AS SELECT * FROM devices";
+    $sql = "CREATE VIEW `system` AS SELECT * FROM devices";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -257,7 +257,7 @@ if (!$db->fieldExists('notes', 'locations')) {
 $component_tables = array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discoveries', 'discovery_log', 'disk', 'dns', 'edit_log', 'field', 'file', 'graph', 'image', 'invoice_item', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
 foreach ($component_tables as $table) {
     if ($db->tableExists($table) and $db->fieldExists('system_id', $table)) {
-        $sql = "ALTER TABLE `$table` RENAME COLUMN system_id TO device_id";
+        $sql = "ALTER TABLE `$table` CHANGE `system_id` `device_id` int(10) unsigned DEFAULT NULL";
         $query = $db->query($sql);
         $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
         log_message('info', (string)$db->getLastQuery());
@@ -265,7 +265,7 @@ foreach ($component_tables as $table) {
 }
 
 if ($db->fieldExists('guest_system_id', 'vm')) {
-    $sql = "ALTER TABLE `vm` RENAME COLUMN `guest_system_id` TO `guest_device_id`";
+    $sql = "ALTER TABLE `vm` CHANGE `guest_system_id` `guest_device_id` int(10) unsigned DEFAULT NULL";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

@@ -1131,7 +1131,7 @@ CREATE TABLE `devices` (
   `os_name` varchar(100) NOT NULL DEFAULT '',
   `os_version` varchar(200) NOT NULL DEFAULT '',
   `os_cpe` varchar(200) NOT NULL DEFAULT '',
-  `attached_device_id` int(10) DEFAULT NULL,
+  `attached_device_id` int(10) unsigned DEFAULT NULL,
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `manufacturer_code` varchar(200) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
