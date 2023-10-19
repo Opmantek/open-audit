@@ -1193,7 +1193,7 @@ CREATE TABLE `devices` (
   `end_of_life` date NOT NULL DEFAULT '2000-01-01',
   `end_of_service` date NOT NULL DEFAULT '2000-01-01',
   `end_of_production` date NOT NULL DEFAULT '2000-01-01',
-  `switch_device_id` int(10) DEFAULT NULL,
+  `switch_device_id` int(10) unsigned DEFAULT NULL,
   `switch_port` int(10) unsigned NOT NULL DEFAULT '0',
   `patch_panel` varchar(45) NOT NULL DEFAULT '',
   `patch_panel_port` int(10) unsigned NOT NULL DEFAULT '0',
