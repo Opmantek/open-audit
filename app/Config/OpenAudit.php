@@ -143,5 +143,36 @@ class OpenAudit extends BaseConfig
         $this->enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
 
         $this->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
+
+
+
+        $modules = array();
+        $apps = array();
+        $base = '/usr/local/omk';
+        if (file_exists('/usr/local/opmojo')) {
+            $base = '/usr/local/opmojo';
+        }
+        if (file_exists($base . '/conf/opCommon.json')) {
+            $omkConfig = file_get_contents($base . '/conf/opCommon.json');
+            if (!empty($omkConfig)) {
+                $omkConfig = json_decode($omkConfig);
+            }
+            if (!empty($omkConfig->omkd->load_applications)) {
+                $apps = $omkConfig->omkd->load_applications;
+            }
+        }
+        $nmis = "/usr/local/nmis9/cgi-bin/nmiscgi.pl";
+        $opLicense = $base . "/bin/oplicense-cli.pl";
+        $modules[] = (object)array("name" => "Applications",  "url" => (file_exists($base))           ? "/omk"                  : "");
+        $modules[] = (object)array("name" => "opCharts",      "url" => (in_array('opCharts', $apps))  ? "/omk/opCharts"         : "https://firstwave.com/products/interactive-dashboards-and-charts/");
+        $modules[] = (object)array("name" => "opEvents",      "url" => (in_array('opEvents', $apps))  ? "/omk/opEvents/"        : "https://firstwave.com/opevents-traps-network-event-management/");
+        $modules[] = (object)array("name" => "opConfig",      "url" => (in_array('opConfig', $apps))  ? "/omk/opConfig"         : "https://firstwave.com/products/network-configuration-management/");
+        $modules[] = (object)array("name" => "opHA",          "url" => (in_array('opHA', $apps))      ? "/omk/opHA"             : "https://firstwave.com/products/distributed-network-management/");
+        $modules[] = (object)array("name" => "opReports",     "url" => (in_array('opReports', $apps)) ? "/omk/opReports/"       : "https => //firstwave.com/products/advanced-analysis-and-reporting/");
+        $modules[] = (object)array("name" => "opAddress",     "url" => (in_array('opAddress', $apps)) ? "/omk/opAddress/"       : "https://firstwave.com/products/ip-address-audit-and-management/");
+        $modules[] = (object)array("name" => "opLicensing",   "url" => (file_exists($opLicense))      ? "/omk/opLicense"        : "");
+        $modules[] = (object)array("name" => "NMIS",          "url" => (file_exists($nmis))           ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
+        $modules[] = (object)array("name" => "Other Modules", "url" => "https://firstwave.com");
+        $this->modules = $modules;
     }
 }

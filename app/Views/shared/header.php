@@ -453,22 +453,12 @@ if ($config->product !== 'community') {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarModules" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Modules') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarModules">
 <?php
-if (!empty($config->modules)) {
-    $modules = $config->modules;
-    if (is_string($modules)) {
-        $modules = json_decode($modules);
-    }
-    foreach ($modules as $module) {
-        if (!empty($module->installed)) {
-            $url = $module->link;
-        } else {
-            $url = @$module->url;
+    foreach ($config->modules as $module) {
+        if (!empty($module->url)) {
+            echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $module->url . "\">" . $module->name . "</a></li>\n";
         }
-        echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $url . "\">" . $module->name . "</a></li>\n";
     }
-} else {
-    echo "                              <li><a class=\"dropdown-item\" href=\"#\">No modules installed.</a></li>\n";
-} ?>
+?>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
