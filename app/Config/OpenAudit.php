@@ -111,7 +111,7 @@ class OpenAudit extends BaseConfig
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
-                    $this->device_known = intval($result->device_known);
+                    $this->device_known = intval($result->device_count);
                 }
             }
         }
