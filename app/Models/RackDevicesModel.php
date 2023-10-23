@@ -112,7 +112,10 @@ class RackDevicesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $racksModel = new \App\Models\RacksModel();
+        $included['racks'] = $racksModel->listUser();
+        return $included;
     }
 
     /**
@@ -166,7 +169,8 @@ class RackDevicesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
+        $sql = "SELECT rack_devices.*, racks.name AS `racks.name`, devices.name AS `devices.name` FROM rack_devices LEFT JOIN racks ON rack_devices.rack_id = racks.id LEFT JOIN devices ON rack_devices.device_id = devices.id WHERE rack_devices.id = ?";
+        $query = $this->db->query($sql, [$id]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }

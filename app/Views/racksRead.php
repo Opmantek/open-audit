@@ -8,7 +8,7 @@ if (!empty($config->maps_api_key) and ($config->product === 'professional' or $c
 }
 
 if ($user->toolbar_style === 'icontext') {
-    $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span>' . __('Add Device') . '</button></li>';
+    $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><a href="' . url_to('rack_devicesCreateForm') . '?rack_id=' . $resource->id . '"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span>' . __('Add Device') . '</a></button></li>';
 } else if ($user->toolbar_style === 'icon') {
     $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span></button></li>';
 } else {
@@ -252,7 +252,7 @@ if ($resource->ru_start == 1) {
                                             <td class="text-center"><?= $item->attributes->height ?></td>
                                             <?php if ($update) { ?>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-danger delete_link" data-collection="rack_devices" data-id="<%= $item->{'id'} %>" data-name="<%= $item->{'attributes'}->{'name'} %>">
+                                                <button type="button" class="btn btn-sm btn-danger delete_link" data-collection="rack_devices" data-redirect="racks/<?= $resource->id ?>" data-id="<?= $item->{'id'} ?>" data-name="<?= $item->attributes->name ?>">
                                                     <span class="fa fa-trash"></span>
                                                 </button>
                                             </td>
