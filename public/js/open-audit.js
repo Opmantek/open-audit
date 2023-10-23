@@ -15,8 +15,7 @@ $(document).ready(function () {
             }
         });
         ids = ids.substring(1);
-        // var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;
-        var url = baseurl + 'index.php/devices?devices.id=in(' + ids + ')&action=bulkupdateform';
+        var url = baseurl + '/devices?devices.id=in(' + ids + ')&action=bulkupdateform';
         window.location = url;
     });
 
@@ -161,10 +160,10 @@ $(document).ready(function () {
             return;
         }
 
-        redirect = baseurl + "/" + collection;
+        redirect = baseurl + '/' + collection;
         dataRedirect = $(this).attr('data-redirect');
         if (typeof dataRedirect !== 'undefined' && dataRedirect != "") {
-            redirect = baseurl + dataRedirect;
+            redirect = baseurl + '/' + dataRedirect;
         }
 
         var $id = $(this).attr('data-id');
@@ -193,7 +192,7 @@ $(document).ready(function () {
         }
         var $type = $(this).attr('data-component_type');
         var $id = $(this).attr('data-id');
-        var $url = baseurl + 'components/' + $id + '/' + $type + "?components.type=" + $type;
+        var $url = baseurl + '/components/' + $id + '/' + $type + "?components.type=" + $type;
         $.ajax({
             type: 'DELETE',
             url: $url,

@@ -65,7 +65,7 @@ if ($config->product !== 'community') {
             echo "            var collection = '" . $meta->collection . "';\n";
         }
         if (!empty($meta->baseurl)) {
-            echo "            var baseurl = '" . $meta->baseurl . "';\n";
+            echo "            var baseurl = '" . $meta->baseurl . "index.php';\n";
         } else {
             echo "            var baseurl = '';\n";
         } ?>
