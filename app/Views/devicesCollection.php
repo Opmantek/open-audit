@@ -32,7 +32,7 @@ if (!empty($meta->query_string)) {
 ?>
         <main class="container-fluid">
             <?php if (!empty($config->license) and $config->license !== 'none') { ?>
-            <div class="card oa-card-advanced">
+            <div class="card">
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
@@ -93,6 +93,7 @@ if (!empty($meta->query_string)) {
                     <br>
                 </div>
             </div>
+            <br>
             <?php } ?>
 
             <div class="card">
