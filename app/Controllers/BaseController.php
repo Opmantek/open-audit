@@ -116,8 +116,11 @@ abstract class BaseController extends Controller
                         if (empty($userRoles[$key])) {
                             $userRoles[$key] = $value;
                         } else {
-                            if (strpos($userRoles[$key], $value) === false) {
+                            if (!empty($value) and (empty($userRoles[$key]) or strpos($userRoles[$key], $value) === false)) {
                                 $userRoles[$key] = $userRoles[$key] . $value;
+                            }
+                            if (empty($value)) {
+                                log_message('warning', $userRole . '::' . $role->name . '::' . $key . ' has an empty value. You may wish to reset Roles to their defaults.');
                             }
                         }
                     }
