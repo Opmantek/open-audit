@@ -130,7 +130,7 @@ if ($config->product !== 'community') {
                                         <li><a class="dropdown-item dropdown-toggle second-level-dropdown-toggle" href="#"><?= __('Discovery Scan Options') ?></a>
                                             <ul class="dropdown-menu">
                                                 <?= menuItem('discovery_scan_options', 'r', $user, 'discovery_scan_optionsCollection', __('List') . ' ' . __('Discovery Scan Options')) ?>
-                                                <?= menuItem('discovery_scan_options', 'c', $user, 'discovery_scan_optionsCreate', __('Create') . ' ' . __('Discovery Scan Options')) ?>
+                                                <?= menuItem('discovery_scan_options', 'c', $user, 'discovery_scan_optionsCreateForm', __('Create') . ' ' . __('Discovery Scan Options')) ?>
                                                 <li><a class="dropdown-item" href="<?= url_to('discovery_scan_optionsHelp') ?>"><?= __('Learn About') . ' ' . __('Discovery Scan Options') ?></a></li>
                                             </ul>
                                         </li>
