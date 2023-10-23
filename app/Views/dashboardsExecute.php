@@ -237,6 +237,64 @@ window.onload = function () {
 
         $('.chart-raw-legend').css('overflow-y','visible');
 
+        Highcharts.generictheme = {
+            // colors: ['#1f284f', '#4a3165', '#7a3671', '#a83a71', '#d14565', '#ef5c51', '#ff7e35', '#ffa600'],
+            chart: {
+                backgroundColor: '#fff',
+            },
+            title: {
+                style: {
+                    // color: '#404040',
+                    // font: '16px "Trebuchet MS", Verdana, sans-serif'
+                }
+            },
+            subtitle: {
+                style: {
+                    // color: '#404040',
+                    // font: '12px "Trebuchet MS", Verdana, sans-serif'
+                }
+            },
+            legend: {
+                itemStyle: {
+                    // color: '#404040',
+                    // font: '9pt Trebuchet MS, Verdana, sans-serif',
+                },
+                itemHoverStyle: {
+                    // color: 'gray'
+                }
+            }
+        };
+
+        Highcharts.darktheme = {
+            colors: ['#2162F6', '#50ACF0', '#BA7DF0', '#8462FA', '#BC1EF0','#DF82FA', '#F3A8E8','#FF928C','#FF5465', '#FFAC81'],
+            chart: {
+                backgroundColor: '#222',
+            },
+            title: {
+                style: {
+                    color: '#fff',
+                }
+            },
+            subtitle: {
+                style: {
+                    color: '#fff',
+                }
+            },
+            legend: {
+                itemStyle: {
+                color: '#fff'
+                },
+                itemHoverStyle: {
+                    color: 'gray'
+                }
+            }
+        };
+
+        Highcharts.setOptions(Highcharts.generictheme);
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            Highcharts.setOptions(Highcharts.darktheme);
+        }
+
         <?php
         foreach ($included['widgets'] as $widget) {
             if (!empty($widget->formatted)) {
@@ -245,7 +303,6 @@ window.onload = function () {
         } ?>
 
 <?php if ($config->rss_enable !== "n" and $resource->sidebar !== 'n') { ?>
-
         function getDate(days)
         {
             if (days == "") { days = 0; }
