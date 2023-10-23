@@ -16,7 +16,7 @@ include 'shared/create_functions.php';
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
-                                <?= create_text_field('data[attributes][description]', __('description'), $dictionary->attributes->create) ?>
+                                <?= create_text_field('data[attributes][description]', __('Description'), $dictionary->attributes->create) ?>
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
