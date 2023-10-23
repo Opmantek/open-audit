@@ -1705,7 +1705,7 @@ function reset_icons($id = '')
             }
         }
 
-        $sql = 'UPDATE system SET icon = ? WHERE id = ?';
+        $sql = 'UPDATE devices SET icon = ? WHERE id = ?';
         $query = $db->query($sql, [$details->icon, intval($details->id)]);
     }
 
