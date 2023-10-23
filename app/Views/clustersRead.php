@@ -86,7 +86,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="status" class="col-sm-4 control-label"><?= __('Status') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="status" name="status" data-original-value="<?= $resource->{'Status'} ?>" disabled>
+                                        <select class="form-select" id="status" name="status" data-original-value="<?= $resource->{'status'} ?>" disabled>
                                             <option value="" label=" " <?php if ($resource->{'status'} === '') {         ?>selected<?php } ?>></option>
                                             <option value="active"     <?php if ($resource->{'status'} === 'active') {   ?>selected<?php } ?>><?= __('Active') ?></option>
                                             <option value="inactive"   <?php if ($resource->{'status'} === 'inactive') { ?>selected<?php } ?>><?= __('Inactive') ?></option>
@@ -264,7 +264,7 @@ if ($update) {
                                     <td><?= $item->attributes->{'devices.description'} ?></td>
                                     <?php if ($update) { ?>
                                     <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
-                                    <?php } ?>                                    
+                                    <?php } ?>
                                 </tr>
                                 <?php } ?>
                             </tbody>
