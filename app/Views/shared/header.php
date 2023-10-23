@@ -515,7 +515,7 @@ if ($config->product !== 'community') {
                                 <input type="text"   name="data[attributes][value]" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
                                 <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
                                 <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
-                                <button class="btn btn-sm btn-outline-secondary" style="border: 1px solid #adb5bd" type="submit" title="Submit"><span class="fa fa-search" title="<%= l('Search') %>"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" style="border: 1px solid #adb5bd" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>
                             </div>
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
