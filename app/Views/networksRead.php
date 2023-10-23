@@ -50,7 +50,11 @@ if ($style === 'icontext') {
                                             <div class="input-group">
                                                 <select class="form-select" id="environment" name="environment" data-original-value="<?= $resource->environment ?>" disabled>
                                                 <?php foreach ($environments as $environment) {
-                                                    echo "<option value=\"$environment\">$environment</option>\n";
+                                                    $selected = '';
+                                                    if ($environment === $resource->environment) {
+                                                        $selected = ' selected';
+                                                    }
+                                                    echo "<option value=\"$environment\"$selected>$environment</option>\n";
                                                 } ?>
                                                 </select>
                                                 <?php if ($update) { ?>
@@ -71,7 +75,11 @@ if ($style === 'icontext') {
                                             <div class="input-group">
                                                 <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                                 <?php foreach ($types as $type) {
-                                                    echo "<option value=\"$type\">$type</option>\n";
+                                                    $selected = '';
+                                                    if ($type === $resource->type) {
+                                                        $selected = ' selected';
+                                                    }
+                                                    echo "<option value=\"$type\"$selected>$type</option>\n";
                                                 } ?>
                                                 </select>
                                                 <?php if ($update) { ?>
@@ -90,9 +98,13 @@ if ($style === 'icontext') {
                                         <div class="offset-2 col-8" style="position:relative;">
                                             <label for="admin_status" class="form-label"><?= __('Admin Status') ?></label>
                                             <div class="input-group">
-                                                <select class="form-select" id="admin_status" name="admin_status" data-original-value="<?= $resource->type ?>" disabled>
+                                                <select class="form-select" id="admin_status" name="admin_status" data-original-value="<?= $resource->admin_status ?>" disabled>
                                                 <?php foreach ($statuses as $status) {
-                                                    echo "<option value=\"$status\">$status</option>\n";
+                                                    $selected = '';
+                                                    if ($status === $resource->admin_status) {
+                                                        $selected = ' selected';
+                                                    }
+                                                    echo "<option value=\"$status\"$selected>$status</option>\n";
                                                 } ?>
                                                 </select>
                                                 <?php if ($update) { ?>
