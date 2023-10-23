@@ -20,7 +20,7 @@ if (empty($update) or $resource->editable !== 'y') {
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8">
                                         <label for="collector_name" class="form-label"><?= __('Collector Name') ?></label><br />
-                                        <input class="form-control" type="text" id="collector_name" name="collector_name" value="<%= $values->{'collector_name'} || '' ?>" />
+                                        <input class="form-control" type="text" id="collector_name" name="collector_name" value="<?= $values->{'collector_name'} || '' ?>" />
                                     </div>
                                 </div>
 
@@ -28,28 +28,28 @@ if (empty($update) or $resource->editable !== 'y') {
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8">
                                         <label for="host" class="form-label"><?= __('Host') ?></label><br />
-                                        <input class="form-control" type="text" id="host" name="host" value="<%= $values->{'host'} || 'http://' ?>" />
+                                        <input class="form-control" type="text" id="host" name="host" value="<?= $values->{'host'} || 'http://' ?>" />
                                     </div>
                                 </div>
 
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8">
                                         <label for="community" class="form-label"><?= __('Community') ?></label><br />
-                                        <input class="form-control" type="text" id="community" name="community" value="<%= $values->{'community'} || '/open-audit' ?>" />
+                                        <input class="form-control" type="text" id="community" name="community" value="<?= $values->{'community'} || '/open-audit' ?>" />
                                     </div>
                                 </div>
 
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8">
                                         <label for="username" class="form-label"><?= __('Username') ?></label><br />
-                                        <input class="form-control" type="text" id="username" name="username" value="<%= $values->{'username'} || '' ?>" />
+                                        <input class="form-control" type="text" id="username" name="username" value="<?= $values->{'username'} || '' ?>" />
                                     </div>
                                 </div>
 
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8">
                                         <label for="password" class="form-label"><?= __('Password') ?></label><br />
-                                        <input class="form-control" type="text" id="password" name="password" value="<%= $values->{'password'} || '' ?>" />
+                                        <input class="form-control" type="text" id="password" name="password" value="<?= $values->{'password'} || '' ?>" />
                                     </div>
                                 </div>
 
