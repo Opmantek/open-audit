@@ -195,6 +195,9 @@ class Collections extends BaseController
                     if ($this->resp->meta->collection === 'baselines_policies') {
                         return redirect()->route('baselinesRead', [$this->resp->meta->received_data->attributes->baseline_id]);
                     }
+                    if ($this->resp->meta->collection === 'rack_devices') {
+                        return redirect()->route('racksRead', [$this->resp->meta->received_data->attributes->rack_id]);
+                    }
                     return redirect()->route($this->resp->meta->collection.'Read', [$id]);
                 } else {
                     $collection = 'device';
@@ -247,7 +250,7 @@ class Collections extends BaseController
             output($this);
             exit();
         }
-        $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
+        $this->resp->included = $this->{strtolower($this->resp->meta->collection) . 'Model'}->includedCreateForm();
         $this->resp->included['orgs'] = $this->orgsModel->listUser();
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         if ($this->resp->meta->format !== 'html') {
