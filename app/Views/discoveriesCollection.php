@@ -273,7 +273,7 @@ window.onload = function () {
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
         $("#delete_queue").click(function () {
-            if (confirm("<%= l('Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.') %>") !== true) {
+            if (confirm("<?= __('Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.') ?>") !== true) {
                 return;
             }
             var $id = $(this).attr("data-id");
@@ -293,7 +293,7 @@ window.onload = function () {
         });
 
         $("#delete_queue_count").click(function () {
-            if (confirm("<%= l('Are you sure? This will reset the queue processing count and could cause load on the server.') %>") !== true) {
+            if (confirm("<?= __('Are you sure? This will reset the queue processing count and could cause load on the server.') ?>") !== true) {
                 return;
             }
             var data = {};
