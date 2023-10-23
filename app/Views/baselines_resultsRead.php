@@ -29,41 +29,35 @@ $style = @$user->toolbar_style;
 $single_policy_button = '';
 $single_device_button = '';
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2 active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true" title="' . __('Details') . '"><span style="margin-right:6px;" class="fa fa-eye"></span>' . __('Details') . '</button></li>';
-
-    #$details_button = '<li class="nav-item" role="presentation"><a role="button" href="#details" class="btn btn-light" data-bs-toggle="tab" title="' . __('Details') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Details') . '</a></li>';
-
-    $policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="policies-tab" data-bs-toggle="tab" data-bs-target="#policies" type="button" role="tab" aria-controls="policies" aria-selected="false" title="' . __('Policy Results') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Policy Results') . '</button></li>';
-
-    #$policy_button = '<li class="nav-item" role="presentation"><a role="button" href="#policies" class="btn btn-light nav-link" data-bs-toggle="tab" title="' . __('Policy Results') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Policy Results') . '</a></li>';
-
-    $device_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices" type="button" role="tab" aria-controls="devices" aria-selected="false" title="' . __('Device Results') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Device Results') . '</button></li>';
-
-    #$device_button = '<li class="nav-item" role="presentation"><a role="button" href="#devices" class="btn btn-light" data-bs-toggle="tab" title="' . __('Device Results') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Device Results') . '</a></li>';
-
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
+    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
     if ($extra === 'policy') {
-        $single_policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="policy-tab" data-bs-toggle="tab" data-bs-target="#policy" type="button" role="tab" aria-controls="policy" aria-selected="false" title="' . __('Policy Result') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Policy Result') . '</button></li>';
-
-        #$single_policy_button = '<li class="nav-item" role="presentation"><a role="button" href="#policy" class="btn btn-light" data-bs-toggle="tab" title="' . __('Policy Result') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Policy Result') . '</a></li>';
+        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Result') . '</a></li>';
     }
-
     if ($extra === 'device') {
-        $single_device_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="device-tab" data-bs-toggle="tab" data-bs-target="#device" type="button" role="tab" aria-controls="device" aria-selected="false" title="' . __('Device Result') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Device Result') . '</button></li>';
-
-        #$single_policy_button = '<li class="nav-item" role="presentation"><a role="button" href="#policy" class="btn btn-light" data-bs-toggle="tab" title="' . __('Policy Result') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span>' . __('Policy Result') . '</a></li>';
+        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Result') . '</a></li>';
     }
 } else if ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2 active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true" title="' . __('Details') . '"><span class="fa fa-eye"></span></button></li>';
-
-    $policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false" title="' . __('Policy Results') . '"><span class="fa-solid fa-square-poll-horizontal"></span></button></li>';
-
-    $device_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices" type="button" role="tab" aria-controls="devices" aria-selected="false" title="' . __('Device Results') . '"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal"></span></button></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
+    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
+    if ($extra === 'policy') {
+        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Result') . '</a></li>';
+    }
+    if ($extra === 'device') {
+        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Result') . '</a></li>';
+    }
 } else {
-    $details_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2 active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true" title="' . __('Details') . '">' . __('Details') . '</button></li>';
-
-    $policy_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false" title="' . __('Policy Results') . '">' . __('Policy Results') . '</button></li>';
-
-    $device_button = '<li class="nav-item" role="presentation"><button class="btn btn-light mb-2" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices" type="button" role="tab" aria-controls="devices" aria-selected="false" title="' . __('Device Results') . '">' . __('Device Results') . '</button></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"></span>' . __('Details') . '</a></li>';
+    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab">' . __('Policy Results') . '</a></li>';
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Device Results') . '</a></li>';
+    if ($extra === 'policy') {
+        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab">' . __('Policy Result') . '</a></li>';
+    }
+    if ($extra === 'device') {
+        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab">' . __('Device Result') . '</a></li>';
+    }
 }
 ?>
         <main class="container-fluid">
@@ -87,7 +81,7 @@ if ($style === 'icontext') {
                     <br/>
 
                     <div class="tab-content">
-                        <div class="tab-pane active" id="details" role="tabpanel" tabindex="0">
+                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_field('baseline', $resource->{'baselines.name'}) ?>
@@ -119,7 +113,9 @@ if ($style === 'icontext') {
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="tab-content">
                         <div class="tab-pane" id="policies" role="tabpanel" tabindex="0">
                             <br>
                             <div class="row">
@@ -151,6 +147,7 @@ if ($style === 'icontext') {
                             </table>
                         </div>
 
+                    <div class="tab-content">
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0">
                             <br>
                             <div class="row">
@@ -169,7 +166,7 @@ if ($style === 'icontext') {
                                 <?php if (!empty($resource->result->device_list)) { ?>
                                     <?php foreach ($resource->result->device_list as $row) { ?>
                                     <tr>
-                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>#device" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
                                         <td><?= $row->name ?></td>
                                         <td class="text-center"><a href="#" role="button" class="btn btn-success btn-sm"><strong><?= $row->pass ?></strong></a></td>
                                         <td class="text-center"><a href="#" role="button" class="btn btn-danger  btn-sm"><strong><?= $row->fail ?></strong></a></td>
@@ -179,8 +176,10 @@ if ($style === 'icontext') {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
 
                         <?php if ($extra === 'policy') { ?>
+                    <div class="tab-content">
                         <div class="tab-pane" id="policy" role="tabpanel" tabindex="0">
                             <br>
                             <div class="row">
@@ -235,10 +234,12 @@ if ($style === 'icontext') {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
                         <?php } ?>
 
 
                         <?php if ($extra === 'device') { ?>
+                    <div class="tab-content">
                         <div class="tab-pane" id="device" role="tabpanel" tabindex="0">
                             <br>
                             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -285,6 +286,7 @@ if ($style === 'icontext') {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
                         <?php } ?>
 
                     </div>
@@ -311,28 +313,21 @@ window.onload = function () {
     });
 
     $(document).ready(function() {
-        $(function(){
-          hash = "#details";
-          if (window.location.hash !== "") {
-            var hash = window.location.hash;
-          }
-          hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
-          $('ul.nav.nav-pills a').click(function (e) {
-             $(this).tab('show');
-             $('body').scrollTop();
-             /* window.scrollTo(0, 0); */
-             window.location.hash = this.hash;
-             $('body').scrollTop();
-          });
-        });
-    });
+        var hash = window.location.hash;
+        if (hash == "") {
+            hash = "#details"
+        }
+        hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
 
-    $(document).ready(function () {
+        $('ul.nav.nav-pills a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            window.location.hash = this.hash;
+        });
+
         $(".nav-link").click(function(e) {
-            console.log("Prevent Default");
             window.scrollTo(0, 0);
         });
     });
-
 }
 </script>
