@@ -28,7 +28,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="type" class="col-sm-4 control-label"><?= __('Type') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="type" name="type" data-original-value="<%= $resource->{'type'} ?>" disabled>
+                                        <select class="form-select" id="type" name="type" data-original-value="<?= $resource->{'type'} ?>" disabled>
                                             <option value="" label=" "        <?php if ($resource->{'type'} === '') {                  ?>selected<?php } ?>></option>
                                             <option value="high availability" <?php if ($resource->{'type'} === 'high availability') { ?>selected<?php } ?>><?= __('High Availability') ?></option>
                                             <option value="load balancing"    <?php if ($resource->{'type'} === 'load balancing') {    ?>selected<?php } ?>><?= __('Load Balancing') ?></option>
@@ -56,7 +56,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="purpose" class="col-sm-4 control-label"><?= __('Purpose') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="purpose" name="purpose" data-original-value="<%= $resource->{'purpose'} ?>" disabled>
+                                        <select class="form-select" id="purpose" name="purpose" data-original-value="<?= $resource->{'purpose'} ?>" disabled>
                                             <option value="" label=" "     <?php if ($resource->{'purpose'} === '') {               ?>selected<?php } ?>></option>
                                             <option value="application"    <?php if ($resource->{'purpose'} === 'application') {    ?>selected<?php } ?>><?= __('Application') ?></option>
                                             <option value="compute"        <?php if ($resource->{'purpose'} === 'compute') {        ?>selected<?php } ?>><?= __('Compute') ?></option>
@@ -86,7 +86,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="status" class="col-sm-4 control-label"><?= __('Status') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="status" name="status" data-original-value="<%= $resource->{'Status'} ?>" disabled>
+                                        <select class="form-select" id="status" name="status" data-original-value="<?= $resource->{'Status'} ?>" disabled>
                                             <option value="" label=" " <?php if ($resource->{'status'} === '') {         ?>selected<?php } ?>></option>
                                             <option value="active"     <?php if ($resource->{'status'} === 'active') {   ?>selected<?php } ?>><?= __('Active') ?></option>
                                             <option value="inactive"   <?php if ($resource->{'status'} === 'inactive') { ?>selected<?php } ?>><?= __('Inactive') ?></option>
@@ -112,7 +112,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="scaling" class="col-sm-4 control-label"><?= __('Scaling') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="scaling" name="scaling" data-original-value="<%= $resource->{'scaling'} ?>" disabled>
+                                        <select class="form-select" id="scaling" name="scaling" data-original-value="<?= $resource->{'scaling'} ?>" disabled>
                                             <option value="" label=" " <?php if ($resource->{'scaling'} === '') { ?>selected<?php } ?>></option>
                                             <option value="auto"  <?php if ($resource->{'scaling'} === 'auto')  { ?>selected<?php } ?>><?= __('Auto') ?></option>
                                             <option value="fixed" <?php if ($resource->{'scaling'} === 'fixed') { ?>selected<?php } ?>><?= __('Fixed') ?></option>
@@ -138,7 +138,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="configuration" class="col-sm-4 control-label"><?= __('Configuration') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="configuration" name="configuration" data-original-value="<%= $resource->{'configuration'} ?>" disabled>
+                                        <select class="form-select" id="configuration" name="configuration" data-original-value="<?= $resource->{'configuration'} ?>" disabled>
                                             <option value="" label=" "     <?php if ($resource->{'configuration'} === '') {               ?>selected<?php } ?>></option>
                                             <option value="active/active"  <?php if ($resource->{'configuration'} === 'active/active') {  ?>selected<?php } ?>><?= __('Active / Active') ?></option>
                                             <option value="active/passive" <?php if ($resource->{'configuration'} === 'active/passive') { ?>selected<?php } ?>><?= __('Active / Passive') ?></option>
@@ -168,7 +168,7 @@ if ($update) {
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="environment" class="col-sm-4 control-label"><?= __('Environment') ?></label><br />
                                     <div class="col-sm-7 input-group">
-                                        <select class="form-select" id="environment" name="environment" data-original-value="<%= $resource->{'environment'} ?>" disabled>
+                                        <select class="form-select" id="environment" name="environment" data-original-value="<?= $resource->{'environment'} ?>" disabled>
                                         <option value="" label=" " <?php if ($resource->{'environment'} === '') { ?>selected<?php } ?>></option>
                                         <?php foreach ($included['types'] as $attribute) {
                                             $selected = '';
