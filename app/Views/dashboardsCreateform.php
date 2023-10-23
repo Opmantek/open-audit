@@ -18,7 +18,6 @@ include 'shared/create_functions.php';
                                 <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][description]', __('Description'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][sidebar]', __('Sidebar'), [], $dictionary->attributes->create) ?>
-                                <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
 
                                 <?php for ($i = 1; $i <= 6; $i++) { ?>
                                     <?= create_select('data[attributes][options][widgets][' . $i . '][widget_id]', __('Widget # ') . $i, $included['widgets'], $dictionary->attributes->create) ?>
