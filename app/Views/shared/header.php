@@ -71,6 +71,12 @@ if ($config->product !== 'community') {
         } ?>
             var web_folder = '<?= base_url() ?>';
             var device_auto_delete = '<?= $config->device_auto_delete; ?>';
+
+            let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            let html = document.querySelector('html');
+            html.classList.add(prefers);
+            html.setAttribute('data-bs-theme', prefers);
+
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -515,11 +521,11 @@ if ($config->product !== 'community') {
                                 <input type="text"   name="data[attributes][value]" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
                                 <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
                                 <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
-                                <button class="btn btn-sm btn-outline-secondary" style="border: 1px solid #adb5bd" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>
                             </div>
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
-                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary" style="border: 1px solid #adb5bd; color: #212529" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary dash-drop" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Dashboards
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -538,10 +544,10 @@ if ($config->product !== 'community') {
                                     </ul>
                                 </div>
                                 <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and $meta->id != $user->dashboard_id) { ?>
-                                <button class="btn btn-sm btn-outline-secondary" id="make_my_dashboard_button" title="<?= __('Make My Default Dashboard') ?>" style="border: 1px solid #adb5bd; color: #212529" type="button" aria-expanded="false"><span class="fa fa-home"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" id="make_my_dashboard_button" title="<?= __('Make My Default Dashboard') ?>" type="button" aria-expanded="false"><span class="fa fa-home"></span></button>
                                 <?php } ?>
                                 <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute') { ?>
-                                <a href="<?= url_to('dashboardsRead', $meta->id) ?>" class="btn btn-sm btn-outline-secondary" title="<?= __('Edit') ?>" style="border: 1px solid #adb5bd; color: #212529" type="button" aria-expanded="false"><span class="fa fa-edit"></span></a>
+                                <a href="<?= url_to('dashboardsRead', $meta->id) ?>" class="btn btn-sm btn-outline-secondary" title="<?= __('Edit') ?>" type="button" aria-expanded="false"><span class="fa fa-edit"></span></a>
                                 <?php } ?>
                             </div>
                         </form>
