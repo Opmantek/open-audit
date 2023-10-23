@@ -115,7 +115,11 @@ function create_select(string $field = '', string $label = '', $items = array(),
                                         <label class=\"form-label\" for=\"{$field}\">" . $label . "</label>
                                         <select class=\"form-select\" name=\"{$field}\" id=\"{$field}\" {$required}>\n                                            <option value=\"\">" . __('Choose') . "</option>\n";
     foreach ($items as $item) {
-        $return_string .= "                                            <option value=\"" . $item->id . "\">" . $item->attributes->name . "</option>\n";
+        $selected = '';
+        if ($item->id === 1 and $field === 'data[attributes][org_id]') {
+            $selected = ' selected';
+        }
+        $return_string .= "                                            <option value=\"" . $item->id . "\"" . $selected . ">" . $item->attributes->name . "</option>\n";
     }
     $return_string .= "                                        </select>
                                 </div>
